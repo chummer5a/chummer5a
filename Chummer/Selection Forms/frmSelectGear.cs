@@ -918,7 +918,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = cboCategory.SelectedValue?.ToString();
             StringBuilder sbdFilter = new StringBuilder(_objCharacter.Options.BookXPath());
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0))
+            // Only add in category filter if we either are not searching or we have the option set to only search in categories
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else if (_setAllowedCategories.Count > 0)
             {
@@ -969,7 +970,6 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             int intOverLimit = 0;
-            string strSelectCategory = cboCategory.SelectedValue?.ToString();
             List<ListItem> lstGears = new List<ListItem>();
             foreach (XPathNavigator objXmlGear in objXmlGearList)
             {
@@ -1019,18 +1019,6 @@ namespace Chummer
                         || objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
                     string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    
-                    if ((GlobalOptions.SearchInCategoryOnly && strSelectCategory == "Show All" || !GlobalOptions.SearchInCategoryOnly) && txtSearch.TextLength != 0)
-                    {
-                        string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
-                        if (!string.IsNullOrEmpty(strCategory))
-                        {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
-                            if (!string.IsNullOrEmpty(objFoundItem.Name))
-                                strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
-                        }
-                    }
-                    // When searching, Category needs to be added to the Value so we can identify the English Category name.
                     lstGears.Add(new ListItem(objXmlGear.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayName));
 
                     if (blnTerminateAfterFirst)
@@ -1039,6 +1027,60 @@ namespace Chummer
                 else
                     ++intOverLimit;
             }
+
+            // Find all entries that have duplicate names so that we can add category labels next to them
+            // But only if it's even possible for the list to have multiple items from different categories
+            if (lstGears.Count > 1)
+            {
+                string strSelectCategory = cboCategory.SelectedValue?.ToString();
+                if (!GlobalOptions.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
+                    strSelectCategory == "Show All")
+                {
+                    HashSet<string> setDuplicateNames = new HashSet<string>();
+
+                    for (int i = 0; i < lstGears.Count - 1; ++i)
+                    {
+                        string strLoopName = lstGears[i].Name;
+                        if (setDuplicateNames.Contains(strLoopName))
+                            continue;
+                        for (int j = i + 1; j < lstGears.Count; ++j)
+                        {
+                            if (strLoopName.Equals(lstGears[j].Name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                setDuplicateNames.Add(strLoopName);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (setDuplicateNames.Count > 0)
+                    {
+                        for (int i = 0; i < lstGears.Count; ++i)
+                        {
+                            ListItem objLoopItem = lstGears[i];
+                            if (!setDuplicateNames.Contains(objLoopItem.Name))
+                                continue;
+                            XPathNavigator objXmlGear
+                                = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " +
+                                                                        objLoopItem.Value.ToString().CleanXPath() +
+                                                                        "]");
+                            if (objXmlGear == null)
+                                continue;
+                            string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
+                            if (string.IsNullOrEmpty(strCategory))
+                                continue;
+                            ListItem objFoundItem
+                                = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
+                            if (!string.IsNullOrEmpty(objFoundItem.Name))
+                            {
+                                lstGears[i] = new ListItem(objLoopItem.Value
+                                    , objLoopItem.Name + strSpace + +'[' + objFoundItem.Name + ']');
+                            }
+                        }
+                    }
+                }
+            }
+
             if (blnDoUIUpdate)
             {
                 lstGears.Sort(CompareListItems.CompareNames);
