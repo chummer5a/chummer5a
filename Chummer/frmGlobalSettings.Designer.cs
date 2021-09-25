@@ -2258,7 +2258,7 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Options";
-            this.Text = "Options";
+            this.Text = "Global Settings";
             this.Load += new System.EventHandler(this.frmOptions_Load);
             this.tlpOptions.ResumeLayout(false);
             this.tlpOptions.PerformLayout();
