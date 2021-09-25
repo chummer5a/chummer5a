@@ -918,7 +918,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = cboCategory.SelectedValue?.ToString();
             StringBuilder sbdFilter = new StringBuilder(_objCharacter.Options.BookXPath());
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0))
                 sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else if (_setAllowedCategories.Count > 0)
             {
@@ -969,6 +969,7 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             int intOverLimit = 0;
+            string strSelectCategory = cboCategory.SelectedValue?.ToString();
             List<ListItem> lstGears = new List<ListItem>();
             foreach (XPathNavigator objXmlGear in objXmlGearList)
             {
@@ -1018,8 +1019,8 @@ namespace Chummer
                         || objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
                     string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-
-                    if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                    
+                    if ((GlobalOptions.SearchInCategoryOnly && strSelectCategory == "Show All" || !GlobalOptions.SearchInCategoryOnly) && txtSearch.TextLength != 0)
                     {
                         string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
                         if (!string.IsNullOrEmpty(strCategory))
