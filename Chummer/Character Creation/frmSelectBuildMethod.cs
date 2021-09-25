@@ -43,15 +43,15 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            // Populate the Gameplay Settings list.
-            List<ListItem> lstGameplayOptions = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
+            // Populate the Character Settings list.
+            List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
             foreach (KeyValuePair<string, CharacterSettings> objLoopOptions in SettingsManager.LoadedCharacterSettings)
             {
-                lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
+                lstCharacterSettings.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
             }
-            lstGameplayOptions.Sort(CompareListItems.CompareNames);
+            lstCharacterSettings.Sort(CompareListItems.CompareNames);
             cboCharacterSetting.BeginUpdate();
-            cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
+            cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
             if (blnUseCurrentValues)
             {
                 cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[_objCharacter.SettingsKey];
@@ -61,7 +61,7 @@ namespace Chummer
             }
             else
                 cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
-            if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+            if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
                 cboCharacterSetting.SelectedIndex = 0;
             cboCharacterSetting.EndUpdate();
 

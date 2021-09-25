@@ -294,6 +294,7 @@ namespace Chummer
             this.cboCharacterSetting.Size = new System.Drawing.Size(626, 21);
             this.cboCharacterSetting.TabIndex = 21;
             this.cboCharacterSetting.TooltipText = "";
+            this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // frmMasterIndex
             // 

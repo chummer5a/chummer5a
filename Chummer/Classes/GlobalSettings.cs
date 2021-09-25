@@ -484,7 +484,8 @@ namespace Chummer
             if (_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
-            LoadStringFromRegistry(ref _strDefaultCharacterSetting, "defaultcharacteroption"); // Deliberate name change to force users to re-check
+            if (!LoadStringFromRegistry(ref _strDefaultCharacterSetting, "defaultcharactersetting"))
+                LoadStringFromRegistry(ref _strDefaultCharacterSetting, "defaultcharacteroption"); // Deliberate name change to force users to re-check
 
             LoadStringFromRegistry(ref _strDefaultMasterIndexSetting, "defaultmasterindexsetting");
 
@@ -801,7 +802,8 @@ namespace Chummer
                     objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
-                    objRegistry.SetValue("defaultcharacteroption", DefaultCharacterSetting);
+                    objRegistry.DeleteValue("defaultcharacteroption", false); // For 5.214.x Nightly users
+                    objRegistry.SetValue("defaultcharactersetting", DefaultCharacterSetting);
                     objRegistry.SetValue("defaultmasterindexsetting", DefaultMasterIndexSetting);
                     objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
                     if (CustomDateFormat != null)

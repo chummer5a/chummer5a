@@ -7183,6 +7183,10 @@
       <text>Print Free Karma and Nuyen Expenses</text>
     </string>
     <string>
+      <key>Label_Options_DefaultMasterIndexSetting</key>
+      <text>Default Setting for Master Index:</text>
+    </string>
+    <string>
       <key>Label_Options_DefaultCharacterOption</key>
       <text>Default Setting for New Characters:</text>
     </string>
