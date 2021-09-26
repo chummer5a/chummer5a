@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
@@ -20,11 +21,11 @@ namespace MatrixPlugin
         /// </summary>
         private class Action
         {
-            public string Skill { get; set; }
-            public string Attribute { get; set; }
-            public int Modifier { get; set; }
-            public string Limit { get; set; }
-            public int LimitModifier { get; set; }
+            public string Skill { get; set; } = "";
+            public string Attribute { get; set; } = "";
+            public int Modifier { get; set; } = 0;
+            public string Limit { get; set; } = "";
+            public int LimitModifier { get; set; } = 0;
 
             public Action()
             {
@@ -87,13 +88,13 @@ namespace MatrixPlugin
             // as [-] Digits
             if (Regex.IsMatch(actionCheck, "([-]{0,1})[ ]([\\d]+)"))
             {
-                Match match = Regex.Match(SkillCheck[0], "([-]{0,1})[ ]([\\d]+)");
+                Match match = Regex.Match(actionCheck, "([-]{0,1})[ ]([\\d]+)");
                 string result = match.Groups[1].Value + match.Groups[2].Value;
                 ActionModifier = int.Parse(result);
             }
             if (Regex.IsMatch(defenceCheck, "([-]{0,1})[ ]([\\d]+)"))
             {
-                Match match = Regex.Match(SkillCheck[1], "([-]{0,1})[ ]([\\d]+)");
+                Match match = Regex.Match(defenceCheck, "([-]{0,1})[ ]([\\d]+)");
                 string result = match.Groups[1].Value + match.Groups[2].Value;
                 DefenceModifier = int.Parse(result);
             }
@@ -111,16 +112,84 @@ namespace MatrixPlugin
         public string Name { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
-        public string ActionSkill { get => action.Skill; set => action.Skill = value; }
-        public string ActionAttribute { get => action.Attribute; set => action.Attribute = value; }
-        public int ActionModifier { get => action.Modifier; set => action.Modifier = value; }
-        public string Limit { get => action.Limit; set => action.Limit = value; }
-        public int LimitModifier { get => action.LimitModifier; set => action.LimitModifier = value; }
-        public string DefenceSkill { get => defenceAction.Skill; set => defenceAction.Skill = value; }
-        public string DefenceAttribute { get => defenceAction.Attribute; set => defenceAction.Attribute = value; }
-        public int DefenceModifier { get => defenceAction.Modifier; set => defenceAction.Modifier = value; }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public string ActionSkill
+        {
+            get => action.Skill;
+            set
+            {
+                action.Skill = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ActionAttribute
+        {
+            get => action.Attribute;
+            set
+            {
+                action.Attribute = value;
+                OnPropertyChanged();
+            }
+        }
+        public int ActionModifier
+        {
+            get => action.Modifier;
+            set
+            {
+                action.Modifier = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Limit
+        {
+            get => action.Limit;
+            set
+            {
+                action.Limit = value;
+                OnPropertyChanged();
+            }
+        }
+        public int LimitModifier
+        {
+            get => action.LimitModifier;
+            set
+            {
+                action.LimitModifier = value;
+                OnPropertyChanged();
+            }
+        }
+        public string DefenceSkill
+        {
+            get => defenceAction.Skill;
+            set
+            {
+                defenceAction.Skill = value;
+                OnPropertyChanged();
+            }
+        }
+        public string DefenceAttribute
+        {
+            get => defenceAction.Attribute;
+            set
+            {
+                defenceAction.Attribute = value;
+                OnPropertyChanged();
+            }
+        }
+        public int DefenceModifier
+        {
+            get => defenceAction.Modifier;
+            set
+            {
+                defenceAction.Modifier = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
     }
 }
