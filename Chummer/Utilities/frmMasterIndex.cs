@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,6 +31,7 @@ namespace Chummer
     public partial class frmMasterIndex : Form
     {
         private bool _blnSkipRefresh = true;
+        private CharacterSettings _objSelectedSetting = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultMasterIndexSetting];
         private readonly List<ListItem> _lstFileNamesWithItems;
         private readonly ConcurrentDictionary<MasterIndexEntry, string> _dicCachedNotes = new ConcurrentDictionary<MasterIndexEntry, string>();
         private readonly List<ListItem> _lstItems = new List<ListItem>(short.MaxValue);
@@ -72,19 +74,91 @@ namespace Chummer
             this.TranslateWinForm();
 
             _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
+            PopulateCharacterSettings();
+        }
+
+        private void PopulateCharacterSettings()
+        {
+            // Populate the Character Settings list.
+            List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
+            foreach (KeyValuePair<string, CharacterSettings> objLoopOptions in SettingsManager.LoadedCharacterSettings)
+            {
+                lstCharacterSettings.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
+            }
+            lstCharacterSettings.Sort(CompareListItems.CompareNames);
+
+            string strOldSetting = cboCharacterSetting.SelectedValue?.ToString();
+
+            bool blnOldSkipRefresh = _blnSkipRefresh;
+            _blnSkipRefresh = true;
+
+            cboCharacterSetting.BeginUpdate();
+            cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+            if (!string.IsNullOrEmpty(strOldSetting) && SettingsManager.LoadedCharacterSettings.ContainsKey(strOldSetting))
+                cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[strOldSetting];
+            cboCharacterSetting.EndUpdate();
+
+            _blnSkipRefresh = blnOldSkipRefresh;
+
+            if (cboCharacterSetting.SelectedIndex != -1)
+                return;
+            cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultMasterIndexSetting];
+            if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                cboCharacterSetting.SelectedIndex = 0;
         }
 
         private async void frmMasterIndex_Load(object sender, EventArgs e)
         {
+            await LoadContent();
+            
+            _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+        }
+
+        private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(CharacterSettings.Books) && e.PropertyName != nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
+                return;
+            using (new CursorWait(this))
+                await LoadContent();
+        }
+
+        private async void cboCharacterSetting_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh)
+                return;
+
+            string strSelectedSetting = cboCharacterSetting.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedSetting) || !SettingsManager.LoadedCharacterSettings.ContainsKey(strSelectedSetting))
+                strSelectedSetting = GlobalSettings.DefaultMasterIndexSetting;
+
+            if (strSelectedSetting == _objSelectedSetting.DictionaryKey)
+                return;
+
+            _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+            _objSelectedSetting = SettingsManager.LoadedCharacterSettings[strSelectedSetting];
+            _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+
+            using (new CursorWait(this))
+                await LoadContent();
+        }
+
+        private async Task LoadContent()
+        {
             using (CustomActivity opLoadFrmMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
                 CustomActivity.OperationType.RequestOperation, null))
             {
+                _dicCachedNotes.Clear();
+                _lstItems.Clear();
+                _lstFileNamesWithItems.Clear();
+
                 HashSet<string> setValidCodes = new HashSet<string>();
-                foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync("books.xml")).Select(
-                    "/chummer/books/book/code"))
+                foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync("books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths))
+                    .Select("/chummer/books/book/code"))
                 {
                     setValidCodes.Add(xmlBookNode.Value);
                 }
+
+                setValidCodes.IntersectWith(_objSelectedSetting.Books);
 
                 string strSourceFilter = setValidCodes.Count > 0
                     ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")) + ')'
@@ -97,7 +171,7 @@ namespace Chummer
                     // Prevents locking the UI thread while still benefitting from static scheduling of Parallel.ForEach
                     await Task.WhenAll(_lstFileNames.Select(strFileName => Task.Run(async () =>
                     {
-                        XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName);
+                        XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName, _objSelectedSetting.EnabledCustomDataDirectoryPaths);
                         xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
                         if (xmlBaseNode == null)
                             return;
@@ -125,10 +199,10 @@ namespace Chummer
                             MasterIndexEntry objEntry = new MasterIndexEntry(
                                 strDisplayName,
                                 strFileName,
-                                new SourceString(strSource, strPage, GlobalOptions.DefaultLanguage,
-                                    GlobalOptions.InvariantCultureInfo),
-                                new SourceString(strSource, strDisplayPage, GlobalOptions.Language,
-                                    GlobalOptions.CultureInfo),
+                                new SourceString(strSource, strPage, GlobalSettings.DefaultLanguage,
+                                    GlobalSettings.InvariantCultureInfo),
+                                new SourceString(strSource, strDisplayPage, GlobalSettings.Language,
+                                    GlobalSettings.CultureInfo),
                                 strEnglishNameOnPage,
                                 strTranslatedNameOnPage);
                             lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
@@ -168,7 +242,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    ListItem objItemToAdd = new ListItem(objItem.Value, string.Format(GlobalOptions.CultureInfo,
+                                    ListItem objItemToAdd = new ListItem(objItem.Value, string.Format(GlobalSettings.CultureInfo,
                                         strFormat, objItem.Name, string.Join(',' + strSpace, objEntry.FileNames)));
                                     _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                     lstExistingItems.Add(objItemToAdd);
@@ -179,7 +253,7 @@ namespace Chummer
                                         lstExistingItems.Remove(objToRename);
 
                                         MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
-                                        objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalOptions.CultureInfo,
+                                        objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalSettings.CultureInfo,
                                             strFormat, objExistingEntry.DisplayName, string.Join(',' + strSpace, objExistingEntry.FileNames)));
                                         _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                         lstExistingItems.Add(objItemToAdd);
@@ -206,11 +280,13 @@ namespace Chummer
                 {
                     _lstFileNamesWithItems.Insert(0, new ListItem(string.Empty, LanguageManager.GetString("String_All")));
 
+                    int intOldSelectedIndex = cboFile.SelectedIndex;
+
                     cboFile.BeginUpdate();
                     cboFile.PopulateWithListItems(_lstFileNamesWithItems);
                     try
                     {
-                        cboFile.SelectedIndex = 0;
+                        cboFile.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
                     }
                     // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
                     catch (ArgumentOutOfRangeException)
@@ -303,7 +379,7 @@ namespace Chummer
                         strNotes = CommonFunctions.GetTextFromPdf(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
 
                         if (string.IsNullOrEmpty(strNotes)
-                            && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                            && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                             && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
                                 || objEntry.Source.Page != objEntry.DisplaySource.Page))
                         {
@@ -348,6 +424,26 @@ namespace Chummer
             internal SourceString DisplaySource { get; }
             internal string EnglishNameOnPage { get; }
             internal string TranslatedNameOnPage { get; }
+        }
+
+        private void cmdEditCharacterSetting_Click(object sender, EventArgs e)
+        {
+            using (new CursorWait(this))
+            {
+                using (frmCharacterSettings frmOptions = new frmCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
+                    frmOptions.ShowDialog(this);
+                // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
+            }
+        }
+
+        public void ForceRepopulateCharacterSettings()
+        {
+            using (new CursorWait(this))
+            {
+                SuspendLayout();
+                PopulateCharacterSettings();
+                ResumeLayout();
+            }
         }
     }
 }

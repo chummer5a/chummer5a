@@ -221,6 +221,30 @@ namespace Chummer
             return objReturn;
         }
 
+        /// <summary>
+        /// Parse an XPath for whether it is valid XPath. 
+        /// </summary>
+        /// <param name="strXPathExpression" >XPath Expression to evaluate</param>
+        /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsCharacterAttributeXPathValidOrNull(string strXPathExpression, bool blnIsNullSuccess = true)
+        {
+            if (string.IsNullOrEmpty(strXPathExpression))
+                return blnIsNullSuccess;
+            foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
+            {
+                if (!string.IsNullOrEmpty(strXPathExpression))
+                    strXPathExpression = strXPathExpression
+                        .Replace('{' + strCharAttributeName + '}', "0")
+                        .Replace('{' + strCharAttributeName + "Unaug}", "0")
+                        .Replace('{' + strCharAttributeName + "Base}", "0");
+            }
+
+            if (string.IsNullOrEmpty(strXPathExpression)) return true;
+            CommonFunctions.EvaluateInvariantXPath(strXPathExpression, out bool blnSuccess);
+            return blnSuccess;
+        }
+
         #endregion XPath Evaluators
 
         #region Find Functions
@@ -851,7 +875,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strAltCode))
             {
-                XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
                     .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
                 return xmlOriginalCode?.Value ?? strAltCode;
             }
@@ -868,7 +892,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
                     .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
                 return xmlAltCode?.Value ?? strCode;
             }
@@ -885,7 +909,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
                     .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]");
                 if (xmlBook != null)
                 {
@@ -911,7 +935,7 @@ namespace Chummer
             string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
             // Construct a second needle for French where we have zero-width spaces between a starting consonant and an apostrophe in order to fix ListView's weird way of alphabetically sorting names
             string strSearchText2 = string.Empty;
-            if (GlobalOptions.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
+            if (GlobalSettings.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
             {
                 strSearchText2 = strSearchText
                     .Replace("D\'A", "D\u200B\'A")
@@ -947,7 +971,7 @@ namespace Chummer
             }
             // Treat everything as being uppercase so the search is case-insensitive.
             string strReturn = string.Format(
-                GlobalOptions.InvariantCultureInfo,
+                GlobalSettings.InvariantCultureInfo,
                 "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
                 "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2}))",
                 strTranslateElement,
@@ -956,7 +980,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSearchText2))
             {
                 strReturn = '(' + strReturn + string.Format(
-                    GlobalOptions.InvariantCultureInfo,
+                    GlobalSettings.InvariantCultureInfo,
                     " or ((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
                     "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})))",
                     strTranslateElement,
@@ -979,7 +1003,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strIn))
                 return intOffset;
             int intValue = 1;
-            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
+            string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
@@ -1014,7 +1038,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strIn))
                 return decOffset;
             decimal decValue = 1;
-            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
+            string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
@@ -1041,7 +1065,7 @@ namespace Chummer
         /// </summary>
         public static bool ConfirmDelete(string strMessage)
         {
-            return !GlobalOptions.ConfirmDelete ||
+            return !GlobalSettings.ConfirmDelete ||
                    Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
@@ -1051,7 +1075,7 @@ namespace Chummer
         /// </summary>
         public static bool ConfirmKarmaExpense(string strMessage)
         {
-            return !GlobalOptions.ConfirmKarmaExpense ||
+            return !GlobalSettings.ConfirmKarmaExpense ||
                    Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
@@ -1094,7 +1118,7 @@ namespace Chummer
                 // Read the stream.
                 objStream.Position = 0;
                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.UnSafeXmlReaderSettings))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.UnSafeXmlReaderSettings))
                     objReturn.Load(objXmlReader);
             }
             return objReturn;
@@ -1131,17 +1155,17 @@ namespace Chummer
         /// </summary>
         /// <param name="strSource">Book code and page number to open.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
-        /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
-        /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PdfAppPath.</param>
+        /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalSettings.PdfParameters.</param>
+        /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
         public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
             if (string.IsNullOrEmpty(strPdfParameters))
-                strPdfParameters = GlobalOptions.PdfParameters;
+                strPdfParameters = GlobalSettings.PdfParameters;
             if (string.IsNullOrEmpty(strPdfAppPath))
-                strPdfAppPath = GlobalOptions.PdfAppPath;
+                strPdfAppPath = GlobalSettings.PdfAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
@@ -1149,14 +1173,14 @@ namespace Chummer
                     LanguageManager.GetString("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
-                using (frmOptions frmOptions = new frmOptions())
+                using (frmGlobalSettings frmOptions = new frmGlobalSettings())
                 {
                     if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                         frmOptions.DoLinkPdfReader();
                     if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;
-                    strPdfParameters = GlobalOptions.PdfParameters;
-                    strPdfAppPath = GlobalOptions.PdfAppPath;
+                    strPdfParameters = GlobalSettings.PdfParameters;
+                    strPdfAppPath = GlobalSettings.PdfAppPath;
                 }
             }
 
@@ -1193,7 +1217,7 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfos.ContainsKey(strBook) ? GlobalOptions.SourcebookInfos[strBook] : null;
+            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook) ? GlobalSettings.SourcebookInfos[strBook] : null;
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
@@ -1215,7 +1239,7 @@ namespace Chummer
                         LanguageManager.GetString("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
-                using (frmOptions frmOptions = new frmOptions())
+                using (frmGlobalSettings frmOptions = new frmGlobalSettings())
                 {
                     frmOptions.DoLinkPdf(objBookInfo.Code);
                     if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
@@ -1236,7 +1260,7 @@ namespace Chummer
             intPage += objBookInfo.Offset;
 
             string strParams = strPdfParameters
-                .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
+                .Replace("{page}", intPage.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("{localpath}", uriPath.LocalPath)
                 .Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProcess = new ProcessStartInfo
@@ -1273,7 +1297,7 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfos.ContainsKey(strBook) ? GlobalOptions.SourcebookInfos[strBook] : null;
+            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook) ? GlobalSettings.SourcebookInfos[strBook] : null;
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return string.Empty;

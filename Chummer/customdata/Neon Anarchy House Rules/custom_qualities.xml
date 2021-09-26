@@ -69,11 +69,41 @@
 			<category>Positive</category>
 			<limit>False</limit>
 			<bonus>
-				<adeptpowerpoints>MAG*0.5</adeptpowerpoints>
+				<adeptpowerpoints>{MAG}*0.5</adeptpowerpoints>
 			</bonus>
 			<required>
 				<allof>
 					<quality>Adept</quality>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Prototype Transhuman</quality>
+					<ess grade="Used">0.0001</ess>
+					<ess grade="Standard">0.0001</ess>
+					<ess grade="Alphaware">0.0001</ess>
+					<ess grade="Betaware">0.0001</ess>
+					<ess grade="Deltaware">0.0001</ess>
+					<ess grade="Gammaware">0.0001</ess>
+					<ess grade="Omegaware">0.0001</ess>
+				</oneof>
+			</forbidden>
+			<source>NA</source>
+			<page>15</page>
+			<notes>If ever your Magic rating changes, you must remove and re-add this quality to ensure your power points are properly calculated.</notes>
+		</quality>
+		<quality>
+			<id>81fc47e9-df5e-4c8a-9c98-cb08cf1f41c5</id>
+			<name>Purity Bonus (Mystic Adept)</name>
+			<karma>0</karma>
+			<category>Positive</category>
+			<limit>False</limit>
+			<bonus>
+				<adeptpowerpoints>{MAGAdept}*0.5</adeptpowerpoints>
+			</bonus>
+			<required>
+				<allof>
+					<quality>Mystic Adept</quality>
 				</allof>
 			</required>
 			<forbidden>

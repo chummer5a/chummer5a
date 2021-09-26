@@ -138,8 +138,8 @@ namespace Chummer
                     string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ??
                                      objXmlMentor.SelectSingleNode("page")?.Value ??
                                      LanguageManager.GetString("String_Unknown");
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language,
-                        GlobalOptions.CultureInfo, _objCharacter);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language,
+                        GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     cmdOK.Enabled = true;
@@ -184,7 +184,7 @@ namespace Chummer
         {
             string strForceId = string.Empty;
 
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             List<ListItem> lstMentors = new List<ListItem>();

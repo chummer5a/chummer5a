@@ -99,7 +99,7 @@ namespace Chummer
 
             try
             {
-                read = (T)Convert.ChangeType(fieldValue, typeof(T), GlobalOptions.InvariantCultureInfo);
+                read = (T)Convert.ChangeType(fieldValue, typeof(T), GlobalSettings.InvariantCultureInfo);
                 return true;
             }
             catch (Exception)
@@ -112,7 +112,7 @@ namespace Chummer
                 System.Reflection.MethodBase mth = new StackTrace().GetFrame(1).GetMethod();
                 string errorMsg = string.Format
                     (
-                        GlobalOptions.InvariantCultureInfo,
+                        GlobalSettings.InvariantCultureInfo,
                         "Tried to read missing field \"{0}\" in {1}.{2}",
                         field,
                         mth.ReflectedType?.Name,
@@ -170,7 +170,7 @@ namespace Chummer
                     = new StackTrace().GetFrame(2).GetMethod();
                 string errorMsg = string.Format
                     (
-                        GlobalOptions.InvariantCultureInfo,
+                        GlobalSettings.InvariantCultureInfo,
                         "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
                         field,
                         typeof(T),
@@ -179,7 +179,7 @@ namespace Chummer
 #else //So if DEBUG flag is missing we don't reflect info
                 string errorMsg = string.Format
                     (
-                        GlobalOptions.InvariantCultureInfo,
+                        GlobalSettings.InvariantCultureInfo,
                         "Tried to read missing field \"{0}\" of type \"{1}\"",
                         field,
                         typeof(T)
@@ -452,7 +452,7 @@ namespace Chummer
             if (objField == null)
                 return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalSettings.InvariantCultureInfo;
             if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
                 return false;
             read = intTmp;
@@ -484,7 +484,7 @@ namespace Chummer
             if (objField == null)
                 return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalSettings.InvariantCultureInfo;
             if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
                 return false;
             read = decTmp;
@@ -501,7 +501,7 @@ namespace Chummer
             if (objField == null)
                 return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalSettings.InvariantCultureInfo;
             if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
                 return false;
             read = dblTmp;
@@ -518,7 +518,7 @@ namespace Chummer
             if (objField == null)
                 return false;
             if (objCulture == null)
-                objCulture = GlobalOptions.InvariantCultureInfo;
+                objCulture = GlobalSettings.InvariantCultureInfo;
             if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
                 return false;
             read = fltTmp;

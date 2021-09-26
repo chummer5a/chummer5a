@@ -180,10 +180,10 @@ namespace Chummer.UI.Skills
                         nameof(SkillsSection.HasKnowledgePoints));
                     nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
                     nudSkill.DoDataBinding("Value", objSkill, nameof(Skill.Base));
-                    nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                    nudSkill.InterceptMouseWheel = GlobalSettings.InterceptMode;
                     nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
                     nudKarma.DoDataBinding("Value", objSkill, nameof(Skill.Karma));
-                    nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                    nudKarma.InterceptMouseWheel = GlobalSettings.InterceptMode;
                     
                     tlpMain.Controls.Add(nudSkill, 1, 0);
                     tlpMain.Controls.Add(nudKarma, 2, 0);
@@ -351,7 +351,7 @@ namespace Chummer.UI.Skills
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                 _objSkill.CurrentDisplayName, _objSkill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
@@ -362,7 +362,7 @@ namespace Chummer.UI.Skills
 
         private void btnAddSpec_Click(object sender, EventArgs e)
         {
-            int price = _objSkill.CharacterObject.Options.KarmaKnowledgeSpecialization;
+            int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
             decimal decExtraSpecCost = 0;
             int intTotalBaseRating = _objSkill.TotalBaseRating;
@@ -393,7 +393,7 @@ namespace Chummer.UI.Skills
             else
                 price += decExtraSpecCost.StandardRound(); //Spec
 
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;

@@ -34,7 +34,7 @@ namespace Chummer.UI.Shared.Components
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            CanEverBeRolled = CanEverBeRolled || GlobalOptions.AllowSkillDiceRolling;
+            CanEverBeRolled = CanEverBeRolled || GlobalSettings.AllowSkillDiceRolling;
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;
             cmdRoll.ToolTipText = LanguageManager.GetString("Tip_DiceRoller");
         }
@@ -87,8 +87,8 @@ namespace Chummer.UI.Shared.Components
                 {
                     _intDicePool = value;
                     lblDicePool.Text = CanBeRolled
-                        ? _intDicePool.ToString(GlobalOptions.CultureInfo)
-                        : _intDicePool.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
+                        ? _intDicePool.ToString(GlobalSettings.CultureInfo)
+                        : _intDicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                 }
             }
         }

@@ -1864,6 +1864,7 @@
       <addtoparentess />
       <capacity>[1]</capacity>
       <addtoparentcapacity />
+      <addparentweaponaccessory>External Clip Port</addparentweaponaccessory>
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -1987,6 +1988,7 @@
       <addtoparentess />
       <capacity>[1]</capacity>
       <addtoparentcapacity />
+      <addparentweaponaccessory>Laser Sight</addparentweaponaccessory>
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -2082,6 +2084,7 @@
       <addtoparentess />
       <capacity>[2]</capacity>
       <addtoparentcapacity />
+      <addparentweaponaccessory>Silencer/Suppressor</addparentweaponaccessory>
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -5970,6 +5973,25 @@
             <name>Obvious Torso</name>
             <name>Synthetic Torso</name>
           </OR>
+        </parentdetails>
+      </required>
+    </cyberware>
+    <cyberware>
+      <id>10450C2C-9FC5-460D-A7A1-7A8AC3B1C219</id>
+      <name>Overclocked</name>
+      <limit>False</limit>
+      <category>Cyber Implant Weapon Accessory</category>
+      <ess>0</ess>
+      <capacity>[0]</capacity>
+      <addtoparentcapacity />
+      <addparentweaponaccessory>Overclocked</addparentweaponaccessory>
+      <avail>6F</avail>
+      <cost>200</cost>
+      <source>HT</source>
+      <page>182</page>
+      <required>
+        <parentdetails>
+          <category>Cyber Implant Weapon</category>
         </parentdetails>
       </required>
     </cyberware>

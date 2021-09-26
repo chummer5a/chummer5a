@@ -74,7 +74,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplaySpecific(string strLanguage)
         {
-            return strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? Specific
                 : CharacterObject.TranslateExtra(Specific, strLanguage);
         }

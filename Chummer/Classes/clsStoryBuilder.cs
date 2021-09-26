@@ -59,7 +59,7 @@ namespace Chummer
             //Sort the list (Crude way, but have to do)
             for (int i = 0; i < modules.Count; i++)
             {
-                string stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = " + (i <= 4 ? (i + 1).ToString(GlobalOptions.InvariantCultureInfo).CleanXPath() : "\"5\"") + "]")?.Value;
+                string stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = " + (i <= 4 ? (i + 1).ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() : "\"5\"") + "]")?.Value;
                 int j;
                 for (j = i; j < modules.Count; j++)
                 {
@@ -163,8 +163,8 @@ namespace Chummer
 
                 case "year" when int.TryParse(_objCharacter.Age, out int year):
                     return int.TryParse(macroPool, out int age)
-                        ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo)
-                        : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
+                        ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalSettings.CultureInfo)
+                        : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalSettings.CultureInfo);
 
                 case "year":
                     return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
@@ -190,7 +190,7 @@ namespace Chummer
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            ? GlobalSettings.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
                                             : 0;
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
@@ -213,7 +213,7 @@ namespace Chummer
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            ? GlobalSettings.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
                                             : 0;
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)

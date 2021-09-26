@@ -49,15 +49,15 @@ namespace Chummer
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
-                string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
+                string strName = objGear.DisplayNameShort(GlobalSettings.Language) + " x" + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
                 if (objGear.Rating > 0)
-                    strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                    strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
 
                 if (objGear.Parent is Gear objParent)
                 {
-                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalOptions.Language)))
+                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalSettings.Language)))
                     {
-                        strName += strSpace + '(' + objParent.DisplayNameShort(GlobalOptions.Language);
+                        strName += strSpace + '(' + objParent.DisplayNameShort(GlobalSettings.Language);
                         if (objParent.Location != null)
                             strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
                         strName += ')';
@@ -72,7 +72,7 @@ namespace Chummer
                     StringBuilder sbdPlugins = new StringBuilder();
                     foreach (Gear objChild in objGear.Children)
                     {
-                        sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace);
+                        sbdPlugins.Append(objChild.DisplayNameShort(GlobalSettings.Language) + ',' + strSpace);
                     }
                     // Remove the trailing comma.
                     sbdPlugins.Length -= 1 + strSpace.Length;
@@ -144,7 +144,7 @@ namespace Chummer
         /// Number of rounds that were selected to be loaded.
         /// </summary>
         public int SelectedCount =>
-            int.TryParse(cboType.Text, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo,
+            int.TryParse(cboType.Text, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
                 out int intReturn)
                 ? intReturn
                 : _objWeapon?.AmmoRemaining ?? 0;

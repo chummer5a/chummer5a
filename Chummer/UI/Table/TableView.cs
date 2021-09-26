@@ -41,7 +41,7 @@ namespace Chummer.UI.Table
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 _table.SuspendLayout();
-                int[] aintSharedWidths = _table._columns.Count > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_table._columns.Count) : null;
+                int[] aintSharedWidths = _table._columns.Count > GlobalSettings.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_table._columns.Count) : null;
                 // ReSharper disable once MergeConditionalExpression
 #pragma warning disable IDE0029 // Use coalesce expression
                 Span<int> widths = aintSharedWidths != null ? aintSharedWidths : stackalloc int[_table._columns.Count];

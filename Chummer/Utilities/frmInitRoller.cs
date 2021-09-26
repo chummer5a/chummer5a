@@ -35,7 +35,7 @@ namespace Chummer
 
         private void frmInitRoller_Load(object sender, EventArgs e)
         {
-            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice);
+            lblDice.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice);
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
         }

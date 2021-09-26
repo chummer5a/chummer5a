@@ -398,7 +398,7 @@ namespace Chummer
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
             List<ListItem> lstLifestyles = new List<ListItem>();
-            using (XmlNodeList xmlLifestyleList = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
+            using (XmlNodeList xmlLifestyleList = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Settings.BookXPath() + "]"))
             {
                 if (xmlLifestyleList?.Count > 0)
                 {
@@ -410,7 +410,7 @@ namespace Chummer
                             strLifestyleName != "ID ERROR. Re-add life style to fix" &&
                             (StyleType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove") &&
                             !strLifestyleName.Contains("Hospitalized") &&
-                            _objCharacter.Options.Books.Contains(objXmlLifestyle["source"]?.InnerText))
+                            _objCharacter.Settings.Books.Contains(objXmlLifestyle["source"]?.InnerText))
                         {
                             lstLifestyles.Add(new ListItem(strLifestyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName));
                         }
@@ -604,8 +604,8 @@ namespace Chummer
                 chkQualityContributesLP.Checked = objQuality.ContributesLP;
                 _blnSkipRefresh = false;
 
-                lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
-                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
+                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                 objQuality.SetSourceDetail(lblQualitySource);
                 cmdDeleteQuality.Enabled = objQuality.OriginSource != QualitySource.BuiltIn;
             }
@@ -623,7 +623,7 @@ namespace Chummer
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
                 return;
             objQuality.ContributesLP = chkQualityContributesLP.Checked;
-            lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
+            lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
         }
 
         private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
@@ -631,7 +631,7 @@ namespace Chummer
             if (chkBonusLPRandomize.Checked)
             {
                 nudBonusLP.Enabled = false;
-                nudBonusLP.Value = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                nudBonusLP.Value = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
             }
             else
             {
@@ -685,7 +685,7 @@ namespace Chummer
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
             _objLifestyle.Name = txtLifestyleName.Text;
-            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             _objLifestyle.Area = nudArea.ValueAsInt;
@@ -697,8 +697,8 @@ namespace Chummer
             _objLifestyle.BonusLP = nudBonusLP.ValueAsInt;
 
             // Get the starting Nuyen information.
-            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-            _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+            _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.StyleType = StyleType;
             SelectedLifestyle = _objLifestyle;
             DialogResult = DialogResult.OK;
@@ -718,8 +718,8 @@ namespace Chummer
                 string strPage = xmlAspect["altpage"]?.InnerText ?? xmlAspect["page"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                        GlobalOptions.CultureInfo, _objCharacter);
+                    SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                        GlobalSettings.CultureInfo, _objCharacter);
                     lblSource.Text = objSource.ToString();
                     lblSource.SetToolTip(objSource.LanguageBookTooltip);
                 }
@@ -759,7 +759,7 @@ namespace Chummer
                 {
                     nudBonusLP.Enabled = false;
                     _blnSkipRefresh = true;
-                    nudBonusLP.Value = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    nudBonusLP.Value = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                     _blnSkipRefresh = false;
                 }
                 else

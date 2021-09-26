@@ -1687,7 +1687,7 @@
       <levels>True</levels>
       <limit>1</limit>
       <source>HT</source>
-      <page>190</page>
+      <page>191</page>
       <bonus>
         <throwrangestr>Rating*2</throwrangestr>
       </bonus>

@@ -159,7 +159,7 @@ namespace Chummer.UI.Shared
             objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
 
             // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
-            int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count) : null;
+            int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalSettings.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count) : null;
             // ReSharper disable once MergeConditionalExpression
 #pragma warning disable IDE0029 // Use coalesce expression
             Span<int> aintOldDisplayIndex = aintSharedOldDisplayIndexes != null
@@ -272,13 +272,13 @@ namespace Chummer.UI.Shared
                 if (_intOffScreenChunkSize > 1)
                 {
                     _intOffScreenChunkSize /= 2;
-                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize.ToString(GlobalOptions.InvariantCultureInfo));
+                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
                 }
             }
             else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f))
             {
                 _intOffScreenChunkSize *= 2;
-                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize.ToString(GlobalOptions.InvariantCultureInfo));
+                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
             }
         }
 

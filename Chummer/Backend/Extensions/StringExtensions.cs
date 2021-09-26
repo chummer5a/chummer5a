@@ -31,7 +31,7 @@ namespace Chummer
 {
     public static class StringExtensions
     {
-        public static string EmptyGuid { get; } = Guid.Empty.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public static string EmptyGuid { get; } = Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         public static bool IsEmptyGuid(this string strInput)
         {
@@ -85,7 +85,7 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalOptions.MaxStackLimit)
+            if (intLength > GlobalSettings.MaxStackLimit)
             {
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
@@ -136,7 +136,7 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalOptions.MaxStackLimit)
+            if (intLength > GlobalSettings.MaxStackLimit)
             {
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
@@ -412,7 +412,7 @@ namespace Chummer
                 return strInput;
             if (funcIsWhiteSpace == null)
                 funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
-            if (intLength > GlobalOptions.MaxStackLimit)
+            if (intLength > GlobalSettings.MaxStackLimit)
             {
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...

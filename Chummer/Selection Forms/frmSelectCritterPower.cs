@@ -53,7 +53,7 @@ namespace Chummer
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
             XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("metavariants/metavariant[id = "
-                                                                                      + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
+                                                                                      + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
                                                                                       + "]");
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
@@ -215,8 +215,8 @@ namespace Chummer
 
                     string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                        GlobalOptions.CultureInfo, _objCharacter);
+                    SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                        GlobalSettings.CultureInfo, _objCharacter);
                     lblCritterPowerSource.Text = objSource.ToString();
                     lblCritterPowerSource.SetToolTip(objSource.LanguageBookTooltip);
 
@@ -325,7 +325,7 @@ namespace Chummer
                 }
             }
 
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
                 sbdFilter.Append(" and (contains(category," + strCategory.CleanXPath() + "))");
@@ -413,7 +413,7 @@ namespace Chummer
                 {
                     XPathNavigator objXmlOptionalPowerCost = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + strName.CleanXPath() + "]/@cost");
                     if (objXmlOptionalPowerCost != null)
-                        _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalOptions.InvariantCultureInfo);
+                        _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalSettings.InvariantCultureInfo);
                 }
             }
 

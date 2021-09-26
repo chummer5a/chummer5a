@@ -221,18 +221,18 @@ namespace Chummer
         /// <summary>
         /// Checks if any custom data is activated, that matches name and version of the dependent upon directory
         /// </summary>
-        /// <param name="objCharacterOptions"></param>
+        /// <param name="objCharacterSettings"></param>
         /// <returns>List of the names of all missing dependencies as a single string</returns>
-        public string CheckDependency(CharacterOptions objCharacterOptions)
+        public string CheckDependency(CharacterSettings objCharacterSettings)
         {
-            int intMyLoadOrderPosition = objCharacterOptions.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
+            int intMyLoadOrderPosition = objCharacterSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
             StringBuilder sbdReturn = new StringBuilder();
             List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
             foreach (DirectoryDependency dependency in DependenciesList)
             {
                 lstEnabledCustomData.Clear();
-                if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
-                    lstEnabledCustomData.AddRange(objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(dependency.UniqueIdentifier)));
+                if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
+                    lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(dependency.UniqueIdentifier)));
                 if (lstEnabledCustomData.Count > 0)
                 {
                     // First check if we have any data whose version matches
@@ -253,7 +253,7 @@ namespace Chummer
                             (dependency.MinimumVersion != default && x.MyVersion < dependency.MinimumVersion)
                             || (dependency.MaximumVersion != default && x.MyVersion > dependency.MaximumVersion));
                     }
-                    if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterOptions.EnabledCustomDataDirectoryInfos.FindLastIndex(x => lstEnabledCustomData.Contains(x)))
+                    if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterSettings.EnabledCustomDataDirectoryInfos.FindLastIndex(x => lstEnabledCustomData.Contains(x)))
                     {
                         sbdReturn.AppendLine(string.Format(
                             LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
@@ -272,21 +272,21 @@ namespace Chummer
         /// <summary>
         /// Checks if any custom data is activated, that matches name and version of the prohibited directories
         /// </summary>
-        /// <param name="objCharacterOptions"></param>
+        /// <param name="objCharacterSettings"></param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public string CheckIncompatibility(CharacterOptions objCharacterOptions)
+        public string CheckIncompatibility(CharacterSettings objCharacterSettings)
         {
             StringBuilder sbdReturn = new StringBuilder();
             List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
             foreach (var incompatibility in IncompatibilitiesList)
             {
                 //Use the fast HasSet.Contains to determine if any dependency is present
-                if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
+                if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
                 {
-                    //We still need to filter out all the matching incompatibilities from objCharacterOptions.EnabledCustomDataDirectoryInfos to check their versions
+                    //We still need to filter out all the matching incompatibilities from objCharacterSettings.EnabledCustomDataDirectoryInfos to check their versions
                     lstEnabledCustomData.Clear();
-                    if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
-                        lstEnabledCustomData.AddRange(objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
+                    if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
+                        lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
                     if (lstEnabledCustomData.Count <= 0)
                         continue;
                     CustomDataDirectoryInfo objInfoToDisplay;
@@ -374,7 +374,7 @@ namespace Chummer
         /// </summary>
         public IReadOnlyDictionary<string, string> DescriptionDictionary => _descriptionDictionary;
 
-        private string _strDisplayDescriptionLanguage = GlobalOptions.Language;
+        private string _strDisplayDescriptionLanguage = GlobalSettings.Language;
 
         private string _strDisplayDescription;
 
@@ -388,12 +388,12 @@ namespace Chummer
                 // Custom version of lazy initialization (needed because it's not static), otherwise program crashes on startup
                 // Explanation: LanguageManager.GetString seems to create some win32Window Objects and will cause Application.SetCompatibleTextRenderingDefault(false);
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
-                // SetProcessDPI(GlobalOptions.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
-                // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterOptions are opened.
-                if (_strDisplayDescription == null || _strDisplayDescriptionLanguage != GlobalOptions.Language)
+                // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
+                // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
+                if (_strDisplayDescription == null || _strDisplayDescriptionLanguage != GlobalSettings.Language)
                 {
-                    _strDisplayDescriptionLanguage = GlobalOptions.Language;
-                    _strDisplayDescription = GetDisplayDescription(GlobalOptions.Language);
+                    _strDisplayDescriptionLanguage = GlobalSettings.Language;
+                    _strDisplayDescription = GetDisplayDescription(GlobalSettings.Language);
                 }
 
                 return _strDisplayDescription;
@@ -408,7 +408,7 @@ namespace Chummer
             if (DescriptionDictionary.TryGetValue(strLanguage, out string description))
                 return description.NormalizeLineEndings(true);
 
-            if (!DescriptionDictionary.TryGetValue(GlobalOptions.DefaultLanguage, out description))
+            if (!DescriptionDictionary.TryGetValue(GlobalSettings.DefaultLanguage, out description))
                 return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage);
 
             return LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
@@ -421,7 +421,7 @@ namespace Chummer
         /// </summary>
         public IReadOnlyDictionary<string, bool> AuthorDictionary => _authorDictionary;
 
-        private string _strDisplayAuthorsLanguage = GlobalOptions.Language;
+        private string _strDisplayAuthorsLanguage = GlobalSettings.Language;
 
         private string _strDisplayAuthors;
 
@@ -435,12 +435,12 @@ namespace Chummer
                 // Custom version of lazy initialization (needed because it's not static), otherwise program crashes on startup
                 // Explanation: LanguageManager.GetString seems to create some win32Window Objects and will cause Application.SetCompatibleTextRenderingDefault(false);
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
-                // SetProcessDPI(GlobalOptions.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
-                // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterOptions are opened.
-                if (_strDisplayAuthors == null || _strDisplayAuthorsLanguage != GlobalOptions.Language)
+                // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
+                // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
+                if (_strDisplayAuthors == null || _strDisplayAuthorsLanguage != GlobalSettings.Language)
                 {
-                    _strDisplayAuthorsLanguage = GlobalOptions.Language;
-                    _strDisplayAuthors = GetDisplayAuthors(GlobalOptions.Language, GlobalOptions.CultureInfo);
+                    _strDisplayAuthorsLanguage = GlobalSettings.Language;
+                    _strDisplayAuthors = GetDisplayAuthors(GlobalSettings.Language, GlobalSettings.CultureInfo);
                 }
 
                 return _strDisplayAuthors;
@@ -481,17 +481,17 @@ namespace Chummer
         /// <summary>
         /// The name including the Version in this format "NAME (Version)"
         /// </summary>
-        public string DisplayName => MyVersion == default ? Name : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", Name,
+        public string DisplayName => MyVersion == default ? Name : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
             LanguageManager.GetString("String_Space"), MyVersion);
 
-        public string InternalId => Guid.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => Guid.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Key to use in character options files
         /// </summary>
-        public string CharacterOptionsSaveKey => HasManifest ? InternalId + '>' + MyVersion : Name;
+        public string CharacterSettingsSaveKey => HasManifest ? InternalId + '>' + MyVersion : Name;
 
-        public static string GetIdFromCharacterOptionsSaveKey(string strKey)
+        public static string GetIdFromCharacterSettingsSaveKey(string strKey)
         {
             int intSeparatorIndex = strKey.IndexOf('>');
             if (intSeparatorIndex >= 0 && intSeparatorIndex + 1 < strKey.Length)
@@ -503,7 +503,7 @@ namespace Chummer
             return string.Empty;
         }
 
-        public static string GetIdFromCharacterOptionsSaveKey(string strKey, out Version objPreferredVersion)
+        public static string GetIdFromCharacterSettingsSaveKey(string strKey, out Version objPreferredVersion)
         {
             int intSeparatorIndex = strKey.IndexOf('>');
             if (intSeparatorIndex >= 0 && intSeparatorIndex + 1 < strKey.Length)
@@ -637,13 +637,13 @@ namespace Chummer
                 if (MinimumVersion != default)
                 {
                     return MaximumVersion != default
-                        ? string.Format(GlobalOptions.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace, MinimumVersion, MaximumVersion)
+                        ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace, MinimumVersion, MaximumVersion)
                         // If maxversion is not given, don't display decimal.max display > instead
-                        : string.Format(GlobalOptions.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
+                        : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
                 }
                 return MaximumVersion != default
                     // If minversion is not given, don't display decimal.min display < instead
-                    ? string.Format(GlobalOptions.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
+                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
                     // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                     : Name;
             }

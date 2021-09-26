@@ -75,8 +75,8 @@ namespace Chummer
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strType);
-            chkLimitList.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strType);
+            Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strType);
+            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strType);
 
             _blnLoading = false;
             BuildMetamagicList();
@@ -97,7 +97,7 @@ namespace Chummer
                 {
                     string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value;
                     string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;
@@ -156,7 +156,7 @@ namespace Chummer
         /// </summary>
         private void BuildMetamagicList()
         {
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
             if (_objCharacter.MAGEnabled)
             {

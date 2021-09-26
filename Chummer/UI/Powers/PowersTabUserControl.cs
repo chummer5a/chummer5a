@@ -176,7 +176,7 @@ namespace Chummer.UI.Powers
             };
 
             /*
-            using (XmlNodeList xmlPowerCategoryList = XmlManager.Load("powers.xml", objCharacter.Options.CustomDataDictionary).SelectNodes("/chummer/categories/category"))
+            using (XmlNodeList xmlPowerCategoryList = XmlManager.Load("powers.xml", objCharacter.Settings.CustomDataDictionary).SelectNodes("/chummer/categories/category"))
                 if (xmlPowerCategoryList != null)
                     foreach (XmlNode xmlCategoryNode in xmlPowerCategoryList)
                     {
@@ -213,7 +213,7 @@ namespace Chummer.UI.Powers
         {
             if (_blnSearchMode)
             {
-                _table.Filter = (power => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(power.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
+                _table.Filter = (power => GlobalSettings.InvariantCultureInfo.CompareInfo.IndexOf(power.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
             }
         }
 
@@ -256,7 +256,7 @@ namespace Chummer.UI.Powers
         {
             decimal decPowerPointsTotal = _objCharacter.PowerPointsTotal;
             decimal decPowerPointsRemaining = decPowerPointsTotal - _objCharacter.PowerPointsUsed;
-            lblPowerPoints.Text = string.Format(GlobalOptions.CultureInfo, "{1}{0}({2}{0}{3})",
+            lblPowerPoints.Text = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
                 LanguageManager.GetString("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
         }
 
@@ -273,7 +273,7 @@ namespace Chummer.UI.Powers
                 Text = "Power",
                 Extractor = (power => power.CurrentDisplayName),
                 Tag = "String_Power",
-                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
+                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalSettings.CultureInfo, CompareOptions.Ordinal)
             };
             nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
 
@@ -282,7 +282,7 @@ namespace Chummer.UI.Powers
                 Text = "Action",
                 Extractor = (power => power.DisplayAction),
                 Tag = "ColumnHeader_Action",
-                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2, GlobalOptions.CultureInfo, CompareOptions.Ordinal)
+                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2, GlobalSettings.CultureInfo, CompareOptions.Ordinal)
             };
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
