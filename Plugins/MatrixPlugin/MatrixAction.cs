@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer;
 using Chummer.Backend.Attributes;
 
@@ -30,7 +31,7 @@ namespace MatrixPlugin
             }
         }
 
-        private static readonly string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare" };
+        private static readonly string[] SkillNames = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare" };
         
         private readonly Action action;
         private readonly Action defenceAction;
@@ -41,7 +42,7 @@ namespace MatrixPlugin
             defenceAction = new Action();
         }
 
-        public MatrixAction(XmlNode xmlAction)
+        public MatrixAction(XPathNavigator xmlAction)
         {
             action = new Action();
             defenceAction = new Action();
@@ -53,11 +54,11 @@ namespace MatrixPlugin
 
             //Parsing SkillCheck as
             //Skill + Attribute|MatrixAttribute + Modifier vs. Skill + MatrixAttribute + Modifier
-            string[] SkillCheck = xmlAction.SelectSingleNode("test/dice").FirstChild.Value.Split('.');
+            string[] SkillCheck = xmlAction.SelectSingleNode("test/dice").Value.Split('.');
             string actionCheck = SkillCheck[0];
             string defenceCheck = SkillCheck.Length > 1 ? SkillCheck[0] : "";
             //Parse Skills
-            foreach (string skill in MatrixAction.Skills)
+            foreach (string skill in SkillNames)
             {
                 if (actionCheck.Contains(skill))
                     ActionSkill = skill;
@@ -98,11 +99,11 @@ namespace MatrixPlugin
             }
         }
 
-        private string extractStringFromXmlNode(XmlNode xmlAction,string path)
+        private string extractStringFromXmlNode(XPathNavigator xmlAction,string path)
         {
             var xmlType = xmlAction.SelectSingleNode(path);
             if (xmlType != null)
-                return xmlType.FirstChild.Value;
+                return xmlType.Value;
             return "";
         }
 

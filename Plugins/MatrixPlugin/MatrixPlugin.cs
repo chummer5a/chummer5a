@@ -8,6 +8,7 @@ using NLog;
 using Microsoft.ApplicationInsights.Channel;
 using System.Diagnostics;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace MatrixPlugin
 {
@@ -28,12 +29,12 @@ namespace MatrixPlugin
             try
             {
                 Actions = new List<MatrixAction>();
-                XmlDocument xmlComplexFormDocument = XmlManager.Load("actions.xml");
-                foreach (XmlNode xmlAction in xmlComplexFormDocument.SelectNodes("/chummer/actions/action"))
+                XPathNavigator navActions = XmlManager.LoadXPath("actions.xml");
+                foreach (XPathNavigator xAction in navActions.Select("/chummer/actions/action"))
                 {
-                    if (xmlAction.SelectSingleNode("test/limit") != null)
+                    if (xAction.SelectSingleNode("test/limit") != null)
                     {
-                        MatrixAction newAction = new MatrixAction(xmlAction);
+                        MatrixAction newAction = new MatrixAction(xAction);
                         if (!string.IsNullOrEmpty(newAction.ActionAttribute) && !string.IsNullOrEmpty(newAction.ActionSkill))
                             Actions.Add(newAction);
                     }
