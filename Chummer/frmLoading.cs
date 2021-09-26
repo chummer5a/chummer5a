@@ -36,7 +36,7 @@ namespace Chummer
                 _strCharacterFile = value;
                 if (this.IsNullOrDisposed())
                     return;
-                string strDisplayText = string.Format(GlobalOptions.CultureInfo,
+                string strDisplayText = string.Format(GlobalSettings.CultureInfo,
                     LanguageManager.GetString("String_Loading_Pattern"), value);
                 this.QueueThreadSafe(() => Text = strDisplayText);
             }
@@ -78,10 +78,10 @@ namespace Chummer
                 return;
             string strNewText = string.IsNullOrEmpty(strStepName)
                     ? LanguageManager.GetString(blnSaving ? "String_Saving" : "String_Loading")
-                    : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString(blnSaving ? "String_Saving_Pattern" : "String_Loading_Pattern"), strStepName);
+                    : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString(blnSaving ? "String_Saving_Pattern" : "String_Loading_Pattern"), strStepName);
             if (pgbLoadingProgress.Maximum > 2)
-                strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo)
-                              + '/' + (pgbLoadingProgress.Maximum - 1).ToString(GlobalOptions.CultureInfo) + ')';
+                strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalSettings.CultureInfo)
+                              + '/' + (pgbLoadingProgress.Maximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
             lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
             pgbLoadingProgress.QueueThreadSafe(() => pgbLoadingProgress.PerformStep());
         }

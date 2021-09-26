@@ -143,8 +143,8 @@ namespace Chummer
             }
 
             lblCyberware.Text = sbdCyberwareLabelString.ToString();
-            lblEssence.Text = decTotalESS.ToString(_objCharacter.Options.EssenceFormat, GlobalOptions.CultureInfo);
-            lblCost.Text = decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblEssence.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
+            lblCost.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             lblGrade.Text = objGrade.CurrentDisplayName;
             _decCost = decTotalCost;
         }

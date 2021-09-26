@@ -31,13 +31,13 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.chkIgnoreRules = new Chummer.ColorableCheckBox(this.components);
             this.lblMaxAvailLabel = new System.Windows.Forms.Label();
-            this.cboCharacterOption = new Chummer.ElasticComboBox();
+            this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblMaxNuyenLabel = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdEditCharacterOption = new Chummer.ButtonWithToolTip();
-            this.lblCharacterOption = new System.Windows.Forms.Label();
+            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
+            this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.tlpSummary = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblBuildMethodLabel = new System.Windows.Forms.Label();
             this.lblBuildMethod = new System.Windows.Forms.Label();
@@ -99,18 +99,18 @@ namespace Chummer
             this.lblMaxAvailLabel.Text = "Maximum Availability";
             this.lblMaxAvailLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cboCharacterOption
+            // cboCharacterSetting
             // 
-            this.cboCharacterOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpMain.SetColumnSpan(this.cboCharacterOption, 2);
-            this.cboCharacterOption.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCharacterOption.FormattingEnabled = true;
-            this.cboCharacterOption.Location = new System.Drawing.Point(122, 4);
-            this.cboCharacterOption.Name = "cboCharacterOption";
-            this.cboCharacterOption.Size = new System.Drawing.Size(418, 21);
-            this.cboCharacterOption.TabIndex = 8;
-            this.cboCharacterOption.TooltipText = "";
-            this.cboCharacterOption.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
+            this.cboCharacterSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMain.SetColumnSpan(this.cboCharacterSetting, 2);
+            this.cboCharacterSetting.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCharacterSetting.FormattingEnabled = true;
+            this.cboCharacterSetting.Location = new System.Drawing.Point(74, 4);
+            this.cboCharacterSetting.Name = "cboCharacterSetting";
+            this.cboCharacterSetting.Size = new System.Drawing.Size(466, 21);
+            this.cboCharacterSetting.TabIndex = 8;
+            this.cboCharacterSetting.TooltipText = "";
+            this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
             // 
             // lblKarmaLabel
             // 
@@ -162,9 +162,9 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.Controls.Add(this.chkIgnoreRules, 0, 6);
             this.tlpMain.Controls.Add(this.lblDescription, 0, 1);
-            this.tlpMain.Controls.Add(this.cboCharacterOption, 1, 0);
-            this.tlpMain.Controls.Add(this.cmdEditCharacterOption, 3, 0);
-            this.tlpMain.Controls.Add(this.lblCharacterOption, 0, 0);
+            this.tlpMain.Controls.Add(this.cboCharacterSetting, 1, 0);
+            this.tlpMain.Controls.Add(this.cmdEditCharacterSetting, 3, 0);
+            this.tlpMain.Controls.Add(this.lblCharacterSetting, 0, 0);
             this.tlpMain.Controls.Add(this.tlpSummary, 0, 2);
             this.tlpMain.Controls.Add(this.tlpButtons, 2, 6);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -181,30 +181,38 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 16;
             // 
-            // cmdEditCharacterOption
+            // cmdEditCharacterSetting
             // 
-            this.cmdEditCharacterOption.AutoSize = true;
-            this.cmdEditCharacterOption.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdEditCharacterOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdEditCharacterOption.Location = new System.Drawing.Point(546, 3);
-            this.cmdEditCharacterOption.Name = "cmdEditCharacterOption";
-            this.cmdEditCharacterOption.Size = new System.Drawing.Size(57, 23);
-            this.cmdEditCharacterOption.TabIndex = 17;
-            this.cmdEditCharacterOption.Text = "Modify...";
-            this.cmdEditCharacterOption.ToolTipText = "";
-            this.cmdEditCharacterOption.UseVisualStyleBackColor = true;
-            this.cmdEditCharacterOption.Click += new System.EventHandler(this.cmdEditCharacterOption_Click);
+            this.cmdEditCharacterSetting.AutoSize = true;
+            this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdEditCharacterSetting.Image = null;
+            this.cmdEditCharacterSetting.ImageDpi120 = null;
+            this.cmdEditCharacterSetting.ImageDpi144 = null;
+            this.cmdEditCharacterSetting.ImageDpi192 = null;
+            this.cmdEditCharacterSetting.ImageDpi288 = null;
+            this.cmdEditCharacterSetting.ImageDpi384 = null;
+            this.cmdEditCharacterSetting.ImageDpi96 = null;
+            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(546, 3);
+            this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
+            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(57, 23);
+            this.cmdEditCharacterSetting.TabIndex = 17;
+            this.cmdEditCharacterSetting.Text = "Modify...";
+            this.cmdEditCharacterSetting.ToolTipText = "";
+            this.cmdEditCharacterSetting.UseVisualStyleBackColor = true;
+            this.cmdEditCharacterSetting.Click += new System.EventHandler(this.cmdEditCharacterOption_Click);
             // 
-            // lblCharacterOption
+            // lblCharacterSetting
             // 
-            this.lblCharacterOption.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblCharacterOption.AutoSize = true;
-            this.lblCharacterOption.Location = new System.Drawing.Point(3, 8);
-            this.lblCharacterOption.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCharacterOption.Name = "lblCharacterOption";
-            this.lblCharacterOption.Size = new System.Drawing.Size(113, 13);
-            this.lblCharacterOption.TabIndex = 18;
-            this.lblCharacterOption.Text = "Use Gameplay Option:";
+            this.lblCharacterSetting.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCharacterSetting.AutoSize = true;
+            this.lblCharacterSetting.Location = new System.Drawing.Point(3, 8);
+            this.lblCharacterSetting.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCharacterSetting.Name = "lblCharacterSetting";
+            this.lblCharacterSetting.Size = new System.Drawing.Size(65, 13);
+            this.lblCharacterSetting.TabIndex = 18;
+            this.lblCharacterSetting.Tag = "Label_SelectBP_UseSetting";
+            this.lblCharacterSetting.Text = "Use Setting:";
             // 
             // tlpSummary
             // 
@@ -554,14 +562,14 @@ namespace Chummer
         #endregion
         private ColorableCheckBox chkIgnoreRules;
         private System.Windows.Forms.Label lblMaxAvailLabel;
-        private ElasticComboBox cboCharacterOption;
+        private ElasticComboBox cboCharacterSetting;
         private System.Windows.Forms.Label lblKarmaLabel;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Label lblMaxNuyenLabel;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblBuildMethodParamLabel;
-        private ButtonWithToolTip cmdEditCharacterOption;
-        private System.Windows.Forms.Label lblCharacterOption;
+        private ButtonWithToolTip cmdEditCharacterSetting;
+        private System.Windows.Forms.Label lblCharacterSetting;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
         private ElasticComboBox cboBuildMethod;

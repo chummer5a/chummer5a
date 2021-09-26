@@ -71,7 +71,7 @@ namespace Chummer
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.TopRight,
-                Format = _objCharacter.Options.NuyenFormat + '¥',
+                Format = _objCharacter.Settings.NuyenFormat + '¥',
                 NullValue = null
             };
             dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
@@ -83,13 +83,13 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
             }
 
             // Populate the Weapon Category list.
             // Populate the Category list.
-            string strFilterPrefix = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and category = ";
+            string strFilterPrefix = "/chummer/weapons/weapon[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
             using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
             {
                 if (xmlCategoryList != null)
@@ -167,7 +167,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
                 if (!chkBlackMarketDiscount.Checked)
                 {
-                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                    chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
                 }
                 else if (!blnCanBlackMarketDiscount)
                 {
@@ -177,7 +177,7 @@ namespace Chummer
 
                 _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
 
-                lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
+                lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
                 lblWeaponReachLabel.Visible = !string.IsNullOrEmpty(lblWeaponReach.Text);
                 lblWeaponDamage.Text = _objSelectedWeapon.DisplayDamage;
                 lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(lblWeaponDamage.Text);
@@ -198,7 +198,7 @@ namespace Chummer
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
                 {
-                    lblWeaponCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblWeaponCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                 }
                 else
                 {
@@ -310,7 +310,7 @@ namespace Chummer
                         blnAnyMelee = true;
                     string strID = objWeapon.SourceIDString;
                     string strWeaponName = objWeapon.CurrentDisplayName;
-                    string strDice = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
+                    string strDice = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
                     string strAccuracy = objWeapon.DisplayAccuracy;
                     string strDamage = objWeapon.DisplayDamage;
                     string strAP = objWeapon.DisplayTotalAP;
@@ -319,7 +319,7 @@ namespace Chummer
                     string strRC = objWeapon.DisplayTotalRC;
                     string strAmmo = objWeapon.DisplayAmmo;
                     string strMode = objWeapon.DisplayMode;
-                    string strReach = objWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
+                    string strReach = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
                     string strConceal = objWeapon.DisplayConcealability;
                     StringBuilder sbdAccessories = new StringBuilder();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
@@ -329,7 +329,7 @@ namespace Chummer
                     if (sbdAccessories.Length > 0)
                         sbdAccessories.Length -= Environment.NewLine.Length;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(), objAvail, strSource, strCost);
@@ -432,7 +432,7 @@ namespace Chummer
                 {
                     // Add after sort so that it's always at the end
                     lstWeapons.Add(new ListItem(string.Empty,
-                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
                             intOverLimit)));
                 }
                 string strOldSelected = lstWeapon.SelectedValue?.ToString();
@@ -598,8 +598,8 @@ namespace Chummer
         private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else
             {
@@ -644,7 +644,7 @@ namespace Chummer
                         objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strSelectedId.CleanXPath() + "]");
                         if (objNode != null)
                         {
-                            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
                                 ? cboCategory.SelectedValue?.ToString()
                                 : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
@@ -673,7 +673,7 @@ namespace Chummer
                         }
                         if (objNode != null)
                         {
-                            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
                         }
                         _decMarkup = nudMarkup.Value;

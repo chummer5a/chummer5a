@@ -191,7 +191,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -451,7 +451,7 @@ namespace Chummer
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_UnknownCritterType"), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_UnknownCritterType"), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -460,7 +460,7 @@ namespace Chummer
                 // The Critter should use the same settings file as the character.
                 using (Character objCharacter = new Character
                 {
-                    CharacterOptionsKey = _objSpirit.CharacterObject.CharacterOptionsKey,
+                    SettingsKey = _objSpirit.CharacterObject.SettingsKey,
                     // Override the defaults for the setting.
                     IgnoreRules = true,
                     IsCritter = true,
@@ -475,7 +475,7 @@ namespace Chummer
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
                         Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                        FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
+                        FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo) + ").chum5"
                     })
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)

@@ -174,14 +174,14 @@ namespace Chummer.UI.Skills
                     {
                         if (strLoopAttribute == "MAGAdept")
                         {
-                            if (!objSkill.CharacterObject.Options.MysAdeptSecondMAGAttribute)
+                            if (!objSkill.CharacterObject.Settings.MysAdeptSecondMAGAttribute)
                                 continue;
                             lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.MAGAdeptString()));
                         }
                         else
                         {
                             string strAttributeShort = LanguageManager.GetString(
-                                "String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);
+                                "String_Attribute" + strLoopAttribute + "Short", GlobalSettings.Language, false);
                             lstAttributeItems.Add(new ListItem(strLoopAttribute,
                                 !string.IsNullOrEmpty(strAttributeShort) ? strAttributeShort : strLoopAttribute));
                         }
@@ -231,10 +231,10 @@ namespace Chummer.UI.Skills
                         nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                     nudSkill.DoDataBinding("Value", objSkill, nameof(Skill.Base));
                     nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
-                    nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                    nudSkill.InterceptMouseWheel = GlobalSettings.InterceptMode;
                     nudKarma.DoDataBinding("Value", objSkill, nameof(Skill.Karma));
                     nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
-                    nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                    nudKarma.InterceptMouseWheel = GlobalSettings.InterceptMode;
 
                     tlpMain.Controls.Add(nudSkill, 2, 0);
                     tlpMain.Controls.Add(nudKarma, 3, 0);
@@ -414,7 +414,7 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _objSkill.CurrentDisplayName, _objSkill.Rating + 1, _objSkill.UpgradeKarmaCost);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
@@ -425,7 +425,7 @@ namespace Chummer.UI.Skills
 
         private void btnAddSpec_Click(object sender, EventArgs e)
         {
-            int price = _objSkill.CharacterObject.Options.KarmaSpecialization;
+            int price = _objSkill.CharacterObject.Settings.KarmaSpecialization;
 
             decimal decExtraSpecCost = 0;
             int intTotalBaseRating = _objSkill.TotalBaseRating;
@@ -456,7 +456,7 @@ namespace Chummer.UI.Skills
             else
                 price += decExtraSpecCost.StandardRound(); //Spec
 
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
@@ -558,7 +558,7 @@ namespace Chummer.UI.Skills
 
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalOptions.Language), _objSkill.CharacterObject);
+            CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalSettings.Language), _objSkill.CharacterObject);
         }
 
         [UsedImplicitly]

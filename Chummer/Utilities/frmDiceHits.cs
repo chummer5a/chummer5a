@@ -36,7 +36,7 @@ namespace Chummer
         private void frmDiceHits_Load(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalOptions.CultureInfo)
+            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalSettings.CultureInfo)
                            + LanguageManager.GetString("String_D6") + LanguageManager.GetString("String_Colon") + strSpace;
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = 6;
@@ -59,7 +59,7 @@ namespace Chummer
                 int intResult = 0;
                 for (int i = 0; i < Dice; ++i)
                 {
-                    intResult += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intResult += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                 }
                 nudDiceResult.ValueAsInt = intResult;
             }

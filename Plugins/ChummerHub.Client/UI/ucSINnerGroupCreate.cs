@@ -12,7 +12,7 @@ namespace ChummerHub.Client.UI
     {
         public SINnerGroup MyGroup { get; set; }
         public bool EditMode { get; set; }
-        private string _strSelectedLanguage = GlobalOptions.Language;
+        private string _strSelectedLanguage = GlobalSettings.Language;
 
         public ucSINnerGroupCreate(SINnerGroup group, bool editMode, bool onlyPWHash)
         {
@@ -50,7 +50,7 @@ namespace ChummerHub.Client.UI
                     : Properties.Settings.Default.UserEmail;
                 cboLanguage1.SelectedValue = !string.IsNullOrEmpty(MyGroup.Language)
                     ? MyGroup.Language
-                    : GlobalOptions.Language;
+                    : GlobalSettings.Language;
                 if (MyGroup.IsPublic)
                     cbIsPublic.Checked = MyGroup.IsPublic;
             }
@@ -118,10 +118,10 @@ namespace ChummerHub.Client.UI
 
         private void CboLanguage1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            _strSelectedLanguage = cboLanguage1.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage;
+            _strSelectedLanguage = cboLanguage1.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage;
             imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
 
-            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalOptions.DefaultLanguage;
+            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalSettings.DefaultLanguage;
         }
 
         private void TbPassword_KeyDown(object sender, KeyEventArgs e)

@@ -136,7 +136,7 @@ namespace Chummer
                     return 0;
                 return -1;
             }
-            return ty == null ? 1 : string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
+            return ty == null ? 1 : string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalSettings.CultureInfo);
         }
     }
 
@@ -147,14 +147,14 @@ namespace Chummer
         /// </summary>
         public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
         {
-            if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
+            if (lx == null || !DateTime.TryParse(lx.Text, GlobalSettings.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
             {
-                if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out _))
+                if (ly == null || !DateTime.TryParse(ly.Text, GlobalSettings.CultureInfo, System.Globalization.DateTimeStyles.None, out _))
                     return 0;
                 return -1;
             }
 
-            if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datY))
+            if (ly == null || !DateTime.TryParse(ly.Text, GlobalSettings.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datY))
                 return 1;
 
             return DateTime.Compare(datY, datX);
@@ -168,7 +168,7 @@ namespace Chummer
         /// </summary>
         public static int CompareNames(ListItem objX, ListItem objY)
         {
-            return string.Compare(objX.Name, objY.Name, false, GlobalOptions.CultureInfo);
+            return string.Compare(objX.Name, objY.Name, false, GlobalSettings.CultureInfo);
         }
     }
 
@@ -225,13 +225,13 @@ namespace Chummer
                 {
                     string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
                     string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                    if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo,
+                    if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
                             out decimal decX) &&
-                        decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo,
+                        decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
                             out decimal decY))
                         intCompareResult = decimal.Compare(decX, decY);
                     else
-                        intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+                        intCompareResult = string.Compare(strX, strY, true, GlobalSettings.CultureInfo);
                 }
             }
 
@@ -288,20 +288,20 @@ namespace Chummer
             string strNumberY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString().TrimEnd('¥', '+')
                 .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
                 .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
-            if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
+            if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decX))
             {
-                if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
+                if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decY))
 
                     intCompareResult = decimal.Compare(decX, decY);
                 else
                     intCompareResult = -1;
             }
-            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal _))
+            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal _))
             {
                 intCompareResult = 1;
             }
             else
-                intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+                intCompareResult = string.Compare(strX, strY, true, GlobalSettings.CultureInfo);
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)

@@ -137,11 +137,11 @@ namespace Chummer.UI.Attributes
                 nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
                 nudBase.DoDataBinding("Value", _dataSource, nameof(CharacterAttrib.Base));
                 nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
-                nudBase.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                nudBase.InterceptMouseWheel = GlobalSettings.InterceptMode;
 
                 nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
                 nudKarma.DoDataBinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
-                nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                nudKarma.InterceptMouseWheel = GlobalSettings.InterceptMode;
 
                 flpRight.Controls.Add(nudKarma);
                 flpRight.Controls.Add(nudBase);
@@ -228,7 +228,7 @@ namespace Chummer.UI.Attributes
                 return;
             }
 
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
@@ -316,7 +316,7 @@ namespace Chummer.UI.Attributes
                 return true;
             //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
             //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value.
-            int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
+            int intMaxOtherAttributesAtMax = _objCharacter.Settings.Allow2ndMaxAttribute ? 1 : 0;
             int intNumOtherAttributeAtMax = _objCharacter.AttributeSection.AttributeList.Count(att =>
                 att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 

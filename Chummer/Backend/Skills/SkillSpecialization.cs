@@ -40,7 +40,7 @@ namespace Chummer.Backend.Skills
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter;
-            _strName = _objCharacter.ReverseTranslateExtra(strName, GlobalOptions.Language, "skills.xml");
+            _strName = _objCharacter.ReverseTranslateExtra(strName, GlobalSettings.Language, "skills.xml");
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
@@ -55,10 +55,10 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("spec");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -92,10 +92,10 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalSettings.InvariantCultureInfo));
             int intSpecializationBonus = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
                                                                              && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? 0
@@ -111,14 +111,14 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
@@ -127,7 +127,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The name of the object as it should be displayed in lists in the program's current language.
         /// </summary>
-        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>
         /// The Skill to which this specialization belongs
@@ -139,12 +139,12 @@ namespace Chummer.Backend.Skills
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Language);
+            return GetNode(GlobalSettings.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + "]");
                 _strCachedXmlNodeLanguage = strLanguage;
@@ -181,7 +181,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public int SpecializationBonus => _objCharacter.Options.SpecializationBonus + (Expertise ? 1 : 0);
+        public int SpecializationBonus => _objCharacter.Settings.SpecializationBonus + (Expertise ? 1 : 0);
 
         #endregion Properties
     }

@@ -46,14 +46,14 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode)
                 return;
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
                 {
                     XPathDocument xmlEnglishDocument;
                     using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                         xmlEnglishDocument = new XPathDocument(objXmlReader);
                     XPathNodeIterator xmlStringList =
                         xmlEnglishDocument.CreateNavigator().Select("/chummer/strings/string");
@@ -75,23 +75,23 @@ namespace Chummer
                     }
                     else
                     {
-                        ManagerErrorMessage = "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:"
+                        ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage + ") could not be loaded:"
                                               + Environment.NewLine + Environment.NewLine + "No strings found in file.";
                     }
                 }
                 catch (IOException ex)
                 {
-                    ManagerErrorMessage = "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:"
+                    ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage + ") could not be loaded:"
                                           + Environment.NewLine + Environment.NewLine + ex;
                 }
                 catch (XmlException ex)
                 {
-                    ManagerErrorMessage = "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:"
+                    ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage + ") could not be loaded:"
                                           + Environment.NewLine + Environment.NewLine + ex;
                 }
             }
             else
-                ManagerErrorMessage = "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:"
+                ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage + ") could not be loaded:"
                                       + Environment.NewLine + Environment.NewLine + "File " + strFilePath + " does not exist or cannot be found.";
         }
 
@@ -112,7 +112,7 @@ namespace Chummer
             if (blnDoResumeLayout)
                 objObject.SuspendLayout();
             if (string.IsNullOrEmpty(strIntoLanguage))
-                strIntoLanguage = GlobalOptions.Language;
+                strIntoLanguage = GlobalSettings.Language;
             if (LoadLanguage(strIntoLanguage))
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
@@ -121,15 +121,15 @@ namespace Chummer
                     eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
             }
-            else if (!strIntoLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
+            else if (!strIntoLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                UpdateControls(objObject, GlobalSettings.DefaultLanguage, RightToLeft.No);
             if (blnDoResumeLayout)
                 objObject.ResumeLayout();
         }
 
         public static bool LoadLanguage(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return true;
             string strKey = strLanguage.ToUpperInvariant();
             s_DictionaryLanguages.TryGetValue(strKey, out LanguageData objNewLanguage);
@@ -317,7 +317,7 @@ namespace Chummer
             if (tssItem == null)
                 return;
             if (string.IsNullOrEmpty(strIntoLanguage))
-                strIntoLanguage = GlobalOptions.Language;
+                strIntoLanguage = GlobalSettings.Language;
             if (eIntoRightToLeft == RightToLeft.Inherit && LoadLanguage(strIntoLanguage))
             {
                 string strKey = strIntoLanguage.ToUpperInvariant();
@@ -340,7 +340,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Overload for standard GetString method, using GlobalOptions.Language as default string, but explicitly defining if an error is returned or not.
+        /// Overload for standard GetString method, using GlobalSettings.Language as default string, but explicitly defining if an error is returned or not.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
@@ -348,7 +348,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetString(string strKey, bool blnReturnError)
         {
-            return GetString(strKey, GlobalOptions.Language, blnReturnError);
+            return GetString(strKey, GlobalSettings.Language, blnReturnError);
         }
 
         /// <summary>
@@ -362,7 +362,7 @@ namespace Chummer
             if (Utils.IsDesignerMode)
                 return strKey;
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
+                strLanguage = GlobalSettings.Language;
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
@@ -514,12 +514,12 @@ namespace Chummer
                 Task.Run(() =>
                 {
                     // Load the English version.
-                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
                     try
                     {
                         XPathDocument objEnglishDocument;
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             objEnglishDocument = new XPathDocument(objXmlReader);
                         foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
                         {
@@ -543,7 +543,7 @@ namespace Chummer
                     {
                         XPathDocument objLanguageDocument;
                         using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             objLanguageDocument = new XPathDocument(objXmlReader);
                         foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().Select("/chummer/strings/string"))
                         {
@@ -688,7 +688,7 @@ namespace Chummer
         public static string MAGAdeptString(string strLanguage = "", bool blnLong = false)
         {
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
+                strLanguage = GlobalSettings.Language;
             return GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage) + GetString("String_Space", strLanguage)
                 + '(' + GetString("String_DescAdept", strLanguage) + ')';
         }
@@ -722,11 +722,11 @@ namespace Chummer
             if (string.IsNullOrEmpty(strExtra))
                 return string.Empty;
             if (string.IsNullOrEmpty(strIntoLanguage))
-                strIntoLanguage = GlobalOptions.Language;
+                strIntoLanguage = GlobalSettings.Language;
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (!strIntoLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(strExtra))
+            if (!strIntoLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(strExtra))
             {
                 // Attempt to translate CharacterAttribute names.
                 switch (strExtra)
@@ -838,7 +838,7 @@ namespace Chummer
                                             (objXPathPair, objState) =>
                                             {
                                                 XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
-                                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
+                                                    objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strIntoLanguage);
                                                 foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                                 {
                                                     if (objCancellationToken.IsCancellationRequested ||
@@ -877,7 +877,7 @@ namespace Chummer
                                         {
                                             XPathNavigator xmlDocument = XmlManager.LoadXPath(
                                                 objXPathPair.Item1,
-                                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
+                                                objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strIntoLanguage);
                                             foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                             {
                                                 if (objCancellationToken.IsCancellationRequested ||
@@ -940,9 +940,9 @@ namespace Chummer
             Character objCharacter = null, string strPreferFile = "")
         {
             if (string.IsNullOrEmpty(strFromLanguage))
-                strFromLanguage = GlobalOptions.Language;
+                strFromLanguage = GlobalSettings.Language;
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (strFromLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(strExtra))
+            if (strFromLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(strExtra))
                 return strExtra;
             // Attempt to translate CharacterAttribute names.
             if (strExtra == GetString("String_AttributeBODShort", strFromLanguage))
@@ -1013,7 +1013,7 @@ namespace Chummer
                                 (objXPathPair, objState) =>
                                 {
                                     XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
-                                        objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                                        objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strFromLanguage);
                                     foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                     {
                                         if (objCancellationToken.IsCancellationRequested ||
@@ -1053,7 +1053,7 @@ namespace Chummer
                             Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
                             {
                                 XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
-                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                                    objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strFromLanguage);
                                 foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                 {
                                     if (objCancellationToken.IsCancellationRequested ||
@@ -1086,7 +1086,7 @@ namespace Chummer
         {
             if (cboLanguage == null)
                 throw new ArgumentNullException(nameof(cboLanguage));
-            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.Language;
+            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
             int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
             if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
             {
@@ -1099,7 +1099,7 @@ namespace Chummer
             cboLanguage.PopulateWithListItems(GetSheetLanguageList(lstCharacters));
             cboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (cboLanguage.SelectedIndex == -1)
-                cboLanguage.SelectedValue = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.DefaultLanguage;
+                cboLanguage.SelectedValue = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
             cboLanguage.EndUpdate();
         }
 
@@ -1114,7 +1114,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                         xmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
@@ -1166,7 +1166,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             objLanguageDocument = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)
@@ -1234,7 +1234,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             DataDocument = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)

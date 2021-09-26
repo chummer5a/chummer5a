@@ -45,7 +45,7 @@ namespace Chummer
 
         private string DisplayDebug()
         {
-            return string.Format(GlobalOptions.InvariantCultureInfo, "{0} ({1}, {2}) 🡐 {3}, {4}, {5}",
+            return string.Format(GlobalSettings.InvariantCultureInfo, "{0} ({1}, {2}) 🡐 {3}, {4}, {5}",
                 _objImprovementType, _decVal, _intRating, _objImprovementSource, _strSourceName, _strImprovedName);
         }
 
@@ -484,23 +484,23 @@ namespace Chummer
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("improvedname", _strImprovedName);
             objWriter.WriteElementString("sourcename", _strSourceName);
-            objWriter.WriteElementString("min", _intMin.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("max", _intMax.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("aug", _decAug.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("augmax", _intAugMax.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("val", _decVal.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("min", _intMin.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("max", _intMax.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("aug", _decAug.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("augmax", _intAugMax.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("val", _decVal.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("exclude", _strExclude);
             objWriter.WriteElementString("condition", _strCondition);
             objWriter.WriteElementString("improvementttype", _objImprovementType.ToString());
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            objWriter.WriteElementString("custom", _blnCustom.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("custom", _blnCustom.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("customname", _strCustomName);
             objWriter.WriteElementString("customid", _strCustomId);
             objWriter.WriteElementString("customgroup", _strCustomGroup);
-            objWriter.WriteElementString("addtorating", _blnAddToRating.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("enabled", _blnEnabled.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("order", _intOrder.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("addtorating", _blnAddToRating.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("enabled", _blnEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("order", _intOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
@@ -2591,7 +2591,7 @@ namespace Chummer
                     }
                 case ImprovementType.CyberadeptDaemon:
                     {
-                        if (_objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
+                        if (_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue)
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
                                 nameof(Character.CyberwareEssence));
                         break;
@@ -3401,7 +3401,7 @@ namespace Chummer
             }
             if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
             {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
                 strReturn = strReturn.Replace("/", " div ");
@@ -3417,7 +3417,7 @@ namespace Chummer
                 return intValue;
             }
             //Log.Exit("ValueToInt");
-            int.TryParse(strValue, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn);
+            int.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
             return intReturn;
         }
 
@@ -3441,7 +3441,7 @@ namespace Chummer
             }
             if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
             {
-                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
                 strReturn = strReturn.Replace("/", " div ");
@@ -3457,7 +3457,7 @@ namespace Chummer
                 return decValue;
             }
             //Log.Exit("ValueToInt");
-            decimal.TryParse(strValue, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn);
+            decimal.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
             return decReturn;
         }
 
@@ -3649,7 +3649,7 @@ namespace Chummer
                 using (frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
                 {
                     Description = !string.IsNullOrEmpty(strFriendlyName)
-                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), strFriendlyName)
+                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectSkill")
                 })
                 {
@@ -3729,7 +3729,7 @@ namespace Chummer
             Log.Info("objImprovementSource = " + objImprovementSource);
             Log.Info("strSourceName = " + strSourceName);
             Log.Info("nodBonus = " + nodBonus?.OuterXml);
-            Log.Info("intRating = " + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            Log.Info("intRating = " + intRating.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info("strFriendlyName = " + strFriendlyName);
 
             /*try
@@ -3781,7 +3781,7 @@ namespace Chummer
                         using (frmSelectText frmPickText = new frmSelectText
                         {
                             Description =
-                                string.Format(GlobalOptions.CultureInfo,
+                                string.Format(GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("String_Improvement_SelectText"),
                                     strFriendlyName)
                         })
@@ -3805,7 +3805,7 @@ namespace Chummer
                     {
                         using (frmSelectItem frmSelect = new frmSelectItem
                         {
-                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
+                            Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
                         })
                         {
                             string strXPath = nodBonus["selecttext"].Attributes["xpath"]?.InnerText;
@@ -3848,7 +3848,7 @@ namespace Chummer
                                 return false;
                             }
 
-                            if (Convert.ToBoolean(nodBonus["selecttext"].Attributes["allowedit"]?.InnerText, GlobalOptions.InvariantCultureInfo))
+                            if (Convert.ToBoolean(nodBonus["selecttext"].Attributes["allowedit"]?.InnerText, GlobalSettings.InvariantCultureInfo))
                             {
                                 frmSelect.SetDropdownItemsMode(lstItems);
                             }
@@ -4123,7 +4123,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strImprovedName))
                             objCharacter.PrototypeTranshuman = 1;
                         else
-                            objCharacter.PrototypeTranshuman += Convert.ToDecimal(strImprovedName, GlobalOptions.InvariantCultureInfo);
+                            objCharacter.PrototypeTranshuman += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
                         break;
 
                     case Improvement.ImprovementType.Adapsin:
@@ -4416,7 +4416,7 @@ namespace Chummer
                                 objCharacter.PrototypeTranshuman = 0;
                         }
                         else
-                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName, GlobalOptions.InvariantCultureInfo);
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
                         break;
 
                     case Improvement.ImprovementType.Adapsin:
@@ -4794,7 +4794,7 @@ namespace Chummer
                         }
                         else
                         {
-                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName, GlobalOptions.InvariantCultureInfo);
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
                         }
                         break;
 
@@ -5041,20 +5041,20 @@ namespace Chummer
                 "objImprovementType = " + objImprovementType);
             Log.Info("strUnique = " + strUnique);
             Log.Info(
-                "decValue = " + decValue.ToString(GlobalOptions.InvariantCultureInfo));
+                "decValue = " + decValue.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info(
-                "intRating = " + intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                "intRating = " + intRating.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info(
-                "intMinimum = " + intMinimum.ToString(GlobalOptions.InvariantCultureInfo));
+                "intMinimum = " + intMinimum.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info(
-                "intMaximum = " + intMaximum.ToString(GlobalOptions.InvariantCultureInfo));
+                "intMaximum = " + intMaximum.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info(
-                "decAugmented = " + decAugmented.ToString(GlobalOptions.InvariantCultureInfo));
+                "decAugmented = " + decAugmented.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info(
-                "intAugmentedMaximum = " + intAugmentedMaximum.ToString(GlobalOptions.InvariantCultureInfo));
+                "intAugmentedMaximum = " + intAugmentedMaximum.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info("strExclude = " + strExclude);
             Log.Info(
-                "blnAddToRating = " + blnAddToRating.ToString(GlobalOptions.InvariantCultureInfo));
+                "blnAddToRating = " + blnAddToRating.ToString(GlobalSettings.InvariantCultureInfo));
             Log.Info("strCondition = " + strCondition);
 
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).

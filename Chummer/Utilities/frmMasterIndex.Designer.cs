@@ -42,9 +42,14 @@ namespace Chummer
             this.lblFile = new System.Windows.Forms.Label();
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
+            this.tlpGameplayOption = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblCharacterSetting = new System.Windows.Forms.Label();
+            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
+            this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.tlpTopLeft.SuspendLayout();
+            this.tlpGameplayOption.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -57,12 +62,14 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.tlpRight, 1, 0);
             this.tlpMain.Controls.Add(this.tlpTopLeft, 0, 0);
             this.tlpMain.Controls.Add(this.lstItems, 0, 1);
+            this.tlpMain.Controls.Add(this.tlpGameplayOption, 0, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 2;
+            this.tlpMain.RowCount = 3;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 0;
             // 
@@ -89,7 +96,7 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Size = new System.Drawing.Size(383, 543);
+            this.tlpRight.Size = new System.Drawing.Size(383, 514);
             this.tlpRight.TabIndex = 1;
             // 
             // txtSearch
@@ -167,7 +174,7 @@ namespace Chummer
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.ReadOnly = true;
             this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtNotes.Size = new System.Drawing.Size(377, 486);
+            this.txtNotes.Size = new System.Drawing.Size(377, 457);
             this.txtNotes.TabIndex = 6;
             this.txtNotes.Visible = false;
             // 
@@ -219,9 +226,75 @@ namespace Chummer
             this.lstItems.FormattingEnabled = true;
             this.lstItems.Location = new System.Drawing.Point(3, 30);
             this.lstItems.Name = "lstItems";
-            this.lstItems.Size = new System.Drawing.Size(377, 510);
+            this.lstItems.Size = new System.Drawing.Size(377, 481);
             this.lstItems.TabIndex = 2;
             this.lstItems.SelectedIndexChanged += new System.EventHandler(this.lstItems_SelectedIndexChanged);
+            // 
+            // tlpGameplayOption
+            // 
+            this.tlpGameplayOption.AutoSize = true;
+            this.tlpGameplayOption.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpGameplayOption.ColumnCount = 3;
+            this.tlpMain.SetColumnSpan(this.tlpGameplayOption, 2);
+            this.tlpGameplayOption.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpGameplayOption.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpGameplayOption.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpGameplayOption.Controls.Add(this.cmdEditCharacterSetting, 2, 0);
+            this.tlpGameplayOption.Controls.Add(this.lblCharacterSetting, 0, 0);
+            this.tlpGameplayOption.Controls.Add(this.cboCharacterSetting, 1, 0);
+            this.tlpGameplayOption.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpGameplayOption.Location = new System.Drawing.Point(0, 514);
+            this.tlpGameplayOption.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpGameplayOption.Name = "tlpGameplayOption";
+            this.tlpGameplayOption.RowCount = 1;
+            this.tlpGameplayOption.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpGameplayOption.Size = new System.Drawing.Size(766, 29);
+            this.tlpGameplayOption.TabIndex = 3;
+            // 
+            // lblCharacterSetting
+            // 
+            this.lblCharacterSetting.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCharacterSetting.AutoSize = true;
+            this.lblCharacterSetting.Location = new System.Drawing.Point(3, 8);
+            this.lblCharacterSetting.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCharacterSetting.Name = "lblCharacterSetting";
+            this.lblCharacterSetting.Size = new System.Drawing.Size(65, 13);
+            this.lblCharacterSetting.TabIndex = 19;
+            this.lblCharacterSetting.Tag = "Label_SelectBP_UseSetting";
+            this.lblCharacterSetting.Text = "Use Setting:";
+            // 
+            // cmdEditCharacterSetting
+            // 
+            this.cmdEditCharacterSetting.AutoSize = true;
+            this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdEditCharacterSetting.Image = null;
+            this.cmdEditCharacterSetting.ImageDpi120 = null;
+            this.cmdEditCharacterSetting.ImageDpi144 = null;
+            this.cmdEditCharacterSetting.ImageDpi192 = null;
+            this.cmdEditCharacterSetting.ImageDpi288 = null;
+            this.cmdEditCharacterSetting.ImageDpi384 = null;
+            this.cmdEditCharacterSetting.ImageDpi96 = null;
+            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(706, 3);
+            this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
+            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(57, 23);
+            this.cmdEditCharacterSetting.TabIndex = 20;
+            this.cmdEditCharacterSetting.Text = "Modify...";
+            this.cmdEditCharacterSetting.ToolTipText = "";
+            this.cmdEditCharacterSetting.UseVisualStyleBackColor = true;
+            this.cmdEditCharacterSetting.Click += new System.EventHandler(this.cmdEditCharacterSetting_Click);
+            // 
+            // cboCharacterSetting
+            // 
+            this.cboCharacterSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCharacterSetting.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCharacterSetting.FormattingEnabled = true;
+            this.cboCharacterSetting.Location = new System.Drawing.Point(74, 4);
+            this.cboCharacterSetting.Name = "cboCharacterSetting";
+            this.cboCharacterSetting.Size = new System.Drawing.Size(626, 21);
+            this.cboCharacterSetting.TabIndex = 21;
+            this.cboCharacterSetting.TooltipText = "";
+            this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // frmMasterIndex
             // 
@@ -243,6 +316,8 @@ namespace Chummer
             this.tlpRight.PerformLayout();
             this.tlpTopLeft.ResumeLayout(false);
             this.tlpTopLeft.PerformLayout();
+            this.tlpGameplayOption.ResumeLayout(false);
+            this.tlpGameplayOption.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -262,5 +337,9 @@ namespace Chummer
         private LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceClickReminder;
         private System.Windows.Forms.TextBox txtNotes;
+        private BufferedTableLayoutPanel tlpGameplayOption;
+        private System.Windows.Forms.Label lblCharacterSetting;
+        private ButtonWithToolTip cmdEditCharacterSetting;
+        private ElasticComboBox cboCharacterSetting;
     }
 }

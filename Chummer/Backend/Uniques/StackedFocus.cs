@@ -32,7 +32,7 @@ namespace Chummer
     /// <summary>
     /// A Stacked Focus.
     /// </summary>
-    [DebuggerDisplay("{Name(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
     public class StackedFocus
     {
         private Guid _guiID;
@@ -59,9 +59,9 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("stackedfocus");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("gearid", _guiGearId.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("bonded", _blnBonded.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("gearid", _guiGearId.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("bonded", _blnBonded.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
                 objGear.Save(objWriter);
@@ -98,14 +98,14 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Stacked Focus in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// GUID of the linked Gear.
         /// </summary>
         public string GearId
         {
-            get => _guiGearId.ToString("D", GlobalOptions.InvariantCultureInfo);
+            get => _guiGearId.ToString("D", GlobalSettings.InvariantCultureInfo);
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
@@ -172,67 +172,67 @@ namespace Chummer
                     switch (strFocusName)
                     {
                         case "Qi Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaQiFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaQiFocus;
                             break;
 
                         case "Sustaining Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaSustainingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaSustainingFocus;
                             break;
 
                         case "Counterspelling Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaCounterspellingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaCounterspellingFocus;
                             break;
 
                         case "Banishing Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaBanishingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaBanishingFocus;
                             break;
 
                         case "Binding Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaBindingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaBindingFocus;
                             break;
 
                         case "Weapon Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaWeaponFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaWeaponFocus;
                             break;
 
                         case "Spellcasting Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaSpellcastingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaSpellcastingFocus;
                             break;
 
                         case "Summoning Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaSummoningFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaSummoningFocus;
                             break;
 
                         case "Alchemical Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaAlchemicalFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaAlchemicalFocus;
                             break;
 
                         case "Centering Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaCenteringFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaCenteringFocus;
                             break;
 
                         case "Masking Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaMaskingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaMaskingFocus;
                             break;
 
                         case "Disenchanting Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaDisenchantingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaDisenchantingFocus;
                             break;
 
                         case "Power Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaPowerFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaPowerFocus;
                             break;
 
                         case "Flexible Signature Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaFlexibleSignatureFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaFlexibleSignatureFocus;
                             break;
 
                         case "Ritual Spellcasting Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaRitualSpellcastingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaRitualSpellcastingFocus;
                             break;
 
                         case "Spell Shaping Focus":
-                            decKarmaMultiplier = _objCharacter.Options.KarmaSpellShapingFocus;
+                            decKarmaMultiplier = _objCharacter.Settings.KarmaSpellShapingFocus;
                             break;
 
                         default:
@@ -278,7 +278,7 @@ namespace Chummer
             return sbdReturn.ToString();
         }
 
-        public string CurrentDisplayName => Name(GlobalOptions.CultureInfo, GlobalOptions.Language);
+        public string CurrentDisplayName => Name(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
         /// List of Gear that make up the Stacked Focus.

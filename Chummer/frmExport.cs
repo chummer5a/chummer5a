@@ -60,7 +60,7 @@ namespace Chummer
 
         private async void frmExport_Load(object sender, EventArgs e)
         {
-            LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalOptions.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
+            LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
             cboXSLT.BeginUpdate();
             cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
@@ -125,7 +125,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            _strExportLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
+            _strExportLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
             try
             {
                 _objExportCulture = CultureInfo.GetCultureInfo(_strExportLanguage);
@@ -249,7 +249,7 @@ namespace Chummer
                 else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
                     SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html");
                 else
-                    SaveFileDialog1.Filter = strExtension.ToUpper(GlobalOptions.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
+                    SaveFileDialog1.Filter = strExtension.ToUpper(GlobalSettings.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
                 SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
                 SaveFileDialog1.ShowDialog();
                 strSaveFile = SaveFileDialog1.FileName;

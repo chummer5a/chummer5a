@@ -7174,7 +7174,7 @@
         </string>
         <string>
             <key>Menu_SpecialChangeOptions</key>
-            <text>Change &amp;Options File</text>
+            <text>Change &amp;Settings File</text>
         </string>
         <string>
             <key>String_MutantCritter</key>
@@ -8146,7 +8146,7 @@
         </string>
         <string>
             <key>Message_Options_CloseForms</key>
-            <text>Options are only enumerated on character load. Should we restart the application?</text>
+            <text>Settings are only enumerated on character load. Should we restart the application?</text>
         </string>
         <string>
             <key>Message_Options_SaveForms</key>
@@ -8486,7 +8486,7 @@
         </string>
         <string>
             <key>Message_CharacterOptions_OpenOptions</key>
-            <text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Options menu now?</text>
+            <text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Settings menu now?</text>
         </string>
         <string>
             <key>MessageTitle_CharacterOptions_OpenOptions</key>

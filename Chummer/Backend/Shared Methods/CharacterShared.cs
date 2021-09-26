@@ -48,7 +48,7 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static TelemetryClient TelemetryClient { get; } = new TelemetryClient();
         private readonly Character _objCharacter;
-        private readonly CharacterOptions _objOptions;
+        private readonly CharacterSettings _objSettings;
         private bool _blnIsDirty;
         private bool _blnIsRefreshing;
         private bool _blnLoading = true;
@@ -57,7 +57,7 @@ namespace Chummer
         protected CharacterShared(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _objOptions = _objCharacter?.Options;
+            _objSettings = _objCharacter?.Settings;
             string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
             {
@@ -1740,7 +1740,7 @@ namespace Chummer
                     foreach (Quality objQuality in _objCharacter.Qualities)
                     {
                         strQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
-                                                objQuality.GetSourceName(GlobalOptions.Language) + '|' +
+                                                objQuality.GetSourceName(GlobalSettings.Language) + '|' +
                                                 objQuality.Extra);
                     }
 
@@ -1748,7 +1748,7 @@ namespace Chummer
                     foreach (Quality objQuality in _objCharacter.Qualities)
                     {
                         if (!strQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
-                                                        objQuality.GetSourceName(GlobalOptions.Language) + '|' +
+                                                        objQuality.GetSourceName(GlobalSettings.Language) + '|' +
                                                         objQuality.Extra))
                             continue;
 
@@ -3140,10 +3140,10 @@ namespace Chummer
                     objModularRoot = treCyberware.FindNode("Node_UnequippedModularCyberware", false);
                     objHoleNode =
                         treCyberware.FindNode(
-                            Cyberware.EssenceHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo), false);
+                            Cyberware.EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo), false);
                     objAntiHoleNode =
                         treCyberware.FindNode(
-                            Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo), false);
+                            Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo), false);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
@@ -3758,7 +3758,7 @@ namespace Chummer
                     int intFociTotal = 0;
 
                     int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-                    if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    if (_objSettings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                         intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
 
                     foreach (Gear objGear in _objCharacter.Gear)
@@ -3816,12 +3816,12 @@ namespace Chummer
                                                     ImprovementManager.CreateImprovements(_objCharacter,
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
-                                                        objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                     if (objFociGear.WirelessOn)
                                                         ImprovementManager.CreateImprovements(_objCharacter,
                                                             Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
-                                                            objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                            objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                 }
                                             }
 
@@ -3844,7 +3844,7 @@ namespace Chummer
                             {
                                 bool blnWarned = false;
                                 int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-                                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                                if (_objSettings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                                     intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
 
                                 HashSet<Gear> setNewGears = new HashSet<Gear>();
@@ -3920,13 +3920,13 @@ namespace Chummer
                                                                 ImprovementManager.CreateImprovements(_objCharacter,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
-                                                                    objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                                    objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                                 if (objFociGear.WirelessOn)
                                                                     ImprovementManager.CreateImprovements(_objCharacter,
                                                                         Improvement.ImprovementSource.StackedFocus,
                                                                         objStack.InternalId, objFociGear.WirelessBonus,
                                                                         objFociGear.Rating,
-                                                                        objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                             }
                                                         }
 
@@ -4032,7 +4032,7 @@ namespace Chummer
 
                                 bool blnWarned = false;
                                 int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-                                if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                                if (_objSettings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                                     intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
 
                                 HashSet<Gear> setNewGears = new HashSet<Gear>();
@@ -4108,13 +4108,13 @@ namespace Chummer
                                                                 ImprovementManager.CreateImprovements(_objCharacter,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
-                                                                    objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                                    objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                                 if (objFociGear.WirelessOn)
                                                                     ImprovementManager.CreateImprovements(_objCharacter,
                                                                         Improvement.ImprovementSource.StackedFocus,
                                                                         objStack.InternalId, objFociGear.WirelessBonus,
                                                                         objFociGear.Rating,
-                                                                        objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                             }
                                                         }
 
@@ -4633,7 +4633,7 @@ namespace Chummer
                                              LanguageManager.GetString("String_Space");
                             if (objImprovement.Value > 0)
                                 strName += '+';
-                            strName += objImprovement.Value.ToString(GlobalOptions.CultureInfo);
+                            strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
                                 strName += ',' + LanguageManager.GetString("String_Space") + objImprovement.Condition;
                             if (objParentNode?.Nodes.ContainsKey(strName) == false)
@@ -5581,7 +5581,7 @@ namespace Chummer
                                 objWriter.WriteStartElement("character");
 
                                 objCopyArmor.Save(objWriter);
-                                GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
+                                GlobalSettings.ClipboardContentType = ClipboardContentType.Armor;
 
                                 if (!objCopyArmor.WeaponID.IsEmptyGuid())
                                 {
@@ -5609,12 +5609,12 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
+                            GlobalSettings.Clipboard = objCharacterXml;
                             break;
                         }
                     case ArmorMod objCopyArmorMod:
@@ -5634,7 +5634,7 @@ namespace Chummer
                                 objWriter.WriteStartElement("character");
 
                                 objCopyArmorMod.Save(objWriter);
-                                GlobalOptions.ClipboardContentType = ClipboardContentType.Armor;
+                                GlobalSettings.ClipboardContentType = ClipboardContentType.Armor;
 
                                 if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
                                 {
@@ -5662,12 +5662,12 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
+                            GlobalSettings.Clipboard = objCharacterXml;
                             break;
                         }
                     case Cyberware objCopyCyberware:
@@ -5687,7 +5687,7 @@ namespace Chummer
                                 objWriter.WriteStartElement("character");
 
                                 objCopyCyberware.Save(objWriter);
-                                GlobalOptions.ClipboardContentType = ClipboardContentType.Cyberware;
+                                GlobalSettings.ClipboardContentType = ClipboardContentType.Cyberware;
 
                                 if (!objCopyCyberware.WeaponID.IsEmptyGuid())
                                 {
@@ -5729,12 +5729,12 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
+                            GlobalSettings.Clipboard = objCharacterXml;
                             //Clipboard.SetText(objCharacterXml.OuterXml);
                             break;
                         }
@@ -5755,7 +5755,7 @@ namespace Chummer
                                 objWriter.WriteStartElement("character");
 
                                 objCopyGear.Save(objWriter);
-                                GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
+                                GlobalSettings.ClipboardContentType = ClipboardContentType.Gear;
 
                                 if (!objCopyGear.WeaponID.IsEmptyGuid())
                                 {
@@ -5783,12 +5783,12 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
+                            GlobalSettings.Clipboard = objCharacterXml;
                             break;
                         }
                     case Lifestyle objCopyLifestyle:
@@ -5821,13 +5821,13 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
-                            GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
+                            GlobalSettings.Clipboard = objCharacterXml;
+                            GlobalSettings.ClipboardContentType = ClipboardContentType.Lifestyle;
                             //Clipboard.SetText(objCharacterXml.OuterXml);
                             break;
                         }
@@ -5861,13 +5861,13 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
-                            GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
+                            GlobalSettings.Clipboard = objCharacterXml;
+                            GlobalSettings.ClipboardContentType = ClipboardContentType.Vehicle;
                             //Clipboard.SetText(objCharacterXml.OuterXml);
                             break;
                         }
@@ -5905,13 +5905,13 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
-                            GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
+                            GlobalSettings.Clipboard = objCharacterXml;
+                            GlobalSettings.ClipboardContentType = ClipboardContentType.Weapon;
                             break;
                         }
                     case WeaponAccessory objCopyAccessory:
@@ -5948,13 +5948,13 @@ namespace Chummer
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXml;
-                            GlobalOptions.ClipboardContentType = ClipboardContentType.WeaponAccessory;
+                            GlobalSettings.Clipboard = objCharacterXml;
+                            GlobalSettings.ClipboardContentType = ClipboardContentType.WeaponAccessory;
                             break;
                         }
                 }
@@ -6090,7 +6090,7 @@ namespace Chummer
                         using (StreamReader objStreamReader =
                             new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
                         using (XmlReader objXmlReader =
-                            XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             xmlDoc = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)
@@ -6366,11 +6366,11 @@ namespace Chummer
         protected void AddSpirit()
         {
             // The number of bound Spirits cannot exceed the character's CHA.
-            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.CHA.Value)
+            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.BoundSpiritLimit)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_BoundSpiritLimit"),
-                    LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_BoundSpiritLimit"), CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
+                    LanguageManager.GetString("MessageTitle_BoundSpiritLimit"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6391,9 +6391,9 @@ namespace Chummer
             // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
             if (!CharacterObject.IgnoreRules &&
                 CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
-                CharacterObject.LOG.TotalValue)
+                CharacterObject.RegisteredSpriteLimit)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_RegisteredSpriteLimit"),
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_RegisteredSpriteLimit"), CharacterObject.Settings.RegisteredSpriteExpression, CharacterObject.RegisteredSpriteLimit),
                     LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6438,20 +6438,20 @@ namespace Chummer
             {
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
                 {
-                    if (!string.IsNullOrWhiteSpace(GlobalOptions.RecentImageFolder) &&
-                        Directory.Exists(GlobalOptions.RecentImageFolder))
+                    if (!string.IsNullOrWhiteSpace(GlobalSettings.RecentImageFolder) &&
+                        Directory.Exists(GlobalSettings.RecentImageFolder))
                     {
-                        dlgOpenFileDialog.InitialDirectory = GlobalOptions.RecentImageFolder;
+                        dlgOpenFileDialog.InitialDirectory = GlobalSettings.RecentImageFolder;
                     }
                     // Prompt the user to select an image to associate with this character.
 
                     ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
                     dlgOpenFileDialog.Filter = string.Format(
-                        GlobalOptions.InvariantCultureInfo,
+                        GlobalSettings.InvariantCultureInfo,
                         LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" +
                         LanguageManager.GetString("DialogFilter_All"),
                         string.Join("|",
-                            lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo,
+                            lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
                                 "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName,
                                 codec.FilenameExtension))),
                         string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
@@ -6472,7 +6472,7 @@ namespace Chummer
                     }
 
                     // Convert the image to a string using Base64.
-                    GlobalOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
+                    GlobalSettings.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
                     using (Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
                     {
@@ -6618,7 +6618,7 @@ namespace Chummer
 
         public Character CharacterObject => _objCharacter;
 
-        protected CharacterOptions CharacterObjectOptions => _objOptions;
+        protected CharacterSettings CharacterObjectSettings => _objSettings;
 
         protected virtual string FormMode => string.Empty;
 
@@ -6653,7 +6653,7 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
             string strTitle = _objCharacter.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' +
-                              _objOptions.Name + ')';
+                              _objSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
             this.QueueThreadSafe(() => Text = strTitle);
@@ -6688,7 +6688,7 @@ namespace Chummer
                         frmProgressBar.PerformStep(_objCharacter.CharacterName, true);
                         if (!_objCharacter.Save())
                             return false;
-                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
                         IsDirty = false;
                     }
                 }
@@ -6836,12 +6836,12 @@ namespace Chummer
                             char chrAvail = objGear.TotalAvailTuple().Suffix;
                             switch (chrAvail)
                             {
-                                case 'R' when CharacterObjectOptions.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
                                     break;
 
-                                case 'F' when CharacterObjectOptions.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
                                     break;
                             }
 
@@ -6863,7 +6863,7 @@ namespace Chummer
                                 objExpense.Create(decCost * -1,
                                     LanguageManager.GetString("String_ExpensePurchaseVehicleGear") +
                                     LanguageManager.GetString("String_Space") +
-                                    objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                    objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                     DateTime.Now);
                                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                 CharacterObject.Nuyen -= decCost;

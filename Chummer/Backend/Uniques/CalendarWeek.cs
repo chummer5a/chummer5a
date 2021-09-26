@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
     public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>, IComparable<CalendarWeek>
     {
         private Guid _guiID;
@@ -60,9 +60,9 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("year", _intYear.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("week", _intWeek.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("year", _intYear.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("week", _intWeek.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
@@ -106,7 +106,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Calendar Week in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Year.
@@ -279,7 +279,7 @@ namespace Chummer
             }
         }
 
-        public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
         /// Month and Week to display.
@@ -329,7 +329,7 @@ namespace Chummer
         {
             if (obj is CalendarWeek objWeek)
                 return CompareTo(objWeek);
-            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
+            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalSettings.CultureInfo);
         }
 
         public int CompareTo(CalendarWeek other)

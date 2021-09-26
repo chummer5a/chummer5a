@@ -80,12 +80,12 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
             }
 
             // Populate the Vehicle Category list.
-            string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and category = ";
+            string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
@@ -319,7 +319,7 @@ namespace Chummer
             chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
             if (!chkBlackMarketDiscount.Checked)
             {
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
             }
             else if (!blnCanBlackMarketDiscount)
             {
@@ -341,7 +341,7 @@ namespace Chummer
                 decimal decCost = 0.0m;
                 if (!chkFreeItem.Checked)
                 {
-                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTmp))
+                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTmp))
                     {
                         decCost = decTmp;
                     }
@@ -360,7 +360,7 @@ namespace Chummer
                     }
                 }
 
-                lblVehicleCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleCost.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                 lblVehicleCostLabel.Visible = !string.IsNullOrEmpty(lblVehicleCost.Text);
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
                 lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
@@ -368,8 +368,8 @@ namespace Chummer
 
             string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                GlobalOptions.CultureInfo, _objCharacter);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -380,8 +380,8 @@ namespace Chummer
         private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else
             {
@@ -434,7 +434,7 @@ namespace Chummer
 
                 string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 
-                if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     string strCategory = objXmlVehicle.SelectSingleNode("category")?.Value;
                     if (!string.IsNullOrEmpty(strCategory))
@@ -453,7 +453,7 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstVehicles.Add(new ListItem(string.Empty,
-                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
                         intOverLimit)));
             }
             string strOldSelected = lstVehicle.SelectedValue?.ToString();
@@ -484,7 +484,7 @@ namespace Chummer
 
             if (chkUsedVehicle.Checked)
             {
-                decimal decCost = Convert.ToDecimal(xmlVehicle.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
+                decimal decCost = Convert.ToDecimal(xmlVehicle.SelectSingleNode("cost")?.Value, GlobalSettings.InvariantCultureInfo);
                 decCost *= 1 - (nudUsedVehicleDiscount.Value / 100.0m);
 
                 _blnUsedVehicle = true;
@@ -493,7 +493,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
+            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
             _strSelectedVehicle = strSelectedId;
             _decMarkup = nudMarkup.Value;
 

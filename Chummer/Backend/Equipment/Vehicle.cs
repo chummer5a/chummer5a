@@ -38,7 +38,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
     public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
@@ -231,7 +231,7 @@ namespace Chummer.Backend.Equipment
 
                 string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
-                if (string.IsNullOrEmpty(strGearNotes) && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrEmpty(strGearNotes) && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     string strTranslatedNameOnPage = CurrentDisplayName;
 
@@ -243,7 +243,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language),
+                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language),
                             strTranslatedNameOnPage, _objCharacter);
                     }
                 }
@@ -261,21 +261,21 @@ namespace Chummer.Backend.Equipment
                 if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
 
                 if (decMin != 0 || decMax != decimal.MaxValue)
                 {
                     if (decMax > 1000000)
                         decMax = 1000000;
-                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.MaxNuyenDecimals)
+                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                     {
                         Minimum = decMin,
                         Maximum = decMax,
-                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
+                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalSettings.Language)),
                         AllowCancel = false
                     })
                     {
@@ -284,7 +284,7 @@ namespace Chummer.Backend.Equipment
                             _guiID = Guid.Empty;
                             return;
                         }
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                     }
                 }
             }
@@ -392,7 +392,7 @@ namespace Chummer.Backend.Equipment
                                                     if (objXmlSubsystem == null) continue;
                                                     Cyberware objSubsystem = new Cyberware(_objCharacter);
                                                     int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                                        GlobalOptions.InvariantCultureInfo, out int intSubSystemRating);
+                                                        GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                                     objSubsystem.Create(objXmlSubsystem, new Grade(_objCharacter, Improvement.ImprovementSource.Cyberware), Improvement.ImprovementSource.Cyberware,
                                                         intSubSystemRating, _lstWeapons, _objCharacter.Vehicles, false, true,
                                                         objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty);
@@ -565,7 +565,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objCachedSourceDetail == default)
                     _objCachedSourceDetail = new SourceString(Source,
-                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter);
                 return _objCachedSourceDetail;
             }
@@ -584,34 +584,34 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
-            objWriter.WriteElementString("handling", _intHandling.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("offroadhandling", _intOffroadHandling.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("accel", _intAccel.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("offroadaccel", _intOffroadAccel.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("speed", _intSpeed.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("offroadspeed", _intOffroadSpeed.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("pilot", _intPilot.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("body", _intBody.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("seats", _intSeats.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("armor", _intArmor.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("sensor", _intSensor.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("devicerating", Pilot.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("handling", _intHandling.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("offroadhandling", _intOffroadHandling.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("accel", _intAccel.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("offroadaccel", _intOffroadAccel.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("speed", _intSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("offroadspeed", _intOffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("pilot", _intPilot.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("body", _intBody.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("seats", _intSeats.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("armor", _intArmor.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("sensor", _intSensor.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("devicerating", Pilot.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("addslots", _intAddSlots.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("modslots", _intDroneModSlots.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("powertrainmodslots", _intAddPowertrainModSlots.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("protectionmodslots", _intAddProtectionModSlots.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("weaponmodslots", _intAddWeaponModSlots.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("bodymodslots", _intAddBodyModSlots.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("electromagneticmodslots", _intAddElectromagneticModSlots.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("cosmeticmodslots", _intAddCosmeticModSlots.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("addslots", _intAddSlots.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("modslots", _intDroneModSlots.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("powertrainmodslots", _intAddPowertrainModSlots.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("protectionmodslots", _intAddProtectionModSlots.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("weaponmodslots", _intAddWeaponModSlots.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("bodymodslots", _intAddBodyModSlots.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("electromagneticmodslots", _intAddElectromagneticModSlots.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("cosmeticmodslots", _intAddCosmeticModSlots.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("parentid", _strParentID);
-            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
@@ -634,7 +634,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
                 // <locations>
@@ -646,8 +646,8 @@ namespace Chummer.Backend.Equipment
                 // </locations>
                 objWriter.WriteEndElement();
             }
-            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("programlimit", _strProgramLimit);
             objWriter.WriteElementString("overclocked", _strOverclocked);
@@ -661,8 +661,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("moddataprocessing", _strModDataProcessing);
             objWriter.WriteElementString("modfirewall", _strModFirewall);
             objWriter.WriteElementString("modattributearray", _strModAttributeArray);
-            objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
 
             if (string.IsNullOrEmpty(ParentID))
                 _objCharacter.SourceProcess(_strSource);
@@ -685,7 +685,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Language);
+                XmlNode node = GetNode(GlobalSettings.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
@@ -713,16 +713,16 @@ namespace Chummer.Backend.Equipment
                 if (strTemp.Contains('/'))
                 {
                     string[] lstHandlings = strTemp.Split('/');
-                    int.TryParse(lstHandlings[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intHandling);
-                    int.TryParse(lstHandlings[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intOffroadHandling);
+                    int.TryParse(lstHandlings[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intHandling);
+                    int.TryParse(lstHandlings[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadHandling);
                 }
                 else
                 {
-                    int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intHandling);
+                    int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intHandling);
                     strTemp = objNode["offroadhandling"]?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intOffroadHandling);
+                        int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadHandling);
                     }
                 }
             }
@@ -732,16 +732,16 @@ namespace Chummer.Backend.Equipment
                 if (strTemp.Contains('/'))
                 {
                     string[] lstAccels = strTemp.Split('/');
-                    int.TryParse(lstAccels[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intAccel);
-                    int.TryParse(lstAccels[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intOffroadAccel);
+                    int.TryParse(lstAccels[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intAccel);
+                    int.TryParse(lstAccels[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadAccel);
                 }
                 else
                 {
-                    int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intAccel);
+                    int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intAccel);
                     strTemp = objNode["offroadaccel"]?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intOffroadAccel);
+                        int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadAccel);
                     }
                 }
             }
@@ -751,16 +751,16 @@ namespace Chummer.Backend.Equipment
                 if (strTemp.Contains('/'))
                 {
                     string[] lstSpeeds = strTemp.Split('/');
-                    int.TryParse(lstSpeeds[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intSpeed);
-                    int.TryParse(lstSpeeds[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intOffroadSpeed);
+                    int.TryParse(lstSpeeds[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intSpeed);
+                    int.TryParse(lstSpeeds[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadSpeed);
                 }
                 else
                 {
-                    int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intSpeed);
+                    int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intSpeed);
                     strTemp = objNode["offroadspeed"]?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        int.TryParse(strTemp, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intOffroadSpeed);
+                        int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intOffroadSpeed);
                     }
                 }
             }
@@ -1044,8 +1044,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("seats", TotalSeats.ToString(objCulture));
             objWriter.WriteElementString("sensor", CalculatedSensor.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
@@ -1060,10 +1060,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
             objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
             objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
 
@@ -1081,7 +1081,7 @@ namespace Chummer.Backend.Equipment
             foreach (Weapon objWeapon in Weapons)
                 objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
-            if (GlobalOptions.PrintNotes)
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
@@ -1093,7 +1093,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -1103,7 +1103,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Name.
@@ -1119,7 +1119,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayCategory(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
             return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
@@ -1218,7 +1218,7 @@ namespace Chummer.Backend.Equipment
                         // Set the Vehicle's Pilot to the Modification's bonus.
                         if (!string.IsNullOrEmpty(strBonusPilot))
                         {
-                            if (int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intTest)
+                            if (int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTest)
                                 && intTest > intReturn)
                                 intReturn = intTest;
                         }
@@ -1227,7 +1227,7 @@ namespace Chummer.Backend.Equipment
                             strBonusPilot = objMod.WirelessBonus?["pilot"]?.InnerText;
                             if (!string.IsNullOrEmpty(strBonusPilot))
                             {
-                                if (int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intTest)
+                                if (int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTest)
                                     && intTest > intReturn)
                                     intReturn = intTest;
                             }
@@ -1364,7 +1364,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -1408,7 +1408,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
+        public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
         /// Calculated Availability of the Vehicle.
@@ -1441,8 +1441,8 @@ namespace Chummer.Backend.Equipment
 
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                 {
-                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
                 }
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
@@ -1534,7 +1534,7 @@ namespace Chummer.Backend.Equipment
                     if (!objMod.IncludedInVehicle && objMod.Equipped)
                     {
                         string strSensor = objMod.Bonus?["sensor"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSensor) && int.TryParse(strSensor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).FastEscape('+'), out int intTemp))
+                        if (!string.IsNullOrEmpty(strSensor) && int.TryParse(strSensor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).FastEscape('+'), out int intTemp))
                         {
                             intSensor = Math.Max(intTemp, intSensor);
                         }
@@ -1542,7 +1542,7 @@ namespace Chummer.Backend.Equipment
                         if (objMod.WirelessOn)
                         {
                             strSensor = objMod.WirelessBonus?["sensor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strSensor) && int.TryParse(strSensor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).FastEscape('+'), out int intTemp2))
+                            if (!string.IsNullOrEmpty(strSensor) && int.TryParse(strSensor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).FastEscape('+'), out int intTemp2))
                             {
                                 intSensor = Math.Max(intTemp2, intSensor);
                             }
@@ -1592,7 +1592,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -1601,7 +1601,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Display name.
         /// </summary>
-        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>
         /// Display name.
@@ -1885,17 +1885,17 @@ namespace Chummer.Backend.Equipment
                 // Keeping enumerations separate reduces heap allocations
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                 {
-                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
                 }
                 foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
                 {
-                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    objCost.CheapReplace(strCost, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
                 }
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
-                decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
+                decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
 
                 if (DiscountCost)
                     decCost *= 0.9m;
@@ -1927,7 +1927,7 @@ namespace Chummer.Backend.Equipment
                         chrFirstCharacter = strBonusSeats[0];
                         if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                         {
-                            intTotalSeats = Math.Max(Convert.ToInt32(strBonusSeats.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo), intTotalSeats);
+                            intTotalSeats = Math.Max(Convert.ToInt32(strBonusSeats.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo), intTotalSeats);
                         }
                     }
                 }
@@ -1945,7 +1945,7 @@ namespace Chummer.Backend.Equipment
                         if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                         {
                             // If the bonus is determined by the existing seat number, evaluate the expression.
-                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                             if (blnIsSuccess)
                                 intTotalBonusSeats += ((double)objProcess).StandardRound();
                         }
@@ -1960,7 +1960,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing seat number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusSeats += ((double)objProcess).StandardRound();
                             }
@@ -1997,7 +1997,7 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strSpeed[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intTotalSpeed = Math.Max(intTotalSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intTotalSpeed = Math.Max(intTotalSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
                         strSpeed = objMod.Bonus["offroadspeed"]?.InnerText;
@@ -2006,15 +2006,15 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strSpeed[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
-                        if (IsDrone && _objCharacter.Options.DroneMods)
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
                         {
                             string strArmor = objMod.Bonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
                             {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -2026,7 +2026,7 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strSpeed[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intTotalSpeed = Math.Max(intTotalSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intTotalSpeed = Math.Max(intTotalSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
                         strSpeed = objMod.WirelessBonus["offroadspeed"]?.InnerText;
@@ -2035,15 +2035,15 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strSpeed[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
-                        if (IsDrone && _objCharacter.Options.DroneMods)
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
                         {
                             string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
                             {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -2065,7 +2065,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusSpeed += ((double)objProcess).StandardRound();
                             }
@@ -2077,7 +2077,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusOffroadSpeed += ((double)objProcess).StandardRound();
                             }
@@ -2092,7 +2092,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusSpeed += ((double)objProcess).StandardRound();
                             }
@@ -2104,7 +2104,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusOffroadSpeed += ((double)objProcess).StandardRound();
                             }
@@ -2117,10 +2117,10 @@ namespace Chummer.Backend.Equipment
 
                 if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed != intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
                 {
-                    return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo) + '/' + (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
+                    return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalSettings.InvariantCultureInfo) + '/' + (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
                 }
 
-                return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
+                return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -2149,7 +2149,7 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strAccel[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intTotalAccel = Math.Max(intTotalAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intTotalAccel = Math.Max(intTotalAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
                         strAccel = objMod.Bonus["offroadaccel"]?.InnerText;
@@ -2158,15 +2158,15 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strAccel[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
-                        if (IsDrone && _objCharacter.Options.DroneMods)
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
                         {
                             string strArmor = objMod.Bonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
                             {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -2178,7 +2178,7 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strAccel[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intTotalAccel = Math.Max(intTotalAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intTotalAccel = Math.Max(intTotalAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
                         strAccel = objMod.WirelessBonus["offroadaccel"]?.InnerText;
@@ -2187,15 +2187,15 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strAccel[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
-                        if (IsDrone && _objCharacter.Options.DroneMods)
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
                         {
                             string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
                             {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -2217,7 +2217,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Accel", intTotalAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Accel", intTotalAccel.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusAccel += ((double)objProcess).StandardRound();
                             }
@@ -2229,7 +2229,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadAccel", intBaseOffroadAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadAccel", intBaseOffroadAccel.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusOffroadAccel += ((double)objProcess).StandardRound();
                             }
@@ -2244,7 +2244,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Accel", intTotalAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Accel", intTotalAccel.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusAccel += ((double)objProcess).StandardRound();
                             }
@@ -2256,7 +2256,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadAccel", intBaseOffroadAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadAccel", intBaseOffroadAccel.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusOffroadAccel += ((double)objProcess).StandardRound();
                             }
@@ -2269,10 +2269,10 @@ namespace Chummer.Backend.Equipment
 
                 if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel != intBaseOffroadAccel + intTotalBonusOffroadAccel)
                 {
-                    return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo) + '/' + (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
+                    return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalSettings.InvariantCultureInfo) + '/' + (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
                 }
 
-                return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
+                return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -2297,13 +2297,13 @@ namespace Chummer.Backend.Equipment
                         if (strBodyElement.Contains("Rating"))
                         {
                             // If the cost is determined by the Rating, evaluate the expression.
-                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                             if (blnIsSuccess)
                                 intBody += ((double)objProcess).StandardRound();
                         }
                         else
                         {
-                            intBody += Convert.ToInt32(strBodyElement, GlobalOptions.InvariantCultureInfo);
+                            intBody += Convert.ToInt32(strBodyElement, GlobalSettings.InvariantCultureInfo);
                         }
                     }
                     if (objMod.WirelessOn)
@@ -2315,13 +2315,13 @@ namespace Chummer.Backend.Equipment
                             if (strBodyElement.Contains("Rating"))
                             {
                                 // If the cost is determined by the Rating, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intBody += ((double)objProcess).StandardRound();
                             }
                             else
                             {
-                                intBody += Convert.ToInt32(strBodyElement.TrimStart('+'), GlobalOptions.InvariantCultureInfo);
+                                intBody += Convert.ToInt32(strBodyElement.TrimStart('+'), GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -2356,7 +2356,7 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strHandling[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseHandling = Math.Max(intBaseHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseHandling = Math.Max(intBaseHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
                         strHandling = objMod.Bonus["offroadhandling"]?.InnerText;
@@ -2365,15 +2365,15 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strHandling[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
-                        if (IsDrone && _objCharacter.Options.DroneMods)
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
                         {
                             string strArmor = objMod.Bonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
                             {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -2385,7 +2385,7 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strHandling[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseHandling = Math.Max(intBaseHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseHandling = Math.Max(intBaseHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
                         strHandling = objMod.WirelessBonus["offroadhandling"]?.InnerText;
@@ -2394,15 +2394,15 @@ namespace Chummer.Backend.Equipment
                             chrFirstCharacter = strHandling[0];
                             if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
                             {
-                                intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo));
+                                intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
                             }
                         }
-                        if (IsDrone && _objCharacter.Options.DroneMods)
+                        if (IsDrone && _objCharacter.Settings.DroneMods)
                         {
                             string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
                             if (!string.IsNullOrEmpty(strArmor))
                             {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -2424,7 +2424,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Handling", intBaseHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Handling", intBaseHandling.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusHandling += ((double)objProcess).StandardRound();
                             }
@@ -2436,7 +2436,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadHandling", intBaseOffroadHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadHandling", intBaseOffroadHandling.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusOffroadHandling += ((double)objProcess).StandardRound();
                             }
@@ -2451,7 +2451,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Handling", intBaseHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Handling", intBaseHandling.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusHandling += ((double)objProcess).StandardRound();
                             }
@@ -2463,7 +2463,7 @@ namespace Chummer.Backend.Equipment
                             if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
                             {
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadHandling", intBaseOffroadHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadHandling", intBaseOffroadHandling.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
                                     intTotalBonusOffroadHandling += ((double)objProcess).StandardRound();
                             }
@@ -2477,12 +2477,12 @@ namespace Chummer.Backend.Equipment
                 if (Handling != OffroadHandling
                     || intBaseHandling + intTotalBonusHandling != intBaseOffroadHandling + intTotalBonusOffroadHandling)
                 {
-                    return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo)
+                    return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalSettings.InvariantCultureInfo)
                            + '/'
-                           + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
+                           + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
                 }
 
-                return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
+                return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -2503,19 +2503,19 @@ namespace Chummer.Backend.Equipment
                     string strArmor = objMod.Bonus?["armor"]?.InnerText;
                     if (!string.IsNullOrEmpty(strArmor))
                     {
-                        intModArmor += Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                        intModArmor += Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                     }
                     if (objMod.WirelessOn)
                     {
                         strArmor = objMod.WirelessBonus?["armor"]?.InnerText;
                         if (!string.IsNullOrEmpty(strArmor))
                         {
-                            intModArmor += Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                            intModArmor += Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                         }
                     }
                 }
                 // Rigger5 Drone Armor starts at 0. All other vehicles start with their base armor.
-                if (IsDrone && _objCharacter.Options.DroneMods)
+                if (IsDrone && _objCharacter.Settings.DroneMods)
                 {
                     if (intModArmor <= 0)
                         intModArmor += _intArmor;
@@ -2543,9 +2543,9 @@ namespace Chummer.Backend.Equipment
                 // Rigger 5 says max extra armor is Body + starting Armor, p159
                 int intReturn = _intBody + _intArmor;
 
-                if (IsDrone && _objCharacter.Options.DroneArmorMultiplierEnabled)
+                if (IsDrone && _objCharacter.Settings.DroneArmorMultiplierEnabled)
                 {
-                    intReturn *= _objCharacter.Options.DroneArmorMultiplier;
+                    intReturn *= _objCharacter.Settings.DroneArmorMultiplier;
                 }
 
                 //When you need to use a 0 for the math, use 0.5 instead
@@ -2630,7 +2630,7 @@ namespace Chummer.Backend.Equipment
             {
                 //Drone’s attributes can never by higher than twice their starting value (R5, p123)
                 //When you need to use a 0 for the math, use 0.5 instead
-                if (IsDrone && !_objCharacter.IgnoreRules && _objCharacter.Options.DroneModsMaximumPilot)
+                if (IsDrone && !_objCharacter.IgnoreRules && _objCharacter.Settings.DroneModsMaximumPilot)
                 {
                     return Math.Max(_intPilot * 2, 1);
                 }
@@ -2657,7 +2657,7 @@ namespace Chummer.Backend.Equipment
         public string PowertrainModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddPowertrainModSlots;
-            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - PowertrainModSlots + intModSlots, intTotal);
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - PowertrainModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2689,7 +2689,7 @@ namespace Chummer.Backend.Equipment
         public string ProtectionModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddProtectionModSlots;
-            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - ProtectionModSlots + intModSlots, intTotal);
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - ProtectionModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2720,7 +2720,7 @@ namespace Chummer.Backend.Equipment
         public string WeaponModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddWeaponModSlots;
-            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - WeaponModSlots + intModSlots, intTotal);
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - WeaponModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2761,7 +2761,7 @@ namespace Chummer.Backend.Equipment
         public string BodyModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddBodyModSlots;
-            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - BodyModSlots + intModSlots, intTotal);
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - BodyModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2793,7 +2793,7 @@ namespace Chummer.Backend.Equipment
         public string ElectromagneticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddElectromagneticModSlots;
-            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - ElectromagneticModSlots + intModSlots, intTotal);
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - ElectromagneticModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2848,7 +2848,7 @@ namespace Chummer.Backend.Equipment
         public string CosmeticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddCosmeticModSlots;
-            return string.Format(GlobalOptions.CultureInfo, "{0}/{1}", intTotal - CosmeticModSlots + intModSlots, intTotal);
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CosmeticModSlots + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2868,17 +2868,17 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Language);
+            return GetNode(GlobalSettings.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
                 .SelectSingleNode(SourceID == Guid.Empty
                     ? "/chummer/vehicles/vehicle[name = " + Name.CleanXPath() + ']'
-                    : string.Format(GlobalOptions.InvariantCultureInfo,
+                    : string.Format(GlobalSettings.InvariantCultureInfo,
                         "/chummer/vehicles/vehicle[id = {0} or id = {1}]",
                         SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
             _strCachedXmlNodeLanguage = strLanguage;
@@ -3025,14 +3025,14 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strBonusBoxes))
                     {
                         // Add the Modification's Device Rating to the Vehicle's base Device Rating.
-                        intReturn += Convert.ToInt32(strBonusBoxes, GlobalOptions.InvariantCultureInfo);
+                        intReturn += Convert.ToInt32(strBonusBoxes, GlobalSettings.InvariantCultureInfo);
                     }
                     if (objMod.WirelessOn)
                     {
                         strBonusBoxes = objMod.WirelessBonus?["matrixcmbonus"]?.InnerText;
                         if (!string.IsNullOrEmpty(strBonusBoxes))
                         {
-                            intReturn += Convert.ToInt32(strBonusBoxes, GlobalOptions.InvariantCultureInfo);
+                            intReturn += Convert.ToInt32(strBonusBoxes, GlobalSettings.InvariantCultureInfo);
                         }
                     }
                 }
@@ -3172,7 +3172,7 @@ namespace Chummer.Backend.Equipment
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
-                    if (intAvailInt > _objCharacter.Options.MaximumAvailability)
+                    if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
                     {
                         if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                         {
@@ -3182,7 +3182,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalSettings.Language);
                         }
                     }
                 }
@@ -3227,7 +3227,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsCyberwareGear">ContextMenuStrip for Gear in Cyberware.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear)
         {
-            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode
@@ -3514,7 +3514,7 @@ namespace Chummer.Backend.Equipment
                 // Update the name of the item in the TreeView.
                 TreeNode objNode = treVehicles.FindNode(objCurrentSensor.InternalId);
                 if (objNode != null)
-                    objNode.Text = objCurrentSensor.DisplayNameShort(GlobalOptions.Language);
+                    objNode.Text = objCurrentSensor.DisplayNameShort(GlobalSettings.Language);
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
@@ -3566,7 +3566,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             objValue.Replace("{Children " + strMatrixAttribute + "}",
-                                intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
+                                intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
                         }
                     }
                 }
@@ -3577,7 +3577,7 @@ namespace Chummer.Backend.Equipment
                 return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
-            return !int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
+            return !int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
         }
 
         public int GetBonusMatrixAttribute(string strAttributeName)
@@ -3609,12 +3609,12 @@ namespace Chummer.Backend.Equipment
                     XmlNode objBonus = objMod.Bonus?[strAttributeNodeName];
                     if (objBonus != null)
                     {
-                        intReturn += Convert.ToInt32(objBonus.InnerText, GlobalOptions.InvariantCultureInfo);
+                        intReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
                     }
                     objBonus = objMod.WirelessOn ? objMod.WirelessBonus?[strAttributeNodeName] : null;
                     if (objBonus != null)
                     {
-                        intReturn += Convert.ToInt32(objBonus.InnerText, GlobalOptions.InvariantCultureInfo);
+                        intReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
                     }
                 }
             }
@@ -3646,20 +3646,20 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
-            if (!Remove(GlobalOptions.ConfirmDelete))
+            if (!Remove(GlobalSettings.ConfirmDelete))
                 return;
 
             // Create the Expense Log Entry for the sale.
             decimal decAmount = TotalCost * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
         }
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
@@ -3668,14 +3668,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                switch (GlobalOptions.ClipboardContentType)
+                switch (GlobalSettings.ClipboardContentType)
                 {
                     case ClipboardContentType.Gear:
                         {
                             var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
                             if (xmlAddonCategoryList?.Count > 0)
                                 return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                    xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
+                                    xmlCategory.InnerText == GlobalSettings.Clipboard.SelectSingleNode("category")?.Value);
 
                             return false;
                         }

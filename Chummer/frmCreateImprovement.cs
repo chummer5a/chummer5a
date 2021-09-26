@@ -226,7 +226,7 @@ namespace Chummer
                             lstAbbrevs.Remove("MAG");
                             lstAbbrevs.Remove("MAGAdept");
                         }
-                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Settings.MysAdeptSecondMAGAttribute)
                             lstAbbrevs.Remove("MAGAdept");
 
                         if (!_objCharacter.RESEnabled)
@@ -318,7 +318,7 @@ namespace Chummer
                             lstAbbrevs.Remove("MAG");
                             lstAbbrevs.Remove("MAGAdept");
                         }
-                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Settings.MysAdeptSecondMAGAttribute)
                             lstAbbrevs.Remove("MAGAdept");
 
                         if (!_objCharacter.RESEnabled)
@@ -584,11 +584,11 @@ namespace Chummer
                         }
                         // ReSharper disable once PossibleNullReferenceException
                         string strXml = objFetchNode["xml"].InnerText
-                            .Replace("{val}", nudVal.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                            .Replace("{min}", nudMin.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                            .Replace("{max}", nudMax.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                            .Replace("{aug}", nudAug.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                            .Replace("{free}", chkFree.Checked.ToString(GlobalOptions.InvariantCultureInfo).ToLowerInvariant())
+                            .Replace("{val}", nudVal.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("{min}", nudMin.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("{max}", nudMax.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("{aug}", nudAug.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                            .Replace("{free}", chkFree.Checked.ToString(GlobalSettings.InvariantCultureInfo).ToLowerInvariant())
                             .Replace("{select}", txtSelect.Text)
                             .Replace("{applytorating}", strRating);
                         objWriter.WriteRaw(strXml);
@@ -604,7 +604,7 @@ namespace Chummer
                         objStream.Position = 0;
 
                         // Read it back in as an XmlDocument.
-                        using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                        using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                             objBonusXml.Load(objXmlReader);
                     }
                 }
@@ -614,7 +614,7 @@ namespace Chummer
             XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");
 
             // Pass it to the Improvement Manager so that it can be added to the character.
-            string strGuid = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo);
+            string strGuid = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, 1, txtName.Text);
 
             // If an Improvement was passed in, remove it from the character.

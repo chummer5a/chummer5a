@@ -89,8 +89,8 @@ namespace Chummer
 
                 string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                    GlobalOptions.CultureInfo, _objCharacter);
+                SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                    GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);
                 lblPowerPointsLabel.Visible = !string.IsNullOrEmpty(lblPowerPoints.Text);
@@ -207,7 +207,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 StringBuilder sbdFilter = new StringBuilder();
@@ -226,13 +226,13 @@ namespace Chummer
             List<ListItem> lstPower = new List<ListItem>();
             foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
             {
-                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.InvariantCultureInfo);
+                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalSettings.InvariantCultureInfo);
                 string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
                 string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 if (!string.IsNullOrEmpty(strExtraPointCost) && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
-                    decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
+                    decPoints += Convert.ToDecimal(strExtraPointCost, GlobalSettings.InvariantCultureInfo);
                 }
                 if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
                 {

@@ -35,7 +35,7 @@ namespace Chummer
         public frmAddToken(InitiativeUserControl init)
         {
             InitializeComponent();
-            //LanguageManager.Load(GlobalOptions.Language, this);
+            //LanguageManager.Load(GlobalSettings.Language, this);
             CenterToParent();
             parentControl = init;
         }
@@ -129,7 +129,7 @@ namespace Chummer
                 int intInitRoll = intInitPasses;
                 for (int j = 0; j < intInitPasses; ++j)
                 {
-                    intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intInitRoll += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                 }
                 _character.InitRoll = intInitRoll + _character.InitialInit;
             }

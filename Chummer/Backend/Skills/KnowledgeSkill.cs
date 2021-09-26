@@ -34,7 +34,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (GlobalOptions.LiveCustomData || _dicCategoriesSkillMap == null)
+                if (GlobalSettings.LiveCustomData || _dicCategoriesSkillMap == null)
                 {
                     Dictionary<string, string> dicReturn = new Dictionary<string, string>();
                     foreach (XPathNavigator objXmlSkill in CharacterObject.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill"))
@@ -55,8 +55,8 @@ namespace Chummer.Backend.Skills
         {
             List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
-            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
+                strLanguage = GlobalSettings.Language;
+            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage);
             foreach (XPathNavigator xmlSkill in xmlSkillsDocument.Select("/chummer/knowledgeskills/skill"))
             {
                 string strName = xmlSkill.SelectSingleNode("name")?.Value ?? string.Empty;
@@ -76,8 +76,8 @@ namespace Chummer.Backend.Skills
         {
             List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
-            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
+                strLanguage = GlobalSettings.Language;
+            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage);
             foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.Select("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 string strInnerText = objXmlCategory.Value;
@@ -173,7 +173,7 @@ namespace Chummer.Backend.Skills
 
         private string GetSkillNameFromData(string strInputSkillName)
         {
-            if (GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 return strInputSkillName;
             }
@@ -182,7 +182,7 @@ namespace Chummer.Backend.Skills
 
             if (xmlSkillTranslationNode == null)
             {
-                return CharacterObject.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Language, "skills.xml");
+                return CharacterObject.ReverseTranslateExtra(strInputSkillName, GlobalSettings.Language, "skills.xml");
             }
 
             return xmlSkillTranslationNode.SelectSingleNode("name")?.Value ?? strInputSkillName;
@@ -311,10 +311,10 @@ namespace Chummer.Backend.Skills
                 decCost -= intLower * (intLower + 1);
 
                 decCost /= 2;
-                decCost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
+                decCost *= CharacterObject.Settings.KarmaImproveKnowledgeSkill;
                 // We have bought the first level with karma, too
                 if (intLower == 0 && decCost > 0)
-                    decCost += CharacterObject.Options.KarmaNewKnowledgeSkill - CharacterObject.Options.KarmaImproveKnowledgeSkill;
+                    decCost += CharacterObject.Settings.KarmaNewKnowledgeSkill - CharacterObject.Settings.KarmaImproveKnowledgeSkill;
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
@@ -324,7 +324,7 @@ namespace Chummer.Backend.Skills
                     if (!objSpec.Free && BuyWithKarma)
                         intSpecCount += 1;
                 }
-                decimal decSpecCost = CharacterObject.Options.KarmaKnowledgeSpecialization * intSpecCount;
+                decimal decSpecCost = CharacterObject.Settings.KarmaKnowledgeSpecialization * intSpecCount;
                 decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
@@ -397,12 +397,12 @@ namespace Chummer.Backend.Skills
                 int intValue;
                 if (intTotalBaseRating == 0)
                 {
-                    intOptionsCost = CharacterObject.Options.KarmaNewKnowledgeSkill;
+                    intOptionsCost = CharacterObject.Settings.KarmaNewKnowledgeSkill;
                     intValue = intOptionsCost;
                 }
                 else
                 {
-                    intOptionsCost = CharacterObject.Options.KarmaNewKnowledgeSkill;
+                    intOptionsCost = CharacterObject.Settings.KarmaNewKnowledgeSkill;
                     intValue = (intTotalBaseRating + 1) * intOptionsCost;
                 }
 
@@ -515,7 +515,7 @@ namespace Chummer.Backend.Skills
         public override void WriteToDerived(XmlTextWriter objWriter)
         {
             objWriter.WriteElementString("type", Type);
-            objWriter.WriteElementString("isnativelanguage", IsNativeLanguage.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isnativelanguage", IsNativeLanguage.ToString(GlobalSettings.InvariantCultureInfo));
             if (ForcedName)
                 objWriter.WriteElementString("forced", null);
         }

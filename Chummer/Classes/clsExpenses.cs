@@ -160,7 +160,7 @@ namespace Chummer
             objWriter.WriteElementString("karmatype", KarmaType.ToString());
             objWriter.WriteElementString("nuyentype", NuyenType.ToString());
             objWriter.WriteElementString("objectid", _strObjectId);
-            objWriter.WriteElementString("qty", _decQty.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("qty", _decQty.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteEndElement();
         }
@@ -297,13 +297,13 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("expense");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("date", _datDate.ToString("s", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("amount", _decAmount.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());
-            objWriter.WriteElementString("refund", _blnRefund.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("forcecareervisible", _blnForceCareerVisible.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("refund", _blnRefund.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("forcecareervisible", _blnForceCareerVisible.ToString(GlobalSettings.InvariantCultureInfo));
             Undo?.Save(objWriter);
             objWriter.WriteEndElement();
         }
@@ -317,7 +317,7 @@ namespace Chummer
             if (objNode == null)
                 return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
+            DateTime.TryParse(objNode["date"]?.InnerText, GlobalSettings.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
                 _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund") + ')').Replace("🡒", "->");
@@ -343,15 +343,15 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            if (Amount != 0 || GlobalOptions.PrintFreeExpenses)
+            if (Amount != 0 || GlobalSettings.PrintFreeExpenses)
             {
                 objWriter.WriteStartElement("expense");
                 objWriter.WriteElementString("guid", InternalId);
                 objWriter.WriteElementString("date", Date.ToString(objCulture));
-                objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", objCulture));
+                objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture));
                 objWriter.WriteElementString("reason", DisplayReason(strLanguageToPrint));
                 objWriter.WriteElementString("type", Type.ToString());
-                objWriter.WriteElementString("refund", Refund.ToString(GlobalOptions.InvariantCultureInfo));
+                objWriter.WriteElementString("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteEndElement();
             }
         }
@@ -363,7 +363,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Expense Log Entry.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Date the Expense Log Entry was made.

@@ -210,28 +210,28 @@ namespace Chummer
 
             cboAttack.Enabled = false;
             cboAttack.BindingContext = new BindingContext();
-            cboAttack.DataSource = new List<string>(4) { (intBaseAttack + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboAttack.DataSource = new List<string>(4) { (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo) };
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
             cboAttack.Enabled = objThis.CanSwapAttributes;
 
             cboSleaze.Enabled = false;
             cboSleaze.BindingContext = new BindingContext();
-            cboSleaze.DataSource = new List<string>(4) { (intBaseAttack + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboSleaze.DataSource = new List<string>(4) { (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo) };
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
             cboSleaze.Enabled = objThis.CanSwapAttributes;
 
             cboDataProcessing.Enabled = false;
             cboDataProcessing.BindingContext = new BindingContext();
-            cboDataProcessing.DataSource = new List<string>(4) { (intBaseAttack + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboDataProcessing.DataSource = new List<string>(4) { (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo) };
             cboDataProcessing.SelectedIndex = 2;
             cboDataProcessing.Visible = true;
             cboDataProcessing.Enabled = objThis.CanSwapAttributes;
 
             cboFirewall.Enabled = false;
             cboFirewall.BindingContext = new BindingContext();
-            cboFirewall.DataSource = new List<string>(4) { (intBaseAttack + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboFirewall.DataSource = new List<string>(4) { (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo) };
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
             cboFirewall.Enabled = objThis.CanSwapAttributes;

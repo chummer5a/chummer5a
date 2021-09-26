@@ -64,9 +64,9 @@ namespace Chummer
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
-                             + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
-                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
+            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' + strSpace + '×'
+                             + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(_objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
+                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo);
         }
 
         private void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
@@ -76,7 +76,7 @@ namespace Chummer
             if (cboSelectLifestyle.SelectedIndex < 0)
                 return;
             _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
-            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle?.Dice ?? 0);
+            lblDice.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle?.Dice ?? 0);
             RefreshCalculation();
         }
 
@@ -153,7 +153,7 @@ namespace Chummer
                 int intResult = 0;
                 for (int i = 0; i < SelectedLifestyle.Dice; ++i)
                 {
-                    intResult += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intResult += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                 }
                 nudDiceResult.ValueAsInt = intResult;
             }

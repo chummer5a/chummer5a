@@ -6979,6 +6979,7 @@
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
       <requireammo>False</requireammo>
+      <allowaccessory>True</allowaccessory>
     </weapon>
     <weapon>
       <id>63dcfdb6-bbd9-4a58-bbf4-cd35f7614fdc</id>
@@ -12428,6 +12429,7 @@
       <cost>0</cost>
       <source>SL</source>
       <page>23</page>
+	  <hide />
     </weapon>
     <weapon>
       <id>884d8ed3-3e21-4bf6-b0e5-2197b3d8bc5f</id>
@@ -16202,6 +16204,17 @@
           </OR>
         </weapondetails>
       </forbidden>
+      <hide />
+      <rating>0</rating>
+    </accessory>
+    <accessory>
+      <id>5D5D9FC6-9CB9-40A4-8185-891E29DAECC5</id>
+      <name>External Clip Port</name>
+      <mount />
+      <avail>-</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>458</page>
       <hide />
       <rating>0</rating>
     </accessory>

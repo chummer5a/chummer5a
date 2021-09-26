@@ -95,7 +95,7 @@ namespace Chummer.Backend.Attributes
                 if (_objCharacter.MAGEnabled)
                 {
                     _colAttributes.Add(_objCharacter.MAG);
-                    if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                         _colAttributes.Add(_objCharacter.MAGAdept);
                 }
                 if (_objCharacter.RESEnabled)
@@ -389,7 +389,7 @@ namespace Chummer.Backend.Attributes
                     _objCharacter.MAG.Base = Math.Min(intOldMAGBase, _objCharacter.MAG.PriorityMaximum);
                     _objCharacter.MAG.Karma = Math.Min(intOldMAGKarma, _objCharacter.MAG.KarmaMaximum);
                     Attributes.Add(_objCharacter.MAG);
-                    if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                     {
                         _objCharacter.MAGAdept.Base = Math.Min(intOldMAGAdeptBase, _objCharacter.MAGAdept.PriorityMaximum);
                         _objCharacter.MAGAdept.Karma = Math.Min(intOldMAGAdeptKarma, _objCharacter.MAGAdept.KarmaMaximum);
@@ -761,7 +761,7 @@ namespace Chummer.Backend.Attributes
                 }
                 else
                 {
-                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = " + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
+                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = " + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
                     objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
             }
@@ -812,13 +812,13 @@ namespace Chummer.Backend.Attributes
             if (node != null)
             {
                 int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
-                    GlobalOptions.InvariantCultureInfo, out int intDummy);
+                    GlobalSettings.InvariantCultureInfo, out int intDummy);
                 objTarget.MetatypeMinimum = intDummy;
                 int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
-                    GlobalOptions.InvariantCultureInfo, out intDummy);
+                    GlobalSettings.InvariantCultureInfo, out intDummy);
                 objTarget.MetatypeMaximum = Math.Max(intDummy, objTarget.MetatypeMinimum);
                 int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
-                    GlobalOptions.InvariantCultureInfo, out intDummy);
+                    GlobalSettings.InvariantCultureInfo, out intDummy);
                 objTarget.MetatypeAugmentedMaximum = Math.Max(intDummy, objTarget.MetatypeMaximum);
             }
 
@@ -836,13 +836,13 @@ namespace Chummer.Backend.Attributes
                 strReturn = strReturn
                     .CheapReplace('{' + strCharAttributeName + '}', () => (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
                             ? dicValueOverrides[strCharAttributeName]
-                            : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalOptions.InvariantCultureInfo))
+                            : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalSettings.InvariantCultureInfo))
                     .CheapReplace('{' + strCharAttributeName + "Unaug}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
                         ? dicValueOverrides[strCharAttributeName + "Unaug"]
-                        : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalOptions.InvariantCultureInfo))
+                        : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalSettings.InvariantCultureInfo))
                     .CheapReplace('{' + strCharAttributeName + "Base}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                         ? dicValueOverrides[strCharAttributeName + "Base"]
-                        : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalOptions.InvariantCultureInfo));
+                        : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalSettings.InvariantCultureInfo));
             }
             return strReturn;
         }
@@ -857,13 +857,13 @@ namespace Chummer.Backend.Attributes
             {
                 sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () => (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
                     ? dicValueOverrides[strCharAttributeName]
-                    : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalOptions.InvariantCultureInfo));
+                    : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalSettings.InvariantCultureInfo));
                 sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
                     ? dicValueOverrides[strCharAttributeName + "Unaug"]
-                    : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalOptions.InvariantCultureInfo));
+                    : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalSettings.InvariantCultureInfo));
                 sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                     ? dicValueOverrides[strCharAttributeName + "Base"]
-                    : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalOptions.InvariantCultureInfo));
+                    : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalSettings.InvariantCultureInfo));
             }
         }
 
@@ -872,9 +872,9 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             if (objCultureInfo == null)
-                objCultureInfo = GlobalOptions.CultureInfo;
+                objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
+                strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             string strReturn = strInput;
             foreach (string strCharAttributeName in AttributeStrings)
@@ -919,9 +919,9 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
             if (objCultureInfo == null)
-                objCultureInfo = GlobalOptions.CultureInfo;
+                objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
+                strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             foreach (string strCharAttributeName in AttributeStrings)
             {

@@ -113,7 +113,7 @@ namespace Chummer.UI.Shared
         {
             if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove(GlobalOptions.ConfirmDelete))
+            if (!selectedObject.Remove(GlobalSettings.ConfirmDelete))
                 return;
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
@@ -236,7 +236,7 @@ namespace Chummer.UI.Shared
                         string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space");
                         if (objImprovement.Value > 0)
                             strName += '+';
-                        strName += objImprovement.Value.ToString(GlobalOptions.CultureInfo);
+                        strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
                             strName += ',' + LanguageManager.GetString("String_Space") + objImprovement.Condition;
                         if (!objParentNode.Nodes.ContainsKey(strName))

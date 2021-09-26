@@ -38,7 +38,7 @@ namespace Chummer
         public frmSelectWeaponCategory(Character objCharacter)
         {
             _objXmlDocument =
-                XmlManager.LoadXPath("weapons.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
+                XmlManager.LoadXPath("weapons.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
