@@ -28,7 +28,7 @@ namespace Chummer
     /// <summary>
     /// A Focus.
     /// </summary>
-    [DebuggerDisplay("{GearObject?.DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{GearObject?.DisplayName(GlobalSettings.DefaultLanguage)}")]
     public class Focus : IHasInternalId
     {
         private Guid _guiID;
@@ -52,7 +52,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("focus");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("gearid", GearObject?.InternalId);
             objWriter.WriteEndElement();
         }
@@ -83,7 +83,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Focus in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Foci's name.
@@ -120,71 +120,71 @@ namespace Chummer
             if (intPosition > -1)
                 strFocusName = strFocusName.Substring(0, intPosition);
             decimal decKarmaMultiplier = 1;
-            CharacterOptions characterObjectOptions = GearObject.CharacterObject.Options;
+            CharacterSettings characterObjectSettings = GearObject.CharacterObject.Settings;
             switch (strFocusName)
             {
                 case "Qi Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaQiFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaQiFocus;
                     break;
 
                 case "Sustaining Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaSustainingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaSustainingFocus;
                     break;
 
                 case "Counterspelling Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaCounterspellingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaCounterspellingFocus;
                     break;
 
                 case "Banishing Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaBanishingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaBanishingFocus;
                     break;
 
                 case "Binding Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaBindingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaBindingFocus;
                     break;
 
                 case "Weapon Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaWeaponFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaWeaponFocus;
                     break;
 
                 case "Spellcasting Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaSpellcastingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaSpellcastingFocus;
                     break;
 
                 case "Ritual Spellcasting Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaRitualSpellcastingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaRitualSpellcastingFocus;
                     break;
 
                 case "Spell Shaping Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaSpellShapingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaSpellShapingFocus;
                     break;
 
                 case "Summoning Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaSummoningFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaSummoningFocus;
                     break;
 
                 case "Alchemical Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaAlchemicalFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaAlchemicalFocus;
                     break;
 
                 case "Centering Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaCenteringFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaCenteringFocus;
                     break;
 
                 case "Masking Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaMaskingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaMaskingFocus;
                     break;
 
                 case "Disenchanting Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaDisenchantingFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaDisenchantingFocus;
                     break;
 
                 case "Power Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaPowerFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaPowerFocus;
                     break;
 
                 case "Flexible Signature Focus":
-                    decKarmaMultiplier = characterObjectOptions.KarmaFlexibleSignatureFocus;
+                    decKarmaMultiplier = characterObjectSettings.KarmaFlexibleSignatureFocus;
                     break;
             }
             foreach (Improvement objLoopImprovement in GearObject.CharacterObject.Improvements.Where(x =>

@@ -52,7 +52,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                         objXmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)

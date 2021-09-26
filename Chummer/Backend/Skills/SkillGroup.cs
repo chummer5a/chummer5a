@@ -139,14 +139,14 @@ namespace Chummer.Backend.Skills
                 {
                     if (IsDisabled || SkillList.Count == 0 || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                         _intCachedBaseUnbroken = 0;
-                    else if (_objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
+                    else if (_objCharacter.Settings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
                         _intCachedBaseUnbroken =
                             SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
                             && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
                                 ? 1 : 0;
                     else
                     {
-                        _intCachedBaseUnbroken = _objCharacter.Options.UsePointsOnBrokenGroups
+                        _intCachedBaseUnbroken = _objCharacter.Settings.UsePointsOnBrokenGroups
                             ? KarmaUnbroken
                                 ? 1
                                 : 0
@@ -173,7 +173,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (IsDisabled || SkillList.Count == 0)
                         _intCachedKarmaUnbroken = 0;
-                    else if (_objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
+                    else if (_objCharacter.Settings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
                         _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
                                                   && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
                             ? 1
@@ -307,7 +307,7 @@ namespace Chummer.Backend.Skills
 
                 //If data file contains {4} this crashes but...
                 string strUpgradetext =
-                    string.Format(GlobalOptions.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
+                    string.Format(GlobalSettings.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
                         LanguageManager.GetString("String_ExpenseSkillGroup"), CurrentDisplayName,
                         Rating, Rating + 1, LanguageManager.GetString("String_Space"));
 
@@ -374,9 +374,9 @@ namespace Chummer.Backend.Skills
                 return;
             writer.WriteStartElement("group");
 
-            writer.WriteElementString("karma", _intSkillFromKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            writer.WriteElementString("base", _intSkillFromSp.ToString(GlobalOptions.InvariantCultureInfo));
-            writer.WriteElementString("id", _guidId.ToString("D", GlobalOptions.InvariantCultureInfo));
+            writer.WriteElementString("karma", _intSkillFromKarma.ToString(GlobalSettings.InvariantCultureInfo));
+            writer.WriteElementString("base", _intSkillFromSp.ToString(GlobalSettings.InvariantCultureInfo));
+            writer.WriteElementString("id", _guidId.ToString("D", GlobalSettings.InvariantCultureInfo));
             writer.WriteElementString("name", _strGroupName);
 
             writer.WriteEndElement();
@@ -472,7 +472,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, SkillGroup>(nameof(BaseUnbroken),
                     new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
-                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Options.UsePointsOnBrokenGroups)
+                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Settings.UsePointsOnBrokenGroups)
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(ToolTip),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
@@ -533,7 +533,7 @@ namespace Chummer.Backend.Skills
             if (_objCharacter != null)
             {
                 _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
-                _objCharacter.Options.PropertyChanged += OnCharacterOptionsPropertyChanged;
+                _objCharacter.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
             }
         }
 
@@ -542,7 +542,7 @@ namespace Chummer.Backend.Skills
             if (_objCharacter != null)
             {
                 _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
-                _objCharacter.Options.PropertyChanged -= OnCharacterOptionsPropertyChanged;
+                _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
             }
             foreach (Skill objSkill in _lstAffectedSkills)
                 objSkill.PropertyChanged -= SkillOnPropertyChanged;
@@ -563,11 +563,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
             return _objCharacter.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value ?? Name;
         }
@@ -584,8 +584,8 @@ namespace Chummer.Backend.Skills
                     return LanguageManager.GetString("Label_SkillGroup_Broken");
                 List<Skill> lstEnabledSkills = SkillList.Where(x => x.Enabled).ToList();
                 return lstEnabledSkills.Count > 1
-                    ? lstEnabledSkills.Min(x => x.TotalBaseRating).ToString(GlobalOptions.CultureInfo)
-                    : 0.ToString(GlobalOptions.CultureInfo);
+                    ? lstEnabledSkills.Min(x => x.TotalBaseRating).ToString(GlobalSettings.CultureInfo)
+                    : 0.ToString(GlobalSettings.CultureInfo);
             }
         }
 
@@ -622,7 +622,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 List<Skill> lstSkills = SkillList.Where(x => x.Enabled).ToList();
-                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
+                return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
                     (lstSkills.Count > 0 ? lstSkills.Min(x => x.TotalBaseRating) : 0) + 1, UpgradeKarmaCost);
             }
         }
@@ -631,7 +631,7 @@ namespace Chummer.Backend.Skills
 
         public Guid Id => _guidId;
 
-        public string InternalId => Id.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => Id.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         #region HasWhateverSkills
 
@@ -737,17 +737,17 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case nameof(CharacterOptions.StrictSkillGroupsInCreateMode):
-                case nameof(CharacterOptions.UsePointsOnBrokenGroups):
+                case nameof(CharacterSettings.StrictSkillGroupsInCreateMode):
+                case nameof(CharacterSettings.UsePointsOnBrokenGroups):
                     OnPropertyChanged(nameof(BaseUnbroken));
                     break;
 
-                case nameof(CharacterOptions.KarmaNewSkillGroup):
-                case nameof(CharacterOptions.KarmaImproveSkillGroup):
+                case nameof(CharacterSettings.KarmaNewSkillGroup):
+                case nameof(CharacterSettings.KarmaImproveSkillGroup):
                     OnPropertyChanged(nameof(CurrentKarmaCost));
                     break;
             }
@@ -819,9 +819,9 @@ namespace Chummer.Backend.Skills
                 intCost /= 2; //We get square, need triangle
 
                 if (intCost == 1)
-                    intCost *= _objCharacter.Options.KarmaNewSkillGroup;
+                    intCost *= _objCharacter.Settings.KarmaNewSkillGroup;
                 else
-                    intCost *= _objCharacter.Options.KarmaImproveSkillGroup;
+                    intCost *= _objCharacter.Settings.KarmaImproveSkillGroup;
 
                 HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
                 decimal decMultiplier = 1.0m;
@@ -881,12 +881,12 @@ namespace Chummer.Backend.Skills
                 int intOptionsCost;
                 if (intRating == 0)
                 {
-                    intOptionsCost = CharacterObject.Options.KarmaNewSkillGroup;
+                    intOptionsCost = CharacterObject.Settings.KarmaNewSkillGroup;
                     intReturn = intOptionsCost;
                 }
                 else if (RatingMaximum > intRating)
                 {
-                    intOptionsCost = CharacterObject.Options.KarmaImproveSkillGroup;
+                    intOptionsCost = CharacterObject.Settings.KarmaImproveSkillGroup;
                     intReturn = (intRating + 1) * intOptionsCost;
                 }
                 else

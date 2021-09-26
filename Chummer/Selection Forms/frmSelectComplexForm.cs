@@ -53,7 +53,7 @@ namespace Chummer
             if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
                 XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = "
-                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
+                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
                                                                                                  + "]");
                 if (xmlMetavariantNode != null)
                     _xmlOptionalComplexFormNode = xmlMetavariantNode;
@@ -141,7 +141,7 @@ namespace Chummer
             }
 
             string strFv = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
-            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strFv = strFv.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))
                     .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
@@ -158,8 +158,8 @@ namespace Chummer
             string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ??
                              xmlComplexForm.SelectSingleNode("page")?.Value ??
                              LanguageManager.GetString("String_Unknown");
-            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                GlobalOptions.CultureInfo, _objCharacter);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
@@ -250,7 +250,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             // Populate the Complex Form list.

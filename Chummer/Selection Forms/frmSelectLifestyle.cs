@@ -56,7 +56,7 @@ namespace Chummer
             string strSelectedId = string.Empty;
             // Populate the Lifestyle ComboBoxes.
             List<ListItem> lstLifestyle = new List<ListItem>();
-            using (XmlNodeList xmlLifestyleList = _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
+            using (XmlNodeList xmlLifestyleList = _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Settings.BookXPath() + "]"))
             {
                 if (xmlLifestyleList?.Count > 0)
                 {
@@ -107,7 +107,7 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
             // Fill the Options list.
-            using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"SR5\" or category = \"Contracts\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+            using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"SR5\" or category = \"Contracts\") and (" + _objCharacter.Settings.BookXPath() + ")]"))
             {
                 if (xmlLifestyleOptionsList?.Count > 0)
                 {
@@ -132,7 +132,7 @@ namespace Chummer
                             nodOption.Text = (objXmlOption["translate"]?.InnerText ?? strOptionName)
                                              + strSpace
                                              + (intCost > 0 ? "[+" : "[")
-                                             + intCost.ToString(GlobalOptions.CultureInfo)
+                                             + intCost.ToString(GlobalSettings.CultureInfo)
                                              + strBaseString + "%]";
                         }
                         else
@@ -143,7 +143,7 @@ namespace Chummer
                             nodOption.Text = (objXmlOption["translate"]?.InnerText ?? strOptionName)
                                              + strSpace
                                              + '['
-                                             + decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)
+                                             + decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                              + "¥]";
                         }
                         treQualities.Nodes.Add(nodOption);
@@ -255,8 +255,8 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                    GlobalOptions.CultureInfo, _objCharacter);
+                SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                    GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);
             }
@@ -322,13 +322,13 @@ namespace Chummer
                 _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
                 _objLifestyle.Name = txtLifestyleName.Text;
                 _objLifestyle.BaseLifestyle = objXmlLifestyle["name"]?.InnerText;
-                _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
                 _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : nudRoommates.ValueAsInt;
                 _objLifestyle.Percentage = nudPercentage.Value;
                 _objLifestyle.LifestyleQualities.Clear();
                 _objLifestyle.StyleType = StyleType;
-                _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+                _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
                 _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
                 _objLifestyle.TrustFund = chkTrustFund.Checked;
                 _objLifestyle.City = cboCity.Text;
@@ -384,8 +384,8 @@ namespace Chummer
                     string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText;
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
-                        SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                            GlobalOptions.CultureInfo, _objCharacter);
+                        SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                            GlobalSettings.CultureInfo, _objCharacter);
                         lblSource.Text = objSource.ToString();
                         lblSource.SetToolTip(objSource.LanguageBookTooltip);
                     }
@@ -407,7 +407,7 @@ namespace Chummer
                             {
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    decCost += Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
+                                    decCost += Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                             }
                         }
                     }
@@ -443,7 +443,7 @@ namespace Chummer
 
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
-            lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblCost.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             if (nudPercentage.Value != 100 || nudRoommates.Value != 0 && !chkPrimaryTenant.Checked)
             {
                 decimal decDiscount = decNuyen;
@@ -453,7 +453,7 @@ namespace Chummer
                     decDiscount /= nudRoommates.Value;
                 }
 
-                lblCost.Text += LanguageManager.GetString("String_Space") + '(' + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
+                lblCost.Text += LanguageManager.GetString("String_Space") + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥)";
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);

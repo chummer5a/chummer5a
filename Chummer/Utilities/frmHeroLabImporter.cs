@@ -94,7 +94,7 @@ namespace Chummer
                             {
                                 XPathDocument xmlSourceDoc;
                                 using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
                                     xmlSourceDoc = new XPathDocument(objXmlReader);
                                 lstCharacterXmlStatblocks.Add(xmlSourceDoc.CreateNavigator());
                             }
@@ -327,7 +327,7 @@ namespace Chummer
                 lblPlayerName.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
 
                 lblCareerKarma.Text = objCache.Karma;
-                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalOptions.CultureInfo))
+                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
                     lblCareerKarma.Text = strNone;
                 lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
                 lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
@@ -397,7 +397,7 @@ namespace Chummer
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode != null && objSelectedNode.Level > 0)
             {
-                int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalOptions.InvariantCultureInfo);
+                int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                     objCache = _lstCharacterCache[intIndex];
             }
@@ -438,7 +438,7 @@ namespace Chummer
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 return;
-            int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalOptions.InvariantCultureInfo);
+            int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
             if (intIndex < 0 || intIndex >= _lstCharacterCache.Count)
                 return;
             string strFile = _lstCharacterCache[intIndex]?.FilePath;

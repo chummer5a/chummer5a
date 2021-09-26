@@ -51,7 +51,7 @@ namespace Chummer
         public InitiativeUserControl()
         {
             InitializeComponent();
-            lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalOptions.CultureInfo);
+            lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalSettings.CultureInfo);
             _intRound = 1;
 
             // setup the list of chummers to show
@@ -200,7 +200,7 @@ namespace Chummer
             if (_intIndex == _lstCharacters.Count - _intTotalChummersWithNoInit)
             {
                 // increment the round count since we have reached the end of the list
-                lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + (++_intRound).ToString(GlobalOptions.CultureInfo);
+                lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + (++_intRound).ToString(GlobalSettings.CultureInfo);
                 // reset the the round with a minus ten on all
                 int index = -1;
                 for (int i = 0; i < _lstCharacters.Count; i++)
@@ -304,7 +304,7 @@ namespace Chummer
                     int intInitRoll = intInitPasses;
                     for (int j = 0; j < intInitPasses; j++)
                     {
-                        intInitRoll += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                        intInitRoll += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                     }
                     objLoopCharacter.InitRoll = intInitRoll + objLoopCharacter.InitialInit;
                 }
@@ -334,7 +334,7 @@ namespace Chummer
             _blnFinishedCombatTurn = false;
             _intIndex = 0;
             _intRound = 1;
-            lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalOptions.CultureInfo);
+            lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalSettings.CultureInfo);
             _intTotalChummersWithNoInit = 0;
         }
 

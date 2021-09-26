@@ -29,7 +29,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Grade of Cyberware or Bioware.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
     public class Grade : IHasName, IHasInternalId, IHasXmlNode
     {
         private readonly Character _objCharacter;
@@ -105,12 +105,12 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Language);
+            return GetNode(GlobalSettings.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = _objCharacter.LoadData(_eSource == Improvement.ImprovementSource.Bioware
                     ? "bioware.xml"
@@ -156,7 +156,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
-        public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -166,7 +166,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceId"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// The English name of the Grade.
@@ -182,13 +182,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
-        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>
         /// The Grade's Essence cost multiplier.

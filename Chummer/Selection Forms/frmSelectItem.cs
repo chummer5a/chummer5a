@@ -60,16 +60,16 @@ namespace Chummer
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
                         {
-                            StringBuilder sbdAmmoName = new StringBuilder(objGear.DisplayNameShort(GlobalOptions.Language));
+                            StringBuilder sbdAmmoName = new StringBuilder(objGear.DisplayNameShort(GlobalSettings.Language));
                             // Retrieve the plugin information if it has any.
                             if (objGear.Children.Count > 0)
                             {
                                 // Append the plugin information to the name.
-                                sbdAmmoName.Append(strSpace + '[' + string.Join(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalOptions.Language))) + ']');
+                                sbdAmmoName.Append(strSpace + '[' + string.Join(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalSettings.Language))) + ']');
                             }
                             if (objGear.Rating > 0)
-                                sbdAmmoName.Append(strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')');
-                            sbdAmmoName.Append(strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
+                                sbdAmmoName.Append(strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')');
+                            sbdAmmoName.Append(strSpace + 'x' + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                             lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                         }
 
@@ -101,7 +101,7 @@ namespace Chummer
                     {
                         cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
                         cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
-                        if (!_objCharacter.Options.LicenseRestricted)
+                        if (!_objCharacter.Settings.LicenseRestricted)
                         {
                             foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml").Select("/chummer/licenses/license"))
                             {

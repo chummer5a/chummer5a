@@ -226,7 +226,7 @@ namespace Chummer
                         string strPage = objXmlProgram.SelectSingleNode("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
                         if (!string.IsNullOrEmpty(strPage))
                         {
-                            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                             lblSource.Text = objSource.ToString();
                             lblSource.SetToolTip(objSource.LanguageBookTooltip);
                         }
@@ -259,10 +259,10 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
 
             string strCategory = cboCategory.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else
             {
@@ -322,7 +322,7 @@ namespace Chummer
                 if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + "]") == null)
                     continue;
                 string strDisplayName = objXmlProgram.SelectSingleNode("translate")?.Value ?? strName;
-                if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;
                     if (!string.IsNullOrEmpty(strCategory))
@@ -362,7 +362,7 @@ namespace Chummer
                 }
 
                 _strSelectedAIProgram = strSelectedId;
-                _strSelectedCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlProgram.SelectSingleNode("category")?.Value;
+                _strSelectedCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlProgram.SelectSingleNode("category")?.Value;
 
                 DialogResult = DialogResult.OK;
             }

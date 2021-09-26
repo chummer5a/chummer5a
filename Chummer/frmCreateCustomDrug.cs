@@ -65,7 +65,7 @@ namespace Chummer
                     Log.Warn("Unknown category " + strCategory + " in component " + objItem.Key);
                     return;
                 }
-                TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalOptions.Language));
+                TreeNode objNode = nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalSettings.Language));
                 int intLevelCount = objItem.Value.DrugEffects.Count;
                 if (intLevelCount == 1)
                 {
@@ -76,7 +76,7 @@ namespace Chummer
                     objNode.Tag = new clsNodeData(objItem.Value);
                     for (int i = 0; i < intLevelCount; i++)
                     {
-                        TreeNode objSubNode = objNode.Nodes.Add(strLevelString + strSpaceString + (i + 1).ToString(GlobalOptions.CultureInfo));
+                        TreeNode objSubNode = objNode.Nodes.Add(strLevelString + strSpaceString + (i + 1).ToString(GlobalSettings.CultureInfo));
                         objSubNode.Tag = new clsNodeData(objItem.Value, i);
                     }
                 }
@@ -178,7 +178,7 @@ namespace Chummer
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
                 Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"),
+                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"),
                         objNodeData.DrugComponent.Limit));
                 return;
             }
@@ -211,10 +211,10 @@ namespace Chummer
                                              Environment.NewLine + Environment.NewLine +
                                              objFoundationNodeData.DrugComponent.CurrentDisplayName + strColonString +
                                              strSpaceString + objItem.Key +
-                                             objItem.Value.ToString("+#;-#;", GlobalOptions.CultureInfo) +
+                                             objItem.Value.ToString("+#;-#;", GlobalSettings.CultureInfo) +
                                              objNodeData.DrugComponent.CurrentDisplayName + strColonString +
                                              strSpaceString + objItem.Key +
-                                             decBlockAttrValue.ToString("+#.#;-#.#;", GlobalOptions.CultureInfo);
+                                             decBlockAttrValue.ToString("+#.#;-#.#;", GlobalSettings.CultureInfo);
                             Program.MainForm.ShowMessageBox(this, message);
                             return;
                         }
@@ -224,7 +224,7 @@ namespace Chummer
 
             string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalOptions.CultureInfo) + ")";
+                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ")";
             TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
             objNewNode.Tag = objNodeData;
             objNewNode.EnsureVisible();

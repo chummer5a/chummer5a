@@ -114,13 +114,13 @@ namespace Chummer.UI.Skills
 
                     nudKarma.DoDataBinding("Value", _skillGroup, nameof(SkillGroup.Karma));
                     nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
-                    nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                    nudKarma.InterceptMouseWheel = GlobalSettings.InterceptMode;
 
                     nudSkill.DoOneWayDataBinding("Visible", _skillGroup.CharacterObject,
                         nameof(Character.EffectiveBuildMethodUsesPriorityTables));
                     nudSkill.DoDataBinding("Value", _skillGroup, nameof(SkillGroup.Base));
                     nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
-                    nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
+                    nudSkill.InterceptMouseWheel = GlobalSettings.InterceptMode;
 
                     tlpMain.Controls.Add(nudSkill, 2, 0);
                     tlpMain.Controls.Add(nudKarma, 3, 0);
@@ -149,7 +149,7 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))

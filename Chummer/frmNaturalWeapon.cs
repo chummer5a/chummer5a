@@ -65,7 +65,7 @@ namespace Chummer
             };
             for (int i = 1; i <= 20; ++i)
             {
-                lstDVBase.Add(new ListItem(i.ToString(GlobalOptions.InvariantCultureInfo), i.ToString(GlobalOptions.CultureInfo)));
+                lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo), i.ToString(GlobalSettings.CultureInfo)));
             }
 
             List<ListItem> lstDVType = new List<ListItem>(2)
@@ -128,9 +128,9 @@ namespace Chummer
             if (nudDVMod.ValueAsInt != 0)
             {
                 if (nudDVMod.Value < 0)
-                    strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                    strDamage += nudDVMod.Value.ToString(GlobalSettings.InvariantCultureInfo);
                 else
-                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                    strDamage += '+' + nudDVMod.Value.ToString(GlobalSettings.InvariantCultureInfo);
             }
             strDamage += cboDVType.SelectedValue.ToString();
 
@@ -139,9 +139,9 @@ namespace Chummer
             if (nudAP.Value == 0)
                 strAP = "0";
             else if (nudAP.Value > 0)
-                strAP = '+' + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                strAP = '+' + nudAP.Value.ToString(GlobalSettings.InvariantCultureInfo);
             else
-                strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                strAP = nudAP.Value.ToString(GlobalSettings.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
             XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");

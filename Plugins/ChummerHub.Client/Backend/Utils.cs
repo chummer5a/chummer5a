@@ -524,7 +524,7 @@ namespace ChummerHub.Client.Backend
                         Tag = new Action(() =>
                         {
                             using (new CursorWait(Program.MainForm))
-                                using (frmOptions frmOptions = new frmOptions("tabPlugins"))
+                                using (frmGlobalSettings frmOptions = new frmGlobalSettings("tabPlugins"))
                                     frmOptions.ShowDialog(Program.MainForm);
                         })
                     };
@@ -730,7 +730,7 @@ namespace ChummerHub.Client.Backend
             string strReturn;
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
-                strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + LanguageManager.GetString("String_Error", GlobalOptions.Language) + ')';
+                strReturn = Path.GetFileNameWithoutExtension(objCache.FileName) + LanguageManager.GetString("String_Space", GlobalSettings.Language) + '(' + LanguageManager.GetString("String_Error", GlobalSettings.Language) + ')';
             }
             else
             {
@@ -739,7 +739,7 @@ namespace ChummerHub.Client.Backend
                 {
                     strReturn = objCache.CharacterName;
                     if (string.IsNullOrEmpty(strReturn))
-                        strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
+                        strReturn = LanguageManager.GetString("String_UnnamedCharacter", GlobalSettings.Language);
                 }
                 strReturn += " (online)";
             }
@@ -766,7 +766,7 @@ namespace ChummerHub.Client.Backend
             };
             if (ssg.MyMembers.Count == 0 && ssg.MySINSearchGroups.Count == 0)
             {
-                string emptystring = LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                string emptystring = LanguageManager.GetString("String_Empty", GlobalSettings.Language);
                 TreeNode empty = new TreeNode()
                 {
                     Text = emptystring
@@ -825,8 +825,8 @@ namespace ChummerHub.Client.Backend
                 {
                     memberNode.ForeColor = Color.Red;
                     memberNode.ToolTipText += Environment.NewLine + Environment.NewLine +
-                                               LanguageManager.GetString("String_Error", GlobalOptions.Language)
-                                               + LanguageManager.GetString("String_Colon", GlobalOptions.Language) +
+                                               LanguageManager.GetString("String_Error", GlobalSettings.Language)
+                                               + LanguageManager.GetString("String_Colon", GlobalSettings.Language) +
                                                Environment.NewLine + objCache.ErrorText;
                 }
             }
@@ -1261,7 +1261,7 @@ namespace ChummerHub.Client.Backend
                     await client.PostSINAsync(uploadInfoObject);
                 }
                 Log.Info("Post of " + (ce.MySINnerFile.Id != null
-                    ? ce.MySINnerFile.Id.Value.ToString("D", GlobalOptions.InvariantCultureInfo)
+                    ? ce.MySINnerFile.Id.Value.ToString("D", GlobalSettings.InvariantCultureInfo)
                     : string.Empty) + " finished.");
             }
             catch (Exception ex)

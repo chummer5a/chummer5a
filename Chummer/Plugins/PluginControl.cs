@@ -213,7 +213,7 @@ namespace Chummer.Plugins
             try
             {
                 RegisterChummerProtocol();
-                if (!GlobalOptions.PluginsEnabled)
+                if (!GlobalSettings.PluginsEnabled)
                 {
                     Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
                     return;
@@ -336,11 +336,11 @@ namespace Chummer.Plugins
             get
             {
                 List<IPlugin> result = new List<IPlugin>();
-                if (!GlobalOptions.PluginsEnabled)
+                if (!GlobalSettings.PluginsEnabled)
                     return result;
                 foreach (IPlugin plugin in MyPlugins)
                 {
-                    if (!GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled) || enabled)
+                    if (!GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled) || enabled)
                         result.Add(plugin);
                 }
                 return result;

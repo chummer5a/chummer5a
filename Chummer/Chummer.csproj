@@ -354,7 +354,7 @@
     <Compile Include="Classes\AddImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\CharacterOptions.cs" />
+    <Compile Include="Classes\CharacterSettings.cs" />
     <Compile Include="Classes\clsCustomDataDirectoryInfo.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashReportData.cs" />
@@ -366,7 +366,7 @@
     <Compile Include="Classes\clsLanguageManager.cs" />
     <Compile Include="Classes\clsListItems.cs" />
     <Compile Include="Classes\clsLog.cs" />
-    <Compile Include="Classes\clsOptions.cs" />
+    <Compile Include="Classes\GlobalSettings.cs" />
     <Compile Include="Classes\clsParameterAttribute.cs" />
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
@@ -394,7 +394,7 @@
     <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Interfaces\ITranslatable.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
-    <Compile Include="Classes\OptionsManager.cs" />
+    <Compile Include="Classes\SettingsManager.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
@@ -423,11 +423,11 @@
     <Compile Include="frmLoading.Designer.cs">
       <DependentUpon>frmLoading.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCharacterOptions.cs">
+    <Compile Include="frmCharacterSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCharacterOptions.Designer.cs">
-      <DependentUpon>frmCharacterOptions.cs</DependentUpon>
+    <Compile Include="frmCharacterSettings.Designer.cs">
+      <DependentUpon>frmCharacterSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="helpers\Application Insights\CustomActivity.cs" />
     <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
@@ -1421,11 +1421,11 @@
     <Compile Include="Selection Forms\frmSelectSkillGroup.Designer.cs">
       <DependentUpon>frmSelectSkillGroup.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmOptions.cs">
+    <Compile Include="frmGlobalSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmOptions.Designer.cs">
-      <DependentUpon>frmOptions.cs</DependentUpon>
+    <Compile Include="frmGlobalSettings.Designer.cs">
+      <DependentUpon>frmGlobalSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectArmor.cs">
       <SubType>Form</SubType>
@@ -1617,8 +1617,8 @@
     <EmbeddedResource Include="frmLoading.resx">
       <DependentUpon>frmLoading.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCharacterOptions.resx">
-      <DependentUpon>frmCharacterOptions.cs</DependentUpon>
+    <EmbeddedResource Include="frmCharacterSettings.resx">
+      <DependentUpon>frmCharacterSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectDrug.resx">
       <DependentUpon>frmSelectDrug.cs</DependentUpon>
@@ -1810,8 +1810,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectSkillGroup.resx">
       <DependentUpon>frmSelectSkillGroup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmOptions.resx">
-      <DependentUpon>frmOptions.cs</DependentUpon>
+    <EmbeddedResource Include="frmGlobalSettings.resx">
+      <DependentUpon>frmGlobalSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectArmor.resx">
       <DependentUpon>frmSelectArmor.cs</DependentUpon>

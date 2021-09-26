@@ -3174,7 +3174,7 @@ namespace Chummer
 			this.mnuSpecialChangeOptions.Name = "mnuSpecialChangeOptions";
 			this.mnuSpecialChangeOptions.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialChangeOptions.Tag = "Menu_SpecialChangeOptions";
-			this.mnuSpecialChangeOptions.Text = "Change &Options File";
+			this.mnuSpecialChangeOptions.Text = "Change &Settings File";
 			this.mnuSpecialChangeOptions.Click += new System.EventHandler(this.mnuSpecialChangeOptions_Click);
 			// 
 			// mnuSpecialCyberzombie

@@ -87,9 +87,9 @@ namespace Chummer
             objWriter.WriteStartElement("sustainedobject");
             objWriter.WriteElementString("linkedobject", _objLinkedObject.InternalId);
             objWriter.WriteElementString("linkedobjecttype", _eLinkedObjectType.ToString());
-            objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -217,7 +217,7 @@ namespace Chummer
             }
         }
 
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         public IHasInternalId LinkedObject => _objLinkedObject;
 
@@ -263,7 +263,7 @@ namespace Chummer
             return LanguageManager.GetString("String_Unknown", strLanguage);
         }
 
-        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public string Name
         {
@@ -281,7 +281,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.CritterPower:
                         return (_objLinkedObject as CritterPower)?.Name;
                 }
-                return LanguageManager.GetString("String_Unknown", GlobalOptions.DefaultLanguage);
+                return LanguageManager.GetString("String_Unknown", GlobalSettings.DefaultLanguage);
             }
         }
 

@@ -38,7 +38,7 @@ namespace Chummer
         {
             using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
             using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                blnSafe ? GlobalOptions.SafeXmlReaderSettings : GlobalOptions.UnSafeXmlReaderSettings))
+                blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
                 xmlDocument.Load(objReader);
         }
 
@@ -56,8 +56,8 @@ namespace Chummer
             {
                 xmlDocument.Save(memStream);
                 memStream.Position = 0;
-                //TODO: Should probably be using GlobalOptions.SafeXmlReaderSettings here but it has some issues.
-                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.UnSafeXmlReaderSettings))
+                //TODO: Should probably be using GlobalSettings.SafeXmlReaderSettings here but it has some issues.
+                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalSettings.UnSafeXmlReaderSettings))
                     return new XPathDocument(objXmlReader).CreateNavigator();
             }
         }

@@ -179,7 +179,7 @@ namespace Chummer
                             string strNameUpper = objXmlAttribute.Name.ToUpperInvariant();
                             TreeNode objChild = new TreeNode
                             {
-                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short") + strSpace + (objXmlAttribute.ValueAsInt - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.CultureInfo)
+                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short") + strSpace + (objXmlAttribute.ValueAsInt - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalSettings.CultureInfo)
                             };
 
                             objParent.Nodes.Add(objChild);
@@ -195,7 +195,7 @@ namespace Chummer
                         {
                             if (objXmlQuality.SelectSingleNode("hide") != null)
                                 continue;
-                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Settings.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -215,7 +215,7 @@ namespace Chummer
                         {
                             if (objXmlQuality.SelectSingleNode("hide") != null)
                                 continue;
-                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Settings.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -323,7 +323,7 @@ namespace Chummer
 
                             TreeNode objMartialArt = new TreeNode
                             {
-                                Text = strSelect + strSpace + LanguageManager.GetString("String_Rating") + strSpace + intRating.ToString(GlobalOptions.CultureInfo)
+                                Text = strSelect + strSpace + LanguageManager.GetString("String_Rating") + strSpace + intRating.ToString(GlobalSettings.CultureInfo)
                             };
                             objParent.Nodes.Add(objMartialArt);
                             objParent.Expand();
@@ -337,7 +337,7 @@ namespace Chummer
                             if (objXmlArt.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlArt.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("martialarts/martialart[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -352,7 +352,7 @@ namespace Chummer
                                 if (xmlTechnique.SelectSingleNode("hide") != null)
                                     continue;
                                 string strTechniqueName = xmlTechnique.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + _objCharacter.Options.BookXPath() + ") and name = " + strTechniqueName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strTechniqueName.CleanXPath() + "]");
                                 if (objNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -378,7 +378,7 @@ namespace Chummer
                                 if (objXmlPower.SelectSingleNode("hide") != null)
                                     continue;
                                 string strName = objXmlPower.SelectSingleNode("name").Value;
-                                XPathNavigator objNode = _xmlPowersBasePowersNode.SelectSingleNode("power[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                XPathNavigator objNode = _xmlPowersBasePowersNode.SelectSingleNode("power[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objNode == null)
                                     continue;
                                 TreeNode objChild = new TreeNode
@@ -405,7 +405,7 @@ namespace Chummer
                             if (objXmlProgram.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlProgram.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("complexforms/complexform[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("complexforms/complexform[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -420,7 +420,7 @@ namespace Chummer
                                 if (objXmlOption.SelectSingleNode("hide") != null)
                                     continue;
                                 string strOptionName = objXmlOption.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("options/option[(" + _objCharacter.Options.BookXPath() + ") and name = " + strOptionName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("options/option[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strOptionName.CleanXPath() + "]");
                                 if (objNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -448,7 +448,7 @@ namespace Chummer
                             if (objXmlSpell.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlSpell.Value;
-                            XPathNavigator objNode = _xmlSpellsBaseSpellsNode.SelectSingleNode("spell[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlSpellsBaseSpellsNode.SelectSingleNode("spell[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode.SelectSingleNode("hide") == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -521,7 +521,7 @@ namespace Chummer
                             {
                                 Text = (objXmlLifestyle.SelectSingleNode("translate") ?? objXmlLifestyle.SelectSingleNode("baselifestyle")).Value
                                        + strSpace + objXmlLifestyle.SelectSingleNode("months").Value
-                                       + strSpace + strIncrementString + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent"), intPermanentAmount.ToString(GlobalOptions.CultureInfo))
+                                       + strSpace + strIncrementString + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent"), intPermanentAmount.ToString(GlobalSettings.CultureInfo))
                             };
 
                             // Check for Qualities.
@@ -550,7 +550,7 @@ namespace Chummer
                             if (objXmlCyberware.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlCyberware.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -569,7 +569,7 @@ namespace Chummer
                                 if (objXmlChild.SelectSingleNode("hide") != null)
                                     continue;
                                 string strChildName = objXmlChild.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -606,7 +606,7 @@ namespace Chummer
                             if (objXmlBioware.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlBioware.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -625,7 +625,7 @@ namespace Chummer
                                 if (objXmlChild.SelectSingleNode("hide") != null)
                                     continue;
                                 string strChildName = objXmlChild.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -662,7 +662,7 @@ namespace Chummer
                             if (objXmlArmor.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlArmor.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlArmorBaseChummerNode.SelectSingleNode("armors/armor[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlArmorBaseChummerNode.SelectSingleNode("armors/armor[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -676,7 +676,7 @@ namespace Chummer
                                 if (objXmlChild.SelectSingleNode("hide") != null)
                                     continue;
                                 string strChildName = objXmlChild.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlArmorBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlArmorBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -712,7 +712,7 @@ namespace Chummer
                             if (objXmlWeapon.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlWeapon.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -726,7 +726,7 @@ namespace Chummer
                                 if (objXmlAccessory.SelectSingleNode("hide") != null)
                                     continue;
                                 strName = objXmlAccessory.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("accessories/accessory[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("accessories/accessory[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -753,7 +753,7 @@ namespace Chummer
                                 if (objXmlWeapon.SelectSingleNode("hide") != null)
                                     continue;
 
-                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -790,7 +790,7 @@ namespace Chummer
                             if (objXmlVehicle.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlVehicle.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                            XPathNavigator objNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("vehicles/vehicle[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -804,7 +804,7 @@ namespace Chummer
                                 if (objXmlMod.SelectSingleNode("hide") != null)
                                     continue;
                                 strName = objXmlMod.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -834,7 +834,7 @@ namespace Chummer
                                 if (objXmlWeapon.SelectSingleNode("hide") != null)
                                     continue;
                                 strName = objXmlWeapon.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                                XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
@@ -877,7 +877,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DeletePACKSKit"), strSelectedKit),
+            if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_DeletePACKSKit"), strSelectedKit),
                     LanguageManager.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 
@@ -998,8 +998,8 @@ namespace Chummer
             string strName = xmlNameNode?.Value ?? string.Empty;
             string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
             XPathNavigator objNode = !string.IsNullOrEmpty(strCategory)
-                ? _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]")
-                : _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
+                ? _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]")
+                : _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Settings.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
 
             if (objNode != null)
             {

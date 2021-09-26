@@ -65,7 +65,7 @@ namespace Chummer
 
             s_TmrDarkModeCheckerTimer = new Timer { Interval = 5000 }; // Poll registry every 5 seconds
             s_TmrDarkModeCheckerTimer.Tick += TmrDarkModeCheckerTimerOnTick;
-            switch (GlobalOptions.ColorModeSetting)
+            switch (GlobalSettings.ColorModeSetting)
             {
                 case ColorMode.Automatic:
                     AutoApplyLightDarkMode();
@@ -88,7 +88,7 @@ namespace Chummer
 
         public static void AutoApplyLightDarkMode()
         {
-            if (GlobalOptions.ColorModeSetting == ColorMode.Automatic)
+            if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
             {
                 IsLightMode = !DoesRegistrySayDarkMode();
                 s_TmrDarkModeCheckerTimer.Enabled = true;

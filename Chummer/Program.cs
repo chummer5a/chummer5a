@@ -70,9 +70,9 @@ namespace Chummer
         private static void Main()
         {
             // Set DPI Stuff before anything else, even the mutex
-            SetProcessDPI(GlobalOptions.DpiScalingMethodSetting);
+            SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
             if (IsMainThread)
-                SetThreadDPI(GlobalOptions.DpiScalingMethodSetting);
+                SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + ChummerGuid, out bool blnIsNewInstance))
             {
                 try
@@ -131,8 +131,8 @@ namespace Chummer
                     PageViewTelemetry pvt = null;
                     var startTime = DateTimeOffset.UtcNow;
                     // Set default cultures based on the currently set language
-                    CultureInfo.DefaultThreadCurrentCulture = GlobalOptions.CultureInfo;
-                    CultureInfo.DefaultThreadCurrentUICulture = GlobalOptions.CultureInfo;
+                    CultureInfo.DefaultThreadCurrentCulture = GlobalSettings.CultureInfo;
+                    CultureInfo.DefaultThreadCurrentUICulture = GlobalSettings.CultureInfo;
                     string strPostErrorMessage = string.Empty;
                     string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
                     if (!Directory.Exists(settingsDirectoryPath))
@@ -144,7 +144,7 @@ namespace Chummer
                         catch (UnauthorizedAccessException ex)
                         {
                             string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
-                                GlobalOptions.Language, false);
+                                GlobalSettings.Language, false);
                             if (string.IsNullOrEmpty(strMessage))
                                 strMessage = ex.ToString();
                             strPostErrorMessage = strMessage;
@@ -184,7 +184,7 @@ namespace Chummer
                     sw.TaskEnd("appdomain 2");
 
                     string strInfo =
-                        string.Format(GlobalOptions.InvariantCultureInfo,
+                        string.Format(GlobalSettings.InvariantCultureInfo,
                             "Application Chummer5a build {0} started at {1} with command line arguments {2}",
                             Assembly.GetExecutingAssembly().GetName().Version, DateTime.UtcNow,
                             Environment.CommandLine);
@@ -241,10 +241,10 @@ namespace Chummer
                         return;
                     }
 
-                    if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
+                    if (!string.IsNullOrEmpty(GlobalSettings.ErrorMessage))
                     {
                         // MainForm is null at the moment, so we have to show error box manually
-                        MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK,
+                        MessageBox.Show(GlobalSettings.ErrorMessage, Application.ProductName, MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                         return;
                     }
@@ -264,9 +264,9 @@ namespace Chummer
                         if (IsMono)
                         {
                             //Mono Crashes because of Application Insights. Set Logging to local, when Mono Runtime is detected
-                            GlobalOptions.UseLoggingApplicationInsights = UseAILogging.OnlyLocal;
+                            GlobalSettings.UseLoggingApplicationInsights = UseAILogging.OnlyLocal;
                         }
-                        if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
+                        if (GlobalSettings.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
                         {
                             ConfigurationItemFactory.Default.Targets.RegisterDefinition(
                                 "ApplicationInsightsTarget",
@@ -276,7 +276,7 @@ namespace Chummer
 
                         LogManager.ThrowExceptions = false;
                         Log = LogManager.GetCurrentClassLogger();
-                        if (GlobalOptions.UseLogging)
+                        if (GlobalSettings.UseLogging)
                         {
                             foreach (LoggingRule objRule in LogManager.Configuration.LoggingRules)
                             {
@@ -297,7 +297,7 @@ namespace Chummer
                             Properties.Settings.Default.Save();
                         }
 
-                        if (!Utils.IsUnitTest && GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
+                        if (!Utils.IsUnitTest && GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                         {
 #if DEBUG
                             //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
@@ -323,7 +323,7 @@ namespace Chummer
                             objMetric.TrackValue(1,
                                 Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                                 CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
-                                GlobalOptions.UseLoggingApplicationInsights.ToString(),
+                                GlobalSettings.UseLoggingApplicationInsights.ToString(),
                                 strOSVersion);
 
                             //Log a page view:
@@ -337,7 +337,7 @@ namespace Chummer
                             pvt.Context.Operation.Name = "Operation Program.Main()";
                             pvt.Properties.Add("parameters", Environment.CommandLine);
 
-                            UploadObjectAsMetric.UploadObject(ChummerTelemetryClient, typeof(GlobalOptions));
+                            UploadObjectAsMetric.UploadObject(ChummerTelemetryClient, typeof(GlobalSettings));
                         }
                         else
                         {
@@ -345,11 +345,11 @@ namespace Chummer
                         }
 
                         Log.Info(strInfo);
-                        Log.Info("Logging options are set to " + GlobalOptions.UseLogging +
+                        Log.Info("Logging options are set to " + GlobalSettings.UseLogging +
                                  " and Upload-Options are set to "
-                                 + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: "
+                                 + GlobalSettings.UseLoggingApplicationInsights + " (Installation-Id: "
                                  + Properties.Settings.Default.UploadClientId.ToString("D",
-                                     GlobalOptions.InvariantCultureInfo) + ").");
+                                     GlobalSettings.InvariantCultureInfo) + ").");
 
                         //make sure the Settings are upgraded/preserved after an upgrade
                         //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -385,7 +385,7 @@ namespace Chummer
                     try
                     {
                         // Make sure the default language has been loaded before attempting to open the Main Form.
-                        blnRestoreDefaultLanguage = !LanguageManager.LoadLanguage(GlobalOptions.Language);
+                        blnRestoreDefaultLanguage = !LanguageManager.LoadLanguage(GlobalSettings.Language);
                     }
                     // This to catch and handle an extremely strange issue where Chummer tries to load a language it shouldn't and ends up
                     // dereferencing a null value that should be impossible by static code analysis. This code here is a failsafe so that
@@ -398,7 +398,7 @@ namespace Chummer
 
                     // Restore Chummer's language to en-US if we failed to load the default one.
                     if (blnRestoreDefaultLanguage)
-                        GlobalOptions.Language = GlobalOptions.DefaultLanguage;
+                        GlobalSettings.Language = GlobalSettings.DefaultLanguage;
                     MainForm = new frmChummerMain();
                     try
                     {
@@ -419,7 +419,7 @@ namespace Chummer
                             {
                                 if (!strArg.Contains("/plugin"))
                                     continue;
-                                if (!GlobalOptions.PluginsEnabled)
+                                if (!GlobalSettings.PluginsEnabled)
                                 {
                                     const string strMessage =
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
@@ -477,7 +477,7 @@ namespace Chummer
 
                     PluginLoader?.Dispose();
                     Log.Info(ExceptionHeatMap.GenerateInfo());
-                    if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal
+                    if (GlobalSettings.UseLoggingApplicationInsights > UseAILogging.OnlyLocal
                         && ChummerTelemetryClient != null)
                     {
                         ChummerTelemetryClient.Flush();

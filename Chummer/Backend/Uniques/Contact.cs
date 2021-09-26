@@ -49,14 +49,14 @@ namespace Chummer
     /// <summary>
     /// A Contact or Enemy.
     /// </summary>
-    [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
+    [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalSettings.DefaultLanguage)})")]
     public sealed class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes, IHasInternalId
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
         private string _strLocation = string.Empty;
-        private string _strUnique = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo);
+        private string _strUnique = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
 
         private int _intConnection = 1;
         private int _intLoyalty = 1;
@@ -236,7 +236,7 @@ namespace Chummer
 
         public static List<ListItem> ContactArchetypes(Character objCharacter)
         {
-            if (_lstCachedContactArchetypes != null && _objCharacterForCachedContactArchetypes == objCharacter && !GlobalOptions.LiveCustomData)
+            if (_lstCachedContactArchetypes != null && _objCharacterForCachedContactArchetypes == objCharacter && !GlobalSettings.LiveCustomData)
                 return _lstCachedContactArchetypes;
             _objCharacterForCachedContactArchetypes = objCharacter;
             _lstCachedContactArchetypes = new List<ListItem> { ListItem.Blank };
@@ -283,8 +283,8 @@ namespace Chummer
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("role", _strRole);
             objWriter.WriteElementString("location", _strLocation);
-            objWriter.WriteElementString("connection", _intConnection.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("loyalty", _intLoyalty.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("connection", _intConnection.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("metatype", _strMetatype);
             objWriter.WriteElementString("gender", _strGender);
             objWriter.WriteElementString("age", _strAge);
@@ -298,12 +298,12 @@ namespace Chummer
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("groupname", _strGroupName);
-            objWriter.WriteElementString("colour", _objColour.ToArgb().ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("group", _blnIsGroup.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("family", _blnFamily.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("blackmail", _blnBlackmail.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("blackmail", _blnBlackmail.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString(GlobalSettings.InvariantCultureInfo));
 
             if (_blnReadOnly)
                 objWriter.WriteElementString("readonly", string.Empty);
@@ -407,9 +407,9 @@ namespace Chummer
             objWriter.WriteElementString("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
             objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType, strLanguageToPrint));
             objWriter.WriteElementString("forcedloyalty", ForcedLoyalty.ToString(objCulture));
-            objWriter.WriteElementString("blackmail", Blackmail.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("family", Family.ToString(GlobalOptions.InvariantCultureInfo));
-            if (GlobalOptions.PrintNotes)
+            objWriter.WriteElementString("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("family", Family.ToString(GlobalSettings.InvariantCultureInfo));
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
             PrintMugshots(objWriter);
@@ -464,7 +464,7 @@ namespace Chummer
 
         public string DisplayRoleMethod(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Role;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/contacts/contact[. = " + Role.CleanXPath() + "]/@translate")?.Value ?? Role;
@@ -472,8 +472,8 @@ namespace Chummer
 
         public string DisplayRole
         {
-            get => DisplayRoleMethod(GlobalOptions.Language);
-            set => Role = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayRoleMethod(GlobalSettings.Language);
+            set => Role = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -559,7 +559,7 @@ namespace Chummer
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                     return strReturn;
                 objMetatypeNode = objMetatypeNode
-                    .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
+                    .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
 
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += LanguageManager.GetString("String_Space", strLanguage)
@@ -576,8 +576,8 @@ namespace Chummer
 
         public string DisplayMetatype
         {
-            get => DisplayMetatypeMethod(GlobalOptions.Language);
-            set => Metatype = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayMetatypeMethod(GlobalSettings.Language);
+            set => Metatype = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -611,7 +611,7 @@ namespace Chummer
 
         public string DisplayGenderMethod(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Gender;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
@@ -619,8 +619,8 @@ namespace Chummer
 
         public string DisplayGender
         {
-            get => DisplayGenderMethod(GlobalOptions.Language);
-            set => Gender = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayGenderMethod(GlobalSettings.Language);
+            set => Gender = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace Chummer
 
         public string DisplayAgeMethod(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Age;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
@@ -649,8 +649,8 @@ namespace Chummer
 
         public string DisplayAge
         {
-            get => DisplayAgeMethod(GlobalOptions.Language);
-            set => Age = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayAgeMethod(GlobalSettings.Language);
+            set => Age = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -671,7 +671,7 @@ namespace Chummer
 
         public string DisplayTypeMethod(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Type;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
@@ -679,8 +679,8 @@ namespace Chummer
 
         public string DisplayType
         {
-            get => DisplayTypeMethod(GlobalOptions.Language);
-            set => Type = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayTypeMethod(GlobalSettings.Language);
+            set => Type = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -701,7 +701,7 @@ namespace Chummer
 
         public string DisplayPreferredPaymentMethod(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PreferredPayment;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage)
@@ -710,8 +710,8 @@ namespace Chummer
 
         public string DisplayPreferredPayment
         {
-            get => DisplayPreferredPaymentMethod(GlobalOptions.Language);
-            set => PreferredPayment = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayPreferredPaymentMethod(GlobalSettings.Language);
+            set => PreferredPayment = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -732,7 +732,7 @@ namespace Chummer
 
         public string DisplayHobbiesViceMethod(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return HobbiesVice;
 
             try
@@ -750,8 +750,8 @@ namespace Chummer
 
         public string DisplayHobbiesVice
         {
-            get => DisplayHobbiesViceMethod(GlobalOptions.Language);
-            set => HobbiesVice = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayHobbiesViceMethod(GlobalSettings.Language);
+            set => HobbiesVice = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -772,7 +772,7 @@ namespace Chummer
 
         public string DisplayPersonalLifeMethod(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PersonalLife;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
@@ -781,8 +781,8 @@ namespace Chummer
 
         public string DisplayPersonalLife
         {
-            get => DisplayPersonalLifeMethod(GlobalOptions.Language);
-            set => PersonalLife = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
+            get => DisplayPersonalLifeMethod(GlobalSettings.Language);
+            set => PersonalLife = _objCharacter.ReverseTranslateExtra(value, GlobalSettings.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -821,7 +821,7 @@ namespace Chummer
 
         public int ConnectionMaximum => CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
 
-        public string QuickText => string.Format(GlobalOptions.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", Connection, Loyalty);
+        public string QuickText => string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", Connection, Loyalty);
 
         /// <summary>
         /// The Contact's type, either Contact or Enemy.
@@ -1053,7 +1053,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
                         LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -1209,12 +1209,12 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteElementString("mainmugshotindex",
-                MainMugshotIndex.ToString(GlobalOptions.InvariantCultureInfo));
+                MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
             // <mugshot>
             objWriter.WriteStartElement("mugshots");
             foreach (Image imgMugshot in Mugshots)
             {
-                objWriter.WriteElementString("mugshot", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
+                objWriter.WriteElementString("mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
             }
             // </mugshot>
             objWriter.WriteEndElement();
@@ -1274,7 +1274,7 @@ namespace Chummer
                 if (imgMainMugshot != null)
                 {
                     string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                        guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + ".jpg");
+                        guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) + ".jpg");
                     imgMainMugshot.Save(imgMugshotPath);
                     // <mainmugshotpath />
                     objWriter.WriteElementString("mainmugshotpath",
@@ -1284,7 +1284,7 @@ namespace Chummer
                 }
                 // <othermugshots>
                 objWriter.WriteElementString("hasothermugshots",
-                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalOptions.InvariantCultureInfo));
+                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
@@ -1296,8 +1296,8 @@ namespace Chummer
                     objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64StringAsJpeg());
 
                     string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                        guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) +
-                        i.ToString(GlobalOptions.InvariantCultureInfo) + ".jpg");
+                        guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
+                        i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath",
                         "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));

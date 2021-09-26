@@ -72,8 +72,8 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
             }
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -90,7 +90,7 @@ namespace Chummer
             List<ListItem> lstAccessories = new List<ListItem>();
 
             // Populate the Accessory list.
-            StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+            StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Settings.BookXPath() + ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (string strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
                 sbdFilter.Append(" or contains(mount, " + strAllowedMount.CleanXPath() + ")");
@@ -127,7 +127,7 @@ namespace Chummer
             if (intOverLimit > 0)
             {
                 // Add after sort so that it's always at the end
-                lstAccessories.Add(new ListItem(string.Empty, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                lstAccessories.Add(new ListItem(string.Empty, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
                     intOverLimit)));
             }
             string strOldSelected = lstAccessory.SelectedValue?.ToString();
@@ -449,9 +449,9 @@ namespace Chummer
             {
                 string strCost = "0";
                 if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
-                    strCost = strCost.CheapReplace("Weapon Cost", () => _objParentWeapon.OwnCost.ToString(GlobalOptions.InvariantCultureInfo))
-                        .CheapReplace("Weapon Total Cost", () => _objParentWeapon.MultipliableCost(null).ToString(GlobalOptions.InvariantCultureInfo))
-                        .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
+                    strCost = strCost.CheapReplace("Weapon Cost", () => _objParentWeapon.OwnCost.ToString(GlobalSettings.InvariantCultureInfo))
+                        .CheapReplace("Weapon Total Cost", () => _objParentWeapon.MultipliableCost(null).ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("Rating", nudRating.Value.ToString(GlobalSettings.CultureInfo));
                 if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
                     decimal decMin;
@@ -460,26 +460,26 @@ namespace Chummer
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
-                        decimal.TryParse(strValues[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMin);
-                        decimal.TryParse(strValues[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMax);
+                        decimal.TryParse(strValues[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
+                        decimal.TryParse(strValues[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
                     }
                     else
-                        decimal.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMin);
+                        decimal.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
 
                     if (decMax == decimal.MaxValue)
                     {
-                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
+                        lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+";
                     }
                     else
-                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + strSpace + '-'
-                                       + strSpace + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strSpace + '-'
+                                       + strSpace + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
 
                     lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }
                 else
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
-                    decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
+                    decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
 
                     // Apply any markup.
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
@@ -497,18 +497,18 @@ namespace Chummer
                         }
                     }
 
-                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblCost.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                     lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
                 }
             }
             else
             {
-                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
 
             lblRatingLabel.Text = xmlAccessory.SelectSingleNode("ratinglabel") != null
-                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                     LanguageManager.GetString(xmlAccessory.SelectSingleNode("ratinglabel").Value))
                 : LanguageManager.GetString("Label_Rating");
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
@@ -517,7 +517,7 @@ namespace Chummer
             chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             if (!chkBlackMarketDiscount.Checked)
             {
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _blnIsParentWeaponBlackMarketAllowed;
+                chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && _blnIsParentWeaponBlackMarketAllowed;
             }
             else if (!_blnIsParentWeaponBlackMarketAllowed)
             {
@@ -527,7 +527,7 @@ namespace Chummer
 
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+            SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             tlpRight.Visible = true;

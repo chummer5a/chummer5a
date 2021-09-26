@@ -54,8 +54,8 @@ namespace Chummer
             XmlNode xmlVehicleNode = _objVehicle.GetNode();
             List<ListItem> lstSize;
             // Populate the Weapon Mount Category list.
-            string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
-            if (!_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
+            string strSizeFilter = "category = \"Size\" and " + _objCharacter.Settings.BookXPath();
+            if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                 strSizeFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlSizeNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
             {
@@ -413,12 +413,12 @@ namespace Chummer
                 if (objMod != null)
                 {
                     cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
-                    lblSlots.Text = objMod.CalculatedSlots.ToString(GlobalOptions.InvariantCultureInfo);
+                    lblSlots.Text = objMod.CalculatedSlots.ToString(GlobalSettings.InvariantCultureInfo);
                     lblAvailability.Text = objMod.DisplayTotalAvail;
 
                     if (chkFreeItem.Checked)
                     {
-                        lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                     }
                     else
                     {
@@ -442,7 +442,7 @@ namespace Chummer
                         {
                             intTotalSlots += objLoopMod.CalculatedSlots;
                         }
-                        lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                     }
 
                     objMod.SetSourceDetail(lblSource);
@@ -469,7 +469,7 @@ namespace Chummer
             chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
             if (!chkBlackMarketDiscount.Checked)
             {
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
             }
             else if (!blnCanBlackMarketDiscount)
             {
@@ -489,7 +489,7 @@ namespace Chummer
                 strAvail = strAvail.Substring(0, strAvail.Length - 1);
             else
                 chrAvailSuffix = ' ';
-            int.TryParse(strAvail, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intAvail);
+            int.TryParse(strAvail, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intAvail);
 
             foreach (string strSelectedId in astrSelectedValues)
             {
@@ -526,7 +526,7 @@ namespace Chummer
                             break;
                         }
                 }
-                if (int.TryParse(strLoopAvail, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intLoopAvail))
+                if (int.TryParse(strLoopAvail, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoopAvail))
                     intAvail += intLoopAvail;
             }
             foreach (VehicleMod objMod in _lstMods)
@@ -551,7 +551,7 @@ namespace Chummer
             if (chkBlackMarketDiscount.Checked)
                 decCost *= 0.9m;
 
-            string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
+            string strAvailText = intAvail.ToString(GlobalSettings.CultureInfo);
             switch (chrAvailSuffix)
             {
                 case 'F':
@@ -564,8 +564,8 @@ namespace Chummer
             }
 
             decCost *= 1 + (nudMarkup.Value / 100.0m);
-            lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            lblSlots.Text = intSlots.ToString(GlobalOptions.CultureInfo);
+            lblCost.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+            lblSlots.Text = intSlots.ToString(GlobalSettings.CultureInfo);
             lblAvailability.Text = strAvailText;
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
@@ -573,7 +573,7 @@ namespace Chummer
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+            SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
@@ -598,7 +598,7 @@ namespace Chummer
                     XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
                     if (xmlLoopNode != null)
                     {
-                        intSlots += Convert.ToInt32(xmlLoopNode["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                        intSlots += Convert.ToInt32(xmlLoopNode["slots"]?.InnerText, GlobalSettings.InvariantCultureInfo);
                     }
                 }
             }
@@ -639,12 +639,12 @@ namespace Chummer
                         objMod.Cost = "0";
 
                     // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-                    if (_objCharacter.Options.EnforceCapacity)
+                    if (_objCharacter.Settings.EnforceCapacity)
                     {
                         bool blnOverCapacity = false;
-                        if (_objCharacter.Options.BookEnabled("R5"))
+                        if (_objCharacter.Settings.BookEnabled("R5"))
                         {
-                            if (_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
+                            if (_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                             {
                                 if (_objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots)
                                     blnOverCapacity = true;
@@ -677,12 +677,12 @@ namespace Chummer
                         char chrAvail = objMod.TotalAvailTuple().Suffix;
                         switch (chrAvail)
                         {
-                            case 'R' when _objCharacter.Options.MultiplyRestrictedCost:
-                                decCost *= _objCharacter.Options.RestrictedCostMultiplier;
+                            case 'R' when _objCharacter.Settings.MultiplyRestrictedCost:
+                                decCost *= _objCharacter.Settings.RestrictedCostMultiplier;
                                 break;
 
-                            case 'F' when _objCharacter.Options.MultiplyForbiddenCost:
-                                decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
+                            case 'F' when _objCharacter.Settings.MultiplyForbiddenCost:
+                                decCost *= _objCharacter.Settings.ForbiddenCostMultiplier;
                                 break;
                         }
 
@@ -698,7 +698,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(decCost * -1,
                             LanguageManager.GetString("String_ExpensePurchaseVehicleMod") +
-                            strSpace + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                            strSpace + objMod.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
                         _objCharacter.ExpenseEntries.AddWithSort(objExpense);
                         _objCharacter.Nuyen -= decCost;
 
@@ -786,8 +786,8 @@ namespace Chummer
             List<ListItem> lstFlexibility;
             List<ListItem> lstControl;
             // Populate the Weapon Mount Category list.
-            string strFilter = "category != \"Size\" and " + _objCharacter.Options.BookXPath();
-            if (!_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
+            string strFilter = "category != \"Size\" and " + _objCharacter.Settings.BookXPath();
+            if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                 strFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlWeaponMountOptionNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
             {

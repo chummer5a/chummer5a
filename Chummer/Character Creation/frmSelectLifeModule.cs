@@ -49,7 +49,7 @@ namespace Chummer
 
         private void frmSelectLifeModule_Load(object sender, EventArgs e)
         {
-            string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalOptions.InvariantCultureInfo).CleanXPath() + "]";
+            string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + "]";
 
             XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
             if (xmlStageNode != null)
@@ -88,7 +88,7 @@ namespace Chummer
                     if (xmlNode["versions"] != null)
                     {
                         treNode.Nodes.AddRange(
-                            BuildList(xmlNode.SelectNodes("versions/version[" + _objCharacter.Options.BookXPath() + "or not(source)]")));
+                            BuildList(xmlNode.SelectNodes("versions/version[" + _objCharacter.Settings.BookXPath() + "or not(source)]")));
                     }
 
                     treNode.Tag = xmlNode["id"]?.InnerText;
@@ -231,7 +231,7 @@ namespace Chummer
                     cboStage.PopulateWithListItems(lstStages);
                 }
 
-                ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalOptions.InvariantCultureInfo));
+                ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalSettings.InvariantCultureInfo));
                 if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
             }
@@ -280,7 +280,7 @@ namespace Chummer
 
         private string GetSelectString()
         {
-            string strReturn = "[(" + _objCharacter.Options.BookXPath();
+            string strReturn = "[(" + _objCharacter.Settings.BookXPath();
 
             //chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
             // /chummer/modules/module//name[contains(., "can")]/..[id]

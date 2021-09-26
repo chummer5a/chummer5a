@@ -45,7 +45,7 @@ namespace Chummer.Backend
             // In theory shouldn't mask any existing issues?
             if (frame == null)
                 return;
-            string heat = string.Format(GlobalOptions.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
+            string heat = string.Format(GlobalSettings.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
 
             if (_map.TryGetValue(heat, out int intTmp))
             {
@@ -65,7 +65,7 @@ namespace Chummer.Backend
             foreach (KeyValuePair<string, int> exception in _map.OrderBy(i => -i.Value))
             {
                 length = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), length);
-                builder.AppendLine("\t\t" + exception.Value.ToString("D" + length.ToString(GlobalOptions.InvariantCultureInfo), GlobalOptions.InvariantCultureInfo) + " - " + exception.Key);
+                builder.AppendLine("\t\t" + exception.Value.ToString("D" + length.ToString(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo) + " - " + exception.Key);
             }
 
             return builder.ToString();

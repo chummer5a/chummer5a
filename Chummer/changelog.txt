@@ -315,6 +315,8 @@ Changed/New Strings:
 - Label_CharacterOptions_CompiledSpriteLimit
 - Message_BoundSpiritLimit
 - Message_RegisteredSpriteLimit
+- Label_SelectBP_UseSetting
+- Label_Options_DefaultMasterIndexSetting
 
 Deleted Strings:
 - Label_Options_NuyenPerBP

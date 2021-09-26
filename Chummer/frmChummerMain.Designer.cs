@@ -72,8 +72,8 @@ namespace Chummer
             this.toolsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuToolsDiceRoller = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuOptions = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuCharacterOptions = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuGlobalSettings = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuCharacterSettings = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.mnuToolsUpdate = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.mnuRestart = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -634,8 +634,8 @@ namespace Chummer
             this.toolsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuToolsDiceRoller,
             this.toolStripSeparator5,
-            this.mnuOptions,
-            this.mnuCharacterOptions,
+            this.mnuGlobalSettings,
+            this.mnuCharacterSettings,
             this.mnuToolsUpdate,
             this.mnuRestart,
             this.toolStripSeparator6,
@@ -666,35 +666,35 @@ namespace Chummer
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
             // 
-            // mnuOptions
+            // mnuGlobalSettings
             // 
-            this.mnuOptions.Image = global::Chummer.Properties.Resources.cog_edit;
-            this.mnuOptions.ImageDpi120 = null;
-            this.mnuOptions.ImageDpi144 = null;
-            this.mnuOptions.ImageDpi192 = global::Chummer.Properties.Resources.cog_edit1;
-            this.mnuOptions.ImageDpi288 = null;
-            this.mnuOptions.ImageDpi384 = null;
-            this.mnuOptions.ImageDpi96 = global::Chummer.Properties.Resources.cog_edit;
-            this.mnuOptions.Name = "mnuOptions";
-            this.mnuOptions.Size = new System.Drawing.Size(171, 22);
-            this.mnuOptions.Tag = "Menu_Main_Options";
-            this.mnuOptions.Text = "&Global Options";
-            this.mnuOptions.Click += new System.EventHandler(this.mnuOptions_Click);
+            this.mnuGlobalSettings.Image = global::Chummer.Properties.Resources.cog_edit;
+            this.mnuGlobalSettings.ImageDpi120 = null;
+            this.mnuGlobalSettings.ImageDpi144 = null;
+            this.mnuGlobalSettings.ImageDpi192 = global::Chummer.Properties.Resources.cog_edit1;
+            this.mnuGlobalSettings.ImageDpi288 = null;
+            this.mnuGlobalSettings.ImageDpi384 = null;
+            this.mnuGlobalSettings.ImageDpi96 = global::Chummer.Properties.Resources.cog_edit;
+            this.mnuGlobalSettings.Name = "mnuGlobalSettings";
+            this.mnuGlobalSettings.Size = new System.Drawing.Size(171, 22);
+            this.mnuGlobalSettings.Tag = "Menu_Main_Options";
+            this.mnuGlobalSettings.Text = "&Global Settings";
+            this.mnuGlobalSettings.Click += new System.EventHandler(this.mnuGlobalSettings_Click);
             // 
-            // mnuCharacterOptions
+            // mnuCharacterSettings
             // 
-            this.mnuCharacterOptions.Image = global::Chummer.Properties.Resources.group_gear;
-            this.mnuCharacterOptions.ImageDpi120 = null;
-            this.mnuCharacterOptions.ImageDpi144 = null;
-            this.mnuCharacterOptions.ImageDpi192 = global::Chummer.Properties.Resources.group_gear1;
-            this.mnuCharacterOptions.ImageDpi288 = null;
-            this.mnuCharacterOptions.ImageDpi384 = null;
-            this.mnuCharacterOptions.ImageDpi96 = global::Chummer.Properties.Resources.group_gear;
-            this.mnuCharacterOptions.Name = "mnuCharacterOptions";
-            this.mnuCharacterOptions.Size = new System.Drawing.Size(171, 22);
-            this.mnuCharacterOptions.Tag = "Menu_Main_Character_Options";
-            this.mnuCharacterOptions.Text = "&Character Options";
-            this.mnuCharacterOptions.Click += new System.EventHandler(this.mnuCharacterOptions_Click);
+            this.mnuCharacterSettings.Image = global::Chummer.Properties.Resources.group_gear;
+            this.mnuCharacterSettings.ImageDpi120 = null;
+            this.mnuCharacterSettings.ImageDpi144 = null;
+            this.mnuCharacterSettings.ImageDpi192 = global::Chummer.Properties.Resources.group_gear1;
+            this.mnuCharacterSettings.ImageDpi288 = null;
+            this.mnuCharacterSettings.ImageDpi384 = null;
+            this.mnuCharacterSettings.ImageDpi96 = global::Chummer.Properties.Resources.group_gear;
+            this.mnuCharacterSettings.Name = "mnuCharacterSettings";
+            this.mnuCharacterSettings.Size = new System.Drawing.Size(171, 22);
+            this.mnuCharacterSettings.Tag = "Menu_Main_Character_Options";
+            this.mnuCharacterSettings.Text = "&Character Settings";
+            this.mnuCharacterSettings.Click += new System.EventHandler(this.mnuCharacterSettings_Click);
             // 
             // mnuToolsUpdate
             // 
@@ -1117,8 +1117,8 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem newWindowToolStripMenuItem;
         private DpiFriendlyToolStripMenuItem closeAllToolStripMenuItem;
         private DpiFriendlyToolStripMenuItem mnuToolsDiceRoller;
-        private DpiFriendlyToolStripMenuItem mnuOptions;
-        private DpiFriendlyToolStripMenuItem mnuCharacterOptions;
+        private DpiFriendlyToolStripMenuItem mnuGlobalSettings;
+        private DpiFriendlyToolStripMenuItem mnuCharacterSettings;
         private DpiFriendlyToolStripMenuItem mnuToolsUpdate;
         private DpiFriendlyToolStripMenuItem mnuRestart;
         private DpiFriendlyToolStripMenuItem mnuToolsTranslator;
