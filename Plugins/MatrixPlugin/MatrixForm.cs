@@ -35,26 +35,26 @@ namespace MatrixPlugin
             void InitializeBinding()
             {
                 //Attribute section
-                lOverClocker.DoDataBinding("Enabled", logic, "OverClocker");
+                lOverClocker.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
 
-                rbOverAttack.DoDataBinding("Enabled", logic, "OverClocker");
-                rbOverSleaze.DoDataBinding("Enabled", logic, "OverClocker");
-                rbOverDataProc.DoDataBinding("Enabled", logic, "OverClocker");
-                rbOverFirewall.DoDataBinding("Enabled", logic, "OverClocker");
-                AddRadioCheckedBinding(rbOverAttack, logic, "Overclocked", "Attack");
-                AddRadioCheckedBinding(rbOverSleaze, logic, "Overclocked", "Sleaze");
-                AddRadioCheckedBinding(rbOverDataProc, logic, "Overclocked", "DataProcessing");
-                AddRadioCheckedBinding(rbOverFirewall, logic, "Overclocked", "Firewall");
+                rbOverAttack.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
+                rbOverSleaze.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
+                rbOverDataProc.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
+                rbOverFirewall.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
+                AddRadioCheckedBinding(rbOverAttack, logic, nameof(logic.OverClocked), nameof(logic.Attack));
+                AddRadioCheckedBinding(rbOverSleaze, logic, nameof(logic.OverClocked), nameof(logic.Sleaze));
+                AddRadioCheckedBinding(rbOverDataProc, logic, nameof(logic.OverClocked), nameof(logic.DataProcessing));
+                AddRadioCheckedBinding(rbOverFirewall, logic, nameof(logic.OverClocked), nameof(logic.Firewall));
 
-                lAttackMod.DoDataBinding("Text", logic, "AttackMod");
-                lSleazeMod.DoDataBinding("Text", logic, "SleazeMod");
-                lDataProcMod.DoDataBinding("Text", logic, "DataProcessingMod");
-                lFirewallMod.DoDataBinding("Text", logic, "FirewallMod");
+                lAttackMod.DoDataBinding("Text", logic, nameof(logic.AttackMod));
+                lSleazeMod.DoDataBinding("Text", logic, nameof(logic.SleazeMod));
+                lDataProcMod.DoDataBinding("Text", logic, nameof(logic.DataProcessingMod));
+                lFirewallMod.DoDataBinding("Text", logic, nameof(logic.FirewallMod));
 
-                lAttackRes.DoDataBinding("Text", logic, "TotalAttack");
-                lSleazeRes.DoDataBinding("Text", logic, "TotalSleaze");
-                lDataProcRes.DoDataBinding("Text", logic, "TotalDataProcessing");
-                lFirewallRes.DoDataBinding("Text", logic, "TotalFirewall");
+                lAttackRes.DoDataBinding("Text", logic, nameof(logic.TotalAttack));
+                lSleazeRes.DoDataBinding("Text", logic, nameof(logic.TotalSleaze));
+                lDataProcRes.DoDataBinding("Text", logic, nameof(logic.TotalDataProcessing));
+                lFirewallRes.DoDataBinding("Text", logic, nameof(logic.TotalFirewall));
                 //Action section
                 lSkillDescription.DoDataBinding("Text", logic, "currentAction.Description");
                 lActionType.DoDataBinding("Text", logic, "currentAction.Type");
@@ -71,8 +71,8 @@ namespace MatrixPlugin
                 DoDataBindingWithFormatter(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
                 lActionModifier.DoDataBinding("Text", logic, "currentAction.ActionModifier");
                 lDefendModifier.DoDataBinding("Text", logic, "currentAction.DefenceModifier");
-                dpcActionDicePool.DoDataBinding("DicePool", logic, "ActionDicePool");
-                dpcDefendDicePool.DoDataBinding("DicePool", logic, "DefenceDicePool");
+                dpcActionDicePool.DoDataBinding("DicePool", logic, nameof(logic.ActionDicePool));
+                dpcDefendDicePool.DoDataBinding("DicePool", logic, nameof(logic.DefenceDicePool));
             }
         }
 
