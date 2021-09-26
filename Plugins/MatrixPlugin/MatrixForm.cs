@@ -128,10 +128,10 @@ namespace MatrixPlugin
             int intBaseFirewall = (objThis.Firewall);
             
             List<ListItem> DataSource = new List<ListItem>(4) {
-                    new ListItem(intBaseAttack, intBaseAttack.ToString(GlobalOptions.InvariantCultureInfo)),
-                    new ListItem(intBaseSleaze, intBaseSleaze.ToString(GlobalOptions.InvariantCultureInfo)),
-                    new ListItem(intBaseDP, intBaseDP.ToString(GlobalOptions.InvariantCultureInfo)),
-                    new ListItem(intBaseFirewall, intBaseFirewall.ToString(GlobalOptions.InvariantCultureInfo))
+                    new ListItem(intBaseAttack, intBaseAttack.ToString(GlobalSettings.InvariantCultureInfo)),
+                    new ListItem(intBaseSleaze, intBaseSleaze.ToString(GlobalSettings.InvariantCultureInfo)),
+                    new ListItem(intBaseDP, intBaseDP.ToString(GlobalSettings.InvariantCultureInfo)),
+                    new ListItem(intBaseFirewall, intBaseFirewall.ToString(GlobalSettings.InvariantCultureInfo))
             };
 
             cboAttack.SuspendLayout();
