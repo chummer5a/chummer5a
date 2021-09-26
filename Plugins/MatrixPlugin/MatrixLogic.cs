@@ -1,11 +1,10 @@
 using Chummer;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Linq;
-using System.Collections.ObjectModel;
 
 namespace MatrixPlugin
 {
@@ -15,7 +14,7 @@ namespace MatrixPlugin
 
         private readonly Character _character;
 
-        public List<IHasMatrixAttributes> Persons;
+        public List<Gear> Persons;
         public List<Gear> Software;
         public List<MatrixAction> Actions;
         public MatrixLogic(Character character, List<MatrixAction> matrixActions)
@@ -24,14 +23,14 @@ namespace MatrixPlugin
             _character.PropertyChanged += _character_PropertyChanged;
             _character.Gear.CollectionChanged += Gear_CollectionChanged;
             Actions = matrixActions;
-            Persons = new List<IHasMatrixAttributes>();
+            Persons = new List<Gear>();
             Software = new List<Gear>();
 
             //Load all CyberDecks,Commlinks and Programs to the Lists
             AddEquipment(character.Gear);
         }
 
-        private void AddEquipment(ObservableCollection<Gear> gears)
+        private void AddEquipment(IList gears)
         {
             foreach (Gear gear in gears)
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
@@ -44,7 +43,9 @@ namespace MatrixPlugin
 
         private void Gear_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            AddEquipment(e.NewItems as ObservableCollection<Gear>);
+            if (e.NewItems != null)
+                AddEquipment(e.NewItems);
+            if (e.OldItems != null)
             foreach(Gear gear in e.OldItems)
             {
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")

@@ -20,16 +20,19 @@ namespace MatrixPlugin
 
             void InitializeContent()
             {
-                foreach(var person in logic.Persons)
-                    if (person is Gear gear)
-                        listCyberDecks.Items.Add(gear.Name);
+                //foreach(var person in logic.Persons)
+                //    if (person is Gear gear)
+                //        listCyberDecks.Items.Add(gear.Name);
                 foreach (var software in logic.Software)
                     listSoftware.Items.Add(software.Name);
                 foreach (var action in logic.Actions)
                     cbActions.Items.Add(action.Name);
 
+                listCyberDecks.DataSource = logic.Persons;
+                listCyberDecks.DisplayMember = "Name";
+                //listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(((Gear)logic.CurrentPerson).Name);
+
                 cbActions.SelectedIndex = 0;
-                listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(((Gear)logic.CurrentPerson).Name);
             }
 
             void InitializeBinding()
