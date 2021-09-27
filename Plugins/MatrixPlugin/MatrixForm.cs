@@ -20,17 +20,14 @@ namespace MatrixPlugin
 
             void InitializeContent()
             {
-                //foreach(var person in logic.Persons)
-                //    if (person is Gear gear)
-                //        listCyberDecks.Items.Add(gear.Name);
-                foreach (var software in logic.Software)
-                    listSoftware.Items.Add(software.Name);
-                foreach (var action in logic.Actions)
-                    cbActions.Items.Add(action.Name);
-
                 listCyberDecks.DataSource = logic.Persons;
                 listCyberDecks.DisplayMember = "Name";
-                //listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(((Gear)logic.CurrentPerson).Name);
+
+                listSoftware.DataSource = logic.Software;
+                listSoftware.DisplayMember = "Name";
+
+                foreach (var action in logic.Actions)
+                    cbActions.Items.Add(action.Name);
 
                 cbActions.SelectedIndex = 0;
             }
@@ -78,7 +75,6 @@ namespace MatrixPlugin
                 dpcDefendDicePool.DoDataBinding("DicePool", logic, nameof(logic.DefenceDicePool));
             }
         }
-
 
         private void DoDataBindingWithFormatter(Control obj, string dataMember, ConvertEventHandler formatter)
         {

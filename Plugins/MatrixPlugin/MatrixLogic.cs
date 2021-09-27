@@ -14,8 +14,8 @@ namespace MatrixPlugin
 
         private readonly Character _character;
 
-        public List<Gear> Persons;
-        public List<Gear> Software;
+        public BindingList<Gear> Persons { get; set; }
+        public BindingList<Gear> Software { get; set; }
         public List<MatrixAction> Actions;
         public MatrixLogic(Character character, List<MatrixAction> matrixActions)
         {
@@ -23,8 +23,8 @@ namespace MatrixPlugin
             _character.PropertyChanged += _character_PropertyChanged;
             _character.Gear.CollectionChanged += Gear_CollectionChanged;
             Actions = matrixActions;
-            Persons = new List<Gear>();
-            Software = new List<Gear>();
+            Persons = new BindingList<Gear>();
+            Software = new BindingList<Gear>();
 
             //Load all CyberDecks,Commlinks and Programs to the Lists
             AddEquipment(character.Gear);
