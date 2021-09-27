@@ -5886,7 +5886,7 @@
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>Special</damage>
-      <ap />
+      <ap>-</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>Special</ammo>
@@ -5913,7 +5913,7 @@
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
-      <ap />
+      <ap>-</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(b)</ammo>
@@ -5954,7 +5954,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
-      <ap />
+      <ap>-</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(b)</ammo>
