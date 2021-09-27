@@ -2397,7 +2397,7 @@ namespace Chummer.Backend.Equipment
                     }
                     // Adjust the Weapon's Damage.
                     if (!string.IsNullOrEmpty(objAccessory.Damage))
-                        sbdBonusDamage.Append(" + " + objAccessory.Damage);
+                        sbdBonusDamage.Append(" + " + objAccessory.Damage.TrimStartOnce('+'));
                     if (!string.IsNullOrEmpty(objAccessory.DamageReplacement))
                     {
                         blnDamageReplaced = true;
@@ -2423,7 +2423,7 @@ namespace Chummer.Backend.Equipment
                         // Adjust the Weapon's Damage.
                         string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
-                            sbdBonusDamage.Append(" + " + strTemp);
+                            sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
                         strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
                         {
@@ -2442,7 +2442,7 @@ namespace Chummer.Backend.Equipment
                         // Adjust the Weapon's Damage.
                         string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
-                            sbdBonusDamage.Append(" + " + strTemp);
+                            sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
                         strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
                         {
@@ -2464,7 +2464,7 @@ namespace Chummer.Backend.Equipment
                             // Adjust the Weapon's Damage.
                             string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                sbdBonusDamage.Append(" + " + strTemp);
+                                sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
                             strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
                             {
@@ -2483,7 +2483,7 @@ namespace Chummer.Backend.Equipment
                             // Adjust the Weapon's Damage.
                             string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                sbdBonusDamage.Append(" + " + strTemp);
+                                sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
                             strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
                             {
@@ -3163,7 +3163,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
                     if (!string.IsNullOrEmpty(strAPAdd))
-                        sbdBonusAP.Append(" + " + strAPAdd);
+                        sbdBonusAP.Append(" + " + strAPAdd.TrimStartOnce('+'));
                 }
                 else if (objGear?.WeaponBonus != null)
                 {
@@ -3174,7 +3174,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
                     if (!string.IsNullOrEmpty(strAPAdd))
-                        sbdBonusAP.Append(" + " + strAPAdd);
+                        sbdBonusAP.Append(" + " + strAPAdd.TrimStartOnce('+'));
                 }
 
                 if (_objCharacter != null && (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
@@ -3195,7 +3195,7 @@ namespace Chummer.Backend.Equipment
                         strAP = objAccessory.APReplacement;
                     // Adjust the Weapon's AP value.
                     if (!string.IsNullOrEmpty(objAccessory.AP))
-                        sbdBonusAP.Append(" + " + objAccessory.AP);
+                        sbdBonusAP.Append(" + " + objAccessory.AP.TrimStartOnce('+'));
                 }
             }
 
