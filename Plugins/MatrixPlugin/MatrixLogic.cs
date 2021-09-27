@@ -1,6 +1,7 @@
 using Chummer;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -79,16 +80,18 @@ namespace MatrixPlugin
             return 0;
         }
 
-        public int GetTotalSkill(string skill)
+        public int GetTotalSkill(string skillName)
         {
-            if (_character.SkillsSection.GetActiveSkill(skill) != null)
-                return _character.SkillsSection.GetActiveSkill(skill).TotalBaseRating;
+            Skill skill = _character.SkillsSection.GetActiveSkill(skillName);
+            if (skill != null)
+                return skill.TotalBaseRating;
             return 0;
         }
-        public int GetTotalAttribute(string attribute)
+        public int GetTotalAttribute(string attributeName)
         {
-            if (_character.GetAttribute(attribute) != null)
-                return _character.GetAttribute(attribute).TotalValue;
+            CharacterAttrib attribute = _character.GetAttribute(attributeName);
+            if (attribute != null)
+                return attribute.TotalValue;
             return 0;
         }
 
