@@ -108,10 +108,8 @@ namespace MatrixPlugin
             radio.DataBindings.Add(binding);
         }
 
-        public void RefreshMatrixAttributeCBOs(MatrixLogic objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
+        public void RefreshMatrixAttributeCBOs(ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
         {
-            if (objThis == null)
-                return;
             if (cboAttack == null)
                 throw new ArgumentNullException(nameof(cboAttack));
             if (cboSleaze == null)
@@ -121,10 +119,10 @@ namespace MatrixPlugin
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            int intBaseAttack = (objThis.Attack);
-            int intBaseSleaze = (objThis.Sleaze);
-            int intBaseDP = (objThis.DataProcessing);
-            int intBaseFirewall = (objThis.Firewall);
+            int intBaseAttack = (logic.Attack);
+            int intBaseSleaze = (logic.Sleaze);
+            int intBaseDP = (logic.DataProcessing);
+            int intBaseFirewall = (logic.Firewall);
             
             List<ListItem> DataSource = new List<ListItem>(4) {
                     new ListItem(intBaseAttack, intBaseAttack.ToString(GlobalSettings.InvariantCultureInfo)),
@@ -147,7 +145,7 @@ namespace MatrixPlugin
             cboAttack.PopulateWithListItems(DataSource);
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
-            cboAttack.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboAttack.Enabled = logic.CurrentPerson.CanSwapAttributes;
             cboAttack.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboSleaze.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
@@ -155,7 +153,7 @@ namespace MatrixPlugin
             cboSleaze.PopulateWithListItems(DataSource);
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
-            cboSleaze.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboSleaze.Enabled = logic.CurrentPerson.CanSwapAttributes;
             cboSleaze.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboDP.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
@@ -163,7 +161,7 @@ namespace MatrixPlugin
             cboDP.PopulateWithListItems(DataSource);
             cboDP.SelectedIndex = 2;
             cboDP.Visible = true;
-            cboDP.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboDP.Enabled = logic.CurrentPerson.CanSwapAttributes;
             cboDP.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboFirewall.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
@@ -171,7 +169,7 @@ namespace MatrixPlugin
             cboFirewall.PopulateWithListItems(DataSource);
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
-            cboFirewall.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboFirewall.Enabled = logic.CurrentPerson.CanSwapAttributes;
             cboFirewall.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboAttack.EndUpdate();
@@ -229,7 +227,7 @@ namespace MatrixPlugin
                 logic.Firewall = oldValue;
             }
 
-            RefreshMatrixAttributeCBOs(logic, cbAttack, cbSleaze, cbDataProc, cbFirewall);
+            RefreshMatrixAttributeCBOs(cbAttack, cbSleaze, cbDataProc, cbFirewall);
         }
 
         private void CbActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -241,7 +239,7 @@ namespace MatrixPlugin
         private void ListCyberDecks_SelectedIndexChanged(object sender, EventArgs e)
         {
             logic.CurrentPerson = logic.Persons[listCyberDecks.SelectedIndex];
-            RefreshMatrixAttributeCBOs(logic, cbAttack, cbSleaze, cbDataProc, cbFirewall);
+            RefreshMatrixAttributeCBOs(cbAttack, cbSleaze, cbDataProc, cbFirewall);
         }
 
         private void ValueChanged(object sender, EventArgs e)

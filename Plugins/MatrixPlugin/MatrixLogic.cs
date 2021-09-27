@@ -68,13 +68,13 @@ namespace MatrixPlugin
             switch (attribute)
             {
                 case "Attack":
-                    return this.TotalAttack;
+                    return TotalAttack;
                 case "Sleaze":
-                    return this.TotalSleaze;
+                    return TotalSleaze;
                 case "Data Processing":
-                    return this.TotalDataProcessing;
+                    return TotalDataProcessing;
                 case "Firewall":
-                    return this.TotalFirewall;
+                    return TotalFirewall;
             }
             return 0;
         }
