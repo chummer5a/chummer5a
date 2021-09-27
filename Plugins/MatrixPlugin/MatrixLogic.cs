@@ -15,9 +15,6 @@ namespace MatrixPlugin
 
         private readonly Character _character;
 
-        public BindingList<Gear> Persons { get; set; }
-        public BindingList<Gear> Software { get; set; }
-        public List<MatrixAction> Actions;
         public MatrixLogic(Character character, List<MatrixAction> matrixActions)
         {
             _character = character;
@@ -31,15 +28,27 @@ namespace MatrixPlugin
             AddEquipment(character.Gear);
         }
 
-        private void AddEquipment(IList gears)
+        private void AddEquipment(IList equipment)
         {
-            foreach (Gear gear in gears)
+            foreach (Gear gear in equipment)
+            {
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
                     Persons.Add(gear);
                 else if (gear.Category.Contains("Program"))
                     Software.Add(gear);
-                else if (gear.Children.Count > 0)
+                if (gear.Children.Count > 0)
                     AddEquipment(gear.Children);
+            }
+        }
+        private void RemoveEquipment(IList equipment)
+        {
+            foreach (Gear gear in equipment)
+            {
+                if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
+                    Persons.Remove(gear);
+                else if (gear.Category.Contains("Program"))
+                    Software.Remove(gear);
+            }
         }
 
         private void Gear_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -47,13 +56,7 @@ namespace MatrixPlugin
             if (e.NewItems != null)
                 AddEquipment(e.NewItems);
             if (e.OldItems != null)
-            foreach(Gear gear in e.OldItems)
-            {
-                if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
-                    Persons.Remove(gear);
-                else if (gear.Category.Contains("Program"))
-                    Software.Remove(gear);
-            }
+                RemoveEquipment(e.OldItems);
         }
 
         private void _character_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -149,6 +152,10 @@ namespace MatrixPlugin
         }
 
         #region Properties
+
+        public BindingList<Gear> Persons { get; set; }
+        public BindingList<Gear> Software { get; set; }
+        public List<MatrixAction> Actions { get; set; }
 
         public IHasMatrixAttributes CurrentPerson
         {
