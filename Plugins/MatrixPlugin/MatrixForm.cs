@@ -1,5 +1,4 @@
 using Chummer;
-using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -17,6 +16,7 @@ namespace MatrixPlugin
             InitializeComponent();
             InitializeContent();
             InitializeBinding();
+            this.UpdateLightDarkMode();
 
             void InitializeContent()
             {

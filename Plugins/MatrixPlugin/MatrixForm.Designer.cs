@@ -105,7 +105,7 @@ namespace MatrixPlugin
             // 
             // MatrixTabPage
             // 
-            this.MatrixTabPage.BackColor = System.Drawing.Color.Transparent;
+            this.MatrixTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.MatrixTabPage.Controls.Add(this.listCyberDecks);
             this.MatrixTabPage.Controls.Add(this.gbAttributes);
             this.MatrixTabPage.Controls.Add(this.gbSoftware);
@@ -374,6 +374,7 @@ namespace MatrixPlugin
             // 
             // gbActions
             // 
+            this.gbActions.BackColor = System.Drawing.SystemColors.Control;
             this.gbActions.Controls.Add(this.lActionType);
             this.gbActions.Controls.Add(this.lDefendModifier);
             this.gbActions.Controls.Add(this.lSkillLimitValue);
@@ -609,13 +610,14 @@ namespace MatrixPlugin
             // 
             // gbModifier
             // 
+            this.gbModifier.BackColor = System.Drawing.SystemColors.Control;
             this.gbModifier.Controls.Add(this.cSilent);
             this.gbModifier.Controls.Add(this.cHotVR);
             this.gbModifier.Controls.Add(this.nNoize);
             this.gbModifier.Controls.Add(this.lNoize);
             this.gbModifier.Location = new System.Drawing.Point(227, 6);
             this.gbModifier.Name = "gbModifier";
-            this.gbModifier.Size = new System.Drawing.Size(354, 188);
+            this.gbModifier.Size = new System.Drawing.Size(348, 188);
             this.gbModifier.TabIndex = 4;
             this.gbModifier.TabStop = false;
             this.gbModifier.Text = "Modifiers";
