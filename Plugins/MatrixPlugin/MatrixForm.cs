@@ -192,19 +192,27 @@ namespace MatrixPlugin
             ComboBox from = (ComboBox)sender;
             Action<int> funcAttributePropertySetter;
             int oldValue;
-            if (from == cbAttack) {
+            if (from == cbAttack)
+            {
                 oldValue = logic.Attack;
                 funcAttributePropertySetter = (x => logic.Attack = x);
-            } else if (from == cbSleaze) {
+            }
+            else if (from == cbSleaze)
+            {
                 oldValue = logic.Sleaze;
                 funcAttributePropertySetter = (x => logic.Sleaze = x);
-            } else if (from == cbDataProc) {
+            }
+            else if (from == cbDataProc)
+            {
                 oldValue = logic.DataProcessing;
                 funcAttributePropertySetter = (x => logic.DataProcessing = x);
-            } else if (from == cbFirewall) {
+            }
+            else if (from == cbFirewall)
+            {
                 oldValue = logic.Firewall;
                 funcAttributePropertySetter = (x => logic.Firewall = x);
-            } else return;
+            }
+            else return;
 
             if (from.SelectedItem.ToString() == cbAttack.Items[cbAttack.SelectedIndex].ToString() && cbAttack != from)
             {
