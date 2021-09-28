@@ -80,6 +80,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Software.cs" />
     <Compile Include="MatrixAction.cs" />
     <Compile Include="MatrixForm.cs">
       <SubType>Form</SubType>
@@ -105,6 +106,10 @@
     <None Include="app.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\software.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -127,6 +132,11 @@
       <Name>Chummer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\software.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>echo Statement 1: 
@@ -135,6 +145,9 @@ mkdir "$(TargetDir)Plugins\MatrixPlugin\"
 echo Statement 2: 
 mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\"
 mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\"
+echo Statement 2: 
+mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\data"
+mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\data"
 Exit 0</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
@@ -160,10 +173,13 @@ echo ---------------------------------------------------------------------------
         echo Statement 12: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\MatrixPlugin\" /Y
         copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\MatrixPlugin\" /Y
 
+echo Statement 13: copy "$(ProjectDir)data\*.xml" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\data"
+copy "$(ProjectDir)data\*.xml" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\data"
+
+
         echo Statement last: copy "$(TargetDir)Plugins\MatrixPlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\" /Y
         copy "$(TargetDir)Plugins\MatrixPlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\MatrixPlugin\" /Y
 
-
-    </PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
