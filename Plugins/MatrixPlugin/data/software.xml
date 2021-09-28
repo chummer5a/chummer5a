@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema programs.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema software.xsd">
   <gears>
     <gear>
-      <id>b3c0a6bd-e086-4971-be77-dc9a9cb2e174</id>
       <name>Browse</name>
       <description>This handy browser and search engine cuts the time for a Matrix Search action in half. </description>
     </gear>
     <gear>
-      <id>0e9a4de8-c78e-498e-8f3b-8e581bc73e43</id>
       <name>Configurator</name>
       <description>When you run this program, choose a configuration for your deck other than its current one. This alternate configuration is stored in the Configurator program. The next time you reconfigure your deck, you may switch to the full configuration stored in this program instead of just swapping two attributes or programs, even if it means Configurator stops running at that point. The configuration stored in this program doesn’t change when you use it, so you can recall it again if you reconfigure your deck to something else (assuming the Configurator program is running when you want to recall the stored information). </description>
     </gear>
     <gear>
-      <id>fe598c15-fe7a-46f9-bc84-751cb32735e2</id>
       <name>Edit</name>
       <description>This program makes editing easier with a smart interface that learns your style and can even give you suggestions. Add 2 to the Data Processing limit for any Edit tests made while this is running. </description>
       <modifiers>
@@ -20,7 +17,6 @@
       </modifiers>
     </gear>
     <gear>
-      <id>d3bb1242-73b0-4b8a-89ab-27c272ebc900</id>
       <name>Encryption</name>
       <description>Activating the Encryption utility gives you a +1 bonus to your Firewall attribute. </description>
       <modifiers>
@@ -28,7 +24,6 @@
       </modifiers>
     </gear>
     <gear>
-      <id>1662e26b-7370-4ade-9d9d-c9b92b0d145b</id>
       <name>Signal Scrub</name>
       <description>By analyzing the background noise and incoming signals, Signal Scrub gives you Rating 2 noise reduction </description>
       <modifiers>
@@ -36,7 +31,6 @@
       </modifiers>
     </gear>
     <gear>
-      <id>cffae49c-30d1-42df-b47c-a407f3a86e7a</id>
       <name>Toolbox</name>
       <description>The memory management utilities in the Toolbox give you a +1 bonus to your Data Processing attribute </description>
       <modifiers>
@@ -44,7 +38,6 @@
       </modifiers>
     </gear>
     <gear>
-      <id>7b8f4a4e-0bdb-4e05-ade4-bf558daf60a6</id>
       <name>Virtual Machine</name>
       <description>This program creates a virtual memory space in your deck, giving you increased program capacity at the cost of system stability. Your deck can run two additional programs, but whenever your persona takes Matrix damage, it takes an additional box of Matrix damage that cannot be resisted. </description>
       <modifiers>
@@ -53,32 +46,26 @@
       </modifiers>
     </gear>
     <gear>
-      <id>a1e4b783-0751-43eb-b5bd-ee00f84b7bb3</id>
       <name>Armor</name>
       <description>This program works with your firmware as a second firewall, giving you a +2 dice pool modifier to resist Matrix damage. </description>
     </gear>
     <gear>
-      <id>a37b8000-495b-4ab8-a73b-16a36a6a410e</id>
       <name>Baby Monitor</name>
       <description>The Baby Monitor program uses algorithms stolen from the Grid Overwatch Division and keeps track of your movements in the Matrix, so you always know your current Overwatch Score. </description>
     </gear>
     <gear>
-      <id>e631585a-0cce-4c95-873d-74b278a661df</id>
       <name>Biofeedback</name>
       <description>When you’re attacked, this program laces all of the attacks you make against other icons with dangerous biofeedback signals, the sort of drek that Black IC and G-men use. This program only works if the target is biological in nature (a security spider, for instance). When your attack causes Matrix damage, the target is hit with an equal amount of Stun (if the target is using cold-sim) or Physical (if the target is using hot-sim) biofeedback damage. This program also applies to damage caused by failed Attack actions against you. Biofeedback damage is resisted with Willpower + Firewall. </description>
     </gear>
     <gear>
-      <id>7bc33fe3-96b0-4f3c-a459-7c85ede9f8c1</id>
       <name>Biofeedback Filter</name>
       <description>This program is like a firewall for your sim module, giving you a +2 dice pool modifier to resist biofeedback damage. </description>
     </gear>
     <gear>
-      <id>f3134808-861c-41df-8bdf-2d2c855e78a4</id>
       <name>Blackout</name>
       <description>This is a kinder version of Biofeedback. It works the same way, but only causes Stun damage, even if the target is using hot-sim. </description>
     </gear>
     <gear>
-      <id>5217388a-e2ce-4add-bcc0-b0b1672f156c</id>
       <name>Decryption</name>
       <description>The code-cutting algorithms in this program give you a +1 bonus to your Attack attribute. </description>
       <modifiers>
@@ -86,17 +73,14 @@
       </modifiers>
     </gear>
     <gear>
-      <id>168b8c61-9ea4-4816-8cf4-cb996067b6d6</id>
       <name>Defuse</name>
       <description>This program creates predictive barriers between you and a Data Bomb, giving you a +4 dice pool modifier to resist damage from one. </description>
     </gear>
     <gear>
-      <id>3da01b93-3830-4211-b563-f41c7fcf4ab0</id>
       <name>Demolition</name>
       <description>Demolition comes with the latest and most effective Data Bomb-coding techniques, adding 1 to the rating of any Data Bomb you set while this is running. </description>
     </gear>
     <gear>
-      <id>67ea7c0c-1703-412b-80d3-9c23cc6d8291</id>
       <name>Exploit</name>
       <description>This program analyzes and scans a target for weaknesses in its Firewall. You receive a +2 bonus to your Sleaze attribute when attempting a Hack on the Fly action. </description>
       <modifiers>
@@ -104,37 +88,30 @@
       </modifiers>
     </gear>
     <gear>
-      <id>69a87be8-6f05-453d-a344-b02d9fab055c</id>
       <name>Fork</name>
       <description>You can perform a single Matrix action on two targets with this program. You make a single test, with modifiers from each target both counting toward your dice pool. Each of the targets defend with their own dice pools. Determine the result of the actions separately against each target. </description>
     </gear>
     <gear>
-      <id>ea3178a2-535f-43b7-8555-deca95ac837d</id>
       <name>Guard</name>
       <description>This program keeps an eye out for weaknesses the same way an attacker would, reducing the extra damage you take from marks by 1 DV per mark. </description>
     </gear>
     <gear>
-      <id>a3851f14-3fdc-47d6-82b4-07caf00202ce</id>
       <name>Hammer</name>
       <description>Whenever you cause Matrix damage with an action, this offensive program lets you inflict +2 DV worth of Matrix Damage. This does not apply against targets that take damage from failing an Attack action against you. </description>
     </gear>
     <gear>
-      <id>70be200d-5b83-4842-83b5-725839330808</id>
       <name>Lockdown</name>
       <description>When you cause damage to a persona, he or she is link-locked until you stop running this program or they successfully Jack Out. </description>
     </gear>
     <gear>
-      <id>62d165f6-bc3f-4204-afb7-47b3485e25ad</id>
       <name>Mugger</name>
       <description>By actively tracking your marks, the bonus damage from them is increased by 1 DV per mark. </description>
     </gear>
     <gear>
-      <id>84a3e0d5-ed40-4706-9b96-7f07567bcbef</id>
       <name>Shell</name>
       <description>This program uses a set of filtering algorithms to give you a +1 dice pool modifier to resist both Matrix and biofeedback damage. This modifier stacks with similar modifiers from other programs. </description>
     </gear>
     <gear>
-      <id>8920c83c-f4f2-4dfa-81a4-b150ba6ae1c0</id>
       <name>Sneak</name>
       <description>This utility bounces your Matrix traffic through unnecessary routes, giving you a +2 dice pool modifier to defend against Trace User actions. Additionally, if a demiGOD converges on you while this program is running, they don’t get your physical location, although you’re still hit with all the other bad stuff they throw at you. </description>
       <modifiers>
@@ -142,7 +119,6 @@
       </modifiers>
     </gear>
     <gear>
-      <id>d5877f46-03e0-4603-b77a-f27e278202ab</id>
       <name>Stealth</name>
       <description>This clever program gives you a +1 bonus to your Sleaze attribute. </description>
       <modifiers>
@@ -150,7 +126,6 @@
       </modifiers>
     </gear>
     <gear>
-      <id>9bfce6cb-99ea-4b63-ad9f-e1bceb87bbd6</id>
       <name>Track</name>
       <description>The Track program keeps an eye on your targets for you, making it easier to find their meat world equivalents. Add 2 to your Data Processing attribute when making Trace User tests with Track running. Alternately, if the target is running Sneak, Track negates the +2 dice pool bonus from that program. Note that the program delivers one of the listed benefits, not both. </description>
       <modifiers>
@@ -158,17 +133,14 @@
       </modifiers>
     </gear>
     <gear>
-      <id>4a33f713-566b-4233-bdd2-985000097648</id>
       <name>Wrapper</name>
       <description>This program overrides the Matrix’s protocols for icons. While this program is running, your icons can be anything you want them to be when you use the Change Icon action. From the lens of the Matrix, your Hammer program could look like a music file, your Ares Predator icon could look like a credstick, and your own persona could look like a Mitsubishi Nightsky. Another persona can see what the disguised icon really is with a Matrix Perception Test, but they need to at least suspect enough to check (Matrix Perception, p. 241). </description>
     </gear>
     <gear>
-      <id>175df941-97a5-4527-ad6a-14ea1624f971</id>
       <name>Bootstrap</name>
       <description>An IT expert’s tool of choice when working with boot code of a device. Corrupted by many hackers, Bootstrap allows for hidden commands to be input into the device after the next reboot. Popular options include announcing the location of the device when it connects to the Matrix, adjusting the processing of the device so that the default device attributes are the choice of the user, annoying the user with constant demands for ownership permissions, and making a record of every action on the device. This cyberprogram allows for a variety of tasks to be set up in the boot record by way of a Format Device action rather than just setting the device up to no longer function.</description>
     </gear>
     <gear>
-      <id>a0a5008f-deae-4d43-a714-5309b4d9c416</id>
       <name>Search</name>
       <description>When loaded, this cyberprogram tailors the cyberdeck’s search algorithms to match the specific iconography of the host, making the decker’s Matrix Search results more likely to contain the paydata he’s looking for. This is quite popular with Mr. Johnsons, who often provide copies with pre-loaded search requirements that are programmed to self-destruct after use, so that they can only be run once. The program provides 2 extra dice on a Matrix Search action when looking for specific data on a host that contains that data. There is no bonus is if the decker is searching for something that originates from outside the host.</description>
       <modifiers>
@@ -176,7 +148,6 @@
       </modifiers>
     </gear>
     <gear>
-      <id>5d4a8d67-276d-4112-b060-b85c65370ac3</id>
       <name>Shredder</name>
       <description>Designed to assist in erasing files and all their redundant back-up options that might be around inside a host and grid that the host inhabits, Shredder adds 2 to a cyberdeck’s Data Processing attribute for the purpose of deleting a file with the Edit File action. It functions by entering a large amount of random junk data into designated files, overwriting them repeatedly to help deter attempts at recovering them. A nice security option that is legal for users to use. Recovering a file that has been Shredded (or destroyed by a Data Bomb, for that matter) requires constant access to the host or grid the file was originally on, and a Computer (File Recovery) + Logic [Mental] (18, 1 week) Extended Test, which explains why offline back-ups are quite popular.</description>
     <modifiers>
@@ -184,17 +155,14 @@
     </modifiers>
     </gear>
     <gear>
-      <id>dd28044c-4745-49f8-8b79-2166f4e02769</id>
       <name>Cat's Paw</name>
       <description>A low-offensive attack program that distracts the user instead of damaging the device he is using, Cat’s Paw is useful to prevent a user from performing Matrix actions while not bricking the device they may be using. This program fills the AR display or VR experience with annoying errors, spam pop-ups and pop-unders, or other distracting garbage. On a successful Data Spike action (p. 239, SR5), instead of doing damage, the program generates a negative dice pool modifier equal to two plus the number of marks the user has on his target. Marks added or removed after using Cat’s Paw will also modify the penalty accordingly.</description>
     </gear>
     <gear>
-      <id>6a63bad1-de71-4929-a298-2d4f6c50a494</id>
       <name>Cloudless</name>
       <description>Not comfortable with your data stored only in the Matrix’s cloud? This program uses legacy code from previous incarnations of the Matrix to place data in physical media and physical media only. In addition to saving a file, it allows the user to use a successful Edit File action to move a file off the Matrix into the memory of a single designated device. This test is an Opposed Test, using the normal rules for Edit File (p.239, SR5). The Public grid has a dice pool of 6, local grids a dice pool of 8, and global grids a dice pool of 10 for the purposes of this test.</description>
     </gear>
     <gear>
-      <id>e1e3753e-9e94-4e6e-860d-a8a03782baf3</id>
       <name>Crash (Program)</name>
       <description>One thing deckers have learned about the new Matrix protocols is that the ability to force devices to reboot can be very beneficial. Crash is there to help deckers who want to do this. When running, it attempts to fill a targeted device with an exceptional amount of reboot-worthy errors, adding 2 to the Data Processing attribute of a deck running this program when it attempts a Reboot Device action (p. 242, SR5).</description>
     <modifiers>
@@ -202,32 +170,26 @@
     </modifiers>
     </gear>
     <gear>
-      <id>73872ee5-0d7e-4c00-84cc-b4e62bcbcd13</id>
       <name>Detonator</name>
       <description>With delicate monitoring, this cyberprogram is able to determine how often a file is accessed, and it sets a data bomb to go off after it has been affected a set number of times. To use this program, a decker attempts a Set Data Bomb action; if successful, they can then select how many actions can be executed with the file before the bomb goes off. They can also choose whether the Data Bomb does Matrix damage or just deletes the file. Similar to a Data Bomb, a Detonator can be detected with a Matrix Perception Test and defused with a Disarm Data Bomb action. Notoriously difficult to spot, Detonator-enabled data bombs are considered to have a Device Rating of 3 and a Sleaze attribute equal to [Remaining actions before detonation – 1] for the purposes of opposing Matrix Perception tests. This program costs twice as much as normal hacking cyberprograms, meaning it costs 500 nuyen.</description>
     </gear>
     <gear>
-      <id>dd3aede4-e0a2-425e-944d-c3d5c3a4b2d1</id>
       <name>Evaluate</name>
       <description>With constant updates from a series of Black BBS that specialize in monitoring paydata auctions, this program calculates how much a certain amount of paydata might be worth, in order to allow the decker to only take an amount that would limit the amount of heat they would generate in stealing a little extra while on the job.</description>
     </gear>
     <gear>
-      <id>9a4f4240-d1f8-4034-af1c-24e2e5326ccf</id>
       <name>Fly on a Wall</name>
     <description>Haven’t you always wanted to be the fly on a wall, in order to see the look on the faces of people when the final tally of their lives comes up? Well, GOD tends to prevent long-term surveillance by unauthorized personnel, but this program helps rebalance the scales. While this program is running, and the decker is performing no actions other than Matrix Perception tests, the Overwatch Score only increases by 1D6 per half-hour (rolled in secret by the gamemaster as normal). The program requires a Hide action in order to activate properly, and it does not assist in any way in preventing any other icon from noticing the decker.</description>
     </gear>
     <gear>
-      <id>04e80043-eabb-4ae1-944e-189d6e9ef419</id>
       <name>Hitchhiker</name>
     <description>There are some special parts of the Matrix where you can take others with you. And where you definitely don’t want to be alone. Grab this program to take your non-hacker friends to foundations and UV hosts.</description>
     </gear>
     <gear>
-      <id>39a8d39a-5c1c-44c7-a7fe-e9f28899c69e</id>
       <name>Nuke-from-Orbit</name>
     <description>A hugely powerful file destruction program that requires frequent updates as adjustments in file recovery technology continue to progress. This upgraded and outright illegal program is designed to ensure that no one will ever be able to recover a file that it destroys. If used to delete a file (the Edit File action should be used), this program ensures that no one will ever be able to recover the file from the Matrix. A brutal and decidedly unsubtle cyberprogram, any Overwatch Score generated from the Opposed Test is doubled. Offline back-ups and the Resonance realms are the only options for getting the file back. Nuke-From-Orbit has an Availability Rating of 12F</description>
     </gear>
     <gear>
-      <id>d1fbeb34-3ae0-4cb1-9c0f-85131c749849</id>
       <name>Paintjob</name>
     <description>Resprays and textures a persona’s icon, assisting in erasing or knocking off marks as it does so, ensuring the decker is able to trust in the fact that his cyberdeck is not being affected by outsiders. This program adds 2 to the Attack attribute for the purpose of making Erase Mark tests.</description>
     <modifiers>
@@ -235,12 +197,10 @@
     </modifiers>
     </gear>
     <gear>
-      <id>dd86897c-058e-4246-a921-9a556ec139d8</id>
       <name>Smoke and Mirrors</name>
     <description>Adds significant amounts of misleading location information in order to keep the decker from being located IRL. This program increases the cyberdeck’s Sleaze attribute between 1 and 5 (user’s choice) with an equivalent amount of noise added to any tests performed with the deck. The noise also affects Trace Icon tests performed against the deck using the program. This program has no effect against convergence (p. 231, SR5), as GOD and all the demiGODs cannot be distracted by so simple a trick.</description>
     </gear>
     <gear>
-      <id>b5bfc411-2c94-48c6-953a-b1a7c212c433</id>
       <name>Swerve</name>
       <description>Just as deckers have seen the benefits of forcing other devices to reboot, they have seen a need to keep their devices safe from those efforts. Swerve adds redundant code to the OS of the cyberdeck and any connected devices in the decker’s PAN, making it easier for the devices to resist crash attacks. This program adds 1 to the Firewall attribute of a device for the purpose of resisting Reboot Device attempts.</description>
     <modifiers>
@@ -248,12 +208,10 @@
     </modifiers>
     </gear>
     <gear>
-      <id>86a6c880-f877-4268-a693-a9b9e2b6f480</id>
       <name>Tantrum</name>
     <description>This program overlays cold simsense sensations on top of a Data Spike action, hitting the target with a quick and disgusting sensation if even a single box of Matrix Damage is scored. The program is effective against all technomancers, as well as cold sim or hot sim deckers, but it does nothing to users working in the Matrix in AR, any form of IC, and agents. The program does no damage from the Data Spike; instead, the targeted user experiences Nausea (p. 409, SR5) for three Combat Turns due to the sensory input. Popular options this program uses to make targets feel queasy include the smell of a dirty diaper or the feeling of being punched in the junk.</description>
     </gear>
     <gear>
-      <id>1609bec9-f1c2-4834-a704-917fc8642724</id>
       <name>Tarball</name>
     <description>A powerful but inaccurate combat program based on the old tar-based IC used for decades, Tarball adds 2 to the Attack attribute and 1 to the dice pool of Crash Program attempts (both of these bonuses only apply to Crash Program attempts), but its broader-based attack affects a random program rather than a chosen one.</description>
     <modifiers>

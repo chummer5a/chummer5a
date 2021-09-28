@@ -10,7 +10,6 @@
               <xs:element maxOccurs="unbounded" name="gear">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="id" type="xs:string" />
                     <xs:element name="name" type="xs:string" />
                     <xs:element minOccurs="0" name="description" type="xs:string" />
                     <xs:element minOccurs="0" name="modifiers">
