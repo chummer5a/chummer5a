@@ -9,6 +9,7 @@ using Microsoft.ApplicationInsights.Channel;
 using System.Diagnostics;
 using System.Xml;
 using System.Xml.XPath;
+using System.Xml.Serialization;
 
 namespace MatrixPlugin
 {
@@ -18,6 +19,7 @@ namespace MatrixPlugin
         
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private List<MatrixAction> Actions;
+        private List<Software> Softwares;
         
         public override string ToString()
         {
@@ -44,7 +46,25 @@ namespace MatrixPlugin
             {
                 Log.Error(e);
             }
-            
+
+            try
+            {
+                Softwares = new List<Software>();
+                XPathNavigator navSoftwares = XmlManager.LoadXPath("..\\Plugins\\MatrixPlugin\\data\\software.xml");
+                XPathNodeIterator iterator = navSoftwares.Select("/chummer/gears/gear");
+                foreach (XPathNavigator xSoftware in iterator)
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Software));
+                    Software item = (Software)xmlSerializer.Deserialize(xSoftware.ReadSubtree());
+
+                    Softwares.Add(item);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
             return;
         }
 

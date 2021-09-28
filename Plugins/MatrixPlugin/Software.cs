@@ -1,25 +1,34 @@
 using Chummer.Backend.Equipment;
-using System.Collections.Generic;
-using System.Xml.XPath;
+using System.Xml.Serialization;
 
 namespace MatrixPlugin
 {
     public class SoftwareModifier
     {
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string Action { get; set; }
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string Attribute { get; set; }
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public int Value { get; set; }
+
+        public SoftwareModifier()
+        {
+        }
     }
+
+    [XmlRoot(ElementName = "gear")]
     public class Software
     {
+        [XmlElement(ElementName = "name")]
         public string Name { get; set; }
+        [XmlElement(ElementName = "description")]
         public string Description { get; set; }
-        [System.Xml.Serialization.XmlArrayItemAttribute("modifier", IsNullable = false)]
+        [XmlArrayItem("modifiers", IsNullable = false)]
         public SoftwareModifier[] Modifiers { get; set; }
-        private Gear _gear;
-
+        
+        public Software()
+        {
+        }
     }
 }
