@@ -25,13 +25,14 @@ namespace MatrixPlugin
 
                 listSoftware.DataSource = logic.Software;
                 listSoftware.DisplayMember = "Name";
-
+                
                 foreach (var action in logic.Actions)
                     cbActions.Items.Add(action.Name);
 
                 cbActions.SelectedIndex = 0;
             }
 
+            
             void InitializeBinding()
             {
                 //Attribute section
@@ -255,8 +256,22 @@ namespace MatrixPlugin
             int resultValue = (int)-nNoize.Value;
             if (cHotVR.Checked) resultValue += 2;
             if (cSilent.Checked) resultValue -= 2;
-            logic.ActionModifier = resultValue;            
+            logic.ActionModifier = resultValue;
         }
 
+        int hoveredIndex = -1;
+
+        private void listSoftware_MouseMove(object sender, MouseEventArgs e)
+        {
+            int newHoveredIndex = listSoftware.IndexFromPoint(e.Location);
+            if (hoveredIndex != newHoveredIndex)
+            {
+                hoveredIndex = newHoveredIndex;
+                if (hoveredIndex > -1)
+                {
+                    listSoftware.SetToolTip(((Software)listSoftware.Items[hoveredIndex]).Description.WordWrap());
+                }
+            }
+        }
     }
 }

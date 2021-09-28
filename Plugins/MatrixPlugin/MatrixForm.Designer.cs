@@ -371,6 +371,7 @@ namespace MatrixPlugin
             this.listSoftware.Size = new System.Drawing.Size(196, 154);
             this.listSoftware.TabIndex = 2;
             this.listSoftware.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ListSoftware_ItemCheck);
+            this.listSoftware.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listSoftware_MouseMove);
             // 
             // gbActions
             // 

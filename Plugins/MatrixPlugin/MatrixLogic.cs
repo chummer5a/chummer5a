@@ -15,14 +15,15 @@ namespace MatrixPlugin
 
         private readonly Character _character;
 
-        public MatrixLogic(Character character, List<MatrixAction> matrixActions)
+        public MatrixLogic(Character character, List<MatrixAction> matrixActions, List<Software> softwares)
         {
             _character = character;
             _character.PropertyChanged += _character_PropertyChanged;
             _character.Gear.CollectionChanged += Gear_CollectionChanged;
             Actions = matrixActions;
+            SoftwaresList = softwares;
             Persons = new BindingList<Gear>();
-            Software = new BindingList<Gear>();
+            Software = new BindingList<Software>();
 
             //Load all CyberDecks,Commlinks and Programs to the Lists
             AddEquipment(character.Gear);
@@ -35,7 +36,7 @@ namespace MatrixPlugin
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
                     Persons.Add(gear);
                 else if (gear.Category.Contains("Program"))
-                    Software.Add(gear);
+                    Software.Add(SoftwaresList.Find(x => x.Name.Equals(gear.Name)));
                 if (gear.Children.Count > 0)
                     AddEquipment(gear.Children);
             }
@@ -47,7 +48,7 @@ namespace MatrixPlugin
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
                     Persons.Remove(gear);
                 else if (gear.Category.Contains("Program"))
-                    Software.Remove(gear);
+                    Software.Remove(SoftwaresList.Find(x => x.Name.Equals(gear.Name)));
             }
         }
 
@@ -154,8 +155,9 @@ namespace MatrixPlugin
         #region Properties
 
         public BindingList<Gear> Persons { get; set; }
-        public BindingList<Gear> Software { get; set; }
+        public BindingList<Software> Software { get; set; }
         public List<MatrixAction> Actions { get; set; }
+        public List<Software> SoftwaresList { get; }
 
         public IHasMatrixAttributes CurrentPerson
         {
