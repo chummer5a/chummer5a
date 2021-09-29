@@ -1,4 +1,5 @@
 using Chummer;
+using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -12,7 +13,7 @@ namespace MatrixPlugin
         public MatrixForm(MatrixLogic logic)
         {
             this.logic = logic;
-            
+
             InitializeComponent();
             InitializeContent();
             InitializeBinding();
@@ -21,18 +22,18 @@ namespace MatrixPlugin
             void InitializeContent()
             {
                 listCyberDecks.DataSource = logic.Persons;
-                listCyberDecks.DisplayMember = "Name";
+                listCyberDecks.DisplayMember = nameof(Gear.Name);
 
                 listSoftware.DataSource = logic.Software;
-                listSoftware.DisplayMember = "Name";
-                
+                listSoftware.DisplayMember = nameof(Software.Name);
+
                 foreach (var action in logic.Actions)
                     cbActions.Items.Add(action.Name);
 
                 cbActions.SelectedIndex = 0;
             }
 
-            
+
             void InitializeBinding()
             {
                 //Attribute section
@@ -124,7 +125,7 @@ namespace MatrixPlugin
             int intBaseSleaze = (logic.Sleaze);
             int intBaseDP = (logic.DataProcessing);
             int intBaseFirewall = (logic.Firewall);
-            
+
             List<ListItem> DataSource = new List<ListItem>(4) {
                     new ListItem(intBaseAttack, intBaseAttack.ToString(GlobalSettings.InvariantCultureInfo)),
                     new ListItem(intBaseSleaze, intBaseSleaze.ToString(GlobalSettings.InvariantCultureInfo)),
