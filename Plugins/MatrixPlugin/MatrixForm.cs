@@ -186,7 +186,7 @@ namespace MatrixPlugin
 
         private void ListSoftware_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            logic.ActivateSoftware(listSoftware.Items[e.Index].ToString(), e.NewValue == CheckState.Checked);
+            logic.ActivateSoftware(e.Index, e.NewValue == CheckState.Checked);
         }
 
         private void CbAttribute_SelectedIndexChanged(object sender, EventArgs e)

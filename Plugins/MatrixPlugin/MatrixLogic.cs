@@ -36,7 +36,11 @@ namespace MatrixPlugin
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
                     Persons.Add(gear);
                 else if (gear.Category.Contains("Program"))
-                    Software.Add(SoftwaresList.Find(x => x.Name.Equals(gear.Name)));
+                {
+                    Software newItem = SoftwaresList.Find(x => x.Name.Equals(gear.Name));
+                    newItem.logic = this;
+                    Software.Add(newItem);
+                }
                 if (gear.Children.Count > 0)
                     AddEquipment(gear.Children);
             }
@@ -111,45 +115,10 @@ namespace MatrixPlugin
             return result;
         }
 
-        
-        public void ActivateSoftware(string software,bool enable)
+
+        public void ActivateSoftware(int index, bool enable)
         {
-            switch (software)
-            {
-                //AttributeSoft
-                case "Decryption":
-                    AttackMod += enable ? 1 : -1;
-                    break;
-                case "Stealth":
-                    SleazeMod += enable ? 1 : -1;
-                    break;
-                case "Toolbox":
-                    DataProcessingMod += enable ? 1 : -1;
-                    break;
-                case "Encryption":
-                    FirewallMod += enable ? 1 : -1;
-                    break;
-                //ActionRelatedSoftware
-                case "Shredder":
-                case "Edit":
-                    Actions.Find(i => i.Name == "Edit File").LimitModifier += enable ? +2 : -2;
-                    break;
-                case "Search":
-                    Actions.Find(i => i.Name == "Matrix Search").ActionModifier += enable ? +2 : -2;
-                    break;
-                case "Exploit":
-                    Actions.Find(i => i.Name.Contains("Hack on the Fly")).LimitModifier += enable ? +2 : -2;
-                    break;
-                case "Paintjob":
-                    Actions.Find(i => i.Name.Contains("Erase Marks")).LimitModifier += enable ? +2 : -2;
-                    break;
-                case "Tarball":
-                    Actions.Find(i => i.Name.Contains("Crash Program")).LimitModifier += enable ? +2 : -2;
-                    Actions.Find(i => i.Name.Contains("Crash Program")).ActionModifier += enable ? +1 : -1;
-                    break;
-                default:
-                    break;
-            }
+            Software[index].IsActive = enable;
         }
 
         #region Properties
@@ -183,7 +152,7 @@ namespace MatrixPlugin
             }
         }
         public MatrixAction CurrentAction => Actions[currentActionIndex];
-        
+
         public bool OverClocker => _character.Overclocker;
         public int WoundModifier => _character.WoundModifier;
 
@@ -212,9 +181,12 @@ namespace MatrixPlugin
 
         public int AttackMod
         {
-            get => Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack"?1:0);
+            get => Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack" ? 1 : 0);
             set
             {
+                value -= (CurrentPerson.Overclocked == "Attack" ? 1 : 0);
+                if (string.IsNullOrEmpty(CurrentPerson.ModAttack))
+                    CurrentPerson.ModAttack = "0";
                 if (CurrentPerson.ModAttack != value.ToString())
                 {
                     CurrentPerson.ModAttack = value.ToString();
@@ -224,7 +196,7 @@ namespace MatrixPlugin
         }
 
         public int TotalAttack => Parse(CurrentPerson.Attack) + Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack" ? 1 : 0);
-        
+
 
         public int Sleaze
         {
@@ -244,6 +216,9 @@ namespace MatrixPlugin
             get => Parse(CurrentPerson.ModSleaze) + (CurrentPerson.Overclocked == "Sleaze" ? 1 : 0);
             set
             {
+                value -= (CurrentPerson.Overclocked == "Sleaze" ? 1 : 0);
+                if (string.IsNullOrEmpty(CurrentPerson.ModSleaze))
+                    CurrentPerson.ModSleaze = "0";
                 if (CurrentPerson.ModSleaze != value.ToString())
                 {
                     CurrentPerson.ModSleaze = value.ToString();
@@ -272,6 +247,9 @@ namespace MatrixPlugin
             get => Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
             set
             {
+                value -= (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
+                if (string.IsNullOrEmpty(CurrentPerson.ModDataProcessing))
+                    CurrentPerson.ModDataProcessing = "0";
                 if (CurrentPerson.ModDataProcessing != value.ToString())
                 {
                     CurrentPerson.ModDataProcessing = value.ToString();
@@ -281,7 +259,7 @@ namespace MatrixPlugin
         }
 
         public int TotalDataProcessing => Parse(CurrentPerson.DataProcessing) + Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
-        
+
 
         public int Firewall
         {
@@ -301,6 +279,9 @@ namespace MatrixPlugin
             get => Parse(CurrentPerson.ModFirewall) + (CurrentPerson.Overclocked == "Firewall" ? 1 : 0);
             set
             {
+                value -= (CurrentPerson.Overclocked == "Firewall" ? 1 : 0);
+                if (string.IsNullOrEmpty(CurrentPerson.ModFirewall))
+                    CurrentPerson.ModFirewall = "0";
                 if (CurrentPerson.ModFirewall != value.ToString())
                 {
                     CurrentPerson.ModFirewall = value.ToString();
@@ -310,13 +291,13 @@ namespace MatrixPlugin
         }
 
         public int TotalFirewall => Parse(CurrentPerson.Firewall) + Parse(CurrentPerson.ModFirewall) + (CurrentPerson.Overclocked == "Firewall" ? 1 : 0);
-        
+
         public int ActionDicePool => GetTotalAttribute(CurrentAction.ActionAttribute) +
                 GetTotalSkill(CurrentAction.ActionSkill) +
                 CurrentAction.ActionModifier +
                 WoundModifier +
                 ActionModifier;
-        
+
         public int DefenceDicePool => GetTotalSkill(CurrentAction.DefenceSkill) +
                 GetTotalAttribute(CurrentAction.DefenceAttribute) +
                 WoundModifier +
@@ -340,7 +321,7 @@ namespace MatrixPlugin
                     new DependencyGraphNode<string, MatrixLogic>(nameof(OverClocker),
                         new DependencyGraphNode<string, MatrixLogic>(nameof(CurrentPerson))
                         )
-                    
+
                 );
 
         private static readonly DependencyGraphNode<string, MatrixLogic> _graphAttack =
@@ -399,7 +380,7 @@ namespace MatrixPlugin
                         _graphFirewall
                         ),
                         new DependencyGraphNode<string, MatrixLogic>(nameof(WoundModifier)),
-                    new DependencyGraphNode<string, MatrixLogic>(nameof(_character)+"."+nameof(Character.WoundModifier))
+                    new DependencyGraphNode<string, MatrixLogic>(nameof(_character) + "." + nameof(Character.WoundModifier))
                     ),
                 new DependencyGraphNode<string, MatrixLogic>(nameof(DefenceDicePool),
                     _graphCurrentAction,
