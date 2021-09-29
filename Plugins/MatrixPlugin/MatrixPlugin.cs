@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 using NLog;
 using Microsoft.ApplicationInsights.Channel;
 using System.Diagnostics;
-using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Serialization;
+using System.Xml;
 
 namespace MatrixPlugin
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class MatrixPlugin : IPlugin
     {
-        
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private List<MatrixAction> Actions;
         private List<Software> Softwares;
-        
+
         public override string ToString()
         {
             return "Matrix Helper";
@@ -41,22 +41,15 @@ namespace MatrixPlugin
                             Actions.Add(newAction);
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
 
-            try
-            {
                 Softwares = new List<Software>();
                 XPathNavigator navSoftwares = XmlManager.LoadXPath("..\\Plugins\\MatrixPlugin\\data\\software.xml");
                 XPathNodeIterator iterator = navSoftwares.Select("/chummer/gears/gear");
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Software));
                 foreach (XPathNavigator xSoftware in iterator)
                 {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Software));
-                    Software item = (Software)xmlSerializer.Deserialize(xSoftware.ReadSubtree());
-
+                    XmlReader reader = xSoftware.ReadSubtree();
+                    Software item = (Software)xmlSerializer.Deserialize(reader);
                     Softwares.Add(item);
                 }
             }
@@ -64,6 +57,8 @@ namespace MatrixPlugin
             {
                 Log.Error(e);
             }
+
+
 
             return;
         }
@@ -115,7 +110,7 @@ namespace MatrixPlugin
 
         public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCareer input)
         {
-            MatrixLogic logic = new MatrixLogic(input.CharacterObject,Actions,Softwares);
+            MatrixLogic logic = new MatrixLogic(input.CharacterObject, Actions, Softwares);
             MatrixForm FormFrom = new MatrixForm(logic);
             yield return FormFrom.MatrixTabPage;
         }
