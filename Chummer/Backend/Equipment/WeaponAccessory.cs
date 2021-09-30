@@ -1524,7 +1524,7 @@ namespace Chummer.Backend.Equipment
                         ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
                         : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
-                return IncludedInWeapon || string.IsNullOrEmpty(ParentID)
+                return IncludedInWeapon || !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
