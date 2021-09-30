@@ -239,6 +239,11 @@ namespace Chummer.UI.Skills
                     tlpMiddle.Controls.Add(chkNativeLanguage, 1, 0);
                     tlpMiddle.Controls.Add(cboSpec, 2, 0);
                     tlpMiddle.Controls.Add(chkKarma, 3, 0);
+
+                    // Hacky way of fixing a weird UI issue caused by items of a combobox only being populated from the DataSource after the combobox is added
+                    _blnUpdatingSpec = true;
+                    cboSpec.Text = objSkill.CurrentDisplaySpecialization;
+                    _blnUpdatingSpec = false;
                 }
 
                 if (objSkill.ForcedName)
@@ -285,7 +290,7 @@ namespace Chummer.UI.Skills
                         {
                             cboSpec.BeginUpdate();
                             cboSpec.PopulateWithListItems(lstSpecializations);
-                            cboSpec.MaxDropDownItems = Math.Max(1, lstSpecializations.Count);
+                            cboSpec.EndUpdate();
                             if (string.IsNullOrEmpty(strOldSpec))
                                 cboSpec.SelectedIndex = -1;
                             else
@@ -294,8 +299,6 @@ namespace Chummer.UI.Skills
                                 if (cboSpec.SelectedIndex == -1)
                                     cboSpec.Text = strOldSpec;
                             }
-
-                            cboSpec.EndUpdate();
                         });
                     }
                     if (blnAll)
@@ -306,17 +309,27 @@ namespace Chummer.UI.Skills
                     if (!_blnUpdatingName)
                     {
                         string strWritableName = _objSkill.WritableName;
-                        cboName.QueueThreadSafe(() => cboName.Text = strWritableName);
+                        cboName.QueueThreadSafe(() =>
+                        {
+                            _blnUpdatingName = true;
+                            cboName.Text = strWritableName;
+                            _blnUpdatingName = false;
+                        });
                     }
                     if (blnAll)
-                        goto case nameof(Skill.Specialization);
+                        goto case nameof(Skill.TopMostDisplaySpecialization);
                     break;
 
-                case nameof(KnowledgeSkill.Specialization):
+                case nameof(KnowledgeSkill.TopMostDisplaySpecialization):
                     if (!_blnUpdatingSpec)
                     {
-                        string strWritableSpec = _objSkill.Specialization;
-                        cboSpec.QueueThreadSafe(() => cboSpec.Text = strWritableSpec);
+                        string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
+                        cboSpec.QueueThreadSafe(() =>
+                        {
+                            _blnUpdatingSpec = true;
+                            cboSpec.Text = strDisplaySpec;
+                            _blnUpdatingSpec = false;
+                        });
                     }
                     if (blnAll)
                         goto case nameof(Skill.IsNativeLanguage);
@@ -516,7 +529,7 @@ namespace Chummer.UI.Skills
         {
             _tmrSpecChangeTimer.Stop();
             _blnUpdatingSpec = true;
-            _objSkill.Specialization = cboSpec.Text;
+            _objSkill.TopMostDisplaySpecialization = cboSpec.Text;
             _blnUpdatingSpec = false;
         }
     }

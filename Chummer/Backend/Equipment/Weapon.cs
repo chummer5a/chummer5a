@@ -4156,7 +4156,7 @@ namespace Chummer.Backend.Equipment
                                         objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
                                         objSkill.GetSpecialization(Category);
 
-                                    if (objSpec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
+                                    if (objSpec == null && objSkill.Specializations.Count > 0)
                                     {
                                         objSpec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
                                     }
@@ -4536,7 +4536,7 @@ namespace Chummer.Backend.Equipment
                                         spec = objSkill.GetSpecialization(Category.EndsWith('s')
                                             ? Category.TrimEndOnce('s')
                                             : (Category + 's'));
-                                        if (spec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
+                                        if (spec == null && objSkill.Specializations.Count > 0)
                                             spec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
                                     }
                                     if (spec != null)

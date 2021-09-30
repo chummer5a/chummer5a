@@ -47,6 +47,12 @@ namespace Chummer.Backend.Skills
 
         public override bool AllowDelete => !CharacterObject.Created && FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0;
 
+        public override bool BuyWithKarma
+        {
+            get => false;
+            set {}
+        }
+
         public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
         /// <summary>
