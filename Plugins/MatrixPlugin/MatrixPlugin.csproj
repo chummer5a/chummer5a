@@ -106,7 +106,7 @@
     <None Include="app.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="data\software.xsd">
+    <None Include="data\program.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
@@ -133,7 +133,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\software.xml">
+    <Content Include="data\program.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
