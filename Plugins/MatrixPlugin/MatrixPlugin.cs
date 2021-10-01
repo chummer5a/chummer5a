@@ -19,7 +19,7 @@ namespace MatrixPlugin
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private List<MatrixAction> Actions;
-        private List<Software> Softwares;
+        private List<Program> Softwares;
 
         public override string ToString()
         {
@@ -42,14 +42,14 @@ namespace MatrixPlugin
                     }
                 }
 
-                Softwares = new List<Software>();
-                XPathNavigator navSoftwares = XmlManager.LoadXPath("..\\Plugins\\MatrixPlugin\\data\\software.xml");
+                Softwares = new List<Program>();
+                XPathNavigator navSoftwares = XmlManager.LoadXPath("..\\Plugins\\MatrixPlugin\\data\\program.xml");
                 XPathNodeIterator iterator = navSoftwares.Select("/chummer/gears/gear");
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Software));
+                XmlSerializer xmlSerializerProgram = new XmlSerializer(typeof(Program));
                 foreach (XPathNavigator xSoftware in iterator)
                 {
                     XmlReader reader = xSoftware.ReadSubtree();
-                    Software item = (Software)xmlSerializer.Deserialize(reader);
+                    Program item = (Program)xmlSerializerProgram.Deserialize(reader);
                     Softwares.Add(item);
                 }
             }

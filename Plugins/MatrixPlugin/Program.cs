@@ -3,17 +3,25 @@ using System.Xml.Serialization;
 
 namespace MatrixPlugin
 {
+    /// <summary>
+    /// Class with representation of Common and Hacking Programs
+    /// </summary>
     [XmlType("gear")]
-    public class Software
+    public class Program
     {
         private bool isActive;
 
+        [XmlElement("id")]
+        public string ID { get; set; }
         [XmlElement("name")]
         public string Name { get; set; }
         [XmlElement("description")]
         public string Description { get; set; }
         [XmlArray("modifiers")]
-        public SoftwareModifier[] Modifiers { get; set; }
+        public ProgramModifier[] Modifiers { get; set; }
+        /// <summary>
+        /// MatrixLogic object is need for changing modifiers of attributes
+        /// </summary>
         [XmlIgnore]
         public MatrixLogic logic { get; set; }
         [XmlIgnore]
@@ -35,7 +43,7 @@ namespace MatrixPlugin
             }
         }
 
-        public Software()
+        public Program()
         {
         }
 
@@ -45,7 +53,7 @@ namespace MatrixPlugin
         /// else all properties work only on Actions with that name
         /// </summary>
         [XmlType("modifier")]
-        public class SoftwareModifier
+        public class ProgramModifier
         {
             /// <summary>
             /// Name of matrix action
@@ -62,7 +70,7 @@ namespace MatrixPlugin
             [XmlAttribute("value")]
             public int Value { get; set; }
 
-            public SoftwareModifier()
+            public ProgramModifier()
             {
             }
 
