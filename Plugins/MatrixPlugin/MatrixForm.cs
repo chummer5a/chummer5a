@@ -25,7 +25,7 @@ namespace MatrixPlugin
                 listCyberDecks.DisplayMember = nameof(Gear.Name);
 
                 listSoftware.DataSource = logic.Software;
-                listSoftware.DisplayMember = nameof(Software.Name);
+                listSoftware.DisplayMember = nameof(Program.Name);
 
                 foreach (var action in logic.Actions)
                     cbActions.Items.Add(action.Name);
@@ -58,13 +58,13 @@ namespace MatrixPlugin
                 lDataProcRes.DoDataBinding("Text", logic, nameof(logic.TotalDataProcessing));
                 lFirewallRes.DoDataBinding("Text", logic, nameof(logic.TotalFirewall));
                 //Action section
-                lSkillDescription.DoDataBinding("Text", logic, "currentAction.Description");
-                lActionType.DoDataBinding("Text", logic, "currentAction.Type");
-                lActionAttributeName.DoDataBinding("Text", logic, "currentAction.ActionAttribute");
-                lActionSkillName.DoDataBinding("Text", logic, "currentAction.ActionSkill");
-                lSkillLimitName.DoDataBinding("Text", logic, "currentAction.Limit");
-                lDefendAttributeName.DoDataBinding("Text", logic, "currentAction.DefenceAttribute");
-                lDefendSkillName.DoDataBinding("Text", logic, "currentAction.DefenceSkill");
+                lSkillDescription.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.Description));
+                lActionType.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.Type));
+                lActionAttributeName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.ActionAttribute));
+                lActionSkillName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.ActionSkill));
+                lSkillLimitName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.Limit));
+                lDefendAttributeName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.DefenceAttribute));
+                lDefendSkillName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.DefenceSkill));
 
                 DoDataBindingWithFormatter(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
                 DoDataBindingWithFormatter(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
