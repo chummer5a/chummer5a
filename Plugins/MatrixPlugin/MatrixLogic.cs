@@ -15,7 +15,7 @@ namespace MatrixPlugin
 
         private readonly Character _character;
 
-        public MatrixLogic(Character character, List<MatrixAction> matrixActions, List<Software> softwares)
+        public MatrixLogic(Character character, List<MatrixAction> matrixActions, List<Program> softwares)
         {
             _character = character;
             _character.PropertyChanged += _character_PropertyChanged;
@@ -23,7 +23,7 @@ namespace MatrixPlugin
             Actions = matrixActions;
             SoftwaresList = softwares;
             Persons = new BindingList<Gear>();
-            Software = new BindingList<Software>();
+            Software = new BindingList<Program>();
 
             //Load all CyberDecks,Commlinks and Programs to the Lists
             AddEquipment(character.Gear);
@@ -37,7 +37,7 @@ namespace MatrixPlugin
                     Persons.Add(gear);
                 else if (gear.Category.Contains("Program"))
                 {
-                    Software newItem = SoftwaresList.Find(x => x.Name.Equals(gear.Name));
+                    Program newItem = SoftwaresList.Find(x => x.Name.Equals(gear.Name));
                     newItem.logic = this;
                     Software.Add(newItem);
                 }
@@ -124,9 +124,9 @@ namespace MatrixPlugin
         #region Properties
 
         public BindingList<Gear> Persons { get; set; }
-        public BindingList<Software> Software { get; set; }
+        public BindingList<Program> Software { get; set; }
         public List<MatrixAction> Actions { get; set; }
-        public List<Software> SoftwaresList { get; }
+        public List<Program> SoftwaresList { get; }
 
         public IHasMatrixAttributes CurrentPerson
         {
