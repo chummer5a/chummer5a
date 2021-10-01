@@ -1482,7 +1482,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsExoticSkill)
                 {
-                    return ((ExoticSkill) this).DisplaySpecific(GlobalSettings.Language);
+                    return ((ExoticSkill)this).DisplaySpecific(GlobalSettings.Language);
                 }
 
                 return Specializations.FirstOrDefault(x => !x.Free)?.CurrentDisplayName ?? string.Empty;

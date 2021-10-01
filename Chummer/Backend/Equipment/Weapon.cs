@@ -5338,7 +5338,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 int intCurrentAmmoCount = objInternalClip.Ammo;
-                
+
                 // Determine which loading methods are available to the Weapon.
                 if (ammoString.IndexOfAny('x', '+') != -1 ||
                     ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||

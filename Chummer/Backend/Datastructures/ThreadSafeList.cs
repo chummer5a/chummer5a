@@ -60,7 +60,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         public new int Count
         {
             get

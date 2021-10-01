@@ -724,7 +724,7 @@ namespace Chummer.Backend.Equipment
                 Weapon objWeapon = ParentVehicle != null
                     ? ParentVehicle.Weapons.FindById(Parent.WeaponID)
                     : _objCharacter.Weapons.FindById(Parent?.WeaponID);
-                
+
                 foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
                 {
                     string strLoopID = objXml.InnerText;
@@ -1754,6 +1754,7 @@ namespace Chummer.Backend.Equipment
                     _guiWeaponID = guiTemp;
             }
         }
+
         /// <summary>
         /// Guid of a Cyberware Weapon Accessory.
         /// </summary>
@@ -5167,7 +5168,7 @@ namespace Chummer.Backend.Equipment
             int intRating, Vehicle objVehicle, ICollection<Cyberware> lstCyberwareCollection,
             ICollection<Vehicle> lstVehicleCollection, ICollection<Weapon> lstWeaponCollection,
             decimal decMarkup = 0, bool blnFree = false, bool blnBlackMarket = false, bool blnForVehicle = false,
-            string strExpenseString = "String_ExpensePurchaseCyberware",Cyberware objParent = null)
+            string strExpenseString = "String_ExpensePurchaseCyberware", Cyberware objParent = null)
         {
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>(1);
