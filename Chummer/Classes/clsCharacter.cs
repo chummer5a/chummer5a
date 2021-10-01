@@ -15949,7 +15949,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{BOD}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -15970,8 +15970,7 @@ namespace Chummer
                     if (Settings.BoundSpiritExpression.Contains("{BODUnaug}"))
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{BODUnaug}"))
-                        {_intRegisteredSpriteLimit = int.MinValue;}
-
+                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.MetatypeMaximum):
@@ -16007,7 +16006,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{AGI}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16029,8 +16028,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{AGIUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16063,7 +16061,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{REA}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16085,7 +16083,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{REAUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
             }
         }
@@ -16119,7 +16117,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{STR}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16141,8 +16139,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{STRUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16175,7 +16172,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{CHA}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16197,8 +16194,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{CHAUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16237,7 +16233,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{INT}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16259,8 +16255,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{INTUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16298,8 +16293,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{INT}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16321,8 +16315,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{INTUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16377,8 +16370,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{WIL}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16400,8 +16392,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{WILUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16432,8 +16423,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{EDG}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16455,8 +16445,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{EDGUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16498,8 +16487,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{MAG}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16521,7 +16509,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{MAGUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
             }
         }
@@ -16553,7 +16541,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{MAGAdept}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16577,8 +16565,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{MAGAdeptUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16607,7 +16594,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{RES}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16630,8 +16617,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{RESUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16663,8 +16649,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{DEP}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16687,8 +16672,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{DEPUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
             }
         }
@@ -16722,8 +16706,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{ESS}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-
-                        break;
+                    break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16746,7 +16729,7 @@ namespace Chummer
                         _intBoundSpiritLimit = int.MinValue;
                     if (Settings.RegisteredSpriteExpression.Contains("{ESSUnaug}"))
                         _intRegisteredSpriteLimit = int.MinValue;
-                        break;
+                    break;
                 }
             }
         }

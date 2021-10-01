@@ -31,7 +31,6 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
-using RtfPipe.Tokens;
 using Version = System.Version;
 
 namespace Chummer.Backend.Equipment
@@ -5258,7 +5257,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (_objCharacter.Created && lstCyberwareCollection == _objCharacter.Cyberware)
+                if (_objCharacter.Created && ReferenceEquals(lstCyberwareCollection, _objCharacter.Cyberware))
                 {
                     _objCharacter.DecreaseEssenceHole(CalculatedESS, SourceID == EssenceAntiHoleGUID);
                 }
