@@ -31,15 +31,14 @@ namespace MatrixPlugin
             try
             {
                 Actions = new List<MatrixAction>();
+                XmlSerializer xmlSerializerAction = new XmlSerializer(typeof(MatrixAction));
                 XPathNavigator navActions = XmlManager.LoadXPath("actions.xml");
                 foreach (XPathNavigator xAction in navActions.Select("/chummer/actions/action"))
                 {
-                    if (xAction.SelectSingleNode("test/limit") != null)
-                    {
-                        MatrixAction newAction = new MatrixAction(xAction);
-                        if (!string.IsNullOrEmpty(newAction.ActionAttribute) && !string.IsNullOrEmpty(newAction.ActionSkill))
-                            Actions.Add(newAction);
-                    }
+                    XmlReader reader = xAction.ReadSubtree();
+                    MatrixAction item = (MatrixAction)xmlSerializerAction.Deserialize(reader);
+                    if (!string.IsNullOrEmpty(item.ActionSkill) && !string.IsNullOrEmpty(item.ActionAttribute))
+                        Actions.Add(item);
                 }
 
                 Softwares = new List<Program>();
