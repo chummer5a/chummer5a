@@ -422,6 +422,7 @@ namespace MatrixPlugin
             this.lDefendModifier.Size = new System.Drawing.Size(22, 13);
             this.lDefendModifier.TabIndex = 140;
             this.lDefendModifier.Text = " [0]";
+            this.lDefendModifier.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lSkillLimitValue
             // 
@@ -431,15 +432,17 @@ namespace MatrixPlugin
             this.lSkillLimitValue.Size = new System.Drawing.Size(22, 13);
             this.lSkillLimitValue.TabIndex = 139;
             this.lSkillLimitValue.Text = " [0]";
+            this.lSkillLimitValue.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lSkillLimitName
             // 
             this.lSkillLimitName.AutoSize = true;
             this.lSkillLimitName.Location = new System.Drawing.Point(212, 57);
             this.lSkillLimitName.Name = "lSkillLimitName";
-            this.lSkillLimitName.Size = new System.Drawing.Size(10, 13);
+            this.lSkillLimitName.Size = new System.Drawing.Size(39, 13);
             this.lSkillLimitName.TabIndex = 138;
-            this.lSkillLimitName.Text = " ";
+            this.lSkillLimitName.Text = "[name]";
+            this.lSkillLimitName.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lSkillDescription
             // 
@@ -456,6 +459,7 @@ namespace MatrixPlugin
             this.lActionModifier.Size = new System.Drawing.Size(22, 13);
             this.lActionModifier.TabIndex = 136;
             this.lActionModifier.Text = " [0]";
+            this.lActionModifier.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // label7
             // 
@@ -483,15 +487,17 @@ namespace MatrixPlugin
             this.lDefendSkillValue.Size = new System.Drawing.Size(22, 13);
             this.lDefendSkillValue.TabIndex = 133;
             this.lDefendSkillValue.Text = " [0]";
+            this.lDefendSkillValue.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lDefendSkillName
             // 
             this.lDefendSkillName.AutoSize = true;
             this.lDefendSkillName.Location = new System.Drawing.Point(66, 119);
             this.lDefendSkillName.Name = "lDefendSkillName";
-            this.lDefendSkillName.Size = new System.Drawing.Size(10, 13);
+            this.lDefendSkillName.Size = new System.Drawing.Size(39, 13);
             this.lDefendSkillName.TabIndex = 132;
-            this.lDefendSkillName.Text = " ";
+            this.lDefendSkillName.Text = "[name]";
+            this.lDefendSkillName.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lDefendAttributeValue
             // 
@@ -501,15 +507,17 @@ namespace MatrixPlugin
             this.lDefendAttributeValue.Size = new System.Drawing.Size(22, 13);
             this.lDefendAttributeValue.TabIndex = 131;
             this.lDefendAttributeValue.Text = " [0]";
+            this.lDefendAttributeValue.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lDefendAttributeName
             // 
             this.lDefendAttributeName.AutoSize = true;
             this.lDefendAttributeName.Location = new System.Drawing.Point(6, 119);
             this.lDefendAttributeName.Name = "lDefendAttributeName";
-            this.lDefendAttributeName.Size = new System.Drawing.Size(10, 13);
+            this.lDefendAttributeName.Size = new System.Drawing.Size(39, 13);
             this.lDefendAttributeName.TabIndex = 130;
-            this.lDefendAttributeName.Text = " ";
+            this.lDefendAttributeName.Text = "[name]";
+            this.lDefendAttributeName.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // label5
             // 
@@ -537,15 +545,17 @@ namespace MatrixPlugin
             this.lActionSkillValue.Size = new System.Drawing.Size(22, 13);
             this.lActionSkillValue.TabIndex = 127;
             this.lActionSkillValue.Text = " [0]";
+            this.lActionSkillValue.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lActionSkillName
             // 
             this.lActionSkillName.AutoSize = true;
             this.lActionSkillName.Location = new System.Drawing.Point(66, 57);
             this.lActionSkillName.Name = "lActionSkillName";
-            this.lActionSkillName.Size = new System.Drawing.Size(10, 13);
+            this.lActionSkillName.Size = new System.Drawing.Size(39, 13);
             this.lActionSkillName.TabIndex = 126;
-            this.lActionSkillName.Text = " ";
+            this.lActionSkillName.Text = "[name]";
+            this.lActionSkillName.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lActionAttributeValue
             // 
@@ -555,15 +565,17 @@ namespace MatrixPlugin
             this.lActionAttributeValue.Size = new System.Drawing.Size(22, 13);
             this.lActionAttributeValue.TabIndex = 125;
             this.lActionAttributeValue.Text = " [0]";
+            this.lActionAttributeValue.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // lActionAttributeName
             // 
             this.lActionAttributeName.AutoSize = true;
             this.lActionAttributeName.Location = new System.Drawing.Point(6, 57);
             this.lActionAttributeName.Name = "lActionAttributeName";
-            this.lActionAttributeName.Size = new System.Drawing.Size(10, 13);
+            this.lActionAttributeName.Size = new System.Drawing.Size(39, 13);
             this.lActionAttributeName.TabIndex = 124;
-            this.lActionAttributeName.Text = " ";
+            this.lActionAttributeName.Text = "[name]";
+            this.lActionAttributeName.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
             // dpcDefendDicePool
             // 

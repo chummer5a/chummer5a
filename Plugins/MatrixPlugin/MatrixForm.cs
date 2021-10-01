@@ -270,9 +270,16 @@ namespace MatrixPlugin
                 hoveredIndex = newHoveredIndex;
                 if (hoveredIndex > -1)
                 {
-                    listSoftware.SetToolTip(((Software)listSoftware.Items[hoveredIndex]).Description.WordWrap());
+                    listSoftware.SetToolTip(((Program)listSoftware.Items[hoveredIndex]).Description.WordWrap());
                 }
             }
+        }
+
+        private void labelAction_TextChanged(object sender, EventArgs e)
+        {
+            Label label = (Label)sender;
+            label.Visible = !(string.IsNullOrEmpty(label.Text) || label.Text == "0");
+            //label.Visible = true;
         }
     }
 }
