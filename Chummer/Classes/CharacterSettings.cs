@@ -3993,9 +3993,6 @@ namespace Chummer
         /// </summary>
         public int SpecializationBonus { get; } = 2;
 
-        public static object RegisteredSpriteLimit { get; internal set; }
-        public static object BoundSpiritLimit { get; internal set; }
-
         #endregion Constant Values
     }
 }
