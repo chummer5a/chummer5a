@@ -142,6 +142,7 @@ namespace Chummer
                             report.AppendLine();
                         }
                     }
+
                     cv?.Close();
                     cv2?.Close();
                 }
@@ -156,6 +157,7 @@ namespace Chummer
                 report.AppendLine();
                 report.AppendFormat("CrashHandlerException={0}", ex);
             }
+
             return report.ToString();
         }
 

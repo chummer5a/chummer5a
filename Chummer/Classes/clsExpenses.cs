@@ -285,7 +285,7 @@ namespace Chummer
             _objExpenseType = objExpenseType;
             _blnRefund = blnRefund;
 
-            return this;  //Allow chaining
+            return this; //Allow chaining
         }
 
         /// <summary>
@@ -386,7 +386,9 @@ namespace Chummer
                 {
                     _decAmount = value;
                     if (!Refund)
-                        _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen ? nameof(Character.CareerNuyen) : nameof(Character.CareerKarma));
+                        _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen
+                                                             ? nameof(Character.CareerNuyen)
+                                                             : nameof(Character.CareerKarma));
                 }
             }
         }
@@ -482,6 +484,7 @@ namespace Chummer
             {
                 return CompareTo(objEntry);
             }
+
             return 1;
         }
 
@@ -508,6 +511,7 @@ namespace Chummer
                         }
                     }
                 }
+
                 return -intReturn;
             }
 
@@ -538,6 +542,7 @@ namespace Chummer
                     }
                 }
             }
+
             return -intBackupReturn;
         }
 
