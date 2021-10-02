@@ -171,7 +171,7 @@ namespace Chummer
                             break;
 
                         default:
-                            if (objNode.InnerText.StartsWith("Select", StringComparison.Ordinal))
+                            if (objNode.InnerText.StartsWith("Select", StringComparison.OrdinalIgnoreCase))
                             {
                                 lblSelect.Visible = true;
                                 txtTranslateSelection.Visible = true;
@@ -744,6 +744,14 @@ namespace Chummer
 
                 case "SelectAdeptPower":
                     objXmlNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = " + strToTranslate.CleanXPath() + " or name = " + strToTranslate.CleanXPath() + "]");
+                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+
+                case "SelectMetamagic":
+                    objXmlNode = _objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = " + strToTranslate.CleanXPath() + "]");
+                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+
+                case "SelectEcho":
+                    objXmlNode = _objCharacter.LoadDataXPath("echoes.xml").SelectSingleNode("/chummer/echoes/echo[name = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
 
                 default:
