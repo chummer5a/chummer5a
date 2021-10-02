@@ -257,8 +257,28 @@ namespace Chummer
                             frmPickMetamagic.ShowDialog(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
-                                txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                                string strSelectedId = frmPickMetamagic.SelectedMetamagic;
+                                if (!string.IsNullOrEmpty(strSelectedId))
+                                {
+                                    string strEchoName = _objCharacter.LoadDataXPath("echoes.xml")
+                                                                             .SelectSingleNode(
+                                                                                 "/chummer/echoes/echo[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
+                                    if (!string.IsNullOrEmpty(strEchoName))
+                                    {
+                                        txtSelect.Text = strEchoName;
+                                        txtTranslateSelection.Text = TranslateField(_strSelect, strEchoName);
+                                    }
+                                    else
+                                    {
+                                        txtSelect.Text = string.Empty;
+                                        txtTranslateSelection.Text = string.Empty;
+                                    }
+                                }
+                                else
+                                {
+                                    txtSelect.Text = string.Empty;
+                                    txtTranslateSelection.Text = string.Empty;
+                                }
                             }
                         }
                     }
@@ -272,8 +292,28 @@ namespace Chummer
                             frmPickMetamagic.ShowDialog(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
-                                txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                                string strSelectedId = frmPickMetamagic.SelectedMetamagic;
+                                if (!string.IsNullOrEmpty(strSelectedId))
+                                {
+                                    string strEchoName = _objCharacter.LoadDataXPath("metamagic.xml")
+                                                                      .SelectSingleNode(
+                                                                          "/chummer/metamagics/metamagic[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
+                                    if (!string.IsNullOrEmpty(strEchoName))
+                                    {
+                                        txtSelect.Text = strEchoName;
+                                        txtTranslateSelection.Text = TranslateField(_strSelect, strEchoName);
+                                    }
+                                    else
+                                    {
+                                        txtSelect.Text = string.Empty;
+                                        txtTranslateSelection.Text = string.Empty;
+                                    }
+                                }
+                                else
+                                {
+                                    txtSelect.Text = string.Empty;
+                                    txtTranslateSelection.Text = string.Empty;
+                                }
                             }
                         }
                     }
