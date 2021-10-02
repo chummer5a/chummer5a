@@ -1,4 +1,3 @@
-using Chummer.Backend.Equipment;
 using System.Xml.Serialization;
 
 namespace MatrixPlugin
@@ -9,21 +8,26 @@ namespace MatrixPlugin
     [XmlType("gear")]
     public class Program
     {
-        private bool isActive;
 
         [XmlElement("id")]
         public string ID { get; set; }
+
         [XmlElement("name")]
         public string Name { get; set; }
+
         [XmlElement("description")]
         public string Description { get; set; }
+
         [XmlArray("modifiers")]
         public ProgramModifier[] Modifiers { get; set; }
+
         /// <summary>
         /// MatrixLogic object is need for changing modifiers of attributes
         /// </summary>
         [XmlIgnore]
         public MatrixLogic logic { get; set; }
+
+        private bool isActive;
         [XmlIgnore]
         public bool IsActive
         {
@@ -61,12 +65,14 @@ namespace MatrixPlugin
             /// </summary>
             [XmlAttribute("action")]
             public string ActionName { get; set; }
+
             /// <summary>
             /// Name of attribute or another property
             /// which program change
             /// </summary>
             [XmlAttribute("attribute")]
             public string AttributeName { get; set; }
+
             [XmlAttribute("value")]
             public int Value { get; set; }
 

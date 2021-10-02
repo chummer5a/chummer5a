@@ -17,9 +17,9 @@ namespace MatrixPlugin
     public class MatrixPlugin : IPlugin
     {
 
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private List<MatrixAction> Actions;
-        private List<Program> Softwares;
+        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
+        public List<MatrixAction> ActionList;
+        public List<Program> ProgramList;
 
         public override string ToString()
         {
@@ -30,7 +30,7 @@ namespace MatrixPlugin
         {
             try
             {
-                Actions = new List<MatrixAction>();
+                ActionList = new List<MatrixAction>();
                 XmlSerializer xmlSerializerAction = new XmlSerializer(typeof(MatrixAction));
                 XPathNavigator navActions = XmlManager.LoadXPath("actions.xml");
                 foreach (XPathNavigator xAction in navActions.Select("/chummer/actions/action"))
@@ -38,10 +38,10 @@ namespace MatrixPlugin
                     XmlReader reader = xAction.ReadSubtree();
                     MatrixAction item = (MatrixAction)xmlSerializerAction.Deserialize(reader);
                     if (!string.IsNullOrEmpty(item.ActionSkill) && !string.IsNullOrEmpty(item.ActionAttribute))
-                        Actions.Add(item);
+                        ActionList.Add(item);
                 }
 
-                Softwares = new List<Program>();
+                ProgramList = new List<Program>();
                 XPathNavigator navSoftwares = XmlManager.LoadXPath("..\\Plugins\\MatrixPlugin\\data\\program.xml");
                 XPathNodeIterator iterator = navSoftwares.Select("/chummer/gears/gear");
                 XmlSerializer xmlSerializerProgram = new XmlSerializer(typeof(Program));
@@ -49,15 +49,13 @@ namespace MatrixPlugin
                 {
                     XmlReader reader = xSoftware.ReadSubtree();
                     Program item = (Program)xmlSerializerProgram.Deserialize(reader);
-                    Softwares.Add(item);
+                    ProgramList.Add(item);
                 }
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                _log.Error(e);
             }
-
-
 
             return;
         }
@@ -96,11 +94,10 @@ namespace MatrixPlugin
 
             catch (Exception e)
             {
-                Log.Error(e);
+                _log.Error(e);
             }
             return null;
         }
-
 
         public string GetSaveToFileElement(Character input)
         {
@@ -109,7 +106,7 @@ namespace MatrixPlugin
 
         public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCareer input)
         {
-            MatrixLogic logic = new MatrixLogic(input.CharacterObject, Actions, Softwares);
+            MatrixLogic logic = new MatrixLogic(input.CharacterObject, ActionList, ProgramList);
             MatrixForm FormFrom = new MatrixForm(logic);
             yield return FormFrom.MatrixTabPage;
         }

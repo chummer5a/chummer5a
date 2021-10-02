@@ -1,5 +1,6 @@
 using Chummer;
 using Chummer.Backend.Equipment;
+using Chummer.UI.Shared.Components;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -8,11 +9,11 @@ namespace MatrixPlugin
 {
     public partial class MatrixForm : Form
     {
-        private readonly MatrixLogic logic;
+        private readonly MatrixLogic _logic;
 
         public MatrixForm(MatrixLogic logic)
         {
-            this.logic = logic;
+            _logic = logic;
 
             InitializeComponent();
             InitializeContent();
@@ -21,66 +22,65 @@ namespace MatrixPlugin
 
             void InitializeContent()
             {
-                listCyberDecks.DataSource = logic.Persons;
+                listCyberDecks.DataSource = _logic.Persons;
                 listCyberDecks.DisplayMember = nameof(Gear.Name);
 
-                listSoftware.DataSource = logic.Software;
+                listSoftware.DataSource = _logic.Programs;
                 listSoftware.DisplayMember = nameof(Program.Name);
 
-                foreach (var action in logic.Actions)
+                foreach (var action in _logic.Actions)
                     cbActions.Items.Add(action.Name);
 
                 cbActions.SelectedIndex = 0;
             }
 
-
             void InitializeBinding()
             {
                 //Attribute section
-                lOverClocker.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
+                lOverClocker.DoOneWayDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
 
-                rbOverAttack.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
-                rbOverSleaze.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
-                rbOverDataProc.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
-                rbOverFirewall.DoDataBinding("Enabled", logic, nameof(logic.OverClocker));
-                AddRadioCheckedBinding(rbOverAttack, logic, nameof(logic.OverClocked), nameof(logic.Attack));
-                AddRadioCheckedBinding(rbOverSleaze, logic, nameof(logic.OverClocked), nameof(logic.Sleaze));
-                AddRadioCheckedBinding(rbOverDataProc, logic, nameof(logic.OverClocked), nameof(logic.DataProcessing));
-                AddRadioCheckedBinding(rbOverFirewall, logic, nameof(logic.OverClocked), nameof(logic.Firewall));
+                rbOverAttack.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                rbOverSleaze.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                rbOverDataProc.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                rbOverFirewall.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                AddRadioCheckedBinding(rbOverAttack, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.Attack));
+                AddRadioCheckedBinding(rbOverSleaze, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.Sleaze));
+                AddRadioCheckedBinding(rbOverDataProc, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.DataProcessing));
+                AddRadioCheckedBinding(rbOverFirewall, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.Firewall));
 
-                lAttackMod.DoDataBinding("Text", logic, nameof(logic.AttackMod));
-                lSleazeMod.DoDataBinding("Text", logic, nameof(logic.SleazeMod));
-                lDataProcMod.DoDataBinding("Text", logic, nameof(logic.DataProcessingMod));
-                lFirewallMod.DoDataBinding("Text", logic, nameof(logic.FirewallMod));
+                lAttackMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.AttackMod));
+                lSleazeMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.SleazeMod));
+                lDataProcMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.DataProcessingMod));
+                lFirewallMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.FirewallMod));
 
-                lAttackRes.DoDataBinding("Text", logic, nameof(logic.TotalAttack));
-                lSleazeRes.DoDataBinding("Text", logic, nameof(logic.TotalSleaze));
-                lDataProcRes.DoDataBinding("Text", logic, nameof(logic.TotalDataProcessing));
-                lFirewallRes.DoDataBinding("Text", logic, nameof(logic.TotalFirewall));
+                lAttackRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalAttack));
+                lSleazeRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalSleaze));
+                lDataProcRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalDataProcessing));
+                lFirewallRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalFirewall));
                 //Action section
-                lSkillDescription.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.Description));
-                lActionType.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.Type));
-                lActionAttributeName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.ActionAttribute));
-                lActionSkillName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.ActionSkill));
-                lSkillLimitName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.Limit));
-                lDefendAttributeName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.DefenceAttribute));
-                lDefendSkillName.DoDataBinding("Text", logic, nameof(logic.CurrentAction) + "." + nameof(MatrixAction.DefenceSkill));
+                lSkillDescription.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Description));
+                lActionType.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Type));
+                lActionAttributeName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionAttribute));
+                lActionSkillName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionSkill));
+                lSkillLimitName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Limit));
+                lDefendAttributeName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceAttribute));
+                lDefendSkillName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceSkill));
 
-                DoDataBindingWithFormatter(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
-                DoDataBindingWithFormatter(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
-                DoDataBindingWithFormatter(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
-                DoDataBindingWithFormatter(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
-                DoDataBindingWithFormatter(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
-                lActionModifier.DoDataBinding("Text", logic, "currentAction.ActionModifier");
-                lDefendModifier.DoDataBinding("Text", logic, "currentAction.DefenceModifier");
-                dpcActionDicePool.DoDataBinding("DicePool", logic, nameof(logic.ActionDicePool));
-                dpcDefendDicePool.DoDataBinding("DicePool", logic, nameof(logic.DefenceDicePool));
+                DoDataBindingWithFormatter(lActionAttributeValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionAttribute), new ConvertEventHandler(AttributeToValue));
+                DoDataBindingWithFormatter(lActionSkillValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionSkill), new ConvertEventHandler(SkillToValue));
+                DoDataBindingWithFormatter(lSkillLimitValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Limit), new ConvertEventHandler(MatrixAttributeToValue));
+                DoDataBindingWithFormatter(lDefendAttributeValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceAttribute), new ConvertEventHandler(AttributeToValue));
+                DoDataBindingWithFormatter(lDefendSkillValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceSkill), new ConvertEventHandler(MatrixAttributeToValue));
+                lActionModifier.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionModifier));
+                lDefendModifier.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceModifier));
+                dpcActionDicePool.DoDataBinding(nameof(DicePoolControl.DicePool), _logic, nameof(MatrixLogic.ActionDicePool));
+                dpcDefendDicePool.DoDataBinding(nameof(DicePoolControl.DicePool), _logic, nameof(MatrixLogic.DefenceDicePool));
             }
         }
 
         private void DoDataBindingWithFormatter(Control obj, string dataMember, ConvertEventHandler formatter)
         {
-            Binding binding = new Binding("Text", logic, dataMember);
+            Binding binding = new Binding("Text", _logic, dataMember);
             binding.Format += formatter;
             obj.DataBindings.Add(binding);
         }
@@ -88,24 +88,24 @@ namespace MatrixPlugin
         private void AttributeToValue(object sender, ConvertEventArgs cevent)
         {
             if (cevent.DesiredType != typeof(string)) return;
-            cevent.Value = logic.GetTotalAttribute((string)cevent.Value).ToString();
+            cevent.Value = _logic.GetTotalAttribute((string)cevent.Value).ToString();
         }
 
         private void MatrixAttributeToValue(object sender, ConvertEventArgs cevent)
         {
             if (cevent.DesiredType != typeof(string)) return;
-            cevent.Value = logic.GetTotalMatrixAttribute((string)cevent.Value).ToString();
+            cevent.Value = _logic.GetTotalMatrixAttribute((string)cevent.Value).ToString();
         }
         private void SkillToValue(object sender, ConvertEventArgs cevent)
         {
             if (cevent.DesiredType != typeof(string)) return;
-            cevent.Value = logic.GetTotalSkill((string)cevent.Value).ToString();
+            cevent.Value = _logic.GetTotalSkill((string)cevent.Value).ToString();
         }
 
         private void AddRadioCheckedBinding(RadioButton radio, object dataSource, string dataMember, string trueValue)
         {
             var binding = new Binding(nameof(RadioButton.Checked), dataSource, dataMember, true, DataSourceUpdateMode.OnPropertyChanged);
-            binding.Parse += (s, a) => { if ((bool)a.Value) a.Value = trueValue; logic.OverClocked = trueValue; };
+            binding.Parse += (s, a) => { if ((bool)a.Value) a.Value = trueValue; _logic.OverClocked = trueValue; };
             binding.Format += (s, a) => a.Value = (a.Value).Equals(trueValue);
             radio.DataBindings.Add(binding);
         }
@@ -121,10 +121,10 @@ namespace MatrixPlugin
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
-            int intBaseAttack = (logic.Attack);
-            int intBaseSleaze = (logic.Sleaze);
-            int intBaseDP = (logic.DataProcessing);
-            int intBaseFirewall = (logic.Firewall);
+            int intBaseAttack = _logic.Attack;
+            int intBaseSleaze = _logic.Sleaze;
+            int intBaseDP = _logic.DataProcessing;
+            int intBaseFirewall = _logic.Firewall;
 
             List<ListItem> DataSource = new List<ListItem>(4) {
                     new ListItem(intBaseAttack, intBaseAttack.ToString(GlobalSettings.InvariantCultureInfo)),
@@ -147,7 +147,7 @@ namespace MatrixPlugin
             cboAttack.PopulateWithListItems(DataSource);
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
-            cboAttack.Enabled = logic.CurrentPerson.CanSwapAttributes;
+            cboAttack.Enabled = _logic.CurrentPerson.CanSwapAttributes;
             cboAttack.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboSleaze.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
@@ -155,7 +155,7 @@ namespace MatrixPlugin
             cboSleaze.PopulateWithListItems(DataSource);
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
-            cboSleaze.Enabled = logic.CurrentPerson.CanSwapAttributes;
+            cboSleaze.Enabled = _logic.CurrentPerson.CanSwapAttributes;
             cboSleaze.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboDP.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
@@ -163,7 +163,7 @@ namespace MatrixPlugin
             cboDP.PopulateWithListItems(DataSource);
             cboDP.SelectedIndex = 2;
             cboDP.Visible = true;
-            cboDP.Enabled = logic.CurrentPerson.CanSwapAttributes;
+            cboDP.Enabled = _logic.CurrentPerson.CanSwapAttributes;
             cboDP.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboFirewall.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
@@ -171,7 +171,7 @@ namespace MatrixPlugin
             cboFirewall.PopulateWithListItems(DataSource);
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
-            cboFirewall.Enabled = logic.CurrentPerson.CanSwapAttributes;
+            cboFirewall.Enabled = _logic.CurrentPerson.CanSwapAttributes;
             cboFirewall.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboAttack.EndUpdate();
@@ -186,7 +186,7 @@ namespace MatrixPlugin
 
         private void ListSoftware_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            logic.ActivateSoftware(e.Index, e.NewValue == CheckState.Checked);
+            _logic.Programs[e.Index].IsActive = e.NewValue == CheckState.Checked;
         }
 
         private void CbAttribute_SelectedIndexChanged(object sender, EventArgs e)
@@ -194,47 +194,48 @@ namespace MatrixPlugin
             ComboBox from = (ComboBox)sender;
             Action<int> funcAttributePropertySetter;
             int oldValue;
+
             if (from == cbAttack)
             {
-                oldValue = logic.Attack;
-                funcAttributePropertySetter = (x => logic.Attack = x);
+                oldValue = _logic.Attack;
+                funcAttributePropertySetter = (x => _logic.Attack = x);
             }
             else if (from == cbSleaze)
             {
-                oldValue = logic.Sleaze;
-                funcAttributePropertySetter = (x => logic.Sleaze = x);
+                oldValue = _logic.Sleaze;
+                funcAttributePropertySetter = (x => _logic.Sleaze = x);
             }
             else if (from == cbDataProc)
             {
-                oldValue = logic.DataProcessing;
-                funcAttributePropertySetter = (x => logic.DataProcessing = x);
+                oldValue = _logic.DataProcessing;
+                funcAttributePropertySetter = (x => _logic.DataProcessing = x);
             }
             else if (from == cbFirewall)
             {
-                oldValue = logic.Firewall;
-                funcAttributePropertySetter = (x => logic.Firewall = x);
+                oldValue = _logic.Firewall;
+                funcAttributePropertySetter = (x => _logic.Firewall = x);
             }
             else return;
 
             if (from.SelectedItem.ToString() == cbAttack.Items[cbAttack.SelectedIndex].ToString() && cbAttack != from)
             {
-                funcAttributePropertySetter.Invoke(logic.Attack);
-                logic.Attack = oldValue;
+                funcAttributePropertySetter.Invoke(_logic.Attack);
+                _logic.Attack = oldValue;
             }
             else if (from.SelectedItem.ToString() == cbSleaze.Items[cbSleaze.SelectedIndex].ToString() && cbSleaze != from)
             {
-                funcAttributePropertySetter.Invoke(logic.Sleaze);
-                logic.Sleaze = oldValue;
+                funcAttributePropertySetter.Invoke(_logic.Sleaze);
+                _logic.Sleaze = oldValue;
             }
             else if (from.SelectedItem.ToString() == cbDataProc.Items[cbDataProc.SelectedIndex].ToString() && cbDataProc != from)
             {
-                funcAttributePropertySetter.Invoke(logic.DataProcessing);
-                logic.DataProcessing = oldValue;
+                funcAttributePropertySetter.Invoke(_logic.DataProcessing);
+                _logic.DataProcessing = oldValue;
             }
             else if (from.SelectedItem.ToString() == cbFirewall.Items[cbFirewall.SelectedIndex].ToString() && cbFirewall != from)
             {
-                funcAttributePropertySetter.Invoke(logic.Firewall);
-                logic.Firewall = oldValue;
+                funcAttributePropertySetter.Invoke(_logic.Firewall);
+                _logic.Firewall = oldValue;
             }
 
             RefreshMatrixAttributeCBOs(cbAttack, cbSleaze, cbDataProc, cbFirewall);
@@ -242,13 +243,13 @@ namespace MatrixPlugin
 
         private void CbActions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbActions.SelectedIndex >= 0 && cbActions.SelectedIndex < logic.Actions.Count)
-                logic.CurrentActionIndex = cbActions.SelectedIndex;
+            if (cbActions.SelectedIndex >= 0 && cbActions.SelectedIndex < _logic.Actions.Count)
+                _logic.CurrentActionIndex = cbActions.SelectedIndex;
         }
 
         private void ListCyberDecks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            logic.CurrentPerson = logic.Persons[listCyberDecks.SelectedIndex];
+            _logic.CurrentPerson = _logic.Persons[listCyberDecks.SelectedIndex];
             RefreshMatrixAttributeCBOs(cbAttack, cbSleaze, cbDataProc, cbFirewall);
         }
 
@@ -257,7 +258,7 @@ namespace MatrixPlugin
             int resultValue = (int)-nNoize.Value;
             if (cHotVR.Checked) resultValue += 2;
             if (cSilent.Checked) resultValue -= 2;
-            logic.ActionModifier = resultValue;
+            _logic.ActionModifier = resultValue;
         }
 
         int hoveredIndex = -1;
@@ -279,7 +280,6 @@ namespace MatrixPlugin
         {
             Label label = (Label)sender;
             label.Visible = !(string.IsNullOrEmpty(label.Text) || label.Text == "0");
-            //label.Visible = true;
         }
     }
 }

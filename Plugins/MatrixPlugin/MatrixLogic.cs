@@ -9,25 +9,31 @@ using System.Runtime.CompilerServices;
 
 namespace MatrixPlugin
 {
+    /// <summary>
+    /// Class represents all inner logic of this plugin
+    /// MatrixAttributes, Programs, Actions (matrix only)
+    /// </summary>
     public class MatrixLogic : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly Character _character;
 
-        public MatrixLogic(Character character, List<MatrixAction> matrixActions, List<Program> softwares)
+        public MatrixLogic(Character character, List<MatrixAction> matrixActions, List<Program> programs)
         {
+            Persons = new BindingList<Gear>();
+            Programs = new BindingList<Program>();
             _character = character;
-            _character.PropertyChanged += _character_PropertyChanged;
+            _character.PropertyChanged += character_PropertyChanged;
             _character.Gear.CollectionChanged += Gear_CollectionChanged;
             Actions = matrixActions;
-            SoftwaresList = softwares;
-            Persons = new BindingList<Gear>();
-            Software = new BindingList<Program>();
+            ProgramsList = programs;
 
             //Load all CyberDecks,Commlinks and Programs to the Lists
             AddEquipment(character.Gear);
         }
+
+        #region HelperFunctions
 
         private void AddEquipment(IList equipment)
         {
@@ -37,14 +43,15 @@ namespace MatrixPlugin
                     Persons.Add(gear);
                 else if (gear.Category.Contains("Program"))
                 {
-                    Program newItem = SoftwaresList.Find(x => x.Name.Equals(gear.Name));
+                    Program newItem = ProgramsList.Find(x => x.Name.Equals(gear.Name));
                     newItem.logic = this;
-                    Software.Add(newItem);
+                    Programs.Add(newItem);
                 }
                 if (gear.Children.Count > 0)
                     AddEquipment(gear.Children);
             }
         }
+
         private void RemoveEquipment(IList equipment)
         {
             foreach (Gear gear in equipment)
@@ -52,7 +59,7 @@ namespace MatrixPlugin
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
                     Persons.Remove(gear);
                 else if (gear.Category.Contains("Program"))
-                    Software.Remove(SoftwaresList.Find(x => x.Name.Equals(gear.Name)));
+                    Programs.Remove(ProgramsList.Find(x => x.Name.Equals(gear.Name)));
             }
         }
 
@@ -64,7 +71,7 @@ namespace MatrixPlugin
                 RemoveEquipment(e.OldItems);
         }
 
-        private void _character_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void character_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.WoundModifier))
             {
@@ -95,6 +102,7 @@ namespace MatrixPlugin
                 return skill.TotalBaseRating;
             return 0;
         }
+
         public int GetTotalAttribute(string attributeName)
         {
             CharacterAttrib attribute = _character.GetAttribute(attributeName);
@@ -103,30 +111,31 @@ namespace MatrixPlugin
             return 0;
         }
 
-        private int Parse(string value)
+        /// <summary>
+        /// Parse Character attribute by attribute's name
+        /// </summary>
+        /// <param name="attributeName">Attribute's name</param>
+        /// <returns></returns>
+        private int Parse(string attributeName)
         {
-            int.TryParse(value, out int result);
+            int.TryParse(attributeName, out int result);
             if (result == 0)
             {
-                CharacterAttrib attribute = _character.GetAttribute(value.Replace("{", "").Replace("}", ""));
+                CharacterAttrib attribute = _character.GetAttribute(attributeName.Replace("{", "").Replace("}", ""));
                 if (attribute != null)
                     result = attribute.Base;
             }
             return result;
         }
 
-
-        public void ActivateSoftware(int index, bool enable)
-        {
-            Software[index].IsActive = enable;
-        }
+        #endregion
 
         #region Properties
 
         public BindingList<Gear> Persons { get; set; }
-        public BindingList<Program> Software { get; set; }
+        public BindingList<Program> Programs { get; set; }
         public List<MatrixAction> Actions { get; set; }
-        public List<Program> SoftwaresList { get; }
+        public List<Program> ProgramsList { get; }
 
         public IHasMatrixAttributes CurrentPerson
         {
@@ -151,9 +160,11 @@ namespace MatrixPlugin
                 OnPropertyChanged();
             }
         }
+
         public MatrixAction CurrentAction => Actions[currentActionIndex];
 
         public bool OverClocker => _character.Overclocker;
+
         public int WoundModifier => _character.WoundModifier;
 
         public string OverClocked
@@ -196,7 +207,6 @@ namespace MatrixPlugin
         }
 
         public int TotalAttack => Parse(CurrentPerson.Attack) + Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack" ? 1 : 0);
-
 
         public int Sleaze
         {
@@ -260,7 +270,6 @@ namespace MatrixPlugin
 
         public int TotalDataProcessing => Parse(CurrentPerson.DataProcessing) + Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
 
-
         public int Firewall
         {
             get => Parse(CurrentPerson.Firewall);
@@ -321,7 +330,6 @@ namespace MatrixPlugin
                     new DependencyGraphNode<string, MatrixLogic>(nameof(OverClocker),
                         new DependencyGraphNode<string, MatrixLogic>(nameof(CurrentPerson))
                         )
-
                 );
 
         private static readonly DependencyGraphNode<string, MatrixLogic> _graphAttack =
@@ -394,10 +402,12 @@ namespace MatrixPlugin
                 );
 
         #endregion DependencyGraphTrees
+
         protected void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             OnMultiplePropertyChanged(strPropertyName);
         }
+
         protected void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
             ICollection<string> lstNamesOfChangedProperties = null;
