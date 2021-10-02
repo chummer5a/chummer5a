@@ -3455,7 +3455,7 @@ namespace Chummer.Classes
             Log.Info("biowareessmultiplier");
             Log.Info("biowareessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCostNonRetroactive, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3467,11 +3467,11 @@ namespace Chummer.Classes
             Log.Info("biowaretotalessmultiplier");
             Log.Info("biowaretotalessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
-        // Check for Non-Retroactive Cybeware Essence Cost modifiers that stack additively with base modifiers like grade.
+        // Check for Non-Retroactive Cyberware Essence Cost modifiers that stack additively with base modifiers like grade.
         public void cyberwareessmultipliernonretroactive(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -3479,7 +3479,7 @@ namespace Chummer.Classes
             Log.Info("cyberwareessmultiplier");
             Log.Info("cyberwareessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCostNonRetroactive, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
@@ -3491,7 +3491,7 @@ namespace Chummer.Classes
             Log.Info("cyberwaretotalessmultiplier");
             Log.Info("cyberwaretotalessmultiplier = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
