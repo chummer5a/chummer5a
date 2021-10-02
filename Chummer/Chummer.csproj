@@ -2223,22 +2223,6 @@
     <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Runnerhub Rules\amend_armor.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_bioware.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_complexforms.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_cyberware.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_gear.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_martialarts.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_mentors.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_metamagic.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_metatypes.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_powers.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_priorities.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_qualities.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_spells.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_traditions.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_vehicles.xml" />
-    <Content Include="customdata\Runnerhub Rules\amend_weapons.xml" />
     <Content Include="customdata\Shadowrun Missions Rules\amend_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
