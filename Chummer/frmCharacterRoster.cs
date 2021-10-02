@@ -390,7 +390,7 @@ namespace Chummer
                         continue;
                     }
 
-                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalSettings.CharacterRosterPath + "\\", string.Empty);
+                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalSettings.CharacterRosterPath + Path.DirectorySeparatorChar, string.Empty);
                     dicWatch.Add(strFile, strNewParent);
                 }
             }
@@ -425,7 +425,7 @@ namespace Chummer
                         return;
                     dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value);
                 });
-                foreach (string s in dicWatchNodes.Values.Distinct())
+                foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
                 {
                     if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                         return;
@@ -437,7 +437,7 @@ namespace Chummer
                         objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
                 }
 
-                foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes)
+                foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
                 {
                     if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                         return;
