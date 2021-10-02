@@ -21,11 +21,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Windows.Forms;
+using Chummer.Annotations;
 using NLog;
 
 namespace Chummer
 {
-    public class CursorWait : IDisposable
+    public sealed class CursorWait : IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static readonly object s_ObjApplicationWaitCursorsLock = new object();
@@ -177,7 +178,7 @@ namespace Chummer
             {
                 Utils.BreakIfDebug();
                 Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + _guidInstance + "\" somehow does not have a CursorWait list defined for it");
-                throw new ArgumentNullException(nameof(lstCursorWaits));
+                throw new InvalidOperationException(nameof(lstCursorWaits));
             }
 
             int intMyIndex = lstCursorWaits.FindLastIndex(x => x.Equals(this));
@@ -185,7 +186,7 @@ namespace Chummer
             {
                 Utils.BreakIfDebug();
                 Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + _guidInstance + "\" somehow is not in the CursorWait list defined for it");
-                throw new ArgumentNullException(nameof(intMyIndex));
+                throw new InvalidOperationException(nameof(intMyIndex));
             }
             if (intMyIndex >= lstCursorWaits.Count)
             {

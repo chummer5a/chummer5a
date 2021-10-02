@@ -188,7 +188,7 @@ namespace Chummer.Backend.Equipment
             if (!objXmlGear.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlGear.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlGear.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -1071,7 +1071,7 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -1681,7 +1681,8 @@ namespace Chummer.Backend.Equipment
                             x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                         {
                             // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            objChild.Rating = objChild.Rating;
+                            int intCurrentRating = objChild.Rating;
+                            objChild.Rating = intCurrentRating;
                         }
                     }
                 }

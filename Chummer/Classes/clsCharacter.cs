@@ -20623,22 +20623,22 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyDoubleClick;
+        public EventHandler OnMyDoubleClick { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyContextMenuDeleteClick;
+        public EventHandler OnMyContextMenuDeleteClick { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<TreeViewEventArgs> OnMyAfterSelect;
+        public EventHandler<TreeViewEventArgs> OnMyAfterSelect { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown;
+        public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown { get; set; }
 
         public void OnDefaultDoubleClick(object sender, EventArgs e)
         {

@@ -520,7 +520,7 @@ namespace Chummer.Backend.Equipment
             if (!objXmlCyberware.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlCyberware.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlCyberware.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -1488,7 +1488,7 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -2611,7 +2611,8 @@ namespace Chummer.Backend.Equipment
                         x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        objChild.Rating = objChild.Rating;
+                        int intCurrentRating = objChild.Rating;
+                        objChild.Rating = intCurrentRating;
                     }
                 }
                 DoPropertyChanges(true, false);
@@ -4801,27 +4802,30 @@ namespace Chummer.Backend.Equipment
                 List<Grade> objBiowareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware);
                 if (objSelectedGrade == null)
                 {
+                    bool blnDoBiowareGradeCheck = true;
                     foreach (Grade objCyberwareGrade in objCyberwareGradeList)
                     {
                         if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')', StringComparison.Ordinal))
                         {
                             strGradeName = objCyberwareGrade.Name;
                             strOriginalName = strOriginalName.TrimEndOnce(" (" + objCyberwareGrade.Name + ')');
-                            goto EndGradeCheck;
-                        }
-                    }
-
-                    foreach (Grade objCyberwareGrade in objBiowareGradeList)
-                    {
-                        if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')', StringComparison.Ordinal))
-                        {
-                            strGradeName = objCyberwareGrade.Name;
-                            strOriginalName = strOriginalName.TrimEndOnce(" (" + objCyberwareGrade.Name + ')');
+                            blnDoBiowareGradeCheck = false;
                             break;
                         }
                     }
 
-                EndGradeCheck:;
+                    if (blnDoBiowareGradeCheck)
+                    {
+                        foreach (Grade objCyberwareGrade in objBiowareGradeList)
+                        {
+                            if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')', StringComparison.Ordinal))
+                            {
+                                strGradeName = objCyberwareGrade.Name;
+                                strOriginalName = strOriginalName.TrimEndOnce(" (" + objCyberwareGrade.Name + ')');
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 XmlDocument xmlCyberwareDocument = _objCharacter.LoadData("cyberware.xml");

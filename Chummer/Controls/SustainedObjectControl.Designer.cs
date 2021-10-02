@@ -115,7 +115,7 @@ namespace Chummer
             this.nudNetHits.Name = "nudNetHits";
             this.nudNetHits.Size = new System.Drawing.Size(32, 20);
             this.nudNetHits.TabIndex = 12;
-            this.nudNetHits.ValueChanged += new System.EventHandler(this.nudNetHits_ValueChanged);
+            this.nudNetHits.ValueChanged += new System.EventHandler(this.SustainedObject_ControlStateChanged);
             // 
             // lblForce
             // 
@@ -148,7 +148,7 @@ namespace Chummer
             this.nudForce.Name = "nudForce";
             this.nudForce.Size = new System.Drawing.Size(32, 20);
             this.nudForce.TabIndex = 9;
-            this.nudForce.ValueChanged += new System.EventHandler(this.nudForce_ValueChanged);
+            this.nudForce.ValueChanged += new System.EventHandler(this.SustainedObject_ControlStateChanged);
             // 
             // chkSelfSustained
             // 
@@ -165,7 +165,7 @@ namespace Chummer
             this.chkSelfSustained.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkSelfSustained.UseVisualStyleBackColor = true;
             this.chkSelfSustained.Visible = false;
-            this.chkSelfSustained.CheckedChanged += new System.EventHandler(this.chkSelf_CheckedChanged);
+            this.chkSelfSustained.CheckedChanged += new System.EventHandler(this.SustainedObject_ControlStateChanged);
             // 
             // cmdDelete
             // 

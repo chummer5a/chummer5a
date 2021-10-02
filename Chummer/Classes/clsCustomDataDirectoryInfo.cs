@@ -30,7 +30,7 @@ namespace Chummer
     /// <summary>
     /// This class holds all information about an CustomDataDirectory
     /// </summary>
-    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>, IHasInternalId
+    public sealed class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>, IHasInternalId
     {
         private readonly Version _objMyVersion = new Version(1, 0);
         private Guid _guid = Guid.NewGuid();

@@ -25,7 +25,7 @@ namespace Chummer
     /// <summary>
     /// Syntactic Sugar for wrapping a ReaderWriterLockSlim's EnterUpgradeableReadLock() and ExitUpgradeableReadLock() methods into something that hooks into `using`
     /// </summary>
-    public class EnterUpgradeableReadLock : IDisposable
+    public sealed class EnterUpgradeableReadLock : IDisposable
     {
         private readonly ReaderWriterLockSlim _rwlMyLock;
 

@@ -403,7 +403,7 @@ namespace Chummer
             UpdateCyberwareInfo();
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
+        private void ProcessCyberwareInfoChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -467,20 +467,6 @@ namespace Chummer
             UpdateCyberwareInfo();
         }
 
-        private void nudESSDiscount_ValueChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            UpdateCyberwareInfo();
-        }
-
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            UpdateCyberwareInfo();
-        }
-
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -519,14 +505,7 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-
-        private void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            UpdateCyberwareInfo();
-        }
-
+        
         #endregion Control Events
 
         #region Properties

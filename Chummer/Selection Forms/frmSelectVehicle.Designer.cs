@@ -456,7 +456,7 @@ namespace Chummer
             this.chkUsedVehicle.Text = "Used Vehicle";
             this.chkUsedVehicle.UseVisualStyleBackColor = true;
             this.chkUsedVehicle.Visible = false;
-            this.chkUsedVehicle.CheckedChanged += new System.EventHandler(this.chkUsedVehicle_CheckedChanged);
+            this.chkUsedVehicle.CheckedChanged += new System.EventHandler(this.ProcessVehicleCostsChanged);
             // 
             // lblUsedVehicleDiscountLabel
             // 
@@ -496,7 +496,7 @@ namespace Chummer
             0,
             0});
             this.nudUsedVehicleDiscount.Visible = false;
-            this.nudUsedVehicleDiscount.ValueChanged += new System.EventHandler(this.nudUsedVehicleDiscount_ValueChanged);
+            this.nudUsedVehicleDiscount.ValueChanged += new System.EventHandler(this.ProcessVehicleCostsChanged);
             // 
             // lblUsedVehicleDiscountPercentLabel
             // 
@@ -529,7 +529,7 @@ namespace Chummer
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 28;
-            this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
+            this.nudMarkup.ValueChanged += new System.EventHandler(this.ProcessVehicleCostsChanged);
             // 
             // lblMarkupLabel
             // 

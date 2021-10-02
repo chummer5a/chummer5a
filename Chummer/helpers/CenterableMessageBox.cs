@@ -32,8 +32,8 @@ namespace Chummer
     public class CenterableMessageBox
     {
         private static IWin32Window _owner;
-        private static readonly NativeMethods.HookProc s_HookProc;
-        private static IntPtr _hHook;
+        private static readonly NativeMethods.HookProc s_HookProc = MessageBoxHookProc;
+        private static IntPtr _hHook = IntPtr.Zero;
 
         public static DialogResult Show(string text)
         {
@@ -137,12 +137,6 @@ namespace Chummer
             public IntPtr wParam;
             public uint message;
             public IntPtr hwnd;
-        }
-
-        static CenterableMessageBox()
-        {
-            s_HookProc = MessageBoxHookProc;
-            _hHook = IntPtr.Zero;
         }
 
         private static void Initialize()

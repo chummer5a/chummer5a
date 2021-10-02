@@ -175,7 +175,7 @@ namespace Chummer
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool ShowWindow(IntPtr hWnd, ShowWindowEnum flags);
+        internal static extern bool ShowWindow(IntPtr hWnd, ShowWindowMode flags);
 
         [DllImport("user32.dll")]
         internal static extern int SetForegroundWindow(IntPtr hWnd);
@@ -224,7 +224,7 @@ namespace Chummer
             UnawareGdiScaled = -5
         }
 
-        internal enum ShowWindowEnum
+        internal enum ShowWindowMode
         {
             Hide = 0,
             ShowNormal = 1,
@@ -408,7 +408,7 @@ namespace Chummer
             if (objProcess.MainWindowHandle == IntPtr.Zero)
             {
                 // the window is hidden so try to restore it before setting focus.
-                ShowWindow(objProcess.Handle, ShowWindowEnum.Restore);
+                ShowWindow(objProcess.Handle, ShowWindowMode.Restore);
             }
             // set user the focus to the window
             SetForegroundWindow(objProcess.MainWindowHandle);

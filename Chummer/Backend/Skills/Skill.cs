@@ -260,7 +260,7 @@ namespace Chummer.Backend.Skills
             if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                 xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
 

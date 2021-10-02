@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows.Forms.VisualStyles;
 
 namespace Chummer
 {
@@ -126,9 +128,16 @@ namespace Chummer
         {
             if (Root != null)
                 return MyObject?.GetHashCode() ?? 0;
+            
+            List<object> lstDummy = new List<object>(2 + UpStreamNodes.Count + DownStreamNodes.Count)
+            {
+                MyObject,
+                Root
+            };
+            lstDummy.AddRange(UpStreamNodes.Cast<object>());
+            lstDummy.AddRange(DownStreamNodes.Cast<object>());
 
-            // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
-            return base.GetHashCode();
+            return lstDummy.GetEnsembleHashCode();
         }
 
         public override string ToString()

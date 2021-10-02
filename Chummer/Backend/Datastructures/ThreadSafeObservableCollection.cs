@@ -167,9 +167,19 @@ namespace Chummer
                 base.OnCollectionChanged(e);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _rwlThis.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            _rwlThis.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
