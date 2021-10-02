@@ -671,13 +671,17 @@ namespace Chummer.Backend.Equipment
             get => Math.Min(_intRating, MaximumRating);
             set
             {
-                _intRating = Math.Min(value, MaximumRating);
+                int intNewRating = Math.Min(value, MaximumRating);
+                if (_intRating == intNewRating)
+                    return;
+                _intRating = intNewRating;
                 if (GearChildren.Count > 0)
                 {
                     foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        objChild.Rating = objChild.Rating;
+                        int intCurrentRating = objChild.Rating;
+                        objChild.Rating = intCurrentRating;
                     }
                 }
             }

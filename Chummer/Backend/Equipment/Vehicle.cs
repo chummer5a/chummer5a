@@ -1225,11 +1225,9 @@ namespace Chummer.Backend.Equipment
                         else if (objMod.WirelessOn)
                         {
                             strBonusPilot = objMod.WirelessBonus?["pilot"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBonusPilot))
+                            if (!string.IsNullOrEmpty(strBonusPilot) && int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTest) && intTest > intReturn)
                             {
-                                if (int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTest)
-                                    && intTest > intReturn)
-                                    intReturn = intTest;
+                                intReturn = intTest;
                             }
                         }
                     }
@@ -2998,14 +2996,27 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Empty for Vehicles.
         /// </summary>
-        public string CanFormPersona { get => string.Empty; set { } }
+        public string CanFormPersona {
+            get => string.Empty;
+            set
+            {
+                // Dummy
+            }
+        }
 
         public bool IsCommlink => GearChildren.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
 
         /// <summary>
         /// 0 for Vehicles.
         /// </summary>
-        public int BonusMatrixBoxes { get => 0; set { } }
+        public int BonusMatrixBoxes
+        {
+            get => 0;
+            set
+            {
+                // Dummy
+            }
+        }
 
         public int TotalBonusMatrixBoxes
         {

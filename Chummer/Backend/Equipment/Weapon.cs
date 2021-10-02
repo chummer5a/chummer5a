@@ -5334,7 +5334,7 @@ namespace Chummer.Backend.Equipment
                     RecreateInternalClip();
                     objInternalClip = GetClip(ActiveAmmoSlot);
                     if (objInternalClip == null)
-                        throw new ArgumentNullException(nameof(objInternalClip));
+                        throw new InvalidOperationException(nameof(objInternalClip));
                 }
 
                 int intCurrentAmmoCount = objInternalClip.Ammo;

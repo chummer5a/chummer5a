@@ -1023,13 +1023,8 @@ namespace Chummer
                                 (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                             {
                                 string[] astrBlockedMounts = strBlocksMounts.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                foreach (string strLoop in _strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                {
-                                    if (astrBlockedMounts.Contains(strLoop))
-                                    {
-                                        goto NextCyberware;
-                                    }
-                                }
+                                if (_strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(strLoop => astrBlockedMounts.Contains(strLoop)))
+                                    continue;
                             }
                         }
                     }
@@ -1037,16 +1032,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_strDisallowedMounts))
                     {
                         string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
-                        if (!string.IsNullOrEmpty(strLoopMount))
-                        {
-                            foreach (string strLoop in _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                if (strLoopMount == strLoop)
-                                {
-                                    goto NextCyberware;
-                                }
-                            }
-                        }
+                        if (!string.IsNullOrEmpty(strLoopMount) && _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(strLoop => strLoopMount == strLoop))
+                            continue;
                     }
 
                     string strMaxRating = xmlCyberware.SelectSingleNode("rating")?.Value;
@@ -1128,7 +1115,6 @@ namespace Chummer
                     lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
                     if (blnTerminateAfterFirst)
                         break;
-                    NextCyberware:;
                 }
             }
 

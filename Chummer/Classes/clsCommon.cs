@@ -1022,12 +1022,20 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+                object objProcess = EvaluateInvariantXPath(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                         .Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
-            catch (OverflowException) { } // Result is text and not a double
-            catch (InvalidCastException) { }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
 
             intValue += intOffset;
             if (intForce > 0)
@@ -1058,12 +1066,20 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+                object objProcess = EvaluateInvariantXPath(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                         .Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }
-            catch (OverflowException) { } // Result is text and not a double
-            catch (InvalidCastException) { }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
 
             decValue += decOffset;
             if (intForce > 0)

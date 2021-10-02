@@ -132,6 +132,7 @@ namespace Chummer
             }
             catch (CultureNotFoundException)
             {
+                // Swallow this
             }
             _objCharacterXml = null;
             await Task.WhenAll(
@@ -154,7 +155,10 @@ namespace Chummer
                     if (_tskCharacterXmlGenerator?.IsCompleted == false)
                         await _tskCharacterXmlGenerator;
                 }
-                catch (TaskCanceledException) { }
+                catch (TaskCanceledException)
+                {
+                    // Swallow this
+                }
                 _tskCharacterXmlGenerator = Task.Run(GenerateCharacterXml, _objCharacterXmlGeneratorCancellationTokenSource.Token);
                 return;
             }
@@ -179,7 +183,10 @@ namespace Chummer
                         if (_tskXmlGenerator?.IsCompleted == false)
                             await _tskXmlGenerator;
                     }
-                    catch (TaskCanceledException) { }
+                    catch (TaskCanceledException)
+                    {
+                        // Swallow this
+                    }
                     _tskXmlGenerator = _strXslt == "Export JSON"
                         ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
                         : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);

@@ -50,7 +50,10 @@ namespace Chummer.Backend.Skills
         public override bool BuyWithKarma
         {
             get => false;
-            set { }
+            set
+            {
+                // Dummy
+            }
         }
 
         public override int CurrentSpCost => Math.Max(BasePoints, 0);

@@ -1062,21 +1062,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Min(value, MaxRating);
-                if (_intRating != intNewValue)
+                if (_intRating == intNewValue)
+                    return;
+                _intRating = intNewValue;
+                if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
                 {
-                    _intRating = intNewValue;
-                    if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
+                    _objCharacter.RefreshEncumbrance();
+                }
+                if (GearChildren.Count > 0)
+                {
+                    foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                     {
-                        _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
-                        _objCharacter.RefreshEncumbrance();
-                    }
-                    if (GearChildren.Count > 0)
-                    {
-                        foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
-                        {
-                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            objChild.Rating = objChild.Rating;
-                        }
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        int intCurrentRating = objChild.Rating;
+                        objChild.Rating = intCurrentRating;
                     }
                 }
             }

@@ -143,17 +143,19 @@ namespace Chummer
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
                 {
+                    bool blnDoChar = true;
                     char chrLoop = strInput[i];
                     for (int j = 0; j < intDeleteLength; ++j)
                     {
                         if (chrLoop == achrToDelete[j])
                         {
-                            goto SkipChar;
+                            blnDoChar = false;
+                            break;
                         }
                     }
 
-                    achrNewChars[intCurrent++] = chrLoop;
-                SkipChar:;
+                    if (blnDoChar)
+                        achrNewChars[intCurrent++] = chrLoop;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
@@ -169,17 +171,19 @@ namespace Chummer
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
                 {
+                    bool blnDoChar = true;
                     char chrLoop = strInput[i];
                     for (int j = 0; j < intDeleteLength; ++j)
                     {
                         if (chrLoop == achrToDelete[j])
                         {
-                            goto SkipChar;
+                            blnDoChar = false;
+                            break;
                         }
                     }
 
-                    achrNewChars[intCurrent++] = chrLoop;
-                SkipChar:;
+                    if (blnDoChar)
+                        achrNewChars[intCurrent++] = chrLoop;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied

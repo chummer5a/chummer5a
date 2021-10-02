@@ -831,8 +831,14 @@ namespace Chummer.Backend.Equipment
                         if (blnIsSuccess)
                             intReturn = ((double)objProcess).StandardRound();
                     }
-                    catch (OverflowException) { }
-                    catch (InvalidCastException) { }
+                    catch (OverflowException)
+                    {
+                        // swallow this
+                    }
+                    catch (InvalidCastException)
+                    {
+                        // swallow this
+                    }
                 }
                 else if (!string.IsNullOrEmpty(strConceal) && !int.TryParse(strConceal, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
                 {
@@ -850,13 +856,16 @@ namespace Chummer.Backend.Equipment
             get => _intRating;
             set
             {
+                if (_intRating == value)
+                    return;
                 _intRating = value;
                 if (GearChildren.Count > 0)
                 {
                     foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        objChild.Rating = objChild.Rating;
+                        int intCurrentRating = objChild.Rating;
+                        objChild.Rating = intCurrentRating;
                     }
                 }
             }
@@ -1249,8 +1258,14 @@ namespace Chummer.Backend.Equipment
                         if (blnIsSuccess)
                             intReturn = ((double)objProcess).StandardRound();
                     }
-                    catch (OverflowException) { }
-                    catch (InvalidCastException) { }
+                    catch (OverflowException)
+                    {
+                        // swallow this
+                    }
+                    catch (InvalidCastException)
+                    {
+                        // swallow this
+                    }
                 }
                 else if (!string.IsNullOrEmpty(strAmmoBonus) && !int.TryParse(strAmmoBonus, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
                 {

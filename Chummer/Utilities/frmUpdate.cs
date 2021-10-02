@@ -121,7 +121,10 @@ namespace Chummer
                 if (_tskConnectionLoader?.IsCompleted == false)
                     await _tskConnectionLoader;
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                // Swallow this
+            }
             _tskConnectionLoader = Task.Run(async () =>
             {
                 await LoadConnection();
@@ -688,12 +691,15 @@ namespace Chummer
                     }
                     catch (IOException)
                     {
+                        // Swallow this
                     }
                     catch (NotSupportedException)
                     {
+                        // Swallow this
                     }
                     catch (UnauthorizedAccessException)
                     {
+                        // Swallow this
                     }
                 }
             }
