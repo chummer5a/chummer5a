@@ -263,6 +263,7 @@
     <Compile Include="Backend\Datastructures\TaggedObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollection.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeObservableCollectionWithMaxSize.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />

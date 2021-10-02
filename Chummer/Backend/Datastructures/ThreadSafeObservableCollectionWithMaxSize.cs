@@ -17,24 +17,38 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace Chummer
 {
-    public class MostRecentlyUsedCollection<T> : ThreadSafeObservableCollectionWithMaxSize<T>
+    public class ThreadSafeObservableCollectionWithMaxSize<T> : ThreadSafeObservableCollection<T>
     {
-        public MostRecentlyUsedCollection(int intMaxSize) : base(intMaxSize)
+        private readonly int _intMaxSize;
+
+        public ThreadSafeObservableCollectionWithMaxSize(int intMaxSize)
         {
+            _intMaxSize = intMaxSize;
         }
 
-        public MostRecentlyUsedCollection(List<T> list, int intMaxSize) : base(list, intMaxSize)
+        public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize) : base(list)
         {
+            _intMaxSize = intMaxSize;
+            using (new EnterWriteLock(LockerObject))
+            {
+                while (Count > _intMaxSize)
+                    RemoveAt(Count - 1);
+            }
         }
 
-        public MostRecentlyUsedCollection(IEnumerable<T> collection, int intMaxSize) : base(collection, intMaxSize)
+        public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize) : base(collection)
         {
+            _intMaxSize = intMaxSize;
+            using (new EnterWriteLock(LockerObject))
+            {
+                while (Count > _intMaxSize)
+                    RemoveAt(Count - 1);
+            }
         }
 
         private bool _blnSkipCollectionChanged;
@@ -50,16 +64,9 @@ namespace Chummer
                     _blnSkipCollectionChanged = true;
                     using (new EnterWriteLock(LockerObject))
                     {
-                        // Remove all duplicate entries
-                        for (int intLastIndex = Count - 1; intLastIndex >= 0; --intLastIndex)
-                        {
-                            T objItem = this[intLastIndex];
-                            for (int intIndex = IndexOf(objItem); intIndex != intLastIndex; intIndex = IndexOf(objItem))
-                            {
-                                RemoveAt(intIndex);
-                                --intLastIndex;
-                            }
-                        }
+                        // Remove all entries greater than the allowed size
+                        while (Count > _intMaxSize)
+                            RemoveAt(Count - 1);
                     }
                     _blnSkipCollectionChanged = false;
                 }
@@ -71,13 +78,13 @@ namespace Chummer
         {
             using (new EnterUpgradeableReadLock(LockerObject))
             {
-                int intExistingIndex = IndexOf(item);
+                if (index >= _intMaxSize)
+                    return;
+                base.InsertItem(index, item);
                 using (new EnterWriteLock(LockerObject))
                 {
-                    if (intExistingIndex == -1)
-                        base.InsertItem(index, item);
-                    else
-                        MoveItem(intExistingIndex, Math.Min(index, Count - 1));
+                    while (Count > _intMaxSize)
+                        RemoveAt(Count - 1);
                 }
             }
         }

@@ -31,6 +31,8 @@ namespace Chummer
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
+        protected ReaderWriterLockSlim LockerObject => _rwlThis;
+
         public ThreadSafeObservableCollection()
         {
         }
