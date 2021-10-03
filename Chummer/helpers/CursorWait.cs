@@ -21,7 +21,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Chummer.Annotations;
 using NLog;
 
 namespace Chummer
