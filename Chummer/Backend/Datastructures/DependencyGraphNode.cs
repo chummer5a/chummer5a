@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Chummer
 {
@@ -126,17 +125,10 @@ namespace Chummer
         public override int GetHashCode()
         {
             if (Root != null)
-                return MyObject?.GetHashCode() ?? 0;
-            
-            List<object> lstDummy = new List<object>(2 + UpStreamNodes.Count + DownStreamNodes.Count)
-            {
-                MyObject,
-                Root
-            };
-            lstDummy.AddRange(UpStreamNodes.Cast<object>());
-            lstDummy.AddRange(DownStreamNodes.Cast<object>());
-
-            return lstDummy.GetEnsembleHashCode();
+                return MyObject != null
+                    ? (Root, MyObject).GetHashCode()
+                    : Root.GetHashCode();
+            return MyObject != null ? MyObject.GetHashCode() : 0;
         }
 
         public override string ToString()
