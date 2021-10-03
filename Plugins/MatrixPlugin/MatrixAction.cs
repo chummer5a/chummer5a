@@ -18,6 +18,8 @@ namespace MatrixPlugin
         private static readonly string[] SkillNames = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare" };
         private readonly Action _action;
         private readonly Action _defenceAction;
+        //Pattern for finding +X or -X in string
+        private static string _dicePoolModifierRegexPattern = "([-]{0,1})[ ]([\\d]+)";
 
         public MatrixAction()
         {
@@ -172,15 +174,15 @@ namespace MatrixPlugin
             }
             //Parse Modifiers
             // as [-] Digits
-            if (!string.IsNullOrEmpty(actionCheck) && Regex.IsMatch(actionCheck, "([-]{0,1})[ ]([\\d]+)"))
+            if (!string.IsNullOrEmpty(actionCheck) && Regex.IsMatch(actionCheck, _dicePoolModifierRegexPattern))
             {
-                Match match = Regex.Match(actionCheck, "([-]{0,1})[ ]([\\d]+)");
+                Match match = Regex.Match(actionCheck, _dicePoolModifierRegexPattern);
                 string result = match.Groups[1].Value + match.Groups[2].Value;
                 ActionModifier = int.Parse(result);
             }
-            if (!string.IsNullOrEmpty(defenceCheck) && Regex.IsMatch(defenceCheck, "([-]{0,1})[ ]([\\d]+)"))
+            if (!string.IsNullOrEmpty(defenceCheck) && Regex.IsMatch(defenceCheck, _dicePoolModifierRegexPattern))
             {
-                Match match = Regex.Match(defenceCheck, "([-]{0,1})[ ]([\\d]+)");
+                Match match = Regex.Match(defenceCheck, _dicePoolModifierRegexPattern);
                 string result = match.Groups[1].Value + match.Groups[2].Value;
                 DefenceModifier = int.Parse(result);
             }
