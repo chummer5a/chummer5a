@@ -6569,37 +6569,37 @@ namespace Chummer
         public bool IsRefreshing
         {
             get => _blnIsRefreshing;
-            set
+            set => _blnIsRefreshing = value;
+            /*
             {
-                //if (_blnIsRefreshing != value)
+                if (_blnIsRefreshing != value)
                 {
                     _blnIsRefreshing = value;
-                    /*
                     if (value)
                         SuspendLayout();
                     else if (!IsLoading)
                         ResumeLayout();
-                    */
                 }
             }
+            */
         }
 
         public bool IsLoading
         {
             get => _blnLoading;
-            set
+            set => _blnLoading = value;
+            /*
             {
-                //if (_blnLoading != value)
+                if (_blnLoading != value)
                 {
                     _blnLoading = value;
-                    /*
                     if (value)
                         SuspendLayout();
                     else if (!IsRefreshing)
                         ResumeLayout();
-                    */
                 }
             }
+            */
         }
 
         public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
