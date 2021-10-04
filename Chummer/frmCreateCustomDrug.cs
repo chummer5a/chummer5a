@@ -31,7 +31,7 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
-        private readonly List<clsNodeData> _lstSelectedDrugComponents;
+        private readonly List<DrugNodeData> _lstSelectedDrugComponents;
         private readonly List<ListItem> _lstGrade = new List<ListItem>(10);
         private readonly Character _objCharacter;
         private Drug _objDrug;
@@ -52,7 +52,7 @@ namespace Chummer
             _objXmlDocument = objCharacter.LoadData("drugcomponents.xml");
             LoadData();
 
-            _lstSelectedDrugComponents = new List<clsNodeData>(5);
+            _lstSelectedDrugComponents = new List<DrugNodeData>(5);
 
             string strLevelString = LanguageManager.GetString("String_Level");
             string strSpaceString = LanguageManager.GetString("String_Space");
@@ -69,15 +69,15 @@ namespace Chummer
                 int intLevelCount = objItem.Value.DrugEffects.Count;
                 if (intLevelCount == 1)
                 {
-                    objNode.Tag = new clsNodeData(objItem.Value, 0);
+                    objNode.Tag = new DrugNodeData(objItem.Value, 0);
                 }
                 else
                 {
-                    objNode.Tag = new clsNodeData(objItem.Value);
+                    objNode.Tag = new DrugNodeData(objItem.Value);
                     for (int i = 0; i < intLevelCount; i++)
                     {
                         TreeNode objSubNode = objNode.Nodes.Add(strLevelString + strSpaceString + (i + 1).ToString(GlobalSettings.CultureInfo));
-                        objSubNode.Tag = new clsNodeData(objItem.Value, i);
+                        objSubNode.Tag = new DrugNodeData(objItem.Value, i);
                     }
                 }
             }
@@ -130,7 +130,7 @@ namespace Chummer
                 _objDrug.Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),
                     Improvement.ImprovementSource.Drug, _objCharacter);
 
-            foreach (clsNodeData objNodeData in _lstSelectedDrugComponents)
+            foreach (DrugNodeData objNodeData in _lstSelectedDrugComponents)
             {
                 DrugComponent objDrugComponent = objNodeData.DrugComponent;
                 objDrugComponent.Level = objNodeData.Level;
@@ -160,7 +160,7 @@ namespace Chummer
 
         private void AddSelectedComponent()
         {
-            if (!(treAvailableComponents.SelectedNode?.Tag is clsNodeData objNodeData) || objNodeData.Level == -1)
+            if (!(treAvailableComponents.SelectedNode?.Tag is DrugNodeData objNodeData) || objNodeData.Level == -1)
             {
                 return;
             }
@@ -195,7 +195,7 @@ namespace Chummer
             //restriction for maximum level of block (CF 191)
             if (objNodeData.Level + 1 > 2)
             {
-                foreach (clsNodeData objFoundationNodeData in _lstSelectedDrugComponents)
+                foreach (DrugNodeData objFoundationNodeData in _lstSelectedDrugComponents)
                 {
                     if (objFoundationNodeData.DrugComponent.Category != "Foundation")
                         continue;
@@ -238,7 +238,7 @@ namespace Chummer
 
         private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treAvailableComponents.SelectedNode?.Tag is clsNodeData objNodeData)
+            if (treAvailableComponents.SelectedNode?.Tag is DrugNodeData objNodeData)
             {
                 lblBlockDescription.Text = objNodeData.DrugComponent.GenerateDescription(objNodeData.Level);
             }
@@ -246,7 +246,7 @@ namespace Chummer
 
         private void treChoosenComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)
+            if (treChosenComponents.SelectedNode?.Tag is DrugNodeData objNodeData)
             {
                 lblBlockDescription.Text = objNodeData.DrugComponent.GenerateDescription(objNodeData.Level);
             }
@@ -264,7 +264,7 @@ namespace Chummer
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            if (!(treChosenComponents.SelectedNode?.Tag is clsNodeData objNodeData)) return;
+            if (!(treChosenComponents.SelectedNode?.Tag is DrugNodeData objNodeData)) return;
             treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
 
             _lstSelectedDrugComponents.Remove(objNodeData);
@@ -306,17 +306,17 @@ namespace Chummer
             UpdateCustomDrugStats();
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
-    }
 
-    internal class clsNodeData
-    {
-        public DrugComponent DrugComponent { get; }
-        public int Level { get; }
-
-        public clsNodeData(DrugComponent objDrugComponent, int level = -1)
+        private class DrugNodeData
         {
-            DrugComponent = objDrugComponent;
-            Level = level;
+            public DrugComponent DrugComponent { get; }
+            public int Level { get; }
+
+            public DrugNodeData(DrugComponent objDrugComponent, int level = -1)
+            {
+                DrugComponent = objDrugComponent;
+                Level = level;
+            }
         }
     }
 }
