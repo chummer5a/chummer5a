@@ -114,6 +114,8 @@ Application Changes:
 - Added support for customising the calculation of bound spirit and registered sprite limits as a house rule.
 - Fixed category display not working correctly when searching for items in frmSelectGear. Closes #4570
 - Non-retroactive essence modifiers are now properly non-retroactive.
+- Restricted Gear-style improvements can now support multiple allowed availabilities and different quantities for each allowed availability.
+- Restricted Gear can now properly handle cases where multiple items exceeding character creation availability limits are in one stack instead of split across multiple ones.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

@@ -695,8 +695,14 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="restrictedgear" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="restricteditemcount" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="restrictedgear" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="availability" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="amount" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="runmultiplier" minOccurs="0" maxOccurs="3">
         <xs:complexType>
           <xs:sequence>

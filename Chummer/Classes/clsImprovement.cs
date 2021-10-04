@@ -117,7 +117,6 @@ namespace Chummer
             Echo,
             Skillwire,
             DamageResistance,
-            RestrictedItemCount,
             JudgeIntentions,
             JudgeIntentionsOffense,
             JudgeIntentionsDefense,
@@ -1301,9 +1300,6 @@ namespace Chummer
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
                             nameof(Character.DamageResistancePool));
                     }
-                    break;
-
-                case ImprovementType.RestrictedItemCount:
                     break;
 
                 case ImprovementType.JudgeIntentions:

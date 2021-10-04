@@ -340,8 +340,6 @@ namespace Chummer
                     return objImprovementAdder.hardwires;
                 case "DAMAGERESISTANCE":
                     return objImprovementAdder.damageresistance;
-                case "RESTRICTEDITEMCOUNT":
-                    return objImprovementAdder.restricteditemcount;
                 case "JUDGEINTENTIONS":
                     return objImprovementAdder.judgeintentions;
                 case "JUDGEINTENTIONSOFFENSE":

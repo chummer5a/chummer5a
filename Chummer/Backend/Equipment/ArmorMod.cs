@@ -1290,46 +1290,54 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
-        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
-        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
-        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
-        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
-        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
-        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
-        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>
+        /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
+        /// <param name="intRestrictedCount">Number of items that are above availability limits.</param>
+        public void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount)
         {
-            AvailabilityValue objTotalAvail = TotalAvailTuple();
-            if (!objTotalAvail.AddToParent)
+            if (!IncludedInArmor)
             {
-                int intAvailInt = objTotalAvail.Value;
-                if (intAvailInt > _objCharacter.Settings.MaximumAvailability && !_blnIncludedInArmor)
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
                 {
-                    if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                    int intAvailInt = objTotalAvail.Value;
+                    if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
                     {
-                        blnRestrictedGearUsed = true;
-                        strRestrictedItem = Parent == null
+                        int intLowestValidRestrictedGearAvail = -1;
+                        foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
+                        {
+                            if (intValidAvail >= intAvailInt && (intLowestValidRestrictedGearAvail < 0
+                                                                 || intValidAvail < intLowestValidRestrictedGearAvail))
+                                intLowestValidRestrictedGearAvail = intValidAvail;
+                        }
+
+                        string strNameToUse = Parent == null
                             ? CurrentDisplayName
                             : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                CurrentDisplayName, LanguageManager.GetString("String_Space"), Parent.CurrentDisplayName);
-                    }
-                    else
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalSettings.Language);
+                                            CurrentDisplayName, LanguageManager.GetString("String_Space"),
+                                            Parent.CurrentDisplayName);
+
+                        if (intLowestValidRestrictedGearAvail >= 0
+                            && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
+                        {
+                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                        }
+                        else
+                        {
+                            dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
+                            ++intRestrictedCount;
+                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                        }
                     }
                 }
             }
 
             foreach (Gear objChild in GearChildren)
             {
-                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
             }
-            strOutAvailItems = strAvailItems;
-            intOutRestrictedCount = intRestrictedCount;
-            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
-            strOutRestrictedItem = strRestrictedItem;
         }
 
         #endregion Methods

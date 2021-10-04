@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
@@ -1465,20 +1466,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
-        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
-        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
-        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
-        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
-        /// <param name="strCyberwareGrade">String used to list names of cyberware that have a banned cyberware grade.</param>
-        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
-        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
-        /// <param name="strOutCyberwareGrade">Cyberware grade that is being used for Restricted Gear (tracked across gear children).</param>
-        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems,
-            string strRestrictedItem, string strCyberwareGrade, out bool blnOutRestrictedGearUsed,
-            out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem,
-            out string strOutCyberwareGrade)
+        /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>
+        /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
+        /// <param name="intRestrictedCount">Number of items that are above availability limits.</param>
+        public void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount)
         {
             if (!IncludedInVehicle)
             {
@@ -1486,21 +1478,33 @@ namespace Chummer.Backend.Equipment
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
-                    //TODO: Make this dynamically update without having to validate the character.
                     if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
                     {
-                        if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        int intLowestValidRestrictedGearAvail = -1;
+                        foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
                         {
-                            blnRestrictedGearUsed = true;
-                            strRestrictedItem = Parent == null
-                                ? CurrentDisplayName
-                                : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                    CurrentDisplayName, LanguageManager.GetString("String_Space"), Parent.CurrentDisplayName);
+                            if (intValidAvail >= intAvailInt && (intLowestValidRestrictedGearAvail < 0
+                                                                 || intValidAvail < intLowestValidRestrictedGearAvail))
+                                intLowestValidRestrictedGearAvail = intValidAvail;
+                        }
+
+                        string strNameToUse = Parent == null
+                            ? CurrentDisplayName
+                            : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
+                                            CurrentDisplayName, LanguageManager.GetString("String_Space"),
+                                            Parent.CurrentDisplayName);
+
+                        if (intLowestValidRestrictedGearAvail >= 0
+                            && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
+                        {
+                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
                         }
                         else
                         {
-                            intRestrictedCount++;
-                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalSettings.Language);
+                            dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
+                            ++intRestrictedCount;
+                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
                         }
                     }
                 }
@@ -1508,22 +1512,13 @@ namespace Chummer.Backend.Equipment
 
             foreach (Weapon objChild in Weapons)
             {
-                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems,
-                    strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems,
-                    out strRestrictedItem);
+                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
             }
 
             foreach (Cyberware objChild in Cyberware)
             {
-                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems,
-                    strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount,
-                    out strAvailItems, out strRestrictedItem, out strOutCyberwareGrade);
+                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
             }
-            strOutAvailItems = strAvailItems;
-            intOutRestrictedCount = intRestrictedCount;
-            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
-            strOutRestrictedItem = strRestrictedItem;
-            strOutCyberwareGrade = strCyberwareGrade;
         }
 
         #region UI Methods

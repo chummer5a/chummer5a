@@ -14263,7 +14263,7 @@ namespace Chummer
         private int _intCachedRestrictedGear = -1;
 
         /// <summary>
-        /// Whether or not RestrictedGear is enabled.
+        /// The maximum availability for Restricted Gear if this character has it. If they do not, this is 0.
         /// </summary>
         public int RestrictedGear
         {
