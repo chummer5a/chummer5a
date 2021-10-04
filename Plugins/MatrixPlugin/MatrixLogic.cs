@@ -112,16 +112,16 @@ namespace MatrixPlugin
         }
 
         /// <summary>
-        /// Parse Character attribute by attribute's name
+        /// Parse string as integer or as character attribute by attribute's name
         /// </summary>
-        /// <param name="attributeName">Attribute's name</param>
+        /// <param name="value">Integer value or Attribute's name</param>
         /// <returns></returns>
-        private int Parse(string attributeName)
+        private int Parse(string value)
         {
-            int.TryParse(attributeName, out int result);
-            if (result == 0)
+            int result;
+            if (!int.TryParse(value, out result))
             {
-                CharacterAttrib attribute = _character.GetAttribute(attributeName.Replace("{", "").Replace("}", ""));
+                CharacterAttrib attribute = _character.GetAttribute(value.Replace("{", "").Replace("}", ""));
                 if (attribute != null)
                     result = attribute.Base;
             }
