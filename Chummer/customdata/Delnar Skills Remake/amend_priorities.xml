@@ -27,6 +27,9 @@
             <skillgroup xpathfilter=". = 'Enchanting'" amendoperation="remove" />
           </skillgroupchoices>
         </talent>
+        <talent xpathfilter="value = 'Adept'">
+          <skilltype amendoperation="replace" xpath="not(attribute = 'RES' or attribute = 'DEP' or skillgroup = 'Sorcery' or skillgroup = 'Conjuring')">xpath</skilltype>
+        </talent>
         <talent xpathfilter="value = 'Aware' or value = 'Explorer'">
           <skillchoices amendoperation="replace">
             <skill>Arcana</skill>

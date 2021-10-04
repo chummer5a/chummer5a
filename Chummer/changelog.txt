@@ -167,6 +167,7 @@ Data Changes:
 - Alter Ballistics is now flagged as an Alchemical spell when added via the Alchemical Armorer quality. Characters that already have this quality will need to use Reapply Improvements to see this change. 
 - Innate Spell critter power now enables the Magician/Spells and Spirits tab.
 - Cyberware Silencer, Laser Sight, Overclocked, and External Clip Port now add accessories to their parent cyberweapons.
+- Adepts can no longer choose skills from the Sorcery, Conjuring, or Enchanting skill groups for their free skill ranks from their priority entries at character creation.
 
 Changed/New Strings:
 - String_ContactPoints
