@@ -28,8 +28,14 @@
     </authors>
     <descriptions>
       <description>
-        <text>This ruleset hides all books containing the word German in their title from being selected.</text>
+        <text>This ruleset hides all German specific sourcebooks from being selected.\nIt is not required when playing with Shadowrun Missions Rules.</text>
         <lang>en-us</lang>
       </description>
     </descriptions>
+    <incompatibilities>
+      <incompatibility>
+        <name>Shadowrun Missions Rules</name>
+        <guid>62aeb98e-e61c-4d0e-b4ff-03e0469e6e2b</guid>
+      </incompatibility>
+    </incompatibilities>
   </manifest>

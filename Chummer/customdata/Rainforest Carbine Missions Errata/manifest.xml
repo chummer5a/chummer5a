@@ -58,8 +58,14 @@
   </authors>
   <descriptions>
     <description>
-      <text>This ruleset replaces the Rainforest Carbine from Gun H(e)aven 3 with the rules specified in Shadowrun Missions Combined FAQ 1.3. It is not required when playing with Shadowrun Missions' rules.</text>
+      <text>This ruleset replaces the Rainforest Carbine from Gun H(e)aven 3 with the rules specified in Shadowrun Missions Combined FAQ 1.3.\nIt is not required when playing with Shadowrun Missions Rules.</text>
       <lang>en-us</lang>
     </description>
   </descriptions>
+  <incompatibilities>
+    <incompatibility>
+      <name>Shadowrun Missions Rules</name>
+      <guid>62aeb98e-e61c-4d0e-b4ff-03e0469e6e2b</guid>
+    </incompatibility>
+  </incompatibilities>
 </manifest>
