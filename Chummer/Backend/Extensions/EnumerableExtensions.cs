@@ -63,15 +63,7 @@ namespace Chummer
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
         public static int GetEnsembleHashCode<T>(this IEnumerable<T> lstItems)
         {
-            if (lstItems == null)
-                return 0;
-
-            int intHash = 19;
-            foreach (T objItem in lstItems)
-            {
-                intHash = intHash * 31 + objItem.GetHashCode();
-            }
-            return intHash;
+            return lstItems?.Aggregate(19, (current, objItem) => current * 31 + objItem.GetHashCode()) ?? 0;
         }
 
         /// <summary>

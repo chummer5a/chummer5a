@@ -166,7 +166,7 @@ namespace Chummer
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             if (arrayIndex + Count >= array.Length)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
             for (int i = 0; i < Count; ++i)
                 array[i + arrayIndex] = this[i];
         }
@@ -174,7 +174,7 @@ namespace Chummer
         public void CopyTo(Tuple<TKey, TValue>[] array, int arrayIndex)
         {
             if (arrayIndex + Count >= array.Length)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
             for (int i = 0; i < Count; ++i)
                 array[i + arrayIndex] =
                     new Tuple<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
@@ -183,7 +183,7 @@ namespace Chummer
         public void CopyTo(Array array, int index)
         {
             if (index + Count >= array.Length)
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
             for (int i = 0; i < Count; ++i)
                 array.SetValue(this[i], i + index);
         }

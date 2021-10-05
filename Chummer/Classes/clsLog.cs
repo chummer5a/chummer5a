@@ -142,7 +142,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
             )
         {
-            WriteLog(info?.Select(x => x.ToString()), file ?? String.Empty, method, line, LogLevel.Error);
+            WriteLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>

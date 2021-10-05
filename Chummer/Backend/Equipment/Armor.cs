@@ -252,7 +252,7 @@ namespace Chummer.Backend.Equipment
             if (!objXmlArmorNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArmorNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlArmorNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -739,7 +739,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("damage", ref _intDamage);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -1062,21 +1062,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Min(value, MaxRating);
-                if (_intRating != intNewValue)
+                if (_intRating == intNewValue)
+                    return;
+                _intRating = intNewValue;
+                if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
                 {
-                    _intRating = intNewValue;
-                    if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
+                    _objCharacter.RefreshEncumbrance();
+                }
+                if (GearChildren.Count > 0)
+                {
+                    foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                     {
-                        _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
-                        _objCharacter.RefreshEncumbrance();
-                    }
-                    if (GearChildren.Count > 0)
-                    {
-                        foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
-                        {
-                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            objChild.Rating = objChild.Rating;
-                        }
+                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                        int intCurrentRating = objChild.Rating;
+                        objChild.Rating = intCurrentRating;
                     }
                 }
             }
@@ -2309,46 +2309,46 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
-        /// <param name="blnRestrictedGearUsed">Whether Restricted Gear is already being used.</param>
-        /// <param name="intRestrictedCount">Amount of gear that is currently over the availability limit.</param>
-        /// <param name="strAvailItems">String used to list names of gear that are currently over the availability limit.</param>
-        /// <param name="strRestrictedItem">Item that is being used for Restricted Gear.</param>
-        /// <param name="blnOutRestrictedGearUsed">Whether Restricted Gear is already being used (tracked across gear children).</param>
-        /// <param name="intOutRestrictedCount">Amount of gear that is currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutAvailItems">String used to list names of gear that are currently over the availability limit (tracked across gear children).</param>
-        /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
-        public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
+        /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>
+        /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
+        /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
+        /// <param name="intRestrictedCount">Number of items that are above availability limits.</param>
+        public void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount)
         {
             AvailabilityValue objTotalAvail = TotalAvailTuple();
             int intAvailInt = objTotalAvail.Value;
             if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
             {
-                if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                int intLowestValidRestrictedGearAvail = -1;
+                foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
                 {
-                    blnRestrictedGearUsed = true;
-                    strRestrictedItem = CurrentDisplayName;
+                    if (intValidAvail >= intAvailInt && (intLowestValidRestrictedGearAvail < 0
+                                                         || intValidAvail < intLowestValidRestrictedGearAvail))
+                        intLowestValidRestrictedGearAvail = intValidAvail;
+                }
+                
+                if (intLowestValidRestrictedGearAvail >= 0 && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
+                {
+                    dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                    sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
                 }
                 else
                 {
-                    intRestrictedCount++;
-                    strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalSettings.Language);
+                    dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
+                    ++intRestrictedCount;
+                    sbdAvailItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
                 }
             }
 
             foreach (Gear objChild in Children)
             {
-                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
             }
 
             foreach (ArmorMod objChild in ArmorMods)
             {
-                objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
+                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
             }
-
-            strOutAvailItems = strAvailItems;
-            intOutRestrictedCount = intRestrictedCount;
-            blnOutRestrictedGearUsed = blnRestrictedGearUsed;
-            strOutRestrictedItem = strRestrictedItem;
         }
 
         public bool AllowPasteXml

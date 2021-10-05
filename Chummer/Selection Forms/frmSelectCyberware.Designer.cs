@@ -556,7 +556,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
             this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
             this.chkBlackMarketDiscount.Visible = false;
-            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
+            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
             // 
             // chkPrototypeTranshuman
             // 
@@ -572,7 +572,7 @@ namespace Chummer
             this.chkPrototypeTranshuman.Text = "Prototype Transhuman";
             this.chkPrototypeTranshuman.UseVisualStyleBackColor = true;
             this.chkPrototypeTranshuman.Visible = false;
-            this.chkPrototypeTranshuman.CheckedChanged += new System.EventHandler(this.chkPrototypeTranshuman_CheckedChanged);
+            this.chkPrototypeTranshuman.CheckedChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
             // 
             // lblCostLabel
             // 
@@ -646,7 +646,7 @@ namespace Chummer
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(41, 20);
             this.nudRating.TabIndex = 3;
-            this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
+            this.nudRating.ValueChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
             // 
             // lblRatingNALabel
             // 
@@ -710,7 +710,7 @@ namespace Chummer
             this.nudESSDiscount.Name = "nudESSDiscount";
             this.nudESSDiscount.Size = new System.Drawing.Size(56, 20);
             this.nudESSDiscount.TabIndex = 7;
-            this.nudESSDiscount.ValueChanged += new System.EventHandler(this.nudESSDiscount_ValueChanged);
+            this.nudESSDiscount.ValueChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
             // 
             // lblESSDiscountPercentLabel
             // 

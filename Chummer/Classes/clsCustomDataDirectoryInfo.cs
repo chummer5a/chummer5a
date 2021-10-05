@@ -30,7 +30,7 @@ namespace Chummer
     /// <summary>
     /// This class holds all information about an CustomDataDirectory
     /// </summary>
-    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>, IHasInternalId
+    public sealed class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>, IHasInternalId
     {
         private readonly Version _objMyVersion = new Version(1, 0);
         private Guid _guid = Guid.NewGuid();
@@ -153,6 +153,7 @@ namespace Chummer
                     _lstDependencies.Add(objDependency);
                 }
             }
+
             void GetIncompatibilities(XmlNode xmlDocument)
             {
                 XmlNodeList xmlIncompatibilities = xmlDocument.SelectNodes("incompatibilities/incompatibility");
@@ -243,8 +244,8 @@ namespace Chummer
                             || (dependency.MaximumVersion != default && x.MyVersion > dependency.MaximumVersion)))
                         {
                             sbdReturn.AppendLine(string.Format(
-                                LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
-                                lstEnabledCustomData[0].DisplayName, dependency.DisplayName));
+                                                     LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
+                                                     lstEnabledCustomData[0].DisplayName, dependency.DisplayName));
                             continue;
                         }
 
@@ -256,8 +257,8 @@ namespace Chummer
                     if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterSettings.EnabledCustomDataDirectoryInfos.FindLastIndex(x => lstEnabledCustomData.Contains(x)))
                     {
                         sbdReturn.AppendLine(string.Format(
-                            LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
-                            lstEnabledCustomData[0].Name, Name));
+                                                 LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
+                                                 lstEnabledCustomData[0].Name, Name));
                     }
                 }
                 else
@@ -266,6 +267,7 @@ namespace Chummer
                     sbdReturn.AppendLine(dependency.DisplayName);
                 }
             }
+
             return sbdReturn.ToString();
         }
 
@@ -305,11 +307,12 @@ namespace Chummer
                     if (objInfoToDisplay != default)
                     {
                         sbdReturn.AppendLine(string.Format(
-                            LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
-                            objInfoToDisplay.DisplayName, incompatibility.DisplayName));
+                                                 LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                                                 objInfoToDisplay.DisplayName, incompatibility.DisplayName));
                     }
                 }
             }
+
             return sbdReturn.ToString();
         }
 
@@ -327,6 +330,7 @@ namespace Chummer
             {
                 strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing") + Environment.NewLine + missingDependency;
             }
+
             if (!string.IsNullOrEmpty(presentIncompatibilities))
             {
                 if (!string.IsNullOrEmpty(strReturn))
@@ -412,7 +416,7 @@ namespace Chummer
                 return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage);
 
             return LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
-                       strLanguage) +
+                                             strLanguage) +
                    Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
         }
 
@@ -453,10 +457,12 @@ namespace Chummer
             foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
             {
                 sbdDisplayAuthors.AppendLine(kvp.Value
-                    ? string.Format(objCultureInfo, kvp.Key,
-                        LanguageManager.GetString("String_IsMainAuthor", strLanguage))
-                    : kvp.Key);
+                                                 ? string.Format(objCultureInfo, kvp.Key,
+                                                                 LanguageManager.GetString(
+                                                                     "String_IsMainAuthor", strLanguage))
+                                                 : kvp.Key);
             }
+
             return sbdDisplayAuthors.ToString().Trim();
         }
 
@@ -481,8 +487,10 @@ namespace Chummer
         /// <summary>
         /// The name including the Version in this format "NAME (Version)"
         /// </summary>
-        public string DisplayName => MyVersion == default ? Name : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
-            LanguageManager.GetString("String_Space"), MyVersion);
+        public string DisplayName => MyVersion == default
+            ? Name
+            : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
+                            LanguageManager.GetString("String_Space"), MyVersion);
 
         public string InternalId => Guid.ToString("D", GlobalSettings.InvariantCultureInfo);
 
@@ -500,6 +508,7 @@ namespace Chummer
                 if (strReturn.IsGuid())
                     return strReturn;
             }
+
             return string.Empty;
         }
 
@@ -515,6 +524,7 @@ namespace Chummer
                     return strReturn;
                 }
             }
+
             objPreferredVersion = default;
             return string.Empty;
         }
@@ -540,6 +550,7 @@ namespace Chummer
                 if (intReturn == 0)
                     intReturn = MyVersion.CompareTo(other.MyVersion);
             }
+
             return intReturn;
         }
 
@@ -641,6 +652,7 @@ namespace Chummer
                         // If maxversion is not given, don't display decimal.max display > instead
                         : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
                 }
+
                 return MaximumVersion != default
                     // If minversion is not given, don't display decimal.min display < instead
                     ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)

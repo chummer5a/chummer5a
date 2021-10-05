@@ -149,30 +149,16 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkUsedVehicle_CheckedChanged(object sender, EventArgs e)
+        private void ProcessVehicleCostsChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
                 RefreshList();
             UpdateSelectedVehicle();
         }
-
-        private void nudUsedVehicleDiscount_ValueChanged(object sender, EventArgs e)
-        {
-            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
-                RefreshList();
-            UpdateSelectedVehicle();
-        }
-
+        
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
-                RefreshList();
-            UpdateSelectedVehicle();
-        }
-
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
-        {
-            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
                 RefreshList();
             UpdateSelectedVehicle();
         }

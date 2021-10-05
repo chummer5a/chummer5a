@@ -453,7 +453,7 @@ namespace Chummer
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new InvalidOperationException(nameof(xmlNode.NodeType));
             }
             XmlNode xmlReturn = xmlParentDocument.CreateNode(eNodeType, xmlNode.Prefix, xmlNode.Name, xmlNode.NamespaceURI);
             xmlReturn.InnerXml = xmlNode.InnerXml;

@@ -73,21 +73,7 @@ namespace Chummer
             UnsustainObject?.Invoke(this, e);
         }
 
-        private void nudForce_ValueChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            SustainedObjectDetailChanged?.Invoke(this, e);
-        }
-
-        private void nudNetHits_ValueChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            SustainedObjectDetailChanged?.Invoke(this, e);
-        }
-
-        private void chkSelf_CheckedChanged(object sender, EventArgs e)
+        private void SustainedObject_ControlStateChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;

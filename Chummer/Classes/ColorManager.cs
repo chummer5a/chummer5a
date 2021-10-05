@@ -58,9 +58,11 @@ namespace Chummer
             }
             catch (ObjectDisposedException)
             {
+                //swallow this
             }
             catch (System.Security.SecurityException)
             {
+                //swallow this
             }
 
             s_TmrDarkModeCheckerTimer = new Timer { Interval = 5000 }; // Poll registry every 5 seconds

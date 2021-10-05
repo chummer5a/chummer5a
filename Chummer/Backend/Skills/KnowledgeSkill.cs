@@ -466,7 +466,9 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                int intPointCost = BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1);
+                int intPointCost = BasePoints;
+                if (!IsExoticSkill && !BuyWithKarma)
+                    intPointCost += Specializations.Count(x => !x.Free);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;

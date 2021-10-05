@@ -23,13 +23,14 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Annotations;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     public partial class frmCreatePACKSKit : Form
     {
-        private readonly Character _objCharacter;
+        [NotNull] private readonly Character _objCharacter;
 
         #region Control Events
 
@@ -43,9 +44,6 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (_objCharacter == null)
-                throw new ArgumentNullException(nameof(_objCharacter));
-
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
@@ -69,7 +67,7 @@ namespace Chummer
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (XmlManager.LoadXPath("packs.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths)
+            if (XmlManager.LoadXPath("packs.xml", _objCharacter.Settings.EnabledCustomDataDirectoryPaths)
                 .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
                 Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),

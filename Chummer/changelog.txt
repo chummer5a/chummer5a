@@ -113,6 +113,9 @@ Application Changes:
 - Added support for Cyberware plugins that add a weapon accessory to their parent weapon, i.e. the Overclocked upgrade for a Shock Hand. Adding the plugin will now add the relevant accessory to the added weapon.
 - Added support for customising the calculation of bound spirit and registered sprite limits as a house rule.
 - Fixed category display not working correctly when searching for items in frmSelectGear. Closes #4570
+- Non-retroactive essence modifiers are now properly non-retroactive.
+- Merged <restrictedgearitemcount> bonus node functionality into <restrictedgear> bonus nodes so that the latter can now support multiple allowed availabilities and different quantities for each allowed availability.
+- Restricted Gear can now properly handle cases where multiple items exceeding character creation availability limits are in one stack instead of split across multiple ones.
 - Fixed Smartsoft behaviour for drone-controlled weapon dicepools not being properly calculated. 
 
 Data Changes:
@@ -167,6 +170,7 @@ Data Changes:
 - Alter Ballistics is now flagged as an Alchemical spell when added via the Alchemical Armorer quality. Characters that already have this quality will need to use Reapply Improvements to see this change. 
 - Innate Spell critter power now enables the Magician/Spells and Spirits tab.
 - Cyberware Silencer, Laser Sight, Overclocked, and External Clip Port now add accessories to their parent cyberweapons.
+- Adepts can no longer choose skills from the Sorcery, Conjuring, or Enchanting skill groups for their free skill ranks from their priority entries at character creation.
 
 Changed/New Strings:
 - String_ContactPoints

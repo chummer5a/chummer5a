@@ -125,10 +125,10 @@ namespace Chummer
         public override int GetHashCode()
         {
             if (Root != null)
-                return MyObject?.GetHashCode() ?? 0;
-
-            // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
-            return base.GetHashCode();
+                return MyObject != null
+                    ? (Root, MyObject).GetHashCode()
+                    : Root.GetHashCode();
+            return MyObject != null ? MyObject.GetHashCode() : 0;
         }
 
         public override string ToString()

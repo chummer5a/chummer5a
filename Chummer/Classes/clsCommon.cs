@@ -44,7 +44,7 @@ namespace Chummer
 
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
+        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument {XmlResolver = null};
 
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
@@ -65,11 +65,13 @@ namespace Chummer
             {
                 return objCachedEvaluation.Item2;
             }
+
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 s_DicCompiledEvaluations.TryAdd(strXPath, null);
                 return null;
             }
+
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
@@ -113,12 +115,14 @@ namespace Chummer
                 blnIsSuccess = objCachedEvaluation.Item1;
                 return objCachedEvaluation.Item2;
             }
+
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, null));
                 blnIsSuccess = false;
                 return null;
             }
+
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
@@ -161,6 +165,7 @@ namespace Chummer
             {
                 return objCachedEvaluation.Item2;
             }
+
             object objReturn;
             bool blnIsSuccess;
             try
@@ -199,6 +204,7 @@ namespace Chummer
                 blnIsSuccess = objCachedEvaluation.Item1;
                 return objCachedEvaluation.Item2;
             }
+
             object objReturn;
             try
             {
@@ -222,7 +228,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Parse an XPath for whether it is valid XPath. 
+        /// Parse an XPath for whether it is valid XPath.
         /// </summary>
         /// <param name="strXPathExpression" >XPath Expression to evaluate</param>
         /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
@@ -235,9 +241,9 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strXPathExpression))
                     strXPathExpression = strXPathExpression
-                        .Replace('{' + strCharAttributeName + '}', "0")
-                        .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                        .Replace('{' + strCharAttributeName + "Base}", "0");
+                                         .Replace('{' + strCharAttributeName + '}', "0")
+                                         .Replace('{' + strCharAttributeName + "Unaug}", "0")
+                                         .Replace('{' + strCharAttributeName + "Base}", "0");
             }
 
             if (string.IsNullOrEmpty(strXPathExpression)) return true;
@@ -495,6 +501,7 @@ namespace Chummer
                     }
                 }
             }
+
             objFoundVehicle = null;
             return null;
         }
@@ -527,6 +534,7 @@ namespace Chummer
                     }
                 }
             }
+
             outMount = null;
             return null;
         }
@@ -810,6 +818,7 @@ namespace Chummer
                     if (objEnhancement.InternalId == strGuid)
                         return objEnhancement;
                 }
+
                 foreach (Power objPower in objCharacter.Powers)
                 {
                     foreach (Enhancement objEnhancement in objPower.Enhancements)
@@ -819,6 +828,7 @@ namespace Chummer
                     }
                 }
             }
+
             return null;
         }
 
@@ -879,6 +889,7 @@ namespace Chummer
                     .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
                 return xmlOriginalCode?.Value ?? strAltCode;
             }
+
             return string.Empty;
         }
 
@@ -896,6 +907,7 @@ namespace Chummer
                     .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
                 return xmlAltCode?.Value ?? strCode;
             }
+
             return string.Empty;
         }
 
@@ -918,6 +930,7 @@ namespace Chummer
                         return strReturn;
                 }
             }
+
             return string.Empty;
         }
 
@@ -938,37 +951,38 @@ namespace Chummer
             if (GlobalSettings.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
             {
                 strSearchText2 = strSearchText
-                    .Replace("D\'A", "D\u200B\'A")
-                    .Replace("D\'À", "D\u200B\'À")
-                    .Replace("D\'Â", "D\u200B\'Â")
-                    .Replace("D\'E", "D\u200B\'E")
-                    .Replace("D\'É", "D\u200B\'É")
-                    .Replace("D\'È", "D\u200B\'È")
-                    .Replace("D\'Ê", "D\u200B\'Ê")
-                    .Replace("D\'I", "D\u200B\'I")
-                    .Replace("D\'Î", "D\u200B\'Î")
-                    .Replace("D\'Ï", "D\u200B\'Ï")
-                    .Replace("D\'O", "D\u200B\'O")
-                    .Replace("D\'Ô", "D\u200B\'Ô")
-                    .Replace("D\'Œ", "D\u200B\'Œ")
-                    .Replace("D\'U", "D\u200B\'U")
-                    .Replace("D\'Û", "D\u200B\'Û")
-                    .Replace("L\'A", "L\u200B\'A")
-                    .Replace("L\'À", "L\u200B\'À")
-                    .Replace("L\'Â", "L\u200B\'Â")
-                    .Replace("L\'E", "L\u200B\'E")
-                    .Replace("L\'É", "L\u200B\'É")
-                    .Replace("L\'È", "L\u200B\'È")
-                    .Replace("L\'Ê", "L\u200B\'Ê")
-                    .Replace("L\'I", "L\u200B\'I")
-                    .Replace("L\'Î", "L\u200B\'Î")
-                    .Replace("L\'Ï", "L\u200B\'Ï")
-                    .Replace("L\'O", "L\u200B\'O")
-                    .Replace("L\'Ô", "L\u200B\'Ô")
-                    .Replace("L\'Œ", "L\u200B\'Œ")
-                    .Replace("L\'U", "L\u200B\'U")
-                    .Replace("L\'Û", "L\u200B\'Û");
+                                 .Replace("D\'A", "D\u200B\'A")
+                                 .Replace("D\'À", "D\u200B\'À")
+                                 .Replace("D\'Â", "D\u200B\'Â")
+                                 .Replace("D\'E", "D\u200B\'E")
+                                 .Replace("D\'É", "D\u200B\'É")
+                                 .Replace("D\'È", "D\u200B\'È")
+                                 .Replace("D\'Ê", "D\u200B\'Ê")
+                                 .Replace("D\'I", "D\u200B\'I")
+                                 .Replace("D\'Î", "D\u200B\'Î")
+                                 .Replace("D\'Ï", "D\u200B\'Ï")
+                                 .Replace("D\'O", "D\u200B\'O")
+                                 .Replace("D\'Ô", "D\u200B\'Ô")
+                                 .Replace("D\'Œ", "D\u200B\'Œ")
+                                 .Replace("D\'U", "D\u200B\'U")
+                                 .Replace("D\'Û", "D\u200B\'Û")
+                                 .Replace("L\'A", "L\u200B\'A")
+                                 .Replace("L\'À", "L\u200B\'À")
+                                 .Replace("L\'Â", "L\u200B\'Â")
+                                 .Replace("L\'E", "L\u200B\'E")
+                                 .Replace("L\'É", "L\u200B\'É")
+                                 .Replace("L\'È", "L\u200B\'È")
+                                 .Replace("L\'Ê", "L\u200B\'Ê")
+                                 .Replace("L\'I", "L\u200B\'I")
+                                 .Replace("L\'Î", "L\u200B\'Î")
+                                 .Replace("L\'Ï", "L\u200B\'Ï")
+                                 .Replace("L\'O", "L\u200B\'O")
+                                 .Replace("L\'Ô", "L\u200B\'Ô")
+                                 .Replace("L\'Œ", "L\u200B\'Œ")
+                                 .Replace("L\'U", "L\u200B\'U")
+                                 .Replace("L\'Û", "L\u200B\'Û");
             }
+
             // Treat everything as being uppercase so the search is case-insensitive.
             string strReturn = string.Format(
                 GlobalSettings.InvariantCultureInfo,
@@ -987,6 +1001,7 @@ namespace Chummer
                     strNameElement,
                     strSearchText2);
             }
+
             return strReturn;
         }
 
@@ -1007,12 +1022,20 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+                object objProcess = EvaluateInvariantXPath(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                         .Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
-            catch (OverflowException) { } // Result is text and not a double
-            catch (InvalidCastException) { }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
 
             intValue += intOffset;
             if (intForce > 0)
@@ -1022,6 +1045,7 @@ namespace Chummer
             }
             else if (intValue < 0)
                 return 0;
+
             return intValue;
         }
 
@@ -1042,12 +1066,20 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+                object objProcess = EvaluateInvariantXPath(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                         .Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }
-            catch (OverflowException) { } // Result is text and not a double
-            catch (InvalidCastException) { }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
 
             decValue += decOffset;
             if (intForce > 0)
@@ -1057,6 +1089,7 @@ namespace Chummer
             }
             else if (decValue < 0)
                 return 0;
+
             return decValue;
         }
 
@@ -1087,7 +1120,7 @@ namespace Chummer
 
         public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
         {
-            XmlDocument objReturn = new XmlDocument { XmlResolver = null };
+            XmlDocument objReturn = new XmlDocument {XmlResolver = null};
             // Write the Character information to a MemoryStream so we don't need to create any files.
             using (MemoryStream objStream = new MemoryStream())
             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
@@ -1144,8 +1177,10 @@ namespace Chummer
                         objCharacter = objShared.CharacterObject;
                         break;
                     }
+
                     objLoopControl = objLoopControl.Parent;
                 }
+
                 OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
             }
         }
@@ -1189,9 +1224,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new[] {"SR5", strSource.Substring(3)};
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                astrSourceParts = new[] { "R5", strSource.Substring(2) };
+                astrSourceParts = new[] {"R5", strSource.Substring(2)};
             else
             {
                 int i = strSource.Length - 1;
@@ -1202,8 +1237,10 @@ namespace Chummer
                         break;
                     }
                 }
-                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
+
+                astrSourceParts = new[] {strSource.Substring(0, i), strSource.Substring(i)};
             }
+
             if (astrSourceParts.Length < 2)
                 return;
             if (!int.TryParse(astrSourceParts[1], out int intPage))
@@ -1217,7 +1254,9 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook) ? GlobalSettings.SourcebookInfos[strBook] : null;
+            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
+                ? GlobalSettings.SourcebookInfos[strBook]
+                : null;
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
@@ -1260,9 +1299,9 @@ namespace Chummer
             intPage += objBookInfo.Offset;
 
             string strParams = strPdfParameters
-                .Replace("{page}", intPage.ToString(GlobalSettings.InvariantCultureInfo))
-                .Replace("{localpath}", uriPath.LocalPath)
-                .Replace("{absolutepath}", uriPath.AbsolutePath);
+                               .Replace("{page}", intPage.ToString(GlobalSettings.InvariantCultureInfo))
+                               .Replace("{localpath}", uriPath.LocalPath)
+                               .Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProcess = new ProcessStartInfo
             {
                 FileName = strPdfAppPath,
@@ -1297,7 +1336,9 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook) ? GlobalSettings.SourcebookInfos[strBook] : null;
+            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
+                ? GlobalSettings.SourcebookInfos[strBook]
+                : null;
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return string.Empty;
@@ -1311,6 +1352,7 @@ namespace Chummer
             {
                 return string.Empty;
             }
+
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return string.Empty;
@@ -1332,7 +1374,7 @@ namespace Chummer
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            int intMaxPagesToRead = 3;  // parse at most 3 pages of content
+            int intMaxPagesToRead = 3; // parse at most 3 pages of content
             // Loop through each page, starting at the listed page + offset.
             for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
             {
@@ -1377,6 +1419,7 @@ namespace Chummer
                                     // add the content plus a space
                                     sbdCurrentLine.Append(' ' + lstStringFromPdf[i + intTitleExtraLines]);
                                 }
+
                                 strCurrentLine = sbdCurrentLine.ToString();
                             }
                             else
@@ -1385,6 +1428,7 @@ namespace Chummer
                                 continue;
                             }
                         }
+
                         // now either we have enough text to search or the page doesn't have anymore stuff and must give up
                         if (strCurrentLine.Length < intTextToSearchLength)
                             break;
@@ -1410,6 +1454,7 @@ namespace Chummer
                                     blnTitleWithColon = false;
                                 }
                             }
+
                             // if we found the tile lets finish some things before finding the text block
                             if (intTitleIndex != -1 && intTitleExtraLines > 0)
                             {
@@ -1433,16 +1478,19 @@ namespace Chummer
                                 i--;
                                 continue;
                             }
+
                             // if it is a line in all caps following the all caps title just skip it
                             if (!blnTitleWithColon && i == intTitleIndex + intExtraAllCapsInfo + 1)
                             {
                                 intExtraAllCapsInfo++;
                                 continue;
                             }
+
                             // if we are here it is the end of the block we found our end, mark it and be done
                             intBlockEndIndex = i;
                             break;
                         }
+
                         // if it is a title with colon we stop in the next line that has a colon
                         // this is not perfect, if we had bold information we could do more about that
                         if (blnTitleWithColon && strCurrentLine.Contains(':'))
@@ -1452,6 +1500,7 @@ namespace Chummer
                         }
                     }
                 }
+
                 // we scanned the first page and found nothing, just give up
                 if (intTitleIndex == -1)
                     return string.Empty;
@@ -1507,8 +1556,10 @@ namespace Chummer
                         }
                     }
                 }
+
                 return sbdResultContent.ToString().Trim();
             }
+
             return string.Empty;
         }
 
