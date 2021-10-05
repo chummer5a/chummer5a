@@ -113,6 +113,7 @@ Application Changes:
 - Added support for Cyberware plugins that add a weapon accessory to their parent weapon, i.e. the Overclocked upgrade for a Shock Hand. Adding the plugin will now add the relevant accessory to the added weapon.
 - Added support for customising the calculation of bound spirit and registered sprite limits as a house rule.
 - Fixed category display not working correctly when searching for items in frmSelectGear. Closes #4570
+- Fixed Smartsoft behaviour for drone-controlled weapon dicepools not being properly calculated. 
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

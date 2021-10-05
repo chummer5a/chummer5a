@@ -4047,7 +4047,7 @@ namespace Chummer.Backend.Equipment
                             intDicePool += objAutosoft?.Rating ?? -1;
 
                             if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn)
-                                           && ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped && x.WirelessOn))
+                                           && ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
                             {
                                 ++decDicePoolModifier;
                             }
@@ -4407,7 +4407,7 @@ namespace Chummer.Backend.Equipment
                     switch (FireMode)
                     {
                         case FiringMode.DogBrain:
-                            if (ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
+                            if (ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
                                 sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
                             break;
