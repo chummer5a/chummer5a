@@ -483,18 +483,28 @@ namespace Chummer.Plugins
                 }
             }
         }
-
+        
         private bool _blnDisposed;
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_blnDisposed)
+                    return;
+
+                _blnDisposed = true;
+
+                foreach (IPlugin plugin in MyActivePlugins)
+                    plugin.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            if (_blnDisposed)
-                return;
-
-            foreach (IPlugin plugin in MyActivePlugins)
-                plugin.Dispose();
-
-            _blnDisposed = true;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

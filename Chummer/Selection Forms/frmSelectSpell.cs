@@ -238,7 +238,7 @@ namespace Chummer
         /// </summary>
         public bool Alchemical => chkAlchemical.Checked;
 
-        public bool FreeOnly;
+        public bool FreeOnly { get; set; }
 
         /// <summary>
         /// Limit the Spell list to a particular Category.

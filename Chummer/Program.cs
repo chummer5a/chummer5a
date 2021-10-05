@@ -54,7 +54,7 @@ namespace Chummer
         private static PluginControl _objPluginLoader;
         public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();
 
-        internal static IntPtr CommandLineArgsDataTypeId = (IntPtr)7593599;
+        internal static readonly IntPtr CommandLineArgsDataTypeId = (IntPtr)7593599;
 
         /// <summary>
         /// Check this to see if we are currently in the Main Thread.

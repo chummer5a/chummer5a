@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Xml.XPath;
+using Chummer.Annotations;
 using Chummer.Plugins;
 using Newtonsoft.Json;
 using NLog;
@@ -107,9 +108,12 @@ namespace Chummer
             try
             {
                 await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
-                    Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
+                                   Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                //swallow this
+            }
             UpdateCharacter(null);
         }
 
@@ -129,7 +133,10 @@ namespace Chummer
                 if (_tskWatchFolderRefresh?.IsCompleted == false)
                     await _tskWatchFolderRefresh;
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                //swallow this
+            }
             SuspendLayout();
             _tskWatchFolderRefresh = LoadWatchFolderCharacters();
             try
@@ -140,7 +147,10 @@ namespace Chummer
             {
                 //swallow this
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                //swallow this
+            }
             ResumeLayout();
         }
 
@@ -158,7 +168,10 @@ namespace Chummer
                 if (_tskMostRecentlyUsedsRefresh?.IsCompleted == false)
                     await _tskMostRecentlyUsedsRefresh;
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                //swallow this
+            }
             SuspendLayout();
             _tskMostRecentlyUsedsRefresh = LoadMruCharacters(strMruType != "mru");
             try
@@ -169,7 +182,10 @@ namespace Chummer
             {
                 //swallow this
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                //swallow this
+            }
             ResumeLayout();
         }
 
@@ -309,7 +325,10 @@ namespace Chummer
                         }
                     }, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token));
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                //swallow this
+            }
 
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
@@ -390,7 +409,7 @@ namespace Chummer
                         continue;
                     }
 
-                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalSettings.CharacterRosterPath + "\\", string.Empty);
+                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalSettings.CharacterRosterPath + Path.DirectorySeparatorChar, string.Empty);
                     dicWatch.Add(strFile, strNewParent);
                 }
             }
@@ -425,7 +444,7 @@ namespace Chummer
                         return;
                     dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value);
                 });
-                foreach (string s in dicWatchNodes.Values.Distinct())
+                foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
                 {
                     if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                         return;
@@ -437,7 +456,7 @@ namespace Chummer
                         objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
                 }
 
-                foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes)
+                foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
                 {
                     if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                         return;
@@ -497,10 +516,15 @@ namespace Chummer
             await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
         }
 
-        public async Task RefreshPluginNodes(IPlugin objPluginToRefresh)
+        public Task RefreshPluginNodes(IPlugin objPluginToRefresh)
         {
             if (objPluginToRefresh == null)
                 throw new ArgumentNullException(nameof(objPluginToRefresh));
+            return RefreshPluginNodesInner(objPluginToRefresh); // Split up this way so that the parameter check happens synchronously
+        }
+
+        private async Task RefreshPluginNodesInner([NotNull] IPlugin objPluginToRefresh)
+        {
             int intNodeOffset = Program.PluginLoader.MyActivePlugins.IndexOf(objPluginToRefresh);
             if (intNodeOffset < 0)
             {
@@ -931,7 +955,7 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<MouseEventArgs> OnMyMouseDown;
+        public EventHandler<MouseEventArgs> OnMyMouseDown { get; set; }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
         {

@@ -117,7 +117,6 @@ namespace Chummer
             Echo,
             Skillwire,
             DamageResistance,
-            RestrictedItemCount,
             JudgeIntentions,
             JudgeIntentionsOffense,
             JudgeIntentionsDefense,
@@ -178,14 +177,14 @@ namespace Chummer
             PrototypeTranshuman,
             Hardwire,
             DealerConnection,
-            Skill,  //Improve pool of skill based on name
-            SkillGroup,  //Group
+            Skill, //Improve pool of skill based on name
+            SkillGroup, //Group
             SkillCategory, //category
             SkillAttribute, //attribute
             SkillLinkedAttribute, //linked attribute
-            SkillLevel,  //Karma points in skill
+            SkillLevel, //Karma points in skill
             SkillGroupLevel, //group
-            SkillBase,  //base points in skill
+            SkillBase, //base points in skill
             SkillGroupBase, //group
             Skillsoft, // A knowledge or language skill gained from a knowsoft
             Activesoft, // An active skill gained from an activesoft
@@ -443,6 +442,7 @@ namespace Chummer
             {
                 strValue = strValue.Replace("InitiativePass", "InitiativeDice");
             }
+
             if (strValue == "ContactForceLoyalty")
                 strValue = "ContactForcedLoyalty";
             return (ImprovementType)Enum.Parse(typeof(ImprovementType), strValue);
@@ -552,6 +552,7 @@ namespace Chummer
             {
                 _decVal = 24;
             }
+
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
             objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
             objNode.TryGetStringFieldQuickly("customid", ref _strCustomId);
@@ -560,7 +561,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("enabled", ref _blnEnabled);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -1299,9 +1300,6 @@ namespace Chummer
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
                             nameof(Character.DamageResistancePool));
                     }
-                    break;
-
-                case ImprovementType.RestrictedItemCount:
                     break;
 
                 case ImprovementType.JudgeIntentions:
@@ -2630,6 +2628,7 @@ namespace Chummer
                         ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
                         : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
+
                 return !Enabled
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
@@ -2667,10 +2666,12 @@ namespace Chummer
             {
                 return Equals(objOtherImprovementDictionaryKey);
             }
+
             if (obj is Tuple<Character, Improvement.ImprovementType, string> objOtherTuple)
             {
                 return Equals(objOtherTuple);
             }
+
             return false;
         }
 
@@ -2798,11 +2799,13 @@ namespace Chummer
                 if (objKey.CharacterObject == objCharacter)
                     s_DictionaryCachedValues.TryRemove(objKey, out decimal _);
             }
+
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
             {
                 if (objKey.CharacterObject == objCharacter)
                     s_DictionaryCachedAugmentedValues.TryRemove(objKey, out decimal _);
             }
+
             s_DictionaryTransactions.TryRemove(objCharacter, out List<TransactingImprovement> _);
         }
 
@@ -2819,7 +2822,9 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
-        public static decimal ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+        public static decimal ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
+                                      bool blnAddToRating = false, string strImprovedName = "",
+                                      bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
             //Log.Enter("ValueOf");
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
@@ -2860,9 +2865,11 @@ namespace Chummer
                                 blnDoRecalculate = true;
                                 break;
                             }
+
                             decCachedValue += decLoopCachedValue;
                         }
                     }
+
                     if (!blnDoRecalculate)
                     {
                         return decCachedValue;
@@ -2900,7 +2907,7 @@ namespace Chummer
                     }
                     else
                     {
-                        dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                        dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
                     }
 
                     // Add the values to the UniquePair List so we can check them later.
@@ -2945,10 +2952,13 @@ namespace Chummer
                             if (objLoopUniquePair.Item1 == "precedence0")
                                 decHighest = Math.Max(decHighest, objLoopUniquePair.Item2);
                         }
+
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
-                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1")
+                                                        .Sum(strValues => strValues.Item2);
                         }
+
                         decLoopValue = Math.Max(decLoopValue, decHighest);
                     }
                     else if (lstUniqueNames.Contains("precedence1"))
@@ -2967,10 +2977,12 @@ namespace Chummer
                                 if (objLoopUniquePair.Item1 == strUniqueName)
                                     decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                             }
+
                             if (decInnerLoopValue != decimal.MinValue)
                                 decLoopValue += decInnerLoopValue;
                         }
                     }
+
                     if (blnValuesDictionaryContains)
                         dicValues[strLoopImprovedName] = decLoopValue;
                     else
@@ -3007,7 +3019,7 @@ namespace Chummer
                     }
                     else
                     {
-                        dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                        dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
                     }
 
                     // Add the values to the UniquePair List so we can check them later.
@@ -3051,9 +3063,11 @@ namespace Chummer
                             if (objLoopUniquePair.Item1 == strUniqueName)
                                 decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                         }
+
                         if (decInnerLoopValue != decimal.MinValue)
                             decLoopValue += decInnerLoopValue;
                     }
+
                     if (blnValuesDictionaryContains)
                         dicCustomValues[strLoopImprovedName] = decLoopValue;
                     else
@@ -3102,7 +3116,9 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
+        public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
+                                               bool blnAddToRating = false, string strImprovedName = "",
+                                               bool blnUnconditionalOnly = true)
         {
             //Log.Enter("AugmentedValueOf");
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
@@ -3143,9 +3159,11 @@ namespace Chummer
                                 blnDoRecalculate = true;
                                 break;
                             }
+
                             decCachedValue += decLoopCachedValue;
                         }
                     }
+
                     if (!blnDoRecalculate)
                     {
                         return decCachedValue;
@@ -3158,7 +3176,8 @@ namespace Chummer
             Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
-                if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
+                if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom
+                    && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
                 {
                     string strLoopImprovedName = objImprovement.ImprovedName;
                     bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
@@ -3182,7 +3201,7 @@ namespace Chummer
                             }
                             else
                             {
-                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
                             }
 
                             // Add the values to the UniquePair List so we can check them later.
@@ -3229,10 +3248,13 @@ namespace Chummer
                             if (objLoopUniquePair.Item1 == "precedence0")
                                 decHighest = Math.Max(decHighest, objLoopUniquePair.Item2);
                         }
+
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
-                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1")
+                                                        .Sum(strValues => strValues.Item2);
                         }
+
                         decLoopValue = Math.Max(decLoopValue, decHighest);
                     }
                     else if (lstUniqueNames.Contains("precedence1"))
@@ -3251,10 +3273,12 @@ namespace Chummer
                                 if (objLoopUniquePair.Item1 == strUniqueName)
                                     decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                             }
+
                             if (decInnerLoopValue != decimal.MinValue)
                                 decLoopValue += decInnerLoopValue;
                         }
                     }
+
                     if (blnValuesDictionaryContains)
                         dicValues[strLoopImprovedName] = decLoopValue;
                     else
@@ -3292,7 +3316,7 @@ namespace Chummer
                             }
                             else
                             {
-                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> { strUniqueName });
+                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
                             }
 
                             // Add the values to the UniquePair List so we can check them later.
@@ -3338,9 +3362,11 @@ namespace Chummer
                             if (objLoopUniquePair.Item1 == strUniqueName)
                                 decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                         }
+
                         if (decInnerLoopValue != decimal.MinValue)
                             decLoopValue += decInnerLoopValue;
                     }
+
                     if (blnValuesDictionaryContains)
                         dicCustomValues[strLoopImprovedName] = decLoopValue;
                     else
@@ -3396,9 +3422,11 @@ namespace Chummer
             //Log.Info("intRating = " + intRating.ToString());
             if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
+
             if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3416,6 +3444,7 @@ namespace Chummer
                 //Log.Exit("ValueToInt");
                 return intValue;
             }
+
             //Log.Exit("ValueToInt");
             int.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
             return intReturn;
@@ -3436,9 +3465,11 @@ namespace Chummer
             //Log.Info("intRating = " + intRating.ToString());
             if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
+
             if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3456,6 +3487,7 @@ namespace Chummer
                 //Log.Exit("ValueToInt");
                 return decValue;
             }
+
             //Log.Exit("ValueToInt");
             decimal.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
             return decReturn;
@@ -5000,6 +5032,7 @@ namespace Chummer
                         break;
                 }
             }
+
             objImprovementList.ProcessRelevantEvents();
 
             Log.Debug("RemoveImprovements exit");
@@ -5025,10 +5058,15 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
-        public static void CreateImprovement(Character objCharacter, string strImprovedName, Improvement.ImprovementSource objImprovementSource,
-            string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
-            decimal decValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, decimal decAugmented = 0,
-            int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
+        public static void CreateImprovement(Character objCharacter, string strImprovedName,
+                                             Improvement.ImprovementSource objImprovementSource,
+                                             string strSourceName, Improvement.ImprovementType objImprovementType,
+                                             string strUnique,
+                                             decimal decValue = 0, int intRating = 1, int intMinimum = 0,
+                                             int intMaximum = 0, decimal decAugmented = 0,
+                                             int intAugmentedMaximum = 0, string strExclude = "",
+                                             bool blnAddToRating = false, string strTarget = "",
+                                             string strCondition = "")
         {
             Log.Debug("CreateImprovement");
             Log.Info(
@@ -5111,6 +5149,7 @@ namespace Chummer
                         lstImprovementsToProcess.Add(objLoopTransactingImprovement.ImprovementObject);
                     }
                 }
+
                 lstImprovementsToProcess.ProcessRelevantEvents();
                 lstTransaction.Clear();
             }
@@ -5154,11 +5193,11 @@ namespace Chummer
                 foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
                 {
                     if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1,
-                        out HashSet<string> setLoopPropertiesChanged))
+                                                         out HashSet<string> setLoopPropertiesChanged))
                         setLoopPropertiesChanged.Add(tuplePropertyChanged.Item2);
                     else
                         dicPropertiesChanged.Add(tuplePropertyChanged.Item1,
-                            new HashSet<string> { tuplePropertyChanged.Item2 });
+                                                 new HashSet<string> {tuplePropertyChanged.Item2});
                 }
             }
             // Fire each event once

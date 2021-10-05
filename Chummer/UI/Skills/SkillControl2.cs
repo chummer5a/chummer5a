@@ -359,14 +359,19 @@ namespace Chummer.UI.Skills
                         AttributeActive = _objSkill.AttributeObject;
                     }
                     if (blnUpdateAll)
-                        goto case nameof(Skill.Specialization);
+                        goto case nameof(Skill.TopMostDisplaySpecialization);
                     break;
 
-                case nameof(Skill.Specialization):
+                case nameof(Skill.TopMostDisplaySpecialization):
                     if (!_blnUpdatingSpec)
                     {
-                        string strWritableSpec = _objSkill.Specialization;
-                        cboSpec.QueueThreadSafe(() => cboSpec.Text = strWritableSpec);
+                        string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
+                        cboSpec.QueueThreadSafe(() =>
+                        {
+                            _blnUpdatingSpec = true;
+                            cboSpec.Text = strDisplaySpec;
+                            _blnUpdatingSpec = false;
+                        });
                     }
                     if (blnUpdateAll)
                         goto case nameof(Skill.CGLSpecializations);
@@ -659,7 +664,7 @@ namespace Chummer.UI.Skills
         {
             _tmrSpecChangeTimer.Stop();
             _blnUpdatingSpec = true;
-            _objSkill.Specialization = cboSpec.Text;
+            _objSkill.TopMostDisplaySpecialization = cboSpec.Text;
             _blnUpdatingSpec = false;
         }
     }

@@ -3192,7 +3192,10 @@
       <limit>3</limit>
       <nolevels />
       <bonus>
-        <restrictedgear>24</restrictedgear>
+        <restrictedgear>
+          <availability>24</availability>
+          <amount>1</amount>
+        </restrictedgear>
       </bonus>
       <source>RF</source>
       <page>149</page>

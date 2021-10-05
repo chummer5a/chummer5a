@@ -113,7 +113,7 @@ namespace Chummer
                 }
             }
 
-            _left = true;  //Don't do again flag
+            _left = true; //Don't do again flag
 
             //remove everything we have a listener on. Might not be necessary but afraid of GC leak
             //Anybody can test this by uncommenting the lines below and triggering 100000 of those

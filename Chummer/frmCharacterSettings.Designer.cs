@@ -4671,7 +4671,7 @@ namespace Chummer
             this.txtBoundSpiritLimit.Size = new System.Drawing.Size(290, 20);
             this.txtBoundSpiritLimit.TabIndex = 47;
             this.txtBoundSpiritLimit.Text = "{CHA}";
-            this.txtBoundSpiritLimit.TextChanged += new System.EventHandler(this.txtRegisteredSpriteLimit_TextChanged);
+            this.txtBoundSpiritLimit.TextChanged += new System.EventHandler(this.txtBoundSpiritLimit_TextChanged);
             // 
             // txtRegisteredSpriteLimit
             // 
@@ -4681,6 +4681,7 @@ namespace Chummer
             this.txtRegisteredSpriteLimit.Size = new System.Drawing.Size(290, 20);
             this.txtRegisteredSpriteLimit.TabIndex = 49;
             this.txtRegisteredSpriteLimit.Text = "{LOG}";
+            this.txtRegisteredSpriteLimit.TextChanged += new System.EventHandler(this.txtRegisteredSpriteLimit_TextChanged);
             // 
             // lblSettingName
             // 

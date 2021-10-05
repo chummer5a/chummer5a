@@ -1966,6 +1966,7 @@ namespace Chummer
             {
                 XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (cboHeritage.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
                     + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                bool blnRemoveCategory = true;
                 foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                 {
                     if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNode("prioritytable") != null)
@@ -1974,15 +1975,16 @@ namespace Chummer
                         {
                             if (null != xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + (objXmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty).CleanXPath() + "]"))
                             {
-                                goto NextItem;
+                                blnRemoveCategory = false;
+                                break;
                             }
                         }
                         break;
                     }
                 }
                 // Remove metatypes not covered by heritage
-                lstRemoveCategory.Add(objXmlCategory.Value);
-            NextItem:;
+                if (blnRemoveCategory)
+                    lstRemoveCategory.Add(objXmlCategory.Value);
             }
 
             foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.Select("categories/category"))

@@ -108,6 +108,7 @@ namespace Chummer
             HashSet<T> lstExclude = new HashSet<T>();
             foreach (T objLoopChild in objParentList)
             {
+                bool blnFoundItem = false;
                 foreach (T objTargetChild in objTargetList)
                 {
                     if (!lstExclude.Contains(objTargetChild)
@@ -115,12 +116,13 @@ namespace Chummer
                         && funcGetChildrenMethod(objLoopChild).DeepMatch(funcGetChildrenMethod(objTargetChild), funcGetChildrenMethod, predicate))
                     {
                         lstExclude.Add(objTargetChild);
-                        goto NextItem;
+                        blnFoundItem = true;
+                        break;
                     }
                 }
                 // No matching item was found, return false
-                return false;
-            NextItem:;
+                if (!blnFoundItem)
+                    return false;
             }
             return true;
         }

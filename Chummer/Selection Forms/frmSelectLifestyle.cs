@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -487,9 +488,7 @@ namespace Chummer
         /// <param name="treTree">TreeView to sort.</param>
         private static void SortTree(TreeView treTree)
         {
-            List<TreeNode> lstNodes = new List<TreeNode>();
-            foreach (TreeNode objNode in treTree.Nodes)
-                lstNodes.Add(objNode);
+            List<TreeNode> lstNodes = treTree.Nodes.Cast<TreeNode>().ToList();
             treTree.Nodes.Clear();
             try
             {
@@ -497,6 +496,7 @@ namespace Chummer
             }
             catch (ArgumentException)
             {
+                // Swallow this
             }
             foreach (TreeNode objNode in lstNodes)
                 treTree.Nodes.Add(objNode);

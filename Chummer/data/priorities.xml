@@ -4550,7 +4550,7 @@
           <magic>6</magic>
           <skillqty>1</skillqty>
           <skillval>4</skillval>
-          <skilltype xpath="not(attribute = 'RES' or attribute = 'DEP')">xpath</skilltype>
+          <skilltype xpath="not(attribute = 'RES' or attribute = 'DEP') and (not(category = 'Magical Active') or skillgroup = '' or not(skillgroup))">xpath</skilltype>
           <forbidden>
             <oneof>
               <metatype>A.I.</metatype>
@@ -4679,7 +4679,7 @@
           <magic>4</magic>
           <skillqty>1</skillqty>
           <skillval>2</skillval>
-          <skilltype xpath="not(attribute = 'RES' or attribute = 'DEP')">xpath</skilltype>
+          <skilltype xpath="not(attribute = 'RES' or attribute = 'DEP') and (not(category = 'Magical Active') or skillgroup = '' or not(skillgroup))">xpath</skilltype>
           <forbidden>
             <oneof>
               <metatype>A.I.</metatype>

@@ -403,7 +403,7 @@ namespace Chummer
             UpdateCyberwareInfo();
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
+        private void ProcessCyberwareInfoChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -467,20 +467,6 @@ namespace Chummer
             UpdateCyberwareInfo();
         }
 
-        private void nudESSDiscount_ValueChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            UpdateCyberwareInfo();
-        }
-
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            UpdateCyberwareInfo();
-        }
-
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -519,14 +505,7 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-
-        private void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            UpdateCyberwareInfo();
-        }
-
+        
         #endregion Control Events
 
         #region Properties
@@ -1044,13 +1023,8 @@ namespace Chummer
                                 (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                             {
                                 string[] astrBlockedMounts = strBlocksMounts.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                foreach (string strLoop in _strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                {
-                                    if (astrBlockedMounts.Contains(strLoop))
-                                    {
-                                        goto NextCyberware;
-                                    }
-                                }
+                                if (_strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(strLoop => astrBlockedMounts.Contains(strLoop)))
+                                    continue;
                             }
                         }
                     }
@@ -1058,16 +1032,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_strDisallowedMounts))
                     {
                         string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
-                        if (!string.IsNullOrEmpty(strLoopMount))
-                        {
-                            foreach (string strLoop in _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                if (strLoopMount == strLoop)
-                                {
-                                    goto NextCyberware;
-                                }
-                            }
-                        }
+                        if (!string.IsNullOrEmpty(strLoopMount) && _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(strLoop => strLoopMount == strLoop))
+                            continue;
                     }
 
                     string strMaxRating = xmlCyberware.SelectSingleNode("rating")?.Value;
@@ -1149,7 +1115,6 @@ namespace Chummer
                     lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
                     if (blnTerminateAfterFirst)
                         break;
-                    NextCyberware:;
                 }
             }
 

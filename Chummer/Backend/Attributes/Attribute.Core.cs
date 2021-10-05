@@ -166,9 +166,10 @@ namespace Chummer.Backend.Attributes
             switch (Abbrev)
             {
                 case "MAGAdept":
-                    if (!_objCharacter.Settings.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept)
+                    if (!_objCharacter.Settings.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept || !_objCharacter.MAGEnabled)
                         return;
-                    goto case "MAG";
+                    break;
+
                 case "MAG":
                     if (!_objCharacter.MAGEnabled)
                         return;

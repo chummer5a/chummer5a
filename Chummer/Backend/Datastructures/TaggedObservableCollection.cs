@@ -18,8 +18,7 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 using System.Collections.Specialized;
 
 namespace Chummer
@@ -29,9 +28,9 @@ namespace Chummer
     /// ObservableCollection that allows for adding and removal of anonymous delegates by an associated tag
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class TaggedObservableCollection<T> : ObservableCollection<T>
+    public class TaggedObservableCollection<T> : ThreadSafeObservableCollection<T>
     {
-        private readonly Dictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedDelegates = new Dictionary<object, NotifyCollectionChangedEventHandler>();
+        private readonly ConcurrentDictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedDelegates = new ConcurrentDictionary<object, NotifyCollectionChangedEventHandler>();
 
         /// <summary>
         /// Use in place of CollectionChanged Adder
@@ -41,10 +40,9 @@ namespace Chummer
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
         public bool AddTaggedCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
-            if (!_dicTaggedAddedDelegates.ContainsKey(objTag))
+            if (_dicTaggedAddedDelegates.TryAdd(objTag, funcDelegateToAdd))
             {
                 base.CollectionChanged += funcDelegateToAdd;
-                _dicTaggedAddedDelegates.Add(objTag, funcDelegateToAdd);
                 return true;
             }
             Utils.BreakIfDebug();
@@ -58,10 +56,9 @@ namespace Chummer
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
         public bool RemoveTaggedCollectionChanged(object objTag)
         {
-            if (_dicTaggedAddedDelegates.TryGetValue(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
+            if (_dicTaggedAddedDelegates.TryRemove(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
             {
                 base.CollectionChanged -= funcDelegateToRemove;
-                _dicTaggedAddedDelegates.Remove(objTag);
                 return true;
             }
             Utils.BreakIfDebug();

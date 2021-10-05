@@ -103,11 +103,11 @@ namespace Chummer
         private bool _blnUnrestrictedNuyen;
         private bool _blnUseCalculatedPublicAwareness;
         private bool _blnUsePointsOnBrokenGroups;
-        private string _strContactPointsExpression       = "{CHAUnaug} * 3";
-        private string _strKnowledgePointsExpression     = "({INTUnaug} + {LOGUnaug}) * 2";
+        private string _strContactPointsExpression = "{CHAUnaug} * 3";
+        private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
-        private string _strBoundSpiritExpression         = "{CHA}";
-        private string _strRegisteredSpriteExpression      = "{LOG}";
+        private string _strBoundSpiritExpression = "{CHA}";
+        private string _strRegisteredSpriteExpression = "{LOG}";
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnemyKarmaQualityLimit = true;
         private string _strEssenceFormat = "#,0.00";
@@ -2179,7 +2179,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// The XPath expression to use to determine how many spirits a character can bind 
+        /// The XPath expression to use to determine how many spirits a character can bind
         /// </summary>
         public string BoundSpiritExpression
         {
@@ -3992,8 +3992,6 @@ namespace Chummer
         /// The value by which Specializations add to dicepool.
         /// </summary>
         public int SpecializationBonus { get; } = 2;
-        public static object RegisteredSpriteLimit { get; internal set; }
-        public static object BoundSpiritLimit { get; internal set; }
 
         #endregion Constant Values
     }

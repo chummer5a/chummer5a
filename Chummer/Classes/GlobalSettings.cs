@@ -763,7 +763,7 @@ namespace Chummer
                 using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
                 {
                     if (objRegistry == null)
-                        throw new ArgumentNullException(nameof(Registry));
+                        throw new InvalidOperationException(nameof(Registry));
                     objRegistry.SetValue("autoupdate", AutomaticUpdate.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("liveupdatecleancharacterfiles",
@@ -1355,9 +1355,11 @@ namespace Chummer
                         }
                         catch (System.Security.SecurityException)
                         {
+                            //swallow this
                         }
                         catch (UnauthorizedAccessException)
                         {
+                            //swallow this
                         }
 
                         _dicSourcebookInfos.Add(strCode, objSource);

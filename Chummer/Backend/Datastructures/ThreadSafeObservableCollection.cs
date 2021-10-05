@@ -31,6 +31,8 @@ namespace Chummer
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
+        protected ReaderWriterLockSlim LockerObject => _rwlThis;
+
         public ThreadSafeObservableCollection()
         {
         }
@@ -165,9 +167,19 @@ namespace Chummer
                 base.OnCollectionChanged(e);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _rwlThis.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            _rwlThis.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

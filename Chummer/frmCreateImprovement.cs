@@ -171,7 +171,7 @@ namespace Chummer
                             break;
 
                         default:
-                            if (objNode.InnerText.StartsWith("Select", StringComparison.Ordinal))
+                            if (objNode.InnerText.StartsWith("Select", StringComparison.OrdinalIgnoreCase))
                             {
                                 lblSelect.Visible = true;
                                 txtTranslateSelection.Visible = true;
@@ -257,8 +257,28 @@ namespace Chummer
                             frmPickMetamagic.ShowDialog(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
-                                txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                                string strSelectedId = frmPickMetamagic.SelectedMetamagic;
+                                if (!string.IsNullOrEmpty(strSelectedId))
+                                {
+                                    string strEchoName = _objCharacter.LoadDataXPath("echoes.xml")
+                                                                             .SelectSingleNode(
+                                                                                 "/chummer/echoes/echo[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
+                                    if (!string.IsNullOrEmpty(strEchoName))
+                                    {
+                                        txtSelect.Text = strEchoName;
+                                        txtTranslateSelection.Text = TranslateField(_strSelect, strEchoName);
+                                    }
+                                    else
+                                    {
+                                        txtSelect.Text = string.Empty;
+                                        txtTranslateSelection.Text = string.Empty;
+                                    }
+                                }
+                                else
+                                {
+                                    txtSelect.Text = string.Empty;
+                                    txtTranslateSelection.Text = string.Empty;
+                                }
                             }
                         }
                     }
@@ -272,8 +292,28 @@ namespace Chummer
                             frmPickMetamagic.ShowDialog(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
-                                txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                                string strSelectedId = frmPickMetamagic.SelectedMetamagic;
+                                if (!string.IsNullOrEmpty(strSelectedId))
+                                {
+                                    string strEchoName = _objCharacter.LoadDataXPath("metamagic.xml")
+                                                                      .SelectSingleNode(
+                                                                          "/chummer/metamagics/metamagic[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
+                                    if (!string.IsNullOrEmpty(strEchoName))
+                                    {
+                                        txtSelect.Text = strEchoName;
+                                        txtTranslateSelection.Text = TranslateField(_strSelect, strEchoName);
+                                    }
+                                    else
+                                    {
+                                        txtSelect.Text = string.Empty;
+                                        txtTranslateSelection.Text = string.Empty;
+                                    }
+                                }
+                                else
+                                {
+                                    txtSelect.Text = string.Empty;
+                                    txtTranslateSelection.Text = string.Empty;
+                                }
                             }
                         }
                     }
@@ -704,6 +744,14 @@ namespace Chummer
 
                 case "SelectAdeptPower":
                     objXmlNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = " + strToTranslate.CleanXPath() + " or name = " + strToTranslate.CleanXPath() + "]");
+                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+
+                case "SelectMetamagic":
+                    objXmlNode = _objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = " + strToTranslate.CleanXPath() + "]");
+                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+
+                case "SelectEcho":
+                    objXmlNode = _objCharacter.LoadDataXPath("echoes.xml").SelectSingleNode("/chummer/echoes/echo[name = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
 
                 default:

@@ -80,12 +80,12 @@ namespace Codaxy.WkHtmlToPdf
         public bool Debug { get; set; }
     }
 
-    public class PdfConvert
+    public static class PdfConvert
     {
         private static PdfConvertEnvironment _e;
 
         public static PdfConvertEnvironment Environment => _e ?? (_e = new PdfConvertEnvironment
-        { WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation() });
+            {WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation()});
 
         private static string GetWkhtmlToPdfExeLocation()
         {
@@ -285,10 +285,14 @@ namespace Codaxy.WkHtmlToPdf
                                     {
                                         try
                                         {
-                                            await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length, objCancellationTokenSource.Token);
+                                            await stream.BaseStream.WriteAsync(
+                                                buffer, 0, buffer.Length, objCancellationTokenSource.Token);
                                             await stream.WriteLineAsync();
                                         }
-                                        catch (TaskCanceledException) { }
+                                        catch (TaskCanceledException)
+                                        {
+                                            // Swallow this
+                                        }
                                     }
                                 }
                             }

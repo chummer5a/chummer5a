@@ -1831,22 +1831,23 @@ namespace Chummer
                                     blnAnyAutosaveInMru = true;
                             }
 
-                            if (objMostRecentAutosave != null)
+                            // Might have had a crash for an unsaved character, so prompt if we want to load them
+                            if (objMostRecentAutosave != null
+                                && blnAnyAutosaveInMru
+                                && !setFilesToLoad.Contains(objMostRecentAutosave.FullName)
+                                && GlobalSettings.MostRecentlyUsedCharacters.All(
+                                    x => Path.GetFileName(x) != objMostRecentAutosave.Name)
+                                && GlobalSettings.FavoritedCharacters.All(
+                                    x => Path.GetFileName(x) != objMostRecentAutosave.Name)
+                                && ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                LanguageManager.GetString(
+                                                                    "Message_PossibleCrashAutosaveFound"),
+                                                                objMostRecentAutosave.Name,
+                                                                objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
+                                                  LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
-                                // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                if (blnAnyAutosaveInMru &&
-                                    !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
-                                    GlobalSettings.MostRecentlyUsedCharacters.All(x =>
-                                        Path.GetFileName(x) != objMostRecentAutosave.Name) &&
-                                    GlobalSettings.FavoritedCharacters.All(x =>
-                                        Path.GetFileName(x) != objMostRecentAutosave.Name) && ShowMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo,
-                                            LanguageManager.GetString("Message_PossibleCrashAutosaveFound"),
-                                            objMostRecentAutosave.Name,
-                                            objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
-                                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                                    setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
                             }
                         }
 

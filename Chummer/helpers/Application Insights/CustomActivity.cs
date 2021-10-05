@@ -24,7 +24,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Chummer
 {
-    public class CustomActivity : Activity
+    public sealed class CustomActivity : Activity
     {
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
         //public IOperationHolder<RequestTelemetry> myOperationRequestHolder { get; set; }

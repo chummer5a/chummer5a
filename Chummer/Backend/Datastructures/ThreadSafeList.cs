@@ -60,7 +60,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         public new int Count
         {
             get
@@ -370,10 +370,20 @@ namespace Chummer
             using (new EnterReadLock(_rwlThis))
                 return base.TrueForAll(match);
         }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _rwlThis.Dispose();
+            }
+        }
 
+        /// <inheritdoc />
         public void Dispose()
         {
-            _rwlThis.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

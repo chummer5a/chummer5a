@@ -260,7 +260,7 @@ namespace Chummer.Backend.Skills
             if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                 xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -806,12 +806,12 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is the specialization bought with karma. During career mode this is undefined
         /// </summary>
-        public bool BuyWithKarma
+        public virtual bool BuyWithKarma
         {
-            get => (_blnBuyWithKarma || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && !string.IsNullOrEmpty(Specialization);
+            get => (_blnBuyWithKarma || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && Specializations.Any(x => !x.Free);
             set
             {
-                bool blnNewValue = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && !string.IsNullOrEmpty(Specialization);
+                bool blnNewValue = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && Specializations.Any(x => !x.Free);
                 if (_blnBuyWithKarma != blnNewValue)
                 {
                     _blnBuyWithKarma = blnNewValue;
@@ -996,7 +996,9 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                int cost = BasePoints + ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
+                int cost = BasePoints;
+                if (!IsExoticSkill && !BuyWithKarma)
+                    cost += Specializations.Count(x => !x.Free);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
@@ -1474,15 +1476,15 @@ namespace Chummer.Backend.Skills
         //Or just ignore support for multiple specializations even if the rules say it is possible?
         public CachedBindingList<SkillSpecialization> Specializations { get; } = new CachedBindingList<SkillSpecialization>();
 
-        public string Specialization
+        public string TopMostDisplaySpecialization
         {
             get
             {
                 if (IsExoticSkill)
                 {
-                    return ((ExoticSkill)this).Specific;
+                    return ((ExoticSkill)this).DisplaySpecific(GlobalSettings.Language);
                 }
-                
+
                 return Specializations.FirstOrDefault(x => !x.Free)?.CurrentDisplayName ?? string.Empty;
             }
             set
@@ -1498,14 +1500,11 @@ namespace Chummer.Backend.Skills
                 {
                     Specializations.AddWithSort(new SkillSpecialization(CharacterObject, value), (x, y) =>
                     {
-                        if (x.Free == y.Free)
-                        {
-                            if (x.Expertise == y.Expertise)
-                                return 0;
+                        if (x.Free != y.Free)
+                            return x.Free ? 1 : -1;
+                        if (x.Expertise != y.Expertise)
                             return x.Expertise ? 1 : -1;
-                        }
-
-                        return x.Free ? 1 : -1;
+                        return 0;
                     });
                     return;
                 }
@@ -1916,7 +1915,7 @@ namespace Chummer.Backend.Skills
         public string DisplayOtherAttribute(string strAttribute)
         {
             int intPool = PoolOtherAttribute(strAttribute);
-            if ((IsExoticSkill || string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x =>
+            if ((IsExoticSkill || Specializations.Count == 0 || CharacterObject.Improvements.Any(x =>
                      x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
                      x.ImprovedName == DictionaryKey && string.IsNullOrEmpty(x.Condition) && x.Enabled)) &&
                  !CharacterObject.Improvements.Any(i =>
@@ -2065,7 +2064,7 @@ namespace Chummer.Backend.Skills
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(Name)),
                             new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
-                            new DependencyGraphNode<string, Skill>(nameof(Specialization))
+                            new DependencyGraphNode<string, Skill>(nameof(Specializations))
                         ),
                         new DependencyGraphNode<string, Skill>(nameof(Pool),
                             new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers),
@@ -2124,7 +2123,7 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(BuyWithKarma),
                     new DependencyGraphNode<string, Skill>(nameof(ForcedBuyWithKarma),
-                        new DependencyGraphNode<string, Skill>(nameof(Specialization)),
+                        new DependencyGraphNode<string, Skill>(nameof(Specializations)),
                         new DependencyGraphNode<string, Skill>(nameof(KarmaPoints)),
                         new DependencyGraphNode<string, Skill>(nameof(BasePoints)),
                         new DependencyGraphNode<string, Skill>(nameof(FreeBase))
@@ -2167,7 +2166,7 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentSpCost),
                     new DependencyGraphNode<string, Skill>(nameof(BasePoints)),
-                    new DependencyGraphNode<string, Skill>(nameof(Specialization)),
+                    new DependencyGraphNode<string, Skill>(nameof(Specializations)),
                     new DependencyGraphNode<string, Skill>(nameof(BuyWithKarma))
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentKarmaCost),
@@ -2192,8 +2191,7 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentDisplaySpecialization),
                     new DependencyGraphNode<string, Skill>(nameof(DisplaySpecialization),
-                        new DependencyGraphNode<string, Skill>(nameof(Specialization),
-                            new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating)),
+                        new DependencyGraphNode<string, Skill>(nameof(TopMostDisplaySpecialization),
                             new DependencyGraphNode<string, Skill>(nameof(Specializations))
                         )
                     )
@@ -2912,7 +2910,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedForcedBuyWithKarma < 0)
                 {
-                    _intCachedForcedBuyWithKarma = !string.IsNullOrWhiteSpace(Specialization)
+                    _intCachedForcedBuyWithKarma = Specializations.Any(x => !x.Free)
                                                    && ((KarmaPoints > 0
                                                         && BasePoints + FreeBase == 0
                                                         && !CharacterObject.Settings

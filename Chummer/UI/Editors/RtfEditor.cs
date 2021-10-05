@@ -34,7 +34,7 @@ namespace Chummer.UI.Editors
                 tsControls.Visible = false;
         }
 
-        public KeyEventHandler ContentKeyDown;
+        public KeyEventHandler ContentKeyDown { get; set; }
 
         public void FocusContent()
         {

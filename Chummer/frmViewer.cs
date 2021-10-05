@@ -227,6 +227,7 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
+                    // Swallow this
                 }
             }
 
@@ -358,6 +359,7 @@ namespace Chummer
             }
             catch (CultureNotFoundException)
             {
+                // Swallow this
             }
             if (_blnLoading)
                 return;
@@ -449,7 +451,10 @@ namespace Chummer
                 if (_tskRefresher?.IsCompleted == false)
                     await _tskRefresher;
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                // Swallow this
+            }
             _tskRefresher = Task.Run(RefreshCharacterXml, _objRefresherCancellationTokenSource.Token);
         }
 
@@ -465,7 +470,10 @@ namespace Chummer
                 if (_tskOutputGenerator?.IsCompleted == false)
                     await _tskOutputGenerator;
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                // Swallow this
+            }
             _tskOutputGenerator = Task.Run(AsyncGenerateOutput, _objOutputGeneratorCancellationTokenSource.Token);
         }
 
@@ -635,12 +643,15 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
+                    // Swallow this
                 }
                 catch (IOException)
                 {
+                    // Swallow this
                 }
                 catch (SecurityException)
                 {
+                    // Swallow this
                 }
 
                 // webBrowser can only print to the default printer, so we (temporarily) change it to the PDF printer
@@ -681,12 +692,15 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
+                    // Swallow this
                 }
                 catch (IOException)
                 {
+                    // Swallow this
                 }
                 catch (SecurityException)
                 {
+                    // Swallow this
                 }
             }
 
