@@ -5024,7 +5024,7 @@ namespace Chummer
 
                             case ContactType.Enemy:
                                 {
-                                    if (panEnemies == null)
+                                    if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                         break;
                                     ContactControl objContactControl = new ContactControl(objContact);
                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5082,7 +5082,7 @@ namespace Chummer
 
                                         case ContactType.Enemy:
                                             {
-                                                if (panEnemies == null)
+                                                if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
                                                 ContactControl objContactControl = new ContactControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5260,7 +5260,7 @@ namespace Chummer
 
                                         case ContactType.Enemy:
                                             {
-                                                if (panEnemies == null)
+                                                if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
                                                 ContactControl objContactControl = new ContactControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged

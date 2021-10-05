@@ -117,6 +117,7 @@ Application Changes:
 - Merged <restrictedgearitemcount> bonus node functionality into <restrictedgear> bonus nodes so that the latter can now support multiple allowed availabilities and different quantities for each allowed availability.
 - Restricted Gear can now properly handle cases where multiple items exceeding character creation availability limits are in one stack instead of split across multiple ones.
 - Fixed Smartsoft behaviour for drone-controlled weapon dicepools not being properly calculated. 
+- Enemies as per 4th edition rules now need to be enabled through the House Rules tab in character settings. Settings for the amount of karma gained from enemies are now clearly delineated and grouped together in the House Rules tab. Fixes #1325.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -322,6 +323,10 @@ Changed/New Strings:
 - Message_RegisteredSpriteLimit
 - Label_SelectBP_UseSetting
 - Label_Options_DefaultMasterIndexSetting
+- Label_CharacterOptions_4eAdaptations
+- Checkbox_Options_Enable4eStyleEnemyTracking
+- Label_Options_KarmaGainedFromEnemies
+- Checkbox_Options_EnemyKarmaQualityLimit
 
 Deleted Strings:
 - Label_Options_NuyenPerBP

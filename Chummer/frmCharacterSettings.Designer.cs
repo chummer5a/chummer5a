@@ -67,7 +67,6 @@ namespace Chummer
             this.txtContactPoints = new System.Windows.Forms.TextBox();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkEnemyKarmaQualityLimit = new Chummer.ColorableCheckBox(this.components);
             this.chkAllowFreeGrids = new Chummer.ColorableCheckBox(this.components);
             this.chkAllowPointBuySpecializationsOnKarmaSkills = new Chummer.ColorableCheckBox(this.components);
             this.chkStrictSkillGroups = new Chummer.ColorableCheckBox(this.components);
@@ -169,9 +168,6 @@ namespace Chummer
             this.lblKarmaContact = new System.Windows.Forms.Label();
             this.nudKarmaContact = new Chummer.NumericUpDownEx();
             this.lblKarmaContactExtra = new System.Windows.Forms.Label();
-            this.lblKarmaEnemyExtra = new System.Windows.Forms.Label();
-            this.nudKarmaEnemy = new Chummer.NumericUpDownEx();
-            this.lblKarmaEnemy = new System.Windows.Forms.Label();
             this.lblKarmaSpirit = new System.Windows.Forms.Label();
             this.nudKarmaSpirit = new Chummer.NumericUpDownEx();
             this.lblKarmaSpiritExtra = new System.Windows.Forms.Label();
@@ -282,7 +278,6 @@ namespace Chummer
             this.gpbHouseRulesCombat = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesCombat = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkNoArmorEncumbrance = new Chummer.ColorableCheckBox(this.components);
-            this.chkMoreLethalGameplay = new Chummer.ColorableCheckBox(this.components);
             this.chkUnarmedSkillImprovements = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesMagicResonance = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesMagicResonance = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -300,6 +295,11 @@ namespace Chummer
             this.lblBoundSpiritLimit = new Chummer.LabelWithToolTip();
             this.txtBoundSpiritLimit = new System.Windows.Forms.TextBox();
             this.txtRegisteredSpriteLimit = new System.Windows.Forms.TextBox();
+            this.gpbHouseRules4eAdaptations = new System.Windows.Forms.GroupBox();
+            this.tlpHouseRules4eAdaptations = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkEnemyKarmaQualityLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkEnable4eStyleEnemyTracking = new Chummer.ColorableCheckBox(this.components);
+            this.chkMoreLethalGameplay = new Chummer.ColorableCheckBox(this.components);
             this.lblSettingName = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdRename = new System.Windows.Forms.Button();
@@ -308,6 +308,10 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
+            this.flpKarmaGainedFromEnemies = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblKarmaGainedFromEnemies = new System.Windows.Forms.Label();
+            this.nudKarmaGainedFromEnemies = new Chummer.NumericUpDownEx();
+            this.lblKarmaGainedFromEnemiesExtra = new System.Windows.Forms.Label();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -360,7 +364,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellcastingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpell)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).BeginInit();
@@ -408,7 +411,11 @@ namespace Chummer
             this.tlpHouseRulesCombat.SuspendLayout();
             this.gpbHouseRulesMagicResonance.SuspendLayout();
             this.tlpHouseRulesMagicResonance.SuspendLayout();
+            this.gpbHouseRules4eAdaptations.SuspendLayout();
+            this.tlpHouseRules4eAdaptations.SuspendLayout();
             this.tlpButtons.SuspendLayout();
+            this.flpKarmaGainedFromEnemies.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -950,7 +957,7 @@ namespace Chummer
             this.gpbBasicOptionsOfficialRules.Controls.Add(this.tlpBasicOptionsOfficialRules);
             this.gpbBasicOptionsOfficialRules.Location = new System.Drawing.Point(3, 211);
             this.gpbBasicOptionsOfficialRules.Name = "gpbBasicOptionsOfficialRules";
-            this.gpbBasicOptionsOfficialRules.Size = new System.Drawing.Size(472, 244);
+            this.gpbBasicOptionsOfficialRules.Size = new System.Drawing.Size(472, 219);
             this.gpbBasicOptionsOfficialRules.TabIndex = 3;
             this.gpbBasicOptionsOfficialRules.TabStop = false;
             this.gpbBasicOptionsOfficialRules.Tag = "Label_CharacterOptions_OptionsOfficialRules";
@@ -962,7 +969,6 @@ namespace Chummer
             this.tlpBasicOptionsOfficialRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpBasicOptionsOfficialRules.ColumnCount = 1;
             this.tlpBasicOptionsOfficialRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsOfficialRules.Controls.Add(this.chkEnemyKarmaQualityLimit, 0, 8);
             this.tlpBasicOptionsOfficialRules.Controls.Add(this.chkAllowFreeGrids, 0, 7);
             this.tlpBasicOptionsOfficialRules.Controls.Add(this.chkAllowPointBuySpecializationsOnKarmaSkills, 0, 6);
             this.tlpBasicOptionsOfficialRules.Controls.Add(this.chkStrictSkillGroups, 0, 5);
@@ -974,8 +980,7 @@ namespace Chummer
             this.tlpBasicOptionsOfficialRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBasicOptionsOfficialRules.Location = new System.Drawing.Point(3, 16);
             this.tlpBasicOptionsOfficialRules.Name = "tlpBasicOptionsOfficialRules";
-            this.tlpBasicOptionsOfficialRules.RowCount = 9;
-            this.tlpBasicOptionsOfficialRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsOfficialRules.RowCount = 8;
             this.tlpBasicOptionsOfficialRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsOfficialRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsOfficialRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -984,24 +989,8 @@ namespace Chummer
             this.tlpBasicOptionsOfficialRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsOfficialRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsOfficialRules.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsOfficialRules.Size = new System.Drawing.Size(466, 225);
+            this.tlpBasicOptionsOfficialRules.Size = new System.Drawing.Size(466, 200);
             this.tlpBasicOptionsOfficialRules.TabIndex = 0;
-            // 
-            // chkEnemyKarmaQualityLimit
-            // 
-            this.chkEnemyKarmaQualityLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkEnemyKarmaQualityLimit.AutoSize = true;
-            this.chkEnemyKarmaQualityLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.tlpBasicOptionsOfficialRules.SetColumnSpan(this.chkEnemyKarmaQualityLimit, 4);
-            this.chkEnemyKarmaQualityLimit.DefaultColorScheme = true;
-            this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(3, 204);
-            this.chkEnemyKarmaQualityLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkEnemyKarmaQualityLimit.Name = "chkEnemyKarmaQualityLimit";
-            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(389, 17);
-            this.chkEnemyKarmaQualityLimit.TabIndex = 47;
-            this.chkEnemyKarmaQualityLimit.Tag = "Checkbox_Options_EnemyKarmaQualityLimit";
-            this.chkEnemyKarmaQualityLimit.Text = "Karma spent on enemies counts towards negative Quality limit in create mode";
-            this.chkEnemyKarmaQualityLimit.UseVisualStyleBackColor = true;
             // 
             // chkAllowFreeGrids
             // 
@@ -1383,7 +1372,7 @@ namespace Chummer
             this.gpbBasicOptionsRounding.AutoSize = true;
             this.gpbBasicOptionsRounding.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbBasicOptionsRounding.Controls.Add(this.tlpBasicOptionsRounding);
-            this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(3, 461);
+            this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(3, 436);
             this.gpbBasicOptionsRounding.Name = "gpbBasicOptionsRounding";
             this.gpbBasicOptionsRounding.Size = new System.Drawing.Size(361, 122);
             this.gpbBasicOptionsRounding.TabIndex = 1;
@@ -1625,9 +1614,6 @@ namespace Chummer
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaContact, 0, 10);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaContact, 1, 10);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaContactExtra, 2, 10);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaEnemyExtra, 2, 11);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaEnemy, 1, 11);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaEnemy, 0, 11);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpirit, 3, 3);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaSpirit, 4, 3);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpiritExtra, 5, 3);
@@ -1667,17 +1653,17 @@ namespace Chummer
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpiritFettering, 3, 4);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaSpiritFettering, 4, 4);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpiritFetteringExtra, 5, 4);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQuality, 0, 12);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaQuality, 1, 12);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQualityExtra, 2, 12);
-            this.tlpKarmaCosts.Controls.Add(this.lblMetatypeCostsKarmaMultiplierLabel, 0, 13);
-            this.tlpKarmaCosts.Controls.Add(this.nudMetatypeCostsKarmaMultiplier, 1, 13);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerWftM, 0, 14);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNuyenPerWftM, 1, 14);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtraWftM, 2, 14);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtraWftP, 2, 15);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerWftP, 0, 15);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNuyenPerWftP, 1, 15);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQuality, 0, 11);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaQuality, 1, 11);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQualityExtra, 2, 11);
+            this.tlpKarmaCosts.Controls.Add(this.lblMetatypeCostsKarmaMultiplierLabel, 0, 12);
+            this.tlpKarmaCosts.Controls.Add(this.nudMetatypeCostsKarmaMultiplier, 1, 12);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerWftM, 0, 13);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNuyenPerWftM, 1, 13);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtraWftM, 2, 13);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerWftP, 0, 14);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNuyenPerWftP, 1, 14);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtraWftP, 2, 14);
             this.tlpKarmaCosts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKarmaCosts.Location = new System.Drawing.Point(9, 9);
             this.tlpKarmaCosts.Name = "tlpKarmaCosts";
@@ -2692,51 +2678,6 @@ namespace Chummer
             this.lblKarmaContactExtra.Text = "x (Connection + Loyalty)";
             this.lblKarmaContactExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblKarmaEnemyExtra
-            // 
-            this.lblKarmaEnemyExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaEnemyExtra.AutoSize = true;
-            this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(249, 292);
-            this.lblKarmaEnemyExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaEnemyExtra.Name = "lblKarmaEnemyExtra";
-            this.lblKarmaEnemyExtra.Size = new System.Drawing.Size(120, 13);
-            this.lblKarmaEnemyExtra.TabIndex = 49;
-            this.lblKarmaEnemyExtra.Tag = "Label_Options_ConnectionLoyalty";
-            this.lblKarmaEnemyExtra.Text = "x (Connection + Loyalty)";
-            this.lblKarmaEnemyExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // nudKarmaEnemy
-            // 
-            this.nudKarmaEnemy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaEnemy.AutoSize = true;
-            this.nudKarmaEnemy.Location = new System.Drawing.Point(190, 289);
-            this.nudKarmaEnemy.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaEnemy.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaEnemy.Name = "nudKarmaEnemy";
-            this.nudKarmaEnemy.Size = new System.Drawing.Size(53, 20);
-            this.nudKarmaEnemy.TabIndex = 48;
-            // 
-            // lblKarmaEnemy
-            // 
-            this.lblKarmaEnemy.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaEnemy.AutoSize = true;
-            this.lblKarmaEnemy.Location = new System.Drawing.Point(137, 292);
-            this.lblKarmaEnemy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaEnemy.Name = "lblKarmaEnemy";
-            this.lblKarmaEnemy.Size = new System.Drawing.Size(47, 13);
-            this.lblKarmaEnemy.TabIndex = 47;
-            this.lblKarmaEnemy.Tag = "Label_Options_Enemies";
-            this.lblKarmaEnemy.Text = "Enemies";
-            this.lblKarmaEnemy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // lblKarmaSpirit
             // 
             this.lblKarmaSpirit.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -3372,7 +3313,7 @@ namespace Chummer
             // 
             this.lblKarmaQuality.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaQuality.AutoSize = true;
-            this.lblKarmaQuality.Location = new System.Drawing.Point(51, 318);
+            this.lblKarmaQuality.Location = new System.Drawing.Point(51, 292);
             this.lblKarmaQuality.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaQuality.Name = "lblKarmaQuality";
             this.lblKarmaQuality.Size = new System.Drawing.Size(133, 13);
@@ -3385,7 +3326,7 @@ namespace Chummer
             // 
             this.nudKarmaQuality.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaQuality.AutoSize = true;
-            this.nudKarmaQuality.Location = new System.Drawing.Point(190, 315);
+            this.nudKarmaQuality.Location = new System.Drawing.Point(190, 289);
             this.nudKarmaQuality.Maximum = new decimal(new int[] {
             100,
             0,
@@ -3404,7 +3345,7 @@ namespace Chummer
             // 
             this.lblKarmaQualityExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaQualityExtra.AutoSize = true;
-            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(249, 318);
+            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(249, 292);
             this.lblKarmaQualityExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaQualityExtra.Name = "lblKarmaQualityExtra";
             this.lblKarmaQualityExtra.Size = new System.Drawing.Size(53, 13);
@@ -3417,7 +3358,7 @@ namespace Chummer
             // 
             this.lblMetatypeCostsKarmaMultiplierLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetatypeCostsKarmaMultiplierLabel.AutoSize = true;
-            this.lblMetatypeCostsKarmaMultiplierLabel.Location = new System.Drawing.Point(32, 344);
+            this.lblMetatypeCostsKarmaMultiplierLabel.Location = new System.Drawing.Point(32, 318);
             this.lblMetatypeCostsKarmaMultiplierLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatypeCostsKarmaMultiplierLabel.Name = "lblMetatypeCostsKarmaMultiplierLabel";
             this.lblMetatypeCostsKarmaMultiplierLabel.Size = new System.Drawing.Size(152, 13);
@@ -3430,7 +3371,7 @@ namespace Chummer
             // 
             this.nudMetatypeCostsKarmaMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMetatypeCostsKarmaMultiplier.AutoSize = true;
-            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(190, 341);
+            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(190, 315);
             this.nudMetatypeCostsKarmaMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -3454,7 +3395,7 @@ namespace Chummer
             // 
             this.lblKarmaNuyenPerWftM.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaNuyenPerWftM.AutoSize = true;
-            this.lblKarmaNuyenPerWftM.Location = new System.Drawing.Point(9, 370);
+            this.lblKarmaNuyenPerWftM.Location = new System.Drawing.Point(9, 344);
             this.lblKarmaNuyenPerWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaNuyenPerWftM.Name = "lblKarmaNuyenPerWftM";
             this.lblKarmaNuyenPerWftM.Size = new System.Drawing.Size(175, 13);
@@ -3467,7 +3408,7 @@ namespace Chummer
             // 
             this.nudKarmaNuyenPerWftM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNuyenPerWftM.AutoSize = true;
-            this.nudKarmaNuyenPerWftM.Location = new System.Drawing.Point(190, 367);
+            this.nudKarmaNuyenPerWftM.Location = new System.Drawing.Point(190, 341);
             this.nudKarmaNuyenPerWftM.Maximum = new decimal(new int[] {
             99999,
             0,
@@ -3486,7 +3427,7 @@ namespace Chummer
             // 
             this.lblKarmaNuyenPerExtraWftM.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaNuyenPerExtraWftM.AutoSize = true;
-            this.lblKarmaNuyenPerExtraWftM.Location = new System.Drawing.Point(249, 370);
+            this.lblKarmaNuyenPerExtraWftM.Location = new System.Drawing.Point(249, 344);
             this.lblKarmaNuyenPerExtraWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaNuyenPerExtraWftM.Name = "lblKarmaNuyenPerExtraWftM";
             this.lblKarmaNuyenPerExtraWftM.Size = new System.Drawing.Size(86, 13);
@@ -3499,7 +3440,7 @@ namespace Chummer
             // 
             this.lblKarmaNuyenPerExtraWftP.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaNuyenPerExtraWftP.AutoSize = true;
-            this.lblKarmaNuyenPerExtraWftP.Location = new System.Drawing.Point(249, 396);
+            this.lblKarmaNuyenPerExtraWftP.Location = new System.Drawing.Point(249, 370);
             this.lblKarmaNuyenPerExtraWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaNuyenPerExtraWftP.Name = "lblKarmaNuyenPerExtraWftP";
             this.lblKarmaNuyenPerExtraWftP.Size = new System.Drawing.Size(92, 13);
@@ -3512,7 +3453,7 @@ namespace Chummer
             // 
             this.lblKarmaNuyenPerWftP.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaNuyenPerWftP.AutoSize = true;
-            this.lblKarmaNuyenPerWftP.Location = new System.Drawing.Point(3, 396);
+            this.lblKarmaNuyenPerWftP.Location = new System.Drawing.Point(3, 370);
             this.lblKarmaNuyenPerWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaNuyenPerWftP.Name = "lblKarmaNuyenPerWftP";
             this.lblKarmaNuyenPerWftP.Size = new System.Drawing.Size(181, 13);
@@ -3525,7 +3466,7 @@ namespace Chummer
             // 
             this.nudKarmaNuyenPerWftP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNuyenPerWftP.AutoSize = true;
-            this.nudKarmaNuyenPerWftP.Location = new System.Drawing.Point(190, 393);
+            this.nudKarmaNuyenPerWftP.Location = new System.Drawing.Point(190, 367);
             this.nudKarmaNuyenPerWftP.Maximum = new decimal(new int[] {
             99999,
             0,
@@ -3945,6 +3886,7 @@ namespace Chummer
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesSkills);
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesCombat);
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesMagicResonance);
+            this.flpHouseRules.Controls.Add(this.gpbHouseRules4eAdaptations);
             this.flpHouseRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpHouseRules.Location = new System.Drawing.Point(9, 9);
             this.flpHouseRules.Margin = new System.Windows.Forms.Padding(0);
@@ -4364,7 +4306,7 @@ namespace Chummer
             this.gpbHouseRulesCombat.Controls.Add(this.tlpHouseRulesCombat);
             this.gpbHouseRulesCombat.Location = new System.Drawing.Point(461, 204);
             this.gpbHouseRulesCombat.Name = "gpbHouseRulesCombat";
-            this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 94);
+            this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 69);
             this.gpbHouseRulesCombat.TabIndex = 4;
             this.gpbHouseRulesCombat.TabStop = false;
             this.gpbHouseRulesCombat.Tag = "Label_CharacterOptions_Combat";
@@ -4377,16 +4319,14 @@ namespace Chummer
             this.tlpHouseRulesCombat.ColumnCount = 1;
             this.tlpHouseRulesCombat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpHouseRulesCombat.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
-            this.tlpHouseRulesCombat.Controls.Add(this.chkMoreLethalGameplay, 0, 2);
             this.tlpHouseRulesCombat.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
             this.tlpHouseRulesCombat.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesCombat.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesCombat.Name = "tlpHouseRulesCombat";
-            this.tlpHouseRulesCombat.RowCount = 3;
+            this.tlpHouseRulesCombat.RowCount = 2;
             this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 75);
+            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 50);
             this.tlpHouseRulesCombat.TabIndex = 0;
             // 
             // chkNoArmorEncumbrance
@@ -4402,20 +4342,6 @@ namespace Chummer
             this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
             this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
             this.chkNoArmorEncumbrance.UseVisualStyleBackColor = true;
-            // 
-            // chkMoreLethalGameplay
-            // 
-            this.chkMoreLethalGameplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkMoreLethalGameplay.AutoSize = true;
-            this.chkMoreLethalGameplay.DefaultColorScheme = true;
-            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(3, 54);
-            this.chkMoreLethalGameplay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
-            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(297, 17);
-            this.chkMoreLethalGameplay.TabIndex = 41;
-            this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
-            this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
-            this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
             // 
             // chkUnarmedSkillImprovements
             // 
@@ -4683,6 +4609,84 @@ namespace Chummer
             this.txtRegisteredSpriteLimit.Text = "{LOG}";
             this.txtRegisteredSpriteLimit.TextChanged += new System.EventHandler(this.txtRegisteredSpriteLimit_TextChanged);
             // 
+            // gpbHouseRules4eAdaptations
+            // 
+            this.gpbHouseRules4eAdaptations.AutoSize = true;
+            this.gpbHouseRules4eAdaptations.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbHouseRules4eAdaptations.Controls.Add(this.tlpHouseRules4eAdaptations);
+            this.gpbHouseRules4eAdaptations.Location = new System.Drawing.Point(449, 329);
+            this.gpbHouseRules4eAdaptations.Name = "gpbHouseRules4eAdaptations";
+            this.gpbHouseRules4eAdaptations.Size = new System.Drawing.Size(441, 120);
+            this.gpbHouseRules4eAdaptations.TabIndex = 5;
+            this.gpbHouseRules4eAdaptations.TabStop = false;
+            this.gpbHouseRules4eAdaptations.Tag = "Label_CharacterOptions_4eAdaptations";
+            this.gpbHouseRules4eAdaptations.Text = "4th Edition Adaptations";
+            // 
+            // tlpHouseRules4eAdaptations
+            // 
+            this.tlpHouseRules4eAdaptations.AutoSize = true;
+            this.tlpHouseRules4eAdaptations.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRules4eAdaptations.ColumnCount = 1;
+            this.tlpHouseRules4eAdaptations.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRules4eAdaptations.Controls.Add(this.chkEnemyKarmaQualityLimit, 0, 2);
+            this.tlpHouseRules4eAdaptations.Controls.Add(this.chkEnable4eStyleEnemyTracking, 0, 0);
+            this.tlpHouseRules4eAdaptations.Controls.Add(this.chkMoreLethalGameplay, 0, 3);
+            this.tlpHouseRules4eAdaptations.Controls.Add(this.flpKarmaGainedFromEnemies, 0, 1);
+            this.tlpHouseRules4eAdaptations.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRules4eAdaptations.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRules4eAdaptations.Name = "tlpHouseRules4eAdaptations";
+            this.tlpHouseRules4eAdaptations.RowCount = 4;
+            this.tlpHouseRules4eAdaptations.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRules4eAdaptations.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRules4eAdaptations.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRules4eAdaptations.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRules4eAdaptations.Size = new System.Drawing.Size(435, 101);
+            this.tlpHouseRules4eAdaptations.TabIndex = 0;
+            // 
+            // chkEnemyKarmaQualityLimit
+            // 
+            this.chkEnemyKarmaQualityLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkEnemyKarmaQualityLimit.AutoSize = true;
+            this.chkEnemyKarmaQualityLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.tlpHouseRules4eAdaptations.SetColumnSpan(this.chkEnemyKarmaQualityLimit, 4);
+            this.chkEnemyKarmaQualityLimit.DefaultColorScheme = true;
+            this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(23, 55);
+            this.chkEnemyKarmaQualityLimit.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkEnemyKarmaQualityLimit.Name = "chkEnemyKarmaQualityLimit";
+            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(409, 17);
+            this.chkEnemyKarmaQualityLimit.TabIndex = 48;
+            this.chkEnemyKarmaQualityLimit.Tag = "Checkbox_Options_EnemyKarmaQualityLimit";
+            this.chkEnemyKarmaQualityLimit.Text = "Karma Gained from Enemies counts towards Negative Quality limit in Create mode";
+            this.chkEnemyKarmaQualityLimit.UseVisualStyleBackColor = true;
+            // 
+            // chkEnable4eStyleEnemyTracking
+            // 
+            this.chkEnable4eStyleEnemyTracking.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkEnable4eStyleEnemyTracking.AutoSize = true;
+            this.chkEnable4eStyleEnemyTracking.DefaultColorScheme = true;
+            this.chkEnable4eStyleEnemyTracking.Location = new System.Drawing.Point(3, 4);
+            this.chkEnable4eStyleEnemyTracking.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkEnable4eStyleEnemyTracking.Name = "chkEnable4eStyleEnemyTracking";
+            this.chkEnable4eStyleEnemyTracking.Size = new System.Drawing.Size(272, 17);
+            this.chkEnable4eStyleEnemyTracking.TabIndex = 38;
+            this.chkEnable4eStyleEnemyTracking.Tag = "Checkbox_Options_Enable4eStyleEnemyTracking";
+            this.chkEnable4eStyleEnemyTracking.Text = "Use 4th Edition Rules for Enemies as a Contact type";
+            this.chkEnable4eStyleEnemyTracking.UseVisualStyleBackColor = true;
+            // 
+            // chkMoreLethalGameplay
+            // 
+            this.chkMoreLethalGameplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkMoreLethalGameplay.AutoSize = true;
+            this.chkMoreLethalGameplay.DefaultColorScheme = true;
+            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(3, 80);
+            this.chkMoreLethalGameplay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
+            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(297, 17);
+            this.chkMoreLethalGameplay.TabIndex = 41;
+            this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
+            this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
+            this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
+            // 
             // lblSettingName
             // 
             this.lblSettingName.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -4811,6 +4815,64 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
+            // flpKarmaGainedFromEnemies
+            // 
+            this.flpKarmaGainedFromEnemies.AutoSize = true;
+            this.flpKarmaGainedFromEnemies.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpKarmaGainedFromEnemies.Controls.Add(this.lblKarmaGainedFromEnemies);
+            this.flpKarmaGainedFromEnemies.Controls.Add(this.nudKarmaGainedFromEnemies);
+            this.flpKarmaGainedFromEnemies.Controls.Add(this.lblKarmaGainedFromEnemiesExtra);
+            this.flpKarmaGainedFromEnemies.Location = new System.Drawing.Point(20, 25);
+            this.flpKarmaGainedFromEnemies.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.flpKarmaGainedFromEnemies.Name = "flpKarmaGainedFromEnemies";
+            this.flpKarmaGainedFromEnemies.Size = new System.Drawing.Size(319, 26);
+            this.flpKarmaGainedFromEnemies.TabIndex = 49;
+            // 
+            // lblKarmaGainedFromEnemies
+            // 
+            this.lblKarmaGainedFromEnemies.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaGainedFromEnemies.AutoSize = true;
+            this.lblKarmaGainedFromEnemies.Location = new System.Drawing.Point(3, 6);
+            this.lblKarmaGainedFromEnemies.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaGainedFromEnemies.Name = "lblKarmaGainedFromEnemies";
+            this.lblKarmaGainedFromEnemies.Size = new System.Drawing.Size(140, 13);
+            this.lblKarmaGainedFromEnemies.TabIndex = 48;
+            this.lblKarmaGainedFromEnemies.Tag = "Label_Options_KarmaGainedFromEnemies";
+            this.lblKarmaGainedFromEnemies.Text = "Karma Gained from Enemies";
+            this.lblKarmaGainedFromEnemies.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaGainedFromEnemies
+            // 
+            this.nudKarmaGainedFromEnemies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaGainedFromEnemies.AutoSize = true;
+            this.nudKarmaGainedFromEnemies.Location = new System.Drawing.Point(149, 3);
+            this.nudKarmaGainedFromEnemies.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaGainedFromEnemies.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaGainedFromEnemies.Name = "nudKarmaGainedFromEnemies";
+            this.nudKarmaGainedFromEnemies.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaGainedFromEnemies.TabIndex = 49;
+            // 
+            // lblKarmaGainedFromEnemiesExtra
+            // 
+            this.lblKarmaGainedFromEnemiesExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaGainedFromEnemiesExtra.AutoSize = true;
+            this.lblKarmaGainedFromEnemiesExtra.Location = new System.Drawing.Point(196, 6);
+            this.lblKarmaGainedFromEnemiesExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaGainedFromEnemiesExtra.Name = "lblKarmaGainedFromEnemiesExtra";
+            this.lblKarmaGainedFromEnemiesExtra.Size = new System.Drawing.Size(120, 13);
+            this.lblKarmaGainedFromEnemiesExtra.TabIndex = 50;
+            this.lblKarmaGainedFromEnemiesExtra.Tag = "Label_Options_ConnectionLoyalty";
+            this.lblKarmaGainedFromEnemiesExtra.Text = "x (Connection + Loyalty)";
+            this.lblKarmaGainedFromEnemiesExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // frmCharacterSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4821,7 +4883,7 @@ namespace Chummer
             this.Controls.Add(this.tlpOptions);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
-            this.Name = "frmCharacterOptions";
+            this.Name = "frmCharacterSettings";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -4898,7 +4960,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellcastingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpell)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).EndInit();
@@ -4968,8 +5029,15 @@ namespace Chummer
             this.gpbHouseRulesMagicResonance.PerformLayout();
             this.tlpHouseRulesMagicResonance.ResumeLayout(false);
             this.tlpHouseRulesMagicResonance.PerformLayout();
+            this.gpbHouseRules4eAdaptations.ResumeLayout(false);
+            this.gpbHouseRules4eAdaptations.PerformLayout();
+            this.tlpHouseRules4eAdaptations.ResumeLayout(false);
+            this.tlpHouseRules4eAdaptations.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            this.flpKarmaGainedFromEnemies.ResumeLayout(false);
+            this.flpKarmaGainedFromEnemies.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -5037,9 +5105,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaFlexibleSignatureFocus;
         private System.Windows.Forms.Label lblKarmaCarryover;
         private System.Windows.Forms.Label lblKarmaSustainingFocusExtra;
-        private System.Windows.Forms.Label lblKarmaEnemyExtra;
-        private NumericUpDownEx nudKarmaEnemy;
-        private System.Windows.Forms.Label lblKarmaEnemy;
         private System.Windows.Forms.Label lblKarmaContactExtra;
         private NumericUpDownEx nudKarmaContact;
         private System.Windows.Forms.Label lblKarmaContact;
@@ -5174,7 +5239,6 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpCyberlimbAttributeBonusCap;
         private ColorableCheckBox chkCyberlimbAttributeBonusCap;
         private System.Windows.Forms.Label lblCyberlimbAttributeBonusCapPlus;
-        private ColorableCheckBox chkEnemyKarmaQualityLimit;
         private LabelWithToolTip lblContactPoints;
         private LabelWithToolTip lblKnowledgePoints;
         private System.Windows.Forms.TextBox txtContactPoints;
@@ -5255,5 +5319,13 @@ namespace Chummer
         private LabelWithToolTip lblBoundSpiritLimit;
         private System.Windows.Forms.TextBox txtBoundSpiritLimit;
         private System.Windows.Forms.TextBox txtRegisteredSpriteLimit;
+        private System.Windows.Forms.GroupBox gpbHouseRules4eAdaptations;
+        private BufferedTableLayoutPanel tlpHouseRules4eAdaptations;
+        private ColorableCheckBox chkEnemyKarmaQualityLimit;
+        private ColorableCheckBox chkEnable4eStyleEnemyTracking;
+        private System.Windows.Forms.FlowLayoutPanel flpKarmaGainedFromEnemies;
+        private System.Windows.Forms.Label lblKarmaGainedFromEnemies;
+        private NumericUpDownEx nudKarmaGainedFromEnemies;
+        private System.Windows.Forms.Label lblKarmaGainedFromEnemiesExtra;
     }
 }

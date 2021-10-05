@@ -307,6 +307,13 @@ namespace Chummer
                             }
                         }
 
+                        if (!CharacterObjectSettings.EnableEnemyTracking)
+                        {
+                            tabPeople.TabPages.Remove(tabEnemies);
+                            lblEnemiesBP.Visible = false;
+                            lblBuildEnemies.Visible = false;
+                        }
+
                         RefreshQualities(treQualities, cmsQuality);
                         RefreshSpirits(panSpirits, panSprites);
                         RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
@@ -1779,6 +1786,30 @@ namespace Chummer
 
                         break;
                     }
+                case nameof(CharacterSettings.EnableEnemyTracking):
+                {
+                    using (new CursorWait(this))
+                    {
+                        SuspendLayout();
+                        if (!CharacterObjectSettings.EnableEnemyTracking)
+                        {
+                            tabPeople.TabPages.Remove(tabEnemies);
+                            lblEnemiesBP.Visible = false;
+                            lblBuildEnemies.Visible = false;
+                        }
+                        else
+                        {
+                            lblEnemiesBP.Visible = true;
+                            lblBuildEnemies.Visible = true;
+                            if (!tabPeople.TabPages.Contains(tabEnemies))
+                                tabPeople.TabPages.Insert(tabPeople.TabPages.IndexOf(tabContacts) + 1, tabEnemies);
+                            RefreshContacts(panContacts, panEnemies, panPets);
+                        }
+                        ResumeLayout();
+                    }
+
+                    break;
+                }
             }
         }
 

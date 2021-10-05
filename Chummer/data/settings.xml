@@ -67,6 +67,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -214,6 +215,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -361,6 +363,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -508,6 +511,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -655,6 +659,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -802,6 +807,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -949,6 +955,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -1097,6 +1104,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -1245,6 +1253,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -1392,6 +1401,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -1545,6 +1555,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -1699,6 +1710,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -1853,6 +1865,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -2038,6 +2051,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -2223,6 +2237,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -2371,6 +2386,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -2558,6 +2574,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -2745,6 +2762,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -2937,6 +2955,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -3131,6 +3150,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -3325,6 +3345,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -3519,6 +3540,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -3713,6 +3735,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -3907,6 +3930,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>
@@ -4101,6 +4125,7 @@
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
       <forbiddencostmultiplier>1</forbiddencostmultiplier>
       <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enableenemytracking>False</enableenemytracking>
       <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
       <nuyenformat>#,0.##</nuyenformat>
       <essenceformat>#,0.00</essenceformat>

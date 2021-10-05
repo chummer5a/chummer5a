@@ -109,6 +109,7 @@ namespace Chummer
         private string _strBoundSpiritExpression = "{CHA}";
         private string _strRegisteredSpriteExpression = "{LOG}";
         private bool _blnDoNotRoundEssenceInternally;
+        private bool _blnEnableEnemyTracking;
         private bool _blnEnemyKarmaQualityLimit = true;
         private string _strEssenceFormat = "#,0.00";
         private int _intForbiddenCostMultiplier = 1;
@@ -547,7 +548,9 @@ namespace Chummer
                     objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
                     // <donotroundessenceinternally />
                     objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <donotroundessenceinternally />
+                    // <enableenemytracking />
+                    objWriter.WriteElementString("enableenemytracking", _blnEnableEnemyTracking.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <enemykarmaqualitylimit />
                     objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <nuyenformat />
                     objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
@@ -967,7 +970,9 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
             // Only round essence when its value is displayed
             objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
-            // Only round essence when its value is displayed
+            // Allow use of enemies
+            objXmlNode.TryGetBoolFieldQuickly("enableenemytracking", ref _blnEnableEnemyTracking);
+            // Have enemies contribute to negative quality limit
             objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
             // Format in which nuyen values are displayed
             objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
@@ -2785,6 +2790,22 @@ namespace Chummer
                 if (_blnDoNotRoundEssenceInternally != value)
                 {
                     _blnDoNotRoundEssenceInternally = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Allow Enemies to be bought and tracked like in 4e?
+        /// </summary>
+        public bool EnableEnemyTracking
+        {
+            get => _blnEnableEnemyTracking;
+            set
+            {
+                if (_blnEnableEnemyTracking != value)
+                {
+                    _blnEnableEnemyTracking = value;
                     OnPropertyChanged();
                 }
             }
