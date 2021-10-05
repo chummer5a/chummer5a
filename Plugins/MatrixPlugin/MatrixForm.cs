@@ -19,6 +19,7 @@ namespace MatrixPlugin
             InitializeContent();
             InitializeBinding();
             this.UpdateLightDarkMode();
+            this.TranslateWinForm();
 
             void InitializeContent()
             {
@@ -39,42 +40,42 @@ namespace MatrixPlugin
                 //Attribute section
                 lOverClocker.DoOneWayDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
 
-                rbOverAttack.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
-                rbOverSleaze.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
-                rbOverDataProc.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
-                rbOverFirewall.DoDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                rbOverAttack.DoOneWayDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                rbOverSleaze.DoOneWayDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                rbOverDataProc.DoOneWayDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
+                rbOverFirewall.DoOneWayDataBinding("Enabled", _logic, nameof(MatrixLogic.OverClocker));
                 AddRadioCheckedBinding(rbOverAttack, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.Attack));
                 AddRadioCheckedBinding(rbOverSleaze, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.Sleaze));
                 AddRadioCheckedBinding(rbOverDataProc, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.DataProcessing));
                 AddRadioCheckedBinding(rbOverFirewall, _logic, nameof(MatrixLogic.OverClocked), nameof(MatrixLogic.Firewall));
 
-                lAttackMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.AttackMod));
-                lSleazeMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.SleazeMod));
-                lDataProcMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.DataProcessingMod));
-                lFirewallMod.DoDataBinding("Text", _logic, nameof(MatrixLogic.FirewallMod));
+                lAttackMod.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.AttackMod));
+                lSleazeMod.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.SleazeMod));
+                lDataProcMod.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.DataProcessingMod));
+                lFirewallMod.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.FirewallMod));
 
-                lAttackRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalAttack));
-                lSleazeRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalSleaze));
-                lDataProcRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalDataProcessing));
-                lFirewallRes.DoDataBinding("Text", _logic, nameof(MatrixLogic.TotalFirewall));
+                lAttackRes.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.TotalAttack));
+                lSleazeRes.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.TotalSleaze));
+                lDataProcRes.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.TotalDataProcessing));
+                lFirewallRes.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.TotalFirewall));
                 //Action section
-                lSkillDescription.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Description));
-                lActionType.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Type));
-                lActionAttributeName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionAttribute));
-                lActionSkillName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionSkill));
-                lSkillLimitName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Limit));
-                lDefendAttributeName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceAttribute));
-                lDefendSkillName.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceSkill));
+                lSkillDescription.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Description));
+                lActionType.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Type));
+                lActionAttributeName.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionAttribute));
+                lActionSkillName.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionSkill));
+                lSkillLimitName.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Limit));
+                lDefendAttributeName.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceAttribute));
+                lDefendSkillName.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceSkill));
 
                 DoDataBindingWithFormatter(lActionAttributeValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionAttribute), new ConvertEventHandler(AttributeToValue));
                 DoDataBindingWithFormatter(lActionSkillValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionSkill), new ConvertEventHandler(SkillToValue));
                 DoDataBindingWithFormatter(lSkillLimitValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.Limit), new ConvertEventHandler(MatrixAttributeToValue));
                 DoDataBindingWithFormatter(lDefendAttributeValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceAttribute), new ConvertEventHandler(AttributeToValue));
                 DoDataBindingWithFormatter(lDefendSkillValue, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceSkill), new ConvertEventHandler(MatrixAttributeToValue));
-                lActionModifier.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionModifier));
-                lDefendModifier.DoDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceModifier));
-                dpcActionDicePool.DoDataBinding(nameof(DicePoolControl.DicePool), _logic, nameof(MatrixLogic.ActionDicePool));
-                dpcDefendDicePool.DoDataBinding(nameof(DicePoolControl.DicePool), _logic, nameof(MatrixLogic.DefenceDicePool));
+                lActionModifier.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.ActionModifier));
+                lDefendModifier.DoOneWayDataBinding("Text", _logic, nameof(MatrixLogic.CurrentAction) + "." + nameof(MatrixAction.DefenceModifier));
+                dpcActionDicePool.DoOneWayDataBinding(nameof(DicePoolControl.DicePool), _logic, nameof(MatrixLogic.ActionDicePool));
+                dpcDefendDicePool.DoOneWayDataBinding(nameof(DicePoolControl.DicePool), _logic, nameof(MatrixLogic.DefenceDicePool));
             }
         }
 

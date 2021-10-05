@@ -1,5 +1,6 @@
 
 using System.Windows.Forms;
+using Chummer;
 
 namespace MatrixPlugin
 {
@@ -77,14 +78,14 @@ namespace MatrixPlugin
             this.lActionSkillName = new System.Windows.Forms.Label();
             this.lActionAttributeValue = new System.Windows.Forms.Label();
             this.lActionAttributeName = new System.Windows.Forms.Label();
-            this.dpcDefendDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
-            this.dpcActionDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.cbActions = new System.Windows.Forms.ComboBox();
             this.gbModifier = new System.Windows.Forms.GroupBox();
             this.cSilent = new System.Windows.Forms.CheckBox();
             this.cHotVR = new System.Windows.Forms.CheckBox();
             this.nNoize = new System.Windows.Forms.NumericUpDown();
             this.lNoize = new System.Windows.Forms.Label();
+            this.dpcDefendDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
+            this.dpcActionDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.tabControl1.SuspendLayout();
             this.MatrixTabPage.SuspendLayout();
             this.gbAttributes.SuspendLayout();
@@ -100,8 +101,9 @@ namespace MatrixPlugin
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(985, 578);
+            this.tabControl1.Size = new System.Drawing.Size(985, 596);
             this.tabControl1.TabIndex = 0;
+            this.tabControl1.Tag = "";
             // 
             // MatrixTabPage
             // 
@@ -113,8 +115,9 @@ namespace MatrixPlugin
             this.MatrixTabPage.Controls.Add(this.gbModifier);
             this.MatrixTabPage.Location = new System.Drawing.Point(4, 22);
             this.MatrixTabPage.Name = "MatrixTabPage";
-            this.MatrixTabPage.Size = new System.Drawing.Size(977, 552);
+            this.MatrixTabPage.Size = new System.Drawing.Size(977, 570);
             this.MatrixTabPage.TabIndex = 0;
+            this.MatrixTabPage.Tag = "Tab_Matrix";
             this.MatrixTabPage.Text = "Matrix";
             // 
             // listCyberDecks
@@ -154,6 +157,7 @@ namespace MatrixPlugin
             this.gbAttributes.Size = new System.Drawing.Size(208, 148);
             this.gbAttributes.TabIndex = 0;
             this.gbAttributes.TabStop = false;
+            this.gbAttributes.Tag = "string_Attributes";
             this.gbAttributes.Text = "Attributes";
             // 
             // lFirewallMod
@@ -275,6 +279,7 @@ namespace MatrixPlugin
             this.lOverClocker.Name = "lOverClocker";
             this.lOverClocker.Size = new System.Drawing.Size(66, 13);
             this.lOverClocker.TabIndex = 8;
+            this.lOverClocker.Tag = "Label_Overclocker";
             this.lOverClocker.Text = "OverClocker";
             // 
             // lFirewall
@@ -284,6 +289,7 @@ namespace MatrixPlugin
             this.lFirewall.Name = "lFirewall";
             this.lFirewall.Size = new System.Drawing.Size(42, 13);
             this.lFirewall.TabIndex = 7;
+            this.lFirewall.Tag = "Label_Firewall";
             this.lFirewall.Text = "Firewall";
             // 
             // cbFirewall
@@ -303,6 +309,7 @@ namespace MatrixPlugin
             this.lDataProc.Name = "lDataProc";
             this.lDataProc.Size = new System.Drawing.Size(55, 13);
             this.lDataProc.TabIndex = 5;
+            this.lDataProc.Tag = "Label_DataProcessing";
             this.lDataProc.Text = "Data Proc";
             // 
             // cbDataProc
@@ -322,6 +329,7 @@ namespace MatrixPlugin
             this.lSleaze.Name = "lSleaze";
             this.lSleaze.Size = new System.Drawing.Size(39, 13);
             this.lSleaze.TabIndex = 3;
+            this.lSleaze.Tag = "Label_Sleaze";
             this.lSleaze.Text = "Sleaze";
             // 
             // cbSleaze
@@ -341,6 +349,7 @@ namespace MatrixPlugin
             this.lAttack.Name = "lAttack";
             this.lAttack.Size = new System.Drawing.Size(38, 13);
             this.lAttack.TabIndex = 1;
+            this.lAttack.Tag = "Label_Attack";
             this.lAttack.Text = "Attack";
             // 
             // cbAttack
@@ -355,16 +364,22 @@ namespace MatrixPlugin
             // 
             // gbSoftware
             // 
+            this.gbSoftware.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.gbSoftware.AutoSize = true;
             this.gbSoftware.Controls.Add(this.listSoftware);
             this.gbSoftware.Location = new System.Drawing.Point(7, 354);
             this.gbSoftware.Name = "gbSoftware";
-            this.gbSoftware.Size = new System.Drawing.Size(208, 188);
+            this.gbSoftware.Size = new System.Drawing.Size(208, 206);
             this.gbSoftware.TabIndex = 5;
             this.gbSoftware.TabStop = false;
-            this.gbSoftware.Text = "Software";
+            this.gbSoftware.Tag = "string_Programs";
+            this.gbSoftware.Text = "Programs";
             // 
             // listSoftware
             // 
+            this.listSoftware.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.listSoftware.FormattingEnabled = true;
             this.listSoftware.Location = new System.Drawing.Point(6, 19);
             this.listSoftware.Name = "listSoftware";
@@ -375,6 +390,8 @@ namespace MatrixPlugin
             // 
             // gbActions
             // 
+            this.gbActions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.gbActions.BackColor = System.Drawing.SystemColors.Control;
             this.gbActions.Controls.Add(this.lActionType);
             this.gbActions.Controls.Add(this.lDefendModifier);
@@ -397,11 +414,12 @@ namespace MatrixPlugin
             this.gbActions.Controls.Add(this.dpcDefendDicePool);
             this.gbActions.Controls.Add(this.dpcActionDicePool);
             this.gbActions.Controls.Add(this.cbActions);
-            this.gbActions.Location = new System.Drawing.Point(221, 200);
+            this.gbActions.Location = new System.Drawing.Point(227, 200);
             this.gbActions.Name = "gbActions";
-            this.gbActions.Size = new System.Drawing.Size(354, 342);
+            this.gbActions.Size = new System.Drawing.Size(354, 360);
             this.gbActions.TabIndex = 3;
             this.gbActions.TabStop = false;
+            this.gbActions.Tag = "string_Actions";
             this.gbActions.Text = "Actions";
             // 
             // lActionType
@@ -446,10 +464,14 @@ namespace MatrixPlugin
             // 
             // lSkillDescription
             // 
+            this.lSkillDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lSkillDescription.Location = new System.Drawing.Point(6, 219);
+            this.lSkillDescription.Margin = new System.Windows.Forms.Padding(3);
             this.lSkillDescription.Name = "lSkillDescription";
-            this.lSkillDescription.Size = new System.Drawing.Size(342, 108);
+            this.lSkillDescription.Size = new System.Drawing.Size(342, 135);
             this.lSkillDescription.TabIndex = 137;
+            this.lSkillDescription.Text = "[Description]";
             // 
             // lActionModifier
             // 
@@ -577,40 +599,6 @@ namespace MatrixPlugin
             this.lActionAttributeName.Text = "[name]";
             this.lActionAttributeName.TextChanged += new System.EventHandler(this.labelAction_TextChanged);
             // 
-            // dpcDefendDicePool
-            // 
-            this.dpcDefendDicePool.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.dpcDefendDicePool.AutoSize = true;
-            this.dpcDefendDicePool.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.dpcDefendDicePool.BackColor = System.Drawing.SystemColors.Control;
-            this.dpcDefendDicePool.CanBeRolled = true;
-            this.dpcDefendDicePool.CanEverBeRolled = true;
-            this.dpcDefendDicePool.DicePool = 0;
-            this.dpcDefendDicePool.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.dpcDefendDicePool.Location = new System.Drawing.Point(284, 143);
-            this.dpcDefendDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.dpcDefendDicePool.Name = "dpcDefendDicePool";
-            this.dpcDefendDicePool.Size = new System.Drawing.Size(64, 24);
-            this.dpcDefendDicePool.TabIndex = 123;
-            this.dpcDefendDicePool.ToolTipText = "";
-            // 
-            // dpcActionDicePool
-            // 
-            this.dpcActionDicePool.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.dpcActionDicePool.AutoSize = true;
-            this.dpcActionDicePool.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.dpcActionDicePool.BackColor = System.Drawing.SystemColors.Control;
-            this.dpcActionDicePool.CanBeRolled = true;
-            this.dpcActionDicePool.CanEverBeRolled = true;
-            this.dpcActionDicePool.DicePool = 0;
-            this.dpcActionDicePool.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.dpcActionDicePool.Location = new System.Drawing.Point(284, 70);
-            this.dpcActionDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.dpcActionDicePool.Name = "dpcActionDicePool";
-            this.dpcActionDicePool.Size = new System.Drawing.Size(64, 24);
-            this.dpcActionDicePool.TabIndex = 122;
-            this.dpcActionDicePool.ToolTipText = "";
-            // 
             // cbActions
             // 
             this.cbActions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -630,9 +618,10 @@ namespace MatrixPlugin
             this.gbModifier.Controls.Add(this.lNoize);
             this.gbModifier.Location = new System.Drawing.Point(227, 6);
             this.gbModifier.Name = "gbModifier";
-            this.gbModifier.Size = new System.Drawing.Size(348, 188);
+            this.gbModifier.Size = new System.Drawing.Size(354, 188);
             this.gbModifier.TabIndex = 4;
             this.gbModifier.TabStop = false;
+            this.gbModifier.Tag = "string_Modifiers";
             this.gbModifier.Text = "Modifiers";
             // 
             // cSilent
@@ -642,6 +631,7 @@ namespace MatrixPlugin
             this.cSilent.Name = "cSilent";
             this.cSilent.Size = new System.Drawing.Size(52, 17);
             this.cSilent.TabIndex = 3;
+            this.cSilent.Tag = "CheckBox_Silent";
             this.cSilent.Text = "Silent";
             this.cSilent.UseVisualStyleBackColor = true;
             this.cSilent.CheckedChanged += new System.EventHandler(this.ValueChanged);
@@ -653,6 +643,7 @@ namespace MatrixPlugin
             this.cHotVR.Name = "cHotVR";
             this.cHotVR.Size = new System.Drawing.Size(61, 17);
             this.cHotVR.TabIndex = 2;
+            this.cHotVR.Tag = "CheckBox_HotVR";
             this.cHotVR.Text = "Hot VR";
             this.cHotVR.UseVisualStyleBackColor = true;
             this.cHotVR.CheckedChanged += new System.EventHandler(this.ValueChanged);
@@ -677,7 +668,42 @@ namespace MatrixPlugin
             this.lNoize.Name = "lNoize";
             this.lNoize.Size = new System.Drawing.Size(34, 13);
             this.lNoize.TabIndex = 0;
+            this.lNoize.Tag = "Label_Noize";
             this.lNoize.Text = "Noize";
+            // 
+            // dpcDefendDicePool
+            // 
+            this.dpcDefendDicePool.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.dpcDefendDicePool.AutoSize = true;
+            this.dpcDefendDicePool.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.dpcDefendDicePool.BackColor = System.Drawing.SystemColors.Control;
+            this.dpcDefendDicePool.CanBeRolled = true;
+            this.dpcDefendDicePool.CanEverBeRolled = true;
+            this.dpcDefendDicePool.DicePool = 0;
+            this.dpcDefendDicePool.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.dpcDefendDicePool.Location = new System.Drawing.Point(284, 152);
+            this.dpcDefendDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.dpcDefendDicePool.Name = "dpcDefendDicePool";
+            this.dpcDefendDicePool.Size = new System.Drawing.Size(64, 24);
+            this.dpcDefendDicePool.TabIndex = 123;
+            this.dpcDefendDicePool.ToolTipText = "";
+            // 
+            // dpcActionDicePool
+            // 
+            this.dpcActionDicePool.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.dpcActionDicePool.AutoSize = true;
+            this.dpcActionDicePool.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.dpcActionDicePool.BackColor = System.Drawing.SystemColors.Control;
+            this.dpcActionDicePool.CanBeRolled = true;
+            this.dpcActionDicePool.CanEverBeRolled = true;
+            this.dpcActionDicePool.DicePool = 0;
+            this.dpcActionDicePool.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.dpcActionDicePool.Location = new System.Drawing.Point(284, 79);
+            this.dpcActionDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.dpcActionDicePool.Name = "dpcActionDicePool";
+            this.dpcActionDicePool.Size = new System.Drawing.Size(64, 24);
+            this.dpcActionDicePool.TabIndex = 122;
+            this.dpcActionDicePool.ToolTipText = "";
             // 
             // MatrixForm
             // 
@@ -689,6 +715,7 @@ namespace MatrixPlugin
             this.Text = "MatrixForm";
             this.tabControl1.ResumeLayout(false);
             this.MatrixTabPage.ResumeLayout(false);
+            this.MatrixTabPage.PerformLayout();
             this.gbAttributes.ResumeLayout(false);
             this.gbAttributes.PerformLayout();
             this.gbSoftware.ResumeLayout(false);

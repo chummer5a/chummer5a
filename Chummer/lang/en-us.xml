@@ -10457,5 +10457,39 @@
       <key>String_CapacityRemaining</key>
       <text>{0} ({1} remaining)</text>
     </string>
+    <!-- Region Matrix Action Plugin -->
+    <string>
+      <key>Tab_Matrix</key>
+      <text>Matrix</text>
+    </string>
+    <string>
+      <key>string_Attributes</key>
+      <text>Attributes</text>
+    </string>
+    <string>
+      <key>string_Programs</key>
+      <text>Programs</text>
+    </string>
+    <string>
+      <key>string_Modifiers</key>
+      <text>Programs</text>
+    </string>
+    <string>
+      <key>string_Actions</key>
+      <text>Programs</text>
+    </string>
+    <string>
+      <key>Label_Noize</key>
+      <text>Noize:</text>
+    </string>
+    <string>
+      <key>CheckBox_HotVR</key>
+      <text>Hot VR</text>
+    </string>
+    <string>
+      <key>CheckBox_Silent</key>
+      <text>Silent</text>
+    </string>
+    <!-- End Region -->
   </strings>
 </chummer>
