@@ -377,6 +377,7 @@
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
+    <Compile Include="Classes\XslManager.cs" />
     <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
     </Compile>
