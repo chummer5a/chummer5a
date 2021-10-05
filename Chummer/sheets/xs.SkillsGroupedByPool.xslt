@@ -7,7 +7,7 @@
   <xsl:include href="xt.SkillGroups.xslt" />
 
   <xsl:template name="skills1">
-    <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and total &gt; 0]) + count(skills/skillgroup)) div 2)" />
+    <xsl:variable name="skillcut" select="number(round((count(skills/skill[knowledge = 'False' and total &gt; 0]) + count(skills/skillgroup)) div 2))" />
     <xsl:variable name="sortedskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
@@ -38,7 +38,7 @@
   </xsl:template>
 
   <xsl:template name="skills2">
-    <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and total &gt; 0]) + count(skills/skillgroup)) div 2)" />
+    <xsl:variable name="skillcut" select="number(round((count(skills/skill[knowledge = 'False' and total &gt; 0]) + count(skills/skillgroup)) div 2))" />
     <xsl:variable name="sortedskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
@@ -96,7 +96,7 @@
         </xsl:for-each>
       </xsl:if>
     </xsl:variable>
-	<xsl:variable name="arelanguages" select="count(msxsl:node-set($sortedlanguageskills)/skill)" />
+	<xsl:variable name="arelanguages" select="number(count(msxsl:node-set($sortedlanguageskills)/skill))" />
     <xsl:variable name="sortedknowledgeskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">

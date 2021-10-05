@@ -107,8 +107,8 @@
     </script>
 
     <xsl:variable name="txt">
-      <xsl:variable name="t1" select="translate($text,'&#160;&#x9;&#xD;&#xA;&#8239;','&#x20;')" />
-      <xsl:variable name="t2" select="normalize-space($t1)" />
+      <xsl:variable name="t1" select="string(translate($text,'&#160;&#x9;&#xD;&#xA;&#8239;','&#x20;'))" />
+      <xsl:variable name="t2" select="string(normalize-space($t1))" />
       <xsl:choose>
         <xsl:when test="$t2 != ''">
           <xsl:value-of select="$t2" />
@@ -131,8 +131,8 @@
               <xsl:value-of select="$blockname" />
             </xsl:when>
             <xsl:otherwise>
-              <xsl:variable name="b1" select="translate($txt,'&#x20;&#160;&#x9;&#xD;&#xA;&#8239;&amp;/','')" />
-              <xsl:value-of select="concat($b1,'Block')" />
+              <xsl:variable name="b1" select="string(translate($txt,'&#x20;&#160;&#x9;&#xD;&#xA;&#8239;&amp;/',''))" />
+              <xsl:value-of select="string(concat($b1,'Block'))" />
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>

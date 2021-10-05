@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -41,6 +42,11 @@ namespace Chummer
     public partial class frmViewer : Form
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+
+        // Cache of compiled XSLTs to speed up repeated prints of the same character sheet
+        private static ConcurrentDictionary<string, XslCompiledTransform> s_dicCompiledTransforms
+            = new ConcurrentDictionary<string, XslCompiledTransform>();
+
         private List<Character> _lstCharacters = new List<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalSettings.DefaultCharacterSheet;
@@ -526,23 +532,29 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(this, strReturn);
                     return;
                 }
+
+                if (!s_dicCompiledTransforms.TryGetValue(strXslPath, out XslCompiledTransform objXslTransform))
+                {
 #if DEBUG
-                XslCompiledTransform objXslTransform = new XslCompiledTransform(true);
+                    objXslTransform = new XslCompiledTransform(true);
 #else
-                XslCompiledTransform objXslTransform = new XslCompiledTransform();
+                    objXslTransform = new XslCompiledTransform();
 #endif
-                try
-                {
-                    objXslTransform.Load(strXslPath);
-                }
-                catch (Exception ex)
-                {
-                    string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
-                    Log.Debug(strReturn);
-                    Log.Error("ERROR Message = " + ex.Message);
-                    strReturn += ex.Message;
-                    Program.MainForm.ShowMessageBox(this, strReturn);
-                    return;
+                    try
+                    {
+                        objXslTransform.Load(strXslPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
+                        Log.Debug(strReturn);
+                        Log.Error("ERROR Message = " + ex.Message);
+                        strReturn += ex.Message;
+                        Program.MainForm.ShowMessageBox(this, strReturn);
+                        return;
+                    }
+
+                    s_dicCompiledTransforms.TryAdd(strXslPath, objXslTransform);
                 }
 
                 if (_objOutputGeneratorCancellationTokenSource.IsCancellationRequested)
