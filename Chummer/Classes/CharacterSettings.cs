@@ -1139,7 +1139,7 @@ namespace Chummer
 
                 if (xmlLegacyCharacterNavigator == null)
                 {
-                    foreach (string strMruCharacterFile in GlobalSettings.FavoritedCharacters)
+                    foreach (string strMruCharacterFile in GlobalSettings.FavoriteCharacters)
                     {
                         XPathDocument objXmlDocument;
                         if (!File.Exists(strMruCharacterFile))

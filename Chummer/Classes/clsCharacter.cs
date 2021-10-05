@@ -20662,7 +20662,7 @@ namespace Chummer
                         GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
                         break;
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Remove(FilePath);
+                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
                         break;
                 }
             }
@@ -20849,7 +20849,7 @@ namespace Chummer
                         GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
                         break;
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Remove(FilePath);
+                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
                         break;
                 }
             }
