@@ -12900,12 +12900,30 @@ namespace Chummer
                 }
 
                 // Check if the character's Essence is above 0.
-                decimal decEss = CharacterObject.Essence();
-                decimal decMinEss = CharacterObjectSettings.DontRoundEssenceInternally ? 0 : 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals);
-                if (decEss < decMinEss && CharacterObject.ESS.MetatypeMaximum > 0)
+                if (CharacterObject.ESS.MetatypeMaximum > 0)
                 {
-                    blnValid = false;
-                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), decMinEss - decEss));
+                    decimal decEss = CharacterObject.Essence();
+                    decimal decExcessEss = 0.0m;
+                    // Need to split things up this way because without internal rounding, Essence can be as small as the player wants as long as it is positive
+                    // And getting the smallest positive number supported by the decimal type is way trickier than just checking if it's zero or negative
+                    if (CharacterObjectSettings.DontRoundEssenceInternally)
+                    {
+                        if (decEss < 0)
+                            decExcessEss = -decEss;
+                        else if (decEss == 0)
+                            decExcessEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals); // Hacky, but necessary so that the player knows they need to increase their ESS
+                    }
+                    else
+                    {
+                        decimal decMinEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals);
+                        if (decEss < decMinEss)
+                            decExcessEss = decMinEss - decEss;
+                    }
+                    if (decExcessEss > 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), decExcessEss));
+                    }
                 }
 
                 // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.

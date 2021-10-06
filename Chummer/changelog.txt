@@ -119,6 +119,7 @@ Application Changes:
 - Fixed Smartsoft behaviour for drone-controlled weapon dicepools not being properly calculated. 
 - Enemies as per 4th edition rules now need to be enabled through the House Rules tab in character settings. Settings for the amount of karma gained from enemies are now clearly delineated and grouped together in the House Rules tab. Fixes #1325.
 - Favorite characters are now always automatically sorted alphabetically by their file paths. Fixes #3853.
+- Having Chummer not round Essence internally no longer allows characters with exactly 0 Essence to be valid.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
