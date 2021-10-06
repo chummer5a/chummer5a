@@ -17625,6 +17625,13 @@
         </weapondetails>
       </forbidden>
       <rating>0</rating>
+      <required>
+        <oneof>
+          <accessory>Smartgun System, Internal</accessory>
+          <accessory>Smartgun System, External</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
+        </oneof>
+      </required>
     </accessory>
     <accessory>
       <id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
