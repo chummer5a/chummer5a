@@ -1396,7 +1396,7 @@
         </string>
         <string>
             <key>Message_InvalidAvail</key>
-            <text>noch {0} Gegenstände mit einer Verfügbarkeit höher als {1} erlaubt</text>
+            <text>{0} Gegenstände mit einer Verfügbarkeit höher als die erlaubt Verfügbarkeit {1}:</text>
         </string>
         <string>
             <key>MessageTitle_Invalid</key>
@@ -7939,7 +7939,7 @@
         </string>
         <string>
             <key>Message_RestrictedGearUsed</key>
-            <text>Eingeschränkte Ausrüstung wurde verwendet:\n{0}</text>
+            <text>Eingeschränkte Ausrüstung wurde verwendet:{0}</text>
         </string>
         <string>
             <key>Message_SelectQuality_RequireESSGradeAbove</key>

@@ -13001,20 +13001,6 @@ namespace Chummer
                     objCyberware.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
                 }
 
-                // Cyberware: Prototype Transhuman
-                decimal decPrototypeTranshumanEssenceMax = CharacterObject.PrototypeTranshuman;
-                if (decPrototypeTranshumanEssenceMax > 0)
-                {
-                    decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
-                    if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
-                    {
-                        blnValid = false;
-                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
-                            decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo),
-                            decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo)));
-                    }
-                }
-
                 // Armor Availability.
                 foreach (Armor objArmor in CharacterObject.Armor)
                 {
@@ -13040,12 +13026,13 @@ namespace Chummer
                     sbdMessage.Append(Environment.NewLine + '\t' + string.Format(
                                           GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidAvail"),
                                           intRestrictedCount,
-                                          CharacterObjectSettings.MaximumAvailability + sbdAvailItems.ToString()));
-                    if (sbdAvailItems.Length > 0)
+                                          CharacterObjectSettings.MaximumAvailability));
+                    sbdMessage.Append(sbdAvailItems.ToString());
+                    if (sbdRestrictedItems.Length > 0)
                     {
-                        sbdMessage.Append(string.Format(GlobalSettings.CultureInfo,
-                                                        LanguageManager.GetString("Message_RestrictedGearUsed"),
-                                                        sbdAvailItems.ToString().TrimStart(Environment.NewLine)));
+                        sbdMessage.Append(Environment.NewLine + string.Format(GlobalSettings.CultureInfo,
+                                                                              LanguageManager.GetString("Message_RestrictedGearUsed"),
+                                                                              sbdRestrictedItems.ToString()));
                     }
                 }
 
@@ -13075,6 +13062,20 @@ namespace Chummer
                 {
                     blnValid = false;
                     sbdMessage.Append(Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidCyberwareGrades") + sbdIllegalCyberwareFromGrade);
+                }
+
+                // Cyberware: Prototype Transhuman
+                decimal decPrototypeTranshumanEssenceMax = CharacterObject.PrototypeTranshuman;
+                if (decPrototypeTranshumanEssenceMax > 0)
+                {
+                    decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
+                    if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
+                    {
+                        blnValid = false;
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
+                                              decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo),
+                                              decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo)));
+                    }
                 }
 
                 // Check item Capacities if the option is enabled.
