@@ -6,5 +6,5 @@
   <xsl:import href="../Notes set.xslt" />
 
   <!-- Set global variables -->
-  <xsl:variable name="ProduceNotes" select="true()" />
+  <xsl:variable name="ProduceNotes" select="boolean(true())" />
 </xsl:stylesheet>

@@ -7,6 +7,6 @@
   <xsl:import href="../xs.SkillsGroupedAssorted.xslt" />
 
   <!-- Set global control variables -->
-  <xsl:variable name="CorePrint" select="true()" />
-  <xsl:variable name="PrintSkillCategoryNames" select="false()" />
+  <xsl:variable name="CorePrint" select="boolean(true())" />
+  <xsl:variable name="PrintSkillCategoryNames" select="boolean(false())" />
 </xsl:stylesheet>

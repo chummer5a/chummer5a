@@ -67,7 +67,7 @@ namespace Chummer
 
             DoDataBindings();
 
-            if (_objContact.EntityType == ContactType.Enemy)
+            if (_objContact.IsEnemy)
             {
                 if (cmdLink != null)
                     cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
@@ -346,7 +346,7 @@ namespace Chummer
                     return;
                 _objContact.FileName = openFileDialog.FileName;
                 if (cmdLink != null)
-                    cmdLink.ToolTipText = _objContact.EntityType == ContactType.Enemy
+                    cmdLink.ToolTipText = _objContact.IsEnemy
                         ? LanguageManager.GetString("Tip_Enemy_OpenFile")
                         : LanguageManager.GetString("Tip_Contact_OpenFile");
             }
@@ -367,7 +367,7 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = _objContact.EntityType == ContactType.Enemy
+                cmdLink.ToolTipText = _objContact.IsEnemy
                     ? LanguageManager.GetString("Tip_Enemy_LinkFile")
                     : LanguageManager.GetString("Tip_Contact_LinkFile");
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
@@ -384,7 +384,7 @@ namespace Chummer
                 _objContact.Notes = frmContactNotes.Notes;
             }
 
-            string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
+            string strTooltip = LanguageManager.GetString(_objContact.IsEnemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
             cmdNotes.ToolTipText = strTooltip.WordWrap();
@@ -458,7 +458,7 @@ namespace Chummer
 
         private void LoadContactList()
         {
-            if (_objContact.EntityType == ContactType.Enemy)
+            if (_objContact.IsEnemy)
             {
                 string strContactRole = _objContact.DisplayRole;
                 if (!string.IsNullOrEmpty(strContactRole))
@@ -618,15 +618,15 @@ namespace Chummer
                     //Don't present a useless field
                     chkFree.Visible = _objContact?.CharacterObject.Created == false;
                     chkFamily.DoDataBinding("Checked", _objContact, nameof(_objContact.Family));
-                    chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkFamily.DoOneWayNegatableDataBinding("Visible", _objContact, nameof(_objContact.IsEnemy));
                     chkBlackmail.DoDataBinding("Checked", _objContact, nameof(_objContact.Blackmail));
-                    chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkBlackmail.DoOneWayNegatableDataBinding("Visible", _objContact, nameof(_objContact.IsEnemy));
                     nudLoyalty.DoDataBinding("Value", _objContact, nameof(_objContact.Loyalty));
                     nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
                     nudConnection.DoDataBinding("Value", _objContact, nameof(_objContact.Connection));
                     nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
                     nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
-                    if (_objContact.EntityType == ContactType.Enemy)
+                    if (_objContact.IsEnemy)
                     {
                         cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
                             ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")

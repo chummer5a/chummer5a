@@ -7,5 +7,5 @@
   <xsl:import href="../xs.SkillsGroupedByPool.xslt" />
 
   <!-- Set global control variables -->
-  <xsl:variable name="PrintSkillCategoryNames" select="true()" />
+  <xsl:variable name="PrintSkillCategoryNames" select="boolean(true())" />
 </xsl:stylesheet>

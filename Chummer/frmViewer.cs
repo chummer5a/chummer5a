@@ -526,16 +526,37 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(this, strReturn);
                     return;
                 }
-#if DEBUG
-                XslCompiledTransform objXslTransform = new XslCompiledTransform(true);
-#else
-                XslCompiledTransform objXslTransform = new XslCompiledTransform();
-#endif
+
+                XslCompiledTransform objXslTransform;
                 try
                 {
-                    objXslTransform.Load(strXslPath);
+                    objXslTransform = XslManager.GetTransformForFile(strXslPath);
                 }
-                catch (Exception ex)
+                catch (ArgumentException)
+                {
+                    string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
+                                       Environment.NewLine;
+                    Log.Debug(strReturn);
+                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    return;
+                }
+                catch (PathTooLongException)
+                {
+                    string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
+                                       Environment.NewLine;
+                    Log.Debug(strReturn);
+                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    return;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
+                                       Environment.NewLine;
+                    Log.Debug(strReturn);
+                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    return;
+                }
+                catch (XsltException ex)
                 {
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
                     Log.Debug(strReturn);

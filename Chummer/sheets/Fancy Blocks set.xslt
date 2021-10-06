@@ -248,24 +248,24 @@
               <xsl:when test="count(qualities/quality) &gt; count(contacts/contact) or count(contacts/contact) &lt; 4">
                 <td class="fill66" colspan="2">
                   <xsl:call-template name="print_qualities">
-                    <xsl:with-param name="double_size" select="true()" />
+                    <xsl:with-param name="double_size" select="boolean(true())" />
                   </xsl:call-template>
                 </td>
                 <td class="fill33">
                   <xsl:call-template name="print_contacts">
-                    <xsl:with-param name="double_size" select="false()" />
+                    <xsl:with-param name="double_size" select="boolean(false())" />
                   </xsl:call-template>
                 </td>
               </xsl:when>
               <xsl:otherwise>
                 <td class="fill66" colspan="2">
                   <xsl:call-template name="print_contacts">
-                    <xsl:with-param name="double_size" select="true()" />
+                    <xsl:with-param name="double_size" select="boolean(true())" />
                   </xsl:call-template>
                 </td>
                 <td class="fill33">
                   <xsl:call-template name="print_qualities">
-                    <xsl:with-param name="double_size" select="false()" />
+                    <xsl:with-param name="double_size" select="boolean(false())" />
                   </xsl:call-template>
                 </td>
               </xsl:otherwise>
@@ -655,14 +655,14 @@
         <td style="width:50%;">
           <table style="width:100%; border-collapse: collapse;">
             <xsl:call-template name="print_half_active_skills">
-              <xsl:with-param name="condition" select="true()" />
+              <xsl:with-param name="condition" select="boolean(true())" />
             </xsl:call-template>
           </table>
         </td>
         <td style="width:50%;">
           <table style="width:100%; border-collapse: collapse;">
             <xsl:call-template name="print_half_active_skills">
-              <xsl:with-param name="condition" select="false()" />
+              <xsl:with-param name="condition" select="boolean(false())" />
             </xsl:call-template>
             <xsl:if test="(count(skills/skillgroup) &gt; 0)">
               <tr>
@@ -704,7 +704,7 @@
       </xsl:for-each>
     </xsl:variable>
 
-    <xsl:variable name="skills_half_count" select="ceiling((count(msxsl:node-set($sorted_skills)/skill) + count(skills/skillgroup)) div 2) + 1" />
+    <xsl:variable name="skills_half_count" select="number(ceiling((count(msxsl:node-set($sorted_skills)/skill) + count(skills/skillgroup)) div 2) + 1)" />
 
     <tr class="smallheader"><td><xsl:value-of select="$lang.Skill" /></td><td><xsl:value-of select="$lang.Rtg" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
     <xsl:for-each select="msxsl:node-set($sorted_skills)/skill">
@@ -879,7 +879,7 @@
                 <tr class="smallheader"><td><xsl:value-of select="$lang.Contact" /></td><td><xsl:value-of select="$lang.Location" /></td><td>C/L</td></tr>
                 <xsl:call-template name="print_half_contacts">
                   <xsl:with-param name="contacts" select="$sorted_contacts" />
-                  <xsl:with-param name="condition" select="true()" />
+                  <xsl:with-param name="condition" select="boolean(true())" />
                 </xsl:call-template>
               </table>
             </td>
@@ -888,7 +888,7 @@
                 <tr class="smallheader"><td><xsl:value-of select="$lang.Contact" /></td><td><xsl:value-of select="$lang.Location" /></td><td>C/L</td></tr>
                 <xsl:call-template name="print_half_contacts">
                   <xsl:with-param name="contacts" select="$sorted_contacts" />
-                  <xsl:with-param name="condition" select="false()" />
+                  <xsl:with-param name="condition" select="boolean(false())" />
                 </xsl:call-template>
               </table>
             </td>
@@ -899,11 +899,11 @@
           <tr class="smallheader"><td><xsl:value-of select="$lang.Contact" /></td><td><xsl:value-of select="$lang.Location" /></td><td>C/L</td></tr>
           <xsl:call-template name="print_half_contacts">
             <xsl:with-param name="contacts" select="$sorted_contacts" />
-            <xsl:with-param name="condition" select="true()" />
+            <xsl:with-param name="condition" select="boolean(true())" />
           </xsl:call-template>
           <xsl:call-template name="print_half_contacts">
             <xsl:with-param name="contacts" select="$sorted_contacts" />
-            <xsl:with-param name="condition" select="false()" />
+            <xsl:with-param name="condition" select="boolean(false())" />
           </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
@@ -914,7 +914,7 @@
     <xsl:param name="contacts" />
     <xsl:param name="condition" />
 
-    <xsl:variable name="half_count" select="ceiling(count(msxsl:node-set($contacts)/contact) div 2) + 1" />
+    <xsl:variable name="half_count" select="number(ceiling(count(msxsl:node-set($contacts)/contact) div 2) + 1)" />
 
     <xsl:for-each select="msxsl:node-set($contacts)/contact">
       <xsl:if test="(position() &lt; $half_count)=$condition">
@@ -931,7 +931,7 @@
           <tr>
             <xsl:call-template name="make_grey_lines" />
             <td colspan="3">
-              <xsl:call-template name="print_notes"><xsl:with-param name="linebreak" select="false()" /></xsl:call-template>
+              <xsl:call-template name="print_notes"><xsl:with-param name="linebreak" select="boolean(false())" /></xsl:call-template>
             </td>
           </tr>
         </xsl:if>
@@ -966,7 +966,7 @@
 
     <xsl:if test="count(msxsl:node-set($sorted_ranged)/*) &gt; 0  or  count(msxsl:node-set($sorted_ammunition)/*) &gt; 0">
 
-      <xsl:variable name="need_location" select="count(msxsl:node-set($sorted_ranged)/weapon[location!='']) &gt; 0" />
+      <xsl:variable name="need_location" select="boolean(count(msxsl:node-set($sorted_ranged)/weapon[location!='']) &gt; 0)" />
 
       <table class="stats armory">
         <tr><td colspan="8"><div class="bigheader">[<xsl:value-of select="$lang.RangedWeapons" />]</div></td></tr>
@@ -1010,7 +1010,7 @@
   </xsl:template>
 
   <xsl:template name="print_ranged_weapon_stats">
-    <xsl:param name="is_mount" select="false()" />
+    <xsl:param name="is_mount" select="boolean(false())" />
 
     <tr>
       <xsl:if test="$is_mount">
@@ -1122,7 +1122,7 @@
       </xsl:for-each>
     </xsl:variable>
 
-    <xsl:variable name="need_location" select="count(msxsl:node-set($sorted_melee)/weapon[location!='']) &gt; 0" />
+    <xsl:variable name="need_location" select="boolean(count(msxsl:node-set($sorted_melee)/weapon[location!='']) &gt; 0)" />
 
     <table class="stats armory">
       <tr><td colspan="6"><div class="bigheader">[<xsl:value-of select="$lang.MeleeWeapons" />]</div></td></tr>
@@ -1143,7 +1143,7 @@
   </xsl:template>
 
   <xsl:template name="print_melee_weapon_stats">
-    <xsl:param name="is_mount" select="false()" />
+    <xsl:param name="is_mount" select="boolean(false())" />
 
     <tr>
       <xsl:if test="$is_mount">
@@ -1182,7 +1182,7 @@
       </xsl:for-each>
     </xsl:variable>
 
-    <xsl:variable name="need_location" select="count(msxsl:node-set($sorted_armor)/armor[location!='']) &gt; 0" />
+    <xsl:variable name="need_location" select="boolean(count(msxsl:node-set($sorted_armor)/armor[location!='']) &gt; 0)" />
 
     <table class="stats armory">
       <tr><td colspan="3"><div class="bigheader">[<xsl:value-of select="$lang.Armor" />]</div></td></tr>
@@ -1325,7 +1325,7 @@
                     <xsl:sort select="name" />
 
                     <xsl:call-template name="print_ranged_weapon_stats">
-                      <xsl:with-param name="is_mount" select="true()" />
+                      <xsl:with-param name="is_mount" select="boolean(true())" />
                     </xsl:call-template>
                   </xsl:for-each>
                 </table>
@@ -1342,7 +1342,7 @@
                     <xsl:sort select="name" />
 
                     <xsl:call-template name="print_melee_weapon_stats">
-                      <xsl:with-param name="is_mount" select="true()" />
+                      <xsl:with-param name="is_mount" select="boolean(true())" />
                     </xsl:call-template>
                   </xsl:for-each>
                 </table>
@@ -1498,7 +1498,7 @@
     <xsl:if test="notes!=''">
       <tr>
         <td colspan="5">
-          <xsl:call-template name="print_notes"><xsl:with-param name="linebreak" select="false()" /></xsl:call-template>
+          <xsl:call-template name="print_notes"><xsl:with-param name="linebreak" select="boolean(false())" /></xsl:call-template>
         </td>
       </tr>
     </xsl:if>
@@ -1507,7 +1507,7 @@
         <ul>
           <xsl:call-template name="print_matrix_device_nested_list_by_half">
             <xsl:with-param name="list" select="$sorted_everything" />
-            <xsl:with-param name="condition" select="true()" />
+            <xsl:with-param name="condition" select="boolean(true())" />
           </xsl:call-template>
         </ul>
       </td>
@@ -1515,7 +1515,7 @@
         <ul>
           <xsl:call-template name="print_matrix_device_nested_list_by_half">
             <xsl:with-param name="list" select="$sorted_everything" />
-            <xsl:with-param name="condition" select="false()" />
+            <xsl:with-param name="condition" select="boolean(false())" />
           </xsl:call-template>
         </ul>
       </td>
@@ -1526,7 +1526,7 @@
     <xsl:param name="list" />
     <xsl:param name="condition" />
 
-    <xsl:variable name="list_half_count" select="ceiling(count(msxsl:node-set($list)/*) div 2) + 1" />
+    <xsl:variable name="list_half_count" select="number(ceiling(count(msxsl:node-set($list)/*) div 2) + 1)" />
 
     <xsl:for-each select="msxsl:node-set($list)/*">
       <xsl:if test="(position() &lt; $list_half_count)=$condition">
@@ -2029,13 +2029,13 @@
         <td style="width:50%;">
           <xsl:call-template name="print_half_gear">
             <xsl:with-param name="gear_list" select="$other_gears" />
-            <xsl:with-param name="condition" select="true()" />
+            <xsl:with-param name="condition" select="boolean(true())" />
           </xsl:call-template>
         </td>
         <td style="width:50%;">
           <xsl:call-template name="print_half_gear">
             <xsl:with-param name="gear_list" select="$other_gears" />
-            <xsl:with-param name="condition" select="false()" />
+            <xsl:with-param name="condition" select="boolean(false())" />
           </xsl:call-template>
         </td>
       </tr>
@@ -2046,9 +2046,9 @@
     <xsl:param name="gear_list" />
     <xsl:param name="condition" />
 
-    <xsl:variable name="gears_half_count" select="ceiling(count(msxsl:node-set($gear_list)/gear) div 2) + 1" />
-    <xsl:variable name="need_location" select="count(msxsl:node-set($gear_list)/gear[location!='']) &gt; 0" />
-    <xsl:variable name="need_equip_mark" select="count(msxsl:node-set($gear_list)/gear[equipped='False']) &gt; 0" />
+    <xsl:variable name="gears_half_count" select="number(ceiling(count(msxsl:node-set($gear_list)/gear) div 2) + 1)" />
+    <xsl:variable name="need_location" select="boolean(count(msxsl:node-set($gear_list)/gear[location!='']) &gt; 0)" />
+    <xsl:variable name="need_equip_mark" select="boolean(count(msxsl:node-set($gear_list)/gear[equipped='False']) &gt; 0)" />
 
     <ul style="margin-left:0px;">
       <xsl:for-each select="msxsl:node-set($gear_list)/gear">
@@ -2250,9 +2250,9 @@
   </xsl:template>
 
   <xsl:template name="print_nested">
-    <xsl:param name="need_equip_mark" select="false()" />
+    <xsl:param name="need_equip_mark" select="boolean(false())" />
 
-    <xsl:variable name="is_long_extra" select="name_english='Custom Fit (Stack)'" />
+    <xsl:variable name="is_long_extra" select="boolean(name_english='Custom Fit (Stack)')" />
 
     <span>
       <xsl:if test="included and included='True'">
@@ -2283,7 +2283,7 @@
     </span>
 
     <xsl:if test="count(children/gear) &gt; 0">
-      <xsl:variable name="child_need_equip_mark" select="count(children/gear[equipped='False']) &gt; 0" />
+      <xsl:variable name="child_need_equip_mark" select="boolean(count(children/gear[equipped='False']) &gt; 0)" />
       <ul>
         <xsl:for-each select="children/gear">
           <xsl:sort select="name" />
@@ -2305,7 +2305,7 @@
   </xsl:template>
 
   <xsl:template name="print_notes">
-    <xsl:param name="linebreak" select="true()" />
+    <xsl:param name="linebreak" select="boolean(true())" />
 
     <xsl:if test="notes!=''">
       <xsl:if test="$linebreak">

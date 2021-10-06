@@ -218,7 +218,7 @@ namespace Chummer
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            List<string> lstFavorites = blnRefreshFavorites ? GlobalSettings.FavoritedCharacters.ToList() : new List<string>();
+            List<string> lstFavorites = blnRefreshFavorites ? GlobalSettings.FavoriteCharacters.ToList() : new List<string>();
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
             if (objFavoriteNode == null && blnRefreshFavorites)
@@ -838,12 +838,12 @@ namespace Chummer
                         switch (strDestinationNode)
                         {
                             case "Recent":
-                                GlobalSettings.FavoritedCharacters.Remove(objCache.FilePath);
+                                GlobalSettings.FavoriteCharacters.Remove(objCache.FilePath);
                                 GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                                 break;
 
                             case "Favorite":
-                                GlobalSettings.FavoritedCharacters.Add(objCache.FilePath);
+                                GlobalSettings.FavoriteCharacters.AddWithSort(objCache.FilePath);
                                 break;
                         }
                     }
@@ -911,7 +911,7 @@ namespace Chummer
                         break;
 
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Sort();
+                        GlobalSettings.FavoriteCharacters.Sort();
                         break;
                 }
             }
@@ -924,7 +924,7 @@ namespace Chummer
                         break;
 
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Sort();
+                        GlobalSettings.FavoriteCharacters.Sort();
                         break;
                 }
             }
@@ -940,12 +940,12 @@ namespace Chummer
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Remove(objCache.FilePath);
+                        GlobalSettings.FavoriteCharacters.Remove(objCache.FilePath);
                         GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                         break;
 
                     default:
-                        GlobalSettings.FavoritedCharacters.Add(objCache.FilePath);
+                        GlobalSettings.FavoriteCharacters.AddWithSort(objCache.FilePath);
                         break;
                 }
                 treCharacterList.SelectedNode = t;

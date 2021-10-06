@@ -83,7 +83,7 @@ namespace Chummer
             List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
             foreach (KeyValuePair<string, CharacterSettings> objLoopOptions in SettingsManager.LoadedCharacterSettings)
             {
-                lstCharacterSettings.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
+                lstCharacterSettings.Add(new ListItem(objLoopOptions.Key, objLoopOptions.Value.DisplayName));
             }
             lstCharacterSettings.Sort(CompareListItems.CompareNames);
 

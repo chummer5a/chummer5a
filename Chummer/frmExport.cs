@@ -29,12 +29,14 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
 using Newtonsoft.Json;
+using NLog;
 using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Chummer
 {
     public partial class frmExport : Form
     {
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
         private readonly ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>>();
         private CancellationTokenSource _objCharacterXmlGeneratorCancellationTokenSource;
@@ -281,11 +283,49 @@ namespace Chummer
                 try
                 {
                     string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
+                    
+                    XslCompiledTransform objXslTransform;
+                    try
+                    {
+                        objXslTransform = XslManager.GetTransformForFile(exportSheetPath); // Use the path for the export sheet.
+                    }
+                    catch (ArgumentException)
+                    {
+                        string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
+                                           Environment.NewLine;
+                        Log.Debug(strReturn);
+                        SetTextToWorkerResult(strReturn);
+                        return;
+                    }
+                    catch (PathTooLongException)
+                    {
+                        string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
+                                           Environment.NewLine;
+                        Log.Debug(strReturn);
+                        SetTextToWorkerResult(strReturn);
+                        return;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
+                                           Environment.NewLine;
+                        Log.Debug(strReturn);
+                        SetTextToWorkerResult(strReturn);
+                        return;
+                    }
+                    catch (XsltException ex)
+                    {
+                        string strReturn = "Error attempting to load " + _strXslt + Environment.NewLine;
+                        Log.Debug(strReturn);
+                        Log.Error("ERROR Message = " + ex.Message);
+                        strReturn += ex.Message;
+                        SetTextToWorkerResult(strReturn);
+                        return;
+                    }
 
-                    XslCompiledTransform objXslTransform = new XslCompiledTransform();
-                    objXslTransform.Load(exportSheetPath); // Use the path for the export sheet.
                     if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
                         return;
+
                     XmlWriterSettings objSettings = objXslTransform.OutputSettings.Clone();
                     objSettings.CheckCharacters = false;
                     objSettings.ConformanceLevel = ConformanceLevel.Fragment;

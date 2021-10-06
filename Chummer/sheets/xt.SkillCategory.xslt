@@ -3,7 +3,7 @@
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template name="skillcategorytitle">
-      <xsl:param name="mindthegap" select="false()" />
+      <xsl:param name="mindthegap" select="boolean(false())" />
 
       <xsl:if test="$PrintSkillCategoryNames">
         <xsl:choose>
