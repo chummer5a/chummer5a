@@ -1382,7 +1382,7 @@ namespace Chummer
                                     xmlSkill.InnerText.CleanXPath() + "]");
                             if (objXmlSkillNode != null)
                             {
-                                KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this) as KnowledgeSkill;
+                                KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this, true) as KnowledgeSkill;
                                 SkillsSection.KnowledgeSkills.Add(objSkill);
                             }
                             else
