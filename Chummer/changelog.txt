@@ -173,6 +173,7 @@ Data Changes:
 - Innate Spell critter power now enables the Magician/Spells and Spirits tab.
 - Cyberware Silencer, Laser Sight, Overclocked, and External Clip Port now add accessories to their parent cyberweapons.
 - Adepts can no longer choose skills from the Sorcery, Conjuring, or Enchanting skill groups for their free skill ranks from their priority entries at character creation.
+- Added addspirit bonus for Spirit Expansion: UMT and Spirit Expansion: Shedim metamagics.
 
 Changed/New Strings:
 - String_ContactPoints
