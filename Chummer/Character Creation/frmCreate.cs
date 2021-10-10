@@ -12900,12 +12900,30 @@ namespace Chummer
                 }
 
                 // Check if the character's Essence is above 0.
-                decimal decEss = CharacterObject.Essence();
-                decimal decMinEss = CharacterObjectSettings.DontRoundEssenceInternally ? 0 : 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals);
-                if (decEss < decMinEss && CharacterObject.ESS.MetatypeMaximum > 0)
+                if (CharacterObject.ESS.MetatypeMaximum > 0)
                 {
-                    blnValid = false;
-                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), decMinEss - decEss));
+                    decimal decEss = CharacterObject.Essence();
+                    decimal decExcessEss = 0.0m;
+                    // Need to split things up this way because without internal rounding, Essence can be as small as the player wants as long as it is positive
+                    // And getting the smallest positive number supported by the decimal type is way trickier than just checking if it's zero or negative
+                    if (CharacterObjectSettings.DontRoundEssenceInternally)
+                    {
+                        if (decEss < 0)
+                            decExcessEss = -decEss;
+                        else if (decEss == 0)
+                            decExcessEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals); // Hacky, but necessary so that the player knows they need to increase their ESS
+                    }
+                    else
+                    {
+                        decimal decMinEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals);
+                        if (decEss < decMinEss)
+                            decExcessEss = decMinEss - decEss;
+                    }
+                    if (decExcessEss > 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), decExcessEss));
+                    }
                 }
 
                 // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
@@ -12983,20 +13001,6 @@ namespace Chummer
                     objCyberware.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
                 }
 
-                // Cyberware: Prototype Transhuman
-                decimal decPrototypeTranshumanEssenceMax = CharacterObject.PrototypeTranshuman;
-                if (decPrototypeTranshumanEssenceMax > 0)
-                {
-                    decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
-                    if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
-                    {
-                        blnValid = false;
-                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
-                            decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo),
-                            decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo)));
-                    }
-                }
-
                 // Armor Availability.
                 foreach (Armor objArmor in CharacterObject.Armor)
                 {
@@ -13022,12 +13026,13 @@ namespace Chummer
                     sbdMessage.Append(Environment.NewLine + '\t' + string.Format(
                                           GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidAvail"),
                                           intRestrictedCount,
-                                          CharacterObjectSettings.MaximumAvailability + sbdAvailItems.ToString()));
-                    if (sbdAvailItems.Length > 0)
+                                          CharacterObjectSettings.MaximumAvailability));
+                    sbdMessage.Append(sbdAvailItems.ToString());
+                    if (sbdRestrictedItems.Length > 0)
                     {
-                        sbdMessage.Append(string.Format(GlobalSettings.CultureInfo,
-                                                        LanguageManager.GetString("Message_RestrictedGearUsed"),
-                                                        sbdAvailItems.ToString().TrimStart(Environment.NewLine)));
+                        sbdMessage.Append(Environment.NewLine + string.Format(GlobalSettings.CultureInfo,
+                                                                              LanguageManager.GetString("Message_RestrictedGearUsed"),
+                                                                              sbdRestrictedItems.ToString()));
                     }
                 }
 
@@ -13057,6 +13062,20 @@ namespace Chummer
                 {
                     blnValid = false;
                     sbdMessage.Append(Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidCyberwareGrades") + sbdIllegalCyberwareFromGrade);
+                }
+
+                // Cyberware: Prototype Transhuman
+                decimal decPrototypeTranshumanEssenceMax = CharacterObject.PrototypeTranshuman;
+                if (decPrototypeTranshumanEssenceMax > 0)
+                {
+                    decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
+                    if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
+                    {
+                        blnValid = false;
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
+                                              decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo),
+                                              decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat, GlobalSettings.CultureInfo)));
+                    }
                 }
 
                 // Check item Capacities if the option is enabled.

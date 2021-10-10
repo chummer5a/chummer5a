@@ -1564,7 +1564,7 @@
         </string>
         <string>
             <key>Message_InvalidAvail</key>
-            <text>入手値が上限の{1} を超過している {0} 個のアイテムがあります</text>
+            <text>入手値が上限の{1} を超過している {0} 個のアイテムがあります:</text>
         </string>
         <string>
             <key>MessageTitle_Invalid</key>
@@ -7270,7 +7270,7 @@
         </string>
         <string>
             <key>Message_RestrictedGearUsed</key>
-            <text>Restricted Gear was used on:\n{0}</text>
+            <text>Restricted Gear was used on:{0}</text>
         </string>
         <string>
             <key>Message_InvalidCyberwareGrades</key>

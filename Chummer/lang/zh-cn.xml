@@ -1590,7 +1590,7 @@
         </string>
         <string>
             <key>Message_InvalidAvail</key>
-            <text>{0}个装备的可获得性高于上限{1}。</text>
+            <text>{0}个装备的可获得性高于上限{1}：</text>
         </string>
         <string>
             <key>MessageTitle_Invalid</key>
@@ -7926,7 +7926,7 @@
         </string>
         <string>
             <key>Message_RestrictedGearUsed</key>
-            <text>「限制装备」应用于：\n{0}</text>
+            <text>「限制装备」应用于：{0}</text>
         </string>
         <string>
             <key>Label_Size</key>

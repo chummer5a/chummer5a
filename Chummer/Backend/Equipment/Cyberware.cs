@@ -4663,6 +4663,9 @@ namespace Chummer.Backend.Equipment
                                             CurrentDisplayName, LanguageManager.GetString("String_Space"),
                                             Parent.CurrentDisplayName);
 
+                        if (Grade.Avail != 0)
+                            strNameToUse += LanguageManager.GetString("String_Space") + '(' + Grade.CurrentDisplayName + ')';
+
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
