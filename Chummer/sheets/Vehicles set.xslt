@@ -15,7 +15,7 @@
   <xsl:include href="xt.RuleLine.xslt" />
 
 <!-- Set local control variables if global versions have not already been defined  -->
-  <xsl:variable name="ProduceNotes" select="true()" />
+  <xsl:variable name="ProduceNotes" select="boolean(true())" />
 <!-- End of setting local control variables to default local values  -->
 
   <xsl:template match="/characters/character">

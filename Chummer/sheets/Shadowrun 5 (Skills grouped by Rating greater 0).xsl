@@ -7,6 +7,6 @@
   <xsl:import href="xs.SkillsGroupedByRating.xslt" />
 
   <!-- Set global control variables -->
-  <xsl:variable name="MinimumRating" select="1" />
-  <xsl:variable name="PrintSkillCategoryNames" select="false()" />
+  <xsl:variable name="MinimumRating" select="number(1)" />
+  <xsl:variable name="PrintSkillCategoryNames" select="boolean(false())" />
 </xsl:stylesheet>

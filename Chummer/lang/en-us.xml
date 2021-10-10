@@ -2756,11 +2756,11 @@
     </string>
     <string>
       <key>Message_InvalidAvail</key>
-      <text>{0} more items with Avail higher than {1} than allowed</text>
+      <text>{0} item(s) with Avail higher than the allowed availability of {1}:</text>
     </string>
     <string>
       <key>Message_RestrictedGearUsed</key>
-      <text>Restricted Gear was used on:\n{0}</text>
+      <text>Restricted Gear was used on:{0}</text>
     </string>
     <string>
       <key>Message_InvalidCyberwareGrades</key>
@@ -5848,8 +5848,20 @@
       <text>Compensate for higher karma costs when raising the rating of the last skill in a skill group</text>
     </string>
     <string>
+      <key>Label_CharacterOptions_4eAdaptations</key>
+      <text>4th Edition Adaptations</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_Enable4eStyleEnemyTracking</key>
+      <text>Use 4th Edition Rules for Enemies as a Contact type</text>
+    </string>
+    <string>
+      <key>Label_Options_KarmaGainedFromEnemies</key>
+      <text>Karma gain from Enemies</text>
+    </string>
+    <string>
       <key>Checkbox_Options_EnemyKarmaQualityLimit</key>
-      <text>Karma spent on enemies counts towards negative Quality limit in create mode</text>
+      <text>Karma gained from Enemies counts towards Negative Quality limit in Create mode</text>
     </string>
     <string>
       <key>Checkbox_Options_EnablePlugins</key>

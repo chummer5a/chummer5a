@@ -328,7 +328,14 @@ namespace Chummer.Backend.Skills
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
                     ?? xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
 
-                objSkill = FromData(xmlSkillDataNode, objCharacter);
+                bool blnIsKnowledgeSkill = xmlSkillDataNode != null
+                                           && xmlSkillsDocument
+                                              .SelectSingleNode(
+                                                  "/chummer/categories/category[. = "
+                                                  + xmlSkillDataNode["category"]?.InnerText.CleanXPath() + "]/@type")
+                                              ?.Value != "active";
+
+                objSkill = FromData(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill);
                 objSkill._intBase = intBaseRating;
                 objSkill._intKarma = intKarmaRating;
 
@@ -394,7 +401,7 @@ namespace Chummer.Backend.Skills
             }
             else
             {
-                objSkill = FromData(xmlSkillDataNode, objCharacter);
+                objSkill = FromData(xmlSkillDataNode, objCharacter, false);
                 if (xmlSkillNode.SelectSingleNode("@fromgroup")?.Value == "yes")
                 {
                     intKarmaRating -= objSkill.SkillGroupObject.Karma;
@@ -437,7 +444,7 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-        protected static Dictionary<string, bool> SkillTypeCache { get; } = new Dictionary<string, bool>();
+
         //TODO CACHE INVALIDATE
 
         /// <summary>
@@ -445,8 +452,9 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="xmlNode">The XML node describing the skill</param>
         /// <param name="character">The character the skill belongs to</param>
+        /// <param name="blnIsKnowledgeSkill">Whether or not this skill is a knowledge skill.</param>
         /// <returns></returns>
-        public static Skill FromData(XmlNode xmlNode, Character character)
+        public static Skill FromData(XmlNode xmlNode, Character character, bool blnIsKnowledgeSkill)
         {
             if (xmlNode == null)
                 return null;
@@ -457,34 +465,18 @@ namespace Chummer.Backend.Skills
                 ExoticSkill objExoticSkill = new ExoticSkill(character, xmlNode);
                 objSkill = objExoticSkill;
             }
+            else if (blnIsKnowledgeSkill)
+            {
+                //TODO INIT SKILL
+                Utils.BreakIfDebug();
+
+                objSkill = new KnowledgeSkill(character);
+            }
             else
             {
-                string category = xmlNode["category"]?.InnerText;
-                if (string.IsNullOrEmpty(category))
-                    return null;
-                if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
-                {
-                    blnIsKnowledgeSkill =
-                        character.LoadDataXPath("skills.xml")
-                            .SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")
-                            ?.Value != "active";
-                    if (SkillTypeCache != null)
-                        SkillTypeCache[category] = blnIsKnowledgeSkill;
-                }
+                //TODO INIT SKILL
 
-                if (blnIsKnowledgeSkill)
-                {
-                    //TODO INIT SKILL
-                    Utils.BreakIfDebug();
-
-                    objSkill = new KnowledgeSkill(character);
-                }
-                else
-                {
-                    //TODO INIT SKILL
-
-                    objSkill = new Skill(character, xmlNode);
-                }
+                objSkill = new Skill(character, xmlNode);
             }
 
             return objSkill;

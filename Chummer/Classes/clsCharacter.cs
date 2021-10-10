@@ -546,6 +546,7 @@ namespace Chummer
                 case nameof(CharacterSettings.ExceedNegativeQualitiesLimit):
                     OnPropertyChanged(nameof(NegativeQualityKarma));
                     break;
+                case nameof(CharacterSettings.EnableEnemyTracking):
                 case nameof(CharacterSettings.KarmaEnemy):
                     OnPropertyChanged(nameof(EnemyKarma));
                     break;
@@ -1381,7 +1382,7 @@ namespace Chummer
                                     xmlSkill.InnerText.CleanXPath() + "]");
                             if (objXmlSkillNode != null)
                             {
-                                KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this) as KnowledgeSkill;
+                                KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this, true) as KnowledgeSkill;
                                 SkillsSection.KnowledgeSkills.Add(objSkill);
                             }
                             else
@@ -20331,14 +20332,13 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedEnemyKarma == int.MinValue)
-                {
-                    _intCachedEnemyKarma = Contacts
-                        .Where(x => x.EntityType == ContactType.Enemy && !x.Free)
-                        .Sum(x => (x.Connection + x.Loyalty) * Settings.KarmaEnemy);
-                }
-
-                return _intCachedEnemyKarma;
+                if (_intCachedEnemyKarma != int.MinValue)
+                    return _intCachedEnemyKarma;
+                if (Settings.EnableEnemyTracking && Settings.KarmaEnemy > 0)
+                    return _intCachedEnemyKarma = Contacts
+                                           .Where(x => x.IsEnemy && !x.Free)
+                                           .Sum(x => (x.Connection + x.Loyalty) * Settings.KarmaEnemy);
+                return _intCachedEnemyKarma = 0;
             }
         }
 
@@ -20662,7 +20662,7 @@ namespace Chummer
                         GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
                         break;
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Remove(FilePath);
+                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
                         break;
                 }
             }
@@ -20849,7 +20849,7 @@ namespace Chummer
                         GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
                         break;
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Remove(FilePath);
+                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
                         break;
                 }
             }

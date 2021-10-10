@@ -2204,11 +2204,11 @@
     </string>
     <string>
       <key>Message_InvalidAvail</key>
-      <text>{0} itens mais com Disponibilidade maior que {1} do que o permitido</text>
+      <text>{0} itens mais com Disponibilidade maior que o permitido {1}:</text>
     </string>
     <string>
       <key>Message_RestrictedGearUsed</key>
-      <text>Equipamento Restrito foi usado em:\n{0}</text>
+      <text>Equipamento Restrito foi usado em:{0}</text>
     </string>
     <string>
       <key>Message_InvalidCyberwareGrades</key>

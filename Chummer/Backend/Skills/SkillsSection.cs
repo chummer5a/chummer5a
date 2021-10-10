@@ -498,7 +498,7 @@ namespace Chummer.Backend.Skills
                     XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
                     if (objXmlSkillNode != null)
                     {
-                        Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter);
+                        Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter, false);
                         Skills.Add(objSkill);
                     }
                 }
@@ -1114,7 +1114,8 @@ namespace Chummer.Backend.Skills
             //TODO less retarded way please
             // Load the Skills information.
             // Populate the Skills list.
-            using (XmlNodeList xmlSkillList = _objCharacter.LoadData("skills.xml")
+            XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
+            using (XmlNodeList xmlSkillList = xmlSkillsDocument
                 .SelectNodes(string.Format(GlobalSettings.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
                     _objCharacter.Settings.BookXPath(), SkillFilter(filter, strName))))
             {
@@ -1138,12 +1139,22 @@ namespace Chummer.Backend.Skills
                             }
                             else
                             {
-                                dicSkills.Add(objSkillItem, Skill.FromData(xmlSkill, _objCharacter));
+                                bool blnIsKnowledgeSkill
+                                    = xmlSkillsDocument
+                                      .SelectSingleNode("/chummer/categories/category[. = "
+                                                        + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")
+                                      ?.Value != "active";
+                                dicSkills.Add(objSkillItem, Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
                             }
                         }
                         else
                         {
-                            Skill objSkill = Skill.FromData(xmlSkill, _objCharacter);
+                            bool blnIsKnowledgeSkill
+                                = xmlSkillsDocument
+                                  .SelectSingleNode("/chummer/categories/category[. = "
+                                                    + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")?.Value
+                                  != "active";
+                            Skill objSkill = Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
                             dicSkills.Add(objSkillItem, objSkill);
                         }
                     }

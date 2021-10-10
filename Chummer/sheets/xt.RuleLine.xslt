@@ -21,7 +21,7 @@
 -->
   <xsl:template name="Xline">
       <xsl:param name="cntl" select="'1'" />
-      <xsl:param name="nte" select="false()" />
+      <xsl:param name="nte" select="boolean(false())" />
       <xsl:param name="height" select="'L'" />
 
     <xsl:variable name="ht">

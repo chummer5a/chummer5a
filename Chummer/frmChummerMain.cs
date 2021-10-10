@@ -243,9 +243,9 @@ namespace Chummer
 
                                 if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                 {
+                                    // Always process newest autosave if all MRUs are empty
                                     bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                               GlobalSettings.FavoritedCharacters.Count ==
-                                                               0; // Always process newest autosave if all MRUs are empty
+                                                               GlobalSettings.FavoriteCharacters.Count == 0; 
                                     FileInfo objMostRecentAutosave = null;
                                     List<string> lstOldAutosaves = new List<string>();
                                     DateTime objOldAutosaveTimeThreshold =
@@ -273,7 +273,7 @@ namespace Chummer
                                             objMostRecentAutosave = objAutosave;
                                         if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
                                                 Path.GetFileName(x) == objAutosave.Name) ||
-                                            GlobalSettings.FavoritedCharacters.Any(x =>
+                                            GlobalSettings.FavoriteCharacters.Any(x =>
                                                 Path.GetFileName(x) == objAutosave.Name))
                                             blnAnyAutosaveInMru = true;
                                         else if (objAutosave != objMostRecentAutosave &&
@@ -289,7 +289,7 @@ namespace Chummer
                                             !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
                                             GlobalSettings.MostRecentlyUsedCharacters.All(x =>
                                                 Path.GetFileName(x) != objMostRecentAutosave.Name) &&
-                                            GlobalSettings.FavoritedCharacters.All(x =>
+                                            GlobalSettings.FavoriteCharacters.All(x =>
                                                 Path.GetFileName(x) != objMostRecentAutosave.Name) && ShowMessageBox(
                                                 string.Format(GlobalSettings.CultureInfo,
                                                     LanguageManager.GetString("Message_PossibleCrashAutosaveFound"),
@@ -458,7 +458,7 @@ namespace Chummer
                     {
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
                         await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>().Any(objClosedForm =>
-                            GlobalSettings.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                            GlobalSettings.FavoriteCharacters.Contains(objClosedForm.CharacterObject.FileName))
                             ? "stickymru"
                             : "mru");
                     }
@@ -469,7 +469,7 @@ namespace Chummer
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
                         await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>()
                             .Concat(e.NewItems.Cast<CharacterShared>()).Any(objClosedForm =>
-                                GlobalSettings.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
+                                GlobalSettings.FavoriteCharacters.Contains(objClosedForm.CharacterObject.FileName))
                             ? "stickymru"
                             : "mru");
                     }
@@ -826,7 +826,7 @@ namespace Chummer
                 return;
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (!string.IsNullOrEmpty(strFileName))
-                GlobalSettings.FavoritedCharacters.Add(strFileName);
+                GlobalSettings.FavoriteCharacters.AddWithSort(strFileName);
         }
 
         private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
@@ -836,7 +836,7 @@ namespace Chummer
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (!string.IsNullOrEmpty(strFileName))
             {
-                GlobalSettings.FavoritedCharacters.Remove(strFileName);
+                GlobalSettings.FavoriteCharacters.Remove(strFileName);
                 GlobalSettings.MostRecentlyUsedCharacters.Insert(0, strFileName);
             }
         }
@@ -1589,7 +1589,7 @@ namespace Chummer
         public void PopulateMruToolstripMenu(object sender, TextEventArgs e)
         {
             SuspendLayout();
-            mnuFileMRUSeparator.Visible = GlobalSettings.FavoritedCharacters.Count > 0
+            mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
                                           || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
 
             if (e?.Text != "mru")
@@ -1643,10 +1643,10 @@ namespace Chummer
                             continue;
                     }
 
-                    if (i < GlobalSettings.FavoritedCharacters.Count)
+                    if (i < GlobalSettings.FavoriteCharacters.Count)
                     {
-                        objItem.Text = GlobalSettings.FavoritedCharacters[i];
-                        objItem.Tag = GlobalSettings.FavoritedCharacters[i];
+                        objItem.Text = GlobalSettings.FavoriteCharacters[i];
+                        objItem.Tag = GlobalSettings.FavoriteCharacters[i];
                         objItem.Visible = true;
                     }
                     else
@@ -1675,7 +1675,7 @@ namespace Chummer
                     i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
                     continue;
                 string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                if (GlobalSettings.FavoritedCharacters.Contains(strFile))
+                if (GlobalSettings.FavoriteCharacters.Contains(strFile))
                     continue;
                 ToolStripMenuItem objItem;
                 switch (i2)
@@ -1799,9 +1799,9 @@ namespace Chummer
 
                         if (Directory.Exists(Utils.GetAutosavesFolderPath))
                         {
+                            // Always process newest autosave if all MRUs are empty
                             bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                       GlobalSettings.FavoritedCharacters.Count ==
-                                                       0; // Always process newest autosave if all MRUs are empty
+                                                       GlobalSettings.FavoriteCharacters.Count == 0;
                             FileInfo objMostRecentAutosave = null;
                             foreach (string strAutosave in Directory.EnumerateFiles(
                                 Utils.GetAutosavesFolderPath,
@@ -1826,7 +1826,7 @@ namespace Chummer
                                     objMostRecentAutosave = objAutosave;
                                 if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
                                         Path.GetFileName(x) == objAutosave.Name) ||
-                                    GlobalSettings.FavoritedCharacters.Any(x =>
+                                    GlobalSettings.FavoriteCharacters.Any(x =>
                                         Path.GetFileName(x) == objAutosave.Name))
                                     blnAnyAutosaveInMru = true;
                             }
@@ -1837,7 +1837,7 @@ namespace Chummer
                                 && !setFilesToLoad.Contains(objMostRecentAutosave.FullName)
                                 && GlobalSettings.MostRecentlyUsedCharacters.All(
                                     x => Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                && GlobalSettings.FavoritedCharacters.All(
+                                && GlobalSettings.FavoriteCharacters.All(
                                     x => Path.GetFileName(x) != objMostRecentAutosave.Name)
                                 && ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                 LanguageManager.GetString(

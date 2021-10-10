@@ -110,7 +110,7 @@ namespace Chummer
             for (; intPower > 1; intPower -= i / 2)
             {
                 decimal decLoopElement = decBase;
-                for (i = 2; i < intPower; i *= 2)
+                for (i = 2; i <= intPower; i *= 2)
                 {
                     decLoopElement *= decLoopElement;
                 }

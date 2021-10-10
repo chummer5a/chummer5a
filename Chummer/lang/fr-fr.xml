@@ -2195,7 +2195,7 @@
     </string>
     <string>
       <key>Message_InvalidAvail</key>
-      <text>{0} objet(s) de Disponibilité supérieure à {1} au delà de la limite autorisée</text>
+      <text>{0} objet(s) de Disponibilité supérieure de la limite autorisée {1}:</text>
     </string>
     <string>
       <key>MessageTitle_Invalid</key>
@@ -7326,7 +7326,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Message_RestrictedGearUsed</key>
-      <text>Un équipement réglementé est utilisé pour:\n{0}</text>
+      <text>Un équipement réglementé est utilisé pour:{0}</text>
     </string>
     <string>
       <key>Label_CyberlimbSTR</key>

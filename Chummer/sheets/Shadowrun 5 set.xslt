@@ -29,11 +29,11 @@
 
 <!-- Set local control variables if global versions have not already been defined  -->
   <!-- print core details (supress notes, calendar, expenses, and additional mugshots) -->
-  <xsl:variable name="CorePrint" select="false()" />
+  <xsl:variable name="CorePrint" select="boolean(false())" />
   <!-- minimum skill rating to print - used to prevent printing of zero ratings -->
-  <xsl:variable name="MinimumRating" select="0" />
+  <xsl:variable name="MinimumRating" select="number(0)" />
   <!-- supress notes if producing core print -->
-  <xsl:variable name="ProduceNotes" select="not($CorePrint)" />
+  <xsl:variable name="ProduceNotes" select="boolean(not($CorePrint))" />
 <!-- End of setting local control variables to default local values  -->
 
   <xsl:variable name="rtglit">
@@ -2924,7 +2924,7 @@
   </xsl:template>
 
   <xsl:template name="gear1">
-    <xsl:variable name="halfcut" select="round(count(gears/gear) div 3)" />
+    <xsl:variable name="halfcut" select="number(round(count(gears/gear) div 3))" />
     <xsl:variable name="sortedcopy">
       <xsl:for-each select="gears/gear">
         <xsl:sort select="location" />
@@ -2940,7 +2940,7 @@
   </xsl:template>
 
   <xsl:template name="gear2">
-    <xsl:variable name="halfcut" select="round(count(gears/gear) div 3)" />
+    <xsl:variable name="halfcut" select="number(round(count(gears/gear) div 3))" />
     <xsl:variable name="sortedcopy">
       <xsl:for-each select="gears/gear">
         <xsl:sort select="location" />
@@ -2956,7 +2956,7 @@
   </xsl:template>
 
   <xsl:template name="gear3">
-    <xsl:variable name="halfcut" select="round(count(gears/gear) div 3)" />
+    <xsl:variable name="halfcut" select="number(round(count(gears/gear) div 3))" />
     <xsl:variable name="sortedcopy">
       <xsl:for-each select="gears/gear">
         <xsl:sort select="location" />

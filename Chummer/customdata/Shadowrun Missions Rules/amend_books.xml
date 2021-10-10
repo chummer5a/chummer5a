@@ -68,6 +68,7 @@
     </book>
     <book>
       <name>Shadowrun 2050 (5th Edition)</name>
+      <!-- Shadowrun 2050 is for 5e in German, but 4e in English. So we need to hide it because we only have the 5e version in Chummer5a, which is German-only -->
       <hide />
     </book>
     <book>

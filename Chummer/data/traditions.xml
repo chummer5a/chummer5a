@@ -3311,6 +3311,138 @@
       <page>117</page>
     </spirit>
     <!-- End Region -->
+    <!-- Region Shedim -->
+    <spirit>
+      <id>67ac70ce-554b-45bb-affc-1de3b29e0696</id>
+      <name>Shedim</name>
+      <category>Shedim</category>
+      <bod>F</bod>
+      <agi>F</agi>
+      <rea>F+2</rea>
+      <str>F+1</str>
+      <cha>F</cha>
+      <int>F</int>
+      <log>F</log>
+      <wil>F</wil>
+      <ini>0</ini>
+      <edg>F/2</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Deathly Aura</power>
+        <power>Energy Drain</power>
+        <power>Fear</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Paralyzing Touch</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power select="Sunlight, Mild">Allergy</power>
+        <power>Evanescence</power>
+      </powers>
+      <optionalpowers>
+        <optionalpower>Accident</optionalpower>
+        <optionalpower>Aura Masking</optionalpower>
+        <optionalpower>Compulsion</optionalpower>
+        <optionalpower>Regeneration</optionalpower>
+        <optionalpower>Search</optionalpower>
+        <optionalpower>Shadow Cloak</optionalpower>
+        <optionalpower>Silence</optionalpower>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>SG</source>
+      <page>93</page>
+    </spirit>   
+    <spirit>
+      <id>5b122a59-408e-4634-855a-763b25fbad16</id>
+      <name>Master Shedim</name>
+      <category>Shedim</category>
+      <bon>F</bon>
+      <agi>F</agi>
+      <rea>F+2</rea>
+      <str>F+1</str>
+      <cha>F</cha>
+      <int>F+1</int>
+      <log>F+1</log>
+      <wil>F+1</wil>
+      <ini>3</ini>
+      <edg>F/2</edg>
+      <mag>F</mag>
+      <res>0</res>
+      <dep>0</dep>
+      <ess>F</ess>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <qualities>
+        <positive>
+          <quality>Aspected Magician</quality>
+        </positive>
+      </qualities>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Astral Gateway</power>
+        <power>Aura Masking</power>
+        <power>Banishing Resistance</power>
+        <power>Compulsion</power>
+        <power>Deathly Aura</power>
+        <power>Energy Drain</power>
+        <power>Fear</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Possession</power>
+        <power>Regeneration</power>
+        <power>Sapience</power>
+        <power>Shadow Cloak</power>
+        <power>Spirit Pact</power>
+        <power select="Sunlight, Mild">Allergy</power>
+        <power>Evanescence</power>
+      </powers>
+      <optionalpowers>
+        <optionalpower>Accident</optionalpower>
+        <optionalpower>Noxious Breath</optionalpower>
+        <optionalpower>Search</optionalpower>
+        <optionalpower>Silence</optionalpower>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Counterspelling</skill>
+        <skill rating="F">Gymnastics</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Spellcasting</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>SG</source>
+      <page>93</page>
+    </spirit>
+    <!-- End Region -->
+    <!-- End Region -->
   </spirits>
   <drainattributes>
     <drainattribute>

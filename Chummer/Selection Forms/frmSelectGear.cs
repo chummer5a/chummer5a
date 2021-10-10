@@ -968,7 +968,6 @@ namespace Chummer
 
         private List<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
             int intOverLimit = 0;
             List<ListItem> lstGears = new List<ListItem>();
             foreach (XPathNavigator objXmlGear in objXmlGearList)
@@ -1055,6 +1054,7 @@ namespace Chummer
 
                     if (setDuplicateNames.Count > 0)
                     {
+                        string strSpace = LanguageManager.GetString("String_Space");
                         for (int i = 0; i < lstGears.Count; ++i)
                         {
                             ListItem objLoopItem = lstGears[i];
@@ -1074,7 +1074,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(objFoundItem.Name))
                             {
                                 lstGears[i] = new ListItem(objLoopItem.Value
-                                    , objLoopItem.Name + strSpace + +'[' + objFoundItem.Name + ']');
+                                    , objLoopItem.Name + strSpace +'[' + objFoundItem.Name + ']');
                             }
                         }
                     }

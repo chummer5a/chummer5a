@@ -191,6 +191,9 @@ namespace Chummer
 
         public void RefreshNodeTexts()
         {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
             foreach (TreeNode objCharacterNode in treCharacterList.Nodes.Cast<TreeNode>().GetAllDescendants(x => x.Nodes.Cast<TreeNode>()))
             {
                 if (!(objCharacterNode.Tag is CharacterCache objCache))
@@ -218,7 +221,10 @@ namespace Chummer
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            List<string> lstFavorites = blnRefreshFavorites ? GlobalSettings.FavoritedCharacters.ToList() : new List<string>();
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
+            List<string> lstFavorites = blnRefreshFavorites ? GlobalSettings.FavoriteCharacters.ToList() : new List<string>();
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
             if (objFavoriteNode == null && blnRefreshFavorites)
@@ -287,7 +293,11 @@ namespace Chummer
                             if (objNode == null)
                                 continue;
                             if (objFavoriteNode.TreeView != null)
+                            {
+                                if (objFavoriteNode.TreeView.IsDisposed)
+                                    continue;
                                 objFavoriteNode.TreeView.DoThreadSafe(() => objFavoriteNode.Nodes.Add(objNode));
+                            }
                             else
                                 objFavoriteNode.Nodes.Add(objNode);
                         }
@@ -319,7 +329,11 @@ namespace Chummer
                             if (objNode == null)
                                 continue;
                             if (objRecentNode.TreeView != null)
+                            {
+                                if (objRecentNode.TreeView.IsDisposed)
+                                    continue;
                                 objRecentNode.TreeView.DoThreadSafe(() => objRecentNode.Nodes.Add(objNode));
+                            }
                             else
                                 objRecentNode.Nodes.Add(objNode);
                         }
@@ -329,8 +343,11 @@ namespace Chummer
             {
                 //swallow this
             }
-
+            
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                return;
+
+            if (treCharacterList.IsNullOrDisposed())
                 return;
 
             Log.Info("Populating CharacterRosterTreeNode MRUs (MainThread).");
@@ -394,6 +411,9 @@ namespace Chummer
             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
             Dictionary<string, string> dicWatch = new Dictionary<string, string>();
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
@@ -451,7 +471,11 @@ namespace Chummer
                     if (s == "Watch")
                         continue;
                     if (objWatchNode.TreeView != null)
+                    {
+                        if (objWatchNode.TreeView.IsDisposed)
+                            continue;
                         objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s }));
+                    }
                     else
                         objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
                 }
@@ -463,7 +487,11 @@ namespace Chummer
                     if (kvtNode.Value == "Watch")
                     {
                         if (objWatchNode.TreeView != null)
+                        {
+                            if (objWatchNode.TreeView.IsDisposed)
+                                continue;
                             objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                        }
                         else
                             objWatchNode.Nodes.Add(kvtNode.Key);
                     }
@@ -473,19 +501,25 @@ namespace Chummer
                         {
                             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                                 return;
-                            if (objNode.Tag.ToString() == kvtNode.Value)
+                            if (objNode.Tag.ToString() != kvtNode.Value)
+                                continue;
+                            if (objWatchNode.TreeView != null)
                             {
-                                if (objWatchNode.TreeView != null)
-                                    objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
-                                else
-                                    objNode.Nodes.Add(kvtNode.Key);
+                                if (objWatchNode.TreeView.IsDisposed)
+                                    continue;
+                                objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
                             }
+                            else
+                                objNode.Nodes.Add(kvtNode.Key);
                         }
                     }
                 }
             });
 
             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                return;
+
+            if (treCharacterList.IsNullOrDisposed())
                 return;
 
             Log.Info("Populating CharacterRosterTreeNode Watch Folder (MainThread).");
@@ -838,12 +872,12 @@ namespace Chummer
                         switch (strDestinationNode)
                         {
                             case "Recent":
-                                GlobalSettings.FavoritedCharacters.Remove(objCache.FilePath);
+                                GlobalSettings.FavoriteCharacters.Remove(objCache.FilePath);
                                 GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                                 break;
 
                             case "Favorite":
-                                GlobalSettings.FavoritedCharacters.Add(objCache.FilePath);
+                                GlobalSettings.FavoriteCharacters.AddWithSort(objCache.FilePath);
                                 break;
                         }
                     }
@@ -890,6 +924,9 @@ namespace Chummer
 
         public void tsDelete_Click(object sender, EventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+            
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t?.Tag is CharacterCache objCache)
@@ -900,6 +937,9 @@ namespace Chummer
 
         private void tsSort_Click(object sender, EventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t?.Tag is CharacterCache)
@@ -911,7 +951,7 @@ namespace Chummer
                         break;
 
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Sort();
+                        GlobalSettings.FavoriteCharacters.Sort();
                         break;
                 }
             }
@@ -924,7 +964,7 @@ namespace Chummer
                         break;
 
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Sort();
+                        GlobalSettings.FavoriteCharacters.Sort();
                         break;
                 }
             }
@@ -933,6 +973,9 @@ namespace Chummer
 
         private void tsToggleFav_Click(object sender, EventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t?.Tag is CharacterCache objCache)
@@ -940,12 +983,12 @@ namespace Chummer
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Favorite":
-                        GlobalSettings.FavoritedCharacters.Remove(objCache.FilePath);
+                        GlobalSettings.FavoriteCharacters.Remove(objCache.FilePath);
                         GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                         break;
 
                     default:
-                        GlobalSettings.FavoritedCharacters.Add(objCache.FilePath);
+                        GlobalSettings.FavoriteCharacters.AddWithSort(objCache.FilePath);
                         break;
                 }
                 treCharacterList.SelectedNode = t;
@@ -993,6 +1036,8 @@ namespace Chummer
 
         private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode?.Tag == null || objSelectedNode.Level <= 0)
                 return;

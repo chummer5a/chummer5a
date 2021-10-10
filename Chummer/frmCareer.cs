@@ -73,7 +73,7 @@ namespace Chummer
 
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
-            CharacterObjectSettings.PropertyChanged += OnCharacterObjectOptionsPropertyChanged;
+            CharacterObjectSettings.PropertyChanged += OnCharacterObjectSettingsPropertyChanged;
 
             tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -278,6 +278,10 @@ namespace Chummer
                             nudAstralReputation.Visible = false;
                             lblAstralReputationTotal.Visible = false;
                         }
+                    }
+                    if (!CharacterObjectSettings.EnableEnemyTracking)
+                    {
+                        tabPeople.TabPages.Remove(tabEnemies);
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_refresh", op_load_frm_career))
@@ -1861,7 +1865,7 @@ namespace Chummer
             }
         }
 
-        private void OnCharacterObjectOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCharacterObjectSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             IsCharacterUpdateRequested = true;
             switch (e.PropertyName)
@@ -2099,6 +2103,26 @@ namespace Chummer
 
                         break;
                     }
+                case nameof(CharacterSettings.EnableEnemyTracking):
+                {
+                    using (new CursorWait(this))
+                    {
+                        SuspendLayout();
+                        if (!CharacterObjectSettings.EnableEnemyTracking)
+                        {
+                            tabPeople.TabPages.Remove(tabEnemies);
+                        }
+                        else
+                        {
+                            if (!tabPeople.TabPages.Contains(tabEnemies))
+                                tabPeople.TabPages.Insert(tabPeople.TabPages.IndexOf(tabContacts) + 1, tabEnemies);
+                            RefreshContacts(panContacts, panEnemies, panPets);
+                        }
+                        ResumeLayout();
+                    }
+
+                    break;
+                }
             }
         }
 

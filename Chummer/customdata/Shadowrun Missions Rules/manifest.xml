@@ -74,5 +74,9 @@
       <name>Rainforest Carbine Missions Errata</name>
       <guid>39B1963E-DFB3-4082-8D7F-79F88DAB786F</guid>
     </incompatibility>
+    <incompatibility>
+      <name>Exclude German Sourcebooks</name>
+      <guid>08C4538B-6448-4DDF-BE93-D8A7696DB7BD</guid>
+    </incompatibility>
   </incompatibilities>
 </manifest>
