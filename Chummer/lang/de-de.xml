@@ -1396,7 +1396,7 @@
         </string>
         <string>
             <key>Message_InvalidAvail</key>
-            <text>{0} Gegenstände mit einer Verfügbarkeit höher als die erlaubt Verfügbarkeit {1}:</text>
+            <text>{0} Gegenstände mit einer Verfügbarkeit höher als die erlaubte Verfügbarkeit {1}:</text>
         </string>
         <string>
             <key>MessageTitle_Invalid</key>
@@ -1484,43 +1484,43 @@
         </string>
         <string>
             <key>Message_ConfirmKarmaExpense</key>
-            <text>Sind Sie sicher, dass Sie Karma für die Verbesserung von {0} ausgeben möchten?</text>
+            <text>Sind Sie sicher, dass Sie {2} Karma für die Verbesserung von {0} auf {1} ausgeben möchten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseSpecialization</key>
-            <text>Sind Sie sicher, dass Sie Karma zum Ändern der Spezialisierung zu {0} ausgeben möchten?</text>
+            <text>Sind Sie sicher, dass Sie {1} Karma zum Ändern der Spezialisierung zu {0} ausgeben möchten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseEnemy</key>
-            <text>Müssen Sie Karma ausgeben, um diesen Feind zu entfernen?</text>
+            <text>Müssen Sie {0} Karma ausgeben, um diesen Feind zu entfernen?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseSpend</key>
-            <text>Sind Sie sicher, dass Sie Karma für {0} ausgeben möchten?</text>
+            <text>Sind Sie sicher, dass Sie {1} Karma für {0} ausgeben möchten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseRemove</key>
-            <text>Sind Sie sicher, dass Sie Karma für das Entfernen von {0} ausgeben möchten?</text>
+            <text>Sind Sie sicher, dass Sie {1} Karma für das Entfernen von {0} ausgeben möchten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseFocus</key>
-            <text>Sind Sie sicher, dass Sie Karma für das Binden des Fokus ausgeben möchten?</text>
+            <text>Sind Sie sicher, dass Sie {0} Karma für das Binden des Fokus ausgeben möchten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseJoinGroup</key>
-            <text>Möchten Sie wirklich Karma ausgeben, um dieser Gruppe beizutreten?</text>
+            <text>Möchten Sie wirklich {0} Karma ausgeben, um dieser Gruppe beizutreten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseLeaveGroup</key>
-            <text>Möchten Sie wirklich Karma ausgeben, um diese Gruppe zu verlassen?</text>
+            <text>Möchten Sie wirklich {0} Karma ausgeben, um diese Gruppe zu verlassen?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseJoinNetwork</key>
-            <text>Möchten Sie wirklich Karma ausgeben, um diesem Netzwerk beizutreten?</text>
+            <text>Möchten Sie wirklich {0} Karma ausgeben, um diesem Netzwerk beizutreten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseLeaveNetwork</key>
-            <text>Möchten Sie wirklich Karma ausgeben, um das Netzwerk zu verlassen?</text>
+            <text>Möchten Sie wirklich {0} Karma ausgeben, um das Netzwerk zu verlassen?</text>
         </string>
         <string>
             <key>MessageTitle_ConfirmKarmaExpense</key>
