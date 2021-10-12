@@ -10590,6 +10590,47 @@ namespace Chummer
 
         #endregion
 
+        #region XPath Processing
+        /// <summary>
+        /// Replaces substring in the form of {Skill} with the total dicepool of the skill.
+        /// </summary>
+        /// <param name="strInput">Stringbuilder object that contains the input.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public string ProcessMatrixAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            string strReturn = strInput;
+            foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
+            {
+                strReturn = strReturn
+                    .CheapReplace('{' + strAttributeName + '}', () => dicValueOverrides?.ContainsKey(strAttributeName) == true
+                        ? dicValueOverrides[strAttributeName].ToString()
+                        : ActiveCommlink?.GetTotalMatrixAttribute("").ToString());
+            }
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Replaces stringbuilder content in the form of {MatrixAttribute} with the total pool of the Matrix Attribute of the Active Commlink, if any.
+        /// </summary>
+        /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
+        /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public void ProcessMatrixAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
+            {
+                sbdInput.CheapReplace('{' + strAttributeName + '}', () => dicValueOverrides?.ContainsKey(strAttributeName) == true
+                    ? dicValueOverrides[strAttributeName].ToString()
+                    : ActiveCommlink?.GetTotalMatrixAttribute("").ToString());
+            }
+        }
+        #endregion
         #endregion
 
         #endregion
