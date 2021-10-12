@@ -1321,5 +1321,96 @@ namespace Chummer.Backend.Skills
                 objSkill.Print(objWriter, objCulture, strLanguageToPrint);
             }
         }
+        #region XPath Processing
+        /// <summary>
+        /// Replaces substring in the form of {Skill} with the total dicepool of the skill.
+        /// </summary>
+        /// <param name="strInput">Stringbuilder object that contains the input.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public string ProcessSkillsInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            return string.IsNullOrEmpty(strInput)
+                ? strInput
+                : ProcessSkillsInXPathForTooltip(strInput, blnShowValues: false, dicValueOverrides: dicValueOverrides);
+        }
+
+        /// <summary>
+        /// Replaces stringbuilder content in the form of {Skill} with the total dicepool of the skill.
+        /// </summary>
+        /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
+        /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public void ProcessSkillsInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            ProcessSkillsInXPathForTooltip(sbdInput, strOriginal, blnShowValues: false,
+                dicValueOverrides: dicValueOverrides);
+        }
+
+        /// <summary>
+        /// Replaces substring in the form of {Skill} with 'Skill (Pool)'. Intended to be used by tooltips and similar. 
+        /// </summary>
+        /// <param name="strInput">Stringbuilder object that contains the input.</param>
+        /// <param name="objCultureInfo">Culture type used by the language. Defaults to null, which is then system defaults.</param>
+        /// <param name="strLanguage">Language to use for displayname translation.</param>
+        /// <param name="blnShowValues">Whether to include the dicepool value in the return string.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public string ProcessSkillsInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strReturn = strInput;
+            foreach (string strSkillName in Skills.Select(i => i.Name))
+            {
+                strReturn = strReturn
+                    .CheapReplace('{' + strSkillName + '}', () =>
+                        GetActiveSkill(strSkillName).DisplayName(strLanguage) +
+                        (blnShowValues
+                            ? LanguageManager.GetString("String_Space", strLanguage) + '(' + (dicValueOverrides?.ContainsKey(strSkillName) == true
+                                ? dicValueOverrides[strSkillName]
+                                : GetActiveSkill(strSkillName).Pool)
+                            .ToString(objCultureInfo) + ')'
+                            : string.Empty));
+            }
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Replaces Stringbuilder content in the form of {Active Skill Name} with 'Active Skill Name (Pool)', ie {Athletics} becomes 'Athletics (1)'. Intended to be used by tooltips and similar. 
+        /// </summary>
+        /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
+        /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
+        /// <param name="objCultureInfo">Culture type used by the language. Defaults to null, which is then system defaults.</param>
+        /// <param name="strLanguage">Language to use for displayname translation.</param>
+        /// <param name="blnShowValues">Whether to include the dicepool value in the return string.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public void ProcessSkillsInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            foreach (string strSkillName in Skills.Select(i => i.Name))
+            {
+                sbdInput.CheapReplace(strOriginal, '{' + strSkillName + '}', () =>
+                    GetActiveSkill(strSkillName).DisplayName(strLanguage) +
+                    (blnShowValues
+                        ? LanguageManager.GetString("String_Space", strLanguage) + '(' + (dicValueOverrides?.ContainsKey(strSkillName) == true
+                            ? dicValueOverrides[strSkillName]
+                            : GetActiveSkill(strSkillName).Pool)
+                        .ToString(objCultureInfo) + ')'
+                        : string.Empty));
+            }
+        }
+        #endregion
     }
 }
