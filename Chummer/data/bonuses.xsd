@@ -552,7 +552,15 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="limitcritterpowercategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="limitspellcategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="limitspellcategory" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="exclude" type="xs:string" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="limitspelldescriptor" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="limitspellrange" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="limitspiritcategory" minOccurs="0" maxOccurs="1">

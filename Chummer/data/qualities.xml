@@ -17416,7 +17416,8 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspellcategory />
+        <allowspellcategory>Rituals</allowspellcategory>
+        <limitspellcategory exclude="Rituals" />
         <skillgroupdisable>Conjuring</skillgroupdisable>
         <spellcategorydrain>
           <val>-2</val>

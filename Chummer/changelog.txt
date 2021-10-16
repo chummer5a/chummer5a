@@ -120,6 +120,7 @@ Application Changes:
 - Enemies as per 4th edition rules now need to be enabled through the House Rules tab in character settings. Settings for the amount of karma gained from enemies are now clearly delineated and grouped together in the House Rules tab. Fixes #1325.
 - Favorite characters are now always automatically sorted alphabetically by their file paths. Fixes #3853.
 - Having Chummer not round Essence internally no longer allows characters with exactly 0 Essence to be valid.
+- LimittSpellCategory improvement can now exclude a category from being selected.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -175,6 +176,7 @@ Data Changes:
 - Cyberware Silencer, Laser Sight, Overclocked, and External Clip Port now add accessories to their parent cyberweapons.
 - Adepts can no longer choose skills from the Sorcery, Conjuring, or Enchanting skill groups for their free skill ranks from their priority entries at character creation.
 - Added addspirit bonus for Spirit Expansion: UMT and Spirit Expansion: Shedim metamagics.
+- Hedge Witch/Wizard quality now always allows Rituals.
 
 Changed/New Strings:
 - String_ContactPoints
