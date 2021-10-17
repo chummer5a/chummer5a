@@ -88,7 +88,7 @@ namespace Chummer
         private int _intCurrentCounterspellingDice;
         private int _intEdgeUsed;
         private int _intBoundSpiritLimit = int.MinValue;
-        private int _intRegisteredSpriteLimit;
+        private int _intRegisteredSpriteLimit = int.MinValue;
 
         // General character info.
         private string _strName = string.Empty;
@@ -5631,6 +5631,8 @@ namespace Chummer
             _intAttributes = 0;
             _intTotalAttributes = 0;
             _intEdgeUsed = 0;
+            _intBoundSpiritLimit = int.MinValue;
+            _intRegisteredSpriteLimit = int.MinValue;
 
             // Reset Metatype Information.
             _strMetatype = string.Empty;
