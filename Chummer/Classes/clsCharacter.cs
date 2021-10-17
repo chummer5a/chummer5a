@@ -10608,7 +10608,7 @@ namespace Chummer
                 strReturn = strReturn
                     .CheapReplace('{' + strAttributeName + '}', () => dicValueOverrides?.ContainsKey(strAttributeName) == true
                         ? dicValueOverrides[strAttributeName].ToString()
-                        : ActiveCommlink?.GetTotalMatrixAttribute("").ToString());
+                        : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName).ToString());
             }
             return strReturn;
         }
@@ -10617,19 +10617,16 @@ namespace Chummer
         /// Replaces stringbuilder content in the form of {MatrixAttribute} with the total pool of the Matrix Attribute of the Active Commlink, if any.
         /// </summary>
         /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
-        /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
         /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
-        public void ProcessMatrixAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public void ProcessMatrixAttributesInXPath(StringBuilder sbdInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
-            if (string.IsNullOrEmpty(strOriginal))
-                strOriginal = sbdInput.ToString();
             foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
             {
                 sbdInput.CheapReplace('{' + strAttributeName + '}', () => dicValueOverrides?.ContainsKey(strAttributeName) == true
                     ? dicValueOverrides[strAttributeName].ToString()
-                    : ActiveCommlink?.GetTotalMatrixAttribute("").ToString());
+                    : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName).ToString());
             }
         }
         #endregion
