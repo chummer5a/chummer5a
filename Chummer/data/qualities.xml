@@ -18832,7 +18832,7 @@
         <addgear>
           <name>Fake SIN</name>
           <category>ID/Credsticks</category>
-          <rating>4</rating>
+          <rating>3</rating>
           <children>
             <child>
               <name>Fake License</name>

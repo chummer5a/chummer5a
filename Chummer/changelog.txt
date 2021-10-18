@@ -177,6 +177,7 @@ Data Changes:
 - Adepts can no longer choose skills from the Sorcery, Conjuring, or Enchanting skill groups for their free skill ranks from their priority entries at character creation.
 - Added addspirit bonus for Spirit Expansion: UMT and Spirit Expansion: Shedim metamagics.
 - Hedge Witch/Wizard quality now always allows Rituals.
+- Changed Dead SIN's Fake SIN to rating 3.
 
 Changed/New Strings:
 - String_ContactPoints
