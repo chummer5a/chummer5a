@@ -76,6 +76,10 @@ namespace Chummer
             return _intHashCode;
         }
 
+        public static bool operator ==(KeyArray<T> lhs, KeyArray<T> rhs) => lhs.Equals(rhs);
+
+        public static bool operator !=(KeyArray<T> lhs, KeyArray<T> rhs) => !(lhs == rhs);
+
         public bool Equals(KeyArray<T> rhs)
         {
             if (GetHashCode() != rhs.GetHashCode())

@@ -88,7 +88,7 @@ namespace Chummer
         private int _intCurrentCounterspellingDice;
         private int _intEdgeUsed;
         private int _intBoundSpiritLimit = int.MinValue;
-        private int _intRegisteredSpriteLimit;
+        private int _intRegisteredSpriteLimit = int.MinValue;
 
         // General character info.
         private string _strName = string.Empty;
@@ -5631,6 +5631,8 @@ namespace Chummer
             _intAttributes = 0;
             _intTotalAttributes = 0;
             _intEdgeUsed = 0;
+            _intBoundSpiritLimit = int.MinValue;
+            _intRegisteredSpriteLimit = int.MinValue;
 
             // Reset Metatype Information.
             _strMetatype = string.Empty;
@@ -7405,16 +7407,16 @@ namespace Chummer
             get => _objSettings;
             private set // Private to make sure this is always in sync with GameplayOption
             {
-                if (_objSettings != value)
-                {
-                    if (_objSettings != null)
-                        _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
-                    _objSettings = value;
-                    if (_objSettings != null)
-                        _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
-                    if (!IsLoading)
-                        OnPropertyChanged();
-                }
+                if (ReferenceEquals(_objSettings, value))
+                    return;
+                bool blnActuallyDifferentSettings = !_objSettings.Equals(value);
+                if (_objSettings != null)
+                    _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                _objSettings = value;
+                if (_objSettings != null)
+                    _objSettings.PropertyChanged += OptionsOnPropertyChanged;
+                if (blnActuallyDifferentSettings && !IsLoading)
+                    OnPropertyChanged();
             }
         }
 
@@ -10285,7 +10287,7 @@ namespace Chummer
         /// <summary>
         /// Astral Initiative Dice.
         /// </summary>
-        public int AstralInitiativeDice => 3;
+        public static int AstralInitiativeDice => 3;
 
         #endregion
 
@@ -10606,7 +10608,7 @@ namespace Chummer
                 strReturn = strReturn
                     .CheapReplace('{' + strAttributeName + '}', () => dicValueOverrides?.ContainsKey(strAttributeName) == true
                         ? dicValueOverrides[strAttributeName].ToString()
-                        : ActiveCommlink?.GetTotalMatrixAttribute("").ToString());
+                        : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName).ToString());
             }
             return strReturn;
         }
@@ -10615,19 +10617,16 @@ namespace Chummer
         /// Replaces stringbuilder content in the form of {MatrixAttribute} with the total pool of the Matrix Attribute of the Active Commlink, if any.
         /// </summary>
         /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
-        /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
         /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
-        public void ProcessMatrixAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public void ProcessMatrixAttributesInXPath(StringBuilder sbdInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
-            if (string.IsNullOrEmpty(strOriginal))
-                strOriginal = sbdInput.ToString();
             foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
             {
                 sbdInput.CheapReplace('{' + strAttributeName + '}', () => dicValueOverrides?.ContainsKey(strAttributeName) == true
                     ? dicValueOverrides[strAttributeName].ToString()
-                    : ActiveCommlink?.GetTotalMatrixAttribute("").ToString());
+                    : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName).ToString());
             }
         }
         #endregion
