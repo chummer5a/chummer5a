@@ -35,10 +35,10 @@ namespace Chummer
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool DeleteFile(string name);
 
-        [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern bool SetDefaultPrinter(string strName);
 
-        [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern bool GetDefaultPrinter(StringBuilder sbdBuffer, ref int ptrBuffer);
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -167,7 +167,7 @@ namespace Chummer
         [DllImport("user32.dll")]
         internal static extern int GetWindowTextLength(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int maxLength);
 
         [DllImport("user32.dll")]
@@ -186,7 +186,7 @@ namespace Chummer
         [DllImport("user32", CharSet = CharSet.Unicode)]
         internal static extern bool PostMessage(IntPtr hWnd, int msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
-        [DllImport("user32")]
+        [DllImport("user32", CharSet = CharSet.Unicode)]
         internal static extern int RegisterWindowMessage(string message);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]

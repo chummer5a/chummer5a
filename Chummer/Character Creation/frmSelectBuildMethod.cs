@@ -83,7 +83,7 @@ namespace Chummer
                     return;
                 string strOldCharacterSettingsKey = _objCharacter.SettingsKey;
                 _objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings
-                    .First(x => x.Value == objSelectedGameplayOption).Key;
+                    .First(x => ReferenceEquals(x.Value, objSelectedGameplayOption)).Key;
                 // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                 if (_objCharacter.IsLoading)
                     _objCharacter.PostLoadMethods.Enqueue(() => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey));
@@ -93,7 +93,7 @@ namespace Chummer
             else
             {
                 _objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings
-                    .First(x => x.Value == objSelectedGameplayOption).Key;
+                    .First(x => ReferenceEquals(x.Value, objSelectedGameplayOption)).Key;
             }
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             DialogResult = DialogResult.OK;

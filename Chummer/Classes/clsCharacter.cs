@@ -7407,16 +7407,16 @@ namespace Chummer
             get => _objSettings;
             private set // Private to make sure this is always in sync with GameplayOption
             {
-                if (_objSettings != value)
-                {
-                    if (_objSettings != null)
-                        _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
-                    _objSettings = value;
-                    if (_objSettings != null)
-                        _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
-                    if (!IsLoading)
-                        OnPropertyChanged();
-                }
+                if (ReferenceEquals(_objSettings, value))
+                    return;
+                bool blnActuallyDifferentSettings = !_objSettings.Equals(value);
+                if (_objSettings != null)
+                    _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                _objSettings = value;
+                if (_objSettings != null)
+                    _objSettings.PropertyChanged += OptionsOnPropertyChanged;
+                if (blnActuallyDifferentSettings && !IsLoading)
+                    OnPropertyChanged();
             }
         }
 

@@ -305,7 +305,7 @@ namespace Chummer
                     StringBuilder sbdConflictingCharacters = new StringBuilder();
                     foreach (Character objCharacter in Program.MainForm.OpenCharacters)
                     {
-                        if (!objCharacter.Created && objCharacter.Settings == _objReferenceCharacterSettings)
+                        if (!objCharacter.Created && ReferenceEquals(objCharacter.Settings, _objReferenceCharacterSettings))
                             sbdConflictingCharacters.AppendLine(objCharacter.CharacterName);
                     }
                     if (sbdConflictingCharacters.Length > 0)
@@ -1233,7 +1233,7 @@ namespace Chummer
             foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in SettingsManager.LoadedCharacterSettings)
             {
                 _lstSettings.Add(new ListItem(kvpCharacterSettingsEntry.Key, kvpCharacterSettingsEntry.Value.DisplayName));
-                if (_objReferenceCharacterSettings == kvpCharacterSettingsEntry.Value)
+                if (ReferenceEquals(_objReferenceCharacterSettings, kvpCharacterSettingsEntry.Value))
                     strSelect = kvpCharacterSettingsEntry.Key;
             }
             _lstSettings.Sort(CompareListItems.CompareNames);
