@@ -42,7 +42,7 @@ namespace Chummer
         public static XslCompiledTransform GetTransformForFile(string strXslFilePath)
         {
             if (!File.Exists(strXslFilePath))
-                throw new ArgumentException(nameof(strXslFilePath));
+                throw new FileNotFoundException(nameof(strXslFilePath));
 
             DateTime datLastWriteTimeUtc = File.GetLastWriteTimeUtc(strXslFilePath);
 

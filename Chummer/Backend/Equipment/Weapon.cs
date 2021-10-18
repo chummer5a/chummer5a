@@ -2727,12 +2727,14 @@ namespace Chummer.Backend.Equipment
                                 string strModifyAmmoCapacity = objAccessory.ModifyAmmoCapacity;
                                 if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
                                 {
-                                    strThisAmmo = '(' + strThisAmmo + strModifyAmmoCapacity + ')';
+                                    StringBuilder sbdThisAmmo
+                                        = new StringBuilder('(' + strThisAmmo + strModifyAmmoCapacity + ')');
                                     int intAddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')') - strModifyAmmoCapacity.Count(x => x == '(');
                                     for (int i = 0; i < intAddParenthesesCount; ++i)
-                                        strThisAmmo = '(' + strThisAmmo;
+                                        sbdThisAmmo.Insert(0, '(');
                                     for (int i = 0; i < -intAddParenthesesCount; ++i)
-                                        strThisAmmo += ')';
+                                        sbdThisAmmo.Append(')');
+                                    strThisAmmo = sbdThisAmmo.ToString();
                                 }
                             }
                         }

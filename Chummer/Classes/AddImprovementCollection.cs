@@ -6312,11 +6312,11 @@ namespace Chummer.Classes
             }
             else
             {
-                    // Display the Select Spell window.
-                    using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
+                // Display the Select Spell window.
+                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellCategory"),
-                    ExcludeCategories = bonusNode.Attributes["exclude"]?.InnerText.Split(',').ToHashSet()
+                    ExcludeCategories = bonusNode.Attributes?["exclude"]?.InnerText.Split(',').ToHashSet()
                 })
                 {
                     frmPickSpellCategory.ShowDialog(Program.MainForm);

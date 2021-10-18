@@ -10287,7 +10287,7 @@ namespace Chummer
         /// <summary>
         /// Astral Initiative Dice.
         /// </summary>
-        public int AstralInitiativeDice => 3;
+        public static int AstralInitiativeDice => 3;
 
         #endregion
 

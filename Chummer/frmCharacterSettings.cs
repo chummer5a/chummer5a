@@ -260,7 +260,7 @@ namespace Chummer
                     if (uintAccumulator == uint.MaxValue)
                     {
                         uintAccumulator = 0;
-                        strSeparator += "_";
+                        strSeparator += '_';
                     }
                     uintAccumulator += 1;
                 }
