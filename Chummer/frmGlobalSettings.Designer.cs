@@ -124,8 +124,10 @@ namespace Chummer
             this.cboDefaultCharacterSetting = new System.Windows.Forms.ComboBox();
             this.chkStartupFullscreen = new Chummer.ColorableCheckBox(this.components);
             this.chkAllowSkillDiceRolling = new Chummer.ColorableCheckBox(this.components);
+            this.btlp_SourcebookInfoAndButton = new Chummer.BufferedTableLayoutPanel(this.components);
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
+            this.bScanForPDFs = new Chummer.ButtonWithToolTip(this.components);
             this.tabCustomDataDirectories = new System.Windows.Forms.TabPage();
             this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.gpbDirectoryInfo = new System.Windows.Forms.GroupBox();
@@ -189,6 +191,7 @@ namespace Chummer
             this.flpEnablePlugins.SuspendLayout();
             this.flpBrowserVersion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).BeginInit();
+            this.btlp_SourcebookInfoAndButton.SuspendLayout();
             this.gpbEditSourcebookInfo.SuspendLayout();
             this.tabCustomDataDirectories.SuspendLayout();
             this.tlpOptionalRules.SuspendLayout();
@@ -260,13 +263,15 @@ namespace Chummer
             this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
             this.tlpGlobal.Controls.Add(this.grpSelectedSourcebook, 1, 1);
             this.tlpGlobal.Controls.Add(this.tlpGlobalOptions, 1, 0);
-            this.tlpGlobal.Controls.Add(this.gpbEditSourcebookInfo, 0, 0);
+            this.tlpGlobal.Controls.Add(this.btlp_SourcebookInfoAndButton, 0, 0);
             this.tlpGlobal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGlobal.Location = new System.Drawing.Point(9, 9);
             this.tlpGlobal.Name = "tlpGlobal";
             this.tlpGlobal.RowCount = 2;
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpGlobal.Size = new System.Drawing.Size(1214, 584);
             this.tlpGlobal.TabIndex = 39;
             // 
@@ -1697,6 +1702,27 @@ namespace Chummer
             this.chkAllowSkillDiceRolling.UseVisualStyleBackColor = true;
             this.chkAllowSkillDiceRolling.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
+            // btlp_SourcebookInfoAndButton
+            // 
+            this.btlp_SourcebookInfoAndButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btlp_SourcebookInfoAndButton.AutoSize = true;
+            this.btlp_SourcebookInfoAndButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btlp_SourcebookInfoAndButton.ColumnCount = 1;
+            this.btlp_SourcebookInfoAndButton.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlp_SourcebookInfoAndButton.Controls.Add(this.gpbEditSourcebookInfo, 0, 0);
+            this.btlp_SourcebookInfoAndButton.Controls.Add(this.bScanForPDFs, 0, 1);
+            this.btlp_SourcebookInfoAndButton.Location = new System.Drawing.Point(3, 3);
+            this.btlp_SourcebookInfoAndButton.Name = "btlp_SourcebookInfoAndButton";
+            this.btlp_SourcebookInfoAndButton.RowCount = 2;
+            this.tlpGlobal.SetRowSpan(this.btlp_SourcebookInfoAndButton, 2);
+            this.btlp_SourcebookInfoAndButton.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.btlp_SourcebookInfoAndButton.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.btlp_SourcebookInfoAndButton.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.btlp_SourcebookInfoAndButton.Size = new System.Drawing.Size(297, 578);
+            this.btlp_SourcebookInfoAndButton.TabIndex = 68;
+            // 
             // gpbEditSourcebookInfo
             // 
             this.gpbEditSourcebookInfo.AutoSize = true;
@@ -1705,9 +1731,8 @@ namespace Chummer
             this.gpbEditSourcebookInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbEditSourcebookInfo.Location = new System.Drawing.Point(3, 3);
             this.gpbEditSourcebookInfo.Name = "gpbEditSourcebookInfo";
-            this.tlpGlobal.SetRowSpan(this.gpbEditSourcebookInfo, 2);
-            this.gpbEditSourcebookInfo.Size = new System.Drawing.Size(297, 578);
-            this.gpbEditSourcebookInfo.TabIndex = 65;
+            this.gpbEditSourcebookInfo.Size = new System.Drawing.Size(291, 543);
+            this.gpbEditSourcebookInfo.TabIndex = 66;
             this.gpbEditSourcebookInfo.TabStop = false;
             this.gpbEditSourcebookInfo.Tag = "Label_Options_EditSourcebookInfo";
             this.gpbEditSourcebookInfo.Text = "Edit Sourcebook Info";
@@ -1718,9 +1743,29 @@ namespace Chummer
             this.lstGlobalSourcebookInfos.FormattingEnabled = true;
             this.lstGlobalSourcebookInfos.Location = new System.Drawing.Point(3, 16);
             this.lstGlobalSourcebookInfos.Name = "lstGlobalSourcebookInfos";
-            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(291, 559);
+            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(285, 524);
             this.lstGlobalSourcebookInfos.TabIndex = 48;
-            this.lstGlobalSourcebookInfos.SelectedIndexChanged += new System.EventHandler(this.lstGlobalSourcebookInfos_SelectedIndexChanged);
+            // 
+            // bScanForPDFs
+            // 
+            this.bScanForPDFs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.bScanForPDFs.AutoSize = true;
+            this.bScanForPDFs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bScanForPDFs.Image = null;
+            this.bScanForPDFs.ImageDpi120 = null;
+            this.bScanForPDFs.ImageDpi144 = null;
+            this.bScanForPDFs.ImageDpi192 = null;
+            this.bScanForPDFs.ImageDpi288 = null;
+            this.bScanForPDFs.ImageDpi384 = null;
+            this.bScanForPDFs.ImageDpi96 = null;
+            this.bScanForPDFs.Location = new System.Drawing.Point(3, 552);
+            this.bScanForPDFs.Name = "bScanForPDFs";
+            this.bScanForPDFs.Size = new System.Drawing.Size(291, 23);
+            this.bScanForPDFs.TabIndex = 0;
+            this.bScanForPDFs.Text = "Scan Folder for PDF Files";
+            this.bScanForPDFs.ToolTipText = "";
+            this.bScanForPDFs.UseVisualStyleBackColor = true;
+            this.bScanForPDFs.Click += new System.EventHandler(this.bScanForPDFs_Click);
             // 
             // tabCustomDataDirectories
             // 
@@ -2306,6 +2351,8 @@ namespace Chummer
             this.flpBrowserVersion.ResumeLayout(false);
             this.flpBrowserVersion.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).EndInit();
+            this.btlp_SourcebookInfoAndButton.ResumeLayout(false);
+            this.btlp_SourcebookInfoAndButton.PerformLayout();
             this.gpbEditSourcebookInfo.ResumeLayout(false);
             this.tabCustomDataDirectories.ResumeLayout(false);
             this.tabCustomDataDirectories.PerformLayout();
@@ -2405,8 +2452,6 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtDateFormat;
         private System.Windows.Forms.TextBox txtDateFormatView;
         private ColorableCheckBox chkCreateBackupOnCareer;
-        private System.Windows.Forms.GroupBox gpbEditSourcebookInfo;
-        private System.Windows.Forms.ListBox lstGlobalSourcebookInfos;
         private System.Windows.Forms.TabPage tabCustomDataDirectories;
         private BufferedTableLayoutPanel tlpOptionalRules;
         private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
@@ -2477,5 +2522,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblDirectoryPathLabel;
         private System.Windows.Forms.Label lblDefaultMasterIndexSetting;
         private System.Windows.Forms.ComboBox cboDefaultMasterIndexSetting;
+        private BufferedTableLayoutPanel btlp_SourcebookInfoAndButton;
+        private System.Windows.Forms.GroupBox gpbEditSourcebookInfo;
+        private System.Windows.Forms.ListBox lstGlobalSourcebookInfos;
+        private ButtonWithToolTip bScanForPDFs;
     }
 }

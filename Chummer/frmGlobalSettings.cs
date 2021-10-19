@@ -19,15 +19,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using NLog;
 using Application = System.Windows.Forms.Application;
 
@@ -137,7 +142,7 @@ namespace Chummer
             {
                 _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
             }
-            
+
             imgLanguageFlag.Image = Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height) >= 32
                 ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strSelectedLanguage.Substring(3, 2))
                 : FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
@@ -1501,5 +1506,154 @@ namespace Chummer
         }
 
         #endregion Methods
+
+        private async void bScanForPDFs_Click(object sender, EventArgs e)
+        {
+            // Prompt the user to select a save file to associate with this Contact.
+            using (new CursorWait(this))
+            {
+                using (var fbd = new FolderBrowserDialog())
+                {
+                   
+#if DEBUG
+                    fbd.SelectedPath = $"d:\\hoza\\persoenlich\\Shadowrun\\";
+#endif
+
+                    DialogResult result = fbd.ShowDialog();
+
+                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        var sw = new Stopwatch();
+                        sw.Start();
+                        string[] files = Directory.GetFiles(fbd.SelectedPath);
+                        var books = XmlManager.LoadXPath("books.xml");
+                        var language = GlobalSettings.Language;
+                        string xpath = $"/chummer/books/book/matches/match[language=\"{language}\"]";
+                        XPathNodeIterator matches = books.Select(xpath);
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(fbd.SelectedPath, files.Count()))
+                        {
+                            await Task.Run( () =>   ScanFilesforPDFTexts(files, matches, frmProgressBar));
+                            sw.Stop();
+                            Log.Info($"Scan for PDFs in Folder {fbd.SelectedPath} completed in " + sw.ElapsedMilliseconds + "ms.");
+                        }
+
+                    }
+                }
+            }
+        }
+
+        private void ScanFilesforPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
+        {
+            ParallelOptions parallelOptions = new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = 10
+            };
+            Parallel.ForEach(files, parallelOptions, file => 
+            {
+                FileInfo fileInfo = new FileInfo(file);
+                frmProgressBar.PerformStep(fileInfo.Name, true);
+                SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
+                if (info != null)
+                {
+                    if (_dicSourcebookInfos.ContainsKey(info.Code))
+                        _dicSourcebookInfos.Remove(info.Code);
+                    _dicSourcebookInfos.Add(info.Code, info);
+                }
+            });
+        }
+
+        private SourcebookInfo ScanPDFForMatchingText(FileInfo fileInfo, XPathNodeIterator xmlMatches)
+        {
+            SourcebookInfo ret = null;
+            //Search the first 10 pages for all the text
+            for (int intPage = 1; intPage <= 10; intPage++)
+            {
+                string text = GetPageTextFromPDF(fileInfo, intPage);
+                if (String.IsNullOrEmpty(text))
+                    continue;
+
+                foreach(XPathNavigator xmlMatch in xmlMatches)
+                {
+                  
+                    var languagetext = xmlMatch.SelectSingleNode("text")?.Value;
+                    if (text.Contains(languagetext))
+                    {
+                        int trueOffset = intPage - xmlMatch.SelectSingleNode("offset").ValueAsInt;
+
+                        xmlMatch.MoveToParent();
+                        xmlMatch.MoveToParent();
+                        
+                        ret = new SourcebookInfo()
+                        {
+                            Code = xmlMatch.SelectSingleNode("code")?.Value,
+                            Offset = trueOffset,
+                            Path = fileInfo.FullName
+                            
+                        };
+                        return ret;
+                    }
+
+                   
+
+
+
+                }
+
+            }
+            return ret;
+        }
+
+        private string GetPageTextFromPDF(FileInfo fileInfo, int intPage)
+        {
+            PdfDocument objPdfDocument = null;
+            try
+            {
+                objPdfDocument = new PdfDocument(new PdfReader(fileInfo.FullName));
+            }
+            catch (iText.IO.IOException e)
+            {
+                if (e.Message == "PDF header not found.")
+                    return null;
+                throw;
+            }
+            catch (Exception e)
+            {
+                //Loading failed, probably not a PDF file
+                Log.Warn(e, "Could not load file " + fileInfo.FullName + " and open it as PDF to search for text.");
+                return null;
+            }
+
+            List<string> lstStringFromPdf = new List<string>(30);
+            int intExtraAllCapsInfo = 0;
+            // Loop through each page, starting at the listed page + offset.
+            if (intPage >= objPdfDocument.GetNumberOfPages())
+                return null;
+
+
+            int intProcessedStrings = lstStringFromPdf.Count;
+            // each page should have its own text extraction strategy for it to work properly
+            // this way we don't need to check for previous page appearing in the current page
+            // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+            string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
+                    new SimpleTextExtractionStrategy())
+                .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+
+            // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+            lstStringFromPdf.AddRange(strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+            string allLines = "";
+            for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+            {
+                // failsafe for languages that don't have case distinction (chinese, japanese, etc)
+                // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
+                if (intExtraAllCapsInfo > 10)
+                    break;
+
+                string strCurrentLine = lstStringFromPdf[i];
+                allLines += strCurrentLine + Environment.NewLine;
+            }
+            return allLines;
+
+
+        }
     }
 }

@@ -381,6 +381,9 @@
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
     <Compile Include="Classes\XslManager.cs" />
+    <Compile Include="data\books.cs">
+      <DependentUpon>books.xsd</DependentUpon>
+    </Compile>
     <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
     </Compile>

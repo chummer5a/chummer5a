@@ -1,34 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-  <xs:element name="chummer">
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="chummer" msprop:Generator_RowClassName="chummerRow" msprop:Generator_RowEvHandlerName="chummerRowChangeEventHandler" msprop:Generator_RowDeletedName="chummerRowDeleted" msprop:Generator_RowDeletingName="chummerRowDeleting" msprop:Generator_RowEvArgName="chummerRowChangeEvent" msprop:Generator_TablePropName="chummer" msprop:Generator_RowChangedName="chummerRowChanged" msprop:Generator_UserTableName="chummer" msprop:Generator_RowChangingName="chummerRowChanging" msprop:Generator_TableClassName="chummerDataTable" msprop:Generator_TableVarName="tablechummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="version" type="xs:string" minOccurs="0" />
-        <xs:element name="books" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="version" msprop:Generator_UserColumnName="version" msprop:Generator_ColumnPropNameInTable="versionColumn" msprop:Generator_ColumnPropNameInRow="version" msprop:Generator_ColumnVarNameInTable="columnversion" type="xs:string" minOccurs="0" />
+        <xs:element name="books" msprop:Generator_RowClassName="booksRow" msprop:Generator_RowEvHandlerName="booksRowChangeEventHandler" msprop:Generator_RowDeletedName="booksRowDeleted" msprop:Generator_RowDeletingName="booksRowDeleting" msprop:Generator_RowEvArgName="booksRowChangeEvent" msprop:Generator_TablePropName="books" msprop:Generator_RowChangedName="booksRowChanged" msprop:Generator_UserTableName="books" msprop:Generator_RowChangingName="booksRowChanging" msprop:Generator_TableClassName="booksDataTable" msprop:Generator_TableVarName="tablebooks" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="book" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="book" msprop:Generator_RowClassName="bookRow" msprop:Generator_RowEvHandlerName="bookRowChangeEventHandler" msprop:Generator_RowDeletedName="bookRowDeleted" msprop:Generator_RowDeletingName="bookRowDeleting" msprop:Generator_RowEvArgName="bookRowChangeEvent" msprop:Generator_TablePropName="book" msprop:Generator_RowChangedName="bookRowChanged" msprop:Generator_UserTableName="book" msprop:Generator_RowChangingName="bookRowChanging" msprop:Generator_TableClassName="bookDataTable" msprop:Generator_TableVarName="tablebook" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="code" type="xs:string" minOccurs="1"  maxOccurs="1" />
-                    <xs:element name="permanent" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="id" msprop:Generator_UserColumnName="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnVarNameInTable="columnid" type="xs:string" />
+                    <xs:element name="name" msprop:Generator_UserColumnName="name" msprop:Generator_ColumnPropNameInTable="nameColumn" msprop:Generator_ColumnPropNameInRow="name" msprop:Generator_ColumnVarNameInTable="columnname" type="xs:string" />
+                    <xs:element name="hide" msprop:Generator_UserColumnName="hide" msprop:Generator_ColumnPropNameInTable="hideColumn" msprop:Generator_ColumnPropNameInRow="hide" msprop:Generator_ColumnVarNameInTable="columnhide" type="xs:string" minOccurs="0" />
+                    <xs:element name="code" msprop:Generator_UserColumnName="code" msprop:Generator_ColumnPropNameInTable="codeColumn" msprop:Generator_ColumnPropNameInRow="code" msprop:Generator_ColumnVarNameInTable="columncode" type="xs:string" />
+                    <xs:element name="permanent" msprop:Generator_UserColumnName="permanent" msprop:Generator_ColumnPropNameInTable="permanentColumn" msprop:Generator_ColumnPropNameInRow="permanent" msprop:Generator_ColumnVarNameInTable="columnpermanent" type="xs:string" minOccurs="0" />
+                    <xs:element name="match" msprop:Generator_RowClassName="matchRow" msprop:Generator_RowEvHandlerName="matchRowChangeEventHandler" msprop:Generator_RowDeletedName="matchRowDeleted" msprop:Generator_RowDeletingName="matchRowDeleting" msprop:Generator_RowEvArgName="matchRowChangeEvent" msprop:Generator_TablePropName="match" msprop:Generator_RowChangedName="matchRowChanged" msprop:Generator_UserTableName="match" msprop:Generator_RowChangingName="matchRowChanging" msprop:Generator_TableClassName="matchDataTable" msprop:Generator_TableVarName="tablematch" minOccurs="0" maxOccurs="unbounded">
+                      <xs:annotation>
+                        <xs:appinfo>
+                          <msdata:Relationship name="matches" msdata:parent="book" msdata:child="match" msdata:parentkey="id" msdata:childkey="book_id" msprop:Generator_UserParentTable="book" msprop:Generator_UserChildTable="match" msprop:Generator_RelationVarName="relationmatches" msprop:Generator_ChildPropName="GetmatchRows" msprop:Generator_ParentPropName="bookRow" msprop:Generator_UserRelationName="matches" />
+                        </xs:appinfo>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="language" msprop:Generator_UserColumnName="language" msprop:Generator_ColumnPropNameInTable="languageColumn" msprop:Generator_ColumnPropNameInRow="language" msprop:Generator_ColumnVarNameInTable="columnlanguage" type="xs:string" />
+                          <xs:element name="text" msprop:Generator_UserColumnName="text" msprop:Generator_ColumnPropNameInTable="textColumn" msprop:Generator_ColumnPropNameInRow="text" msprop:Generator_ColumnVarNameInTable="columntext" type="xs:string" minOccurs="0" />
+                          <xs:element name="offset" msprop:Generator_UserColumnName="offset" msprop:Generator_ColumnPropNameInTable="offsetColumn" msprop:Generator_ColumnPropNameInRow="offset" msprop:Generator_ColumnVarNameInTable="columnoffset" type="xs:string" minOccurs="0" />
+                          <xs:element name="id" msdata:DataType="System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" msprop:Generator_UserColumnName="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnVarNameInTable="columnid" type="xs:string" />
+                          <xs:element name="book_id" msprop:Generator_UserColumnName="book_id" msprop:Generator_ColumnPropNameInTable="book_idColumn" msprop:Generator_ColumnPropNameInRow="book_id" msprop:Generator_ColumnVarNameInTable="columnbook_id" type="xs:string" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
+                  <xs:attribute name="books_Id" msprop:Generator_UserColumnName="books_Id" msprop:Generator_ColumnPropNameInTable="books_IdColumn" msprop:Generator_ColumnPropNameInRow="books_Id" msprop:Generator_ColumnVarNameInTable="columnbooks_Id" type="xs:int" use="prohibited" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
+            <xs:attribute name="books_Id" msdata:AutoIncrement="true" msprop:Generator_UserColumnName="books_Id" msprop:Generator_ColumnPropNameInTable="books_IdColumn" msprop:Generator_ColumnPropNameInRow="books_Id" msprop:Generator_ColumnVarNameInTable="columnbooks_Id" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+            <xs:attribute name="chummer_Id" msprop:Generator_UserColumnName="chummer_Id" msprop:Generator_ColumnPropNameInTable="chummer_IdColumn" msprop:Generator_ColumnPropNameInRow="chummer_Id" msprop:Generator_ColumnVarNameInTable="columnchummer_Id" type="xs:int" use="prohibited" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>
+      <xs:attribute name="chummer_Id" msdata:AutoIncrement="true" msprop:Generator_UserColumnName="chummer_Id" msprop:Generator_ColumnPropNameInTable="chummer_IdColumn" msprop:Generator_ColumnPropNameInRow="chummer_Id" msprop:Generator_ColumnVarNameInTable="columnchummer_Id" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
     </xs:complexType>
   </xs:element>
-  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="NewDataSet" msprop:Generator_DataSetName="NewDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="chummer" />
       </xs:choice>
     </xs:complexType>
+    <xs:unique name="match_Constraint1" msdata:ConstraintName="Constraint1">
+      <xs:selector xpath=".//match" />
+      <xs:field xpath="id" />
+    </xs:unique>
+    <xs:unique name="books_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//books" />
+      <xs:field xpath="@books_Id" />
+    </xs:unique>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//chummer" />
+      <xs:field xpath="@chummer_Id" />
+    </xs:unique>
+    <xs:keyref name="chummer_books" refer="Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserParentTable="chummer" msprop:rel_Generator_UserChildTable="books" msprop:rel_Generator_RelationVarName="relationchummer_books" msprop:rel_Generator_ChildPropName="GetbooksRows" msprop:rel_Generator_UserRelationName="chummer_books" msprop:rel_Generator_ParentPropName="chummerRow">
+      <xs:selector xpath=".//books" />
+      <xs:field xpath="@chummer_Id" />
+    </xs:keyref>
+    <xs:keyref name="books_book" refer="books_Constraint1" msdata:IsNested="true" msprop:rel_Generator_UserParentTable="books" msprop:rel_Generator_UserChildTable="book" msprop:rel_Generator_RelationVarName="relationbooks_book" msprop:rel_Generator_ChildPropName="GetbookRows" msprop:rel_Generator_UserRelationName="books_book" msprop:rel_Generator_ParentPropName="booksRow">
+      <xs:selector xpath=".//book" />
+      <xs:field xpath="@books_Id" />
+    </xs:keyref>
   </xs:element>
 </xs:schema>

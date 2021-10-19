@@ -42,11 +42,35 @@
       <name>Shadowrun 5th Edition</name>
       <code>SR5</code>
       <permanent />
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Welcome to Shadowrun, Fifth Edition. Welcome to the</text>
+          <offset>8</offset>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Wie auch immer der deutsche Text lautet</text>
+          <offset>8</offset>
+        </match>
+      </matches>
     </book>
     <book>
       <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
       <name>Street Grimoire</name>
       <code>SG</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Whatever the text should be here</text>
+          <offset>6</offset>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Wie auch immer der deutsche Text lautet</text>
+          <offset>6</offset>
+        </match>
+      </matches>
     </book>
     <book>
       <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
