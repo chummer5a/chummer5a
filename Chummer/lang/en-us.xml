@@ -2379,6 +2379,14 @@
       <text>Cannot Remove Cyberware</text>
     </string>
     <string>
+      <key>MessageTitle_FoundPDFsInFolder</key>
+      <text>Scan finished</text>
+    </string>
+    <string>
+      <key>Message_FoundPDFsInFolder</key>
+      <text>Do you want to open the log file for a detailed report? Chummer found Sourcebooks in the folder: </text>
+    </string>
+    <string>
       <key>Message_ComplexFormLimit</key>
       <text>You cannot have more complex forms than twice your RES score. Ref: Page 98, SR5 Core (Errata).</text>
     </string>
@@ -7853,6 +7861,10 @@
     <string>
       <key>Button_Options_PDFTest</key>
       <text>Test - Open to Page 5</text>
+    </string>
+    <string>
+      <key>Button_Options_PDFFolderScan</key>
+      <text>Scan a Folder for PDF Files</text>
     </string>
     <string>
       <key>Checkbox_Options_OpenPDFsAsURLs</key>

@@ -1099,6 +1099,15 @@
             <text>Cyberware kann nicht entfernt werden</text>
         </string>
         <string>
+          <key>Message_FoundPDFsInFolder</key>
+          <text>Soll das Logfile für eine detailierte Info geöffnet werden? Chummer hat PDFs im Verzeichnis gefunden: </text>
+        </string>
+      <string>
+        <key>MessageTitle_FoundPDFsInFolder</key>
+        <text>Scan abgeschlossen</text>
+      </string>
+      
+      <string>
             <key>Message_ComplexFormLimit</key>
             <text>Sie können nicht mehr Komplexe Formen beherrschen als zweimal ihr RES-Wert. Siehe Seite 98, SR5 Grundregelwerk (Errata).</text>
         </string>
@@ -6022,6 +6031,10 @@
             <key>Button_Options_PDFTest</key>
             <text>Test - Seite 5 öffnen</text>
         </string>
+      <string>
+        <key>Button_Options_PDFFolderScan</key>
+        <text>Ein Verzeichnis nach PDFs durchsuchen</text>
+      </string>
         <string>
             <key>Checkbox_Options_DatesIncludeTime</key>
             <text>Zu Ausgaben soll die Uhrzeit angezeigt werden</text>
