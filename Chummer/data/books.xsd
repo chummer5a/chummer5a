@@ -15,6 +15,21 @@
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="code" type="xs:string" minOccurs="1"  maxOccurs="1" />
                     <xs:element name="permanent" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="matches" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="match" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="language" type="xs:string" />
+                                <xs:element name="text"  type="xs:string" minOccurs="0" />
+                                <xs:element name="offset"  type="xs:int" minOccurs="0" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
