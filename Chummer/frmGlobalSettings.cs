@@ -1517,11 +1517,6 @@ namespace Chummer
             {
                 using (var fbd = new FolderBrowserDialog())
                 {
-
-#if DEBUG
-                    fbd.SelectedPath = $"d:\\hoza\\persoenlich\\Shadowrun\\";
-#endif
-
                     DialogResult result = fbd.ShowDialog();
 
                     if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
