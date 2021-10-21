@@ -1114,6 +1114,51 @@ namespace Chummer
                         }
                         return false;
                     }
+                case "skilltotal":
+                    {
+                    // Check if the total combined Ratings of Skills adds up to a particular total.
+                    int intTotal = 0;
+                    string[] strGroups = xmlNode.SelectSingleNode("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
+                    StringBuilder objOutputString = new StringBuilder(Environment.NewLine + '\t');
+                    if (strGroups != null)
+                    {
+                        // If the xmlnode contains Type element, assume that it is a Knowledge skill. 
+                        if (xmlNode.SelectSingleNode("type") != null)
+                        {
+                            for (int i = 0; i <= strGroups.Length - 1; ++i)
+                            {
+                                foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
+                                {
+                                    if (objGroup.Name != strGroups[i]) continue;
+                                    if (blnShowMessage)
+                                        objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                    intTotal += objGroup.Rating;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i <= strGroups.Length - 1; ++i)
+                            {
+                                foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
+                                {
+                                    if (objGroup.Name != strGroups[i]) continue;
+                                    if (blnShowMessage)
+                                        objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                    intTotal += objGroup.Rating;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!blnShowMessage) return intTotal >= (xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0);
+                    if (objOutputString.Length > 0)
+                        objOutputString.Length -= 2;
+                    strName = objOutputString + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
+                    return intTotal >= (xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0);
+                    }
                 case "skillgrouptotal":
                     {
                         // Check if the total combined Ratings of Skill Groups adds up to a particular total.

@@ -122,6 +122,7 @@ Application Changes:
 - Favorite characters are now always automatically sorted alphabetically by their file paths. Fixes #3853.
 - Having Chummer not round Essence internally no longer allows characters with exactly 0 Essence to be valid.
 - LimittSpellCategory improvement can now exclude a category from being selected.
+- Objects can now use the presence of skills with total ranks (ie a total rank of 4 or more for Firearms + Blades) using the skilltotal node for required/forbidden operations. 
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
