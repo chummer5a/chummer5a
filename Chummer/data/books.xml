@@ -423,6 +423,14 @@
       <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
       <name>State of the Art ADL (German Handbook)</name>
       <code>SAG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
+          <offset>6</offset>
+        </match>
+      </matches>
+    </book>
     </book>
     <book>
       <id>c4392cc2-8edd-4ae3-8198-b8c00e693c8b</id>
@@ -506,6 +514,13 @@
       <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
       <name>Hamburg (German-exclusive)</name>
       <code>HAMG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
+          <offset>7</offset>
+        </match>
+      </matches>
     </book>
     <book>
       <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
@@ -550,11 +565,25 @@
       <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
       <name>Datapuls SOTA 2080 (German-exclusive)</name>
       <code>SOTG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
+          <offset>4</offset>
+        </match>
+      </matches>
     </book>
     <book>
       <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
       <name>Datapuls Verschlusssache (German-exclusive)</name>
       <code>DPVG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
+          <offset>4</offset>
+        </match>
+      </matches>
     </book>
     <book>
       <id>e997ea2e-916b-4482-a381-bf8c49cb08ff</id>
@@ -589,6 +618,14 @@
       <id>775703af-df57-4ee2-b8e7-c6b829b80539</id>
       <name>Sprawl Wilds</name>
       <code>SW</code>
+      <permanent />
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Gamemastering is more of an art than a science</text>
+          <offset>4</offset>
+        </match>
+      </matches>
     </book>
   </books>
 </chummer>
