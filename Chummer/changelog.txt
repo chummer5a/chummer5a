@@ -180,6 +180,7 @@ Data Changes:
 - Changed Dead SIN's Fake SIN to rating 3.
 - Fixed missing gecko grip and chameleon coating for the Mitsuhama Akiyama (Rules interpretation from description and 4e stats)
 - Fixed missing music player on the Urban Explorer Jumpsuit
+- Updated Krime Varmint to Concealability 2, Submachine Guns range.
 
 Changed/New Strings:
 - String_ContactPoints
