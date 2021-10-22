@@ -1616,11 +1616,11 @@
     </string>
     <string>
       <key>Menu_FileSaveAsCreated</key>
-      <text>Save As &amp;Created</text>
+      <text>Save As C&amp;reated</text>
     </string>
     <string>
       <key>Menu_FileExport</key>
-      <text>Export</text>
+      <text>&amp;Export</text>
     </string>
     <string>
       <key>Menu_FilePrint</key>
@@ -1632,7 +1632,7 @@
     </string>
     <string>
       <key>Menu_FileClose</key>
-      <text>Close</text>
+      <text>&amp;Close</text>
     </string>
     <string>
       <key>Menu_SpecialAddCyberwareSuite</key>

@@ -15511,5 +15511,11 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
+
+        private void mnuFileExport_Click(object sender, EventArgs e)
+        {
+            using (frmExport frmExportCharacter = new frmExport(CharacterObject))
+                frmExportCharacter.ShowDialog(this);
+        }
     }
 }

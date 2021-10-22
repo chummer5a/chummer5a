@@ -123,6 +123,7 @@ Application Changes:
 - Having Chummer not round Essence internally no longer allows characters with exactly 0 Essence to be valid.
 - LimittSpellCategory improvement can now exclude a category from being selected.
 - Objects can now use the presence of skills with total ranks (ie a total rank of 4 or more for Firearms + Blades) using the skilltotal node for required/forbidden operations. 
+- Added the ability to export characters while still in character creation. Fixes #4585.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
