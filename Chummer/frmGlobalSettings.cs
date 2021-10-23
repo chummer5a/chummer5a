@@ -1515,54 +1515,58 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (new CursorWait(this))
             {
-                using (var fbd = new FolderBrowserDialog())
+                using (FolderBrowserDialog fbd = new FolderBrowserDialog())
                 {
                     DialogResult result = fbd.ShowDialog();
 
-                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                        return;
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    var books = await XmlManager.LoadXPathAsync("books.xml");
+                    string xpath = "/chummer/books/book/matches/match[language=\"" + GlobalSettings.Language + "\"]";
+                    XPathNodeIterator matches = books.Select(xpath);
+                    using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
                     {
-                        var sw = new Stopwatch();
-                        sw.Start();
-                        string[] files = Directory.GetFiles(fbd.SelectedPath);
-                        var books = XmlManager.LoadXPath("books.xml");
-                        var language = GlobalSettings.Language;
-                        string xpath = $"/chummer/books/book/matches/match[language=\"{language}\"]";
-                        XPathNodeIterator matches = books.Select(xpath);
-                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(fbd.SelectedPath, files.Count()))
+                        List<SourcebookInfo> list = null;
+                        await Task.Run(() =>
                         {
-                            IEnumerable<SourcebookInfo> list = null;
-                            await Task.Run(() =>
-                            {
-                                list = ScanFilesforPDFTexts(files, matches, frmProgressBar);
-                            });
-                            sw.Stop();
-                            string feedback = Environment.NewLine + Environment.NewLine +
-                                "-------------------------------------------------------------" + Environment.NewLine +
-                                $"Scan for PDFs in Folder {fbd.SelectedPath} completed in {sw.ElapsedMilliseconds}ms.{Environment.NewLine}{list.Count()} Sourcebook(s) was/were found:" + Environment.NewLine + Environment.NewLine;
-                            foreach(var sourcebook in list)
-                            {
-                                feedback += $"{sourcebook.Code} with Offset {sourcebook.Offset} path: {sourcebook.Path}" + Environment.NewLine;
-                            }
-                            feedback += Environment.NewLine +
-                                "-------------------------------------------------------------" + Environment.NewLine;
-                            Log.Info(feedback);
-
-                            var message = LanguageManager.GetString("Message_FoundPDFsInFolder") + list.Count();
-                            var title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder");
-                    
-                            var dialogresult = Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-                            if (dialogresult == DialogResult.Yes)
-                            {
-                                //display the log
-                                string filename = GetLogFileName("f");
-                                FileInfo fileInfo = new FileInfo(filename);
-                                if (fileInfo.Exists)
-                                {
-                                    Process.Start(fileInfo.FullName);
-                                }
-                            }
+                            list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList();
+                        });
+                        sw.Stop();
+                        StringBuilder sbdFeedback = new StringBuilder(Environment.NewLine + Environment.NewLine)
+                                                    .AppendLine(
+                                                        "-------------------------------------------------------------")
+                                                    .AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                                  "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} Sourcebook(s) was/were found:",
+                                                                  fbd.SelectedPath, sw.ElapsedMilliseconds,
+                                                                  Environment.NewLine, list.Count).AppendLine()
+                                                    .AppendLine();
+                        foreach(var sourcebook in list)
+                        {
+                            sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                     "{0} with Offset {1} path: {2}", sourcebook.Code,
+                                                     sourcebook.Offset, sourcebook.Path).AppendLine();
                         }
 
+                        sbdFeedback.AppendLine()
+                                   .AppendLine("-------------------------------------------------------------");
+                        Log.Info(sbdFeedback.ToString());
+
+                        var message = LanguageManager.GetString("Message_FoundPDFsInFolder") + list.Count;
+                        var title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder");
+                    
+                        var dialogresult = Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (dialogresult != DialogResult.Yes)
+                            return;
+                        //display the log
+                        string filename = GetLogFileName("f");
+                        FileInfo fileInfo = new FileInfo(filename);
+                        if (fileInfo.Exists)
+                        {
+                            Process.Start(fileInfo.FullName);
+                        }
                     }
                 }
             }
@@ -1570,21 +1574,19 @@ namespace Chummer
 
         private string GetLogFileName(string targetName)
         {
-            string fileName = null;
+            string fileName;
 
             if (LogManager.Configuration != null && LogManager.Configuration.ConfiguredNamedTargets.Count != 0)
             {
                 Target target = LogManager.Configuration.FindTargetByName(targetName);
                 if (target == null)
                 {
-                    throw new Exception("Could not find target named: " + targetName);
+                    throw new ArgumentException("Could not find target named: " + targetName);
                 }
 
-                FileTarget fileTarget = null;
-                WrapperTargetBase wrapperTarget = target as WrapperTargetBase;
-
+                FileTarget fileTarget;
                 // Unwrap the target if necessary.
-                if (wrapperTarget == null)
+                if (!(target is WrapperTargetBase wrapperTarget))
                 {
                     fileTarget = target as FileTarget;
                 }
@@ -1595,7 +1597,7 @@ namespace Chummer
 
                 if (fileTarget == null)
                 {
-                    throw new Exception("Could not get a FileTarget from " + target.GetType());
+                    throw new ArgumentException("Could not get a FileTarget from " + target.GetType());
                 }
 
                 var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now };
@@ -1606,20 +1608,20 @@ namespace Chummer
             }
             else
             {
-                throw new Exception("LogManager contains no Configuration or there are no named targets");
+                throw new InvalidOperationException("LogManager contains no Configuration or there are no named targets");
             }
 
             if (!File.Exists(fileName))
             {
-                throw new Exception("File " + fileName + " does not exist");
+                throw new FileNotFoundException("File " + fileName + " does not exist");
             }
 
             return fileName;
         }
 
-        private IEnumerable<SourcebookInfo> ScanFilesforPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
+        private ConcurrentBag<SourcebookInfo> ScanFilesForPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
         {
-            ParallelOptions parallelOptions = new ParallelOptions()
+            ParallelOptions parallelOptions = new ParallelOptions
             {
                 MaxDegreeOfParallelism = 10
             };
@@ -1629,61 +1631,53 @@ namespace Chummer
                 FileInfo fileInfo = new FileInfo(file);
                 frmProgressBar.PerformStep(fileInfo.Name, true);
                 SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
-                if (info != null)
-                {
-                    if (_dicSourcebookInfos.ContainsKey(info.Code))
-                        _dicSourcebookInfos.Remove(info.Code);
-                    _dicSourcebookInfos.Add(info.Code, info);
-                    resultCollection.Add(info);
-                }
+                if (info == null)
+                    return;
+                resultCollection.Add(info);
             });
-            return resultCollection.ToList<SourcebookInfo>();
+            foreach (SourcebookInfo objInfo in resultCollection)
+            {
+                if (_dicSourcebookInfos.ContainsKey(objInfo.Code))
+                    _dicSourcebookInfos[objInfo.Code] = objInfo;
+                else
+                    _dicSourcebookInfos.Add(objInfo.Code, objInfo);
+            }
+            return resultCollection;
         }
 
         private SourcebookInfo ScanPDFForMatchingText(FileInfo fileInfo, XPathNodeIterator xmlMatches)
         {
-            SourcebookInfo ret = null;
             //Search the first 10 pages for all the text
             for (int intPage = 1; intPage <= 10; intPage++)
             {
                 string text = GetPageTextFromPDF(fileInfo, intPage);
-                if (String.IsNullOrEmpty(text))
+                if (string.IsNullOrEmpty(text))
                     continue;
 
                 foreach (XPathNavigator xmlMatch in xmlMatches)
                 {
+                    string strLanguageText = xmlMatch.SelectSingleNode("text")?.Value ?? string.Empty;
+                    if (!text.Contains(strLanguageText))
+                        continue;
+                    int trueOffset = intPage - xmlMatch.SelectSingleNode("offset")?.ValueAsInt ?? 0;
 
-                    var languagetext = xmlMatch.SelectSingleNode("text")?.Value;
-                    if (text.Contains(languagetext))
+                    xmlMatch.MoveToParent();
+                    xmlMatch.MoveToParent();
+
+                    return new SourcebookInfo
                     {
-                        int trueOffset = intPage - xmlMatch.SelectSingleNode("offset").ValueAsInt;
-
-                        xmlMatch.MoveToParent();
-                        xmlMatch.MoveToParent();
-
-                        ret = new SourcebookInfo()
-                        {
-                            Code = xmlMatch.SelectSingleNode("code")?.Value,
-                            Offset = trueOffset,
-                            Path = fileInfo.FullName
-
-                        };
-                        return ret;
-                    }
-
-
-
-
-
+                        Code = xmlMatch.SelectSingleNode("code")?.Value,
+                        Offset = trueOffset,
+                        Path = fileInfo.FullName
+                    };
                 }
-
             }
-            return ret;
+            return null;
         }
 
         private string GetPageTextFromPDF(FileInfo fileInfo, int intPage)
         {
-            PdfDocument objPdfDocument = null;
+            PdfDocument objPdfDocument;
             try
             {
                 objPdfDocument = new PdfDocument(new PdfReader(fileInfo.FullName));
@@ -1707,7 +1701,6 @@ namespace Chummer
             if (intPage >= objPdfDocument.GetNumberOfPages())
                 return null;
 
-
             int intProcessedStrings = lstStringFromPdf.Count;
             // each page should have its own text extraction strategy for it to work properly
             // this way we don't need to check for previous page appearing in the current page
@@ -1718,7 +1711,7 @@ namespace Chummer
 
             // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
             lstStringFromPdf.AddRange(strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
-            string allLines = "";
+            StringBuilder sbdAllLines = new StringBuilder();
             for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
             {
                 // failsafe for languages that don't have case distinction (chinese, japanese, etc)
@@ -1727,11 +1720,9 @@ namespace Chummer
                     break;
 
                 string strCurrentLine = lstStringFromPdf[i];
-                allLines += strCurrentLine + Environment.NewLine;
+                sbdAllLines.AppendLine(strCurrentLine);
             }
-            return allLines;
-
-
+            return sbdAllLines.ToString();
         }
     }
 
