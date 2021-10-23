@@ -4492,7 +4492,7 @@ namespace Chummer
                             xmlAddModCategory = objXmlArmor["addmodcategory"];
                             if (xmlAddModCategory != null)
                             {
-                                frmPickArmorMod.AllowedCategories += "," + xmlAddModCategory.InnerText;
+                                frmPickArmorMod.AllowedCategories += ',' + xmlAddModCategory.InnerText;
                             }
                         }
 
