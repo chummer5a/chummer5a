@@ -577,6 +577,48 @@ namespace Chummer
                                 objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
                                (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
                     }
+                case "biowarecategory":
+                {
+                    int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                    if (blnShowMessage)
+                    {
+                        string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
+                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                        strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}",
+                            Environment.NewLine, strSpace, LanguageManager.GetString("Label_Bioware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
+                    }
+                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                    {
+                        if (objParent is Cyberware objCyberware)
+                            return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
+                        return false;
+                    }
+                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Category == strNodeInnerText &&
+                        objCyberware.SourceType == Improvement.ImprovementSource.Bioware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
+                        (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
+                }
+                case "cyberwarecategory":
+                {
+                    int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                    if (blnShowMessage)
+                    {
+                        string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
+                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                        strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}",
+                            Environment.NewLine, strSpace, LanguageManager.GetString("Label_Cyberware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
+                    }
+                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                    {
+                        if (objParent is Cyberware objCyberware)
+                            return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
+                        return false;
+                    }
+                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Category == strNodeInnerText &&
+                        objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
+                        (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
+                }
                 case "biowarecontains":
                     {
                         int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;

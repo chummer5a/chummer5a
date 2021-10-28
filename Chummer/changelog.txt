@@ -124,6 +124,7 @@ Application Changes:
 - LimittSpellCategory improvement can now exclude a category from being selected.
 - Objects can now use the presence of skills with total ranks (ie a total rank of 4 or more for Firearms + Blades) using the skilltotal node for required/forbidden operations. 
 - Added the ability to export characters while still in character creation. Fixes #4585.
+- Added support for using a category of cyberware for forbidden/required nodes. Uses the cyberwarecategory and biowarecategory element names. For example, to require that a quality only be taken if the user has a cyberware in the Cyber Implant Weapon category, you would use <cyberwarecategory>Cyber Implant Weapon</cyberwarecategory>
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
