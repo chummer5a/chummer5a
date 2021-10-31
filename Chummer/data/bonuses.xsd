@@ -1402,6 +1402,24 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="weaponaccuracy" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+          <xs:attribute name="precedence" type="xs:integer" use="optional" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="weaponrangemodifier" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+          <xs:attribute name="precedence" type="xs:integer" use="optional" />
+        </xs:complexType>
+      </xs:element>
       <xs:element name="weaponskillaccuracy" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>

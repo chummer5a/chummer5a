@@ -3853,6 +3853,18 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")?.ValueAsInt ?? 0;
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
+            
+            string strNameUpper = Name.ToUpperInvariant();
+            decimal decImproveAccuracy = (from objImprovement in _objCharacter.Improvements
+                where objImprovement.ImproveType == Improvement.ImprovementType.WeaponRangeModifier &&
+                      objImprovement.Enabled
+                let strImprovedName = objImprovement.ImprovedName
+                where string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name ||
+                      strImprovedName.StartsWith("[contains]", StringComparison.Ordinal) &&
+                      strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true).ToUpperInvariant())
+                select objImprovement.Value).Sum();
+
+            i += decImproveAccuracy.StandardRound();
             i = Math.Min(0, i);
             return string.Format(GlobalSettings.InvariantCultureInfo, LanguageManager.GetString("Label_Range" + strRange), i);
         }

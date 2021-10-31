@@ -612,6 +612,8 @@ namespace Chummer
                     return objImprovementAdder.addware;
                 case "WEAPONACCURACY":
                     return objImprovementAdder.weaponaccuracy;
+                case "WEAPONRANGEMODIFIER":
+                    return objImprovementAdder.weaponrangemodifier;
                 case "WEAPONSKILLACCURACY":
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENICLIMIT":

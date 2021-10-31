@@ -355,6 +355,7 @@ namespace Chummer
             AstralReputationWild,
             CyberadeptDaemon,
             PenaltyFreeSustain,
+            WeaponRangeModifier,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
