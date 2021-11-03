@@ -884,15 +884,23 @@ namespace Chummer
                     // </books>
                     objWriter.WriteEndElement();
 
+                    string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+
                     // <customdatadirectorynames>
                     objWriter.WriteStartElement("customdatadirectorynames");
                     for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
                     {
-                        KeyValuePair<string, bool> dicDirectoryName = _dicCustomDataDirectoryKeys[i];
+                        KeyValuePair<string, bool> kvpDirectoryInfo = _dicCustomDataDirectoryKeys[i];
+                        string strDirectoryName = kvpDirectoryInfo.Key;
+                        bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
+                        if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
+                            x => x.DirectoryPath.StartsWith(strCustomDataRootPath)
+                                 && x.Name.Equals(strDirectoryName, StringComparison.OrdinalIgnoreCase)))
+                            continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         objWriter.WriteStartElement("customdatadirectoryname");
-                        objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
+                        objWriter.WriteElementString("directoryname", strDirectoryName);
                         objWriter.WriteElementString("order", i.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("enabled", dicDirectoryName.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        objWriter.WriteElementString("enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                         objWriter.WriteEndElement();
                     }
                     // </customdatadirectorynames>
