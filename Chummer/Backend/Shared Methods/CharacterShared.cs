@@ -6685,7 +6685,7 @@ namespace Chummer
                 {
                     using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                     {
-                        frmProgressBar.PerformStep(_objCharacter.CharacterName, true);
+                        frmProgressBar.PerformStep(_objCharacter.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
                         if (!_objCharacter.Save())
                             return false;
                         GlobalSettings.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);

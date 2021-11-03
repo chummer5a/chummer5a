@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -25,6 +26,14 @@ namespace Chummer
     public partial class frmLoading : Form
     {
         private string _strCharacterFile = string.Empty;
+
+        public enum ProgressBarTextPatterns
+        {
+            Saving = 0,
+            Loading,
+            Scanning,
+            Initializing
+        }
 
         public string CharacterFile
         {
@@ -71,14 +80,49 @@ namespace Chummer
         /// Performs a single step on the underlying ProgressBar
         /// </summary>
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
-        /// <param name="blnSaving">Whether to use "Saving" instead of "Loading".</param>
-        public void PerformStep(string strStepName = "", bool blnSaving = false)
+        /// <param name="eUseTextPattern">The text pattern to use in combination with <paramref name="strStepName"/>, e.g. "Loading", "Saving", et al.</param>
+        public void PerformStep(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading)
         {
             if (this.IsNullOrDisposed())
                 return;
-            string strNewText = string.IsNullOrEmpty(strStepName)
-                    ? LanguageManager.GetString(blnSaving ? "String_Saving" : "String_Loading")
-                    : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString(blnSaving ? "String_Saving_Pattern" : "String_Loading_Pattern"), strStepName);
+            string strNewText;
+            switch (eUseTextPattern)
+            {
+                case ProgressBarTextPatterns.Saving:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = LanguageManager.GetString("String_Saving");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString("String_Saving_Pattern"),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Loading:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = LanguageManager.GetString("String_Loading");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString("String_Loading_Pattern"),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Scanning:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = LanguageManager.GetString("String_Scanning");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString("String_Scanning_Pattern"),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Initializing:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = LanguageManager.GetString("String_Initializing");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString("String_Initializing_Pattern"),
+                                                   strStepName);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eUseTextPattern), eUseTextPattern, null);
+            }
             if (pgbLoadingProgress.Maximum > 2)
                 strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalSettings.CultureInfo)
                               + '/' + (pgbLoadingProgress.Maximum - 1).ToString(GlobalSettings.CultureInfo) + ')';

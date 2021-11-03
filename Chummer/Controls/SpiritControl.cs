@@ -488,7 +488,7 @@ namespace Chummer
                     objCharacter.MetatypeBP = 0;
                     using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                     {
-                        frmProgressBar.PerformStep(objCharacter.CharacterName, true);
+                        frmProgressBar.PerformStep(objCharacter.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
                         if (!objCharacter.Save())
                             return;
                     }

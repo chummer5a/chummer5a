@@ -204,7 +204,7 @@ namespace Chummer
                                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                                         XmlManager.Load(x, null, GlobalSettings.DefaultLanguage);
                                     XmlManager.Load(x);
-                                    _frmProgressBar.PerformStep(Application.ProductName);
+                                    _frmProgressBar.PerformStep(Application.ProductName, frmLoading.ProgressBarTextPatterns.Initializing);
                                 })));
                                 //Timekeeper.Finish("cache_load");
                             }

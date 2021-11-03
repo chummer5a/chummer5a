@@ -1573,7 +1573,7 @@ namespace Chummer
             Parallel.ForEach(files, parallelOptions, file =>
             {
                 FileInfo fileInfo = new FileInfo(file);
-                frmProgressBar.PerformStep(fileInfo.Name, true);
+                frmProgressBar.PerformStep(fileInfo.Name, frmLoading.ProgressBarTextPatterns.Scanning);
                 SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
                 if (info == null)
                     return;
