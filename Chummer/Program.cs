@@ -156,12 +156,17 @@ namespace Chummer
                     }
 
                     IsMono = Type.GetType("Mono.Runtime") != null;
+                    // Delete old ProfileOptimization files because we don't want them anymore
+                    Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
+                    // Apparently, ProfileOptimization can potentially cause weird hangs and crashes on certain hardware, so it's safer to just turn it off
+                    /*
                     // Mono doesn't always play nice with ProfileOptimization, so it's better to just not bother with it when running under Mono
                     if (!IsMono)
                     {
                         ProfileOptimization.SetProfileRoot(Utils.GetStartupPath);
                         ProfileOptimization.StartProfile("chummerprofile");
                     }
+                    */
 
                     Stopwatch sw = Stopwatch.StartNew();
                     //If debugging and launched from other place (Bootstrap), launch debugger
