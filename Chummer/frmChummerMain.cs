@@ -197,24 +197,6 @@ namespace Chummer
                         Task objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
                         {
-#if DEBUG
-                            if (!Utils.IsUnitTest && GlobalSettings.ShowCharacterCustomDataWarning &&
-                                CurrentVersion.Minor < 215)
-#else
-                            if (!Utils.IsUnitTest && GlobalSettings.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion.Minor < 215)
-#endif
-                            {
-                                if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
-                                    LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                                {
-                                    Application.Exit();
-                                    return;
-                                }
-
-                                GlobalSettings.ShowCharacterCustomDataWarning = false;
-                            }
-
                             // Attempt to cache all XML files that are used the most.
                             using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
                             {
