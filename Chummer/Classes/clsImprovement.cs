@@ -3850,6 +3850,18 @@ namespace Chummer
                                 Log.Debug("CreateImprovements exit");
                                 return false;
                             }
+                            if (strXPath.Contains("@insert"))
+                            {
+                                string whattoinsert = strXPath.Substring(strXPath.IndexOf("@insert"));
+                                whattoinsert = whattoinsert.Substring(0, whattoinsert.IndexOf('\''));
+                                switch(whattoinsert)
+                                {
+                                    case "@insert_tradition_id":
+                                        strXPath = strXPath.Replace(whattoinsert, objCharacter.MagicTradition.SourceIDString);
+                                        break;
+                                    default: throw new NotImplementedException("Please implement replacement handling for " + whattoinsert + "!");
+                                }
+                            }
                             XPathNavigator xmlDoc = objCharacter.LoadDataXPath(nodBonus.SelectSingleNode("selecttext/@xml")?.Value);
                             List<ListItem> lstItems = new List<ListItem>(5);
                             foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))

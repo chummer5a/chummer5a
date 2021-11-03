@@ -12201,7 +12201,8 @@
       <page>143</page>
       <avail>9</avail>
       <bonus>
-        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
+        <!--<selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />-->
+        <selecttext xml="traditions.xml" xpath="/chummer/traditions/tradition[id = '@insert_tradition_id']/spirits/*" />
       </bonus>
       <cost>1000</cost>
       <allowrename>True</allowrename>
