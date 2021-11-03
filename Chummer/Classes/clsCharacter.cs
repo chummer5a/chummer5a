@@ -2716,7 +2716,7 @@ namespace Chummer
                                         setSavedBooks.Add(xmlBook.Value);
                                 if (setSavedBooks.Count == 0)
                                     setSavedBooks = SettingsManager
-                                        .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].Books;
+                                        .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].Books.ToHashSet();
                                 List<string> lstSavedCustomDataDirectoryNames = new List<string>();
                                 foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select(
                                     "customdatadirectorynames/directoryname"))

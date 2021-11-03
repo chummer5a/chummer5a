@@ -2474,7 +2474,12 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> Books => _lstBooks;
+        public HashSet<string> BooksWritable => _lstBooks;
+
+        /// <summary>
+        /// Sourcebooks.
+        /// </summary>
+        public IReadOnlyCollection<string> Books => _lstBooks;
 
         /// <summary>
         /// File name of the option (if it is not a built-in one).

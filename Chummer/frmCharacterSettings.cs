@@ -515,9 +515,9 @@ namespace Chummer
                 {
                     objNode.Checked = _blnSourcebookToggle;
                     if (_blnSourcebookToggle)
-                        _objCharacterSettings.Books.Add(strBookCode);
+                        _objCharacterSettings.BooksWritable.Add(strBookCode);
                     else
-                        _objCharacterSettings.Books.Remove(strBookCode);
+                        _objCharacterSettings.BooksWritable.Remove(strBookCode);
                 }
             }
             _blnLoading = false;
@@ -542,9 +542,9 @@ namespace Chummer
                 return;
             }
             if (objNode.Checked)
-                _objCharacterSettings.Books.Add(strBookCode);
+                _objCharacterSettings.BooksWritable.Add(strBookCode);
             else
-                _objCharacterSettings.Books.Remove(strBookCode);
+                _objCharacterSettings.BooksWritable.Remove(strBookCode);
             _objCharacterSettings.RecalculateBookXPath();
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
         }
@@ -791,7 +791,7 @@ namespace Chummer
                 if (objXmlBook.SelectSingleNode("permanent") != null)
                 {
                     _setPermanentSourcebooks.Add(strCode);
-                    _objCharacterSettings.Books.Add(strCode);
+                    _objCharacterSettings.BooksWritable.Add(strCode);
                     blnChecked = true;
                 }
                 TreeNode objNode = new TreeNode

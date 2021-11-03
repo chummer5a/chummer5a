@@ -410,7 +410,7 @@ namespace Chummer
                             strLifestyleName != "ID ERROR. Re-add life style to fix" &&
                             (StyleType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove") &&
                             !strLifestyleName.Contains("Hospitalized") &&
-                            _objCharacter.Settings.Books.Contains(objXmlLifestyle["source"]?.InnerText))
+                            _objCharacter.Settings.BookEnabled(objXmlLifestyle["source"]?.InnerText))
                         {
                             lstLifestyles.Add(new ListItem(strLifestyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName));
                         }
