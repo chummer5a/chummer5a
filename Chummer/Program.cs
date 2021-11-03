@@ -160,17 +160,21 @@ namespace Chummer
                     }
 
                     IsMono = Type.GetType("Mono.Runtime") != null;
-                    // Delete old ProfileOptimization files because we don't want them anymore
+                    // Delete old ProfileOptimization file because we don't want it anymore, instead we restart profiling for each newly generated assembly
                     Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
-                    // Apparently, ProfileOptimization can potentially cause weird hangs and crashes on certain hardware, so it's safer to just turn it off
-                    /*
-                    // Mono doesn't always play nice with ProfileOptimization, so it's better to just not bother with it when running under Mono
-                    if (!IsMono)
+                    // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
+                    // were made in an older version (i.e. an older assembly)
+                    string strProfileOptimizationName = "chummerprofile_" + CurrentVersion + ".profile";
+                    foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile", SearchOption.TopDirectoryOnly))
+                        if (!string.Equals(strProfileFile, strProfileOptimizationName,
+                                           StringComparison.OrdinalIgnoreCase))
+                            Utils.SafeDeleteFile(strProfileFile);
+                    // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them
+                    if (!IsMono && Utils.HumanReadableOSVersion.StartsWith("Windows") && !Utils.HumanReadableOSVersion.StartsWith("Windows 11"))
                     {
                         ProfileOptimization.SetProfileRoot(Utils.GetStartupPath);
-                        ProfileOptimization.StartProfile("chummerprofile");
+                        ProfileOptimization.StartProfile(strProfileOptimizationName);
                     }
-                    */
 
                     Stopwatch sw = Stopwatch.StartNew();
                     //If debugging and launched from other place (Bootstrap), launch debugger
