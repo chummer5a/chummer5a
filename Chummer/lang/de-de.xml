@@ -9696,5 +9696,9 @@
           <key>Button_SustainSpell</key>
           <text>Aufrechterhalten</text>
         </string>
+        <string>
+          <key>Error_Message_PDF_IndexOutOfBounds</key>
+          <text>Das PDF-File hat eine falsche Seiten-Offset-Zahl in den globalen Einstellungen konfiguriert.</text>
+        </string>
     </strings>
 </chummer>
