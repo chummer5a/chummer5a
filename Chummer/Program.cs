@@ -32,6 +32,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Chummer.Backend;
 using Chummer.Plugins;
+using Chummer.Properties;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -55,6 +56,9 @@ namespace Chummer
         public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();
 
         internal static readonly IntPtr CommandLineArgsDataTypeId = (IntPtr)7593599;
+
+        private static readonly Lazy<Version> _objCurrentVersion = new Lazy<Version>(() => Assembly.GetExecutingAssembly().GetName().Version);
+        public static Version CurrentVersion => _objCurrentVersion.Value;
 
         /// <summary>
         /// Check this to see if we are currently in the Main Thread.
@@ -93,7 +97,7 @@ namespace Chummer
                             if (objMainChummerProcess != MyProcess)
                             {
                                 NativeMethods.SendMessage(objMainChummerProcess.MainWindowHandle,
-                                    NativeMethods.WM_SHOWME, 0, IntPtr.Zero);
+                                                          NativeMethods.WM_SHOWME, 0, IntPtr.Zero);
 
                                 string strCommandLineArgumentsJoined =
                                     string.Join("<>", Environment.GetCommandLineArgs());
@@ -107,7 +111,7 @@ namespace Chummer
                                     Marshal.StructureToPtr(objData, ptrCommandLineArguments, false);
                                     // Send the message
                                     NativeMethods.SendMessage(objMainChummerProcess.MainWindowHandle,
-                                        NativeMethods.WM_COPYDATA, 0, ptrCommandLineArguments);
+                                                              NativeMethods.WM_COPYDATA, 0, ptrCommandLineArguments);
                                 }
                                 finally
                                 {
@@ -144,7 +148,7 @@ namespace Chummer
                         catch (UnauthorizedAccessException ex)
                         {
                             string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
-                                GlobalSettings.Language, false);
+                                                                          GlobalSettings.Language, false);
                             if (string.IsNullOrEmpty(strMessage))
                                 strMessage = ex.ToString();
                             strPostErrorMessage = strMessage;
@@ -242,7 +246,7 @@ namespace Chummer
                     {
                         // MainForm is null at the moment, so we have to show error box manually
                         MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName,
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
@@ -250,7 +254,7 @@ namespace Chummer
                     {
                         // MainForm is null at the moment, so we have to show error box manually
                         MessageBox.Show(GlobalSettings.ErrorMessage, Application.ProductName, MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                                        MessageBoxIcon.Error);
                         return;
                     }
 
@@ -258,7 +262,7 @@ namespace Chummer
                     {
                         // MainForm is null at the moment, so we have to show error box manually
                         MessageBox.Show(strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                                        MessageBoxIcon.Error);
                         return;
                     }
 
@@ -296,10 +300,10 @@ namespace Chummer
                             }
                         }
 
-                        if (Properties.Settings.Default.UploadClientId == Guid.Empty)
+                        if (Settings.Default.UploadClientId == Guid.Empty)
                         {
-                            Properties.Settings.Default.UploadClientId = Guid.NewGuid();
-                            Properties.Settings.Default.Save();
+                            Settings.Default.UploadClientId = Guid.NewGuid();
+                            Settings.Default.Save();
                         }
 
                         if (!Utils.IsUnitTest && GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
@@ -323,20 +327,20 @@ namespace Chummer
                             //Log an Event with AssemblyVersion and CultureInfo
                             MetricIdentifier objMetricIdentifier = new MetricIdentifier("Chummer", "Program Start",
                                 "Version", "Culture", dimension3Name: "AISetting", dimension4Name: "OSVersion");
-                            string strOSVersion = helpers.Application_Insights.OsVersion.GetOsInfo();
+                            string strOSVersion = Utils.HumanReadableOSVersion;
                             Metric objMetric = ChummerTelemetryClient.GetMetric(objMetricIdentifier);
                             objMetric.TrackValue(1,
-                                Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                                CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
-                                GlobalSettings.UseLoggingApplicationInsights.ToString(),
-                                strOSVersion);
+                                                 Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                                                 CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
+                                                 GlobalSettings.UseLoggingApplicationInsights.ToString(),
+                                                 strOSVersion);
 
                             //Log a page view:
                             pvt = new PageViewTelemetry("frmChummerMain()")
                             {
                                 Name = "Chummer Startup: " +
                                        Assembly.GetExecutingAssembly().GetName().Version,
-                                Id = Properties.Settings.Default.UploadClientId.ToString(),
+                                Id = Settings.Default.UploadClientId.ToString(),
                                 Timestamp = startTime
                             };
                             pvt.Context.Operation.Name = "Operation Program.Main()";
@@ -353,18 +357,18 @@ namespace Chummer
                         Log.Info("Logging options are set to " + GlobalSettings.UseLogging +
                                  " and Upload-Options are set to "
                                  + GlobalSettings.UseLoggingApplicationInsights + " (Installation-Id: "
-                                 + Properties.Settings.Default.UploadClientId.ToString("D",
-                                     GlobalSettings.InvariantCultureInfo) + ").");
+                                 + Settings.Default.UploadClientId.ToString("D",
+                                                                            GlobalSettings.InvariantCultureInfo) + ").");
 
                         //make sure the Settings are upgraded/preserved after an upgrade
                         //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
-                        if (Properties.Settings.Default.UpgradeRequired)
+                        if (Settings.Default.UpgradeRequired)
                         {
                             if (UnblockPath(AppDomain.CurrentDomain.BaseDirectory))
                             {
-                                Properties.Settings.Default.Upgrade();
-                                Properties.Settings.Default.UpgradeRequired = false;
-                                Properties.Settings.Default.Save();
+                                Settings.Default.Upgrade();
+                                Settings.Default.UpgradeRequired = false;
+                                Settings.Default.Save();
                             }
                             else
                             {
@@ -430,7 +434,7 @@ namespace Chummer
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                     Log.Warn(strMessage);
                                     MainForm.ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Exclamation);
+                                                            MessageBoxIcon.Exclamation);
                                 }
                                 else
                                 {
@@ -453,7 +457,7 @@ namespace Chummer
                                                 + "If you want to use command-line arguments, please enable this plugin and restart the program.";
                                             Log.Warn(strMessage);
                                             MainForm.ShowMessageBox(strMessage, strWhatPlugin + " not enabled",
-                                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
                                     else
