@@ -34,8 +34,6 @@ using System.Xml.XPath;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using NLog;
-using NLog.Targets;
-using NLog.Targets.Wrappers;
 using Application = System.Windows.Forms.Application;
 
 namespace Chummer
@@ -1647,15 +1645,28 @@ namespace Chummer
                 return null;
 
             int intProcessedStrings = lstStringFromPdf.Count;
-            // each page should have its own text extraction strategy for it to work properly
-            // this way we don't need to check for previous page appearing in the current page
-            // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-            string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
-                    new SimpleTextExtractionStrategy())
-                .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+            try
+            {
+                // each page should have its own text extraction strategy for it to work properly
+                // this way we don't need to check for previous page appearing in the current page
+                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
+                                              objPdfDocument.GetPage(intPage),
+                                              new SimpleTextExtractionStrategy())
+                                          .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
 
-            // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-            lstStringFromPdf.AddRange(strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                lstStringFromPdf.AddRange(
+                    strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                               .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+            }
+            // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
+            catch (Exception e)
+            {
+                Utils.BreakIfDebug();
+                Log.Error(e);
+                return null;
+            }
             StringBuilder sbdAllLines = new StringBuilder();
             for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
             {
