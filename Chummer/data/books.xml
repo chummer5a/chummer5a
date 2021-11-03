@@ -26,7 +26,7 @@
         <match>
           <language>en-us</language>
           <text>Whether we want to admit it or not,</text>
-          <offset>2</offset>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -38,7 +38,7 @@
         <match>
           <language>en-us</language>
           <text>The weapon is designed to be hand loaded</text>
-          <offset>3</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -50,7 +50,7 @@
         <match>
           <language>en-us</language>
           <text>The whole run was a setup. It had to be</text>
-          <offset>8</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -63,12 +63,12 @@
         <match>
           <language>en-us</language>
           <text>Welcome to Shadowrun, Fifth Edition. Welcome to the</text>
-          <offset>2</offset>
+          <page>8</page>
         </match>
         <match>
           <language>de-de</language>
           <text>Wie auch immer der deutsche Text lautet</text>
-          <offset>2</offset>
+          <page>8</page>
         </match>
       </matches>
     </book>
@@ -80,12 +80,12 @@
         <match>
           <language>en-us</language>
           <text>Awakened individuals in the Sixth World are coveted</text>
-          <offset>7</offset>
+          <page>5</page>
         </match>
         <match>
           <language>de-de</language>
           <text>Wie auch immer der deutsche Text lautet</text>
-          <offset>0</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -97,7 +97,7 @@
         <match>
           <language>en-us</language>
           <text>an average troll to stand in. He was lying among a pile of</text>
-          <offset>3</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -109,7 +109,7 @@
         <match>
           <language>en-us</language>
           <text>Cut to the damn chase, Eddie</text>
-          <offset>0</offset>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -121,7 +121,7 @@
         <match>
           <language>en-us</language>
           <text>Freedom is a prison all its own</text>
-          <offset>6</offset>
+          <page>4</page>
         </match>
       </matches>
     </book>
@@ -133,7 +133,7 @@
         <match>
           <language>en-us</language>
           <text>Less than a day before</text>
-          <offset>8</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -145,7 +145,7 @@
         <match>
           <language>en-us</language>
           <text>The subject of magic is broad enough</text>
-          <offset>3</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -157,7 +157,7 @@
         <match>
           <language>en-us</language>
           <text>I let the warm water trickle down my body</text>
-          <offset>0</offset>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -169,7 +169,7 @@
         <match>
           <language>en-us</language>
           <text>The Matrix is the vast, wild, and wooly frontier</text>
-          <offset>4</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -181,7 +181,7 @@
         <match>
           <language>en-us</language>
           <text>The Matrix is the vast, wild, and wooly frontier</text>
-          <offset>0</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -193,7 +193,7 @@
         <match>
           <language>en-us</language>
           <text>The tragedy of a shadowrunner</text>
-          <offset>4</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -205,7 +205,7 @@
         <match>
           <language>en-us</language>
           <text>Shadowrunners will punch you in the face</text>
-          <offset>6</offset>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -217,7 +217,7 @@
         <match>
           <language>en-us</language>
           <text>The bad times are just more intense</text>
-          <offset>0</offset>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -244,7 +244,7 @@
         <match>
           <language>en-us</language>
           <text>There are obvious uses for riggers</text>
-          <offset>6</offset>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -256,7 +256,7 @@
         <match>
           <language>en-us</language>
           <text>In the Sixth World, people usually assume that the thing</text>
-          <offset>6</offset>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -268,7 +268,7 @@
         <match>
           <language>en-us</language>
           <text>They grinned like wolves</text>
-          <offset>0</offset>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -280,7 +280,7 @@
         <match>
           <language>en-us</language>
           <text>Was he on Tempo?</text>
-          <offset>0</offset>
+          <page>4</page>
         </match>
       </matches>
     </book>
@@ -292,7 +292,7 @@
         <match>
           <language>en-us</language>
           <text>This isn’t a run, this is a high school prank</text>
-          <offset>0</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -304,7 +304,7 @@
         <match>
           <language>en-us</language>
           <text>No place in the world is more densely packed</text>
-          <offset>0</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -316,7 +316,7 @@
         <match>
           <language>en-us</language>
           <text>A breakdown of civilization, new threats, crazy danger, corporate desperation, and secrets</text>
-          <offset>8</offset>
+          <page>8</page>
         </match>
       </matches>
     </book>
@@ -328,7 +328,7 @@
         <match>
           <language>en-us</language>
           <text>Known for the fog rolling in off the water</text>
-          <offset>0</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -340,7 +340,7 @@
         <match>
           <language>en-us</language>
           <text>And he was ugly</text>
-          <offset>3</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -352,7 +352,7 @@
         <match>
           <language>en-us</language>
           <text>Real con artists know they never have to ask anyone</text>
-          <offset>4</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -360,13 +360,7 @@
       <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
       <name>Shadowrun 2050 (5th Edition)</name>
       <code>2050</code>
-      <matches>
-        <match>
-          <language>en-us</language>
-          <text>Trench was a street name</text>
-          <offset>0</offset>
-        </match>
-      </matches>
+      <!-- Only match to the German one because the English one is 4e -->
     </book>
     <book>
       <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
@@ -376,7 +370,7 @@
         <match>
           <language>en-us</language>
           <text>Of course there are risks!</text>
-          <offset>6</offset>
+          <page>5</page>
         </match>
       </matches>
     </book>
@@ -388,7 +382,7 @@
         <match>
           <language>en-us</language>
           <text>The world of magic is infinite</text>
-          <offset>7</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -400,7 +394,7 @@
         <match>
           <language>de-de</language>
           <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
-          <offset>0</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -412,7 +406,7 @@
         <match>
           <language>en-us</language>
           <text>That’s why trogs are taking it back.</text>
-          <offset>6</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -424,7 +418,7 @@
         <match>
           <language>en-us</language>
           <text>Motherfucking dammit, Charlie!</text>
-          <offset>0</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -436,7 +430,7 @@
         <match>
           <language>en-us</language>
           <text>Knowing your opponent is a critical part of</text>
-          <offset>6</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -448,7 +442,7 @@
         <match>
           <language>en-us</language>
           <text>Hey, what you got in there, old man?</text>
-          <offset>0</offset>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -460,7 +454,7 @@
         <match>
           <language>en-us</language>
           <text>There is no better way to get a shadowrunner</text>
-          <offset>6</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -472,7 +466,7 @@
         <match>
           <language>en-us</language>
           <text>The Matrix is not a place, but it is everywhere</text>
-          <offset>5</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -484,7 +478,7 @@
         <match>
           <language>de-de</language>
           <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
-          <offset>7</offset>
+          <page>7</page>
         </match>
       </matches>
     </book>
@@ -496,7 +490,7 @@
         <match>
           <language>en-us</language>
           <text>This book is not about them</text>
-          <offset>6</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -508,7 +502,7 @@
         <match>
           <language>en-us</language>
           <text>Once Big D offered all that nuyen for the study of danger</text>
-          <offset>3</offset>
+          <page>3</page>
         </match>
       </matches>
     </book>
@@ -520,7 +514,7 @@
         <match>
           <language>en-us</language>
           <text>There is no future</text>
-          <offset>6</offset>
+          <page>6</page>
         </match>
       </matches>
     </book>
@@ -532,7 +526,7 @@
         <match>
           <language>de-de</language>
           <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
-          <offset>0</offset>
+          <page>4</page>
         </match>
       </matches>
     </book>
@@ -544,7 +538,7 @@
         <match>
           <language>de-de</language>
           <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
-          <offset>0</offset>
+          <page>4</page>
         </match>
       </matches>
     </book>
@@ -557,7 +551,7 @@
         <match>
           <language>en-us</language>
           <text>KRIME!!!!!!!</text>
-          <offset>2</offset>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -584,7 +578,7 @@
         <match>
           <language>en-us</language>
           <text>Gamemastering is more of an art than a science</text>
-          <offset>0</offset>
+          <page>4</page>
         </match>
       </matches>
     </book>

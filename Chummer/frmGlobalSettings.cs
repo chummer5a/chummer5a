@@ -1603,7 +1603,7 @@ namespace Chummer
                     string strLanguageText = xmlMatch.SelectSingleNode("text")?.Value ?? string.Empty;
                     if (!text.Contains(strLanguageText))
                         continue;
-                    int trueOffset = intPage - xmlMatch.SelectSingleNode("offset")?.ValueAsInt ?? 0;
+                    int trueOffset = intPage - xmlMatch.SelectSingleNode("page")?.ValueAsInt ?? 0;
 
                     xmlMatch.MoveToParent();
                     xmlMatch.MoveToParent();
