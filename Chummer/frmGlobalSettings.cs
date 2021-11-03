@@ -1563,30 +1563,31 @@ namespace Chummer
             }
         }
 
-        private ConcurrentBag<SourcebookInfo> ScanFilesForPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
+        private ICollection<SourcebookInfo> ScanFilesForPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
         {
             ParallelOptions parallelOptions = new ParallelOptions
             {
                 MaxDegreeOfParallelism = 10
             };
-            ConcurrentBag<SourcebookInfo> resultCollection = new ConcurrentBag<SourcebookInfo>();
+            // ConcurrentDictionary makes sure we don't pick out multiple files for the same sourcebook
+            ConcurrentDictionary<string, SourcebookInfo> resultCollection = new ConcurrentDictionary<string, SourcebookInfo>();
             Parallel.ForEach(files, parallelOptions, file =>
             {
                 FileInfo fileInfo = new FileInfo(file);
                 frmProgressBar.PerformStep(fileInfo.Name, frmLoading.ProgressBarTextPatterns.Scanning);
                 SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
-                if (info == null)
+                if (info == null || resultCollection.ContainsKey(info.Code))
                     return;
-                resultCollection.Add(info);
+                resultCollection.TryAdd(info.Code, info);
             });
-            foreach (SourcebookInfo objInfo in resultCollection)
+            foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)
             {
-                if (_dicSourcebookInfos.ContainsKey(objInfo.Code))
-                    _dicSourcebookInfos[objInfo.Code] = objInfo;
+                if (_dicSourcebookInfos.ContainsKey(kvpInfo.Key))
+                    _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
                 else
-                    _dicSourcebookInfos.Add(objInfo.Code, objInfo);
+                    _dicSourcebookInfos.Add(kvpInfo.Key, kvpInfo.Value);
             }
-            return resultCollection;
+            return resultCollection.Values;
         }
 
         private SourcebookInfo ScanPDFForMatchingText(FileInfo fileInfo, XPathNodeIterator xmlMatches)
