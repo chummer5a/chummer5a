@@ -1,4 +1,4 @@
-Future Build 215
+Build 215
 Application Changes:
 - Added a Scan Folder for PDF Sourcebooks to Options, so that (to Chummer known) Sourcebooks are automatically found and indexed.
 - Fixed a lot of buggy behavior related to opening characters with Chummer from outside the program (e.g. with Windows' "Open with..." function).
