@@ -2384,7 +2384,7 @@
     </string>
     <string>
       <key>Message_FoundPDFsInFolder</key>
-      <text>Do you want to open the log file for a detailed report? Chummer found Sourcebooks in the folder: </text>
+      <text>Chummer found PDF files for {0} sourcebooks in the folder {1}.</text>
     </string>
     <string>
       <key>Message_ComplexFormLimit</key>
