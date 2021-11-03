@@ -10481,5 +10481,9 @@
       <key>String_CapacityRemaining</key>
       <text>{0} ({1} remaining)</text>
     </string>
+    <string>
+      <key>Error_Message_PDF_IndexOutOfBounds</key>
+      <text>The PDF File has a wrong page offset value set in the global options.</text>
+    </string>
   </strings>
 </chummer>
