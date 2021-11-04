@@ -1,3 +1,18 @@
+Build 216
+Application Changes:
+- The Master Index no longer crashes if a PDF offset is set to a massively high number.
+- Fixed a rare crash that might happen on certain systems running Windows 11.
+
+Data Changes:
+- Fixed a heinous bug that caused a bunch of sourcebooks to always be enabled no matter what.
+- Fixed the page offsets for text search patterns in the PDF scanner 
+
+Changed/New Strings:
+- Error_Message_PDF_IndexOutOfBounds
+- String_Scanning
+- String_Scanning_Pattern
+- String_Initializing_Pattern
+
 Build 215
 Application Changes:
 - Added a Scan Folder for PDF Sourcebooks to Options, so that (to Chummer known) Sourcebooks are automatically found and indexed.

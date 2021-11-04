@@ -34,8 +34,6 @@ using System.Xml.XPath;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using NLog;
-using NLog.Targets;
-using NLog.Targets.Wrappers;
 using Application = System.Windows.Forms.Application;
 
 namespace Chummer
@@ -1515,18 +1513,18 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (new CursorWait(this))
             {
-                using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+                Task<XPathNavigator> tskLoadBooks = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
+                using (FolderBrowserDialog fbd = new FolderBrowserDialog {ShowNewFolderButton = false})
                 {
                     DialogResult result = fbd.ShowDialog();
 
                     if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
                         return;
-                    var sw = new Stopwatch();
+                    Stopwatch sw = new Stopwatch();
                     sw.Start();
-                    string[] files = Directory.GetFiles(fbd.SelectedPath);
-                    var books = await XmlManager.LoadXPathAsync("books.xml");
-                    string xpath = "/chummer/books/book/matches/match[language=\"" + GlobalSettings.Language + "\"]";
-                    XPathNodeIterator matches = books.Select(xpath);
+                    string[] files = Directory.GetFiles(fbd.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly);
+                    XPathNavigator books = await tskLoadBooks;
+                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language=\"" + _strSelectedLanguage + "\"]");
                     using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
                     {
                         List<SourcebookInfo> list = null;
@@ -1539,11 +1537,11 @@ namespace Chummer
                                                     .AppendLine(
                                                         "-------------------------------------------------------------")
                                                     .AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                                                  "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} Sourcebook(s) was/were found:",
+                                                                  "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
                                                                   fbd.SelectedPath, sw.ElapsedMilliseconds,
                                                                   Environment.NewLine, list.Count).AppendLine()
                                                     .AppendLine();
-                        foreach(var sourcebook in list)
+                        foreach(SourcebookInfo sourcebook in list)
                         {
                             sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
                                                      "{0} with Offset {1} path: {2}", sourcebook.Code,
@@ -1554,95 +1552,40 @@ namespace Chummer
                                    .AppendLine("-------------------------------------------------------------");
                         Log.Info(sbdFeedback.ToString());
 
-                        var message = LanguageManager.GetString("Message_FoundPDFsInFolder") + list.Count;
-                        var title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder");
+                        var message = string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FoundPDFsInFolder", _strSelectedLanguage), list.Count, fbd.SelectedPath);
+                        var title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder", _strSelectedLanguage);
                     
-                        var dialogresult = Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (dialogresult != DialogResult.Yes)
-                            return;
-                        //display the log
-                        string filename = GetLogFileName("f");
-                        FileInfo fileInfo = new FileInfo(filename);
-                        if (fileInfo.Exists)
-                        {
-                            Process.Start(fileInfo.FullName);
-                        }
+                        Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
         }
 
-        private string GetLogFileName(string targetName)
-        {
-            string fileName;
-
-            if (LogManager.Configuration != null && LogManager.Configuration.ConfiguredNamedTargets.Count != 0)
-            {
-                Target target = LogManager.Configuration.FindTargetByName(targetName);
-                if (target == null)
-                {
-                    throw new ArgumentException("Could not find target named: " + targetName);
-                }
-
-                FileTarget fileTarget;
-                // Unwrap the target if necessary.
-                if (!(target is WrapperTargetBase wrapperTarget))
-                {
-                    fileTarget = target as FileTarget;
-                }
-                else
-                {
-                    fileTarget = wrapperTarget.WrappedTarget as FileTarget;
-                }
-
-                if (fileTarget == null)
-                {
-                    throw new ArgumentException("Could not get a FileTarget from " + target.GetType());
-                }
-
-                var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now };
-                fileName = fileTarget.FileName.Render(logEventInfo);
-                var uri = new Uri(fileName);
-                fileName = uri.AbsolutePath;
-                
-            }
-            else
-            {
-                throw new InvalidOperationException("LogManager contains no Configuration or there are no named targets");
-            }
-
-            if (!File.Exists(fileName))
-            {
-                throw new FileNotFoundException("File " + fileName + " does not exist");
-            }
-
-            return fileName;
-        }
-
-        private ConcurrentBag<SourcebookInfo> ScanFilesForPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
+        private ICollection<SourcebookInfo> ScanFilesForPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
         {
             ParallelOptions parallelOptions = new ParallelOptions
             {
                 MaxDegreeOfParallelism = 10
             };
-            ConcurrentBag<SourcebookInfo> resultCollection = new ConcurrentBag<SourcebookInfo>();
+            // ConcurrentDictionary makes sure we don't pick out multiple files for the same sourcebook
+            ConcurrentDictionary<string, SourcebookInfo> resultCollection = new ConcurrentDictionary<string, SourcebookInfo>();
             Parallel.ForEach(files, parallelOptions, file =>
             {
                 FileInfo fileInfo = new FileInfo(file);
-                frmProgressBar.PerformStep(fileInfo.Name, true);
+                frmProgressBar.PerformStep(fileInfo.Name, frmLoading.ProgressBarTextPatterns.Scanning);
                 SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
-                if (info == null)
+                if (info == null || resultCollection.ContainsKey(info.Code))
                     return;
-                resultCollection.Add(info);
+                resultCollection.TryAdd(info.Code, info);
             });
-            foreach (SourcebookInfo objInfo in resultCollection)
+            foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)
             {
-                if (_dicSourcebookInfos.ContainsKey(objInfo.Code))
-                    _dicSourcebookInfos[objInfo.Code] = objInfo;
+                if (_dicSourcebookInfos.ContainsKey(kvpInfo.Key))
+                    _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
                 else
-                    _dicSourcebookInfos.Add(objInfo.Code, objInfo);
+                    _dicSourcebookInfos.Add(kvpInfo.Key, kvpInfo.Value);
             }
-            return resultCollection;
+            return resultCollection.Values;
         }
 
         private SourcebookInfo ScanPDFForMatchingText(FileInfo fileInfo, XPathNodeIterator xmlMatches)
@@ -1659,7 +1602,7 @@ namespace Chummer
                     string strLanguageText = xmlMatch.SelectSingleNode("text")?.Value ?? string.Empty;
                     if (!text.Contains(strLanguageText))
                         continue;
-                    int trueOffset = intPage - xmlMatch.SelectSingleNode("offset")?.ValueAsInt ?? 0;
+                    int trueOffset = intPage - xmlMatch.SelectSingleNode("page")?.ValueAsInt ?? 0;
 
                     xmlMatch.MoveToParent();
                     xmlMatch.MoveToParent();
@@ -1702,15 +1645,28 @@ namespace Chummer
                 return null;
 
             int intProcessedStrings = lstStringFromPdf.Count;
-            // each page should have its own text extraction strategy for it to work properly
-            // this way we don't need to check for previous page appearing in the current page
-            // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-            string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
-                    new SimpleTextExtractionStrategy())
-                .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+            try
+            {
+                // each page should have its own text extraction strategy for it to work properly
+                // this way we don't need to check for previous page appearing in the current page
+                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
+                                              objPdfDocument.GetPage(intPage),
+                                              new SimpleTextExtractionStrategy())
+                                          .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
 
-            // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-            lstStringFromPdf.AddRange(strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                lstStringFromPdf.AddRange(
+                    strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                               .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+            }
+            // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
+            catch (Exception e)
+            {
+                Utils.BreakIfDebug();
+                Log.Error(e);
+                return null;
+            }
             StringBuilder sbdAllLines = new StringBuilder();
             for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
             {

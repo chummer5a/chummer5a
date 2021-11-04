@@ -11048,7 +11048,7 @@ namespace Chummer
 
                 using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                 {
-                    frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                    frmProgressBar.PerformStep(CharacterObject.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
                     if (!CharacterObject.Save())
                     {
                         CharacterObject.ExpenseEntries.Clear();
@@ -13363,7 +13363,7 @@ namespace Chummer
                     {
                         using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
-                            frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                            frmProgressBar.PerformStep(CharacterObject.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
                             if (!CharacterObject.Save(strNewName))
                                 return false;
                         }

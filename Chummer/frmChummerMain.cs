@@ -26,7 +26,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,7 +49,6 @@ namespace Chummer
         private frmUpdate _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
-        private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
 
@@ -77,7 +75,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _strCurrentVersion =
-                string.Format(GlobalSettings.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
+                string.Format(GlobalSettings.InvariantCultureInfo, "{0}.{1}.{2}", Program.CurrentVersion.Major, Program.CurrentVersion.Minor, Program.CurrentVersion.Build);
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || isUnitTest)
@@ -206,7 +204,7 @@ namespace Chummer
                                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                                         XmlManager.Load(x, null, GlobalSettings.DefaultLanguage);
                                     XmlManager.Load(x);
-                                    _frmProgressBar.PerformStep(Application.ProductName);
+                                    _frmProgressBar.PerformStep(Application.ProductName, frmLoading.ProgressBarTextPatterns.Initializing);
                                 })));
                                 //Timekeeper.Finish("cache_load");
                             }
@@ -1966,8 +1964,6 @@ namespace Chummer
         public ThreadSafeObservableCollection<Character> OpenCharacters => _lstCharacters;
 
         public ObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
-
-        public Version CurrentVersion => _objCurrentVersion;
 
         /// <summary>
         /// Set to True at the end of the OnLoad method. Useful for unit testing because the load method is executed asynchronously, so form might end up getting closed before it fully loads.

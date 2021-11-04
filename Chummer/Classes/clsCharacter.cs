@@ -2668,21 +2668,21 @@ namespace Chummer
                                         !string.IsNullOrEmpty(strMinimumVersion))
                                     {
                                         strMinimumVersion = strMinimumVersion.TrimStartOnce("0.");
-                                        if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Program.MainForm.CurrentVersion)
+                                        if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Program.CurrentVersion)
                                         {
                                             Program.MainForm.ShowMessageBox(
                                                 string.Format(GlobalSettings.CultureInfo,
                                                     LanguageManager.GetString("Message_OlderThanChummerSaveMinimumVersion"),
-                                                    objMinimumVersion, Program.MainForm.CurrentVersion),
+                                                    objMinimumVersion, Program.CurrentVersion),
                                                 LanguageManager.GetString("MessageTitle_OlderThanChummerSaveMinimumVersion"),
                                                 MessageBoxButtons.OK,
                                                 MessageBoxIcon.Error);
                                             return false;
                                         }
                                     }
-                                    if (_verSavedVersion > Program.MainForm.CurrentVersion && DialogResult.Yes != Program.MainForm.ShowMessageBox(
+                                    if (_verSavedVersion > Program.CurrentVersion && DialogResult.Yes != Program.MainForm.ShowMessageBox(
                                         string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
-                                            _verSavedVersion, Program.MainForm.CurrentVersion),
+                                            _verSavedVersion, Program.CurrentVersion),
                                         LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
                                         MessageBoxButtons.YesNo,
                                         MessageBoxIcon.Warning))
@@ -2716,7 +2716,7 @@ namespace Chummer
                                         setSavedBooks.Add(xmlBook.Value);
                                 if (setSavedBooks.Count == 0)
                                     setSavedBooks = SettingsManager
-                                        .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].Books;
+                                        .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].Books.ToHashSet();
                                 List<string> lstSavedCustomDataDirectoryNames = new List<string>();
                                 foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select(
                                     "customdatadirectorynames/directoryname"))

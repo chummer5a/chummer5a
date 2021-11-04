@@ -437,7 +437,6 @@
     <Compile Include="helpers\Application Insights\CustomActivity.cs" />
     <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
     <Compile Include="helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
-    <Compile Include="helpers\Application Insights\OSVersion.cs" />
     <Compile Include="helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
     <Compile Include="helpers\Application Insights\UploadObjectAsMetric.cs" />
     <Compile Include="helpers\BufferedTableLayoutPanel.cs">

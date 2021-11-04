@@ -2384,7 +2384,7 @@
     </string>
     <string>
       <key>Message_FoundPDFsInFolder</key>
-      <text>Do you want to open the log file for a detailed report? Chummer found Sourcebooks in the folder: </text>
+      <text>Chummer found PDF files for {0} sourcebooks in the folder {1}.</text>
     </string>
     <string>
       <key>Message_ComplexFormLimit</key>
@@ -9948,8 +9948,20 @@
       <text>Saving {0}...</text>
     </string>
     <string>
+      <key>String_Scanning</key>
+      <text>Scanning...</text>
+    </string>
+    <string>
+      <key>String_Scanning_Pattern</key>
+      <text>Scanning {0}...</text>
+    </string>
+    <string>
       <key>String_Initializing</key>
       <text>Initializing...</text>
+    </string>
+    <string>
+      <key>String_Initializing_Pattern</key>
+      <text>Initializing {0}...</text>
     </string>
     <string>
       <key>String_Settings</key>

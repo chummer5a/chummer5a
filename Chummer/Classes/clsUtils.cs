@@ -687,5 +687,128 @@ namespace Chummer
             while (!objTask.IsCompleted)
                 SafeSleep();
         }
+
+        private static readonly Lazy<string> _strHumanReadableOSVersion = new Lazy<string>(GetHumanReadableOSVersion);
+
+        public static string HumanReadableOSVersion => _strHumanReadableOSVersion.Value;
+
+        /// <summary>
+        /// Gets a human-readable version of the current Environment's Windows version.
+        /// It will return something like "Windows XP" or "Windows 7" or "Windows 10" for Windows XP, Windows 7, and Windows 10.
+        /// </summary>
+        /// <returns></returns>
+        private static string GetHumanReadableOSVersion()
+        {
+            string strReturn = string.Empty;
+            try
+            {
+                //Get Operating system information.
+                OperatingSystem objOSInfo = Environment.OSVersion;
+                //Get version information about the os.
+                Version objOSInfoVersion = objOSInfo.Version;
+
+                switch (objOSInfo.Platform)
+                {
+                    case PlatformID.Win32Windows:
+                        //This is a pre-NT version of Windows
+                        switch (objOSInfoVersion.Minor)
+                        {
+                            case 0:
+                                strReturn = "Windows 95";
+                                break;
+
+                            case 10:
+                                strReturn = objOSInfoVersion.Revision.ToString() == "2222A" ? "Windows 98SE" : "Windows 98";
+                                break;
+
+                            case 90:
+                                strReturn = "Windows ME";
+                                break;
+                        }
+
+                        break;
+
+                    case PlatformID.Win32NT:
+                        switch (objOSInfoVersion.Major)
+                        {
+                            case 3:
+                                strReturn = "Windows NT 3.51";
+                                break;
+
+                            case 4:
+                                strReturn = "Windows NT 4.0";
+                                break;
+
+                            case 5:
+                                strReturn = objOSInfoVersion.Minor == 0 ? "Windows 2000" : "Windows XP";
+                                break;
+
+                            case 6:
+                                switch (objOSInfoVersion.Minor)
+                                {
+                                    case 0:
+                                        strReturn = "Windows Vista";
+                                        break;
+
+                                    case 1:
+                                        strReturn = "Windows 7";
+                                        break;
+
+                                    case 2:
+                                        strReturn = "Windows 8";
+                                        break;
+
+                                    default:
+                                        strReturn = "Windows 8.1";
+                                        break;
+                                }
+                                break;
+
+                            case 10:
+                                strReturn = "Windows 10";
+                                break;
+
+                            case 11:
+                                strReturn = "Windows 11";
+                                break;
+                        }
+
+                        break;
+                    case PlatformID.Win32S:
+                        strReturn = "Legacy Windows 16-bit Compatibility Layer";
+                        break;
+                    case PlatformID.WinCE:
+                        strReturn = "Windows Embedded Compact " + objOSInfoVersion.Major + ".0";
+                        break;
+                    case PlatformID.Unix:
+                        strReturn = "Unix Kernel " + objOSInfoVersion;
+                        break;
+                    case PlatformID.Xbox:
+                        strReturn = "Xbox 360";
+                        break;
+                    case PlatformID.MacOSX:
+                        strReturn = "macOS with Darwin Kernel " + objOSInfoVersion;
+                        break;
+                    default:
+                        BreakIfDebug();
+                        strReturn = objOSInfo.VersionString;
+                        break;
+                }
+                //Make sure we actually got something in our OS check
+                //We don't want to just return " Service Pack 2" or " 32-bit"
+                //That information is useless without the OS version.
+                if (strReturn.StartsWith("Windows") && !string.IsNullOrEmpty(objOSInfo.ServicePack))
+                {
+                    //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
+                    strReturn += " " + objOSInfo.ServicePack;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                strReturn = string.Empty;
+            }
+            return string.IsNullOrEmpty(strReturn) ? "Unknown" : strReturn;
+        }
     }
 }
