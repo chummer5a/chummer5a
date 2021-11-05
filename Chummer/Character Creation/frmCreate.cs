@@ -13027,7 +13027,7 @@ namespace Chummer
                                           GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidAvail"),
                                           intRestrictedCount,
                                           CharacterObjectSettings.MaximumAvailability));
-                    sbdMessage.Append(sbdAvailItems.ToString());
+                    sbdMessage.Append(sbdAvailItems);
                     if (sbdRestrictedItems.Length > 0)
                     {
                         sbdMessage.Append(Environment.NewLine + string.Format(GlobalSettings.CultureInfo,

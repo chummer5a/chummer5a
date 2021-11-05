@@ -299,12 +299,12 @@ namespace Chummer
         private void cboUseLoggingHelp_Click(object sender, EventArgs e)
         {
             //open the telemetry document
-            System.Diagnostics.Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
+            Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
         }
 
         private void cmdPluginsHelp_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
+            Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
         }
 
         private void chkCustomDateTimeFormats_CheckedChanged(object sender, EventArgs e)
@@ -1195,7 +1195,7 @@ namespace Chummer
             foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
             {
                 //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
-                if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !System.Diagnostics.Debugger.IsAttached && eOption > UseAILogging.NotSet)
+                if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !Debugger.IsAttached && eOption > UseAILogging.NotSet)
                     continue;
                 lstUseAIOptions.Add(new ListItem(eOption, LanguageManager.GetString("String_ApplicationInsights_" + eOption, _strSelectedLanguage)));
             }
@@ -1625,7 +1625,7 @@ namespace Chummer
             {
                 objPdfDocument = new PdfDocument(new PdfReader(fileInfo.FullName));
             }
-            catch (iText.IO.IOException e)
+            catch (iText.IO.Exceptions.IOException e)
             {
                 if (e.Message == "PDF header not found.")
                     return null;
