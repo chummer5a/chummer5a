@@ -46,7 +46,7 @@ namespace Chummer
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
             if (index + length > lstCollection.Count)
-                throw new ArgumentException(nameof(length));
+                throw new InvalidOperationException(nameof(length));
             if (length == 0)
                 return;
             T[] aobjSorted = new T[length];

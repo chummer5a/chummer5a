@@ -219,16 +219,12 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            if (index < 0)
+            if (index < 0 || index >= lstCollection.Count)
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
-            if (lstCollection.Count == 0)
+            if (lstCollection.Count == 0 || count == 0)
                 return;
-            if (index >= lstCollection.Count)
-                throw new ArgumentException(nameof(index));
-            if (count == 0)
-                throw new ArgumentException(nameof(count));
             for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
                 lstCollection.RemoveAt(i);
         }
