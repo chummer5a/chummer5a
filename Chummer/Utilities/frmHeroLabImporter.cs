@@ -18,12 +18,13 @@
  */
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -33,7 +34,7 @@ namespace Chummer
     public partial class frmHeroLabImporter : Form
     {
         private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(1);
-        private readonly Dictionary<string, Bitmap> _dicImages = new Dictionary<string, Bitmap>();
+        private readonly ConcurrentDictionary<string, Bitmap> _dicImages = new ConcurrentDictionary<string, Bitmap>();
 
         public frmHeroLabImporter()
         {
@@ -79,172 +80,197 @@ namespace Chummer
                 return null;
             }
 
-            List<XPathNavigator> lstCharacterXmlStatblocks = new List<XPathNavigator>(3);
-            try
+            using (ThreadSafeList<XPathNavigator> lstCharacterXmlStatblocks = new ThreadSafeList<XPathNavigator>(3))
             {
-                using (ZipArchive zipArchive = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                try
                 {
-                    foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                    using (ZipArchive zipArchive
+                        = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                     {
-                        string strEntryFullName = entry.FullName;
-                        if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
+                        Parallel.ForEach(zipArchive.Entries, entry =>
                         {
-                            // If we run into any problems loading the character cache, fail out early.
-                            try
+                            string strEntryFullName = entry.FullName;
+                            if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)
+                                && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
                             {
-                                XPathDocument xmlSourceDoc;
-                                using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                    xmlSourceDoc = new XPathDocument(objXmlReader);
-                                lstCharacterXmlStatblocks.Add(xmlSourceDoc.CreateNavigator());
-                            }
-                            // If we run into any problems loading the character cache, fail out early.
-                            catch (IOException)
-                            {
-                                Utils.BreakIfDebug();
-                            }
-                            catch (XmlException)
-                            {
-                                Utils.BreakIfDebug();
-                            }
-                        }
-                        else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
-                        {
-                            string strKey = Path.GetFileName(strEntryFullName);
-                            using (Bitmap bmpMugshot = new Bitmap(entry.Open(), true))
-                            {
-                                Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
-                                    ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
-                                    : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                if (_dicImages.ContainsKey(strKey))
+                                // If we run into any problems loading the character cache, fail out early.
+                                try
                                 {
-                                    _dicImages[strKey].Dispose();
-                                    _dicImages[strKey] = bmpNewMugshot;
+                                    XPathDocument xmlSourceDoc;
+                                    using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                    using (XmlReader objXmlReader
+                                        = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                        xmlSourceDoc = new XPathDocument(objXmlReader);
+                                    XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
+                                    lstCharacterXmlStatblocks.Add(objToAdd);
                                 }
-                                else
-                                    _dicImages.Add(strKey, bmpNewMugshot);
+                                // If we run into any problems loading the character cache, fail out early.
+                                catch (IOException)
+                                {
+                                    Utils.BreakIfDebug();
+                                }
+                                catch (XmlException)
+                                {
+                                    Utils.BreakIfDebug();
+                                }
                             }
-                        }
+                            else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal)
+                                     && strEntryFullName.Contains('.'))
+                            {
+                                string strKey = Path.GetFileName(strEntryFullName);
+                                using (Bitmap bmpMugshot = new Bitmap(entry.Open(), true))
+                                {
+                                    Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
+                                        ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
+                                        : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                                    while (!_dicImages.TryAdd(strKey, bmpNewMugshot))
+                                    {
+                                        if (_dicImages.TryRemove(strKey, out Bitmap bmpOldMugshot))
+                                            bmpOldMugshot?.Dispose();
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
-            }
-            catch (IOException)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
-                return null;
-            }
-            catch (NotSupportedException)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
-                return null;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
-                return null;
-            }
-
-            string strFileText = strFile.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">");
-            TreeNode nodRootNode = new TreeNode
-            {
-                Text = strFileText,
-                ToolTipText = strFileText
-            };
-
-            XPathNavigator xmlMetatypesDocument = XmlManager.LoadXPath("metatypes.xml");
-            foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
-            {
-                XPathNavigator xmlBaseCharacterNode = xmlCharacterDocument.SelectSingleNode("/document/public/character");
-                if (xmlBaseCharacterNode != null)
+                catch (IOException)
                 {
-                    HeroLabCharacterCache objCache = new HeroLabCharacterCache
-                    {
-                        PlayerName = xmlBaseCharacterNode.SelectSingleNode("@playername")?.Value ?? string.Empty
-                    };
-                    string strNameString = xmlBaseCharacterNode.SelectSingleNode("@name")?.Value ?? string.Empty;
-                    objCache.CharacterId = strNameString;
-                    if (!string.IsNullOrEmpty(strNameString))
-                    {
-                        int intAsIndex = strNameString.IndexOf(" as ", StringComparison.Ordinal);
-                        if (intAsIndex != -1)
-                        {
-                            objCache.CharacterName = strNameString.Substring(0, intAsIndex);
-                            objCache.CharacterAlias = strNameString.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
-                        }
-                        else
-                        {
-                            objCache.CharacterName = strNameString;
-                        }
-                    }
+                    Program.MainForm.ShowMessageBox(
+                        this,
+                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine
+                        + Environment.NewLine + strFile);
+                    return null;
+                }
+                catch (NotSupportedException)
+                {
+                    Program.MainForm.ShowMessageBox(
+                        this,
+                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine
+                        + Environment.NewLine + strFile);
+                    return null;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Program.MainForm.ShowMessageBox(
+                        this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    return null;
+                }
 
-                    string strRaceString = xmlBaseCharacterNode.SelectSingleNode("race/@name")?.Value;
-                    if (strRaceString == "Metasapient")
-                        strRaceString = "A.I.";
-                    if (!string.IsNullOrEmpty(strRaceString))
+                string strFileText
+                    = strFile.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">");
+                TreeNode nodRootNode = new TreeNode
+                {
+                    Text = strFileText,
+                    ToolTipText = strFileText
+                };
+
+                XPathNavigator xmlMetatypesDocument = XmlManager.LoadXPath("metatypes.xml");
+                foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
+                {
+                    XPathNavigator xmlBaseCharacterNode
+                        = xmlCharacterDocument.SelectSingleNode("/document/public/character");
+                    if (xmlBaseCharacterNode != null)
                     {
-                        foreach (XPathNavigator xmlMetatype in xmlMetatypesDocument.Select("/chummer/metatypes/metatype"))
+                        HeroLabCharacterCache objCache = new HeroLabCharacterCache
                         {
-                            string strMetatypeName = xmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty;
-                            if (strMetatypeName == strRaceString)
+                            PlayerName = xmlBaseCharacterNode.SelectSingleNode("@playername")?.Value ?? string.Empty
+                        };
+                        string strNameString = xmlBaseCharacterNode.SelectSingleNode("@name")?.Value ?? string.Empty;
+                        objCache.CharacterId = strNameString;
+                        if (!string.IsNullOrEmpty(strNameString))
+                        {
+                            int intAsIndex = strNameString.IndexOf(" as ", StringComparison.Ordinal);
+                            if (intAsIndex != -1)
                             {
-                                objCache.Metatype = strMetatypeName;
-                                objCache.Metavariant = "None";
-                                break;
+                                objCache.CharacterName = strNameString.Substring(0, intAsIndex);
+                                objCache.CharacterAlias
+                                    = strNameString.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
                             }
-
-                            foreach (XPathNavigator xmlMetavariant in xmlMetatype.Select("metavariants/metavariant"))
+                            else
                             {
-                                string strMetavariantName = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
-                                if (strMetavariantName == strRaceString)
+                                objCache.CharacterName = strNameString;
+                            }
+                        }
+
+                        string strRaceString = xmlBaseCharacterNode.SelectSingleNode("race/@name")?.Value;
+                        if (strRaceString == "Metasapient")
+                            strRaceString = "A.I.";
+                        if (!string.IsNullOrEmpty(strRaceString))
+                        {
+                            foreach (XPathNavigator xmlMetatype in xmlMetatypesDocument.Select(
+                                "/chummer/metatypes/metatype"))
+                            {
+                                string strMetatypeName = xmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty;
+                                if (strMetatypeName == strRaceString)
                                 {
                                     objCache.Metatype = strMetatypeName;
-                                    objCache.Metavariant = strMetavariantName;
+                                    objCache.Metavariant = "None";
                                     break;
+                                }
+
+                                foreach (XPathNavigator xmlMetavariant in
+                                    xmlMetatype.Select("metavariants/metavariant"))
+                                {
+                                    string strMetavariantName
+                                        = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
+                                    if (strMetavariantName == strRaceString)
+                                    {
+                                        objCache.Metatype = strMetatypeName;
+                                        objCache.Metavariant = strMetavariantName;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    objCache.Description = xmlBaseCharacterNode.SelectSingleNode("personal/description")?.Value;
-                    objCache.Karma = xmlBaseCharacterNode.SelectSingleNode("karma/@total")?.Value ?? "0";
-                    objCache.Essence = xmlBaseCharacterNode.SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
-                    objCache.BuildMethod = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.Value == "25" ?
-                        CharacterBuildMethod.Priority.ToString() :
-                        CharacterBuildMethod.Karma.ToString();
+                        objCache.Description = xmlBaseCharacterNode.SelectSingleNode("personal/description")?.Value;
+                        objCache.Karma = xmlBaseCharacterNode.SelectSingleNode("karma/@total")?.Value ?? "0";
+                        objCache.Essence = xmlBaseCharacterNode
+                                           .SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
+                        objCache.BuildMethod
+                            = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.Value == "25"
+                                ? CharacterBuildMethod.Priority.ToString()
+                                : CharacterBuildMethod.Karma.ToString();
 
-                    objCache.Created = objCache.Karma != "0";
-                    if (!objCache.Created)
-                    {
-                        XPathNodeIterator xmlJournalEntries = xmlBaseCharacterNode.Select("journals/journal");
-                        if (xmlJournalEntries?.Count > 1)
+                        objCache.Created = objCache.Karma != "0";
+                        if (!objCache.Created)
                         {
-                            objCache.Created = true;
+                            XPathNodeIterator xmlJournalEntries = xmlBaseCharacterNode.Select("journals/journal");
+                            if (xmlJournalEntries?.Count > 1)
+                            {
+                                objCache.Created = true;
+                            }
+                            else if (xmlJournalEntries?.Count == 1
+                                     && xmlJournalEntries.Current?.SelectSingleNode("@name")?.Value != "Title")
+                            {
+                                objCache.Created = true;
+                            }
                         }
-                        else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current?.SelectSingleNode("@name")?.Value != "Title")
+
+                        string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.Value;
+                        if (!string.IsNullOrEmpty(strImageString)
+                            && _dicImages.TryGetValue(strImageString, out Bitmap objTemp))
                         {
-                            objCache.Created = true;
+                            objCache.Mugshot = objTemp;
                         }
-                    }
-                    string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.Value;
-                    if (!string.IsNullOrEmpty(strImageString) && _dicImages.TryGetValue(strImageString, out Bitmap objTemp))
-                    {
-                        objCache.Mugshot = objTemp;
-                    }
 
-                    objCache.FilePath = strFile;
-                    TreeNode objNode = new TreeNode
-                    {
-                        Text = CalculatedName(objCache),
-                        ToolTipText = strFile.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">")
-                    };
-                    nodRootNode.Nodes.Add(objNode);
+                        objCache.FilePath = strFile;
+                        TreeNode objNode = new TreeNode
+                        {
+                            Text = CalculatedName(objCache),
+                            ToolTipText = strFile.CheapReplace(Application.StartupPath,
+                                                               () => "<" + Application.ProductName + ">")
+                        };
+                        nodRootNode.Nodes.Add(objNode);
 
-                    _lstCharacterCache.Add(objCache);
-                    objNode.Tag = _lstCharacterCache.IndexOf(objCache);
+                        _lstCharacterCache.Add(objCache);
+                        objNode.Tag = _lstCharacterCache.IndexOf(objCache);
+                    }
                 }
+
+                nodRootNode.Expand();
+                return nodRootNode;
             }
-            nodRootNode.Expand();
-            return nodRootNode;
         }
 
         #region Classes
