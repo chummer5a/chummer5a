@@ -3,6 +3,9 @@ Application Changes:
 - Adding a new non-advanced lifestyle that is eligible for Trust Fund no longer causes a crash. Fixes #4601.
 - Adding a plugin to a custom cyberweapon no longer causes a crash.
 
+Data Changes:
+- Fixed missing multiplier for Haunted lifestyle quality.
+
 Build 216
 Application Changes:
 - The Master Index no longer crashes if a PDF offset is set to a massively high number.
