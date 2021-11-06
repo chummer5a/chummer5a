@@ -31,10 +31,9 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             // Binary search for the place where item should be inserted
-            int intIntervalStart = 0;
             int intIntervalEnd = lstCollection.Count - 1;
             int intTargetIndex = intIntervalEnd / 2;
-            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            for (int intIntervalStart = 0; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
                 T objLoopExistingItem = lstCollection[intTargetIndex];
                 int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
@@ -80,10 +79,9 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             // Binary search for the place where item should be inserted
-            int intIntervalStart = 0;
             int intIntervalEnd = lstCollection.Count - 1;
             int intTargetIndex = intIntervalEnd / 2;
-            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            for (int intIntervalStart = 0; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
                 T objLoopExistingItem = lstCollection[intTargetIndex];
                 int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
@@ -129,10 +127,9 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             // Binary search for the place where item should be inserted
-            int intIntervalStart = 0;
             int intIntervalEnd = lstCollection.Count - 1;
             int intTargetIndex = intIntervalEnd / 2;
-            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            for (int intIntervalStart = 0; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
                 T objLoopExistingItem = lstCollection[intTargetIndex];
                 int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
@@ -217,14 +214,16 @@ namespace Chummer
 
         public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count)
         {
+            if (count == 0)
+                return;
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
+            if (lstCollection.Count == 0)
+                return;
             if (index < 0 || index >= lstCollection.Count)
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
-            if (lstCollection.Count == 0 || count == 0)
-                return;
             for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
                 lstCollection.RemoveAt(i);
         }
@@ -246,6 +245,8 @@ namespace Chummer
 
         public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection)
         {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
             foreach (T item in collection.Reverse())
             {
                 lstCollection.Insert(index, item);
