@@ -16,6 +16,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _lstCharacterCache?.Dispose();
                 foreach (var imgImage in _dicImages.Values)
                     imgImage.Dispose();
             }

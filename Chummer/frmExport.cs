@@ -86,8 +86,16 @@ namespace Chummer
 
         private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objXmlGeneratorCancellationTokenSource?.Cancel(false);
-            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
+            if (_objXmlGeneratorCancellationTokenSource != null)
+            {
+                _objXmlGeneratorCancellationTokenSource.Cancel(false);
+                _objXmlGeneratorCancellationTokenSource.Dispose();
+            }
+            if (_objCharacterXmlGeneratorCancellationTokenSource != null)
+            {
+                _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
+                _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -150,7 +158,12 @@ namespace Chummer
                 return;
             if (_objCharacterXml == null)
             {
-                _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
+                if (_objCharacterXmlGeneratorCancellationTokenSource != null)
+                {
+                    _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
+                    _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
+                }
+
                 _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                 try
                 {
@@ -178,7 +191,12 @@ namespace Chummer
                 }
                 else
                 {
-                    _objXmlGeneratorCancellationTokenSource?.Cancel(false);
+                    if (_objXmlGeneratorCancellationTokenSource != null)
+                    {
+                        _objXmlGeneratorCancellationTokenSource.Cancel(false);
+                        _objXmlGeneratorCancellationTokenSource.Dispose();
+                    }
+
                     _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                     try
                     {

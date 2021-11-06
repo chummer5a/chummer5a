@@ -119,14 +119,28 @@ namespace Chummer
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
-            _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
+            if (_objMostRecentlyUsedsRefreshCancellationTokenSource != null)
+            {
+                _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
+                _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
+            }
+
+            if (_objWatchFolderRefreshCancellationTokenSource != null)
+            {
+                _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
+                _objWatchFolderRefreshCancellationTokenSource.Dispose();
+            }
+
             SetMyEventHandlers(true);
         }
 
         private async void RefreshWatchList(object sender, EventArgs e)
         {
-            _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
+            if (_objWatchFolderRefreshCancellationTokenSource != null)
+            {
+                _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
+                _objWatchFolderRefreshCancellationTokenSource.Dispose();
+            }
             _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
             try
             {
@@ -161,7 +175,11 @@ namespace Chummer
 
         public async Task RefreshMruLists(string strMruType)
         {
-            _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
+            if (_objMostRecentlyUsedsRefreshCancellationTokenSource != null)
+            {
+                _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
+                _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
+            }
             _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
             try
             {

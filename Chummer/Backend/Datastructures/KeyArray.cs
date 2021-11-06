@@ -28,7 +28,7 @@ namespace Chummer
     /// Structured array built for working properly as a key to dictionaries. Read-only to make sure keys remain immutable.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct KeyArray<T> : IReadOnlyList<T>
+    public readonly struct KeyArray<T> : IReadOnlyList<T>, IEquatable<KeyArray<T>>
     {
         private readonly T[] _aobjItems;
         private readonly int _intHashCode;
