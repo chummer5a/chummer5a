@@ -137,6 +137,8 @@
 				<gearcategory>Drugs</gearcategory>
 				<gearcategory>Toxins</gearcategory>
 			</allowgear>
+			<useskill>Atypical Melee</useskill>
+			<spec>Injection</spec>
 			<hide />
 		</weapon>
 	</weapons>
