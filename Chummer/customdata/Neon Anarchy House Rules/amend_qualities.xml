@@ -58,7 +58,8 @@
 		</quality>
 		<quality>
 			<name>Consummate Professional</name>
-			<hide />
+			<karma>3</karma>
+			<category>Positive</category>
 		</quality>
 		<quality>
 			<name>Dead Emotion</name>
