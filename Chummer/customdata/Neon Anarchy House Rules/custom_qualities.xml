@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <!--This file is part a series of data files created for r/NeonAnarchy.
 
 	You can learn more at
@@ -51,11 +69,41 @@
 			<category>Positive</category>
 			<limit>False</limit>
 			<bonus>
-				<adeptpowerpoints>MAG*0.5</adeptpowerpoints>
+				<adeptpowerpoints>{MAG}*0.5</adeptpowerpoints>
 			</bonus>
 			<required>
 				<allof>
 					<quality>Adept</quality>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Prototype Transhuman</quality>
+					<ess grade="Used">0.0001</ess>
+					<ess grade="Standard">0.0001</ess>
+					<ess grade="Alphaware">0.0001</ess>
+					<ess grade="Betaware">0.0001</ess>
+					<ess grade="Deltaware">0.0001</ess>
+					<ess grade="Gammaware">0.0001</ess>
+					<ess grade="Omegaware">0.0001</ess>
+				</oneof>
+			</forbidden>
+			<source>NA</source>
+			<page>15</page>
+			<notes>If ever your Magic rating changes, you must remove and re-add this quality to ensure your power points are properly calculated.</notes>
+		</quality>
+		<quality>
+			<id>81fc47e9-df5e-4c8a-9c98-cb08cf1f41c5</id>
+			<name>Purity Bonus (Mystic Adept)</name>
+			<karma>0</karma>
+			<category>Positive</category>
+			<limit>False</limit>
+			<bonus>
+				<adeptpowerpoints>{MAGAdept}*0.5</adeptpowerpoints>
+			</bonus>
+			<required>
+				<allof>
+					<quality>Mystic Adept</quality>
 				</allof>
 			</required>
 			<forbidden>

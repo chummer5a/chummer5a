@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <!--This file is part a series of data files created for r/NeonAnarchy.
 
 	You can learn more at
@@ -17,7 +35,7 @@
 				<spec>Ares Screech Sonic Rifle</spec>
 				<spec>Fichetti Pain Inducer</spec>
 				<spec>Laser Weapons</spec>
-				<spec>Microwave</spec>
+				<spec>Microwave Gun</spec>
 				<spec>Narcoject PEP</spec>
 			</specs>
 			<source>NA</source>
@@ -32,9 +50,9 @@
 			<skillgroup>Hunting</skillgroup>
 			<specs>
 				<spec>Blowgun</spec>
-				<spec>Grapple Gun</spec>
+				<spec>Grapple Guns</spec>
+				<spec>Harpoon Guns</spec>
 				<spec>Net Guns</spec>
-				<spec>Bola Launchers</spec>
 			</specs>
 			<source>NA</source>
 			<page>4</page>
@@ -51,7 +69,7 @@
 				<spec>Atomizer</spec>
 				<spec>BioSprayer</spec>
 				<spec>Flamethrowers</spec>
-				<spec>Hold-Fast Sprayer</spec>
+				<spec>Hold-Fast Adhesive Spray</spec>
 				<spec>Narcoject Gas Gun</spec>
 				<spec>Narcoject Trackstopper</spec>
 				<spec>Spray Pen</spec>
@@ -88,8 +106,7 @@
 				<spec>Chainsaw</spec>
 				<spec>Injection</spec>
 				<spec>Rolling Blades</spec>
-				<spec>Shields</spec>
-				<spec>Krime Stun Lance</spec>
+				<spec>Shield</spec>
 			</specs>
 			<source>NA</source>
 			<page>5</page>
