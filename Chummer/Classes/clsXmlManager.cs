@@ -1142,23 +1142,21 @@ namespace Chummer
                                                     case XmlNodeType.Attribute:
                                                     case XmlNodeType.CDATA:
                                                     {
-                                                        bool blnItemFound = false;
                                                         if (objNodeToEdit.HasChildNodes)
                                                         {
-                                                            foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                            XmlNode objChildToEdit = objNodeToEdit.ChildNodes
+                                                                .OfType<XmlNode>()
+                                                                .FirstOrDefault(
+                                                                    x => x.NodeType == eChildNodeType
+                                                                         && (eChildNodeType != XmlNodeType.Attribute
+                                                                             || x.Name == xmlChild.Name));
+                                                            if (objChildToEdit != null)
                                                             {
-                                                                if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
-                                                                    objChildToEdit.Name == xmlChild.Name))
-                                                                {
-                                                                    objChildToEdit.Value += xmlChild.Value;
-                                                                    blnItemFound = true;
-                                                                    break;
-                                                                }
+                                                                objChildToEdit.Value += xmlChild.Value;
+                                                                continue;
                                                             }
                                                         }
-
-                                                        if (blnItemFound)
-                                                            continue;
+                                                        
                                                         break;
                                                     }
                                                 }

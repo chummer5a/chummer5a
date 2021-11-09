@@ -541,12 +541,13 @@ namespace Chummer
                     break;
             }
 
+            string strCheckBoxFormat = LanguageManager.GetString("String_Space") + "({0})";
             foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
             {
                 if (!string.IsNullOrEmpty(chkCheckbox.Text))
                 {
                     chkCheckbox.Visible = true;
-                    chkCheckbox.Text += LanguageManager.GetString("String_Space") + '(' + chkCheckbox.Tag + ')';
+                    chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
                 }
             }
             foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
@@ -556,7 +557,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(chkCheckbox.Text))
                     {
                         chkCheckbox.Visible = true;
-                        chkCheckbox.Text += LanguageManager.GetString("String_Space") + '(' + chkCheckbox.Tag + ')';
+                        chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
                     }
                 }
             }

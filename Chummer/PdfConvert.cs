@@ -319,10 +319,10 @@ namespace Codaxy.WkHtmlToPdf
                             }
                             else
                             {
-                                await tskAsyncProcess;
+                                int intTaskResult = await tskAsyncProcess;
                                 if (tskAsyncProcess.IsCompleted && objCancellationTokenSource?.IsCancellationRequested != true)
                                 {
-                                    if (tskAsyncProcess.Result != 0 && !File.Exists(outputPdfFilePath))
+                                    if (intTaskResult != 0 && !File.Exists(outputPdfFilePath))
                                     {
                                         throw new PdfConvertException(
                                             $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");

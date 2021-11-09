@@ -16,6 +16,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _objConnectionLoaderCancellationTokenSource?.Dispose();
                 _clientDownloader?.Dispose();
                 _clientChangelogDownloader?.Dispose();
             }

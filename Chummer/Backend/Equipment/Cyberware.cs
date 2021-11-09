@@ -719,37 +719,46 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (Parent?.WeaponID != null)
+            string strWeaponId = Parent?.WeaponID;
+            if (!string.IsNullOrEmpty(strWeaponId) && strWeaponId != Guid.Empty.ToString())
             {
                 Weapon objWeapon = ParentVehicle != null
-                    ? ParentVehicle.Weapons.FindById(Parent.WeaponID)
-                    : _objCharacter.Weapons.FindById(Parent?.WeaponID);
+                    ? ParentVehicle.Weapons.FindById(strWeaponId)
+                    : _objCharacter.Weapons.FindById(strWeaponId);
 
-                foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
+                if (objWeapon != null)
                 {
-                    string strLoopID = objXml.InnerText;
-                    XmlNode objXmlAccessory = strLoopID.IsGuid()
-                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + "]")
-                        : objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + "]");
-
-                    if (objXmlAccessory == null) continue;
-                    WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
-                    int intAddWeaponRating = 0;
-                    string strLoopRating = objXml.Attributes["rating"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strLoopRating))
+                    foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
                     {
-                        strLoopRating = strLoopRating.CheapReplace("{Rating}",
-                            () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAddWeaponRating);
+                        string strLoopID = objXml.InnerText;
+                        XmlNode objXmlAccessory = strLoopID.IsGuid()
+                            ? objXmlWeaponDocument.SelectSingleNode(
+                                "/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + "]")
+                            : objXmlWeaponDocument.SelectSingleNode(
+                                "/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + "]");
+
+                        if (objXmlAccessory == null) continue;
+                        WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
+                        int intAddWeaponRating = 0;
+                        string strLoopRating = objXml.Attributes["rating"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strLoopRating))
+                        {
+                            strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                                                                       () => Rating.ToString(
+                                                                           GlobalSettings.InvariantCultureInfo));
+                            int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intAddWeaponRating);
+                        }
+
+                        objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>("", ""), intAddWeaponRating,
+                                             true);
+                        objGearWeapon.Cost = "0";
+                        objGearWeapon.ParentID = InternalId;
+                        objGearWeapon.Parent = objWeapon;
+
+                        if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
+                            objWeapon.WeaponAccessories.Add(objGearWeapon);
                     }
-
-                    objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>("", ""), intAddWeaponRating, true);
-                    objGearWeapon.Cost = "0";
-                    objGearWeapon.ParentID = InternalId;
-                    objGearWeapon.Parent = objWeapon;
-
-                    if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
-                        objWeapon.WeaponAccessories.Add(objGearWeapon);
                 }
             }
 

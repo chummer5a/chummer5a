@@ -260,7 +260,7 @@ namespace Chummer
                     if (uintAccumulator == uint.MaxValue)
                     {
                         uintAccumulator = 0;
-                        strSeparator += "_";
+                        strSeparator += '_';
                     }
                     uintAccumulator += 1;
                 }
@@ -305,7 +305,7 @@ namespace Chummer
                     StringBuilder sbdConflictingCharacters = new StringBuilder();
                     foreach (Character objCharacter in Program.MainForm.OpenCharacters)
                     {
-                        if (!objCharacter.Created && objCharacter.Settings == _objReferenceCharacterSettings)
+                        if (!objCharacter.Created && ReferenceEquals(objCharacter.Settings, _objReferenceCharacterSettings))
                             sbdConflictingCharacters.AppendLine(objCharacter.CharacterName);
                     }
                     if (sbdConflictingCharacters.Length > 0)
@@ -515,9 +515,9 @@ namespace Chummer
                 {
                     objNode.Checked = _blnSourcebookToggle;
                     if (_blnSourcebookToggle)
-                        _objCharacterSettings.Books.Add(strBookCode);
+                        _objCharacterSettings.BooksWritable.Add(strBookCode);
                     else
-                        _objCharacterSettings.Books.Remove(strBookCode);
+                        _objCharacterSettings.BooksWritable.Remove(strBookCode);
                 }
             }
             _blnLoading = false;
@@ -542,9 +542,9 @@ namespace Chummer
                 return;
             }
             if (objNode.Checked)
-                _objCharacterSettings.Books.Add(strBookCode);
+                _objCharacterSettings.BooksWritable.Add(strBookCode);
             else
-                _objCharacterSettings.Books.Remove(strBookCode);
+                _objCharacterSettings.BooksWritable.Remove(strBookCode);
             _objCharacterSettings.RecalculateBookXPath();
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
         }
@@ -791,7 +791,7 @@ namespace Chummer
                 if (objXmlBook.SelectSingleNode("permanent") != null)
                 {
                     _setPermanentSourcebooks.Add(strCode);
-                    _objCharacterSettings.Books.Add(strCode);
+                    _objCharacterSettings.BooksWritable.Add(strCode);
                     blnChecked = true;
                 }
                 TreeNode objNode = new TreeNode
@@ -1233,7 +1233,7 @@ namespace Chummer
             foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in SettingsManager.LoadedCharacterSettings)
             {
                 _lstSettings.Add(new ListItem(kvpCharacterSettingsEntry.Key, kvpCharacterSettingsEntry.Value.DisplayName));
-                if (_objReferenceCharacterSettings == kvpCharacterSettingsEntry.Value)
+                if (ReferenceEquals(_objReferenceCharacterSettings, kvpCharacterSettingsEntry.Value))
                     strSelect = kvpCharacterSettingsEntry.Key;
             }
             _lstSettings.Sort(CompareListItems.CompareNames);

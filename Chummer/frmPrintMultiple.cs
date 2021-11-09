@@ -45,7 +45,12 @@ namespace Chummer
 
         private void frmPrintMultiple_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objPrinterCancellationTokenSource?.Cancel(false);
+            if (_objPrinterCancellationTokenSource != null)
+            {
+                _objPrinterCancellationTokenSource.Cancel(false);
+                _objPrinterCancellationTokenSource.Dispose();
+            }
+
             CleanUpOldCharacters();
         }
 
@@ -85,7 +90,11 @@ namespace Chummer
 
         private async Task CancelPrint()
         {
-            _objPrinterCancellationTokenSource?.Cancel(false);
+            if (_objPrinterCancellationTokenSource != null)
+            {
+                _objPrinterCancellationTokenSource.Cancel(false);
+                _objPrinterCancellationTokenSource.Dispose();
+            }
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
@@ -129,7 +138,11 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel(false);
+                            if (_objPrinterCancellationTokenSource != null)
+                            {
+                                _objPrinterCancellationTokenSource.Cancel(false);
+                                _objPrinterCancellationTokenSource.Dispose();
+                            }
                             return;
                         }
 
@@ -140,7 +153,11 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel(false);
+                            if (_objPrinterCancellationTokenSource != null)
+                            {
+                                _objPrinterCancellationTokenSource.Cancel(false);
+                                _objPrinterCancellationTokenSource.Dispose();
+                            }
                             return;
                         }
                         if (blnLoadSuccessful)

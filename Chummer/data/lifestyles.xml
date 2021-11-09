@@ -1423,6 +1423,7 @@
       <name>Haunted</name>
       <category>Negative</category>
       <lp>0</lp>
+      <multiplier>-20</multiplier>
       <source>SFB</source>
       <page>20</page>
     </quality>

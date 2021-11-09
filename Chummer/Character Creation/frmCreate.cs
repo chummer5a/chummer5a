@@ -4492,7 +4492,7 @@ namespace Chummer
                             xmlAddModCategory = objXmlArmor["addmodcategory"];
                             if (xmlAddModCategory != null)
                             {
-                                frmPickArmorMod.AllowedCategories += "," + xmlAddModCategory.InnerText;
+                                frmPickArmorMod.AllowedCategories += ',' + xmlAddModCategory.InnerText;
                             }
                         }
 
@@ -11048,7 +11048,7 @@ namespace Chummer
 
                 using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                 {
-                    frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                    frmProgressBar.PerformStep(CharacterObject.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
                     if (!CharacterObject.Save())
                     {
                         CharacterObject.ExpenseEntries.Clear();
@@ -13027,7 +13027,7 @@ namespace Chummer
                                           GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidAvail"),
                                           intRestrictedCount,
                                           CharacterObjectSettings.MaximumAvailability));
-                    sbdMessage.Append(sbdAvailItems.ToString());
+                    sbdMessage.Append(sbdAvailItems);
                     if (sbdRestrictedItems.Length > 0)
                     {
                         sbdMessage.Append(Environment.NewLine + string.Format(GlobalSettings.CultureInfo,
@@ -13363,7 +13363,7 @@ namespace Chummer
                     {
                         using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
-                            frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                            frmProgressBar.PerformStep(CharacterObject.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
                             if (!CharacterObject.Save(strNewName))
                                 return false;
                         }
@@ -15510,6 +15510,12 @@ namespace Chummer
             objItem.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
+        }
+
+        private void mnuFileExport_Click(object sender, EventArgs e)
+        {
+            using (frmExport frmExportCharacter = new frmExport(CharacterObject))
+                frmExportCharacter.ShowDialog(this);
         }
     }
 }

@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -393,6 +394,8 @@ namespace Chummer
                 return false;
             if (_strFileName != other._strFileName)
                 return false;
+            if (GetHashCode() != other.GetHashCode())
+                return false;
 
             PropertyInfo[] aobjProperties = GetType().GetProperties();
             PropertyInfo[] aobjOtherProperties = other.GetType().GetProperties();
@@ -413,6 +416,167 @@ namespace Chummer
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
             return _lstBooks.SequenceEqual(other._lstBooks) && BannedWareGrades.SequenceEqual(other.BannedWareGrades);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is CharacterSettings objOther && Equals(objOther);
+        }
+
+        /// <inheritdoc />
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = _guiSourceId.GetHashCode();
+                hashCode = (hashCode * 397) ^ (_strFileName != null ? _strFileName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strName != null ? _strName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ _blnAllow2ndMaxAttribute.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowBiowareSuites.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowCyberwareESSDiscounts.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowEditPartOfBaseWeapon.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowHigherStackedFoci.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowInitiationInCreateMode.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowObsolescentUpgrade.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDontUseCyberlimbCalculation.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowSkillRegrouping.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAlternateMetatypeAttributeKarma.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnArmorDegradation.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnStrictSkillGroupsInCreateMode.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowPointBuySpecializationsOnKarmaSkills.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnCyberlegMovement.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDontDoubleQualityPurchaseCost.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDontDoubleQualityRefundCost.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnEnforceCapacity.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnESSLossReducesMaximumOnly.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnExceedNegativeQualities.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnExceedNegativeQualitiesLimit.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnExceedPositiveQualities.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnExceedPositiveQualitiesCostDoubled.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnExtendAnyDetectionSpell.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDroneArmorMultiplierEnabled.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnFreeSpiritPowerPointsMAG.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnNoArmorEncumbrance.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnIgnoreArt.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnIgnoreComplexFormLimit.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnUnarmedImprovementsApplyToWeapons.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnLicenseRestrictedItems.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnMaximumArmorModifications.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnMetatypeCostsKarma.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnMoreLethalGameplay.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnMultiplyForbiddenCost.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnMultiplyRestrictedCost.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnNoSingleArmorEncumbrance.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnRestrictRecoil.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnSpecialKarmaCostBasedOnShownValue.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnSpiritForceBasedOnTotalMAG.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnUnrestrictedNuyen.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnUseCalculatedPublicAwareness.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnUsePointsOnBrokenGroups.GetHashCode();
+                hashCode = (hashCode * 397) ^ (_strContactPointsExpression != null ? _strContactPointsExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strKnowledgePointsExpression != null ? _strKnowledgePointsExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression != null ? _strChargenKarmaToNuyenExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression != null ? _strBoundSpiritExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression != null ? _strRegisteredSpriteExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ _blnDoNotRoundEssenceInternally.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnEnableEnemyTracking.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnEnemyKarmaQualityLimit.GetHashCode();
+                hashCode = (hashCode * 397) ^ (_strEssenceFormat != null ? _strEssenceFormat.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ _intForbiddenCostMultiplier;
+                hashCode = (hashCode * 397) ^ _intDroneArmorMultiplier;
+                hashCode = (hashCode * 397) ^ _intLimbCount;
+                hashCode = (hashCode * 397) ^ _intMetatypeCostMultiplier;
+                hashCode = (hashCode * 397) ^ _decNuyenPerBPWftM.GetHashCode();
+                hashCode = (hashCode * 397) ^ _decNuyenPerBPWftP.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intRestrictedCostMultiplier;
+                hashCode = (hashCode * 397) ^ _blnAutomaticBackstory.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnFreeMartialArtSpecialization.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnPrioritySpellsAsAdeptPowers.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnMysAdeptAllowPpCareer.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnMysAdeptSecondMAGAttribute.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnReverseAttributePriorityOrder.GetHashCode();
+                hashCode = (hashCode * 397) ^ (_strNuyenFormat != null ? _strNuyenFormat.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ _blnCompensateSkillGroupKarmaDifference.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnIncreasedImprovedAbilityMultiplier.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowFreeGrids.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnAllowTechnomancerSchooling.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnCyberlimbAttributeBonusCapOverride.GetHashCode();
+                hashCode = (hashCode * 397) ^ (_strBookXPath != null ? _strBookXPath.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strExcludeLimbSlot != null ? _strExcludeLimbSlot.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ _intCyberlimbAttributeBonusCap;
+                hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDroneModsMaximumPilot.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intKarmaAttribute;
+                hashCode = (hashCode * 397) ^ _intKarmaCarryover;
+                hashCode = (hashCode * 397) ^ _intKarmaContact;
+                hashCode = (hashCode * 397) ^ _intKarmaEnemy;
+                hashCode = (hashCode * 397) ^ _intKarmaEnhancement;
+                hashCode = (hashCode * 397) ^ _intKarmaImproveActiveSkill;
+                hashCode = (hashCode * 397) ^ _intKarmaImproveKnowledgeSkill;
+                hashCode = (hashCode * 397) ^ _intKarmaImproveSkillGroup;
+                hashCode = (hashCode * 397) ^ _intKarmaInitiation;
+                hashCode = (hashCode * 397) ^ _intKarmaInitiationFlat;
+                hashCode = (hashCode * 397) ^ _intKarmaJoinGroup;
+                hashCode = (hashCode * 397) ^ _intKarmaLeaveGroup;
+                hashCode = (hashCode * 397) ^ _intKarmaTechnique;
+                hashCode = (hashCode * 397) ^ _intKarmaMetamagic;
+                hashCode = (hashCode * 397) ^ _intKarmaNewActiveSkill;
+                hashCode = (hashCode * 397) ^ _intKarmaNewComplexForm;
+                hashCode = (hashCode * 397) ^ _intKarmaNewKnowledgeSkill;
+                hashCode = (hashCode * 397) ^ _intKarmaNewSkillGroup;
+                hashCode = (hashCode * 397) ^ _intKarmaQuality;
+                hashCode = (hashCode * 397) ^ _intKarmaSpecialization;
+                hashCode = (hashCode * 397) ^ _intKarmaKnoSpecialization;
+                hashCode = (hashCode * 397) ^ _intKarmaSpell;
+                hashCode = (hashCode * 397) ^ _intKarmaSpirit;
+                hashCode = (hashCode * 397) ^ _intKarmaNewAIProgram;
+                hashCode = (hashCode * 397) ^ _intKarmaNewAIAdvancedProgram;
+                hashCode = (hashCode * 397) ^ _intKarmaMysticAdeptPowerPoint;
+                hashCode = (hashCode * 397) ^ _intKarmaSpiritFettering;
+                hashCode = (hashCode * 397) ^ _intKarmaAlchemicalFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaDisenchantingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaCenteringFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaFlexibleSignatureFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaMaskingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaSpellShapingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaPowerFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaQiFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaCounterspellingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaRitualSpellcastingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaSpellcastingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaSustainingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaBanishingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaBindingFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaSummoningFocus;
+                hashCode = (hashCode * 397) ^ _intKarmaWeaponFocus;
+                hashCode = (hashCode * 397) ^ _intDicePenaltySustaining;
+                hashCode = (hashCode * 397) ^ (int) _eBuildMethod;
+                hashCode = (hashCode * 397) ^ _intBuildPoints;
+                hashCode = (hashCode * 397) ^ _intQualityKarmaLimit;
+                hashCode = (hashCode * 397) ^ (_strPriorityArray != null ? _strPriorityArray.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strPriorityTable != null ? _strPriorityTable.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ _intSumtoTen;
+                hashCode = (hashCode * 397) ^ _decNuyenMaximumBP.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intAvailability;
+                hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys != null ? _dicCustomDataDirectoryKeys.GetEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories != null ? _setEnabledCustomDataDirectories.GetEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids != null ? _setEnabledCustomDataDirectoryGuids.GetOrderInvariantEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths != null ? _lstEnabledCustomDataDirectoryPaths.GetEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_lstBooks != null ? _lstBooks.GetOrderInvariantEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (BannedWareGrades != null ? BannedWareGrades.GetOrderInvariantEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (RedlinerExcludes != null ? RedlinerExcludes.GetOrderInvariantEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ KarmaMAGInitiationGroupPercent.GetHashCode();
+                hashCode = (hashCode * 397) ^ KarmaRESInitiationGroupPercent.GetHashCode();
+                hashCode = (hashCode * 397) ^ KarmaMAGInitiationOrdealPercent.GetHashCode();
+                hashCode = (hashCode * 397) ^ KarmaRESInitiationOrdealPercent.GetHashCode();
+                hashCode = (hashCode * 397) ^ KarmaMAGInitiationSchoolingPercent.GetHashCode();
+                hashCode = (hashCode * 397) ^ KarmaRESInitiationSchoolingPercent.GetHashCode();
+                hashCode = (hashCode * 397) ^ SpecializationBonus;
+                return hashCode;
+            }
         }
 
         /// <summary>
@@ -720,15 +884,23 @@ namespace Chummer
                     // </books>
                     objWriter.WriteEndElement();
 
+                    string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+
                     // <customdatadirectorynames>
                     objWriter.WriteStartElement("customdatadirectorynames");
                     for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
                     {
-                        KeyValuePair<string, bool> dicDirectoryName = _dicCustomDataDirectoryKeys[i];
+                        KeyValuePair<string, bool> kvpDirectoryInfo = _dicCustomDataDirectoryKeys[i];
+                        string strDirectoryName = kvpDirectoryInfo.Key;
+                        bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
+                        if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
+                            x => x.DirectoryPath.StartsWith(strCustomDataRootPath)
+                                 && x.Name.Equals(strDirectoryName, StringComparison.OrdinalIgnoreCase)))
+                            continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         objWriter.WriteStartElement("customdatadirectoryname");
-                        objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
+                        objWriter.WriteElementString("directoryname", strDirectoryName);
                         objWriter.WriteElementString("order", i.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("enabled", dicDirectoryName.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        objWriter.WriteElementString("enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                         objWriter.WriteEndElement();
                     }
                     // </customdatadirectorynames>
@@ -2302,7 +2474,12 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> Books => _lstBooks;
+        public HashSet<string> BooksWritable => _lstBooks;
+
+        /// <summary>
+        /// Sourcebooks.
+        /// </summary>
+        public IReadOnlyCollection<string> Books => _lstBooks;
 
         /// <summary>
         /// File name of the option (if it is not a built-in one).
@@ -2626,11 +2803,11 @@ namespace Chummer
                     StringBuilder objNuyenFormat = string.IsNullOrEmpty(NuyenFormat) ? new StringBuilder("#,0") : new StringBuilder(NuyenFormat);
                     if (intCurrentNuyenDecimals == 0)
                     {
-                        objNuyenFormat.Append(".");
+                        objNuyenFormat.Append('.');
                     }
                     for (int i = intCurrentNuyenDecimals; i < intNewNuyenDecimals; ++i)
                     {
-                        objNuyenFormat.Append("#");
+                        objNuyenFormat.Append('#');
                     }
                     NuyenFormat = objNuyenFormat.ToString();
                 }

@@ -1,5 +1,29 @@
-Future Build 215
+Future Build 217
 Application Changes:
+- Adding a new non-advanced lifestyle that is eligible for Trust Fund no longer causes a crash. Fixes #4601.
+- Adding a plugin to a custom cyberweapon no longer causes a crash.
+
+Data Changes:
+- Fixed missing multiplier for Haunted lifestyle quality.
+
+Build 216
+Application Changes:
+- The Master Index no longer crashes if a PDF offset is set to a massively high number.
+- Fixed a rare crash that might happen on certain systems running Windows 11.
+
+Data Changes:
+- Fixed a heinous bug that caused a bunch of sourcebooks to always be enabled no matter what.
+- Fixed the page offsets for text search patterns in the PDF scanner 
+
+Changed/New Strings:
+- Error_Message_PDF_IndexOutOfBounds
+- String_Scanning
+- String_Scanning_Pattern
+- String_Initializing_Pattern
+
+Build 215
+Application Changes:
+- Added a Scan Folder for PDF Sourcebooks to Options, so that (to Chummer known) Sourcebooks are automatically found and indexed.
 - Fixed a lot of buggy behavior related to opening characters with Chummer from outside the program (e.g. with Windows' "Open with..." function).
 - Clicking on "Open PDF" on a Master Index entry with no associated pdf now opens the "Choose PDF" Dialog instead of doing nothing.
 - Fixed a crash when Custom Date and/or Time Formats were set to an empty value.
@@ -120,6 +144,11 @@ Application Changes:
 - Enemies as per 4th edition rules now need to be enabled through the House Rules tab in character settings. Settings for the amount of karma gained from enemies are now clearly delineated and grouped together in the House Rules tab. Fixes #1325.
 - Favorite characters are now always automatically sorted alphabetically by their file paths. Fixes #3853.
 - Having Chummer not round Essence internally no longer allows characters with exactly 0 Essence to be valid.
+- LimittSpellCategory improvement can now exclude a category from being selected.
+- Objects can now use the presence of skills with total ranks (ie a total rank of 4 or more for Firearms + Blades) using the skilltotal node for required/forbidden operations. 
+- Added the ability to export characters while still in character creation. Fixes #4585.
+- Added support for using a category of cyberware for forbidden/required nodes. Uses the cyberwarecategory and biowarecategory element names. For example, to require that a quality only be taken if the user has a cyberware in the Cyber Implant Weapon category, you would use <cyberwarecategory>Cyber Implant Weapon</cyberwarecategory>
+- Added weaponrangemodifier bonus type. This can be used to alter the range penalty for a given weapon. The bonus follows the form of <weaponrangemodifier><name>[contains]Partial Weapon Name</name><value>1</value></weaponrangemodifier>. Note that name is optional, and it does not need to use the [contains] tag. If name is not specified, all weapons will be modified. 
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -175,6 +204,11 @@ Data Changes:
 - Cyberware Silencer, Laser Sight, Overclocked, and External Clip Port now add accessories to their parent cyberweapons.
 - Adepts can no longer choose skills from the Sorcery, Conjuring, or Enchanting skill groups for their free skill ranks from their priority entries at character creation.
 - Added addspirit bonus for Spirit Expansion: UMT and Spirit Expansion: Shedim metamagics.
+- Hedge Witch/Wizard quality now always allows Rituals.
+- Changed Dead SIN's Fake SIN to rating 3.
+- Fixed missing gecko grip and chameleon coating for the Mitsuhama Akiyama (Rules interpretation from description and 4e stats)
+- Fixed missing music player on the Urban Explorer Jumpsuit
+- Updated Krime Varmint to Concealability 2, Submachine Guns range.
 
 Changed/New Strings:
 - String_ContactPoints

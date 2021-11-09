@@ -318,7 +318,7 @@ namespace Chummer
                         return this[intKey];
 
                     default:
-                        throw new ArgumentException(nameof(key));
+                        throw new ArgumentException(null, nameof(key));
                 }
             }
             set
@@ -338,7 +338,7 @@ namespace Chummer
                         break;
 
                     default:
-                        throw new ArgumentException(nameof(value));
+                        throw new InvalidOperationException(nameof(value));
                 }
             }
         }
@@ -450,7 +450,7 @@ namespace Chummer
         public void Insert(int index, KeyValuePair<TKey, TValue> item)
         {
             if (_dicUnorderedData.ContainsKey(item.Key))
-                throw new ArgumentException(nameof(item));
+                throw new ArgumentException(null, nameof(item));
             _dicUnorderedData.Add(item.Key, item.Value);
             _lstIndexes.Insert(index, item.Key);
         }
@@ -460,7 +460,7 @@ namespace Chummer
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
             if (_dicUnorderedData.ContainsKey(item.Item1))
-                throw new ArgumentException(nameof(item));
+                throw new ArgumentException(null, nameof(item));
             _dicUnorderedData.Add(item.Item1, item.Item2);
             _lstIndexes.Insert(index, item.Item1);
         }

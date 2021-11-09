@@ -18,16 +18,21 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using NLog;
 using Application = System.Windows.Forms.Application;
 
@@ -294,12 +299,12 @@ namespace Chummer
         private void cboUseLoggingHelp_Click(object sender, EventArgs e)
         {
             //open the telemetry document
-            System.Diagnostics.Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
+            Process.Start("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing");
         }
 
         private void cmdPluginsHelp_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
+            Process.Start("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing");
         }
 
         private void chkCustomDateTimeFormats_CheckedChanged(object sender, EventArgs e)
@@ -1190,7 +1195,7 @@ namespace Chummer
             foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
             {
                 //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
-                if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !System.Diagnostics.Debugger.IsAttached && eOption > UseAILogging.NotSet)
+                if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !Debugger.IsAttached && eOption > UseAILogging.NotSet)
                     continue;
                 lstUseAIOptions.Add(new ListItem(eOption, LanguageManager.GetString("String_ApplicationInsights_" + eOption, _strSelectedLanguage)));
             }
@@ -1501,5 +1506,180 @@ namespace Chummer
         }
 
         #endregion Methods
+
+        
+        private async void bScanForPDFs_Click(object sender, EventArgs e)
+        {
+            // Prompt the user to select a save file to associate with this Contact.
+            using (new CursorWait(this))
+            {
+                Task<XPathNavigator> tskLoadBooks = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
+                using (FolderBrowserDialog fbd = new FolderBrowserDialog {ShowNewFolderButton = false})
+                {
+                    DialogResult result = fbd.ShowDialog();
+
+                    if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                        return;
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    string[] files = Directory.GetFiles(fbd.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly);
+                    XPathNavigator books = await tskLoadBooks;
+                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language=\"" + _strSelectedLanguage + "\"]");
+                    using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
+                    {
+                        List<SourcebookInfo> list = null;
+                        await Task.Run(() =>
+                        {
+                            list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList();
+                        });
+                        sw.Stop();
+                        StringBuilder sbdFeedback = new StringBuilder(Environment.NewLine + Environment.NewLine)
+                                                    .AppendLine(
+                                                        "-------------------------------------------------------------")
+                                                    .AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                                  "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
+                                                                  fbd.SelectedPath, sw.ElapsedMilliseconds,
+                                                                  Environment.NewLine, list.Count).AppendLine()
+                                                    .AppendLine();
+                        foreach(SourcebookInfo sourcebook in list)
+                        {
+                            sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                     "{0} with Offset {1} path: {2}", sourcebook.Code,
+                                                     sourcebook.Offset, sourcebook.Path).AppendLine();
+                        }
+
+                        sbdFeedback.AppendLine()
+                                   .AppendLine("-------------------------------------------------------------");
+                        Log.Info(sbdFeedback.ToString());
+
+                        var message = string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FoundPDFsInFolder", _strSelectedLanguage), list.Count, fbd.SelectedPath);
+                        var title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder", _strSelectedLanguage);
+                    
+                        Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+        }
+
+        private ICollection<SourcebookInfo> ScanFilesForPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
+        {
+            ParallelOptions parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 10
+            };
+            // ConcurrentDictionary makes sure we don't pick out multiple files for the same sourcebook
+            ConcurrentDictionary<string, SourcebookInfo> resultCollection = new ConcurrentDictionary<string, SourcebookInfo>();
+            Parallel.ForEach(files, parallelOptions, file =>
+            {
+                FileInfo fileInfo = new FileInfo(file);
+                frmProgressBar.PerformStep(fileInfo.Name, frmLoading.ProgressBarTextPatterns.Scanning);
+                SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
+                if (info == null || resultCollection.ContainsKey(info.Code))
+                    return;
+                resultCollection.TryAdd(info.Code, info);
+            });
+            foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)
+            {
+                if (_dicSourcebookInfos.ContainsKey(kvpInfo.Key))
+                    _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
+                else
+                    _dicSourcebookInfos.Add(kvpInfo.Key, kvpInfo.Value);
+            }
+            return resultCollection.Values;
+        }
+
+        private SourcebookInfo ScanPDFForMatchingText(FileInfo fileInfo, XPathNodeIterator xmlMatches)
+        {
+            //Search the first 10 pages for all the text
+            for (int intPage = 1; intPage <= 10; intPage++)
+            {
+                string text = GetPageTextFromPDF(fileInfo, intPage);
+                if (string.IsNullOrEmpty(text))
+                    continue;
+
+                foreach (XPathNavigator xmlMatch in xmlMatches)
+                {
+                    string strLanguageText = xmlMatch.SelectSingleNode("text")?.Value ?? string.Empty;
+                    if (!text.Contains(strLanguageText))
+                        continue;
+                    int trueOffset = intPage - xmlMatch.SelectSingleNode("page")?.ValueAsInt ?? 0;
+
+                    xmlMatch.MoveToParent();
+                    xmlMatch.MoveToParent();
+
+                    return new SourcebookInfo
+                    {
+                        Code = xmlMatch.SelectSingleNode("code")?.Value,
+                        Offset = trueOffset,
+                        Path = fileInfo.FullName
+                    };
+                }
+            }
+            return null;
+        }
+
+        private string GetPageTextFromPDF(FileInfo fileInfo, int intPage)
+        {
+            PdfDocument objPdfDocument;
+            try
+            {
+                objPdfDocument = new PdfDocument(new PdfReader(fileInfo.FullName));
+            }
+            catch (iText.IO.Exceptions.IOException e)
+            {
+                if (e.Message == "PDF header not found.")
+                    return null;
+                throw;
+            }
+            catch (Exception e)
+            {
+                //Loading failed, probably not a PDF file
+                Log.Warn(e, "Could not load file " + fileInfo.FullName + " and open it as PDF to search for text.");
+                return null;
+            }
+
+            List<string> lstStringFromPdf = new List<string>(30);
+            int intExtraAllCapsInfo = 0;
+            // Loop through each page, starting at the listed page + offset.
+            if (intPage >= objPdfDocument.GetNumberOfPages())
+                return null;
+
+            int intProcessedStrings = lstStringFromPdf.Count;
+            try
+            {
+                // each page should have its own text extraction strategy for it to work properly
+                // this way we don't need to check for previous page appearing in the current page
+                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
+                                              objPdfDocument.GetPage(intPage),
+                                              new SimpleTextExtractionStrategy())
+                                          .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+
+                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                lstStringFromPdf.AddRange(
+                    strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                               .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+            }
+            // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
+            catch (Exception e)
+            {
+                Utils.BreakIfDebug();
+                Log.Error(e);
+                return null;
+            }
+            StringBuilder sbdAllLines = new StringBuilder();
+            for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+            {
+                // failsafe for languages that don't have case distinction (chinese, japanese, etc)
+                // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
+                if (intExtraAllCapsInfo > 10)
+                    break;
+
+                string strCurrentLine = lstStringFromPdf[i];
+                sbdAllLines.AppendLine(strCurrentLine);
+            }
+            return sbdAllLines.ToString();
+        }
     }
+
 }

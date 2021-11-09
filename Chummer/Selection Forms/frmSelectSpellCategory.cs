@@ -27,7 +27,8 @@ namespace Chummer
     public partial class frmSelectSpellCategory : Form
     {
         private string _strSelectedCategory = string.Empty;
-        private string _strForceCategory = string.Empty;
+        private string _strForceCategory    = string.Empty;
+        private HashSet<string> _setExcludeCategories;
 
         private readonly XPathNavigator _objXmlDocument;
 
@@ -50,6 +51,7 @@ namespace Chummer
                 : _objXmlDocument.Select("/chummer/categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
+                if (_setExcludeCategories.Contains(strInnerText)) continue;
                 lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
 
@@ -91,6 +93,14 @@ namespace Chummer
         public string OnlyCategory
         {
             set => _strForceCategory = value;
+        }
+
+        /// <summary>
+        /// Exclude a Category from the list.
+        /// </summary>
+        public HashSet<string> ExcludeCategories
+        {
+            set => _setExcludeCategories = value;
         }
 
         #endregion Properties

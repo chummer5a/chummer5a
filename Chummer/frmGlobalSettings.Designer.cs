@@ -34,6 +34,7 @@ namespace Chummer
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
             this.tlpGlobal = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.bScanForPDFs = new Chummer.ButtonWithToolTip(this.components);
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.tlpSelectedSourcebook = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
@@ -258,17 +259,41 @@ namespace Chummer
             this.tlpGlobal.ColumnCount = 2;
             this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            this.tlpGlobal.Controls.Add(this.bScanForPDFs, 0, 2);
             this.tlpGlobal.Controls.Add(this.grpSelectedSourcebook, 1, 1);
             this.tlpGlobal.Controls.Add(this.tlpGlobalOptions, 1, 0);
             this.tlpGlobal.Controls.Add(this.gpbEditSourcebookInfo, 0, 0);
             this.tlpGlobal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGlobal.Location = new System.Drawing.Point(9, 9);
             this.tlpGlobal.Name = "tlpGlobal";
-            this.tlpGlobal.RowCount = 2;
+            this.tlpGlobal.RowCount = 3;
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobal.Size = new System.Drawing.Size(1214, 584);
             this.tlpGlobal.TabIndex = 39;
+            // 
+            // bScanForPDFs
+            // 
+            this.bScanForPDFs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.bScanForPDFs.AutoSize = true;
+            this.bScanForPDFs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bScanForPDFs.Image = null;
+            this.bScanForPDFs.ImageDpi120 = null;
+            this.bScanForPDFs.ImageDpi144 = null;
+            this.bScanForPDFs.ImageDpi192 = null;
+            this.bScanForPDFs.ImageDpi288 = null;
+            this.bScanForPDFs.ImageDpi384 = null;
+            this.bScanForPDFs.ImageDpi96 = null;
+            this.bScanForPDFs.Location = new System.Drawing.Point(3, 558);
+            this.bScanForPDFs.Name = "bScanForPDFs";
+            this.bScanForPDFs.Size = new System.Drawing.Size(297, 23);
+            this.bScanForPDFs.TabIndex = 68;
+            this.bScanForPDFs.Tag = "Button_Options_PDFFolderScan";
+            this.bScanForPDFs.Text = "Scan Folder for PDF Files";
+            this.bScanForPDFs.ToolTipText = "";
+            this.bScanForPDFs.UseVisualStyleBackColor = true;
+            this.bScanForPDFs.Click += new System.EventHandler(this.bScanForPDFs_Click);
             // 
             // grpSelectedSourcebook
             // 
@@ -279,6 +304,7 @@ namespace Chummer
             this.grpSelectedSourcebook.Enabled = false;
             this.grpSelectedSourcebook.Location = new System.Drawing.Point(306, 503);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
+            this.tlpGlobal.SetRowSpan(this.grpSelectedSourcebook, 2);
             this.grpSelectedSourcebook.Size = new System.Drawing.Size(475, 78);
             this.grpSelectedSourcebook.TabIndex = 27;
             this.grpSelectedSourcebook.TabStop = false;
@@ -1706,7 +1732,7 @@ namespace Chummer
             this.gpbEditSourcebookInfo.Location = new System.Drawing.Point(3, 3);
             this.gpbEditSourcebookInfo.Name = "gpbEditSourcebookInfo";
             this.tlpGlobal.SetRowSpan(this.gpbEditSourcebookInfo, 2);
-            this.gpbEditSourcebookInfo.Size = new System.Drawing.Size(297, 578);
+            this.gpbEditSourcebookInfo.Size = new System.Drawing.Size(297, 549);
             this.gpbEditSourcebookInfo.TabIndex = 65;
             this.gpbEditSourcebookInfo.TabStop = false;
             this.gpbEditSourcebookInfo.Tag = "Label_Options_EditSourcebookInfo";
@@ -1718,7 +1744,7 @@ namespace Chummer
             this.lstGlobalSourcebookInfos.FormattingEnabled = true;
             this.lstGlobalSourcebookInfos.Location = new System.Drawing.Point(3, 16);
             this.lstGlobalSourcebookInfos.Name = "lstGlobalSourcebookInfos";
-            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(291, 559);
+            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(291, 530);
             this.lstGlobalSourcebookInfos.TabIndex = 48;
             this.lstGlobalSourcebookInfos.SelectedIndexChanged += new System.EventHandler(this.lstGlobalSourcebookInfos_SelectedIndexChanged);
             // 
@@ -2477,5 +2503,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblDirectoryPathLabel;
         private System.Windows.Forms.Label lblDefaultMasterIndexSetting;
         private System.Windows.Forms.ComboBox cboDefaultMasterIndexSetting;
+        private ButtonWithToolTip bScanForPDFs;
     }
 }

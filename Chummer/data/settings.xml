@@ -3119,7 +3119,7 @@
       <ignoreart>False</ignoreart>
       <cyberlegmovement>True</cyberlegmovement>
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
-      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <contactpointsexpression>{CHAUnaug} * 6</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
@@ -3314,7 +3314,7 @@
       <ignoreart>False</ignoreart>
       <cyberlegmovement>True</cyberlegmovement>
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
-      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <contactpointsexpression>{CHAUnaug} * 6</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
@@ -3509,7 +3509,7 @@
       <ignoreart>False</ignoreart>
       <cyberlegmovement>True</cyberlegmovement>
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
-      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <contactpointsexpression>{CHAUnaug} * 6</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>

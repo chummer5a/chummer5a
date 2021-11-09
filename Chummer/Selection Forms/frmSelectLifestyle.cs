@@ -463,7 +463,7 @@ namespace Chummer
             if (Lifestyle.StaticIsTrustFundEligible(_objCharacter, strBaseLifestyle))
             {
                 chkTrustFund.Visible = true;
-                chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
+                chkTrustFund.Checked = _objSourceLifestyle?.TrustFund ?? !_objCharacter.Lifestyles.Any(x => x.TrustFund);
             }
             else
             {

@@ -6315,7 +6315,8 @@ namespace Chummer.Classes
                 // Display the Select Spell window.
                 using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellCategory")
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory"),
+                    ExcludeCategories = bonusNode.Attributes?["exclude"]?.InnerText.Split(',').ToHashSet()
                 })
                 {
                     frmPickSpellCategory.ShowDialog(Program.MainForm);
@@ -7224,6 +7225,16 @@ namespace Chummer.Classes
             Log.Info("weaponaccuracy = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["name"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponAccuracy, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["value"]?.InnerText, _intRating));
+        }
+
+        public void weaponrangemodifier(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("weaponrangemodifier");
+            Log.Info("weaponrangemodifier = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponRangeModifier, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["value"]?.InnerText, _intRating));
         }
 
         public void weaponskillaccuracy(XmlNode bonusNode)

@@ -28,7 +28,7 @@ namespace Chummer
     /// Structured array built for working properly as a key to dictionaries. Read-only to make sure keys remain immutable.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct KeyArray<T> : IReadOnlyList<T>
+    public readonly struct KeyArray<T> : IReadOnlyList<T>, IEquatable<KeyArray<T>>
     {
         private readonly T[] _aobjItems;
         private readonly int _intHashCode;
@@ -75,6 +75,10 @@ namespace Chummer
         {
             return _intHashCode;
         }
+
+        public static bool operator ==(KeyArray<T> lhs, KeyArray<T> rhs) => lhs.Equals(rhs);
+
+        public static bool operator !=(KeyArray<T> lhs, KeyArray<T> rhs) => !(lhs == rhs);
 
         public bool Equals(KeyArray<T> rhs)
         {
