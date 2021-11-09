@@ -17,6 +17,7 @@ namespace Chummer
             {
                 components?.Dispose();
                 _frmPrintView?.Dispose();
+                _objPrinterCancellationTokenSource?.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -1365,17 +1365,27 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strReturn = strInput;
-            foreach (string strSkillName in Skills.Select(i => i.Name))
+            string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
+            foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
             {
-                strReturn = strReturn
-                    .CheapReplace('{' + strSkillName + '}', () =>
-                        GetActiveSkill(strSkillName).DisplayName(strLanguage) +
-                        (blnShowValues
-                            ? LanguageManager.GetString("String_Space", strLanguage) + '(' + (dicValueOverrides?.ContainsKey(strSkillName) == true
-                                ? dicValueOverrides[strSkillName]
-                                : GetActiveSkill(strSkillName).Pool)
-                            .ToString(objCultureInfo) + ')'
-                            : string.Empty));
+                if (blnShowValues)
+                    strReturn = strReturn.CheapReplace('{' + strSkillKey + '}',
+                                                       () =>
+                                                       {
+                                                           Skill objLoopSkill = GetActiveSkill(strSkillKey);
+                                                           return objLoopSkill.DisplayName(strLanguage)
+                                                                  + string.Format(
+                                                                      objCultureInfo, strFormat,
+                                                                      dicValueOverrides?.ContainsKey(strSkillKey)
+                                                                      == true
+                                                                          ? dicValueOverrides[strSkillKey]
+                                                                          : objLoopSkill.PoolOtherAttribute(
+                                                                              objLoopSkill.Attribute,
+                                                                              intAttributeOverrideValue: 0)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                                       });
+                else
+                    strReturn = strReturn.CheapReplace('{' + strSkillKey + '}',
+                                                       () => GetActiveSkill(strSkillKey).DisplayName(strLanguage));
             }
             return strReturn;
         }
@@ -1399,16 +1409,27 @@ namespace Chummer.Backend.Skills
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            foreach (string strSkillName in Skills.Select(i => i.Name))
+            string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
+            foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
             {
-                sbdInput.CheapReplace(strOriginal, '{' + strSkillName + '}', () =>
-                    GetActiveSkill(strSkillName).DisplayName(strLanguage) +
-                    (blnShowValues
-                        ? LanguageManager.GetString("String_Space", strLanguage) + '(' + (dicValueOverrides?.ContainsKey(strSkillName) == true
-                            ? dicValueOverrides[strSkillName]
-                            : GetActiveSkill(strSkillName).Pool)
-                        .ToString(objCultureInfo) + ')'
-                        : string.Empty));
+                if (blnShowValues)
+                    sbdInput.CheapReplace(strOriginal, '{' + strSkillKey + '}',
+                                          () =>
+                                          {
+                                              Skill objLoopSkill = GetActiveSkill(strSkillKey);
+                                              return objLoopSkill.DisplayName(strLanguage)
+                                                     + string.Format(
+                                                         objCultureInfo, strFormat,
+                                                         dicValueOverrides?.ContainsKey(strSkillKey)
+                                                         == true
+                                                             ? dicValueOverrides[strSkillKey]
+                                                             : objLoopSkill.PoolOtherAttribute(
+                                                                 objLoopSkill.Attribute,
+                                                                 intAttributeOverrideValue: 0)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                          });
+                else
+                    sbdInput.CheapReplace(strOriginal, '{' + strSkillKey + '}',
+                                          () => GetActiveSkill(strSkillKey).DisplayName(strLanguage));
             }
         }
         #endregion

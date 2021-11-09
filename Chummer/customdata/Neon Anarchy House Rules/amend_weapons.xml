@@ -54,49 +54,276 @@
 			<range>Medium/Heavy Machinegun</range>
 			<spec>Machine Guns</spec>
 		</weapon>
-		<!--
-			<weapon>
-				<name>Underbarrel Bola Launcher</name>
-				<category>Underbarrel Weapons</category>
-				<useskill>Exotic Ballistic</useskill>
-				<useskillspec amendoperation="remove">Bola</useskillspec>
-			</weapon>
-		-->
-	<weapon>
-      <name>Heavy Crossbow</name>
-      <accessorymounts>
-        <mount>Top</mount>
-        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
-      </accessorymounts>
-    </weapon>
-    <weapon>
-      <name>Light Crossbow</name>
+
+		<!-- Directed Energy -->
+		<weapon xpathfilter="weapontype = 'energy'">
+			<useskill>Directed Energy</useskill>
+		</weapon>
+		<weapon>
+			<name>Fichetti Pain Inducer</name>
+			<useskill>Directed Energy</useskill>
+		</weapon>
+		<weapon xpathfilter="category = 'Laser Weapons'">
+			<useskill>Directed Energy</useskill>
+			<spec>Laser Weapons</spec>
+		</weapon>
+		<weapon xpathfilter="spec = 'Microwave'">
+			<useskill>Directed Energy</useskill>
+		</weapon>
+
+		<!-- Exotic Ballistic -->
+		<weapon>
+			<name>Blowgun</name>
+			<useskill>Exotic Ballistic</useskill>
+		</weapon>
+		<weapon xpathfilter="spec = 'Grapple Gun'">
+			<useskill>Exotic Ballistic</useskill>
+		</weapon>
+		<weapon>
+			<name>SA Retarius Net Gun</name>
+			<useskill>Exotic Ballistic</useskill>
+			<spec>Net Guns</spec>
+		</weapon>
+		<weapon>
+			<name>SA Retarius Net Gun XL</name>
+			<useskill>Exotic Ballistic</useskill>
+			<spec>Net Guns</spec>
+		</weapon>
+		<weapon>
+			<name>Underbarrel Bola Launcher</name>
+			<useskill>Exotic Ballistic</useskill>
+			<spec>Bola Launchers</spec>
+		</weapon>
+
+		<!-- Spray Weapons -->
+		<weapon>
+			<name>Ares S-III Super Squirt</name>
+			<useskill>Spray Weapons</useskill>
+		</weapon>
+		<weapon xpathfilter="category = 'Flamethrowers'">
+			<useskill>Spray Weapons</useskill>
+			<spec>Flamethrowers</spec>
+		</weapon>
+		<weapon>
+			<name>Hold-Fast Sprayer</name>
+			<useskill>Spray Weapons</useskill>
+			<spec>Hold-Fast Sprayer</spec>
+		</weapon>
+		<weapon>
+			<name>Narcoject Gas Gun</name>
+			<useskill>Spray Weapons</useskill>
+		</weapon>
+		<weapon>
+			<name>Narcoject Trackstopper</name>
+			<useskill>Spray Weapons</useskill>
+		</weapon>
+		<weapon>
+			<name>Pepper Punch Pen</name>
+			<useskill>Spray Weapons</useskill>
+			<spec>Spray Pen</spec>
+		</weapon>
+		<weapon>
+			<name>Modified Spray Pen</name>
+			<useskill>Spray Weapons</useskill>
+			<spec>Spray Pen</spec>
+		</weapon>
+		
+		<!-- Flexile Melee -->
+		<weapon>
+			<name>Monofilament Garrote</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Garrote</spec>
+		</weapon>
+		<weapon>
+			<name>Garrote</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Garrote</spec>
+		</weapon>
+		<weapon>
+			<name>Monofilament Whip</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Monofilament Whip</spec>
+		</weapon>
+		<weapon>
+			<name>Bullwhip</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Bullwhip</spec>
+		</weapon>
+		<weapon>
+			<name>Bladed Yo-Yo</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Yo-Yo</spec>
+		</weapon>
+		<weapon>
+			<name>Hardened Yo-Yo</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Yo-Yo</spec>
+		</weapon>
+		<weapon>
+			<name>Monofilament Yo-Yo</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Yo-Yo</spec>
+		</weapon>
+		<weapon>
+			<name>Chain</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Improvised</spec>
+		</weapon>
+		<weapon>
+			<name>Oral Slasher</name>
+			<useskill>Flexile Melee</useskill>
+			<spec>Oral Slasher</spec>
+		</weapon>
+
+		<!-- Atypical Melee -->
+		<weapon>
+			<name>Monofilament Chainsaw</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Chainsaw</spec>
+		</weapon>
+		<weapon>
+			<name>Ash Arms Combat Chainsaw</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Chainsaw</spec>
+		</weapon>
+		<weapon>
+			<name>Ash Arms Monofilament Chainsaw</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Chainsaw</spec>
+		</weapon>
+		<weapon>
+			<name>Injector Pen</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Injection</spec>
+		</weapon>
+		<weapon>
+			<name>Krime Stun Lance</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Krime Stun Lance</spec>
+		</weapon>
+		<weapon>
+			<name>Hardened Skateboard</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Rolling Blades</spec>
+		</weapon>
+		<weapon>
+			<name>Bladed Skateboard</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Rolling Blades</spec>
+		</weapon>
+		<weapon>
+			<name>Rolling Blades</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Rolling Blades</spec>
+		</weapon>
+		<weapon>
+			<name>Ballistic Shield</name>
+			<useskill>Atypical Melee</useskill>
+		</weapon>
+		<weapon>
+			<name>Blast Shield</name>
+			<useskill>Atypical Melee</useskill>
+			<spec>Shields</spec>
+		</weapon>
+		<weapon>
+			<name>Riot Shield</name>
+			<useskill>Atypical Melee</useskill>
+		</weapon>
+		<weapon>
+			<name>Ares Briefcase Shield</name>
+			<useskill>Atypical Melee</useskill>
+		</weapon>
+
+		<!-- Misc Reorganized -->
+		<weapon>
+			<name>Bola</name>
+			<useskill>Throwing Weapons</useskill>
+		</weapon>
+		<weapon>
+			<!-- Chakram (Melee) -->
+			<id>dc18811b-eb07-43d8-8d95-d5c468f048f4</id>
+			<useskill>Blades</useskill>
+		</weapon>
+		<weapon>
+			<name>FN-AAL Gyrojet Pistol</name>
+			<useskill>Pistols</useskill>
+		</weapon>
+		<weapon xpathfilter="category = 'Quality'">
+			<useskill>Unarmed Combat</useskill>
+			<spec>Natural Weapons</spec>
+		</weapon>
+		<weapon>
+			<name>Knockoff Gun Cane</name>
+			<useskill>Pistols</useskill>
+		</weapon>
+		<weapon>
+			<name>Mortimer of London 'Trafalger' Gun Cane</name>
+			<useskill>Pistols</useskill>
+		</weapon>
+		<weapon>
+			<name>Micro Flare Launcher</name>
+			<useskill>Pistols</useskill>
+		</weapon>
+		<weapon>
+			<name>Parashield Dart Pistol</name>
+			<useskill>Pistols</useskill>
+		</weapon>
+		<weapon>
+			<name>Parashield Dart Rifle</name>
+			<useskill>Longarms</useskill>
+		</weapon>
+		<weapon>
+			<name>Shiawase Arms Simoom</name>
+			<useskill>Pistols</useskill>
+		</weapon>
+		<weapon>
+			<name>Parashield Dart Rifle</name>
+			<useskill>Longarms</useskill>
+		</weapon>
+		<weapon>
+			<name>Stimtouch Hosiery</name>
+			<useskill>Unarmed Combat</useskill>
+		</weapon>
+		<weapon>
+			<name>Throwing Syringe</name>
+			<useskill>Throwing Weapons</useskill>
+		</weapon>
+
+		<weapon>
+			<name>Heavy Crossbow</name>
+			<accessorymounts>
+				<mount>Top</mount>
+				<!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+			</accessorymounts>
+		</weapon>
+		<weapon>
+			<name>Light Crossbow</name>
 		<accessorymounts>
-        <mount>Top</mount>
-        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
-      </accessorymounts>
-    </weapon>
-    <weapon>
-      <name>Medium Crossbow</name>
-      <accessorymounts>
-        <mount>Top</mount>
-        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
-      </accessorymounts>
-    </weapon>
-    <weapon>
-      <name>Ranger Sliver Pistol Crossbow</name>
-      <accessorymounts>
-        <mount>Top</mount>
-        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
-      </accessorymounts>
-    </weapon>
+				<mount>Top</mount>
+				<!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+			</accessorymounts>
+		</weapon>
+		<weapon>
+			<name>Medium Crossbow</name>
+			<accessorymounts>
+				<mount>Top</mount>
+				<!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+			</accessorymounts>
+		</weapon>
+		<weapon>
+			<name>Ranger Sliver Pistol Crossbow</name>
+			<accessorymounts>
+				<mount>Top</mount>
+				<!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+			</accessorymounts>
+		</weapon>
 	<weapon>
-      <name>Mitsubishi Yakusoku MRL</name>
-      <accuracy>5</accuracy>
-    </weapon>
+			<name>Mitsubishi Yakusoku MRL</name>
+			<accuracy>5</accuracy>
+		</weapon>
 	<weapon>
-      <name>Onotari Arms Ballista MML</name>
-      <accuracy>5</accuracy>
-    </weapon>
+			<name>Onotari Arms Ballista MML</name>
+			<accuracy>5</accuracy>
+		</weapon>
 	</weapons>
 </chummer>

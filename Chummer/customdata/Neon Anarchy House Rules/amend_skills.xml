@@ -106,6 +106,16 @@
 			</specs>
 		</skill>
 		<skill>
+			<name>Unarmed Combat</name>
+			<specs amendoperation="replace">
+				<spec>Blocking</spec>
+				<spec>Cyber Implants</spec>
+				<spec>Natural Weapons</spec>
+				<spec>Subduing Combat</spec>
+				<spec>[Martial Art]</spec>
+			</specs>
+		</skill>
+		<skill>
 			<name>Longarms</name>
 			<specs amendoperation="replace">
 				<spec>Dart Rifle</spec>

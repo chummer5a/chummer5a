@@ -26,7 +26,7 @@ namespace Chummer
         public static int Min(params int[] aintValues)
         {
             if (aintValues.Length == 0)
-                throw new ArgumentException(nameof(aintValues));
+                throw new InvalidOperationException(nameof(aintValues));
             if (aintValues.Length == 1)
                 return aintValues[0];
             int intReturn = aintValues[0];
@@ -42,7 +42,7 @@ namespace Chummer
         public static float Min(params float[] afltValues)
         {
             if (afltValues.Length == 0)
-                throw new ArgumentException(nameof(afltValues));
+                throw new InvalidOperationException(nameof(afltValues));
             if (afltValues.Length == 1)
                 return afltValues[0];
             float fltReturn = afltValues[0];
@@ -58,7 +58,7 @@ namespace Chummer
         public static double Min(params double[] adblValues)
         {
             if (adblValues.Length == 0)
-                throw new ArgumentException(nameof(adblValues));
+                throw new InvalidOperationException(nameof(adblValues));
             if (adblValues.Length == 1)
                 return adblValues[0];
             double dblReturn = adblValues[0];
@@ -74,7 +74,7 @@ namespace Chummer
         public static decimal Min(params decimal[] adecValues)
         {
             if (adecValues.Length == 0)
-                throw new ArgumentException(nameof(adecValues));
+                throw new InvalidOperationException(nameof(adecValues));
             if (adecValues.Length == 1)
                 return adecValues[0];
             decimal decReturn = adecValues[0];
@@ -90,7 +90,7 @@ namespace Chummer
         public static int Max(params int[] aintValues)
         {
             if (aintValues.Length == 0)
-                throw new ArgumentException(nameof(aintValues));
+                throw new InvalidOperationException(nameof(aintValues));
             if (aintValues.Length == 1)
                 return aintValues[0];
             int intReturn = aintValues[0];
@@ -106,7 +106,7 @@ namespace Chummer
         public static float Max(params float[] afltValues)
         {
             if (afltValues.Length == 0)
-                throw new ArgumentException(nameof(afltValues));
+                throw new InvalidOperationException(nameof(afltValues));
             if (afltValues.Length == 1)
                 return afltValues[0];
             float fltReturn = afltValues[0];
@@ -122,7 +122,7 @@ namespace Chummer
         public static double Max(params double[] adblValues)
         {
             if (adblValues.Length == 0)
-                throw new ArgumentException(nameof(adblValues));
+                throw new InvalidOperationException(nameof(adblValues));
             if (adblValues.Length == 1)
                 return adblValues[0];
             double dblReturn = adblValues[0];
@@ -138,7 +138,7 @@ namespace Chummer
         public static decimal Max(params decimal[] adecValues)
         {
             if (adecValues.Length == 0)
-                throw new ArgumentException(nameof(adecValues));
+                throw new InvalidOperationException(nameof(adecValues));
             if (adecValues.Length == 1)
                 return adecValues[0];
             decimal decReturn = adecValues[0];

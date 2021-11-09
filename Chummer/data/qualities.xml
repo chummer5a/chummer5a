@@ -17416,7 +17416,8 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspellcategory />
+        <allowspellcategory>Rituals</allowspellcategory>
+        <limitspellcategory exclude="Rituals" />
         <skillgroupdisable>Conjuring</skillgroupdisable>
         <spellcategorydrain>
           <val>-2</val>
@@ -18831,7 +18832,7 @@
         <addgear>
           <name>Fake SIN</name>
           <category>ID/Credsticks</category>
-          <rating>4</rating>
+          <rating>3</rating>
           <children>
             <child>
               <name>Fake License</name>
