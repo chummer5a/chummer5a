@@ -86,13 +86,13 @@ namespace Chummer
 
             // Populate the Vehicle Category list.
             string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
-            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("categories/category"))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
-                        objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                        objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -407,9 +407,9 @@ namespace Chummer
                     if (chkUsedVehicle.Checked)
                         decCostMultiplier -= (nudUsedVehicleDiscount.Value / 100.0m);
                     decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value))
+                    if (_setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNodeAndCacheExpression("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true) == true)
+                    if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNodeAndCacheExpression("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true) == true)
                         decCostMultiplier *= 0.9m;
                     if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
                     {
@@ -418,11 +418,11 @@ namespace Chummer
                     }
                 }
 
-                string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strDisplayname = objXmlVehicle.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlVehicle.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 
                 if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
-                    string strCategory = objXmlVehicle.SelectSingleNode("category")?.Value;
+                    string strCategory = objXmlVehicle.SelectSingleNodeAndCacheExpression("category")?.Value;
                     if (!string.IsNullOrEmpty(strCategory))
                     {
                         ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
@@ -432,7 +432,7 @@ namespace Chummer
                         }
                     }
                 }
-                lstVehicles.Add(new ListItem(objXmlVehicle.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayname));
+                lstVehicles.Add(new ListItem(objXmlVehicle.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty, strDisplayname));
             }
             lstVehicles.Sort(CompareListItems.CompareNames);
             if (intOverLimit > 0)

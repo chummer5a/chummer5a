@@ -50,18 +50,18 @@ namespace Chummer
             List<ListItem> lstCategory = new List<ListItem>();
             foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                 ? _objXmlDocument.Select("/chummer/categories/category[. = " + _strForceCategory.CleanXPath() + "]")
-                : _objXmlDocument.Select("/chummer/categories/category"))
+                : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
             {
                 if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
                 {
-                    string strType = objXmlCategory.SelectSingleNode("@type")?.Value;
+                    string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
                     if (string.IsNullOrEmpty(strType) || strType != WeaponType)
                         continue;
                 }
 
                 string strInnerText = objXmlCategory.Value;
                 lstCategory.Add(new ListItem(strInnerText,
-                    objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                    objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
 
             // Add the Cyberware Category.

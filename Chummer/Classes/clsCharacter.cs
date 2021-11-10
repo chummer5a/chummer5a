@@ -2711,14 +2711,14 @@ namespace Chummer
                                 }
 
                                 HashSet<string> setSavedBooks = new HashSet<string>();
-                                foreach (XPathNavigator xmlBook in xmlCharacterNavigator.Select("sources/source"))
+                                foreach (XPathNavigator xmlBook in xmlCharacterNavigator.SelectAndCacheExpression("sources/source"))
                                     if (!string.IsNullOrEmpty(xmlBook.Value))
                                         setSavedBooks.Add(xmlBook.Value);
                                 if (setSavedBooks.Count == 0)
                                     setSavedBooks = SettingsManager
                                         .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].Books.ToHashSet();
                                 List<string> lstSavedCustomDataDirectoryNames = new List<string>();
-                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select(
+                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.SelectAndCacheExpression(
                                     "customdatadirectorynames/directoryname"))
                                     if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
                                         lstSavedCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
@@ -3044,7 +3044,7 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("prioritytalent",
                                     ref _strPriorityTalent);
                                 _lstPrioritySkills.Clear();
-                                foreach (XPathNavigator xmlSkillName in xmlCharacterNavigator.Select(
+                                foreach (XPathNavigator xmlSkillName in xmlCharacterNavigator.SelectAndCacheExpression(
                                     "priorityskills/priorityskill")
                                 )
                                 {
@@ -3273,7 +3273,7 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
                             {
                                 // Contacts.
-                                foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
+                                foreach (XPathNavigator xmlContact in xmlCharacterNavigator.SelectAndCacheExpression("contacts/contact"))
                                 {
                                     Contact objContact = new Contact(this);
                                     objContact.Load(xmlContact);
@@ -4103,7 +4103,7 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                             {
                                 // Spirits/Sprites.
-                                foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
+                                foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.SelectAndCacheExpression("spirits/spirit"))
                                 {
                                     Spirit objSpirit = new Spirit(this);
                                     objSpirit.Load(xmlSpirit);
@@ -20758,7 +20758,7 @@ namespace Chummer
                             }
                         }
 
-                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
+                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character");
                     }
                     catch (Exception ex)
                     {
@@ -20769,21 +20769,21 @@ namespace Chummer
 
                 if (xmlSourceNode != null)
                 {
-                    Description = xmlSourceNode.SelectSingleNode("description")?.Value;
-                    BuildMethod = xmlSourceNode.SelectSingleNode("buildmethod")?.Value;
-                    Background = xmlSourceNode.SelectSingleNode("background")?.Value;
-                    CharacterNotes = xmlSourceNode.SelectSingleNode("notes")?.Value;
-                    GameNotes = xmlSourceNode.SelectSingleNode("gamenotes")?.Value;
-                    Concept = xmlSourceNode.SelectSingleNode("concept")?.Value;
-                    Karma = xmlSourceNode.SelectSingleNode("totalkarma")?.Value;
-                    Metatype = xmlSourceNode.SelectSingleNode("metatype")?.Value;
-                    Metavariant = xmlSourceNode.SelectSingleNode("metavariant")?.Value;
-                    PlayerName = xmlSourceNode.SelectSingleNode("playername")?.Value;
-                    CharacterName = xmlSourceNode.SelectSingleNode("name")?.Value;
-                    CharacterAlias = xmlSourceNode.SelectSingleNode("alias")?.Value;
-                    Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
-                    Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
-                    string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
+                    Description = xmlSourceNode.SelectSingleNodeAndCacheExpression("description")?.Value;
+                    BuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod")?.Value;
+                    Background = xmlSourceNode.SelectSingleNodeAndCacheExpression("background")?.Value;
+                    CharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes")?.Value;
+                    GameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes")?.Value;
+                    Concept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept")?.Value;
+                    Karma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma")?.Value;
+                    Metatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype")?.Value;
+                    Metavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant")?.Value;
+                    PlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername")?.Value;
+                    CharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    CharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias")?.Value;
+                    Created = xmlSourceNode.SelectSingleNodeAndCacheExpression("created")?.Value == bool.TrueString;
+                    Essence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless")?.Value;
+                    string strSettings = xmlSourceNode.SelectSingleNodeAndCacheExpression("settings")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
                         SettingsFile = SettingsManager.LoadedCharacterSettings.ContainsKey(strSettings)
                             ? SettingsManager.LoadedCharacterSettings[strSettings].DisplayName
@@ -20791,15 +20791,15 @@ namespace Chummer
                               LanguageManager.GetString("String_Space") + '[' + strSettings + ']';
                     else
                         SettingsFile = string.Empty;
-                    string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value ?? string.Empty;
+                    string strMugshotBase64 = xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot")?.Value ?? string.Empty;
                     if (string.IsNullOrEmpty(strMugshotBase64))
                     {
-                        XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
+                        XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex");
                         if (xmlMainMugshotIndex != null &&
                             int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) &&
                             intMainMugshotIndex >= 0)
                         {
-                            XPathNodeIterator xmlMugshotList = xmlSourceNode.Select("mugshots/mugshot");
+                            XPathNodeIterator xmlMugshotList = xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot");
                             if (xmlMugshotList.Count > intMainMugshotIndex)
                             {
                                 int intIndex = 0;

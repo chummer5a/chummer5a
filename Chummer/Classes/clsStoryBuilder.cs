@@ -186,7 +186,7 @@ namespace Chummer
                         {
                             case "random":
                                 {
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
@@ -209,7 +209,7 @@ namespace Chummer
                             case "persistent":
                                 {
                                     //Any node not named
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1

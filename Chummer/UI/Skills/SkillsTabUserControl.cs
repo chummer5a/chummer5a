@@ -517,12 +517,12 @@ namespace Chummer.UI.Skills
 
             string strCategory = LanguageManager.GetString("Label_Category");
             foreach (XPathNavigator xmlCategoryNode in XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths)
-                .Select("/chummer/categories/category[@type = \"active\"]"))
+                .SelectAndCacheExpression("/chummer/categories/category[@type = \"active\"]"))
             {
                 string strName = xmlCategoryNode.Value;
                 if (!string.IsNullOrEmpty(strName))
                     ret.Add(new Tuple<string, Predicate<Skill>>(
-                        strCategory + strSpace + (xmlCategoryNode.SelectSingleNode("@translate")?.Value ?? strName),
+                        strCategory + strSpace + (xmlCategoryNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName),
                         skill => skill.SkillCategory == strName));
             }
 
@@ -537,12 +537,12 @@ namespace Chummer.UI.Skills
 
             string strSkillGroupLabel = LanguageManager.GetString("String_ExpenseSkillGroup");
             foreach (XPathNavigator xmlSkillGroupNode in XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths)
-                .Select("/chummer/skillgroups/name"))
+                .SelectAndCacheExpression("/chummer/skillgroups/name"))
             {
                 string strName = xmlSkillGroupNode.Value;
                 if (!string.IsNullOrEmpty(strName))
                     ret.Add(new Tuple<string, Predicate<Skill>>(
-                        strSkillGroupLabel + strSpace + (xmlSkillGroupNode.SelectSingleNode("@translate")?.Value ?? strName),
+                        strSkillGroupLabel + strSpace + (xmlSkillGroupNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName),
                         skill => skill.SkillGroup == strName));
             }
 
@@ -635,12 +635,12 @@ namespace Chummer.UI.Skills
 
             string strCategory = LanguageManager.GetString("Label_Category");
             foreach (XPathNavigator xmlCategoryNode in XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths)
-                .Select("/chummer/categories/category[@type = \"knowledge\"]"))
+                .SelectAndCacheExpression("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 string strName = xmlCategoryNode.Value;
                 if (!string.IsNullOrEmpty(strName))
                     ret.Add(new Tuple<string, Predicate<KnowledgeSkill>>(
-                        strCategory + strSpace + (xmlCategoryNode.SelectSingleNode("@translate")?.Value ?? strName),
+                        strCategory + strSpace + (xmlCategoryNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName),
                         skill => skill.SkillCategory == strName));
             }
 

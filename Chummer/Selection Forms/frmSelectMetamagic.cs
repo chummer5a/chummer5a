@@ -185,13 +185,13 @@ namespace Chummer
             List<ListItem> lstMetamagics = new List<ListItem>();
             foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
             {
-                string strId = objXmlMetamagic.SelectSingleNode("id")?.Value;
+                string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
                     continue;
                 if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                 {
                     lstMetamagics.Add(new ListItem(strId,
-                        objXmlMetamagic.SelectSingleNode("translate")?.Value ?? objXmlMetamagic.SelectSingleNode("name")?.Value ??
+                        objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name")?.Value ??
                         LanguageManager.GetString("String_Unknown")));
                 }
             }

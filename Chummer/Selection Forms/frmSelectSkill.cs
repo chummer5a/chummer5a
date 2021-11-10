@@ -144,7 +144,7 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlSkill in objXmlSkillList)
                 {
-                    string strXmlSkillName = objXmlSkill.SelectSingleNode("name")?.Value;
+                    string strXmlSkillName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                     Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
                     if (objExistingSkill == null)
                     {
@@ -158,7 +158,7 @@ namespace Chummer
                         continue;
                     }
 
-                    lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strXmlSkillName));
+                    lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strXmlSkillName));
                 }
             }
 

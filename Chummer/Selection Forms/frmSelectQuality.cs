@@ -58,10 +58,10 @@ namespace Chummer
         private void frmSelectQuality_Load(object sender, EventArgs e)
         {
             // Populate the Quality Category list.
-            foreach (XPathNavigator objXmlCategory in _xmlBaseQualityDataNode.Select("categories/category"))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseQualityDataNode.SelectAndCacheExpression("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
 
             if (_lstCategory.Count > 0)
@@ -525,14 +525,14 @@ namespace Chummer
             List<ListItem> lstQuality = new List<ListItem>();
             foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + sbdFilter + "]"))
             {
-                string strLoopName = objXmlQuality.SelectSingleNode("name")?.Value;
+                string strLoopName = objXmlQuality.SelectSingleNodeAndCacheExpression("name")?.Value;
                 if (string.IsNullOrEmpty(strLoopName))
                     continue;
                 if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
                     continue;
                 if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
                 {
-                    lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
+                    lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strLoopName));
                 }
             }
             lstQuality.Sort(CompareListItems.CompareNames);

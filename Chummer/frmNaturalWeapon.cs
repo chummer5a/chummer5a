@@ -38,8 +38,8 @@ namespace Chummer
         public frmNaturalWeapon(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _objXmlPowersDocument = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNode("/chummer");
-            _objXmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer");
+            _objXmlPowersDocument = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _objXmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNodeAndCacheExpression("/chummer");
 
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -51,11 +51,11 @@ namespace Chummer
         {
             // Load the list of Combat Active Skills and populate the Skills list.
             List<ListItem> lstSkills = new List<ListItem>(5);
-            foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.Select("skills/skill[category = \"Combat Active\"]"))
+            foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression("skills/skill[category = \"Combat Active\"]"))
             {
-                string strName = objXmlSkill.SelectSingleNode("name")?.Value;
+                string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
-                    lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                    lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
             }
 
             List<ListItem> lstDVBase = new List<ListItem>(2)

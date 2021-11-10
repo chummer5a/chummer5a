@@ -881,12 +881,12 @@ namespace Chummer
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
             List<ListItem> lstSourcebookInfos = new List<ListItem>();
-            foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", null, _strSelectedLanguage).Select("/chummer/books/book"))
+            foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", null, _strSelectedLanguage).SelectAndCacheExpression("/chummer/books/book"))
             {
-                string strCode = objXmlBook.SelectSingleNode("code")?.Value;
+                string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
                 if (!string.IsNullOrEmpty(strCode))
                 {
-                    ListItem objBookInfo = new ListItem(strCode, objXmlBook.SelectSingleNode("translate")?.Value ?? objXmlBook.SelectSingleNode("name")?.Value ?? strCode);
+                    ListItem objBookInfo = new ListItem(strCode, objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value ?? strCode);
                     lstSourcebookInfos.Add(objBookInfo);
                 }
             }
@@ -1162,10 +1162,10 @@ namespace Chummer
 
             int intIndex = 0;
 
-            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", null, _strSelectedLanguage).Select("/chummer/pdfarguments/pdfargument"))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", null, _strSelectedLanguage).SelectAndCacheExpression("/chummer/pdfarguments/pdfargument"))
             {
-                string strValue = objXmlNode.SelectSingleNode("value")?.Value;
-                lstPdfParameters.Add(new ListItem(strValue, objXmlNode.SelectSingleNode("translate")?.Value ?? objXmlNode.SelectSingleNode("name")?.Value ?? string.Empty));
+                string strValue = objXmlNode.SelectSingleNodeAndCacheExpression("value")?.Value;
+                lstPdfParameters.Add(new ListItem(strValue, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
                 if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfParameters) && GlobalSettings.PdfParameters == strValue)
                 {
                     intIndex = lstPdfParameters.Count - 1;
@@ -1314,7 +1314,7 @@ namespace Chummer
             HashSet<string> setLanguagesWithSheets = new HashSet<string>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            foreach (XPathNavigator xmlSheetLanguage in XmlManager.LoadXPath("sheets.xml").Select("/chummer/sheets/@lang"))
+            foreach (XPathNavigator xmlSheetLanguage in XmlManager.LoadXPath("sheets.xml").SelectAndCacheExpression("/chummer/sheets/@lang"))
             {
                 setLanguagesWithSheets.Add(xmlSheetLanguage.Value);
             }
@@ -1344,7 +1344,7 @@ namespace Chummer
                     continue;
                 }
 
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNode("/chummer/name");
+                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name");
                 if (node == null)
                     continue;
 
@@ -1361,13 +1361,13 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            foreach (XPathNavigator xmlSheet in XmlManager.LoadXPath("sheets.xml", null, strLanguage).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
+            foreach (XPathNavigator xmlSheet in XmlManager.LoadXPath("sheets.xml", null, strLanguage).SelectAndCacheExpression("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
-                string strFile = xmlSheet.SelectSingleNode("filename")?.Value ?? string.Empty;
+                string strFile = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value ?? string.Empty;
                 lstSheets.Add(new ListItem(
                     !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                         ? Path.Combine(strLanguage, strFile)
-                        : strFile, xmlSheet.SelectSingleNode("name")?.Value ?? string.Empty));
+                        : strFile, xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
             }
 
             return lstSheets;
@@ -1599,17 +1599,17 @@ namespace Chummer
 
                 foreach (XPathNavigator xmlMatch in xmlMatches)
                 {
-                    string strLanguageText = xmlMatch.SelectSingleNode("text")?.Value ?? string.Empty;
+                    string strLanguageText = xmlMatch.SelectSingleNodeAndCacheExpression("text")?.Value ?? string.Empty;
                     if (!text.Contains(strLanguageText))
                         continue;
-                    int trueOffset = intPage - xmlMatch.SelectSingleNode("page")?.ValueAsInt ?? 0;
+                    int trueOffset = intPage - xmlMatch.SelectSingleNodeAndCacheExpression("page")?.ValueAsInt ?? 0;
 
                     xmlMatch.MoveToParent();
                     xmlMatch.MoveToParent();
 
                     return new SourcebookInfo
                     {
-                        Code = xmlMatch.SelectSingleNode("code")?.Value,
+                        Code = xmlMatch.SelectSingleNodeAndCacheExpression("code")?.Value,
                         Offset = trueOffset,
                         Path = fileInfo.FullName
                     };

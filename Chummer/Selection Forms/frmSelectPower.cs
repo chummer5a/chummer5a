@@ -226,9 +226,9 @@ namespace Chummer
             List<ListItem> lstPower = new List<ListItem>();
             foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
             {
-                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalSettings.InvariantCultureInfo);
-                string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
-                string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNodeAndCacheExpression("points")?.Value, GlobalSettings.InvariantCultureInfo);
+                string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost")?.Value;
+                string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 if (!string.IsNullOrEmpty(strExtraPointCost) && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
@@ -242,7 +242,7 @@ namespace Chummer
                 if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
-                lstPower.Add(new ListItem(objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNode("translate")?.Value ?? strName));
+                lstPower.Add(new ListItem(objXmlPower.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
             }
             lstPower.Sort(CompareListItems.CompareNames);
             _blnLoading = true;

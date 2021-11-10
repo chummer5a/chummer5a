@@ -322,11 +322,11 @@ namespace Chummer
                 }
             }
 
-            XPathNavigator xmlForbiddenNode = xmlNode.SelectSingleNode("forbidden");
+            XPathNavigator xmlForbiddenNode = xmlNode.SelectSingleNodeAndCacheExpression("forbidden");
             if (xmlForbiddenNode != null)
             {
                 // Loop through the oneof requirements.
-                foreach (XPathNavigator objXmlOneOf in xmlForbiddenNode.Select("oneof"))
+                foreach (XPathNavigator objXmlOneOf in xmlForbiddenNode.SelectAndCacheExpression("oneof"))
                 {
                     foreach (XPathNavigator xmlForbiddenItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
                     {
@@ -352,14 +352,14 @@ namespace Chummer
                 }
             }
 
-            XPathNavigator xmlRequiredNode = xmlNode.SelectSingleNode("required");
+            XPathNavigator xmlRequiredNode = xmlNode.SelectSingleNodeAndCacheExpression("required");
             if (xmlRequiredNode != null)
             {
                 StringBuilder objRequirement = new StringBuilder();
                 bool blnRequirementMet = true;
 
                 // Loop through the oneof requirements.
-                foreach (XPathNavigator objXmlOneOf in xmlRequiredNode.Select("oneof"))
+                foreach (XPathNavigator objXmlOneOf in xmlRequiredNode.SelectAndCacheExpression("oneof"))
                 {
                     bool blnOneOfMet = false;
                     StringBuilder objThisRequirement = new StringBuilder(Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf"));
@@ -389,7 +389,7 @@ namespace Chummer
                 if (blnRequirementMet || blnShowMessage)
                 {
                     // Loop through the allof requirements.
-                    foreach (XPathNavigator objXmlAllOf in xmlRequiredNode.Select("allof"))
+                    foreach (XPathNavigator objXmlAllOf in xmlRequiredNode.SelectAndCacheExpression("allof"))
                     {
                         bool blnAllOfMet = true;
                         StringBuilder objThisRequirement = new StringBuilder(Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_AllOf"));

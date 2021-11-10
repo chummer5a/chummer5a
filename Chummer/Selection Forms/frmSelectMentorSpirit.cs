@@ -70,15 +70,15 @@ namespace Chummer
                     cboChoice2.BeginUpdate();
 
                     // If the Mentor offers a choice of bonuses, build the list and let the user select one.
-                    XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
+                    XPathNavigator xmlChoices = objXmlMentor.SelectSingleNodeAndCacheExpression("choices");
                     if (xmlChoices != null)
                     {
                         List<ListItem> lstChoice1 = new List<ListItem>();
                         List<ListItem> lstChoice2 = new List<ListItem>();
 
-                        foreach (XPathNavigator objChoice in xmlChoices.Select("choice"))
+                        foreach (XPathNavigator objChoice in xmlChoices.SelectAndCacheExpression("choice"))
                         {
-                            string strName = objChoice.SelectSingleNode("name")?.Value ?? string.Empty;
+                            string strName = objChoice.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
                             if ((_objCharacter.AdeptEnabled ||
                                  !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
                                 (_objCharacter.MagicianEnabled ||
@@ -86,10 +86,10 @@ namespace Chummer
                             {
                                 if (objChoice.SelectSingleNode("@set")?.Value == "2")
                                     lstChoice2.Add(new ListItem(strName,
-                                        objChoice.SelectSingleNode("translate")?.Value ?? strName));
+                                        objChoice.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                                 else
                                     lstChoice1.Add(new ListItem(strName,
-                                        objChoice.SelectSingleNode("translate")?.Value ?? strName));
+                                        objChoice.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                             }
                         }
 
@@ -192,11 +192,11 @@ namespace Chummer
             {
                 if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
 
-                string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strId = objXmlMentor.SelectSingleNode("id")?.Value ?? string.Empty;
+                string strName = objXmlMentor.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strId = objXmlMentor.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
                 if (strName == _strForceMentor)
                     strForceId = strId;
-                lstMentors.Add(new ListItem(strId, objXmlMentor.SelectSingleNode("translate")?.Value ?? strName));
+                lstMentors.Add(new ListItem(strId, objXmlMentor.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
             }
             lstMentors.Sort(CompareListItems.CompareNames);
             string strOldSelected = lstMentor.SelectedValue?.ToString();

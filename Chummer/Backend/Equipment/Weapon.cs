@@ -3731,7 +3731,7 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml", strLanguage);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + "]");
-                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("translate");
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
                 if (xmlTranslateNode != null)
                 {
                     strRange = xmlTranslateNode.Value;
@@ -3740,7 +3740,7 @@ namespace Chummer.Backend.Equipment
                 {
                     objXmlDocument = _objCharacter.LoadDataXPath("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + "]");
-                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("@translate");
+                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
                     if (xmlTranslateNode != null)
                         strRange = xmlTranslateNode.Value;
                 }
@@ -3760,7 +3760,7 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml", strLanguage);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + "]");
-                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("translate");
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
                 if (xmlTranslateNode != null)
                 {
                     strRange = xmlTranslateNode.Value;
@@ -3769,7 +3769,7 @@ namespace Chummer.Backend.Equipment
                 {
                     objXmlDocument = _objCharacter.LoadDataXPath("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + "]");
-                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("@translate");
+                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
                     if (xmlTranslateNode != null)
                         strRange = xmlTranslateNode.Value;
                 }

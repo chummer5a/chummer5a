@@ -185,17 +185,17 @@ namespace Chummer
 
         private string HelpfulAdvice()
         {
-            if (_usedTips.Count == _objXmlDocument.Select("tip").Count)
+            if (_usedTips.Count == _objXmlDocument.SelectAndCacheExpression("tip").Count)
             {
                 _usedTips.Clear();
             }
-            foreach (XPathNavigator objXmlTip in _objXmlDocument.Select("tip"))
+            foreach (XPathNavigator objXmlTip in _objXmlDocument.SelectAndCacheExpression("tip"))
             {
-                var strId = objXmlTip.SelectSingleNode("id")?.Value;
+                var strId = objXmlTip.SelectSingleNodeAndCacheExpression("id")?.Value;
                 if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
                 if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
                 _usedTips.Add(strId);
-                return objXmlTip.SelectSingleNode("translate")?.Value ?? objXmlTip.SelectSingleNode("text")?.Value ?? string.Empty;
+                return objXmlTip.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlTip.SelectSingleNodeAndCacheExpression("text")?.Value ?? string.Empty;
             }
             return string.Empty;
         }

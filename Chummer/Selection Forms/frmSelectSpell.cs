@@ -81,7 +81,7 @@ namespace Chummer
             }
 
             string strFilterPrefix = "spells/spell[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
-            foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.Select("categories/category"))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.SelectAndCacheExpression("categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
                 if (!_blnIgnoreRequirements)
@@ -106,7 +106,7 @@ namespace Chummer
                     continue;
 
                 _lstCategory.Add(new ListItem(strCategory,
-                    objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
+                    objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strCategory));
             }
 
             _lstCategory.Sort(CompareListItems.CompareNames);

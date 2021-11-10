@@ -979,30 +979,30 @@ namespace Chummer
             {
                 foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
                 {
-                    bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") != null;
+                    bool blnIsForceGrade = xmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade") != null;
                     if (objCurrentGrade != null && blnIsForceGrade && _objCharacter.Improvements.Any(x =>
                         ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) &&
                         objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                         continue;
 
-                    if (blnCyberwareDisabled && xmlCyberware.SelectSingleNode("subsystems/cyberware") != null)
+                    if (blnCyberwareDisabled && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/cyberware") != null)
                     {
                         continue;
                     }
 
-                    if (blnBiowareDisabled && xmlCyberware.SelectSingleNode("subsystems/bioware") != null)
+                    if (blnBiowareDisabled && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/bioware") != null)
                     {
                         continue;
                     }
 
-                    XPathNavigator xmlTestNode = xmlCyberware.SelectSingleNode("forbidden/parentdetails");
+                    XPathNavigator xmlTestNode = xmlCyberware.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
                     if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = xmlCyberware.SelectSingleNode("required/parentdetails");
+                    xmlTestNode = xmlCyberware.SelectSingleNodeAndCacheExpression("required/parentdetails");
                     if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
@@ -1011,7 +1011,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(_strHasModularMounts))
                     {
-                        string strBlocksMounts = xmlCyberware.SelectSingleNode("blocksmounts")?.Value;
+                        string strBlocksMounts = xmlCyberware.SelectSingleNodeAndCacheExpression("blocksmounts")?.Value;
                         if (!string.IsNullOrEmpty(strBlocksMounts))
                         {
                             IList<Cyberware> lstWareListToCheck = CyberwareParent != null
@@ -1019,7 +1019,7 @@ namespace Chummer
                                 : (ParentVehicle == null
                                     ? _objCharacter.Cyberware
                                     : null);
-                            if (xmlCyberware.SelectSingleNode("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
+                            if (xmlCyberware.SelectSingleNodeAndCacheExpression("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
                                 (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                             {
                                 string[] astrBlockedMounts = strBlocksMounts.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -1031,13 +1031,13 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(_strDisallowedMounts))
                     {
-                        string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
+                        string strLoopMount = xmlCyberware.SelectSingleNodeAndCacheExpression("modularmount")?.Value;
                         if (!string.IsNullOrEmpty(strLoopMount) && _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(strLoop => strLoopMount == strLoop))
                             continue;
                     }
 
-                    string strMaxRating = xmlCyberware.SelectSingleNode("rating")?.Value;
-                    string strMinRating = xmlCyberware.SelectSingleNode("minrating")?.Value;
+                    string strMaxRating = xmlCyberware.SelectSingleNodeAndCacheExpression("rating")?.Value;
+                    string strMinRating = xmlCyberware.SelectSingleNodeAndCacheExpression("minrating")?.Value;
                     int intMinRating = 1;
                     // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
                     if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)) || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
@@ -1062,7 +1062,7 @@ namespace Chummer
                     }
 
                     // Ex-Cons cannot have forbidden or restricted 'ware
-                    if (_objCharacter.ExCon && ParentVehicle == null && xmlCyberware.SelectSingleNode("mountsto") == null)
+                    if (_objCharacter.ExCon && ParentVehicle == null && xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto") == null)
                     {
                         Cyberware objParent = CyberwareParent;
                         bool blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
@@ -1074,7 +1074,7 @@ namespace Chummer
 
                         if (!blnAnyParentIsModular)
                         {
-                            string strAvailExpr = xmlCyberware.SelectSingleNode("avail")?.Value ?? string.Empty;
+                            string strAvailExpr = xmlCyberware.SelectSingleNodeAndCacheExpression("avail")?.Value ?? string.Empty;
                             if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                             {
                                 string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -1099,7 +1099,7 @@ namespace Chummer
                         if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
                         {
                             decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                            if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value))
+                            if (_setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNodeAndCacheExpression("category")?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (!xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
                             {
@@ -1112,7 +1112,7 @@ namespace Chummer
                     if (!Upgrading && ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
                         continue;
 
-                    lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
+                    lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNodeAndCacheExpression("id")?.Value, xmlCyberware.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlCyberware.SelectSingleNodeAndCacheExpression("name")?.Value));
                     if (blnTerminateAfterFirst)
                         break;
                 }
@@ -1181,9 +1181,9 @@ namespace Chummer
             if (_objCharacter.Settings.EnforceCapacity && _objParentObject != null)
             {
                 // Capacity.
-                bool blnAddToParentCapacity = objCyberwareNode.SelectSingleNode("addtoparentcapacity") != null;
+                bool blnAddToParentCapacity = objCyberwareNode.SelectSingleNodeAndCacheExpression("addtoparentcapacity") != null;
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = objCyberwareNode.SelectSingleNode("capacity")?.Value;
+                string strCapacity = objCyberwareNode.SelectSingleNodeAndCacheExpression("capacity")?.Value;
                 if (strCapacity?.Contains('[') == true)
                 {
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -1217,7 +1217,7 @@ namespace Chummer
             if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware")))
                 return;
 
-            string strForceGrade = objCyberwareNode.SelectSingleNode("forcegrade")?.Value;
+            string strForceGrade = objCyberwareNode.SelectSingleNodeAndCacheExpression("forcegrade")?.Value;
             if (!string.IsNullOrEmpty(strForceGrade))
             {
                 SelectedGrade = _lstGrades.FirstOrDefault(x => x.Name == strForceGrade);
@@ -1230,7 +1230,7 @@ namespace Chummer
                 else
                     return;
             }
-            _sStrSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
+            _sStrSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNodeAndCacheExpression("category")?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
             SelectedRating = nudRating.ValueAsInt;
@@ -1351,7 +1351,7 @@ namespace Chummer
             }
             else
             {
-                objXmlCategoryList = _xmlBaseCyberwareDataNode.Select("categories/category");
+                objXmlCategoryList = _xmlBaseCyberwareDataNode.SelectAndCacheExpression("categories/category");
             }
             List<ListItem> lstCategory = new List<ListItem>();
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
@@ -1360,7 +1360,7 @@ namespace Chummer
                 if (RefreshList(objXmlCategory.Value, false, true).Count > 0)
                 {
                     string strInnerText = objXmlCategory.Value;
-                    lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                    lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                 }
             }
 

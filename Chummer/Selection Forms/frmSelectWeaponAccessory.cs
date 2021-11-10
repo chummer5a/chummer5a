@@ -101,7 +101,7 @@ namespace Chummer
             int intOverLimit = 0;
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[" + sbdFilter + "]"))
             {
-                string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
+                string strId = objXmlAccessory.SelectSingleNodeAndCacheExpression("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
                     continue;
                 if (!_objParentWeapon.CheckAccessoryRequirements(objXmlAccessory))
@@ -115,8 +115,8 @@ namespace Chummer
                       objXmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))))
                 {
                     lstAccessories.Add(new ListItem(strId,
-                        objXmlAccessory.SelectSingleNode("translate")?.Value ??
-                        objXmlAccessory.SelectSingleNode("name")?.Value ??
+                        objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value ??
+                        objXmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value ??
                         LanguageManager.GetString("String_Unknown")));
                 }
                 else

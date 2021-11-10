@@ -153,7 +153,7 @@ namespace Chummer
 
                 HashSet<string> setValidCodes = new HashSet<string>();
                 foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync("books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths))
-                    .Select("/chummer/books/book/code"))
+                    .SelectAndCacheExpression("/chummer/books/book/code"))
                 {
                     setValidCodes.Add(xmlBookNode.Value);
                 }
@@ -172,30 +172,30 @@ namespace Chummer
                     await Task.WhenAll(_lstFileNames.Select(strFileName => Task.Run(async () =>
                     {
                         XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName, _objSelectedSetting.EnabledCustomDataDirectoryPaths);
-                        xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
+                        xmlBaseNode = xmlBaseNode.SelectSingleNodeAndCacheExpression("/chummer");
                         if (xmlBaseNode == null)
                             return;
                         bool blnLoopFileNameHasItems = false;
-                        foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " +
+                        foreach (XPathNavigator xmlItemNode in xmlBaseNode.SelectAndCacheExpression(".//*[page and " +
                             strSourceFilter + ']'))
                         {
                             blnLoopFileNameHasItems = true;
-                            string strName = xmlItemNode.SelectSingleNode("name")?.Value;
-                            string strDisplayName = xmlItemNode.SelectSingleNode("translate")?.Value
+                            string strName = xmlItemNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            string strDisplayName = xmlItemNode.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                     ?? strName
-                                                    ?? xmlItemNode.SelectSingleNode("id")?.Value
+                                                    ?? xmlItemNode.SelectSingleNodeAndCacheExpression("id")?.Value
                                                     ?? LanguageManager.GetString("String_Unknown");
-                            string strSource = xmlItemNode.SelectSingleNode("source")?.Value;
-                            string strPage = xmlItemNode.SelectSingleNode("page")?.Value;
-                            string strDisplayPage = xmlItemNode.SelectSingleNode("altpage")?.Value
+                            string strSource = xmlItemNode.SelectSingleNodeAndCacheExpression("source")?.Value;
+                            string strPage = xmlItemNode.SelectSingleNodeAndCacheExpression("page")?.Value;
+                            string strDisplayPage = xmlItemNode.SelectSingleNodeAndCacheExpression("altpage")?.Value
                                                     ?? strPage;
-                            string strEnglishNameOnPage = xmlItemNode.SelectSingleNode("nameonpage")?.Value
+                            string strEnglishNameOnPage = xmlItemNode.SelectSingleNodeAndCacheExpression("nameonpage")?.Value
                                                           ?? strName;
                             string strTranslatedNameOnPage =
-                                xmlItemNode.SelectSingleNode("altnameonpage")?.Value
+                                xmlItemNode.SelectSingleNodeAndCacheExpression("altnameonpage")?.Value
                                 ?? strDisplayName;
-                            string strNotes = xmlItemNode.SelectSingleNode("altnotes")?.Value
-                                              ?? xmlItemNode.SelectSingleNode("notes")?.Value;
+                            string strNotes = xmlItemNode.SelectSingleNodeAndCacheExpression("altnotes")?.Value
+                                              ?? xmlItemNode.SelectSingleNodeAndCacheExpression("notes")?.Value;
                             MasterIndexEntry objEntry = new MasterIndexEntry(
                                 strDisplayName,
                                 strFileName,

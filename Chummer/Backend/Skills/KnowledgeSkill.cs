@@ -37,7 +37,7 @@ namespace Chummer.Backend.Skills
                 if (GlobalSettings.LiveCustomData || _dicCategoriesSkillMap == null)
                 {
                     Dictionary<string, string> dicReturn = new Dictionary<string, string>();
-                    foreach (XPathNavigator objXmlSkill in CharacterObject.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill"))
+                    foreach (XPathNavigator objXmlSkill in CharacterObject.LoadDataXPath("skills.xml").SelectAndCacheExpression("/chummer/knowledgeskills/skill"))
                     {
                         string strCategory = objXmlSkill.SelectSingleNode("category")?.Value;
                         if (!string.IsNullOrWhiteSpace(strCategory))
@@ -57,7 +57,7 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage);
-            foreach (XPathNavigator xmlSkill in xmlSkillsDocument.Select("/chummer/knowledgeskills/skill"))
+            foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression("/chummer/knowledgeskills/skill"))
             {
                 string strName = xmlSkill.SelectSingleNode("name")?.Value ?? string.Empty;
                 lstReturn.Add(new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
@@ -78,10 +78,10 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage);
-            foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.Select("/chummer/categories/category[@type = \"knowledge\"]"))
+            foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 string strInnerText = objXmlCategory.Value;
-                lstReturn.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                lstReturn.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
             lstReturn.Sort(CompareListItems.CompareNames);
             return lstReturn;

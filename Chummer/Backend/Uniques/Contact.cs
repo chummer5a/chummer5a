@@ -238,13 +238,13 @@ namespace Chummer
                 return _lstCachedContactArchetypes;
             _objCharacterForCachedContactArchetypes = objCharacter;
             _lstCachedContactArchetypes = new List<ListItem> { ListItem.Blank };
-            XPathNavigator xmlContactsBaseNode = objCharacter.LoadDataXPath("contacts.xml").SelectSingleNode("/chummer");
+            XPathNavigator xmlContactsBaseNode = objCharacter.LoadDataXPath("contacts.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (xmlContactsBaseNode == null)
                 return _lstCachedContactArchetypes;
-            foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("contacts/contact"))
+            foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("contacts/contact"))
             {
                 string strName = xmlNode.Value;
-                _lstCachedContactArchetypes.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
+                _lstCachedContactArchetypes.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
             }
 
             _lstCachedContactArchetypes.Sort(CompareListItems.CompareNames);
@@ -1221,7 +1221,7 @@ namespace Chummer
         public void LoadMugshots(XPathNavigator xmlSavedNode)
         {
             xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-            XPathNodeIterator xmlMugshotsList = xmlSavedNode.Select("mugshots/mugshot");
+            XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
             List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
             foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
             {

@@ -193,11 +193,11 @@ namespace Chummer
             {
                 case "SelectActionDicePool":
                     List<ListItem> lstActions = new List<ListItem>();
-                    foreach (XPathNavigator xmlAction in _objCharacter.LoadDataXPath("actions.xml").Select("/chummer/actions/action"))
+                    foreach (XPathNavigator xmlAction in _objCharacter.LoadDataXPath("actions.xml").SelectAndCacheExpression("/chummer/actions/action"))
                     {
-                        string strName = xmlAction.SelectSingleNode("name")?.Value;
+                        string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
-                            lstActions.Add(new ListItem(strName, xmlAction.SelectSingleNode("translate")?.Value ?? strName));
+                            lstActions.Add(new ListItem(strName, xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                     }
 
                     using (frmSelectItem frmSelectAction = new frmSelectItem
@@ -420,9 +420,9 @@ namespace Chummer
                         string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
                         foreach (XPathNavigator xmlSkill in _objCharacter.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill" + strFilter))
                         {
-                            string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                            string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
-                                lstDropdownItems.Add(new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                                lstDropdownItems.Add(new ListItem(strName, xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                         }
 
                         lstDropdownItems.Sort(CompareListItems.CompareNames);
@@ -474,11 +474,11 @@ namespace Chummer
 
                 case "SelectComplexForm":
                     List<ListItem> lstComplexForms = new List<ListItem>();
-                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("complexforms.xml").Select("/chummer/complexforms/complexform"))
+                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("complexforms.xml").SelectAndCacheExpression("/chummer/complexforms/complexform"))
                     {
-                        string strName = xmlSpell.SelectSingleNode("name")?.Value;
+                        string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
-                            lstComplexForms.Add(new ListItem(strName, xmlSpell.SelectSingleNode("translate")?.Value ?? strName));
+                            lstComplexForms.Add(new ListItem(strName, xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                     }
 
                     using (frmSelectItem selectComplexForm = new frmSelectItem
@@ -499,11 +499,11 @@ namespace Chummer
 
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
-                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("spells.xml").Select("/chummer/spells/spell"))
+                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("spells.xml").SelectAndCacheExpression("/chummer/spells/spell"))
                     {
-                        string strName = xmlSpell.SelectSingleNode("name")?.Value;
+                        string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
-                            lstSpells.Add(new ListItem(strName, xmlSpell.SelectSingleNode("translate")?.Value ?? strName));
+                            lstSpells.Add(new ListItem(strName, xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                     }
 
                     using (frmSelectItem selectSpell = new frmSelectItem
@@ -719,40 +719,40 @@ namespace Chummer
                     else
                     {
                         objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[name = " + strToTranslate.CleanXPath() + "]");
-                        return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+                        return objXmlNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression("name")?.Value ?? strToTranslate;
                     }
 
                 case "SelectKnowSkill":
                     objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
 
                 case "SelectSkillCategory":
                     objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression(".")?.Value ?? strToTranslate;
 
                 case "SelectSkillGroup":
                     objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression(".")?.Value ?? strToTranslate;
 
                 case "SelectWeaponCategory":
                     objXmlNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression(".")?.Value ?? strToTranslate;
 
                 case "SelectSpellCategory":
                     objXmlNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression(".")?.Value ?? strToTranslate;
 
                 case "SelectAdeptPower":
                     objXmlNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = " + strToTranslate.CleanXPath() + " or name = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression("name")?.Value ?? strToTranslate;
 
                 case "SelectMetamagic":
                     objXmlNode = _objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression("name")?.Value ?? strToTranslate;
 
                 case "SelectEcho":
                     objXmlNode = _objCharacter.LoadDataXPath("echoes.xml").SelectSingleNode("/chummer/echoes/echo[name = " + strToTranslate.CleanXPath() + "]");
-                    return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
+                    return objXmlNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode?.SelectSingleNodeAndCacheExpression("name")?.Value ?? strToTranslate;
 
                 default:
                     return strToTranslate;

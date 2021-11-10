@@ -542,7 +542,7 @@ namespace Chummer.Backend.Skills
             using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
                 List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("groups/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill"))
                 {
                     SkillGroup objGroup = new SkillGroup(_objCharacter);
                     objGroup.LoadFromHeroLab(xmlNode);
@@ -562,19 +562,19 @@ namespace Chummer.Backend.Skills
             using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
                 List<Skill> lstTempSkillList = new List<Skill>();
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("active/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
                     if (objSkill != null)
                         lstTempSkillList.Add(objSkill);
                 }
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("knowledge/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("knowledge/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
                     if (objSkill != null)
                         lstTempSkillList.Add(objSkill);
                 }
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("language/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("language/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
                     if (objSkill != null)
