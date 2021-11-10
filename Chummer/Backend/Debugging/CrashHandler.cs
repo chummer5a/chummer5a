@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -39,7 +38,7 @@ namespace Chummer.Backend
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
-        private sealed class DumpData : ISerializable
+        private sealed class DumpData : ISerializable, IDisposable
         {
             public DumpData(Exception ex)
             {
@@ -138,7 +137,7 @@ namespace Chummer.Backend
 
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local
-            public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+            public readonly LockingDictionary<string, string> _dicCapturedFiles = new LockingDictionary<string, string>();
 
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly Dictionary<string, string> _dicPretendFiles;
@@ -185,6 +184,12 @@ namespace Chummer.Backend
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
             }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                _dicCapturedFiles?.Dispose();
+            }
         }
 
         public static void WebMiniDumpHandler(Exception ex)
@@ -215,15 +220,19 @@ namespace Chummer.Backend
 
             try
             {
-                DumpData dump = new DumpData(ex);
-                foreach (string strSettingFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
+                using (DumpData dump = new DumpData(ex))
                 {
-                    dump.AddFile(strSettingFile);
-                }
-                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+                    foreach (string strSettingFile in Directory.EnumerateFiles(
+                        Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
+                    {
+                        dump.AddFile(strSettingFile);
+                    }
 
-                byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
-                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
+                    dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+
+                    byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
+                    File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
+                }
 
                 //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
                 Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));

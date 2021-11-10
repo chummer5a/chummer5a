@@ -33,7 +33,7 @@ namespace Chummer
         private bool _blnSkipRefresh = true;
         private CharacterSettings _objSelectedSetting = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultMasterIndexSetting];
         private readonly List<ListItem> _lstFileNamesWithItems;
-        private readonly ConcurrentDictionary<MasterIndexEntry, string> _dicCachedNotes = new ConcurrentDictionary<MasterIndexEntry, string>();
+        private readonly LockingDictionary<MasterIndexEntry, string> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, string>();
         private readonly List<ListItem> _lstItems = new List<ListItem>(short.MaxValue);
 
         private readonly List<string> _lstFileNames = new List<string>

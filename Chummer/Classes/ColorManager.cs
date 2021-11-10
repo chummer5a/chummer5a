@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Drawing;
 using System.Windows.Forms;
 using Chummer.UI.Skills;
@@ -128,10 +127,10 @@ namespace Chummer
             }
         }
 
-        private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
-        private static readonly ConcurrentDictionary<Color, Color> s_DicInverseDarkModeColors = new ConcurrentDictionary<Color, Color>();
-        private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
-        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly LockingDictionary<Color, Color> s_DicDarkModeColors = new LockingDictionary<Color, Color>();
+        private static readonly LockingDictionary<Color, Color> s_DicInverseDarkModeColors = new LockingDictionary<Color, Color>();
+        private static readonly LockingDictionary<Color, Color> s_DicDimmedColors = new LockingDictionary<Color, Color>();
+        private static readonly LockingDictionary<Color, Color> s_DicBrightenedColors = new LockingDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)

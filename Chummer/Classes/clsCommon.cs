@@ -48,8 +48,8 @@ namespace Chummer
 
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
-        private static readonly ConcurrentDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
-            new ConcurrentDictionary<string, Tuple<bool, object>>();
+        private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
+            new LockingDictionary<string, Tuple<bool, object>>();
 
         private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
 

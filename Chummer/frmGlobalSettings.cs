@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Imaging;
@@ -1567,25 +1566,29 @@ namespace Chummer
             {
                 MaxDegreeOfParallelism = 10
             };
-            // ConcurrentDictionary makes sure we don't pick out multiple files for the same sourcebook
-            ConcurrentDictionary<string, SourcebookInfo> resultCollection = new ConcurrentDictionary<string, SourcebookInfo>();
-            Parallel.ForEach(files, parallelOptions, file =>
+            // LockingDictionary makes sure we don't pick out multiple files for the same sourcebook
+            using (LockingDictionary<string, SourcebookInfo> resultCollection
+                = new LockingDictionary<string, SourcebookInfo>())
             {
-                FileInfo fileInfo = new FileInfo(file);
-                frmProgressBar.PerformStep(fileInfo.Name, frmLoading.ProgressBarTextPatterns.Scanning);
-                SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
-                if (info == null || resultCollection.ContainsKey(info.Code))
-                    return;
-                resultCollection.TryAdd(info.Code, info);
-            });
-            foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)
-            {
-                if (_dicSourcebookInfos.ContainsKey(kvpInfo.Key))
-                    _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
-                else
-                    _dicSourcebookInfos.Add(kvpInfo.Key, kvpInfo.Value);
+                Parallel.ForEach(files, parallelOptions, file =>
+                {
+                    FileInfo fileInfo = new FileInfo(file);
+                    frmProgressBar.PerformStep(fileInfo.Name, frmLoading.ProgressBarTextPatterns.Scanning);
+                    SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
+                    if (info == null || resultCollection.ContainsKey(info.Code))
+                        return;
+                    resultCollection.TryAdd(info.Code, info);
+                });
+                foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)
+                {
+                    if (_dicSourcebookInfos.ContainsKey(kvpInfo.Key))
+                        _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
+                    else
+                        _dicSourcebookInfos.Add(kvpInfo.Key, kvpInfo.Value);
+                }
+
+                return resultCollection.Values;
             }
-            return resultCollection.Values;
         }
 
         private SourcebookInfo ScanPDFForMatchingText(FileInfo fileInfo, XPathNodeIterator xmlMatches)

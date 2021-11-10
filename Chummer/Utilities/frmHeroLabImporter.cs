@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -34,7 +33,7 @@ namespace Chummer
     public partial class frmHeroLabImporter : Form
     {
         private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(1);
-        private readonly ConcurrentDictionary<string, Bitmap> _dicImages = new ConcurrentDictionary<string, Bitmap>();
+        private readonly LockingDictionary<string, Bitmap> _dicImages = new LockingDictionary<string, Bitmap>();
 
         public frmHeroLabImporter()
         {
