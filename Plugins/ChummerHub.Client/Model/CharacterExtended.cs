@@ -671,7 +671,7 @@ namespace ChummerHub.Client.Sinners
             MyCharacter.Save(tempfile, false, false);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
-                MyCharacter.DoOnSaveCompleted.TryAdd(PluginHandler.MyOnSaveUpload);
+                MyCharacter.DoOnSaveCompleted.Add(PluginHandler.MyOnSaveUpload);
 
             if (File.Exists(zipPath))
             {

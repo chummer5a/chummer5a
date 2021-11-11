@@ -257,7 +257,7 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public ConcurrentHashSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new ConcurrentHashSet<Func<Character, bool>>();
+        public LockingHashSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new LockingHashSet<Func<Character, bool>>();
 
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -5602,6 +5602,7 @@ namespace Chummer
                 objSpirit.Dispose();
             ImprovementManager.ClearCachedValues(this);
             AttributeSection.Dispose();
+            DoOnSaveCompleted.Dispose();
             _blnDisposing = false;
         }
 

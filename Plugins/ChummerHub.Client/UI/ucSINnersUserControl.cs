@@ -49,7 +49,7 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     mySINner.CharacterObject.DoOnSaveCompleted.Remove(PluginHandler.MyOnSaveUpload);
-                    mySINner.CharacterObject.DoOnSaveCompleted.TryAdd(PluginHandler.MyOnSaveUpload);
+                    mySINner.CharacterObject.DoOnSaveCompleted.Add(PluginHandler.MyOnSaveUpload);
                 }
                 catch (Exception e)
                 {
