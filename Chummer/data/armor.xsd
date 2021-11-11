@@ -14,6 +14,22 @@
                 <xs:complexType>
                   <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
                     <xs:extension base="xs:string">
+                      <xs:attribute name="blackmarket" type="xs:string" use="optional" />
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="modcategories" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="blackmarket" type="xs:string" use="optional" />
                     </xs:extension>
                   </xs:simpleContent>
                 </xs:complexType>
@@ -50,6 +66,7 @@
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
+                    <xs:element name="wirelessbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="addmodcategory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="forcemodcategory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="mods" minOccurs="0" maxOccurs="1">

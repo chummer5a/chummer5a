@@ -11700,6 +11700,19 @@
       </bonus>
     </gear>
     <gear>
+      <id>09C5BE79-090E-461A-87C7-4A8BDBEB0B98</id>
+      <name>Sacred Circle Materials</name>
+      <category>Magical Supplies</category>
+      <rating>20</rating>
+      <source>FA</source>
+      <page>65</page>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 1500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
       <id>ef37af30-1204-4918-af66-dfbdd33cd045</id>
       <name>Reagents, per dram</name>
       <category>Magical Supplies</category>
