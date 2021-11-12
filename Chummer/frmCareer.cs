@@ -34,6 +34,7 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
+using Chummer.Backend.BuySellIncreaseDecreaseMethods;
 using LiveCharts.Defaults;
 using NLog;
 
@@ -17109,17 +17110,19 @@ namespace Chummer
 
         private void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {
-            // Make sure the character has enough Karma to improve the CharacterAttribute.
+
+
+            // Make sure the character has enough Karma to improve the CharacterAttribute. This Check is basically unnecessary, because the button is only active if you got enough magic and Karma anyways.
             int intKarmaCost = CharacterObject.Settings.KarmaMysticAdeptPowerPoint;
             if (intKarmaCost > CharacterObject.Karma)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (CharacterObject.MysticAdeptPowerPoints + 1 > CharacterObject.MAG.TotalValue)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughMagic"), LanguageManager.GetString("MessageTitle_NotEnoughMagic"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughMagic"), LanguageManager.GetString("MessageTitle_NotEnoughMagic"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -17128,22 +17131,11 @@ namespace Chummer
                 , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
                 return;
 
-            // Create the Karma expense.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_PowerPoint"), ExpenseType.Karma, DateTime.Now);
-            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-            CharacterObject.Karma -= intKarmaCost;
 
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddPowerPoint, string.Empty);
-            objExpense.Undo = objUndo;
-
-            CharacterObject.MysticAdeptPowerPoints += 1;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+            ChangeAttributes.IncreasePowerpoint(CharacterObject, this);
         }
+
+
 
         private void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {

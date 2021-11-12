@@ -280,6 +280,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
+    <Compile Include="Backend\Buy Sell Increase Decrease Methods\ChangeAttributes.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
