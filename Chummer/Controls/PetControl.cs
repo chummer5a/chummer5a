@@ -226,20 +226,20 @@ namespace Chummer
                 ListItem.Blank
             };
             string strSpace = LanguageManager.GetString("String_Space");
-            foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("critters.xml").Select("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("critters.xml").SelectAndCacheExpression("/chummer/metatypes/metatype"))
             {
-                string strName = xmlMetatypeNode.SelectSingleNode("name")?.Value;
-                string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNode("translate")?.Value ?? strName;
+                string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
                 lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
-                XPathNodeIterator xmlMetavariantsList = xmlMetatypeNode.Select("metavariants/metavariant");
+                XPathNodeIterator xmlMetavariantsList = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
                 if (xmlMetavariantsList.Count > 0)
                 {
                     string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                     foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                     {
-                        string strMetavariantName = objXmlMetavariantNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                        string strMetavariantName = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
                         if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
-                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalSettings.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNode("translate")?.Value ?? strMetavariantName)));
+                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalSettings.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strMetavariantName)));
                     }
                 }
             }

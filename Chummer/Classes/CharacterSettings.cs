@@ -871,7 +871,7 @@ namespace Chummer
 
                     XPathNodeIterator lstAllowedBooksCodes = XmlManager
                         .LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
-                        .Select("/chummer/books/book[not(hide)]/code");
+                        .SelectAndCacheExpression("/chummer/books/book[not(hide)]/code");
                     HashSet<string> setAllowedBooks = new HashSet<string>(lstAllowedBooksCodes.Count);
                     foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
                         setAllowedBooks.Add(objAllowedBook.Value);
@@ -1341,12 +1341,12 @@ namespace Chummer
 
             // Load Books.
             _lstBooks.Clear();
-            foreach (XPathNavigator xmlBook in objXmlNode.Select("books/book"))
+            foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book"))
                 _lstBooks.Add(xmlBook.Value);
             // Legacy sweep for sourcebooks
             if (xmlLegacyCharacterNavigator != null)
             {
-                foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.Select("sources/source"))
+                foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression("sources/source"))
                     if (!string.IsNullOrEmpty(xmlBook.Value))
                         _lstBooks.Add(xmlBook.Value);
             }
@@ -1358,19 +1358,19 @@ namespace Chummer
             Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
                 new Dictionary<int, Tuple<string, bool>>();
             bool blnNeedToProcessInfosWithoutLoadOrder = false;
-            foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
+            foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/customdatadirectoryname"))
             {
-                string strDirectoryKey = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
+                string strDirectoryKey = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")?.Value;
                 if (string.IsNullOrEmpty(strDirectoryKey))
                     continue;
                 string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                 // Only load in directories that are either present in our GlobalSettings or are enabled
-                bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
+                bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value == bool.TrueString;
                 if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                     ? GlobalSettings.CustomDataDirectoryInfos.Any(x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
                     : GlobalSettings.CustomDataDirectoryInfos.Any(x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                 {
-                    string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
+                    string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
                     if (!string.IsNullOrEmpty(strOrder)
                         && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intOrder))
                     {
@@ -1413,7 +1413,7 @@ namespace Chummer
             // Legacy sweep for custom data directories
             if (xmlLegacyCharacterNavigator != null)
             {
-                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator.Select("customdatadirectorynames/directoryname"))
+                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator.SelectAndCacheExpression("customdatadirectorynames/directoryname"))
                 {
                     string strDirectoryKey = xmlCustomDataDirectoryName.Value;
                     if (string.IsNullOrEmpty(strDirectoryKey))
@@ -1440,18 +1440,18 @@ namespace Chummer
             // Add in the stragglers that didn't have any load order info
             if (blnNeedToProcessInfosWithoutLoadOrder)
             {
-                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
+                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/customdatadirectoryname"))
                 {
-                    string strDirectoryKey = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
+                    string strDirectoryKey = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")?.Value;
                     if (string.IsNullOrEmpty(strDirectoryKey))
                         continue;
                     string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                    string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
+                    string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
                     if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
                         GlobalSettings.InvariantCultureInfo, out int _))
                         continue;
                     // Only load in directories that are either present in our GlobalSettings or are enabled
-                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
+                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value == bool.TrueString;
                     if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                         ? GlobalSettings.CustomDataDirectoryInfos.Any(x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
                         : GlobalSettings.CustomDataDirectoryInfos.Any(x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
@@ -1477,7 +1477,7 @@ namespace Chummer
 
             if (_dicCustomDataDirectoryKeys.Count == 0)
             {
-                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/directoryname"))
+                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/directoryname"))
                 {
                     string strDirectoryKey = objXmlDirectoryName.Value;
                     if (string.IsNullOrEmpty(strDirectoryKey))
@@ -1513,12 +1513,12 @@ namespace Chummer
 
             RecalculateEnabledCustomDataDirectories();
 
-            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths).Select("/chummer/books/book[permanent]/code"))
+            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths).SelectAndCacheExpression("/chummer/books/book[permanent]/code"))
                 if (!string.IsNullOrEmpty(xmlBook.Value))
                     _lstBooks.Add(xmlBook.Value);
 
             // Used to legacy sweep build settings.
-            XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNode("defaultbuild");
+            XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild");
             if (objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp)
                 && Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod)
                 || xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp) == true
@@ -1536,11 +1536,11 @@ namespace Chummer
             objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
             BannedWareGrades.Clear();
-            foreach (XPathNavigator xmlGrade in objXmlNode.Select("bannedwaregrades/grade"))
+            foreach (XPathNavigator xmlGrade in objXmlNode.SelectAndCacheExpression("bannedwaregrades/grade"))
                 BannedWareGrades.Add(xmlGrade.Value);
 
             RedlinerExcludes.Clear();
-            foreach (XPathNavigator xmlLimb in objXmlNode.Select("redlinerexclusion/limb"))
+            foreach (XPathNavigator xmlLimb in objXmlNode.SelectAndCacheExpression("redlinerexclusion/limb"))
                 RedlinerExcludes.Add(xmlLimb.Value);
 
             return true;

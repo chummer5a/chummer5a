@@ -6105,7 +6105,7 @@ namespace Chummer
                     }
                 }
 
-                foreach (XPathNavigator xmlContact in xmlDoc.CreateNavigator().Select("/chummer/contacts/contact"))
+                foreach (XPathNavigator xmlContact in xmlDoc.CreateNavigator().SelectAndCacheExpression("/chummer/contacts/contact"))
                 {
                     Contact objContact = new Contact(CharacterObject);
                     objContact.Load(xmlContact);

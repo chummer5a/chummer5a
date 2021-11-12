@@ -90,13 +90,13 @@ namespace Chummer
             string strFilterPrefix = (VehicleMountMods
                 ? "weaponmountmods/mod[("
                 : "mods/mod[(") + _objCharacter.Settings.BookXPath() + ") and category = ";
-            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("modcategories/category"))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == strInnerText))
                     && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                 {
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -298,26 +298,26 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
             foreach (XPathNavigator objXmlMod in objXmlModList)
             {
-                XPathNavigator xmlTestNode = objXmlMod.SelectSingleNode("forbidden/vehicledetails");
+                XPathNavigator xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails");
                 if (xmlTestNode != null && objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
                     continue;
                 }
-                xmlTestNode = objXmlMod.SelectSingleNode("required/vehicledetails");
+                xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/vehicledetails");
                 if (xmlTestNode != null && !objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
                     continue;
                 }
 
-                xmlTestNode = objXmlMod.SelectSingleNode("forbidden/oneof");
+                xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/oneof");
                 if (xmlTestNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> setForbiddenAccessory = new HashSet<string>();
-                    foreach (XPathNavigator node in xmlTestNode.Select("mods"))
+                    foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
                     {
                         setForbiddenAccessory.Add(node.Value);
                     }
@@ -328,13 +328,13 @@ namespace Chummer
                     }
                 }
 
-                xmlTestNode = objXmlMod.SelectSingleNode("required/oneof");
+                xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/oneof");
                 if (xmlTestNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> setRequiredAccessory = new HashSet<string>();
-                    foreach (XPathNavigator node in xmlTestNode.Select("mods"))
+                    foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
                     {
                         setRequiredAccessory.Add(node.Value);
                     }
@@ -345,14 +345,14 @@ namespace Chummer
                     }
                 }
 
-                xmlTestNode = objXmlMod.SelectSingleNode("requires");
-                if (xmlTestNode != null && _objVehicle.Seats < (xmlTestNode.SelectSingleNode("seats")?.ValueAsInt ?? 0))
+                xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("requires");
+                if (xmlTestNode != null && _objVehicle.Seats < (xmlTestNode.SelectSingleNodeAndCacheExpression("seats")?.ValueAsInt ?? 0))
                 {
                     continue;
                 }
 
                 int intMinRating = 1;
-                string strMinRating = objXmlMod.SelectSingleNode("minrating")?.Value;
+                string strMinRating = objXmlMod.SelectSingleNodeAndCacheExpression("minrating")?.Value;
                 if (strMinRating?.Length > 0)
                 {
                     strMinRating = ReplaceStrings(strMinRating);
@@ -361,7 +361,7 @@ namespace Chummer
                         intMinRating = ((double)objTempProcess).StandardRound();
                 }
 
-                string strRating = objXmlMod.SelectSingleNode("rating")?.Value;
+                string strRating = objXmlMod.SelectSingleNodeAndCacheExpression("rating")?.Value;
                 if (!string.IsNullOrEmpty(strRating))
                 {
                     // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
@@ -386,12 +386,12 @@ namespace Chummer
                 }
 
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
+                if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNodeAndCacheExpression("category")?.Value))
                     decCostMultiplier *= 0.9m;
                 if ((!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter, intMinRating)) &&
                     (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, intMinRating)))
                 {
-                    lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                    lstMods.Add(new ListItem(objXmlMod.SelectSingleNodeAndCacheExpression("id")?.Value, objXmlMod.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
                 else
                     ++intOverLimit;
@@ -431,7 +431,7 @@ namespace Chummer
                     SelectedRating = nudRating.ValueAsInt;
                     _intMarkup = nudMarkup.ValueAsInt;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                    _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
+                    _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNodeAndCacheExpression("category")?.Value;
                     DialogResult = DialogResult.OK;
                 }
             }

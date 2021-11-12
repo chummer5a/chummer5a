@@ -56,15 +56,15 @@ namespace Chummer
                     using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                         xmlEnglishDocument = new XPathDocument(objXmlReader);
                     XPathNodeIterator xmlStringList =
-                        xmlEnglishDocument.CreateNavigator().Select("/chummer/strings/string");
+                        xmlEnglishDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string");
                     if (xmlStringList.Count > 0)
                     {
                         foreach (XPathNavigator objNode in xmlStringList)
                         {
-                            string strKey = objNode.SelectSingleNode("key")?.Value;
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
                             if (string.IsNullOrEmpty(strKey))
                                 continue;
-                            string strText = objNode.SelectSingleNode("text")?.Value;
+                            string strText = objNode.SelectSingleNodeAndCacheExpression("text")?.Value;
                             if (string.IsNullOrEmpty(strText))
                                 continue;
                             if (s_DictionaryEnglishStrings.ContainsKey(strKey))
@@ -602,87 +602,87 @@ namespace Chummer
             new []
             {
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("programs.xml", "/chummer/categories/category",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("skills.xml", "/chummer/skillgroups/name",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("skills.xml", "/chummer/categories/category",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("spells.xml", "/chummer/categories/category",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("weapons.xml", "/chummer/categories/category",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("armor.xml", "/chummer/armors/armor",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("armor.xml", "/chummer/mods/mod",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("cyberware.xml", "/chummer/cyberwares/cyberware",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("critterpowers.xml", "/chummer/powers/power",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("echoes.xml", "/chummer/echoes/echo",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("mentors.xml", "/chummer/mentors/mentor",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("metamagic.xml", "/chummer/metamagics/metamagic",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("metatypes.xml", "/chummer/metatypes/metatype",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("metatypes.xml", "/chummer/metatypes/metatype/metavariants/metavariant",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("paragons.xml", "/chummer/mentors/mentor",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("powers.xml", "/chummer/powers/power",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("programs.xml", "/chummer/programs/program",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("qualities.xml", "/chummer/qualities/quality",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("ranges.xml", "/chummer/ranges/range",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("skills.xml", "/chummer/skills/skill",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("spells.xml", "/chummer/spells/spell",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("streams.xml", "/chummer/traditions/tradition[name != 'Default']",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("traditions.xml", "/chummer/traditions/tradition[name != 'Custom']",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("weapons.xml", "/chummer/weapons/weapon",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
             },
             new []
             {
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("contacts.xml", "/chummer/contacts/contact",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("contacts.xml", "/chummer/genders/gender",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("contacts.xml", "/chummer/ages/age",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("contacts.xml", "/chummer/personallives/personallife",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("contacts.xml", "/chummer/types/type",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("contacts.xml", "/chummer/preferredpayments/preferredpayment",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("contacts.xml", "/chummer/hobbiesvices/hobbyvice",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("licenses.xml", "/chummer/licenses/license",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("skills.xml", "/chummer/skills/skill/specs/spec",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("skills.xml", "/chummer/knowledgeskills/skill/specs/spec",
-                    x => x.Value, x => x.SelectSingleNode("@translate")?.Value),
+                    x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("actions.xml", "/chummer/actions/action",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("mentors.xml", "/chummer/mentors/mentor/choices/choice",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("paragons.xml", "/chummer/mentors/mentor/choices/choice",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
             },
             new []
             {
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("references.xml", "/chummer/rules/rule",
-                    x => x.SelectSingleNode("name")?.Value, x => x.SelectSingleNode("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
             }
         };
 
@@ -845,7 +845,7 @@ namespace Chummer
                                                                  objXPathPair.Item1,
                                                                  objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
                                                                  strIntoLanguage);
-                                                             foreach (XPathNavigator objNode in xmlDocument.Select(
+                                                             foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
                                                                  objXPathPair.Item2))
                                                              {
                                                                  if (objCancellationToken.IsCancellationRequested ||
@@ -889,7 +889,7 @@ namespace Chummer
                                                 objXPathPair.Item1,
                                                 objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
                                                 strIntoLanguage);
-                                            foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
+                                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(objXPathPair.Item2))
                                             {
                                                 if (objCancellationToken.IsCancellationRequested ||
                                                     objState.ShouldExitCurrentIteration)
@@ -1029,7 +1029,7 @@ namespace Chummer
                                                  XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
                                                      objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
                                                      strFromLanguage);
-                                                 foreach (XPathNavigator objNode in xmlDocument.Select(
+                                                 foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
                                                      objXPathPair.Item2))
                                                  {
                                                      if (objCancellationToken.IsCancellationRequested ||
@@ -1073,7 +1073,7 @@ namespace Chummer
                             {
                                 XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
                                     objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strFromLanguage);
-                                foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
+                                foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(objXPathPair.Item2))
                                 {
                                     if (objCancellationToken.IsCancellationRequested ||
                                         objState.ShouldExitCurrentIteration)
@@ -1205,17 +1205,17 @@ namespace Chummer
                     if (objLanguageDocument != null)
                     {
                         XPathNavigator objLanguageDocumentNavigator = objLanguageDocument.CreateNavigator();
-                        IsRightToLeftScript = objLanguageDocumentNavigator.SelectSingleNode("/chummer/righttoleft")?.Value == bool.TrueString;
+                        IsRightToLeftScript = objLanguageDocumentNavigator.SelectSingleNodeAndCacheExpression("/chummer/righttoleft")?.Value == bool.TrueString;
                         XPathNodeIterator xmlStringList =
-                            objLanguageDocumentNavigator.Select("/chummer/strings/string");
+                            objLanguageDocumentNavigator.SelectAndCacheExpression("/chummer/strings/string");
                         if (xmlStringList.Count > 0)
                         {
                             foreach (XPathNavigator objNode in xmlStringList)
                             {
                                 // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
                                 // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                                string strKey = objNode.SelectSingleNode("key")?.Value;
-                                string strText = objNode.SelectSingleNode("text")?.Value;
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
+                                string strText = objNode.SelectSingleNodeAndCacheExpression("text")?.Value;
                                 if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                                 {
                                     if (TranslatedStrings.ContainsKey(strKey))

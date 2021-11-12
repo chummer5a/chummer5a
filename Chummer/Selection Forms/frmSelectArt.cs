@@ -174,10 +174,10 @@ namespace Chummer
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
             {
-                string strId = objXmlMetamagic.SelectSingleNode("id")?.Value;
+                string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
                 if (!string.IsNullOrEmpty(strId) && (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter)))
                 {
-                    lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNode("id")?.Value, objXmlMetamagic.SelectSingleNode("translate")?.Value ?? objXmlMetamagic.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                    lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value, objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
             }
             lstArts.Sort(CompareListItems.CompareNames);

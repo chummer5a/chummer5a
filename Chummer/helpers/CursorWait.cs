@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Windows.Forms;
 using NLog;
@@ -30,7 +29,7 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static readonly object s_ObjApplicationWaitCursorsLock = new object();
         private static int _intApplicationWaitCursors;
-        private static readonly ConcurrentDictionary<Control, ThreadSafeList<CursorWait>> s_DicWaitingControls = new ConcurrentDictionary<Control, ThreadSafeList<CursorWait>>();
+        private static readonly LockingDictionary<Control, ThreadSafeList<CursorWait>> s_DicWaitingControls = new LockingDictionary<Control, ThreadSafeList<CursorWait>>();
         private readonly Control _objControl;
         private readonly Form _frmControlTopParent;
         private readonly Stopwatch _objTimer = new Stopwatch();
@@ -211,7 +210,7 @@ namespace Chummer
             }
             if (lstCursorWaits.Count != 0)
                 return;
-            s_DicWaitingControls.TryRemove(_objControl, out ThreadSafeList<CursorWait> _);
+            s_DicWaitingControls.Remove(_objControl);
             lstCursorWaits.Dispose();
         }
     }

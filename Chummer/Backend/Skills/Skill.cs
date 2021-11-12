@@ -426,7 +426,7 @@ namespace Chummer.Backend.Skills
             objSkill.SkillId = suid;
 
             List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
-            foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.Select("specialization"))
+            foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization"))
             {
                 string strSpecializationName = xmlSpecializationNode.SelectSingleNode("@bonustext")?.Value;
                 if (string.IsNullOrEmpty(strSpecializationName))

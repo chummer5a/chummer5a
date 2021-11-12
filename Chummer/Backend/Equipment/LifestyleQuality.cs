@@ -369,7 +369,7 @@ namespace Chummer.Backend.Equipment
             if (objLifestyleQualityNode == null)
             {
                 List<ListItem> lstQualities = new List<ListItem>(1);
-                foreach (XPathNavigator xmlNode in objXmlDocument.Select("/chummer/qualities/quality"))
+                foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression("/chummer/qualities/quality"))
                     lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
                         xmlNode.SelectSingleNode("translate")?.Value ?? xmlNode.SelectSingleNode("name")?.Value));
 
@@ -438,7 +438,7 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguageToPrint)
                     .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + "]");
-                strLifestyleQualityType = objNode?.SelectSingleNode("@translate")?.Value ?? strLifestyleQualityType;
+                strLifestyleQualityType = objNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strLifestyleQualityType;
             }
 
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);

@@ -285,6 +285,7 @@
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
     <Compile Include="Backend\Datastructures\KeyArray.cs" />
     <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
+    <Compile Include="Backend\Datastructures\LockingHashSet.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
@@ -299,6 +300,7 @@
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollectionWithMaxSize.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
+    <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />

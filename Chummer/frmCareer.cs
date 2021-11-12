@@ -405,7 +405,7 @@ namespace Chummer
                     };
                         if (xmlTraditionsBaseChummerNode != null)
                         {
-                            foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
+                            foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.SelectAndCacheExpression(
                                 "drainattributes/drainattribute"))
                             {
                                 string strName = xmlDrain.SelectSingleNode("name")?.Value;
@@ -451,7 +451,7 @@ namespace Chummer
                     };
                         if (xmlTraditionsBaseChummerNode != null)
                         {
-                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
+                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
                             {
                                 string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
                                 if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
@@ -1978,7 +1978,7 @@ namespace Chummer
                         };
                             if (xmlTraditionsBaseChummerNode != null)
                             {
-                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
+                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.SelectAndCacheExpression(
                                     "drainattributes/drainattribute"))
                                 {
                                     string strName = xmlDrain.SelectSingleNode("name")?.Value;
@@ -2009,13 +2009,13 @@ namespace Chummer
                         };
                             if (xmlTraditionsBaseChummerNode != null)
                             {
-                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
+                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
                                 {
-                                    string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
+                                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
                                     if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                     {
                                         lstSpirit.Add(new ListItem(strSpiritName,
-                                            xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
+                                            xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
                                     }
                                 }
                             }
@@ -2058,10 +2058,10 @@ namespace Chummer
                                 foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
                                 {
-                                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
-                                        lstStreams.Add(new ListItem(xmlTradition.SelectSingleNode("id")?.Value ?? strName,
-                                            xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                                        lstStreams.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
+                                            xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                                 }
                             }
 
@@ -3032,12 +3032,12 @@ namespace Chummer
             // Prompt the user to select an inanimate Vessel.
             XPathNavigator xmlVesselsNavigator = CharacterObject.LoadDataXPath("vessels.xml");
             List<ListItem> lstMetatype = new List<ListItem>(10);
-            foreach (XPathNavigator xmlMetatype in xmlVesselsNavigator.Select("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatype in xmlVesselsNavigator.SelectAndCacheExpression("/chummer/metatypes/metatype"))
             {
-                string strName = xmlMetatype.SelectSingleNode("name")?.Value;
+                string strName = xmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
                 {
-                    ListItem objItem = new ListItem(strName, xmlMetatype.SelectSingleNode("translate")?.Value ?? strName);
+                    ListItem objItem = new ListItem(strName, xmlMetatype.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName);
                     lstMetatype.Add(objItem);
                 }
             }
@@ -5438,9 +5438,9 @@ namespace Chummer
             // Remove any Critter Powers that are gained through the Quality (Infected).
             if (objXmlDeleteQuality.SelectNodes("powers/power")?.Count > 0)
             {
-                foreach (XPathNavigator objXmlPower in CharacterObject.LoadDataXPath("critterpowers.xml").Select("optionalpowers/optionalpower"))
+                foreach (XPathNavigator objXmlPower in CharacterObject.LoadDataXPath("critterpowers.xml").SelectAndCacheExpression("optionalpowers/optionalpower"))
                 {
-                    string strExtra = objXmlPower.SelectSingleNode("@select")?.Value;
+                    string strExtra = objXmlPower.SelectSingleNodeAndCacheExpression("@select")?.Value;
 
                     foreach (CritterPower objPower in CharacterObject.CritterPowers)
                     {

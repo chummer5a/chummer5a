@@ -48,7 +48,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNode("/chummer");
+            _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNode();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
@@ -62,19 +62,19 @@ namespace Chummer
         private void frmSelectCritterPower_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
-            foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.Select("categories/category"))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.SelectAndCacheExpression("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if (_objCharacter.Improvements.Any(imp =>
                         imp.ImproveType == Improvement.ImprovementType.AllowCritterPowerCategory &&
                         strInnerText.Contains(imp.ImprovedName)) &&
-                    objXmlCategory.SelectSingleNode("@whitelist")?.Value == bool.TrueString ||
+                    objXmlCategory.SelectSingleNodeAndCacheExpression("@whitelist")?.Value == bool.TrueString ||
                     _objCharacter.Improvements.Any(imp =>
                         imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory &&
                         strInnerText.Contains(imp.ImprovedName)))
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
-                        objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                        objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                     continue;
                 }
                 if (_objCharacter.Improvements.Any(imp =>
@@ -84,7 +84,7 @@ namespace Chummer
                     continue;
                 }
                 _lstCategory.Add(new ListItem(strInnerText,
-                    objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                    objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
 
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -131,9 +131,9 @@ namespace Chummer
                 XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + "]");
                 if (objXmlPower != null)
                 {
-                    lblCritterPowerCategory.Text = objXmlPower.SelectSingleNode("category")?.Value ?? string.Empty;
+                    lblCritterPowerCategory.Text = objXmlPower.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
 
-                    switch (objXmlPower.SelectSingleNode("type")?.Value)
+                    switch (objXmlPower.SelectSingleNodeAndCacheExpression("type")?.Value)
                     {
                         case "M":
                             lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana");
@@ -189,7 +189,7 @@ namespace Chummer
                     }
                     lblCritterPowerRange.Text = strRange;
 
-                    string strDuration = objXmlPower.SelectSingleNode("duration")?.Value ?? string.Empty;
+                    string strDuration = objXmlPower.SelectSingleNodeAndCacheExpression("duration")?.Value ?? string.Empty;
                     switch (strDuration)
                     {
                         case "Instant":
@@ -213,16 +213,16 @@ namespace Chummer
                             break;
                     }
 
-                    string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strSource = objXmlPower.SelectSingleNodeAndCacheExpression("source")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                     SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     lblCritterPowerSource.Text = objSource.ToString();
                     lblCritterPowerSource.SetToolTip(objSource.LanguageBookTooltip);
 
-                    nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
+                    nudCritterPowerRating.Visible = objXmlPower.SelectSingleNodeAndCacheExpression("rating") != null;
 
-                    lblKarma.Text = objXmlPower.SelectSingleNode("karma")?.Value ?? "0";
+                    lblKarma.Text = objXmlPower.SelectSingleNodeAndCacheExpression("karma")?.Value ?? "0";
 
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
@@ -259,17 +259,17 @@ namespace Chummer
             List<string> lstPowerWhitelist = new List<string>();
 
             // If the Critter is only allowed certain Powers, display only those.
-            XPathNavigator xmlOptionalPowers = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers");
+            XPathNavigator xmlOptionalPowers = _xmlMetatypeDataNode.SelectSingleNodeAndCacheExpression("optionalpowers");
             if (xmlOptionalPowers != null)
             {
-                foreach (XPathNavigator xmlNode in xmlOptionalPowers.Select("power"))
+                foreach (XPathNavigator xmlNode in xmlOptionalPowers.SelectAndCacheExpression("power"))
                     lstPowerWhitelist.Add(xmlNode.Value);
 
                 // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
                 bool blnPhysicalPresence = _objCharacter.CritterPowers.Any(x => x.Name == "Materialization" || x.Name == "Possession" || x.Name == "Inhabitation");
 
                 // Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
-                foreach (XPathNavigator objXmlCritterPower in _xmlMetatypeDataNode.Select("powers/power"))
+                foreach (XPathNavigator objXmlCritterPower in _xmlMetatypeDataNode.SelectAndCacheExpression("powers/power"))
                 {
                     bool blnAddPower = true;
                     // Make sure the Critter doesn't already have the Power.
@@ -358,13 +358,13 @@ namespace Chummer
                 sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter + "]"))
             {
-                string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPowerName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
                 TreeNode objNode = new TreeNode
                 {
-                    Tag = objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty,
-                    Text = objXmlPower.SelectSingleNode("translate")?.Value ?? strPowerName
+                    Tag = objXmlPower.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
+                    Text = objXmlPower.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strPowerName
                 };
                 trePowers.Nodes.Add(objNode);
             }

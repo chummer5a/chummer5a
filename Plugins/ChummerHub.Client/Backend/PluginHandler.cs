@@ -483,7 +483,7 @@ namespace Chummer.Plugins
                         }
                         finally
                         {
-                            input.DoOnSaveCompleted.TryAdd(MyOnSaveUpload);
+                            input.DoOnSaveCompleted.Add(MyOnSaveUpload);
                         }
                     });
                 }

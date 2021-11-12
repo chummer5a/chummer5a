@@ -425,30 +425,30 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlMod in objXmlModList)
                 {
-                    XPathNavigator xmlTestNode = objXmlMod.SelectSingleNode("forbidden/parentdetails");
+                    XPathNavigator xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
                     if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlMod.SelectSingleNode("required/parentdetails");
+                    xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/parentdetails");
                     if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    string strId = objXmlMod.SelectSingleNode("id")?.Value;
+                    string strId = objXmlMod.SelectSingleNodeAndCacheExpression("id")?.Value;
                     if (string.IsNullOrEmpty(strId)) continue;
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
+                    if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNodeAndCacheExpression("category")?.Value))
                         decCostMultiplier *= 0.9m;
                     if (!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter) &&
                         (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                          objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)) && objXmlMod.RequirementsMet(_objCharacter, _objArmor))
                     {
-                        lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                        lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                     }
                     else
                         ++intOverLimit;

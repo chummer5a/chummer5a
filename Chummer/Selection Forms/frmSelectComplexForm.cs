@@ -257,16 +257,16 @@ namespace Chummer
             List<ListItem> lstComplexFormItems = new List<ListItem>();
             foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select("complexform[" + strFilter + ']'))
             {
-                string strId = xmlComplexForm.SelectSingleNode("id")?.Value;
+                string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
                     continue;
 
                 if (!xmlComplexForm.RequirementsMet(_objCharacter))
                     continue;
 
-                string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + "]") == null)
+                if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform") != null && _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("complexform[. = " + strName.CleanXPath() + "]") == null)
                     continue;
 
                 lstComplexFormItems.Add(new ListItem(strId, xmlComplexForm.SelectSingleNode("translate")?.Value ?? strName));

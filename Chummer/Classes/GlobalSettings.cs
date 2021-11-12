@@ -1323,7 +1323,7 @@ namespace Chummer
                 {
                     _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>();
                     // Retrieve the SourcebookInfo objects.
-                    foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml").Select("/chummer/books/book"))
+                    foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml").SelectAndCacheExpression("/chummer/books/book"))
                     {
                         string strCode = xmlBook.SelectSingleNode("code")?.Value;
                         if (string.IsNullOrEmpty(strCode))
