@@ -2,6 +2,7 @@ Future Build 217
 Application Changes:
 - Adding a new non-advanced lifestyle that is eligible for Trust Fund no longer causes a crash. Fixes #4601.
 - Adding a plugin to a custom cyberweapon no longer causes a crash.
+- Cyberware limited by the number of limbs is now not affected by detached modular limbs.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
