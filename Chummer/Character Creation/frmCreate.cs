@@ -35,8 +35,10 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
+using Chummer.Backend.BuySellIncreaseDecreaseMethods;
 using Microsoft.ApplicationInsights;
 using NLog;
+
 
 namespace Chummer
 {
@@ -3467,27 +3469,27 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Contrary to it's naming and the control elements naming this increases the initiation or submersion grade
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cmdAddMetamagic_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             {
-                if (CharacterObject.MAGEnabled)
-                {
-                    // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                    if (CharacterObject.InitiateGrade + 1 > CharacterObject.MAG.TotalValue ||
-                        CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue)
-                    {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                        return;
-                    }
+                //TODO: Refactor the two CanIncreaseInitiateGrade calls to be just one.
 
-                    // Create the Initiate Grade object.
-                    InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                    objGrade.Create(CharacterObject.InitiateGrade + 1, false, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                    CharacterObject.InitiationGrades.AddWithSort(objGrade);
+
+                // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
+                if (ChangeMetamagicOrEcho.CanIncreaseInitiateGrade(CharacterObject, CharacterObjectSettings))
+                {
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    return;
                 }
-                else if (CharacterObject.RESEnabled)
+
+                if (CharacterObject.RESEnabled)
                 {
                     tsMetamagicAddArt.Visible = false;
                     tsMetamagicAddEnchantment.Visible = false;
@@ -3496,21 +3498,18 @@ namespace Chummer
                     tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho");
 
                     // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                    if (CharacterObject.SubmersionGrade + 1 > CharacterObject.RES.TotalValue)
+                    if (ChangeMetamagicOrEcho.CanIncreaseInitiateGrade(CharacterObject, CharacterObjectSettings))
                     {
                         Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
-
-                    // Create the Initiate Grade object.
-                    InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                    objGrade.Create(CharacterObject.SubmersionGrade + 1, true, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                    CharacterObject.InitiationGrades.AddWithSort(objGrade);
                 }
 
-                IsCharacterUpdateRequested = true;
+                // Create the Initiate Grade object.
+                ChangeMetamagicOrEcho.CreateInitiateGradeObject(CharacterObject, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
 
+                IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
         }
@@ -14676,12 +14675,7 @@ namespace Chummer
                     objSource = Improvement.ImprovementSource.Metamagic;
                 }
 
-                objNewMetamagic.Create(objXmlMetamagic, objSource);
-                objNewMetamagic.Grade = objGrade.Grade;
-                if (objNewMetamagic.InternalId.IsEmptyGuid())
-                    return;
-
-                CharacterObject.Metamagics.Add(objNewMetamagic);
+                ChangeMetamagicOrEcho.CreateAndAddMetaMagic(CharacterObject, objNewMetamagic, objSource, objXmlMetamagic, objGrade.Grade);
             }
 
             IsCharacterUpdateRequested = true;

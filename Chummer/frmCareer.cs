@@ -17130,7 +17130,11 @@ namespace Chummer
                 return;
 
 
-            ChangeAttributes.IncreasePowerpoint(CharacterObject, this);
+            if(ChangeAttributes.IncreasePowerpoint(CharacterObject))
+            {
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
         }
 
 
@@ -17145,9 +17149,16 @@ namespace Chummer
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
+
+
+
             // Evaluate each object
             bool blnPayWithKarma = CharacterObject.Metamagics.Any(objMetamagic => objMetamagic.Grade == objGrade.Grade) ||
                                    CharacterObject.Spells.Any(objSpell => objSpell.Grade == objGrade.Grade);
+
+
+
+
 
             // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
             if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)

@@ -1,11 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Chummer;
-
 
 namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
 {
@@ -18,7 +11,7 @@ namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
         /// Increases the powerpoints of an mystic adept in career mode and creates the Karma expense. Only accessable as a house rule.
         /// </summary>
         /// <param name="characterObj"></param>
-        public static void IncreasePowerpoint(Character characterObj, frmCareer frmCareer)
+        public static void IncreasePowerpoint(Character characterObj)
         {
             //This could have been passed as a variable, but this makes it more independent from frmCareer
             int intKarmaCost = characterObj.Settings.KarmaMysticAdeptPowerPoint;
@@ -35,9 +28,6 @@ namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
             objExpense.Undo = objUndo;
 
             characterObj.MysticAdeptPowerPoints += 1;
-
-            frmCareer.IsCharacterUpdateRequested = true;
-            frmCareer.IsDirty = true;
         }
     }
 }
