@@ -17110,8 +17110,6 @@ namespace Chummer
 
         private void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {
-
-
             // Make sure the character has enough Karma to improve the CharacterAttribute. This Check is basically unnecessary, because the button is only active if you got enough magic and Karma anyways.
             int intKarmaCost = CharacterObject.Settings.KarmaMysticAdeptPowerPoint;
             if (intKarmaCost > CharacterObject.Karma)
