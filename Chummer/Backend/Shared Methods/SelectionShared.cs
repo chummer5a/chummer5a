@@ -272,8 +272,8 @@ namespace Chummer
                         if (blnCheckCyberwareChildren)
                         {
                             intCount = string.IsNullOrEmpty(strLocation)
-                                ? objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && strNameNode == x.Name)
-                                : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && strNameNode == x.Name);
+                                ? objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && strNameNode == x.Name && x.IsModularCurrentlyEquipped)
+                                : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && strNameNode == x.Name && x.IsModularCurrentlyEquipped);
                         }
                         else
                             intCount = lstToCheck?.Count(objItem => strNameNode == objItem.Name) ?? 0;
@@ -295,8 +295,8 @@ namespace Chummer
                             if (blnCheckCyberwareChildren)
                             {
                                 intExtendedCount = string.IsNullOrEmpty(strLocation)
-                                    ? objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == x.Name))
-                                    : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
+                                    ? objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == x.Name && x.IsModularCurrentlyEquipped))
+                                    : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name) && x.IsModularCurrentlyEquipped);
                             }
                             else
                                 intExtendedCount = lstToCheck?.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name)) ?? 0;

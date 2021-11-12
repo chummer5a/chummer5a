@@ -70,12 +70,12 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        void ICollection<T>.Add(T item)
+        public bool Add(T item)
         {
             using (new EnterWriteLock(_rwlThis))
-                _setData.Add(item);
+                return _setData.Add(item);
         }
-
+        
         /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
@@ -147,10 +147,10 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        bool ISet<T>.Add(T item)
+        void ICollection<T>.Add(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
-                return _setData.Add(item);
+            if (item != null)
+                Add(item);
         }
 
         /// <inheritdoc />
