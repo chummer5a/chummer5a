@@ -16,7 +16,7 @@ namespace ChummerHub.Client.UI
     public partial class ucSINnerShare : UserControl
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        public frmSINnerShare MyFrmSINnerShare;
+        public frmSINnerShare MyFrmSINnerShare { get; set; }
 
         public CharacterCache MyCharacterCache { get; set; }
         public SINnerSearchGroup MySINnerSearchGroup { get; set; }
@@ -69,11 +69,11 @@ namespace ChummerHub.Client.UI
             try
             {
                 string hash = string.Empty;
-                using (var op_shareChummer = Timekeeper.StartSyncron("Share Group", null,
+                using (CustomActivity op_shareChummer = Timekeeper.StartSyncron("Share Group", null,
                     CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                 {
                     MyUserState myState = new MyUserState(this);
-                    var client = StaticUtils.GetClient();
+                    SinnersClient client = StaticUtils.GetClient();
 
                     if (string.IsNullOrEmpty(MySINnerSearchGroup?.Id?.ToString()))
                     {
@@ -93,21 +93,19 @@ namespace ChummerHub.Client.UI
                         CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                     {
                         ResultGroupGetGroupById checkresult = await client.GetGroupByIdAsync(MySINnerSearchGroup?.Id).ConfigureAwait(false);
+                        if (checkresult == null)
+                            throw new ArgumentException("Could not parse result from SINners Webservice!");
+                        if (!checkresult.CallSuccess)
                         {
-                            if (checkresult == null)
-                                throw new ArgumentException("Could not parse result from SINners Webservice!");
-                            if (checkresult.CallSuccess != true)
-                            {
-                                if (checkresult.MyException != null)
-                                    throw new ArgumentException(
-                                        "Error from SINners Webservice: " + checkresult.ErrorText,
-                                        checkresult.MyException.ToString());
-                                throw new ArgumentException("Error from SINners Webservice: " +
-                                                            checkresult.ErrorText);
-                            }
-
-                            hash = checkresult.MyGroup.MyHash;
+                            if (checkresult.MyException != null)
+                                throw new ArgumentException(
+                                    "Error from SINners Webservice: " + checkresult.ErrorText,
+                                    checkresult.MyException.ToString());
+                            throw new ArgumentException("Error from SINners Webservice: " +
+                                                        checkresult.ErrorText);
                         }
+
+                        hash = checkresult.MyGroup.MyHash;
                     }
 
 
@@ -142,12 +140,12 @@ namespace ChummerHub.Client.UI
             string hash = string.Empty;
             try
             {
-                using (var op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
+                using (CustomActivity op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
                     CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
                 {
                     MyUserState myState = new MyUserState(this);
                     CharacterExtended ce = null;
-                    var client = StaticUtils.GetClient();
+                    SinnersClient client = StaticUtils.GetClient();
                     string sinnerid = string.Empty;
                     Guid SINid = Guid.Empty;
 
@@ -222,7 +220,7 @@ namespace ChummerHub.Client.UI
                                 checkresult = await client.GetSINByIdAsync(SINid);
                                 if (checkresult == null)
                                     throw new ArgumentException("Could not parse result from SINners Webservice!");
-                                if (checkresult.CallSuccess != true)
+                                if (!checkresult.CallSuccess)
                                 {
                                     if (checkresult.MyException != null)
                                         throw new ArgumentException(
@@ -236,7 +234,7 @@ namespace ChummerHub.Client.UI
                             }
 
 
-                            var lastWriteTimeUtc = MyCharacterCache != null ? File.GetLastWriteTimeUtc(MyCharacterCache.FilePath) : DateTime.MinValue;
+                            DateTime lastWriteTimeUtc = MyCharacterCache != null ? File.GetLastWriteTimeUtc(MyCharacterCache.FilePath) : DateTime.MinValue;
                             if (checkresult.MySINner.LastChange < lastWriteTimeUtc)
                             {
                                 if (ce == null)
@@ -249,7 +247,7 @@ namespace ChummerHub.Client.UI
 
                                 if (ce != null)
                                 {
-                                    using (var op_uploadChummer = Timekeeper.StartSyncron(
+                                    using (CustomActivity op_uploadChummer = Timekeeper.StartSyncron(
                                         "Uploading Chummer", op_shareChummer,
                                         CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                                     {
@@ -260,22 +258,21 @@ namespace ChummerHub.Client.UI
                                         await ce.Upload(myState, op_uploadChummer);
                                         if (ce.MySINnerFile.Id != null)
                                             SINid = ce.MySINnerFile.Id.Value;
-                                        var result = await client.GetSINByIdAsync(SINid);
+                                        ResultSinnerGetSINById result = await client.GetSINByIdAsync(SINid);
+                                        if (result == null)
+                                            throw new ArgumentException(
+                                                "Could not parse result from SINners Webservice!");
+                                        if (!result.CallSuccess)
                                         {
-                                            if (result == null)
-                                                throw new ArgumentException("Could not parse result from SINners Webservice!");
-                                            if (result.CallSuccess != true)
-                                            {
-                                                if (result.MyException != null)
-                                                    throw new ArgumentException(
-                                                        "Error from SINners Webservice: " + result.ErrorText,
-                                                        result.MyException.ToString());
+                                            if (result.MyException != null)
                                                 throw new ArgumentException(
-                                                    "Error from SINners Webservice: " + result.ErrorText);
-                                            }
-
-                                            hash = result.MySINner.MyHash;
+                                                    "Error from SINners Webservice: " + result.ErrorText,
+                                                    result.MyException.ToString());
+                                            throw new ArgumentException(
+                                                "Error from SINners Webservice: " + result.ErrorText);
                                         }
+
+                                        hash = result.MySINner.MyHash;
                                     }
                                 }
                             }

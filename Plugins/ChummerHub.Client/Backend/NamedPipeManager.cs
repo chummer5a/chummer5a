@@ -67,7 +67,7 @@ namespace ChummerHub.Client.Backend
         {
             try
             {
-                using (var client = new NamedPipeClientStream(".", NamedPipeName, PipeDirection.InOut))
+                using (NamedPipeClientStream client = new NamedPipeClientStream(".", NamedPipeName, PipeDirection.InOut))
                 {
                     try
                     {
@@ -123,7 +123,7 @@ namespace ChummerHub.Client.Backend
                 try
                 {
                     string text;
-                    using (var server = new NamedPipeServerStream(pipeNameString,
+                    using (NamedPipeServerStream server = new NamedPipeServerStream(pipeNameString,
                         PipeDirection.InOut, 1,
                         PipeTransmissionMode.Message, PipeOptions.None,
                         4028, 4028, ps))
@@ -154,9 +154,19 @@ namespace ChummerHub.Client.Backend
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _objCancellationTokenSource?.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            _objCancellationTokenSource?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

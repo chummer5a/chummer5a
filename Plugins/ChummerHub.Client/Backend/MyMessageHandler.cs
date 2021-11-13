@@ -40,7 +40,7 @@ namespace ChummerHub.Client.Backend
                 sw.Start();
                 // Call the inner handler.
                 request.Headers.TryAddWithoutValidation("ContentType", "application/json");
-                var response = await base.SendAsync(request, cancellationToken);
+                HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
                 sw.Stop();
                 msg = "Process response " + myCounter + " (" + (sw.ElapsedMilliseconds / 1000.0d).ToString(CultureInfo.InvariantCulture) + "): " + response.StatusCode;
                 Log.Debug<object>(msg);

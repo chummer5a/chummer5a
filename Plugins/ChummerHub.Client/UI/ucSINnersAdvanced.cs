@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using ChummerHub.Client.Backend;
+using ChummerHub.Client.Sinners;
 
 namespace ChummerHub.Client.UI
 {
@@ -70,8 +71,8 @@ namespace ChummerHub.Client.UI
 
         private async void cmdUploadChummerFile_Click(object sender, EventArgs e)
         {
-            var res = await Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE);
-            if (res.CallSuccess == false) 
+            ResultSINnerPut res = await Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE);
+            if (!res.CallSuccess) 
             {
                 throw new NotImplementedException(res.ErrorText);
             }

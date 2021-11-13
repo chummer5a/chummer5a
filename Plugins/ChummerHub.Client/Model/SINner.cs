@@ -17,7 +17,7 @@ namespace ChummerHub.Client.Sinners
             {
                 if (Directory.Exists(ZipFilePath))
                 {
-                    foreach (var file in Directory.EnumerateFiles(ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly))
+                    foreach (string file in Directory.EnumerateFiles(ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly))
                     {
                         DateTime lastwrite = File.GetLastWriteTime(file);
                         if (lastwrite >= LastChange || LastChange == default)

@@ -94,7 +94,7 @@ namespace ChummerHub.Client.Sinners
         {
             SiNnerId = id;
             if (Tags != null && Tags.Count > 0)
-                foreach(var childtag in Tags)
+                foreach(Tag childtag in Tags)
                     childtag.SetSinnerIdRecursive(id);
         }
 
