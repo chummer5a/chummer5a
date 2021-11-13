@@ -85,16 +85,8 @@ namespace Chummer
 
         private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objXmlGeneratorCancellationTokenSource != null)
-            {
-                _objXmlGeneratorCancellationTokenSource.Cancel(false);
-                _objXmlGeneratorCancellationTokenSource.Dispose();
-            }
-            if (_objCharacterXmlGeneratorCancellationTokenSource != null)
-            {
-                _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
-                _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
-            }
+            _objXmlGeneratorCancellationTokenSource?.Cancel(false);
+            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

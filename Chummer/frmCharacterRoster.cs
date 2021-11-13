@@ -118,17 +118,8 @@ namespace Chummer
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource != null)
-            {
-                _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
-                _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
-            }
-
-            if (_objWatchFolderRefreshCancellationTokenSource != null)
-            {
-                _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
-                _objWatchFolderRefreshCancellationTokenSource.Dispose();
-            }
+            _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
+            _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
 
             SetMyEventHandlers(true);
         }
