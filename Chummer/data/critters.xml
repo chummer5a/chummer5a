@@ -51456,6 +51456,7 @@
       <id>e5727729-0e19-4c1e-924d-b2bc4232e752</id>
       <name>Anarch</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -51529,6 +51530,7 @@
       <id>46f688ea-66ab-4b63-a2ea-ce797ad001e6</id>
       <name>Arboreal</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -51602,6 +51604,7 @@
       <id>c1989f9a-c4c7-4f08-83eb-e252663b5142</id>
       <name>Blackjack</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -51676,6 +51679,7 @@
       <id>7499b2df-7a18-4390-a812-30c3ba528856</id>
       <name>Boggle</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bod>F-2</bod>
       <agi>F-1</agi>
       <rea>F-1</rea>
@@ -51716,6 +51720,7 @@
       <id>a2cf75f0-ab9c-4d27-84c5-cebefb0f0d98</id>
       <name>Bugul</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bod>F</bod>
       <agi>F-1</agi>
       <rea>F-1</rea>
@@ -51768,6 +51773,7 @@
       <id>42a1c03d-d70a-47df-a23f-2260615bdefe</id>
       <name>Chindi</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -51830,6 +51836,7 @@
       <id>a296f3ad-26c1-40c4-9cdb-732aa5b86f56</id>
       <name>Corpselight</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>9</bodaug>
@@ -51889,6 +51896,7 @@
       <id>943af23e-b4b0-4b0b-84ed-25d97a92ce77</id>
       <name>Croki</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -51959,6 +51967,7 @@
       <id>d1d30016-6f62-4e08-8387-5de731f1086e</id>
       <name>Duende</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -52028,6 +52037,7 @@
       <id>0919e53d-6e38-48b6-8c4b-f0c22f8cd41d</id>
       <name>Elvar</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -52097,6 +52107,7 @@
       <id>de407ebd-f896-4efe-b16e-511d0181d774</id>
       <name>Ejerian</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -52172,6 +52183,7 @@
       <id>33951b3b-65f5-493f-8eb1-65e208f77a74</id>
       <name>Erinyes</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -52247,6 +52259,7 @@
       <id>6504cd2d-5e31-4dce-8c78-cbfcfda094f7</id>
       <name>Green Man/Heart of the City</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -52308,6 +52321,7 @@
       <id>7aa16d7a-4f70-4e3a-a9c0-9a3d9ab6e07e</id>
       <name>Imp</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -52368,6 +52382,7 @@
       <id>fb5ad9e1-f13e-4da7-b00e-30197cd5ef6c</id>
       <name>Jarl</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -52428,6 +52443,7 @@
       <id>17b642e0-f3ea-4b1c-8b51-a3eccf0a1ab8</id>
       <name>Kappa</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+5</bodmin>
       <bodmax>F+5</bodmax>
       <bodaug>F+5</bodaug>
@@ -52487,6 +52503,7 @@
       <id>5e37b646-6a2b-438d-92b2-4452d3d3599f</id>
       <name>Morbi</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -52554,6 +52571,7 @@
       <id>31fa84e3-5d2a-406f-8e6e-4c25ea7e3779</id>
       <name>Nocnitsa</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-3</bodmin>
       <bodmax>F-3</bodmax>
       <bodaug>F-3</bodaug>
@@ -52620,6 +52638,7 @@
       <id>18ab8683-9c7e-4234-9d1d-35d0f779ec71</id>
       <name>Phantom</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -52699,6 +52718,7 @@
       <id>be973a8d-b997-4d64-b9a7-20d85bc48d08</id>
       <name>Preta</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -52777,6 +52797,7 @@
       <id>d189dcde-b36c-45f4-9a6d-99905af063ba</id>
       <name>Stabber</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -52845,6 +52866,7 @@
       <id>98c87b5e-24ad-4fbb-9ad5-29218b801b5b</id>
       <name>Tungak</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -52912,6 +52934,7 @@
       <id>d6fa5e21-29bd-4cbd-a678-1bf14327a98f</id>
       <name>Ver</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>8</bodaug>
@@ -52972,6 +52995,7 @@
       <id>6cc44762-1e85-4097-bbb4-4f6e5eed2724</id>
       <name>Vucub Caquix</name>
       <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
