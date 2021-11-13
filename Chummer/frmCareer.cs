@@ -17144,21 +17144,14 @@ namespace Chummer
             if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
 
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
 
-
-
-            // Evaluate each object
-            bool blnPayWithKarma = CharacterObject.Metamagics.Any(objMetamagic => objMetamagic.Grade == objGrade.Grade) ||
-                                   CharacterObject.Spells.Any(objSpell => objSpell.Grade == objGrade.Grade);
-
-
-
-
+            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
+            // Later Note. I don't think there is a way to add any further Metamagics??? This whole comparison and code block seems to be deprecated!
+            var blnPayWithKarma = ChangeMetamagicOrEcho.BlnPayWithKarma(objGrade, CharacterObject);
 
             // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
             if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
@@ -17180,6 +17173,7 @@ namespace Chummer
                 , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
                 return;
 
+
             using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
             {
                 frmPickMetamagic.ShowDialog(this);
@@ -17188,58 +17182,25 @@ namespace Chummer
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                     return;
 
-                Metamagic objNewMetamagic = new Metamagic(CharacterObject);
 
-                XmlNode objXmlMetamagic;
-                Improvement.ImprovementSource objSource;
-                if (CharacterObject.RESEnabled)
+                if (ChangeMetamagicOrEcho.InitialiseCompleteMetamagic(CharacterObject, frmPickMetamagic, objGrade, CharacterObjectSettings))
                 {
-                    objXmlMetamagic = CharacterObject.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
-                    objSource = Improvement.ImprovementSource.Echo;
-                }
-                else
-                {
-                    objXmlMetamagic = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
-                    objSource = Improvement.ImprovementSource.Metamagic;
-                }
-
-                objNewMetamagic.Create(objXmlMetamagic, objSource);
-                objNewMetamagic.Grade = objGrade.Grade;
-                if (objNewMetamagic.InternalId.IsEmptyGuid())
-                    return;
-
-                CharacterObject.Metamagics.Add(objNewMetamagic);
-
-                if (blnPayWithKarma)
-                {
-                    string strType = LanguageManager.GetString(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo ? "String_Echo" : "String_Metamagic");
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objNewMetamagic.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
-                    objExpense.Undo = objUndo;
-
-                    // Adjust the character's Karma total.
-                    CharacterObject.Karma -= CharacterObjectSettings.KarmaMetamagic;
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
+
+
+
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
             if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
-            int intGrade = 0;
-            if (treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade)
-                intGrade = objGrade.Grade;
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+                return;
 
             /*
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
@@ -17260,15 +17221,12 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
+                if (ChangeMetamagicOrEcho.InitialiseCompleteArt(CharacterObject, frmPickArt, objGrade))
+                {
 
-                Art objArt = new Art(CharacterObject);
-                objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
-                objArt.Grade = intGrade;
-                if (objArt.InternalId.IsEmptyGuid())
-                    return;
-
-                CharacterObject.Arts.Add(objArt);
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
 
                 /*
                 if (blnPayWithKarma)
@@ -17288,23 +17246,19 @@ namespace Chummer
                 }
                 */
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-
             if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
-            int intGrade = 0;
-            if (treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade)
-                intGrade = objGrade.Grade;
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+                return;
+
+            /*
+            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
+            bool blnPayWithKarma = false;
 
             // Evaluate each object
             foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
@@ -17338,8 +17292,8 @@ namespace Chummer
                     , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                     return;
             }
+            */
 
-            XmlNode objXmlArt;
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enchantment))
             {
                 frmPickArt.ShowDialog(this);
@@ -17348,17 +17302,13 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
+                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            Spell objNewSpell = new Spell(CharacterObject);
-            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-            objNewSpell.Grade = intGrade;
-            if (objNewSpell.InternalId.IsEmptyGuid())
-                return;
-
-            CharacterObject.Spells.Add(objNewSpell);
-
+            /*
             if (blnPayWithKarma)
             {
                 string strType = LanguageManager.GetString("String_Enhancement");
@@ -17374,10 +17324,7 @@ namespace Chummer
                 // Adjust the character's Karma total.
                 CharacterObject.Karma -= intSpellKarmaCost;
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+            */
         }
 
         private void tsMetamagicAddRitual_Click(object sender, EventArgs e)
@@ -17387,10 +17334,10 @@ namespace Chummer
             if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
-            int intGrade = 0;
-            if (treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade)
-                intGrade = objGrade.Grade;
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+                return;
 
+            /*
             // Evaluate each object
             bool blnPayWithKarma = CharacterObject.Metamagics.Any(objMetamagic => objMetamagic.Grade == intGrade)
                 || CharacterObject.Spells.Any(objSpell => objSpell.Grade == intGrade);
@@ -17413,8 +17360,8 @@ namespace Chummer
                     , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                     return;
             }
+            */
 
-            XmlNode objXmlArt;
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Ritual))
             {
                 frmPickArt.ShowDialog(this);
@@ -17423,17 +17370,14 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
+                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
 
-            Spell objNewSpell = new Spell(CharacterObject);
-            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-            objNewSpell.Grade = intGrade;
-            if (objNewSpell.InternalId.IsEmptyGuid())
-                return;
-
-            CharacterObject.Spells.Add(objNewSpell);
-
+            /*
             if (blnPayWithKarma)
             {
                 string strType = LanguageManager.GetString("String_Ritual");
@@ -17449,10 +17393,8 @@ namespace Chummer
                 // Adjust the character's Karma total.
                 CharacterObject.Karma -= intSpellKarmaCost;
             }
+            */
 
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void tsInitiationNotes_Click(object sender, EventArgs e)
@@ -17469,9 +17411,8 @@ namespace Chummer
             if (treMetamagic.SelectedNode?.Level != 0)
                 return;
 
-            int intGrade = 0;
-            if (treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade)
-                intGrade = objGrade.Grade;
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+                return;
 
             if (CharacterObject.Karma < CharacterObjectSettings.KarmaEnhancement)
             {
@@ -17485,7 +17426,7 @@ namespace Chummer
                 , CharacterObjectSettings.KarmaEnhancement.ToString(GlobalSettings.CultureInfo))))
                 return;
 
-            XmlNode objXmlArt;
+
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enhancement))
             {
                 frmPickArt.ShowDialog(this);
@@ -17494,54 +17435,15 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                objXmlArt = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-            }
-
-            if (objXmlArt == null)
-                return;
-
-            Enhancement objEnhancement = new Enhancement(CharacterObject);
-            objEnhancement.Create(objXmlArt, Improvement.ImprovementSource.Initiation);
-            objEnhancement.Grade = intGrade;
-            if (objEnhancement.InternalId.IsEmptyGuid())
-                return;
-
-            // Find the associated Power
-            string strPower = objXmlArt["power"]?.InnerText;
-            bool blnPowerFound = false;
-            foreach (Power objPower in CharacterObject.Powers)
-            {
-                if (objPower.Name == strPower)
+                if (ChangeMetamagicOrEcho.InitializeCompleteEnhancement(CharacterObject, frmPickArt, objGrade, CharacterObjectSettings))
                 {
-                    objPower.Enhancements.Add(objEnhancement);
-                    blnPowerFound = true;
-                    break;
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
             }
-
-            if (!blnPowerFound)
-            {
-                // Add it to the character instead
-                CharacterObject.Enhancements.Add(objEnhancement);
-            }
-
-            string strType = LanguageManager.GetString("String_Enhancement");
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(CharacterObjectSettings.KarmaEnhancement * -1, strType + LanguageManager.GetString("String_Space") + objEnhancement.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
-            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddSpell, objEnhancement.InternalId);
-            objExpense.Undo = objUndo;
-
-            // Adjust the character's Karma total.
-            CharacterObject.Karma -= CharacterObjectSettings.KarmaEnhancement;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
+
+
 
         private void panContacts_Click(object sender, EventArgs e)
         {

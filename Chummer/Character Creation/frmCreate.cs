@@ -3478,9 +3478,6 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                //TODO: Refactor the two CanIncreaseInitiateGrade calls to be just one.
-
-
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
                 if (ChangeMetamagicOrEcho.CanIncreaseInitiateGrade(CharacterObject, CharacterObjectSettings))
                 {
@@ -14660,27 +14657,13 @@ namespace Chummer
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                     return;
 
-                Metamagic objNewMetamagic = new Metamagic(CharacterObject);
-
-                XmlNode objXmlMetamagic;
-                Improvement.ImprovementSource objSource;
-                if (CharacterObject.RESEnabled)
+                if (ChangeMetamagicOrEcho.InitialiseCompleteMetamagic(CharacterObject, frmPickMetamagic, objGrade,
+                        CharacterObjectSettings))
                 {
-                    objXmlMetamagic = CharacterObject.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
-                    objSource = Improvement.ImprovementSource.Echo;
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
-                else
-                {
-                    objXmlMetamagic = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
-                    objSource = Improvement.ImprovementSource.Metamagic;
-                }
-
-                ChangeMetamagicOrEcho.CreateAndAddMetaMagic(CharacterObject, objNewMetamagic, objSource, objXmlMetamagic, objGrade.Grade);
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
@@ -14696,21 +14679,12 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-
-                Art objArt = new Art(CharacterObject);
-
-                objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
-                objArt.Grade = objGrade.Grade;
-                if (objArt.InternalId.IsEmptyGuid())
-                    return;
-
-                CharacterObject.Arts.Add(objArt);
+                if (ChangeMetamagicOrEcho.InitialiseCompleteArt(CharacterObject, frmPickArt, objGrade))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
