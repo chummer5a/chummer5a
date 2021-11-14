@@ -62,7 +62,7 @@ namespace ChummerHub.Client.Sinners
         {
             try
             {
-                var addr = new MailAddress(email);
+                MailAddress addr = new MailAddress(email);
                 return addr.Address == email;
             }
             catch

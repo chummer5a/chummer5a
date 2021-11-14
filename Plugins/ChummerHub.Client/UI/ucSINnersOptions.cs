@@ -32,7 +32,7 @@ namespace ChummerHub.Client.UI
                 if (_SINnerVisibility != null)
                     return _SINnerVisibility;
                 Settings.Default.Reload();
-                var ur = new SINnerUserRight
+                SINnerUserRight ur = new SINnerUserRight
                 {
                     EMail = !string.IsNullOrEmpty(Settings.Default.UserEmail)
                         ? Settings.Default.UserEmail
@@ -126,14 +126,14 @@ namespace ChummerHub.Client.UI
                 });
             }
 
-            var client = blnSync
+            SinnersClient client = blnSync
                 ? this.DoThreadSafeFunc(() => StaticUtils.GetClient())
                 : await this.DoThreadSafeFuncAsync(() => StaticUtils.GetClient());
             if (client == null)
             {
                 return;
             }
-            var sinnerurl = client.BaseUrl;
+            string sinnerurl = client.BaseUrl;
             Settings.Default.SINnerUrls.Clear();
             Settings.Default.Save();
             Settings.Default.SINnerUrls.Add("https://chummer-stable.azurewebsites.net/");
@@ -191,7 +191,7 @@ namespace ChummerHub.Client.UI
                 _ = Chummer.Utils.StartStaTask(
                     async () =>
                     {
-                        var roles = await GetRolesStatus(this);
+                        IList<string> roles = await GetRolesStatus(this);
                         await UpdateDisplay();
                         if (roles.Count == 0)
                             ShowWebBrowser();
@@ -282,7 +282,7 @@ namespace ChummerHub.Client.UI
         {
             Settings.Default.SINnerUrl = cbSINnerUrl.SelectedValue.ToString();
             Settings.Default.Save();
-            var client = StaticUtils.GetClient();
+            SinnersClient client = StaticUtils.GetClient();
             if (client != null)
                 StaticUtils.GetClient(true);
             bLogin.Text = "Logout";
@@ -294,7 +294,7 @@ namespace ChummerHub.Client.UI
         public async Task UpdateDisplay()
         {
             tlpOptions.Enabled = Settings.Default.UserModeRegistered;
-            var mail = await GetUserEmail();
+            string mail = await GetUserEmail();
             await this.DoThreadSafeAsync(async () =>
             {
                 try
@@ -339,10 +339,10 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    var client = StaticUtils.GetClient();
+                    SinnersClient client = StaticUtils.GetClient();
                     if (client == null)
                         return null;
-                    var result = await client.GetUserByAuthorizationAsync();
+                    ResultAccountGetUserByAuthorization result = await client.GetUserByAuthorizationAsync();
                     if (result ==  null)
                     {
                         LoginStatus = false;
@@ -381,7 +381,7 @@ namespace ChummerHub.Client.UI
                     {
                         try
                         {
-                            var client = StaticUtils.GetClient();
+                            SinnersClient client = StaticUtils.GetClient();
                             if (await client.LogoutAsync())
                             {
                                 StaticUtils.UserRoles.Clear();
@@ -461,12 +461,12 @@ namespace ChummerHub.Client.UI
             {
                 using (new CursorWait(sender, true))
                 {
-                    var client = StaticUtils.GetClient();
+                    SinnersClient client = StaticUtils.GetClient();
                     if (client == null)
                         return StaticUtils.UserRoles;
-                    var myresult = await client.GetRolesAsync();
+                    ResultAccountGetRoles myresult = await client.GetRolesAsync();
                     await Utils.ShowErrorResponseFormAsync(myresult);
-                    var myresultbody = myresult;
+                    ResultAccountGetRoles myresultbody = myresult;
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         if (myresultbody?.CallSuccess == true)
@@ -552,7 +552,7 @@ namespace ChummerHub.Client.UI
             {
                 if (thisDialog.ShowDialog() == DialogResult.OK)
                 {
-                    foreach (var file in thisDialog.FileNames)
+                    foreach (string file in thisDialog.FileNames)
                     {
                         using (_ = await Utils.UploadCharacterFromFile(file))
                         {
@@ -593,9 +593,9 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    var client = StaticUtils.GetClient();
-                    var getsinner = await client.AdminGetSINnersAsync();
-                    foreach (var sinner in getsinner)
+                    SinnersClient client = StaticUtils.GetClient();
+                    ICollection<SINner> getsinner = await client.AdminGetSINnersAsync();
+                    foreach (SINner sinner in getsinner)
                     {
                         try
                         {
@@ -629,7 +629,7 @@ namespace ChummerHub.Client.UI
 
         private async void bRestore_Click(object sender, EventArgs e)
         {
-            using (var folderBrowserDialog1 = new FolderBrowserDialog())
+            using (FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog())
             {
                 // Show the FolderBrowserDialog.
                 DialogResult result = folderBrowserDialog1.ShowDialog();
@@ -652,7 +652,7 @@ namespace ChummerHub.Client.UI
                 FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
                 using (new CursorWait(this, true))
                 {
-                    var client = StaticUtils.GetClient();
+                    SinnersClient client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)
                     {
                         try
@@ -668,7 +668,7 @@ namespace ChummerHub.Client.UI
                                     sin
                                 }
                             };
-                            var posttask = await client.PostSINAsync(uploadInfoObject);
+                            ResultSinnerPostSIN posttask = await client.PostSINAsync(uploadInfoObject);
                             if (posttask.CallSuccess)
                             {
                                 Log.Info("SINner " + (sin?.Id.ToString() ?? "null") + " posted!");
@@ -676,7 +676,7 @@ namespace ChummerHub.Client.UI
                             else
                             {
                                 string msg = posttask.ErrorText + ": " + Environment.NewLine;
-                                var content = posttask.MyException?.ToString();
+                                string content = posttask.MyException?.ToString();
 
                                 msg += content;
                                 Log.Warn("SINner " + (sin?.Id.ToString() ?? "null") + " not posted: " + msg);
@@ -702,7 +702,7 @@ namespace ChummerHub.Client.UI
 
         private void BTempPathBrowse_Click(object sender, EventArgs e)
         {
-            using (var fbd = new FolderBrowserDialog())
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
                 if (fbd.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
                     return;

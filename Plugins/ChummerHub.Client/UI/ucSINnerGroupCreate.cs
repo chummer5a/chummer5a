@@ -106,7 +106,7 @@ namespace ChummerHub.Client.UI
             if (Guid.TryParse(tbParentGroupId.Text, out id))
                 myGroup.MyParentGroupId = id;
             myGroup.Password = tbPassword.Text;
-            if (String.IsNullOrEmpty(tbPassword.Text))
+            if (string.IsNullOrEmpty(tbPassword.Text))
                 myGroup.PasswordHash = null;
             myGroup.Language = cboLanguage1.SelectedItem.ToString();
             myGroup.IsPublic = cbIsPublic.Checked;
@@ -134,7 +134,7 @@ namespace ChummerHub.Client.UI
 
         private void bParentGroupId_Click(object sender, EventArgs e)
         {
-            var text = LanguageManager.GetString("String_SINners_HowToGroupParentDescription", _strSelectedLanguage);
+            string text = LanguageManager.GetString("String_SINners_HowToGroupParentDescription", _strSelectedLanguage);
             this.DoThreadSafe(() =>
             {
                 PluginHandler.MainForm.ShowMessageBox(Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -22,33 +22,30 @@ namespace ChummerHub.Client.Backend
             if (obj == null)
                 yield break;
 
-            if (string.IsNullOrEmpty(obj as string))
+            if (string.IsNullOrEmpty(obj as string) && obj is IEnumerable islist)
             {
-                if (obj is IEnumerable islist)
+                Type listtype = StaticUtils.GetListType(islist);
+                object generic;
+                try
                 {
-                    Type listtype = StaticUtils.GetListType(islist);
-                    object generic;
+                    generic = Activator.CreateInstance(listtype, ucSINnersSearch.MySearchCharacter.MyCharacter);
+                }
+                catch (Exception)
+                {
                     try
                     {
-                        generic = Activator.CreateInstance(listtype, ucSINnersSearch.MySearchCharacter.MyCharacter);
+                        generic = Activator.CreateInstance(listtype);
                     }
-                    catch (Exception)
+                    catch(Exception e2)
                     {
-                        try
-                        {
-                            generic = Activator.CreateInstance(listtype);
-                        }
-                        catch(Exception e2)
-                        {
-                            //seriously, that gets out of hand...
-                            Trace.TraceError(e2.ToString());
-                            throw;
-                        }
+                        //seriously, that gets out of hand...
+                        Trace.TraceError(e2.ToString());
+                        throw;
                     }
-                    foreach (SearchTag tagChild in ExtractTagsFromAttributes(generic))
-                        yield return tagChild;
-                    yield break;
                 }
+                foreach (SearchTag tagChild in ExtractTagsFromAttributes(generic))
+                    yield return tagChild;
+                yield break;
             }
             foreach (PropertyInfo property in obj.GetType().GetProperties())
             {

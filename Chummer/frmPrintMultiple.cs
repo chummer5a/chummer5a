@@ -45,11 +45,7 @@ namespace Chummer
 
         private void frmPrintMultiple_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objPrinterCancellationTokenSource != null)
-            {
-                _objPrinterCancellationTokenSource.Cancel(false);
-                _objPrinterCancellationTokenSource.Dispose();
-            }
+            _objPrinterCancellationTokenSource?.Cancel(false);
 
             CleanUpOldCharacters();
         }
@@ -90,11 +86,7 @@ namespace Chummer
 
         private async Task CancelPrint()
         {
-            if (_objPrinterCancellationTokenSource != null)
-            {
-                _objPrinterCancellationTokenSource.Cancel(false);
-                _objPrinterCancellationTokenSource.Dispose();
-            }
+            _objPrinterCancellationTokenSource?.Cancel(false);
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
@@ -113,6 +105,7 @@ namespace Chummer
         private async Task StartPrint()
         {
             await CancelPrint();
+            _objPrinterCancellationTokenSource?.Dispose();
             _objPrinterCancellationTokenSource = new CancellationTokenSource();
             _tskPrinter = Task.Run(DoPrint, _objPrinterCancellationTokenSource.Token);
         }
@@ -138,11 +131,7 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            if (_objPrinterCancellationTokenSource != null)
-                            {
-                                _objPrinterCancellationTokenSource.Cancel(false);
-                                _objPrinterCancellationTokenSource.Dispose();
-                            }
+                            _objPrinterCancellationTokenSource?.Cancel(false);
                             return;
                         }
 
@@ -153,11 +142,7 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            if (_objPrinterCancellationTokenSource != null)
-                            {
-                                _objPrinterCancellationTokenSource.Cancel(false);
-                                _objPrinterCancellationTokenSource.Dispose();
-                            }
+                            _objPrinterCancellationTokenSource?.Cancel(false);
                             return;
                         }
                         if (blnLoadSuccessful)

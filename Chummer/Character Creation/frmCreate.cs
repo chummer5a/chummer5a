@@ -8968,16 +8968,19 @@ namespace Chummer
                 foreach (Contact objGroupContact in CharacterObject.Contacts.Where(x =>
                     x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
                 {
+                    string strNameToUse = objGroupContact.GroupName;
+                    if (string.IsNullOrEmpty(strNameToUse))
+                    {
+                        strNameToUse = objGroupContact.Name;
+                        if (string.IsNullOrEmpty(strNameToUse))
+                            strNameToUse = LanguageManager.GetString("String_Unknown");
+                    }
+                    else if (!string.IsNullOrWhiteSpace(objGroupContact.Name))
+                        strNameToUse += '/' + objGroupContact.Name;
                     sbdPositiveQualityTooltip.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                        !string.IsNullOrWhiteSpace(objGroupContact.GroupName)
-                        ? !string.IsNullOrWhiteSpace(objGroupContact.Name)
-                            ? objGroupContact.GroupName + '/' + objGroupContact.Name
-                            : objGroupContact.GroupName
-                        : !string.IsNullOrWhiteSpace(objGroupContact.Name)
-                            ? objGroupContact.Name
-                            : LanguageManager.GetString("String_Unknown"),
-                        strSpace,
-                        objGroupContact.ContactPoints * CharacterObjectSettings.KarmaContact).AppendLine();
+                                                           strNameToUse,
+                                                           strSpace,
+                                                           objGroupContact.ContactPoints * CharacterObjectSettings.KarmaContact).AppendLine();
                 }
             }
 

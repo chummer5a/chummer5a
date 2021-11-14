@@ -18,7 +18,7 @@ namespace ChummerHub.Client.Backend
         {
             if (task == null)
                 return default;
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
                 if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cancellationToken);
@@ -37,7 +37,7 @@ namespace ChummerHub.Client.Backend
         {
             if (task == null)
                 return;
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
                 if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cancellationToken);
@@ -57,9 +57,9 @@ namespace ChummerHub.Client.Backend
         {
             if (task == null)
                 return default;
-            var cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(milliseconds);
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             using (cts.Token.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
                 if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cts.Token);
@@ -79,9 +79,9 @@ namespace ChummerHub.Client.Backend
         {
             if (task == null)
                 return;
-            var cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new CancellationTokenSource();
             cts.CancelAfter(milliseconds);
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             using (cts.Token.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
                 if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cts.Token);
