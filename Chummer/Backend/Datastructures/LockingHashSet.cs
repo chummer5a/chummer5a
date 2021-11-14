@@ -187,8 +187,8 @@ namespace Chummer
                 return _setData.Remove(item);
         }
 
-        /// <inheritdoc />
-        int ICollection<T>.Count
+        /// <inheritdoc cref="ICollection{T}" />
+        public int Count
         {
             get
             {
@@ -199,16 +199,6 @@ namespace Chummer
 
         /// <inheritdoc />
         public bool IsReadOnly => false;
-
-        /// <inheritdoc />
-        int IReadOnlyCollection<T>.Count
-        {
-            get
-            {
-                using (new EnterReadLock(_rwlThis))
-                    return _setData.Count;
-            }
-        }
 
         protected virtual void Dispose(bool disposing)
         {
