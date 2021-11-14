@@ -53,10 +53,10 @@ namespace Chummer
             this.TranslateWinForm();
 
             _xmlMetatypeDocumentMetatypesNode = _objCharacter.LoadData(strXmlFile).SelectSingleNode("/chummer/metatypes");
-            _xmlBaseMetatypeDataNode = _objCharacter.LoadDataXPath(strXmlFile).SelectSingleNode("/chummer");
+            _xmlBaseMetatypeDataNode = _objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
             _xmlSkillsDocumentKnowledgeSkillsNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
             _xmlQualityDocumentQualitiesNode = _objCharacter.LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
-            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer");
+            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
 
@@ -70,7 +70,7 @@ namespace Chummer
             if (xmlMetatypesNode != null)
             {
                 HashSet<string> lstAlreadyProcessed = new HashSet<string>();
-                foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.Select("categories/category"))
+                foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression("categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if (!lstAlreadyProcessed.Contains(strInnerText))
@@ -80,7 +80,7 @@ namespace Chummer
                             "metatype[category = {0} and ({1})]",
                             strInnerText.CleanXPath(), _objCharacter.Settings.BookXPath())))
                         {
-                            lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value
+                            lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                                          ?? strInnerText));
                         }
                     }
@@ -335,7 +335,7 @@ namespace Chummer
                 // ReSharper disable once IdentifierTypo
                 StringBuilder sbdQualities = new StringBuilder();
                 // Build a list of the Metavariant's Qualities.
-                foreach (XPathNavigator objXmlQuality in objXmlMetavariant.Select("qualities/*/quality"))
+                foreach (XPathNavigator objXmlQuality in objXmlMetavariant.SelectAndCacheExpression("qualities/*/quality"))
                 {
                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
@@ -428,7 +428,7 @@ namespace Chummer
                 // ReSharper disable once IdentifierTypo
                 StringBuilder sbdQualities = new StringBuilder();
                 // Build a list of the Metatype's Positive Qualities.
-                foreach (XPathNavigator objXmlQuality in objXmlMetatype.Select("qualities/*/quality"))
+                foreach (XPathNavigator objXmlQuality in objXmlMetatype.SelectAndCacheExpression("qualities/*/quality"))
                 {
                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {

@@ -21,6 +21,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _objStoryBuilder?.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -49,7 +49,7 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     mySINner.CharacterObject.DoOnSaveCompleted.Remove(PluginHandler.MyOnSaveUpload);
-                    mySINner.CharacterObject.DoOnSaveCompleted.TryAdd(PluginHandler.MyOnSaveUpload);
+                    mySINner.CharacterObject.DoOnSaveCompleted.Add(PluginHandler.MyOnSaveUpload);
                 }
                 catch (Exception e)
                 {
@@ -64,7 +64,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var client = StaticUtils.GetClient();
+                SinnersClient client = StaticUtils.GetClient();
                 if (MyCE.MySINnerFile.Id != null)
                     await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
             }

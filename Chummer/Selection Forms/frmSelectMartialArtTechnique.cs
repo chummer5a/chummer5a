@@ -47,14 +47,14 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             // Load the Martial Art information.
-            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
             // Populate the Martial Art Technique list.
             XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = " + _objMartialArt.Name.CleanXPath() + "]");
             if (xmlMartialArtNode != null)
             {
                 if (!xmlMartialArtNode.NodeExists("alltechniques"))
                 {
-                    foreach (XPathNavigator xmlTechnique in xmlMartialArtNode.Select("techniques/technique"))
+                    foreach (XPathNavigator xmlTechnique in xmlMartialArtNode.SelectAndCacheExpression("techniques/technique"))
                     {
                         string strTechniqueName = xmlTechnique.Value;
                         if (_objMartialArt.Techniques.All(x => x.Name != strTechniqueName))
@@ -71,8 +71,8 @@ namespace Chummer
 
                     foreach (XPathNavigator xmlTechnique in objTechniquesList)
                     {
-                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null) continue;
-                        _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
+                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNodeAndCacheExpression("name") == null) continue;
+                        _setAllowedTechniques.Add(xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value);
                     }
                 }
             }
@@ -180,17 +180,17 @@ namespace Chummer
             List<ListItem> lstTechniqueItems = new List<ListItem>();
             foreach (XPathNavigator xmlTechnique in objTechniquesList)
             {
-                string strId = xmlTechnique.SelectSingleNode("id")?.Value;
+                string strId = xmlTechnique.SelectSingleNodeAndCacheExpression("id")?.Value;
                 if (!string.IsNullOrEmpty(strId))
                 {
-                    string strTechniqueName = xmlTechnique.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 
                     if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
                         continue;
 
                     if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
                     {
-                        lstTechniqueItems.Add(new ListItem(strId, xmlTechnique.SelectSingleNode("translate")?.Value ?? strTechniqueName));
+                        lstTechniqueItems.Add(new ListItem(strId, xmlTechnique.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strTechniqueName));
                     }
                 }
             }

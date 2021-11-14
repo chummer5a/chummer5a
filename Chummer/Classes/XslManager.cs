@@ -30,8 +30,8 @@ namespace Chummer
     public static class XslManager
     {
         // Cache of compiled XSLTs to speed up repeated prints of the same character sheet
-        private static readonly ConcurrentDictionary<string, Tuple<DateTime, XslCompiledTransform>> s_dicCompiledTransforms
-            = new ConcurrentDictionary<string, Tuple<DateTime, XslCompiledTransform>>();
+        private static readonly LockingDictionary<string, Tuple<DateTime, XslCompiledTransform>> s_dicCompiledTransforms
+            = new LockingDictionary<string, Tuple<DateTime, XslCompiledTransform>>();
 
         /// <summary>
         /// Get the compiled Xsl Transform of an Xsl file. Will throw exceptions if anything goes awry.
@@ -59,7 +59,7 @@ namespace Chummer
 #endif
                 objReturn.Load(strXslFilePath);
 
-                s_dicCompiledTransforms.TryRemove(strXslFilePath, out _);
+                s_dicCompiledTransforms.Remove(strXslFilePath);
                 s_dicCompiledTransforms.TryAdd(
                     strXslFilePath, new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn));
             }

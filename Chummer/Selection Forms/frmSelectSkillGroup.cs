@@ -50,7 +50,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strForceValue))
             {
                 // Build the list of Skill Groups found in the Skills file.
-                foreach (XPathNavigator objXmlSkill in _objXmlDocument.Select("/chummer/skillgroups/name"))
+                foreach (XPathNavigator objXmlSkill in _objXmlDocument.SelectAndCacheExpression("/chummer/skillgroups/name"))
                 {
                     if (!string.IsNullOrEmpty(_strExcludeCategory))
                     {
@@ -65,7 +65,7 @@ namespace Chummer
                     }
 
                     string strInnerText = objXmlSkill.Value;
-                    lstGroups.Add(new ListItem(strInnerText, objXmlSkill.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                    lstGroups.Add(new ListItem(strInnerText, objXmlSkill.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                 }
             }
             else

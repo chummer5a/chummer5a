@@ -18,6 +18,7 @@ namespace Chummer
                 components?.Dispose();
                 _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
                 _objXmlGeneratorCancellationTokenSource?.Dispose();
+                _dicCache.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -63,13 +63,13 @@ namespace Chummer
             else
                 xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and (" + _objCharacter.Settings.BookXPath() + ")]");
             // Populate the Skill's Specializations (if any).
-            XPathNodeIterator xmlSpecList = xmlParentSkill?.Select("specs/spec");
+            XPathNodeIterator xmlSpecList = xmlParentSkill?.SelectAndCacheExpression("specs/spec");
             if (xmlSpecList?.Count > 0)
             {
                 foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
                 {
                     string strInnerText = objXmlSpecialization.Value;
-                    lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                    lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
 
                     if (_objSkill.SkillCategory != "Combat Active")
                         continue;
@@ -78,9 +78,9 @@ namespace Chummer
                     //Might need to include skill name or might miss some values?
                     foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select("/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = " + strInnerText.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath() + ")]"))
                     {
-                        string strName = objXmlWeapon.SelectSingleNode("name")?.Value;
+                        string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
-                            lstItems.Add(new ListItem(strName, objXmlWeapon.SelectSingleNode("translate")?.Value ?? strName));
+                            lstItems.Add(new ListItem(strName, objXmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                     }
                 }
             }

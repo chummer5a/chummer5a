@@ -17,10 +17,11 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersSearch : UserControl
     {
-        public static CharacterExtended MySearchCharacter;
+        public static CharacterExtended MySearchCharacter { get; private set; }
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
-        public SearchTag motherTag;
+        public SearchTag motherTag { get; private set; }
+
         private Action<string> GetSelectedObjectCallback;
 
         public string SelectedId { get; private set; }
@@ -44,7 +45,7 @@ namespace ChummerHub.Client.UI
             try
             {
                 //input can be here any time, regardless of childs!
-                var input = GetUserInputControl(stag);
+                Control input = GetUserInputControl(stag);
                 if (input != null)
                 {
                     flpReflectionMembers.Controls.Add(input);
@@ -64,8 +65,8 @@ namespace ChummerHub.Client.UI
                     cb.DisplayMember = "TagName";
                     cb.SelectedValueChanged += (sender, e) =>
                     {
-                        var tag = cb.SelectedItem as SearchTag;
-                        var childcb = GetCbOrOInputontrolFromMembers(tag);
+                        SearchTag tag = cb.SelectedItem as SearchTag;
+                        Control childcb = GetCbOrOInputontrolFromMembers(tag);
                     };
                     return cb;
                 }
@@ -84,7 +85,7 @@ namespace ChummerHub.Client.UI
             return null;
         }
 
-        public List<SearchTag> MySetTags = new List<SearchTag>();
+        public List<SearchTag> MySetTags { get; } = new List<SearchTag>();
 
         private Control GetUserInputControl(SearchTag stag)
         {
@@ -164,7 +165,7 @@ namespace ChummerHub.Client.UI
                     }
                 case "Chummer.Backend.Uniques.Tradition":
                     {
-                        var traditions = Tradition.GetTraditions(MySearchCharacter.MyCharacter);
+                        List<Tradition> traditions = Tradition.GetTraditions(MySearchCharacter.MyCharacter);
                         cb = new ComboBox
                         {
                             DataSource = traditions,
@@ -187,14 +188,11 @@ namespace ChummerHub.Client.UI
                     }
             }
             object obj = stag.MyRuntimePropertyValue;
-            if (!(obj is string))
+            if (!(obj is string) && obj is IList)
             {
-                if (obj is IList)
-                {
-                    Type listtype = StaticUtils.GetListType(obj);
-                    if (listtype != null)
-                        switchname = listtype.Name;
-                }
+                Type listtype = StaticUtils.GetListType(obj);
+                if (listtype != null)
+                    switchname = listtype.Name;
             }
 
             switch (switchname)
@@ -208,7 +206,7 @@ namespace ChummerHub.Client.UI
                         };
                         button.Click += (sender, e) =>
                         {
-                            var frmPickSpell = new frmSelectSpell(MySearchCharacter.MyCharacter);
+                            frmSelectSpell frmPickSpell = new frmSelectSpell(MySearchCharacter.MyCharacter);
                             frmPickSpell.ShowDialog(Program.MainForm);
                             // Open the Spells XML file and locate the selected piece.
                             XmlDocument objXmlDocument = MySearchCharacter.MyCharacter.LoadData("spells.xml");
@@ -239,7 +237,7 @@ namespace ChummerHub.Client.UI
                         };
                         button.Click += ((sender, e) =>
                         {
-                            var frmPick = new frmSelectQuality(MySearchCharacter.MyCharacter);
+                            frmSelectQuality frmPick = new frmSelectQuality(MySearchCharacter.MyCharacter);
                             frmPick.ShowDialog(Program.MainForm);
                             // Open the Spells XML file and locate the selected piece.
                             XmlDocument objXmlDocument = MySearchCharacter.MyCharacter.LoadData("qualities.xml");

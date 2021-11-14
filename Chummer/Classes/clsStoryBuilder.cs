@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,9 +26,9 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public sealed class StoryBuilder
+    public sealed class StoryBuilder : IDisposable
     {
-        private readonly ConcurrentDictionary<string, string> _dicPersistence = new ConcurrentDictionary<string, string>();
+        private readonly LockingDictionary<string, string> _dicPersistence = new LockingDictionary<string, string>();
         private readonly Character _objCharacter;
 
         public StoryBuilder(Character objCharacter)
@@ -186,7 +185,7 @@ namespace Chummer
                         {
                             case "random":
                                 {
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
@@ -209,7 +208,7 @@ namespace Chummer
                             case "persistent":
                                 {
                                     //Any node not named
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
@@ -256,6 +255,12 @@ namespace Chummer
                 return xmlUserMacroNode.Value;
             }
             return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ")";
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _dicPersistence?.Dispose();
         }
     }
 }

@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -119,17 +118,8 @@ namespace Chummer
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource != null)
-            {
-                _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
-                _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
-            }
-
-            if (_objWatchFolderRefreshCancellationTokenSource != null)
-            {
-                _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
-                _objWatchFolderRefreshCancellationTokenSource.Dispose();
-            }
+            _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
+            _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
 
             SetMyEventHandlers(true);
         }
@@ -470,57 +460,42 @@ namespace Chummer
             {
                 if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count <= 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                     return;
-                ConcurrentDictionary<TreeNode, string> dicWatchNodes = new ConcurrentDictionary<TreeNode, string>();
-                Parallel.ForEach(dicWatch, (kvpLoop, objState) =>
+                using (LockingDictionary<TreeNode, string> dicWatchNodes = new LockingDictionary<TreeNode, string>())
                 {
-                    if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                    Parallel.ForEach(dicWatch, (kvpLoop, objState) =>
                     {
-                        objState.Stop();
-                        return;
-                    }
-                    if (objState.ShouldExitCurrentIteration)
-                        return;
-                    dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value);
-                });
-                foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
-                {
-                    if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    if (s == "Watch")
-                        continue;
-                    if (objWatchNode.TreeView != null)
-                    {
-                        if (objWatchNode.TreeView.IsDisposed)
-                            continue;
-                        objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s }));
-                    }
-                    else
-                        objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
-                }
+                        if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                        {
+                            objState.Stop();
+                            return;
+                        }
 
-                foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
-                {
-                    if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    if (kvtNode.Value == "Watch")
+                        if (objState.ShouldExitCurrentIteration)
+                            return;
+                        dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value);
+                    });
+                    foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
                     {
+                        if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                            return;
+                        if (s == "Watch")
+                            continue;
                         if (objWatchNode.TreeView != null)
                         {
                             if (objWatchNode.TreeView.IsDisposed)
                                 continue;
-                            objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                            objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s}));
                         }
                         else
-                            objWatchNode.Nodes.Add(kvtNode.Key);
+                            objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s});
                     }
-                    else
+
+                    foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
                     {
-                        foreach (TreeNode objNode in objWatchNode.Nodes)
+                        if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                            return;
+                        if (kvtNode.Value == "Watch")
                         {
-                            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                                return;
-                            if (objNode.Tag.ToString() != kvtNode.Value)
-                                continue;
                             if (objWatchNode.TreeView != null)
                             {
                                 if (objWatchNode.TreeView.IsDisposed)
@@ -528,7 +503,25 @@ namespace Chummer
                                 objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
                             }
                             else
-                                objNode.Nodes.Add(kvtNode.Key);
+                                objWatchNode.Nodes.Add(kvtNode.Key);
+                        }
+                        else
+                        {
+                            foreach (TreeNode objNode in objWatchNode.Nodes)
+                            {
+                                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                                    return;
+                                if (objNode.Tag.ToString() != kvtNode.Value)
+                                    continue;
+                                if (objWatchNode.TreeView != null)
+                                {
+                                    if (objWatchNode.TreeView.IsDisposed)
+                                        continue;
+                                    objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                                }
+                                else
+                                    objNode.Nodes.Add(kvtNode.Key);
+                            }
                         }
                     }
                 }

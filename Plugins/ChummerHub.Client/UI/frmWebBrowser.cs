@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Windows.Forms;
 using Chummer;
 using ChummerHub.Client.Backend;
@@ -63,35 +64,32 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     //we are logged in!
-                    var client = GetCookieContainer();
+                    SinnersClient client = GetCookieContainer();
                     if (client == null)
                     {
                         Log.Error("Cloud not create an instance of SINnersclient!");
                         login = false;
                         return;
                     }
-                    var body = await client.GetUserByAuthorizationAsync().ConfigureAwait(false);
+                    ResultAccountGetUserByAuthorization body = await client.GetUserByAuthorizationAsync().ConfigureAwait(false);
+                    if (body?.CallSuccess == true)
                     {
-
-                        if (body?.CallSuccess == true)
+                        login = true;
+                        Program.MainForm.Invoke(new Action(() =>
                         {
-                            login = true;
-                            Program.MainForm.Invoke(new Action(() =>
-                            {
-                                SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
-                                                           ?? new SINnerVisibility
-                                                           {
-                                                               IsGroupVisible = true,
-                                                               IsPublic = true
-                                                           };
-                                tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
-                                Close();
-                            }));
-                        }
-                        else
-                        {
-                            login = false;
-                        }
+                            SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
+                                                       ?? new SINnerVisibility
+                                                       {
+                                                           IsGroupVisible = true,
+                                                           IsPublic = true
+                                                       };
+                            tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
+                            Close();
+                        }));
+                    }
+                    else
+                    {
+                        login = false;
                     }
                 }
                 catch(ApiException ae)
@@ -115,7 +113,7 @@ namespace ChummerHub.Client.UI
                 {
                     Settings.Default.CookieData = null;
                     Settings.Default.Save();
-                    var cookies =
+                    CookieCollection cookies =
                         StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Settings.Default
                             .SINnerUrl));
                     return StaticUtils.GetClient(true);
@@ -130,7 +128,7 @@ namespace ChummerHub.Client.UI
 
         private void FrmWebBrowser_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (login == false)
+            if (!login)
                 GetCookieContainer();
         }
     }

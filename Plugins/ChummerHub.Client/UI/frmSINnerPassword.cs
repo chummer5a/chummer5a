@@ -34,12 +34,21 @@ namespace ChummerHub.Client.UI
         [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct SHSTOCKICONINFO
         {
-            public uint cbSize;
-            public IntPtr hIcon;
-            public int iSysIconIndex;
-            public int iIcon;
+            public readonly uint cbSize;
+            public readonly IntPtr hIcon;
+            public readonly int iSysIconIndex;
+            public readonly int iIcon;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260/*MAX_PATH*/)]
-            public string szPath;
+            public readonly string szPath;
+
+            public SHSTOCKICONINFO(uint uintSize, IntPtr ptrIcon, int intSysIconIndex = 0, int intIcon = 0, string strPath = "")
+            {
+                cbSize = uintSize;
+                hIcon = ptrIcon;
+                iSysIconIndex = intSysIconIndex;
+                iIcon = intIcon;
+                szPath = strPath;
+            }
 
             public override bool Equals(object obj)
             {
@@ -72,16 +81,13 @@ namespace ChummerHub.Client.UI
         }
 
         [DllImport("Shell32.dll", SetLastError = false)]
-        public static extern int SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
+        private static extern int SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
 
         public frmSINnerPassword()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
-            SHSTOCKICONINFO sii = new SHSTOCKICONINFO
-            {
-                cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
-            };
+            SHSTOCKICONINFO sii = new SHSTOCKICONINFO((uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO)), IntPtr.Zero);
 
             Marshal.ThrowExceptionForHR(SHGetStockIconInfo(SHSTOCKICONID.SIID_INFO,
                 SHGSI.SHGSI_ICON | SHGSI.SHGSI_LARGEICON,

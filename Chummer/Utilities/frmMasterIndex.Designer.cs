@@ -16,6 +16,7 @@ namespace Chummer
             if (disposing && (components != null))
             {
                 components.Dispose();
+                _dicCachedNotes?.Dispose();
             }
             base.Dispose(disposing);
         }

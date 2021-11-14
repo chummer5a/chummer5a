@@ -3854,7 +3854,7 @@ namespace Chummer
                             List<ListItem> lstItems = new List<ListItem>(5);
                             foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                             {
-                                string strName = objNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                                string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
                                 if (string.IsNullOrWhiteSpace(strName))
                                 {
                                     // Assume that if we're not looking at something that has an XML node,
@@ -3865,7 +3865,7 @@ namespace Chummer
                                 else
                                 {
                                     lstItems.Add(new ListItem(strName,
-                                        objNode.SelectSingleNode("translate")?.Value ?? strName));
+                                        objNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                                 }
                             }
                             //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.

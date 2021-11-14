@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -27,9 +26,9 @@ using System.Text;
 
 namespace Chummer.Backend
 {
-    public sealed class ExceptionHeatMap
+    public sealed class ExceptionHeatMap : IDisposable
     {
-        private readonly ConcurrentDictionary<string, int> _map = new ConcurrentDictionary<string, int>();
+        private readonly LockingDictionary<string, int> _map = new LockingDictionary<string, int>();
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
@@ -46,15 +45,7 @@ namespace Chummer.Backend
             if (frame == null)
                 return;
             string heat = string.Format(GlobalSettings.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
-
-            if (_map.TryGetValue(heat, out int intTmp))
-            {
-                _map[heat] += intTmp + 1;
-            }
-            else
-            {
-                _map.TryAdd(heat, 1);
-            }
+            _map.AddOrUpdate(heat, 1, (a, b) => b + 1);
         }
 
         public string GenerateInfo()
@@ -69,6 +60,12 @@ namespace Chummer.Backend
             }
 
             return builder.ToString();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _map?.Dispose();
         }
     }
 }

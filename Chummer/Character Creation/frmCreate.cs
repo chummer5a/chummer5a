@@ -471,7 +471,7 @@ namespace Chummer
                         };
                         if (xmlTraditionsBaseChummerNode != null)
                         {
-                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
+                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
                             {
                                 string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
                                 if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
@@ -1658,7 +1658,7 @@ namespace Chummer
                         };
                             if (xmlTraditionsBaseChummerNode != null)
                             {
-                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
+                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.SelectAndCacheExpression(
                                     "drainattributes/drainattribute"))
                                 {
                                     string strName = xmlDrain.SelectSingleNode("name")?.Value;
@@ -1689,7 +1689,7 @@ namespace Chummer
                         };
                             if (xmlTraditionsBaseChummerNode != null)
                             {
-                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
+                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
                                 {
                                     string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
                                     if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
@@ -8972,16 +8972,19 @@ namespace Chummer
                 foreach (Contact objGroupContact in CharacterObject.Contacts.Where(x =>
                     x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
                 {
+                    string strNameToUse = objGroupContact.GroupName;
+                    if (string.IsNullOrEmpty(strNameToUse))
+                    {
+                        strNameToUse = objGroupContact.Name;
+                        if (string.IsNullOrEmpty(strNameToUse))
+                            strNameToUse = LanguageManager.GetString("String_Unknown");
+                    }
+                    else if (!string.IsNullOrWhiteSpace(objGroupContact.Name))
+                        strNameToUse += '/' + objGroupContact.Name;
                     sbdPositiveQualityTooltip.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                        !string.IsNullOrWhiteSpace(objGroupContact.GroupName)
-                        ? !string.IsNullOrWhiteSpace(objGroupContact.Name)
-                            ? objGroupContact.GroupName + '/' + objGroupContact.Name
-                            : objGroupContact.GroupName
-                        : !string.IsNullOrWhiteSpace(objGroupContact.Name)
-                            ? objGroupContact.Name
-                            : LanguageManager.GetString("String_Unknown"),
-                        strSpace,
-                        objGroupContact.ContactPoints * CharacterObjectSettings.KarmaContact).AppendLine();
+                                                           strNameToUse,
+                                                           strSpace,
+                                                           objGroupContact.ContactPoints * CharacterObjectSettings.KarmaContact).AppendLine();
                 }
             }
 

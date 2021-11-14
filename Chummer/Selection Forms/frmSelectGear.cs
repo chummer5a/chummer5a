@@ -126,20 +126,20 @@ namespace Chummer
             }
             else
             {
-                objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category");
+                objXmlCategoryList = _xmlBaseGearDataNode.SelectAndCacheExpression("categories/category");
             }
 
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 string strCategory = objXmlCategory.Value;
                 // Make sure the Category isn't in the exclusion list.
-                if (!_setAllowedCategories.Contains(strCategory) && objXmlCategory.SelectSingleNode("@show")?.Value == bool.FalseString)
+                if (!_setAllowedCategories.Contains(strCategory) && objXmlCategory.SelectSingleNodeAndCacheExpression("@show")?.Value == bool.FalseString)
                 {
                     continue;
                 }
                 if (_lstCategory.All(x => x.Value.ToString() != strCategory) && RefreshList(strCategory, false, true).Count > 0)
                 {
-                    _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
+                    _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strCategory));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -972,25 +972,25 @@ namespace Chummer
             List<ListItem> lstGears = new List<ListItem>();
             foreach (XPathNavigator objXmlGear in objXmlGearList)
             {
-                XPathNavigator xmlTestNode = objXmlGear.SelectSingleNode("forbidden/parentdetails");
+                XPathNavigator xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
                 if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
                     continue;
                 }
-                xmlTestNode = objXmlGear.SelectSingleNode("required/parentdetails");
+                xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/parentdetails");
                 if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
                     continue;
                 }
-                xmlTestNode = objXmlGear.SelectSingleNode("forbidden/geardetails");
+                xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/geardetails");
                 if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
                     continue;
                 }
-                xmlTestNode = objXmlGear.SelectSingleNode("required/geardetails");
+                xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/geardetails");
                 if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
@@ -1010,15 +1010,15 @@ namespace Chummer
                 if (chkDoItYourself.Checked)
                     decCostMultiplier *= 0.5m;
                 decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
+                if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value))
                     decCostMultiplier *= 0.9m;
                 if (!blnDoUIUpdate || !chkHideOverAvailLimit.Checked || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier)
                     && (chkFreeItem.Checked
                         || !chkShowOnlyAffordItems.Checked
                         || objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
-                    string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    lstGears.Add(new ListItem(objXmlGear.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayName));
+                    string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlGear.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    lstGears.Add(new ListItem(objXmlGear.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty, strDisplayName));
 
                     if (blnTerminateAfterFirst)
                         break;
@@ -1066,7 +1066,7 @@ namespace Chummer
                                                                         "]");
                             if (objXmlGear == null)
                                 continue;
-                            string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
+                            string strCategory = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
                             if (string.IsNullOrEmpty(strCategory))
                                 continue;
                             ListItem objFoundItem

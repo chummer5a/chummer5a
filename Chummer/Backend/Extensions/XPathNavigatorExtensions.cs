@@ -459,5 +459,42 @@ namespace Chummer
             xmlReturn.InnerXml = xmlNode.InnerXml;
             return xmlReturn;
         }
+
+        /// <summary>
+        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        /// <param name="xmlNode"></param>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        public static XPathNavigator SelectSingleNodeAndCacheExpression(this XPathNavigator xmlNode, string xpath)
+        {
+            if (s_dicCachedExpressions.TryGetValue(xpath, out XPathExpression objExpression))
+                return xmlNode.SelectSingleNode(objExpression);
+            objExpression = XPathExpression.Compile(xpath);
+            s_dicCachedExpressions.TryAdd(xpath, objExpression);
+            return xmlNode.SelectSingleNode(objExpression);
+        }
+
+        /// <summary>
+        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        /// <param name="xmlNode"></param>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        public static XPathNodeIterator SelectAndCacheExpression(this XPathNavigator xmlNode, string xpath)
+        {
+            if (s_dicCachedExpressions.TryGetValue(xpath, out XPathExpression objExpression))
+                return xmlNode.Select(objExpression);
+            objExpression = XPathExpression.Compile(xpath);
+            s_dicCachedExpressions.TryAdd(xpath, objExpression);
+            return xmlNode.Select(objExpression);
+        }
+
+        private static readonly LockingDictionary<string, XPathExpression> s_dicCachedExpressions
+            = new LockingDictionary<string, XPathExpression>();
     }
 }

@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace Chummer
     public static class SettingsManager
     {
         private static int _intDicLoadedCharacterSettingsLoadedStatus = -1;
-        private static readonly ConcurrentDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new ConcurrentDictionary<string, CharacterSettings>();
+        private static readonly LockingDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new LockingDictionary<string, CharacterSettings>();
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
         public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings

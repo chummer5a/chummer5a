@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -542,7 +541,7 @@ namespace Chummer.Backend.Skills
             using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
                 List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("groups/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill"))
                 {
                     SkillGroup objGroup = new SkillGroup(_objCharacter);
                     objGroup.LoadFromHeroLab(xmlNode);
@@ -562,19 +561,19 @@ namespace Chummer.Backend.Skills
             using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
                 List<Skill> lstTempSkillList = new List<Skill>();
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("active/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
                     if (objSkill != null)
                         lstTempSkillList.Add(objSkill);
                 }
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("knowledge/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("knowledge/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
                     if (objSkill != null)
                         lstTempSkillList.Add(objSkill);
                 }
-                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("language/skill"))
+                foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("language/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
                     if (objSkill != null)
@@ -783,37 +782,35 @@ namespace Chummer.Backend.Skills
             //Hacky way of converting Expense entries to guid based skill identification
             //specs already did?
             //First create dictionary mapping name=>guid
-            ConcurrentDictionary<string, Guid> dicGroups = new ConcurrentDictionary<string, Guid>();
-            ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
-            // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-            // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-            // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
-            Utils.RunWithoutThreadLock(
-                () =>
-                {
-                    Parallel.ForEach(SkillGroups, x =>
+            using (LockingDictionary<string, Guid> dicGroups = new LockingDictionary<string, Guid>())
+            using (LockingDictionary<string, Guid> dicSkills = new LockingDictionary<string, Guid>())
+            {
+                // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+                // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
+                Utils.RunWithoutThreadLock(
+                    () =>
                     {
-                        if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
-                            dicGroups.TryAdd(x.Name, x.Id);
-                    });
-                },
-                () =>
-                {
-                    Parallel.ForEach(Skills, x =>
+                        Parallel.ForEach(SkillGroups, x =>
+                        {
+                            if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
+                                dicGroups.TryAdd(x.Name, x.Id);
+                        });
+                    },
+                    () =>
                     {
-                        if (x.TotalBaseRating > 0)
-                            dicSkills.TryAdd(x.Name, x.Id);
-                    });
-                },
-                () =>
-                {
-                    Parallel.ForEach(KnowledgeSkills, x =>
-                    {
-                        dicSkills.TryAdd(x.Name, x.Id);
-                    });
-                });
-            UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
-            UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
+                        Parallel.ForEach(Skills, x =>
+                        {
+                            if (x.TotalBaseRating > 0)
+                                dicSkills.TryAdd(x.Name, x.Id);
+                        });
+                    },
+                    () => { Parallel.ForEach(KnowledgeSkills, x => { dicSkills.TryAdd(x.Name, x.Id); }); });
+                UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills,
+                                   EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill,
+                                                                     KarmaExpenseType.ImproveSkill));
+                UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
+            }
         }
 
         private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequreingConverting)

@@ -103,11 +103,11 @@ namespace Chummer
                         cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
                         if (!_objCharacter.Settings.LicenseRestricted)
                         {
-                            foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml").Select("/chummer/licenses/license"))
+                            foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml").SelectAndCacheExpression("/chummer/licenses/license"))
                             {
                                 string strInnerText = objNode.Value;
                                 if (!string.IsNullOrEmpty(strInnerText))
-                                    lstItems.Add(new ListItem(strInnerText, objNode.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                                    lstItems.Add(new ListItem(strInnerText, objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                             }
                         }
                         else

@@ -1040,7 +1040,7 @@ namespace Chummer
         public void LoadMugshots(XPathNavigator xmlSavedNode)
         {
             xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-            XPathNodeIterator xmlMugshotsList = xmlSavedNode.Select("mugshots/mugshot");
+            XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
             List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
             foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
             {

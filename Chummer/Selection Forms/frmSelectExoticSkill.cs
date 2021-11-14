@@ -133,7 +133,7 @@ namespace Chummer
                     string strName = xmlWeapon.SelectSingleNode("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))
                     {
-                        lstSkillSpecializations.Add(new ListItem(strName, xmlWeapon.SelectSingleNode("translate")?.Value ?? strName));
+                        lstSkillSpecializations.Add(new ListItem(strName, xmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                     }
                 }
             }
@@ -144,7 +144,7 @@ namespace Chummer
                 string strName = xmlSpec.Value;
                 if (!string.IsNullOrEmpty(strName))
                 {
-                    lstSkillSpecializations.Add(new ListItem(strName, xmlSpec.SelectSingleNode("@translate")?.Value ?? strName));
+                    lstSkillSpecializations.Add(new ListItem(strName, xmlSpec.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
                 }
             }
 

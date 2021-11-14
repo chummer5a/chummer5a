@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -30,8 +29,8 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static readonly Stopwatch s_Time = new Stopwatch();
-        private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
-        private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
+        private static readonly LockingDictionary<string, TimeSpan> s_DictionaryStarts = new LockingDictionary<string, TimeSpan>();
+        private static readonly LockingDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new LockingDictionary<string, Tuple<TimeSpan, int>>();
 
         static Timekeeper()
         {

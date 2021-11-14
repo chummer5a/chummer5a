@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections.Concurrent;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -27,9 +27,9 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public class Story
+    public sealed class Story : IDisposable
     {
-        private readonly ConcurrentDictionary<string, StoryModule> _dicPersistentModules = new ConcurrentDictionary<string, StoryModule>();
+        private readonly LockingDictionary<string, StoryModule> _dicPersistentModules = new LockingDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
         private readonly ObservableCollection<StoryModule> _lstStoryModules = new ObservableCollection<StoryModule>();
         private bool _blnNeedToRegeneratePersistents = true;
@@ -82,7 +82,7 @@ namespace Chummer
 
         public ObservableCollection<StoryModule> Modules => _lstStoryModules;
 
-        public ConcurrentDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
+        public LockingDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
 
         public StoryModule GeneratePersistentModule(string strFunction)
         {
@@ -149,7 +149,7 @@ namespace Chummer
             }
 
             foreach (string strKey in lstPersistentKeysToRemove)
-                _dicPersistentModules.TryRemove(strKey, out StoryModule _);
+                _dicPersistentModules.Remove(strKey);
 
             foreach (StoryModule objModule in Modules)
                 await objModule.TestRunToGeneratePersistents(objCulture, strLanguage);
@@ -166,6 +166,12 @@ namespace Chummer
                 strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage);
             }
             return string.Concat(strModuleOutputStrings);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _dicPersistentModules?.Dispose();
         }
     }
 }
