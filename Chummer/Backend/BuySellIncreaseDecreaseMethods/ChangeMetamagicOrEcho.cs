@@ -86,16 +86,67 @@ namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
         {
             Metamagic objNewMetamagic = new Metamagic(objCharacter);
 
-            var objSource = DetermineImprovementSource(objCharacter);
-            var objXmlMetamagic = DetermineMetamagicXmlNode(objCharacter, frmPickMetamagic);
+            var objSource = DetermineImprovementSource();
+            var objXmlMetamagic = DetermineMetamagicXmlNode();
 
             //I think this can go, but not sure though
             if (BlnPayWithKarma(objGrade, objCharacter))
             {
                 Program.MainForm.ShowMessageBox("You found some Code Joschi thought was unnecessary, you may continue. Please inform a Dev about this.");
-                PayMetaMagicWithKarma(objNewMetamagic, objCharacter, objCharacterSettings);
+                PayMetaMagicWithKarma();
             }
-            return CreateAndAddMetaMagic(objCharacter, objNewMetamagic, objSource, objXmlMetamagic, objGrade);
+            return CreateAndAddMetaMagic(objXmlMetamagic, objGrade);
+
+
+            Improvement.ImprovementSource DetermineImprovementSource()
+            {
+                if (objCharacter.RESEnabled)
+                {
+                    return Improvement.ImprovementSource.Echo;
+                }
+                return Improvement.ImprovementSource.Metamagic;
+            }
+
+            XmlNode DetermineMetamagicXmlNode()
+            {
+                if (objCharacter.RESEnabled)
+                {
+                    return objCharacter.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
+                }
+                return objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
+            }
+
+            bool CreateAndAddMetaMagic(XmlNode selectedMetaMagicNode, InitiationGrade objInitiationGrade)
+            {
+                objNewMetamagic.Create(selectedMetaMagicNode, objSource);
+                objNewMetamagic.Grade = objInitiationGrade.Grade;
+                if (objNewMetamagic.InternalId.IsEmptyGuid())
+                    return false;
+
+                objCharacter.Metamagics.Add(objNewMetamagic);
+
+                return true;
+            }
+
+            void PayMetaMagicWithKarma()
+            {
+                string strType = LanguageManager.GetString(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo
+                    ? "String_Echo"
+                    : "String_Metamagic");
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                objExpense.Create(objCharacterSettings.KarmaMetamagic * -1,
+                    strType + LanguageManager.GetString("String_Space") + objNewMetamagic.DisplayNameShort(GlobalSettings.Language),
+                    ExpenseType.Karma, DateTime.Now);
+                objCharacter.ExpenseEntries.AddWithSort(objExpense);
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
+                objExpense.Undo = objUndo;
+
+                // Adjust the character's Karma total.
+                objCharacter.Karma -= objCharacterSettings.KarmaMetamagic;
+            }
         }
 
 
@@ -179,109 +230,30 @@ namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
             EnhancementExpendKarma(objCharacter, objCharacterSettings, objEnhancement);
 
             return true;
-        }
 
 
 
-        #endregion
-        #region Private Methods
 
-        private static void EnhancementExpendKarma(Character objCharacter, CharacterSettings objCharacterSettings, Enhancement objEnhancement)
-        {
-            string strType = LanguageManager.GetString("String_Enhancement");
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-            objExpense.Create(objCharacterSettings.KarmaEnhancement * -1,
-                strType + LanguageManager.GetString("String_Space") + objEnhancement.DisplayNameShort(GlobalSettings.Language),
-                ExpenseType.Karma, DateTime.Now);
-            objCharacter.ExpenseEntries.AddWithSort(objExpense);
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddSpell, objEnhancement.InternalId);
-            objExpense.Undo = objUndo;
-
-            // Adjust the character's Karma total.
-            objCharacter.Karma -= objCharacterSettings.KarmaEnhancement;
-        }
-
-
-        /// <summary>
-        /// Creates and adds a specified Metamagic to the MetaMagic Observable Collection
-        /// </summary>
-        /// <param name="objCharacter"></param>
-        /// <param name="objNewMetamagic"></param>
-        /// <param name="objSource"></param>
-        /// <param name="selectedMetaMagicNode"></param>
-        /// <param name="objInitiationGrade"></param>
-        private static bool CreateAndAddMetaMagic(Character objCharacter, Metamagic objNewMetamagic,
-            Improvement.ImprovementSource objSource, XmlNode selectedMetaMagicNode, InitiationGrade objInitiationGrade)
-        {
-            objNewMetamagic.Create(selectedMetaMagicNode, objSource);
-            objNewMetamagic.Grade = objInitiationGrade.Grade;
-            if (objNewMetamagic.InternalId.IsEmptyGuid())
-                return false;
-
-            objCharacter.Metamagics.Add(objNewMetamagic);
-
-            return true;
-        }
-
-        /// <summary>
-        /// Pays a Metamagic with Karma. Probably deprecated / not needed at all!
-        /// </summary>
-        /// <param name="objNewMetamagic"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="objCharacterSettings"></param>
-        /// <returns></returns>
-        private static void PayMetaMagicWithKarma(Metamagic objNewMetamagic, Character objCharacter, CharacterSettings objCharacterSettings)
-        {
-            string strType = LanguageManager.GetString(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo
-                ? "String_Echo"
-                : "String_Metamagic");
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-            objExpense.Create(objCharacterSettings.KarmaMetamagic * -1,
-                strType + LanguageManager.GetString("String_Space") + objNewMetamagic.DisplayNameShort(GlobalSettings.Language),
-                ExpenseType.Karma, DateTime.Now);
-            objCharacter.ExpenseEntries.AddWithSort(objExpense);
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
-            objExpense.Undo = objUndo;
-
-            // Adjust the character's Karma total.
-            objCharacter.Karma -= objCharacterSettings.KarmaMetamagic;
-        }
-
-        /// <summary>
-        /// Sets the correct Improvement source between Echo and Metamagic
-        /// </summary>
-        /// <param name="objCharacter"></param>
-        /// <returns></returns>
-        private static Improvement.ImprovementSource DetermineImprovementSource(Character objCharacter)
-        {
-            if (objCharacter.RESEnabled)
+            void EnhancementExpendKarma()
             {
-                return Improvement.ImprovementSource.Echo;
-            }
-            return Improvement.ImprovementSource.Metamagic;
-        }
+                string strType = LanguageManager.GetString("String_Enhancement");
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                objExpense.Create(objCharacterSettings.KarmaEnhancement * -1,
+                    strType + LanguageManager.GetString("String_Space") + objEnhancement.DisplayNameShort(GlobalSettings.Language),
+                    ExpenseType.Karma, DateTime.Now);
+                objCharacter.ExpenseEntries.AddWithSort(objExpense);
 
-        /// <summary>
-        /// Returns the XMLNode of an chosen Metamagic
-        /// </summary>
-        /// <param name="objCharacter"></param>
-        /// <param name="frmPickMetamagic"></param>
-        /// <returns></returns>
-        private static XmlNode DetermineMetamagicXmlNode(Character objCharacter, frmSelectMetamagic frmPickMetamagic)
-        {
-            if (objCharacter.RESEnabled)
-            {
-                return objCharacter.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.AddSpell, objEnhancement.InternalId);
+                objExpense.Undo = objUndo;
+
+                // Adjust the character's Karma total.
+                objCharacter.Karma -= objCharacterSettings.KarmaEnhancement;
             }
-            return objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
         }
         #endregion
+
 
 
 
