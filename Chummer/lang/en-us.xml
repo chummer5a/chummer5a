@@ -1616,11 +1616,11 @@
     </string>
     <string>
       <key>Menu_FileSaveAsCreated</key>
-      <text>Save As &amp;Created</text>
+      <text>Save As C&amp;reated</text>
     </string>
     <string>
       <key>Menu_FileExport</key>
-      <text>Export</text>
+      <text>&amp;Export</text>
     </string>
     <string>
       <key>Menu_FilePrint</key>
@@ -1632,7 +1632,7 @@
     </string>
     <string>
       <key>Menu_FileClose</key>
-      <text>Close</text>
+      <text>&amp;Close</text>
     </string>
     <string>
       <key>Menu_SpecialAddCyberwareSuite</key>
@@ -2377,6 +2377,14 @@
     <string>
       <key>MessageTitle_CannotRemoveCyberware</key>
       <text>Cannot Remove Cyberware</text>
+    </string>
+	<string>
+      <key>MessageTitle_FoundPDFsInFolder</key>
+      <text>Scan finished</text>
+    </string>
+    <string>
+      <key>Message_FoundPDFsInFolder</key>
+      <text>Chummer found PDF files for {0} sourcebooks in the folder {1}.</text>
     </string>
     <string>
       <key>Message_ComplexFormLimit</key>
@@ -7854,6 +7862,10 @@
       <key>Button_Options_PDFTest</key>
       <text>Test - Open to Page 5</text>
     </string>
+	<string>
+      <key>Button_Options_PDFFolderScan</key>
+      <text>Scan a Folder for PDF Files</text>
+    </string>
     <string>
       <key>Checkbox_Options_OpenPDFsAsURLs</key>
       <text>Open PDFs as URLs (For use in browsers)</text>
@@ -9935,9 +9947,21 @@
       <key>String_Saving_Pattern</key>
       <text>Saving {0}...</text>
     </string>
+	<string>
+      <key>String_Scanning</key>
+      <text>Scanning...</text>
+    </string>
+    <string>
+      <key>String_Scanning_Pattern</key>
+      <text>Scanning {0}...</text>
+    </string>
     <string>
       <key>String_Initializing</key>
       <text>Initializing...</text>
+    </string>
+	 <string>
+      <key>String_Initializing_Pattern</key>
+      <text>Initializing {0}...</text>
     </string>
     <string>
       <key>String_Settings</key>
@@ -10468,6 +10492,10 @@
     <string>
       <key>String_CapacityRemaining</key>
       <text>{0} ({1} remaining)</text>
+    </string>
+	<string>
+      <key>Error_Message_PDF_IndexOutOfBounds</key>
+      <text>The PDF File has a wrong page offset value set in the global options.</text>
     </string>
     <!-- Region Matrix Action Plugin -->
     <string>
