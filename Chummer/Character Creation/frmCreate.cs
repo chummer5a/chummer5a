@@ -14703,21 +14703,12 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-
-                Spell objNewSpell = new Spell(CharacterObject);
-
-                objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-                objNewSpell.Grade = objGrade.Grade;
-                if (objNewSpell.InternalId.IsEmptyGuid())
-                    return;
-
-                CharacterObject.Spells.Add(objNewSpell);
+                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void tsMetamagicAddRitual_Click(object sender, EventArgs e)
@@ -14733,21 +14724,13 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-
-                Spell objNewSpell = new Spell(CharacterObject);
-
-                objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-                objNewSpell.Grade = objGrade.Grade;
-                if (objNewSpell.InternalId.IsEmptyGuid())
-                    return;
-
-                CharacterObject.Spells.Add(objNewSpell);
+                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
 
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void tsInitiationNotes_Click(object sender, EventArgs e)
@@ -14759,8 +14742,24 @@ namespace Chummer
 
         private void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
+            if (treMetamagic.SelectedNode?.Level != 0)
+                return;
+
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
+
+            if (CharacterObject.Karma < CharacterObjectSettings.KarmaEnhancement)
+            {
+                // Make sure the Karma expense would not put them over the limit.
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                    , LanguageManager.GetString("String_Enhancement")
+                    , CharacterObjectSettings.KarmaEnhancement.ToString(GlobalSettings.CultureInfo))))
+                return;
+
 
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enhancement))
             {
@@ -14770,39 +14769,12 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-                if (objXmlArt == null)
-                    return;
-
-                Enhancement objEnhancement = new Enhancement(CharacterObject);
-                objEnhancement.Create(objXmlArt, Improvement.ImprovementSource.Initiation);
-                objEnhancement.Grade = objGrade.Grade;
-                if (objEnhancement.InternalId.IsEmptyGuid())
-                    return;
-
-                // Find the associated Power
-                string strPower = objXmlArt["power"]?.InnerText;
-                bool blnPowerFound = false;
-                foreach (Power objPower in CharacterObject.Powers)
+                if (ChangeMetamagicOrEcho.InitializeCompleteEnhancement(CharacterObject, frmPickArt, objGrade, CharacterObjectSettings))
                 {
-                    if (objPower.Name == strPower)
-                    {
-                        objPower.Enhancements.Add(objEnhancement);
-                        blnPowerFound = true;
-                        break;
-                    }
-                }
-
-                if (!blnPowerFound)
-                {
-                    // Add it to the character instead
-                    CharacterObject.Enhancements.Add(objEnhancement);
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
                 }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void panContacts_Click(object sender, EventArgs e)
@@ -15060,6 +15032,7 @@ namespace Chummer
                 return;
 
             string strSelectedParentID;
+
             using (frmSelectItem frmPickMount = new frmSelectItem
             {
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
@@ -15072,6 +15045,8 @@ namespace Chummer
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    return;
                 }
 
                 frmPickMount.ShowDialog(this);
@@ -15084,67 +15059,11 @@ namespace Chummer
 
                 strSelectedParentID = frmPickMount.SelectedItem;
             }
-
-            Cyberware objOldParent = objModularCyberware.Parent;
-            if (objOldParent != null)
-                objModularCyberware.ChangeModularEquip(false);
-
-            if (strSelectedParentID == "None")
+            if (ChangeCyberware.ChangeCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
             {
-                if (objOldParent != null)
-                {
-                    objOldParent.Children.Remove(objModularCyberware);
-
-                    CharacterObject.Cyberware.Add(objModularCyberware);
-                }
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
-            else
-            {
-                Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
-                if (objNewParent != null)
-                {
-                    if (objOldParent != null)
-                        objOldParent.Children.Remove(objModularCyberware);
-                    else
-                        CharacterObject.Cyberware.Remove(objModularCyberware);
-
-                    objNewParent.Children.Add(objModularCyberware);
-
-                    objModularCyberware.ChangeModularEquip(true);
-                }
-                else
-                {
-                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
-                    if (objNewVehicleModParent == null)
-                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
-
-                    if (objNewVehicleModParent != null || objNewParent != null)
-                    {
-                        if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
-                        else
-                            CharacterObject.Cyberware.Remove(objModularCyberware);
-
-                        if (objNewParent != null)
-                            objNewParent.Children.Add(objModularCyberware);
-                        else
-                            objNewVehicleModParent.Cyberware.Add(objModularCyberware);
-                    }
-                    else
-                    {
-                        if (objOldParent != null)
-                        {
-                            objOldParent.Children.Remove(objModularCyberware);
-
-                            CharacterObject.Cyberware.Add(objModularCyberware);
-                        }
-                    }
-                }
-            }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
@@ -15164,6 +15083,7 @@ namespace Chummer
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
 
                 frmPickMount.ShowDialog(this);
@@ -15177,67 +15097,12 @@ namespace Chummer
                 strSelectedParentID = frmPickMount.SelectedItem;
             }
 
-            CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId,
-                out VehicleMod objOldParentVehicleMod);
-            Cyberware objOldParent = objModularCyberware.Parent;
-            if (objOldParent != null)
-                objModularCyberware.ChangeModularEquip(false);
-            if (strSelectedParentID == "None")
+            if (ChangeCyberware.ChangeVehicleCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
             {
-                if (objOldParent != null)
-                    objOldParent.Children.Remove(objModularCyberware);
-                else
-                    objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                IsCharacterUpdateRequested = true;
 
-                CharacterObject.Cyberware.Add(objModularCyberware);
+                IsDirty = true;
             }
-            else
-            {
-                Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
-                if (objNewParent != null)
-                {
-                    if (objOldParent != null)
-                        objOldParent.Children.Remove(objModularCyberware);
-                    else
-                        objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
-
-                    objNewParent.Children.Add(objModularCyberware);
-
-                    objModularCyberware.ChangeModularEquip(true);
-                }
-                else
-                {
-                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
-                    if (objNewVehicleModParent == null)
-                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
-
-                    if (objNewVehicleModParent != null || objNewParent != null)
-                    {
-                        if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
-                        else
-                            objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
-
-                        if (objNewParent != null)
-                            objNewParent.Children.Add(objModularCyberware);
-                        else
-                            objNewVehicleModParent.Cyberware.Add(objModularCyberware);
-                    }
-                    else
-                    {
-                        if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
-                        else
-                            objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
-
-                        CharacterObject.Cyberware.Add(objModularCyberware);
-                    }
-                }
-            }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
