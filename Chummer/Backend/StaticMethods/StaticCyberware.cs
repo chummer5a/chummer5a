@@ -5,9 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Chummer.Backend.Equipment;
 
-namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
+namespace Chummer.Backend.StaticMethods
 {
-    public static class ChangeCyberware
+    /// <summary>
+    /// Contains Methods to handle Cyberware
+    /// </summary>
+    public static class StaticCyberware
     {
         /// <summary>
         /// Moves modular cyberware from one mount to another or to the Character
@@ -154,19 +157,15 @@ namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
             //These can probably be merged with the local functions from ChangeCyberwareMount(), the main difference is that these sometimes target the Vehicle instead of the Character.
             #region Local Functions
 
-            void MoveVehicleModAndVehicleCyberwareToNewParent()
+
+            void MoveCyberwareFromMountToCharacter()
             {
                 if (objOldParent != null)
                     objOldParent.Children.Remove(objModularCyberware);
                 else
                     objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
 
-                if (objNewParent != null)
-                    objNewParent.Children.Add(objModularCyberware);
-                else
-                {
-                    objNewVehicleModParent?.Cyberware.Add(objModularCyberware);
-                }
+                objCharacter.Cyberware.Add(objModularCyberware);
             }
 
             void MoveModularCyberwareToNewMount()
@@ -181,14 +180,19 @@ namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
                 objModularCyberware.ChangeModularEquip(true);
             }
 
-            void MoveCyberwareFromMountToCharacter()
+            void MoveVehicleModAndVehicleCyberwareToNewParent()
             {
                 if (objOldParent != null)
                     objOldParent.Children.Remove(objModularCyberware);
                 else
                     objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
 
-                objCharacter.Cyberware.Add(objModularCyberware);
+                if (objNewParent != null)
+                    objNewParent.Children.Add(objModularCyberware);
+                else
+                {
+                    objNewVehicleModParent?.Cyberware.Add(objModularCyberware);
+                }
             }
 
             #endregion

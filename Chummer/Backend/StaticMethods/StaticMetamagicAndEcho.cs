@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 using System.Xml;
 
-namespace Chummer.Backend.BuySellIncreaseDecreaseMethods
+namespace Chummer.Backend.StaticMethods
 {
     /// <summary>
     /// Handles all changes to Metamagic, Echoes, Initiation and Submersion Grade
     /// </summary>
-    public static class ChangeMetamagicOrEcho
+    public static class StaticMetamagicAndEcho
     {
         #region Public Methods
 

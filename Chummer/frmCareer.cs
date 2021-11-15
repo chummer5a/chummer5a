@@ -34,7 +34,7 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
-using Chummer.Backend.BuySellIncreaseDecreaseMethods;
+using Chummer.Backend.StaticMethods;
 using LiveCharts.Defaults;
 using NLog;
 
@@ -17130,7 +17130,7 @@ namespace Chummer
                 return;
 
 
-            if(ChangeAttributes.IncreasePowerpoint(CharacterObject))
+            if(StaticAttributes.IncreasePowerpoint(CharacterObject))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -17151,7 +17151,7 @@ namespace Chummer
 
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             // Later Note. I don't think there is a way to add any further Metamagics??? This whole comparison and code block seems to be deprecated!
-            var blnPayWithKarma = ChangeMetamagicOrEcho.BlnPayWithKarma(objGrade, CharacterObject);
+            var blnPayWithKarma = StaticMetamagicAndEcho.BlnPayWithKarma(objGrade, CharacterObject);
 
             // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
             if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
@@ -17183,7 +17183,7 @@ namespace Chummer
                     return;
 
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteMetamagic(CharacterObject, frmPickMetamagic, objGrade, CharacterObjectSettings))
+                if (StaticMetamagicAndEcho.InitialiseCompleteMetamagic(CharacterObject, frmPickMetamagic, objGrade, CharacterObjectSettings))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -17221,7 +17221,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteArt(CharacterObject, frmPickArt, objGrade))
+                if (StaticMetamagicAndEcho.InitialiseCompleteArt(CharacterObject, frmPickArt, objGrade))
                 {
 
                     IsCharacterUpdateRequested = true;
@@ -17302,7 +17302,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                if (StaticMetamagicAndEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -17370,7 +17370,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                if (StaticMetamagicAndEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -17435,7 +17435,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitializeCompleteEnhancement(CharacterObject, frmPickArt, objGrade, CharacterObjectSettings))
+                if (StaticMetamagicAndEcho.InitializeCompleteEnhancement(CharacterObject, frmPickArt, objGrade, CharacterObjectSettings))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -17680,7 +17680,7 @@ namespace Chummer
                 strSelectedParentID = frmPickMount.SelectedItem;
             }
 
-            if (ChangeCyberware.ChangeCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
+            if (StaticCyberware.ChangeCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -17719,7 +17719,7 @@ namespace Chummer
                 strSelectedParentID = frmPickMount.SelectedItem;
             }
 
-            if (ChangeCyberware.ChangeVehicleCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
+            if (StaticCyberware.ChangeVehicleCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
             {
                 IsCharacterUpdateRequested = true;
 
