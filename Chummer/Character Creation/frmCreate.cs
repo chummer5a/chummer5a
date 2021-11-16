@@ -8833,10 +8833,7 @@ namespace Chummer
 
             void DoUIUpdate()
             {
-
-
                 string strContactPoints = StaticCharacterStrings.FormStrContactPoints(CharacterObject, strSpace, strPoints, strOf);
-
 
                 lblContactsBP.Text = strContactPoints;
                 lblContactPoints.Text = strContactPoints;
@@ -8854,7 +8851,7 @@ namespace Chummer
                 lblPBuildSpecial.Text = StaticCharacterStrings.FormAttributeCostString(CharacterObject,
                     CharacterObject.AttributeSection.SpecialAttributeList, null, true);
 
-                var intMartialArtsPoints = CharacterCalculations.CalculateMartialArtsPoints(CharacterObject, CharacterObjectSettings);
+                var intMartialArtsPoints = CharacterObject.CalculateMartialArtsPoints(CharacterObjectSettings);
                 lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
 
                 string martialArtsBPToolTip =
@@ -8909,9 +8906,7 @@ namespace Chummer
                     tslKarma.ForeColor = ColorManager.ControlText;
                 }
 
-
-
-                //UI Spell UI Update
+                // Spell UI Update
                 if (blnDoUIUpdate
                     && (lblBuildPrepsBP != null
                         || lblSpellsBP != null
@@ -9046,8 +9041,6 @@ namespace Chummer
         }
 
 
-
-
         private void UpdateSkillRelatedInfo()
         {
             string strKarma = LanguageManager.GetString("String_Karma");
@@ -9057,66 +9050,15 @@ namespace Chummer
             string strZeroKarma = 0.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
             //Update Skill Labels
             //Active skills
-            string strTemp = strZeroKarma;
-            int intActiveSkillPointsMaximum = CharacterObject.SkillsSection.SkillPointsMaximum;
-            if (intActiveSkillPointsMaximum > 0)
-            {
-                strTemp = CharacterObject.SkillsSection.SkillPoints.ToString(GlobalSettings.CultureInfo) + strOf + intActiveSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
-            }
-            int intActiveSkillsTotalCostKarma = CharacterObject.SkillsSection.Skills.TotalCostKarma();
-            if (intActiveSkillsTotalCostKarma > 0)
-            {
-                if (strTemp != strZeroKarma)
-                {
-                    strTemp += strColon + strSpace + intActiveSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
-                }
-                else
-                {
-                    strTemp = intActiveSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
-                }
-            }
-            lblActiveSkillsBP.Text = strTemp;
+            lblActiveSkillsBP.Text = StaticCharacterStrings.ActiveSkillBP(strZeroKarma, strOf, strColon, strSpace, strKarma, CharacterObject);
+
             //Knowledge skills
-            strTemp = strZeroKarma;
-            int intKnowledgeSkillPointsMaximum = CharacterObject.SkillsSection.KnowledgeSkillPoints;
-            if (intKnowledgeSkillPointsMaximum > 0)
-            {
-                strTemp = CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
-            }
-            int intKnowledgeSkillsTotalCostKarma = CharacterObject.SkillsSection.KnowledgeSkills.TotalCostKarma();
-            if (intKnowledgeSkillsTotalCostKarma > 0)
-            {
-                if (strTemp != strZeroKarma)
-                {
-                    strTemp += strColon + strSpace + intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
-                }
-                else
-                {
-                    strTemp = intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
-                }
-            }
-            lblKnowledgeSkillsBP.Text = strTemp;
+            lblKnowledgeSkillsBP.Text = StaticCharacterStrings.KnowledgeSkillsBP(strZeroKarma, strOf, strColon, strSpace, strKarma, CharacterObject);
+
             //Groups
-            strTemp = strZeroKarma;
-            int intSkillGroupPointsMaximum = CharacterObject.SkillsSection.SkillGroupPointsMaximum;
-            if (intSkillGroupPointsMaximum > 0)
-            {
-                strTemp = CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalSettings.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalSettings.CultureInfo);
-            }
-            int intSkillGroupsTotalCostKarma = CharacterObject.SkillsSection.SkillGroups.TotalCostKarma();
-            if (intSkillGroupsTotalCostKarma > 0)
-            {
-                if (strTemp != strZeroKarma)
-                {
-                    strTemp += strColon + strSpace + intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
-                }
-                else
-                {
-                    strTemp = intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
-                }
-            }
-            lblSkillGroupsBP.Text = strTemp;
+            lblSkillGroupsBP.Text = StaticCharacterStrings.SkillGroupBP(strZeroKarma, strOf, strColon, strSpace, strKarma, CharacterObject);
         }
+
 
         private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
@@ -9188,7 +9130,7 @@ namespace Chummer
 
                 // Calculate the number of Build Points remaining.
                 CalculateBP();
-                CalculateNuyen();
+                CharacterCalculations.CalculateNuyen(CharacterObject);
 
                 if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
                     CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
@@ -9230,83 +9172,6 @@ namespace Chummer
 
             _blnSkipUpdate = false;
             IsCharacterUpdateRequested = false;
-        }
-
-        /// <summary>
-        /// Calculate the amount of Nuyen the character has remaining.
-        /// </summary>
-        private decimal CalculateNuyen()
-        {
-            decimal decDeductions = 0;
-            decimal decStolenDeductions = 0;
-            //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
-            if (CharacterObject.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
-            {
-                // Cyberware/Bioware cost.
-                decDeductions += CharacterObject.Cyberware.Where(c => !c.Stolen).AsParallel().Sum(x => x.CurrentTotalCost);
-                decStolenDeductions += CharacterObject.Cyberware.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
-
-                // Initiation Grade cost.
-                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
-                {
-                    if (objGrade.Schooling)
-                        decDeductions += 10000;
-                }
-
-                // Armor cost.
-                decDeductions += CharacterObject.Armor.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
-                decStolenDeductions += CharacterObject.Armor.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
-
-                // Weapon cost.
-                decDeductions += CharacterObject.Weapons.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
-                decStolenDeductions += CharacterObject.Weapons.Where(c => c.Stolen).AsParallel().Sum(x => x.TotalCost);
-
-                // Gear cost.
-                decDeductions += CharacterObject.Gear.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
-                decStolenDeductions += CharacterObject.Gear.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
-
-                // Lifestyle cost.
-                decDeductions += CharacterObject.Lifestyles.AsParallel().Sum(x => x.TotalCost);
-
-                // Vehicle cost.
-                decDeductions += CharacterObject.Vehicles.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
-                decStolenDeductions += CharacterObject.Vehicles.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
-
-                // Drug cost.
-                decDeductions += CharacterObject.Drugs.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
-                decStolenDeductions += CharacterObject.Drugs.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
-            }
-            else
-            {
-                // Cyberware/Bioware cost.
-                decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.CurrentTotalCost);
-
-                // Initiation Grade cost.
-                decDeductions += 10000 * CharacterObject.InitiationGrades.Count(x => x.Schooling);
-
-                // Armor cost.
-                decDeductions += CharacterObject.Armor.AsParallel().Sum(x => x.TotalCost);
-
-                // Weapon cost.
-                decDeductions += CharacterObject.Weapons.AsParallel().Sum(x => x.TotalCost);
-
-                // Gear cost.
-                decDeductions += CharacterObject.Gear.AsParallel().Sum(x => x.TotalCost);
-
-                // Lifestyle cost.
-                decDeductions += CharacterObject.Lifestyles.AsParallel().Sum(x => x.TotalCost);
-
-                // Vehicle cost.
-                decDeductions += CharacterObject.Vehicles.AsParallel().Sum(x => x.TotalCost);
-
-                // Drug cost.
-                decDeductions += CharacterObject.Drugs.AsParallel().Sum(x => x.TotalCost);
-            }
-
-            CharacterObject.StolenNuyen =
-                ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen, false, "Stolen") -
-                decStolenDeductions;
-            return CharacterObject.Nuyen = CharacterObject.TotalStartingNuyen - decDeductions;
         }
 
         /// <summary>
@@ -10564,52 +10429,11 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                // If the character was built with Karma, record their staring Karma amount (if any).
-                if (CharacterObject.Karma > 0)
-                {
-                    ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
-                    objKarma.Create(CharacterObject.Karma, LanguageManager.GetString("Label_SelectBP_StartingKarma"), ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objKarma);
+                StaticExpenses.ExpenseLogStartingKarma(CharacterObject);
 
-                    // Create an Undo entry so that the starting Karma amount can be modified if needed.
-                    ExpenseUndo objKarmaUndo = new ExpenseUndo();
-                    objKarmaUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
-                    objKarma.Undo = objKarmaUndo;
-                }
+                var lstAttributesToAdd = StaticAttributes.ShapeshifterAttributesToAdd(CharacterObject);
 
-                List<CharacterAttrib> lstAttributesToAdd = null;
-                if (CharacterObject.MetatypeCategory == "Shapeshifter")
-                {
-                    lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = CharacterObject.LoadData("metatypes.xml");
-                    string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
-                                                 + CharacterObject.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                                 + "]/metavariants/metavariant[id = "
-                                                 + CharacterObject.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                                 + "]";
-                    foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
-                    {
-                        CharacterAttrib objNewAttribute = new CharacterAttrib(CharacterObject, objOldAttribute.Abbrev,
-                            CharacterAttrib.AttributeCategory.Shapeshifter);
-                        AttributeSection.CopyAttribute(objOldAttribute, objNewAttribute, strMetavariantXPath, xmlDoc);
-                        lstAttributesToAdd.Add(objNewAttribute);
-                    }
-
-                    foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
-                    {
-                        CharacterObject.AttributeSection.AttributeList.Add(objAttributeToAdd);
-                    }
-                }
-
-                // Create an Expense Entry for Starting Nuyen.
-                ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
-                objNuyen.Create(CharacterObject.Nuyen, LanguageManager.GetString("Title_LifestyleNuyen"), ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objNuyen);
-
-                // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
-                ExpenseUndo objNuyenUndo = new ExpenseUndo();
-                objNuyenUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
-                objNuyen.Undo = objNuyenUndo;
+                StaticExpenses.ExpenseLogStartingNuyen(CharacterObject);
 
                 CharacterObject.Created = true;
 
@@ -10618,17 +10442,8 @@ namespace Chummer
                     frmProgressBar.PerformStep(CharacterObject.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
                     if (!CharacterObject.Save())
                     {
-                        CharacterObject.ExpenseEntries.Clear();
-                        if (lstAttributesToAdd != null)
-                        {
-                            foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
-                            {
-                                CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
-                            }
-                        }
-
                         CharacterObject.Created = false;
-                        return false;
+                        return SaveAsCreatedFailed(lstAttributesToAdd);
                     }
 
                     IsDirty = false;
@@ -10640,6 +10455,30 @@ namespace Chummer
             }
             return true;
         }
+
+        /// <summary>
+        /// Clears the expense log and Attribute list if the save to xml failed.
+        /// </summary>
+        /// <param name="lstAttributesToAdd"></param>
+        /// <returns>Always false</returns>
+        private bool SaveAsCreatedFailed(List<CharacterAttrib> lstAttributesToAdd)
+        {
+            CharacterObject.ExpenseEntries.Clear();
+            if (lstAttributesToAdd != null)
+            {
+                foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                {
+                    CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                }
+            }
+
+            return false;
+        }
+
+
+
+
+
 
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
@@ -12451,7 +12290,7 @@ namespace Chummer
                 }
 
                 // Check if the character has gone over the Nuyen limit.
-                decimal decNuyen = CalculateNuyen();
+                decimal decNuyen = CharacterCalculations.CalculateNuyen(CharacterObject);
                 if (decNuyen < 0)
                 {
                     blnValid = false;

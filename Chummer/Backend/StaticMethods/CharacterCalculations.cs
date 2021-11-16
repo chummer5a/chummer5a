@@ -147,18 +147,18 @@ namespace Chummer.Backend.StaticMethods
             return intSpritePointsUsed;
         }
 
-        public static int PointsUsedByFettered(Character objCharacter, CharacterSettings objCharacterSettings)
+        private static int PointsUsedByFettered(Character objCharacter, CharacterSettings objCharacterSettings)
         {
             return objCharacter.Spirits.Where(spirit => spirit.Fettered && (spirit.EntityType == SpiritType.Spirit))
                 .Sum(spirit => spirit.Force * objCharacterSettings.KarmaSpiritFettering);
         }
 
-        public static int StackedFocusBindingCost(Character objCharacter)
+        private static int StackedFocusBindingCost(Character objCharacter)
         {
             return objCharacter.StackedFoci.Where(stackedFocus => stackedFocus.Bonded).Sum(stackedFocus => stackedFocus.BindingCost);
         }
 
-        public static int FocusBindingCost(Character objCharacter)
+        private static int FocusBindingCost(Character objCharacter)
         {
             return objCharacter.Foci.Sum(focus => focus.BindingKarmaCost());
         }
@@ -258,54 +258,34 @@ namespace Chummer.Backend.StaticMethods
         /// <returns>(spellReduction, ritualReduction, preperationsReduction)</returns>
         public static (int, int, int) SpellVariantReductions(Character objCharacter, CharacterSettings objCharacterSettings, int intLimitMod, int intPPBought)
         {
-            var spells = OverallSpells(objCharacter, objCharacterSettings, intPPBought);
 
             //TODO: This reads shitty, but that's where I got stuck deconstructing this whole Method into 3 instead of returning a tuple
-            //The problem is this overarching loop variable that needs to be carried between the 3 loops or be merged into one.
+            //The problem is this overarching loop variable that needs to be carried over.
             int limit = objCharacter.FreeSpells;
 
             var availableFreeSpells = limit + intLimitMod;
 
+            var ritualReduction = 0;
+            var preperationsReduction = 0;
             var spellReduction = 0;
-            while (availableFreeSpells > 0)
+
+            var spells = OverallSpells(objCharacter, objCharacterSettings, intPPBought);
+            var rituals = objCharacter.Spells.Count(spell =>
+                spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus);
+            var preperations = objCharacter.Spells.Count(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus);
+
+
+            for (int i = availableFreeSpells; i > 0; i--)
             {
-                availableFreeSpells--;
-                //Are all spells accounted for?
                 if (spells - spellReduction > 0)
                 {
                     spellReduction++;
                 }
-                else
-                {
-                    break;
-                }
-            }
-
-            var rituals = objCharacter.Spells.Count(spell =>
-                spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus);
-
-            var ritualReduction = 0;
-            while (availableFreeSpells > 0)
-            {
-                availableFreeSpells--;
-                //Are all Rituals accounted for?
-                if (rituals - ritualReduction > 0)
+                else if (rituals - ritualReduction > 0)
                 {
                     ritualReduction++;
                 }
-                else
-                {
-                    break;
-                }
-            }
-
-            var preperationsReduction = 0;
-            var preperations = objCharacter.Spells.Count(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus);
-            while (availableFreeSpells > 0)
-            {
-                availableFreeSpells--;
-                //Are all preperations accounted for?
-                if (preperations - preperationsReduction > 0)
+                else if (preperations - preperationsReduction > 0)
                 {
                     preperationsReduction++;
                 }
@@ -319,7 +299,7 @@ namespace Chummer.Backend.StaticMethods
 
         }
 
-        public static int SpellCost(Character objCharacter, CharacterSettings objCharacterSettings)
+        private static int RegainMasteryQualityKarma(Character objCharacter, CharacterSettings objCharacterSettings)
         {
             int spellCost = objCharacter.SpellKarmaCost("Spells");
             // Regain Karma for efficient usage in mastery qualities
@@ -343,16 +323,15 @@ namespace Chummer.Backend.StaticMethods
             return karmaRegained;
         }
 
-        public static int KarmaForMysAdeptPowerPoints(Character objCharacter, CharacterSettings objCharacterSettings,
-            int intPPBought)
+        private static int KarmaForMysAdeptPowerPoints(Character objCharacter, CharacterSettings objCharacterSettings, int powerPointsBought)
         {
             int limit = objCharacter.FreeSpells;
             if (objCharacterSettings.PrioritySpellsAsAdeptPowers)
             {
-                intPPBought = Math.Max(0, intPPBought - limit);
+                powerPointsBought = Math.Max(0, powerPointsBought - limit);
             }
 
-            int intAttributePointsUsed = intPPBought * objCharacter.Settings.KarmaMysticAdeptPowerPoint;
+            int intAttributePointsUsed = powerPointsBought * objCharacter.Settings.KarmaMysticAdeptPowerPoint;
             return intAttributePointsUsed;
         }
 
@@ -423,7 +402,7 @@ namespace Chummer.Backend.StaticMethods
             return intLimitMod;
         }
 
-        public static int CalculateMartialArtsPoints(Character objCharacter, CharacterSettings objCharacterSettings)
+        static int CalculateMartialArtsPoints(this Character objCharacter, CharacterSettings objCharacterSettings)
         {
             int intMartialArtsPoints = 0;
             foreach (MartialArt objectMartialArt in objCharacter.MartialArts)
@@ -445,7 +424,7 @@ namespace Chummer.Backend.StaticMethods
         /// <param name="objCharacter"></param>
         /// <param name="objCharacterSettings"></param>
         /// <returns></returns>
-        public static int LifeModuleQualities(Character objCharacter, CharacterSettings objCharacterSettings)
+        private static int LifeModuleQualities(Character objCharacter, CharacterSettings objCharacterSettings)
         {
             int intLifeModuleQualities = 0;
             foreach (Quality objLoopQuality in objCharacter.Qualities.Where(q => q.ContributeToBP))
@@ -456,36 +435,6 @@ namespace Chummer.Backend.StaticMethods
                 }
             }
             return intLifeModuleQualities;
-        }
-
-        public static int ContactPointsLeft(Character objCharacter)
-        {
-            int intContactPoints = objCharacter.ContactPoints;
-            int intContactPointsLeft = intContactPoints;
-            foreach (Contact objContact in objCharacter.Contacts)
-            {
-                // Don't care about free contacts or groups
-                if (objContact.EntityType != ContactType.Contact || objContact.Free || objContact.IsGroup)
-                    continue;
-
-                int over = intContactPointsLeft - objContact.ContactPoints;
-
-                //Prefers to eat 0, we went over
-                if (over < 0)
-                {
-                    //over is negative so to add we substract
-                    //instead of +abs(over)
-
-                    intContactPointsLeft = 0; //we went over so we know none are left
-                }
-                else
-                {
-                    //otherwise just set;
-                    intContactPointsLeft = over;
-                }
-            }
-
-            return intContactPointsLeft;
         }
 
         public static int PointsInContacts(Character objCharacter)
@@ -519,7 +468,7 @@ namespace Chummer.Backend.StaticMethods
             return intPointsInContacts;
         }
 
-        public static int PointsInHighPlacesFriend(Character objCharacter, int intPointsInContacts)
+        private static int PointsInHighPlacesFriend(Character objCharacter, int intPointsInContacts)
         {
             var intHighPlacesFriends = NumberHighPlacesFriends(objCharacter);
 
@@ -551,7 +500,7 @@ namespace Chummer.Backend.StaticMethods
             return intHighPlacesFriends;
         }
 
-        public static int PointsUsedByMetaType(Character objCharacter, CharacterSettings objCharacterSettings)
+        private static int PointsUsedByMetaType(Character objCharacter, CharacterSettings objCharacterSettings)
         {
             int pointsUsedByMetaType;
 
@@ -569,27 +518,23 @@ namespace Chummer.Backend.StaticMethods
             return pointsUsedByMetaType;
         }
 
-        public static (int, int) CalculateRemainingBP(Character CharacterObject, CharacterSettings CharacterObjectSettings, int intPPBought)
+        public static (int, int) CalculateRemainingBP(Character character, CharacterSettings characterSettings, int powerPointsBought)
         {
-            int intKarmaPointsRemain = CharacterObjectSettings.BuildKarma;
+            int intKarmaPointsRemain = characterSettings.BuildKarma;
             //int intPointsUsed = 0; // used as a running total for each section
 
             int intFreestyleBP = 0;
 
-
-            
-
             // ------------------------------------------------------------------------------
-            var pointsUsedByMetaType = CharacterCalculations.PointsUsedByMetaType(CharacterObject, CharacterObjectSettings);
+            var pointsUsedByMetaType = PointsUsedByMetaType(character, characterSettings);
             intKarmaPointsRemain -= pointsUsedByMetaType;
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Contacts.
 
-            var intContactPointsLeft = CharacterCalculations.ContactPointsLeft(CharacterObject);
-            var intPointsInContacts = CharacterCalculations.PointsInContacts(CharacterObject);
+            var intPointsInContacts = PointsInContacts(character);
 
-            var pointsInHighPlacesFriend = CharacterCalculations.PointsInHighPlacesFriend(CharacterObject, intPointsInContacts);
+            var pointsInHighPlacesFriend = PointsInHighPlacesFriend(character, intPointsInContacts);
 
 
             intPointsInContacts += pointsInHighPlacesFriend;
@@ -598,49 +543,43 @@ namespace Chummer.Backend.StaticMethods
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Qualities.
 
-            var intLifeModuleQualities = CharacterCalculations.LifeModuleQualities(CharacterObject, CharacterObjectSettings);
+            var intLifeModuleQualities = LifeModuleQualities(character, characterSettings);
 
             //Sum of all qualities used. Negative ones give Karma, thats why they are substracted.
-            int intQualityPointsUsed = intLifeModuleQualities - CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
+            int intQualityPointsUsed = intLifeModuleQualities - character.NegativeQualityKarma + character.PositiveQualityKarmaTotal;
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
             // Changelings must either have a balanced negative and positive number of metagenic qualities, or have 1 more point of positive than negative.
             // If the latter, karma is used to balance them out.
-            if (CharacterObject.MetagenicPositiveQualityKarma + CharacterObject.MetagenicNegativeQualityKarma == 1)
+            if (character.MetagenicPositiveQualityKarma + character.MetagenicNegativeQualityKarma == 1)
                 intKarmaPointsRemain--;
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
-            int intAttributePointsUsed = CharacterCalculations.CalculateAttributeBP(CharacterObject.AttributeSection.AttributeList);
+            int intAttributePointsUsed = CalculateAttributeBP(character.AttributeSection.AttributeList);
             //Add Special Attributes
-            intAttributePointsUsed += CharacterCalculations.CalculateAttributeBP(CharacterObject.AttributeSection.SpecialAttributeList);
+            intAttributePointsUsed += CalculateAttributeBP(character.AttributeSection.SpecialAttributeList);
             intKarmaPointsRemain -= intAttributePointsUsed;
 
             // ------------------------------------------------------------------------------
             // Include the BP used by Martial Arts.
 
-
-
-
-
-            var intMartialArtsPoints = CharacterCalculations.CalculateMartialArtsPoints(CharacterObject, CharacterObjectSettings);
-
-
+            var intMartialArtsPoints = CalculateMartialArtsPoints(character, characterSettings);
             intKarmaPointsRemain -= intMartialArtsPoints;
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Skill Groups.
-            int intSkillGroupsPoints = CharacterObject.SkillsSection.SkillGroups.TotalCostKarma();
+            int intSkillGroupsPoints = character.SkillsSection.SkillGroups.TotalCostKarma();
             intKarmaPointsRemain -= intSkillGroupsPoints;
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Active Skills.
-            int skillPointsKarma = CharacterObject.SkillsSection.Skills.TotalCostKarma();
+            int skillPointsKarma = character.SkillsSection.Skills.TotalCostKarma();
             intKarmaPointsRemain -= skillPointsKarma;
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
-            int knowledgeKarmaUsed = CharacterObject.SkillsSection.KnowledgeSkills.TotalCostKarma();
+            int knowledgeKarmaUsed = character.SkillsSection.KnowledgeSkills.TotalCostKarma();
 
             //TODO: Remaining is named USED?
             intKarmaPointsRemain -= knowledgeKarmaUsed;
@@ -649,7 +588,7 @@ namespace Chummer.Backend.StaticMethods
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Resources/Nuyen.
-            int intNuyenBP = CharacterObject.NuyenBP.StandardRound();
+            int intNuyenBP = character.NuyenBP.StandardRound();
 
             intKarmaPointsRemain -= intNuyenBP;
 
@@ -662,23 +601,21 @@ namespace Chummer.Backend.StaticMethods
             int intRitualPointsUsed = 0;
             int intPrepPointsUsed = 0;
 
-            string strColon = LanguageManager.GetString("String_Colon");
-            string strOf = LanguageManager.GetString("String_Of");
 
-            if (CharacterObject.MagicianEnabled
-                || CharacterObject.AdeptEnabled
-                || CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
+            if (character.MagicianEnabled
+                || character.AdeptEnabled
+                || character.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
                                                                        || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
                                                                        || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
                                                                       && objImprovement.Enabled))
             {
-                int limit = CharacterObject.FreeSpells;
+                int limit = character.FreeSpells;
 
-                int intLimitMod = CharacterCalculations.CalcLimitMod(CharacterObject);
+                int intLimitMod = CalcLimitMod(character);
 
 
                 //Calculates the reduction that needs to be applied to all points and counts
-                var reductionTuple = CharacterCalculations.SpellVariantReductions(CharacterObject, CharacterObjectSettings, intLimitMod, intPPBought);
+                var reductionTuple = SpellVariantReductions(character, characterSettings, intLimitMod, powerPointsBought);
 
                 //Deconstructs the tuple
                 var (spellReduction, ritualReduction, preperationsReduction) = reductionTuple;
@@ -689,36 +626,35 @@ namespace Chummer.Backend.StaticMethods
                 var prepPoints = limit + intLimitMod - preperationsReduction;
 
                 //calcs how much are left
-                var spells =
-                    CharacterCalculations.OverallSpells(CharacterObject, CharacterObjectSettings, intPPBought) -
-                    spellReduction;
-                var preperations = CharacterObject.Spells.Count(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus) - prepPoints;
-                var rituals = CharacterObject.Spells.Count(spell =>
+                var spells = OverallSpells(character, characterSettings, powerPointsBought) -
+                             spellReduction;
+                var alchemicalPreparations = character.Spells.Count(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus) - preperationsReduction;
+                var rituals = character.Spells.Count(spell =>
                     spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus) - ritualReduction;
 
 
-                int spellCost = CharacterObject.SpellKarmaCost("Spells");
+                int spellCost = character.SpellKarmaCost("Spells");
                 intKarmaPointsRemain -= Math.Max(0, spells) * spellCost;
 
-                int ritualCost = CharacterObject.SpellKarmaCost("Rituals");
+                int ritualCost = character.SpellKarmaCost("Rituals");
                 intKarmaPointsRemain -= Math.Max(0, rituals) * ritualCost;
 
-                int prepCost = CharacterObject.SpellKarmaCost("Preparations");
-                intKarmaPointsRemain -= Math.Max(0, preperations) * prepCost;
+                int prepCost = character.SpellKarmaCost("Preparations");
+                intKarmaPointsRemain -= Math.Max(0, alchemicalPreparations) * prepCost;
 
-                if (intPPBought > 0)
+                if (powerPointsBought > 0)
                 {
-                    var attributePointsUsed = CharacterCalculations.KarmaForMysAdeptPowerPoints(CharacterObject, CharacterObjectSettings, intPPBought);
+                    var attributePointsUsed = KarmaForMysAdeptPowerPoints(character, characterSettings, powerPointsBought);
                     intKarmaPointsRemain -= attributePointsUsed;
                 }
 
                 //Regained Karma for smart usage of BP in mastery qualities
-                int karmaRegained = CharacterCalculations.SpellCost(CharacterObject, CharacterObjectSettings);
+                int karmaRegained = RegainMasteryQualityKarma(character, characterSettings);
                 intKarmaPointsRemain += karmaRegained;
 
                 intSpellPointsUsed += Math.Max(Math.Max(0, spells) * spellCost, 0);
                 intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * ritualCost, 0);
-                intPrepPointsUsed += Math.Max(Math.Max(0, preperations) * prepCost, 0);
+                intPrepPointsUsed += Math.Max(Math.Max(0, alchemicalPreparations) * prepCost, 0);
 
                 intFreestyleBP += intSpellPointsUsed + intRitualPointsUsed + intPrepPointsUsed;
             }
@@ -727,7 +663,7 @@ namespace Chummer.Backend.StaticMethods
 
             // ------------------------------------------------------------------------------
 
-            var intFociPointsUsed = FociPointsUsed(CharacterObject);
+            var intFociPointsUsed = FociPointsUsed(character);
 
             intKarmaPointsRemain -= intFociPointsUsed;
             intFreestyleBP += intFociPointsUsed;
@@ -736,11 +672,11 @@ namespace Chummer.Backend.StaticMethods
             // Calculate the BP used by Spirits and Sprites.
 
 
-            var intSpiritPointsUsed = CharacterCalculations.SpiritPointsUsed(CharacterObject, CharacterObjectSettings);
+            var intSpiritPointsUsed = SpiritPointsUsed(character, characterSettings);
 
-            var intSpritePointsUsed = CharacterCalculations.SpritePointsUsed(CharacterObject, CharacterObjectSettings);
+            var intSpritePointsUsed = SpritePointsUsed(character, characterSettings);
 
-            var pointsUsedByFettered = CharacterCalculations.PointsUsedByFettered(CharacterObject, CharacterObjectSettings);
+            var pointsUsedByFettered = PointsUsedByFettered(character, characterSettings);
 
 
             intKarmaPointsRemain -= (intSpiritPointsUsed + intSpritePointsUsed + pointsUsedByFettered);
@@ -749,49 +685,118 @@ namespace Chummer.Backend.StaticMethods
             // ------------------------------------------------------------------------------
 
             // Calculate the BP used by Complex Forms.
-            var intFormsPointsUsed = CharacterCalculations.CalculateIntFormsPointsUsed(CharacterObject);
+            var intFormsPointsUsed = CalculateIntFormsPointsUsed(character);
 
-            if (intFormsPointsUsed > CharacterObject.CFPLimit)
-                intKarmaPointsRemain -= (intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost;
+            if (intFormsPointsUsed > character.CFPLimit)
+                intKarmaPointsRemain -= (intFormsPointsUsed - character.CFPLimit) * character.ComplexFormKarmaCost;
             intFreestyleBP += intFormsPointsUsed;
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Programs and Advanced Programs.
             //TODO: Untangle this into multiple Methods to not pass stuff as ref or use out
 
-
-
             int intAINormalProgramPointsUsed, intAIAdvancedProgramPointsUsed;
-            CharacterCalculations.CalculateBPUsedByPrograms(CharacterObject, ref intKarmaPointsRemain, ref intFreestyleBP, out intAINormalProgramPointsUsed, out intAIAdvancedProgramPointsUsed);
+            CalculateBPUsedByPrograms(character, ref intKarmaPointsRemain, ref intFreestyleBP, out intAINormalProgramPointsUsed, out intAIAdvancedProgramPointsUsed);
 
             // ------------------------------------------------------------------------------
-            int intInitiationPoints = CharacterCalculations.CalculateBPUsedByInitiation(CharacterObject, CharacterObjectSettings);
+            int intInitiationPoints = CalculateBPUsedByInitiation(character, characterSettings);
             intKarmaPointsRemain -= intInitiationPoints;
             intFreestyleBP += intInitiationPoints;
 
-
             // Add the Karma cost of any Critter Powers.
-            foreach (CritterPower objPower in CharacterObject.CritterPowers)
-            {
-                intKarmaPointsRemain -= objPower.Karma;
-            }
+            intKarmaPointsRemain = character.CritterPowers.Aggregate(intKarmaPointsRemain, (current, objPower) => current - objPower.Karma);
 
-
-            CharacterObject.Karma = intKarmaPointsRemain;
-
+            character.Karma = intKarmaPointsRemain;
 
             return (intKarmaPointsRemain, intFreestyleBP);
-
         }
 
-        public static int FociPointsUsed(Character CharacterObject)
+        public static int FociPointsUsed(Character character)
         {
             //Calculate the BP used by Foci
-            var focusBindingCost = CharacterCalculations.FocusBindingCost(CharacterObject);
+            var focusBindingCost = FocusBindingCost(character);
             // Calculate the BP used by Stacked Foci.
-            var stackedFocusBindingCost = CharacterCalculations.StackedFocusBindingCost(CharacterObject);
+            var stackedFocusBindingCost = StackedFocusBindingCost(character);
             int intFociPointsUsed = stackedFocusBindingCost + focusBindingCost;
             return intFociPointsUsed;
+        }
+
+
+        /// <summary>
+        /// Calculate the amount of Nuyen the character has remaining.
+        /// </summary>
+        public static decimal CalculateNuyen(Character character)
+        {
+            decimal decDeductions = 0;
+            decimal decStolenDeductions = 0;
+            //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
+            if (character.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
+            {
+                // Cyberware/Bioware cost.
+                decDeductions += character.Cyberware.Where(c => !c.Stolen).AsParallel().Sum(x => x.CurrentTotalCost);
+                decStolenDeductions += character.Cyberware.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Initiation Grade cost.
+                foreach (InitiationGrade objGrade in character.InitiationGrades)
+                {
+                    if (objGrade.Schooling)
+                        decDeductions += 10000;
+                }
+
+                // Armor cost.
+                decDeductions += character.Armor.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += character.Armor.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Weapon cost.
+                decDeductions += character.Weapons.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += character.Weapons.Where(c => c.Stolen).AsParallel().Sum(x => x.TotalCost);
+
+                // Gear cost.
+                decDeductions += character.Gear.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += character.Gear.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Lifestyle cost.
+                decDeductions += character.Lifestyles.AsParallel().Sum(x => x.TotalCost);
+
+                // Vehicle cost.
+                decDeductions += character.Vehicles.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += character.Vehicles.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+
+                // Drug cost.
+                decDeductions += character.Drugs.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decStolenDeductions += character.Drugs.Where(c => c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
+            }
+            else
+            {
+                // Cyberware/Bioware cost.
+                decDeductions += character.Cyberware.AsParallel().Sum(x => x.CurrentTotalCost);
+
+                // Initiation Grade cost.
+                decDeductions += 10000 * character.InitiationGrades.Count(x => x.Schooling);
+
+                // Armor cost.
+                decDeductions += character.Armor.AsParallel().Sum(x => x.TotalCost);
+
+                // Weapon cost.
+                decDeductions += character.Weapons.AsParallel().Sum(x => x.TotalCost);
+
+                // Gear cost.
+                decDeductions += character.Gear.AsParallel().Sum(x => x.TotalCost);
+
+                // Lifestyle cost.
+                decDeductions += character.Lifestyles.AsParallel().Sum(x => x.TotalCost);
+
+                // Vehicle cost.
+                decDeductions += character.Vehicles.AsParallel().Sum(x => x.TotalCost);
+
+                // Drug cost.
+                decDeductions += character.Drugs.AsParallel().Sum(x => x.TotalCost);
+            }
+
+            character.StolenNuyen =
+                ImprovementManager.ValueOf(character, Improvement.ImprovementType.Nuyen, false, "Stolen") -
+                decStolenDeductions;
+            return character.Nuyen = character.TotalStartingNuyen - decDeductions;
         }
     }
 }

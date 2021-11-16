@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
 
 namespace Chummer.Backend.StaticMethods
 {
@@ -209,5 +210,90 @@ namespace Chummer.Backend.StaticMethods
 
             return sbdFociPointsTooltip.ToString();
         }
+
+        public static string SkillGroupBP(string strZeroKarma, string strOf, string strColon, string strSpace, string strKarma, Character character)
+        {
+            string strTemp = strZeroKarma;
+            int intSkillGroupPointsMaximum = character.SkillsSection.SkillGroupPointsMaximum;
+            if (intSkillGroupPointsMaximum > 0)
+            {
+                strTemp = character.SkillsSection.SkillGroupPoints.ToString(GlobalSettings.CultureInfo) + strOf +
+                          intSkillGroupPointsMaximum.ToString(GlobalSettings.CultureInfo);
+            }
+
+            int intSkillGroupsTotalCostKarma = character.SkillsSection.SkillGroups.TotalCostKarma();
+            if (intSkillGroupsTotalCostKarma > 0)
+            {
+                if (strTemp != strZeroKarma)
+                {
+                    strTemp += strColon + strSpace + intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) +
+                               strSpace + strKarma;
+                }
+                else
+                {
+                    strTemp = intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
+                }
+            }
+
+
+            return strTemp;
+        }
+
+        public static string KnowledgeSkillsBP(string strZeroKarma, string strOf, string strColon, string strSpace,
+            string strKarma, Character character)
+        {
+            string strTemp = strZeroKarma;
+            int intKnowledgeSkillPointsMaximum = character.SkillsSection.KnowledgeSkillPoints;
+            if (intKnowledgeSkillPointsMaximum > 0)
+            {
+                strTemp = character.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo) +
+                          strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
+            }
+
+            int intKnowledgeSkillsTotalCostKarma = character.SkillsSection.KnowledgeSkills.TotalCostKarma();
+            if (intKnowledgeSkillsTotalCostKarma > 0)
+            {
+                if (strTemp != strZeroKarma)
+                {
+                    strTemp += strColon + strSpace + intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) +
+                               strSpace + strKarma;
+                }
+                else
+                {
+                    strTemp = intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
+                }
+            }
+
+            return strTemp;
+        }
+
+        public static string ActiveSkillBP(string strZeroKarma, string strOf, string strColon, string strSpace,
+            string strKarma, Character character)
+        {
+            string strTemp = strZeroKarma;
+            int intActiveSkillPointsMaximum = character.SkillsSection.SkillPointsMaximum;
+            if (intActiveSkillPointsMaximum > 0)
+            {
+                strTemp = character.SkillsSection.SkillPoints.ToString(GlobalSettings.CultureInfo) + strOf +
+                          intActiveSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
+            }
+
+            int intActiveSkillsTotalCostKarma = character.SkillsSection.Skills.TotalCostKarma();
+            if (intActiveSkillsTotalCostKarma > 0)
+            {
+                if (strTemp != strZeroKarma)
+                {
+                    strTemp += strColon + strSpace + intActiveSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) +
+                               strSpace + strKarma;
+                }
+                else
+                {
+                    strTemp = intActiveSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
+                }
+            }
+
+            return strTemp;
+        }
+
     }
 }
