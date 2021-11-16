@@ -139,13 +139,12 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage = "")
         {
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
-            return strLanguage != GlobalSettings.Language
-                ? LanguageManager.TranslateExtra(!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+            if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
+                return Name;
+            return LanguageManager.TranslateExtra(
+                !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? LanguageManager.ReverseTranslateExtra(Name, GlobalSettings.Language, _objCharacter)
-                    : Name, strLanguage, _objCharacter)
-                : Name;
+                    : Name, strLanguage, _objCharacter);
         }
 
         /// <summary>

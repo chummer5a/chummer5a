@@ -1014,11 +1014,11 @@ namespace Chummer
                         string strBlocksMounts = xmlCyberware.SelectSingleNodeAndCacheExpression("blocksmounts")?.Value;
                         if (!string.IsNullOrEmpty(strBlocksMounts))
                         {
-                            IList<Cyberware> lstWareListToCheck = CyberwareParent != null
-                                ? CyberwareParent.Children
-                                : (ParentVehicle == null
-                                    ? _objCharacter.Cyberware
-                                    : null);
+                            ICollection<Cyberware> lstWareListToCheck = null;
+                            if (CyberwareParent != null)
+                                lstWareListToCheck = CyberwareParent.Children;
+                            else if (ParentVehicle == null)
+                                lstWareListToCheck = _objCharacter.Cyberware;
                             if (xmlCyberware.SelectSingleNodeAndCacheExpression("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
                                 (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                             {

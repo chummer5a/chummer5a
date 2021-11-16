@@ -1530,10 +1530,13 @@ namespace Chummer
                 {
                     OpenCharacters.Add(objCharacter);
                     //Timekeeper.Start("load_file");
-                    bool blnLoaded = blnSync
+                    bool blnLoaded;
+                    if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.Load(blnShowProgressBar ? _frmProgressBar : null, blnShowErrors)
-                        : await objCharacter.LoadAsync(blnShowProgressBar ? _frmProgressBar : null, blnShowErrors);
+                        blnLoaded = objCharacter.Load(blnShowProgressBar ? _frmProgressBar : null, blnShowErrors);
+                    else
+                        blnLoaded = await objCharacter.LoadAsync(blnShowProgressBar ? _frmProgressBar : null,
+                            blnShowErrors);
                     //Timekeeper.Finish("load_file");
                     if (!blnLoaded)
                     {

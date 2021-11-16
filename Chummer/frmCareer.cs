@@ -13868,45 +13868,55 @@ namespace Chummer
                             if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                                 cmsAmmoSingleShot.Enabled = true;
 
-                            cmsAmmoSingleShot.Text = cmsAmmoSingleShot.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SingleShot")
+                            if (cmsAmmoSingleShot.Enabled)
+                                cmsAmmoSingleShot.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_SingleShot")
                                     , objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.SingleShot == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_SingleShotNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoSingleShot.Text = LanguageManager.GetString("String_SingleShotNA");
 
-                            cmsAmmoShortBurst.Text = cmsAmmoShortBurst.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_ShortBurst")
+                            if (cmsAmmoShortBurst.Enabled)
+                                cmsAmmoShortBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_ShortBurst")
                                     , objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.ShortBurst == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_ShortBurstNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoShortBurst.Text = LanguageManager.GetString("String_ShortBurstNA");
 
-                            cmsAmmoLongBurst.Text = cmsAmmoLongBurst.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_LongBurst")
+                            if (cmsAmmoLongBurst.Enabled)
+                                cmsAmmoLongBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_LongBurst")
                                     , objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.LongBurst == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_LongBurstNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoLongBurst.Text = LanguageManager.GetString("String_LongBurstNA");
 
-                            cmsAmmoFullBurst.Text = cmsAmmoFullBurst.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_FullBurst")
+                            if (cmsAmmoFullBurst.Enabled)
+                                cmsAmmoFullBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_FullBurst")
                                     , objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.FullBurst == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_FullBurstNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurstNA");
 
-                            cmsAmmoSuppressiveFire.Text = cmsAmmoSuppressiveFire.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SuppressiveFire")
+                            if (cmsAmmoSuppressiveFire.Enabled)
+                                cmsAmmoSuppressiveFire.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_SuppressiveFire")
                                     , objWeapon.Suppressive,
                                     LanguageManager.GetString(objWeapon.Suppressive == 1
                                         ? "String_Bullet"
-                                        : "String_Bullets"))
-                                : LanguageManager.GetString("String_SuppressiveFireNA");
+                                        : "String_Bullets"));
+                            else
+                                cmsAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFireNA");
 
                             List<ListItem> lstAmmo = new List<ListItem>(objWeapon.AmmoSlots);
                             int intCurrentSlot = objWeapon.ActiveAmmoSlot;
@@ -16318,7 +16328,10 @@ namespace Chummer
                         lblVehicleRating.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
                         lblVehicleGearQtyLabel.Visible = true;
                         lblVehicleGearQty.Visible = true;
-                        lblVehicleGearQty.Text = objGear.Quantity.ToString(objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal) ? CharacterObjectSettings.NuyenFormat : objGear.Category == "Currency" ? "#,0.00" : "#,0", GlobalSettings.CultureInfo);
+                        string strQuantity = objGear.DisplayQuantity(GlobalSettings.CultureInfo);
+                        if (string.IsNullOrEmpty(strQuantity))
+                            strQuantity = 1.ToString(GlobalSettings.CultureInfo);
+                        lblVehicleGearQty.Text = strQuantity;
                         cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
                         lblVehicleAvail.Text = objGear.DisplayTotalAvail;
                         lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';

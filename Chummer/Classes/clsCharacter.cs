@@ -266,6 +266,13 @@ namespace Chummer
         /// </summary>
         public Character()
         {
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                _objSettings = new CharacterSettings(); // Need this because ExpenseCharts is WPF and needs a Character in design mode.
+            else if (SettingsManager.LoadedCharacterSettings.ContainsKey(GlobalSettings.DefaultCharacterSetting))
+                _objSettings = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
+            else
+                _objSettings = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSettingDefaultValue];
+
             Settings.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
             AttributeSection.Reset();
@@ -6191,11 +6198,7 @@ namespace Chummer
                 strXPath = "/chummer/grades/grade";
 
             List<Grade> lstGrades;
-            using (XmlNodeList xmlGradeList = LoadData(objSource == Improvement.ImprovementSource.Bioware
-                    ? "bioware.xml"
-                    : objSource == Improvement.ImprovementSource.Drug
-                        ? "drugcomponents.xml"
-                        : "cyberware.xml").SelectNodes(strXPath))
+            using (XmlNodeList xmlGradeList = LoadData(Grade.GetDataFileNameFromImprovementSource(objSource)).SelectNodes(strXPath))
             {
                 lstGrades = new List<Grade>(xmlGradeList?.Count ?? 0);
                 if (xmlGradeList?.Count > 0)
@@ -7394,11 +7397,7 @@ namespace Chummer
 
         #region Basic Properties
 
-        private CharacterSettings _objSettings = Utils.IsDesignerMode || Utils.IsRunningInVisualStudio // Need this because ExpenseCharts is WPF and needs a Character in design mode.
-            ? new CharacterSettings()
-            : SettingsManager.LoadedCharacterSettings.ContainsKey(GlobalSettings.DefaultCharacterSetting)
-                ? SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting]
-                : SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSettingDefaultValue];
+        private CharacterSettings _objSettings;
 
         /// <summary>
         /// Character Settings object.
@@ -9151,10 +9150,18 @@ namespace Chummer
         /// <summary>
         /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation.
         /// </summary>
-        public int MaxSpiritForce =>
-            ((Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value) > 0)
-                ? (Created ? 2 : 1) * (Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value)
-                : 0;
+        public int MaxSpiritForce
+        {
+            get
+            {
+                int intReturn = Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value;
+                if (intReturn <= 0)
+                    return 0;
+                if (Created)
+                    intReturn *= 2;
+                return intReturn;
+            }
+        }
 
         public int BoundSpiritLimit
         {
@@ -9182,7 +9189,18 @@ namespace Chummer
         /// <summary>
         /// Maximum level of sprites compilable/registrable by the character. Limited to RES at creation.
         /// </summary>
-        public int MaxSpriteLevel => RES.TotalValue > 0 ? (Created ? 2 : 1) * RES.TotalValue : 0;
+        public int MaxSpriteLevel
+        {
+            get
+            {
+                int intReturn = RES.TotalValue;
+                if (intReturn <= 0)
+                    return 0;
+                if (Created)
+                    intReturn *= 2;
+                return intReturn;
+            }
+        }
 
         public int RegisteredSpriteLimit
         {
@@ -11591,9 +11609,23 @@ namespace Chummer
             return intArmor + intStacking;
         }
 
-        public int DamageResistancePool =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating +
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).StandardRound();
+        public int DamageResistancePool
+        {
+            get
+            {
+                int intBody = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intBody = objVehicle.TotalBody;
+                }
+                else
+                    intBody = BOD.TotalValue;
+                return intBody +
+                       TotalArmorRating +
+                       ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).StandardRound();
+            }
+        }
 
         public string DamageResistancePoolToolTip
         {
@@ -11603,17 +11635,21 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder();
                 if(IsAI)
                 {
-                    sbdToolTip.Append(LanguageManager.GetString("String_VehicleBody") + strSpace + '(' +
-                                      (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalSettings
-                                          .CultureInfo) + ')');
+                    if (HomeNode is Vehicle objVehicle)
+                        sbdToolTip.Append(LanguageManager.GetString("String_VehicleBody") + strSpace + '(' +
+                                          objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo) + ')' + strSpace +
+                                          '+' + strSpace);
                 }
                 else
                 {
-                    sbdToolTip.Append(BOD.DisplayAbbrev + strSpace + '(' + BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')');
+                    sbdToolTip.Append(BOD.DisplayAbbrev + strSpace + '(' +
+                                      BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '+' +
+                                      strSpace);
                 }
 
-                sbdToolTip.Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Armor") + strSpace + '(' +
+                sbdToolTip.Append(LanguageManager.GetString("Tip_Armor") + strSpace + '(' +
                                   TotalArmorRating.ToString(GlobalSettings.CultureInfo) + ')');
+
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance &&
@@ -11703,9 +11739,24 @@ namespace Chummer
         }
         #endregion
         #region Indirect Soak
-        public int SpellDefenseIndirectSoak =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + GetArmorRating(Improvement.ImprovementType.SpellResistance)
-            + ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance).StandardRound();
+        public int SpellDefenseIndirectSoak
+        {
+            get
+            {
+                int intAttributes = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intAttributes = objVehicle.TotalBody;
+                }
+                else
+                    intAttributes = BOD.TotalValue;
+
+                return intAttributes +
+                       GetArmorRating(Improvement.ImprovementType.SpellResistance) +
+                       ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).StandardRound();
+            }
+        }
 
         public string DisplaySpellDefenseIndirectSoak => CurrentCounterspellingDice == 0
             ? SpellDefenseIndirectSoak.ToString(GlobalSettings.CultureInfo)
@@ -11795,10 +11846,25 @@ namespace Chummer
         }
         #endregion
         #region Direct Soak Physical
-        public int SpellDefenseDirectSoakPhysical =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue)
-            + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-               + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist)).StandardRound();
+        public int SpellDefenseDirectSoakPhysical
+        {
+            get
+            {
+                int intAttributes = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intAttributes = objVehicle.TotalBody;
+                }
+                else
+                    intAttributes = BOD.TotalValue;
+
+                return intAttributes +
+                       (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist))
+                       .StandardRound();
+            }
+        }
 
         public string DisplaySpellDefenseDirectSoakPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseDirectSoakPhysical.ToString(GlobalSettings.CultureInfo)
@@ -12655,10 +12721,25 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseManipulationPhysical =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody * 2 : 0) : BOD.TotalValue + STR.TotalValue) +
-            (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-             + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist)).StandardRound();
+        public int SpellDefenseManipulationPhysical
+        {
+            get
+            {
+                int intAttributes = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intAttributes = objVehicle.TotalBody * 2;
+                }
+                else
+                    intAttributes = BOD.TotalValue + STR.TotalValue;
+
+                return intAttributes +
+                       (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist))
+                       .StandardRound();
+            }
+        }
 
         public string DisplaySpellDefenseManipulationPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseManipulationPhysical.ToString(GlobalSettings.CultureInfo)
@@ -12763,9 +12844,10 @@ namespace Chummer
             {
                 if(IsAI)
                 {
-                    return HomeNode == null
-                        ? LanguageManager.GetString("Label_OtherCoreCM")
-                        : LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM");
+                    if (HomeNode is Vehicle)
+                        return LanguageManager.GetString("Label_OtherPhysicalCM");
+                    else
+                        return LanguageManager.GetString("Label_OtherCoreCM");
                 }
                 return LanguageManager.GetString("Label_OtherPhysicalCM");
             }

@@ -877,14 +877,15 @@ namespace Chummer
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Alchemy");
                 }
-                if (Category == "Enchantments")
+                switch (Category)
                 {
-                    return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
+                    case "Enchantments":
+                        return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
+                    case "Rituals":
+                        return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
+                    default:
+                        return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
                 }
-
-                return Category == "Rituals"
-                    ? _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting")
-                    : _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
             }
         }
 

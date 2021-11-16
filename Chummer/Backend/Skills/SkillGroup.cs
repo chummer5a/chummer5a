@@ -146,13 +146,10 @@ namespace Chummer.Backend.Skills
                                 ? 1 : 0;
                     else
                     {
-                        _intCachedBaseUnbroken = _objCharacter.Settings.UsePointsOnBrokenGroups
-                            ? KarmaUnbroken
-                                ? 1
-                                : 0
-                            : SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
-                                ? 1
-                                : 0;
+                        if (_objCharacter.Settings.UsePointsOnBrokenGroups)
+                            _intCachedBaseUnbroken = KarmaUnbroken ? 1 : 0;
+                        else
+                            _intCachedBaseUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0) ? 1 : 0;
                     }
                 }
                 return _intCachedBaseUnbroken > 0;
