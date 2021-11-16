@@ -281,6 +281,7 @@
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\StaticMethods\StaticAttributes.cs" />
+    <Compile Include="Backend\StaticMethods\StaticCharacterStrings.cs" />
     <Compile Include="Backend\StaticMethods\StaticCyberware.cs" />
     <Compile Include="Backend\StaticMethods\StaticMetamagicAndEcho.cs" />
     <Compile Include="Backend\StaticMethods\CharacterCalculations.cs" />

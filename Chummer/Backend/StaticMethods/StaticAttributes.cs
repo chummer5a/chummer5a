@@ -33,26 +33,5 @@ namespace Chummer.Backend.StaticMethods
 
             return true;
         }
-
-        public static string BuildAttributes(Character objCharacter, ICollection<CharacterAttrib> attribs, ICollection<CharacterAttrib> extraAttribs = null, bool special = false)
-        {
-            int bp = CharacterCalculations.CalculateAttributeBP(attribs, extraAttribs);
-            string s = bp.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
-            int att = CharacterCalculations.CalculateAttributePriorityPoints(objCharacter, attribs, extraAttribs);
-            int total = special ? objCharacter.TotalSpecial : objCharacter.TotalAttributes;
-            if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
-            {
-                if (bp > 0)
-                {
-                    s = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_OverPriorityPoints"),
-                        total - att, total, bp);
-                }
-                else
-                {
-                    s = (total - att).ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Of") + total.ToString(GlobalSettings.CultureInfo);
-                }
-            }
-            return s;
-        }
     }
 }

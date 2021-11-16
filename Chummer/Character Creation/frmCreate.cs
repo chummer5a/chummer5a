@@ -35,7 +35,7 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
-using Chummer.Backend.BuySellIncreaseDecreaseMethods;
+using Chummer.Backend.StaticMethods;
 using Microsoft.ApplicationInsights;
 using NLog;
 
@@ -3479,7 +3479,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                if (ChangeMetamagicOrEcho.CanIncreaseInitiateGrade(CharacterObject, CharacterObjectSettings))
+                if (StaticMetamagicAndEcho.CanIncreaseInitiateGrade(CharacterObject, CharacterObjectSettings))
                 {
                     Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -3495,7 +3495,7 @@ namespace Chummer
                     tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho");
 
                     // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                    if (ChangeMetamagicOrEcho.CanIncreaseInitiateGrade(CharacterObject, CharacterObjectSettings))
+                    if (StaticMetamagicAndEcho.CanIncreaseInitiateGrade(CharacterObject, CharacterObjectSettings))
                     {
                         Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
@@ -3504,7 +3504,7 @@ namespace Chummer
                 }
 
                 // Create the Initiate Grade object.
-                ChangeMetamagicOrEcho.CreateInitiateGradeObject(CharacterObject, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
+                StaticMetamagicAndEcho.CreateInitiateGradeObject(CharacterObject, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8805,680 +8805,248 @@ namespace Chummer
         #region Custom Methods
 
         /// <summary>
-        /// Calculate the BP used by Primary Attributes.
-        /// </summary>
-        private static int CalculateAttributeBP(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
-        {
-            // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
-            // Special Attributes are not subject to the 1/2 of max BP rule.
-            int intBP = attribs.Sum(att => att.TotalKarmaCost);
-            if (extraAttribs != null)
-            {
-                intBP += extraAttribs.Sum(att => att.TotalKarmaCost);
-            }
-            return intBP;
-        }
-
-        private int CalculateAttributePriorityPoints(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
-        {
-            int intAtt = 0;
-            if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
-            {
-                // Get the total of "free points" spent
-                intAtt += attribs.Sum(att => att.SpentPriorityPoints);
-                if (extraAttribs != null)
-                {
-                    // Get the total of "free points" spent
-                    intAtt += extraAttribs.Sum(att => att.SpentPriorityPoints);
-                }
-            }
-            return intAtt;
-        }
-
-        private string BuildAttributes(ICollection<CharacterAttrib> attribs, ICollection<CharacterAttrib> extraAttribs = null, bool special = false)
-        {
-            int bp = CalculateAttributeBP(attribs, extraAttribs);
-            string s = bp.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
-            int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
-            int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
-            if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
-            {
-                if (bp > 0)
-                {
-                    s = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_OverPriorityPoints"),
-                        total - att, total, bp);
-                }
-                else
-                {
-                    s = (total - att).ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Of") + total.ToString(GlobalSettings.CultureInfo);
-                }
-            }
-            return s;
-        }
-
-        /// <summary>
         /// Calculate the number of Build Points the character has remaining.
         /// </summary>
         private int CalculateBP(bool blnDoUIUpdate = true)
         {
-            int intKarmaPointsRemain = CharacterObjectSettings.BuildKarma;
-            //int intPointsUsed = 0; // used as a running total for each section
-            const int intFreestyleBPMin = 0;
-            int intFreestyleBP = 0;
-            StringBuilder sbdPositiveQualityTooltip = new StringBuilder();
-            StringBuilder sbdNegativeQualityTooltip = new StringBuilder();
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strPoints = blnDoUIUpdate ? LanguageManager.GetString("String_Karma") : string.Empty;
+            string strColon;
+            string strOf;
+            string strPoints;
+            string strSpace;
 
-            // ------------------------------------------------------------------------------
-            // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
-            if (!CharacterObject.EffectiveBuildMethodUsesPriorityTables)
+            var (intKarmaPointsRemain, intFreestyleBP) = CharacterCalculations.CalculateRemainingBP(CharacterObject,
+                CharacterObjectSettings, nudMysticAdeptMAGMagician.ValueAsInt);
+
+
+            if (blnDoUIUpdate)
             {
-                // Subtract the BP used for Metatype.
-                intKarmaPointsRemain -= CharacterObject.MetatypeBP * CharacterObjectSettings.MetatypeCostsKarmaMultiplier;
-            }
-            else
-            {
-                intKarmaPointsRemain -= CharacterObject.MetatypeBP;
+                //Instead of calling the LanguageManager again and again we just pass this commonly used strings as arguments
+                strColon = LanguageManager.GetString("String_Colon");
+                strOf = LanguageManager.GetString("String_Of");
+                strPoints = blnDoUIUpdate ? LanguageManager.GetString("String_Karma") : string.Empty;
+                strSpace = LanguageManager.GetString("String_Space");
+                DoUIUpdate();
             }
 
-            // ------------------------------------------------------------------------------
-            // Calculate the points used by Contacts.
-            int intPointsInContacts = 0;
+            //Just passing this along to not having to rework the CalculateBP usages right now.
+            return intKarmaPointsRemain;
 
-            int intContactPoints = CharacterObject.ContactPoints;
-            int intContactPointsLeft = intContactPoints;
-            int intHighPlacesFriends = 0;
-            foreach (Contact objContact in CharacterObject.Contacts)
+            void DoUIUpdate()
             {
-                // Don't care about free contacts
-                if (objContact.EntityType != ContactType.Contact || objContact.Free)
-                    continue;
 
-                if (objContact.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
+
+                string strContactPoints = StaticCharacterStrings.FormStrContactPoints(CharacterObject, strSpace, strPoints, strOf);
+
+
+                lblContactsBP.Text = strContactPoints;
+                lblContactPoints.Text = strContactPoints;
+
+                var positiveQualityTooltip =
+                    StaticCharacterStrings.PositiveQualityTooltip(CharacterObject, CharacterObjectSettings, strSpace);
+                lblPositiveQualitiesBP.SetToolTip(positiveQualityTooltip);
+
+                var negativeQualityTooltip =
+                    StaticCharacterStrings.FormNegativeQualityTooltip(CharacterObject, CharacterObjectSettings, strSpace);
+                lblNegativeQualitiesBP.SetToolTip(negativeQualityTooltip);
+
+                lblAttributesBP.Text =
+                    StaticCharacterStrings.FormAttributeCostString(CharacterObject, CharacterObject.AttributeSection.AttributeList);
+                lblPBuildSpecial.Text = StaticCharacterStrings.FormAttributeCostString(CharacterObject,
+                    CharacterObject.AttributeSection.SpecialAttributeList, null, true);
+
+                var intMartialArtsPoints = CharacterCalculations.CalculateMartialArtsPoints(CharacterObject, CharacterObjectSettings);
+                lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+
+                string martialArtsBPToolTip =
+                    StaticCharacterStrings.MartialArtsBPToolTip(CharacterObject, CharacterObjectSettings, strSpace);
+                lblBuildMartialArts.SetToolTip(martialArtsBPToolTip);
+
+                var intNuyenBP = CharacterObject.NuyenBP.StandardRound();
+                lblNuyenBP.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+
+                var intFociPointsUsed = CharacterCalculations.FociPointsUsed(CharacterObject);
+                lblFociBP.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+
+                string FociBPToolip = StaticCharacterStrings.BuildFociBPTooltip(CharacterObject, strSpace);
+                lblBuildFoci.SetToolTip(FociBPToolip);
+
+                var intSpiritPointsUsed = CharacterCalculations.SpiritPointsUsed(CharacterObject, CharacterObjectSettings);
+                lblSpiritsBP.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+
+                var intSpritePointsUsed = CharacterCalculations.SpritePointsUsed(CharacterObject, CharacterObjectSettings);
+                lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+
+                var intFormsPointsUsed = CharacterCalculations.CalculateIntFormsPointsUsed(CharacterObject);
+                lblComplexFormsBP.Text =
+                    StaticCharacterStrings.FormComplexFormsBPString(CharacterObject, strPoints, strColon, strOf,
+                        intFormsPointsUsed);
+
+                //Just passed as a ref and never used again
+                int iAmUSeless = 0;
+                int intAINormalProgramPointsUsed, intAIAdvancedProgramPointsUsed;
+                CharacterCalculations.CalculateBPUsedByPrograms(CharacterObject, ref iAmUSeless, ref iAmUSeless, out intAINormalProgramPointsUsed, out intAIAdvancedProgramPointsUsed);
+                lblAINormalProgramsBP.Text =
+                    ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost)
+                    .ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                lblAIAdvancedProgramsBP.Text =
+                    ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) *
+                     CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+
+                var intInitiationPoints = CharacterCalculations.CalculateBPUsedByInitiation(CharacterObject, CharacterObjectSettings);
+                lblInitiationBP.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                // ------------------------------------------------------------------------------
+                // Update the number of BP remaining in the StatusBar.
+                tslKarmaRemaining.Text = intKarmaPointsRemain.ToString(GlobalSettings.CultureInfo);
+                if (_blnFreestyle)
                 {
-                    intHighPlacesFriends += objContact.Connection + objContact.Loyalty;
-                }
-                else if (!objContact.IsGroup)
-                {
-                    int over = intContactPointsLeft - objContact.ContactPoints;
-
-                    //Prefers to eat 0, we went over
-                    if (over < 0)
-                    {
-                        //over is negative so to add we substract
-                        //instead of +abs(over)
-                        intPointsInContacts -= over;
-                        intContactPointsLeft = 0; //we went over so we know none are left
-                    }
-                    else
-                    {
-                        //otherwise just set;
-                        intContactPointsLeft = over;
-                    }
-                }
-            }
-
-            CharacterObject.ContactPointsUsed = intContactPointsLeft;
-
-            if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
-            {
-                intPointsInContacts += Math.Max(0, intHighPlacesFriends - CharacterObject.CHA.Value * 4);
-            }
-
-            intKarmaPointsRemain -= intPointsInContacts;
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Qualities.
-            int intLifeModuleQualities = 0;
-
-            foreach (Quality objLoopQuality in CharacterObject.Qualities.Where(q => q.ContributeToBP))
-            {
-                if (objLoopQuality.Type == QualityType.LifeModule)
-                {
-                    intLifeModuleQualities += objLoopQuality.BP * CharacterObjectSettings.KarmaQuality;
-                    if (blnDoUIUpdate)
-                    {
-                        sbdPositiveQualityTooltip.AppendFormat(
-                            GlobalSettings.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
-                            strSpace, objLoopQuality.BP * CharacterObjectSettings.KarmaQuality).AppendLine();
-                    }
-                }
-                else if (blnDoUIUpdate)
-                {
-                    switch (objLoopQuality.Type)
-                    {
-                        case QualityType.Positive:
-                            sbdPositiveQualityTooltip.AppendFormat(
-                                GlobalSettings.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
-                                strSpace, objLoopQuality.BP * CharacterObjectSettings.KarmaQuality).AppendLine();
-                            break;
-
-                        case QualityType.Negative:
-                            sbdNegativeQualityTooltip.AppendFormat(
-                                GlobalSettings.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
-                                strSpace, objLoopQuality.BP * CharacterObjectSettings.KarmaQuality).AppendLine();
-                            break;
-                    }
-                }
-            }
-
-            if (CharacterObject.Contacts.Any(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
-            {
-                sbdPositiveQualityTooltip.AppendLine(LanguageManager.GetString("Label_GroupContacts"));
-                foreach (Contact objGroupContact in CharacterObject.Contacts.Where(x =>
-                    x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
-                {
-                    string strNameToUse = objGroupContact.GroupName;
-                    if (string.IsNullOrEmpty(strNameToUse))
-                    {
-                        strNameToUse = objGroupContact.Name;
-                        if (string.IsNullOrEmpty(strNameToUse))
-                            strNameToUse = LanguageManager.GetString("String_Unknown");
-                    }
-                    else if (!string.IsNullOrWhiteSpace(objGroupContact.Name))
-                        strNameToUse += '/' + objGroupContact.Name;
-                    sbdPositiveQualityTooltip.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                                           strNameToUse,
-                                                           strSpace,
-                                                           objGroupContact.ContactPoints * CharacterObjectSettings.KarmaContact).AppendLine();
-                }
-            }
-
-            int intQualityPointsUsed = intLifeModuleQualities - CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
-
-            intKarmaPointsRemain -= intQualityPointsUsed;
-            intFreestyleBP += intQualityPointsUsed;
-            // Changelings must either have a balanced negative and positive number of metagenic qualities, or have 1 more point of positive than negative.
-            // If the latter, karma is used to balance them out.
-            if (CharacterObject.MetagenicPositiveQualityKarma + CharacterObject.MetagenicNegativeQualityKarma == 1)
-                intKarmaPointsRemain--;
-
-            // ------------------------------------------------------------------------------
-            // Update Primary Attributes and Special Attributes values.
-            int intAttributePointsUsed = CalculateAttributeBP(CharacterObject.AttributeSection.AttributeList);
-            intAttributePointsUsed += CalculateAttributeBP(CharacterObject.AttributeSection.SpecialAttributeList);
-            intKarmaPointsRemain -= intAttributePointsUsed;
-
-            // ------------------------------------------------------------------------------
-            // Include the BP used by Martial Arts.
-            int intMartialArtsPoints = 0;
-            string strColon = LanguageManager.GetString("String_Colon");
-            string strOf = LanguageManager.GetString("String_Of");
-            StringBuilder sbdMartialArtsBPToolTip = new StringBuilder();
-            foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
-            {
-                if (objMartialArt.IsQuality)
-                    continue;
-                int intLoopCost = objMartialArt.Cost;
-                intMartialArtsPoints += intLoopCost;
-
-                if (blnDoUIUpdate)
-                {
-                    if (sbdMartialArtsBPToolTip.Length > 0)
-                        sbdMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace);
-                    sbdMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName + strSpace + '(' + intLoopCost.ToString(GlobalSettings.CultureInfo) + ')');
-
-                    bool blnIsFirst = true;
-                    foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
-                    {
-                        if (blnIsFirst)
-                        {
-                            blnIsFirst = false;
-                            continue;
-                        }
-
-                        intLoopCost = CharacterObjectSettings.KarmaTechnique;
-                        intMartialArtsPoints += intLoopCost;
-
-                        sbdMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace + objTechnique.CurrentDisplayName + strSpace + '('
-                                                       + intLoopCost.ToString(GlobalSettings.CultureInfo) + ')');
-                    }
+                    const int intFreestyleBPMin = 0;
+                    tslKarma.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalSettings.CultureInfo);
+                    tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin ? ColorManager.ErrorColor : ColorManager.ControlText;
                 }
                 else
-                    // Add in the Techniques
-                    intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0) * CharacterObjectSettings.KarmaTechnique;
-            }
-            intKarmaPointsRemain -= intMartialArtsPoints;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Skill Groups.
-            int intSkillGroupsPoints = CharacterObject.SkillsSection.SkillGroups.TotalCostKarma();
-            intKarmaPointsRemain -= intSkillGroupsPoints;
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Active Skills.
-            int skillPointsKarma = CharacterObject.SkillsSection.Skills.TotalCostKarma();
-            intKarmaPointsRemain -= skillPointsKarma;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the points used by Knowledge Skills.
-            int knowledgeKarmaUsed = CharacterObject.SkillsSection.KnowledgeSkills.TotalCostKarma();
-
-            //TODO: Remaining is named USED?
-            intKarmaPointsRemain -= knowledgeKarmaUsed;
-
-            intFreestyleBP += knowledgeKarmaUsed;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Resources/Nuyen.
-            int intNuyenBP = CharacterObject.NuyenBP.StandardRound();
-
-            intKarmaPointsRemain -= intNuyenBP;
-
-            intFreestyleBP += intNuyenBP;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Spells.
-            int intSpellPointsUsed = 0;
-            int intRitualPointsUsed = 0;
-            int intPrepPointsUsed = 0;
-            if (CharacterObject.MagicianEnabled
-                || CharacterObject.AdeptEnabled
-                || CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
-                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
-                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                                                                      && objImprovement.Enabled))
-            {
-                // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-                int spells = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus);
-                int intTouchOnlySpells = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && (spell.Range == "T (A)" || spell.Range == "T") && !spell.FreeBonus);
-                int rituals = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus);
-                int preps = CharacterObject.Spells.Count(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus);
-
-                // Each spell costs KarmaSpell.
-                int spellCost = CharacterObject.SpellKarmaCost("Spells");
-                int ritualCost = CharacterObject.SpellKarmaCost("Rituals");
-                int prepCost = CharacterObject.SpellKarmaCost("Preparations");
-                int limit = CharacterObject.FreeSpells;
-
-                // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                if (spellCost <= CharacterObjectSettings.KarmaSpell && CharacterObject.FreeSpells > 0)
                 {
-                    // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-                    int intQualityKarmaToSpellPoints = CharacterObjectSettings.KarmaSpell;
-                    if (CharacterObjectSettings.KarmaSpell != 0)
-                        intQualityKarmaToSpellPoints = Math.Min(limit,
-                            CharacterObject.Qualities
-                                .Where(objQuality => objQuality.CanBuyWithSpellPoints && objQuality.ContributeToBP)
-                                .Sum(objQuality => objQuality.BP) * CharacterObjectSettings.KarmaQuality / CharacterObjectSettings.KarmaSpell);
-                    spells += intQualityKarmaToSpellPoints;
-                    // Add the karma paid for by spell points back into the available karma pool.
-                    intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectSettings.KarmaSpell;
+                    tslKarma.Text = CharacterObjectSettings.BuildKarma.ToString(GlobalSettings.CultureInfo);
+                    tslKarma.ForeColor = ColorManager.ControlText;
                 }
 
-                int intLimitMod = (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
-                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
-                int intLimitModTouchOnly = 0;
-                foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
-                {
-                    int intAttValue = CharacterObject.GetAttribute(imp.ImprovedName).TotalValue;
-                    if (imp.UniqueName.Contains("half"))
-                        intAttValue = (intAttValue + 1) / 2;
-                    if (imp.UniqueName.Contains("touchonly"))
-                        intLimitModTouchOnly += intAttValue;
-                    else
-                        intLimitMod += intAttValue;
-                }
-                foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
-                {
-                    Skill skill = CharacterObject.SkillsSection.GetActiveSkill(imp.ImprovedName);
-                    if (skill == null) continue;
-                    int intSkillValue = skill.TotalBaseRating;
 
-                    if (imp.UniqueName.Contains("half"))
-                        intSkillValue = (intSkillValue + 1) / 2;
-                    if (imp.UniqueName.Contains("touchonly"))
-                        intLimitModTouchOnly += intSkillValue;
-                    else
-                        intLimitMod += intSkillValue;
-                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
-                    foreach (SkillSpecialization spec in skill.Specializations)
-                    {
-                        if (CharacterObject.Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus))
-                        {
-                            spells--;
-                        }
-                    }
-                }
 
-                if (nudMysticAdeptMAGMagician.Value > 0)
-                {
-                    int intPPBought = nudMysticAdeptMAGMagician.ValueAsInt;
-                    if (CharacterObjectSettings.PrioritySpellsAsAdeptPowers)
-                    {
-                        spells += Math.Min(limit, intPPBought);
-                        intPPBought = Math.Max(0, intPPBought - limit);
-                    }
-                    intAttributePointsUsed = intPPBought * CharacterObject.Settings.KarmaMysticAdeptPowerPoint;
-                    intKarmaPointsRemain -= intAttributePointsUsed;
-                }
-                spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
-
-                int spellPoints = limit + intLimitMod;
-                int ritualPoints = limit + intLimitMod;
-                int prepPoints = limit + intLimitMod;
-                for (int i = limit + intLimitMod; i > 0; i--)
-                {
-                    if (spells > 0)
-                    {
-                        spells--;
-                        spellPoints--;
-                    }
-                    else if (rituals > 0)
-                    {
-                        rituals--;
-                        ritualPoints--;
-                    }
-                    else if (preps > 0)
-                    {
-                        preps--;
-                        prepPoints--;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                intKarmaPointsRemain -= Math.Max(0, spells) * spellCost;
-                intKarmaPointsRemain -= Math.Max(0, rituals) * ritualCost;
-                intKarmaPointsRemain -= Math.Max(0, preps) * prepCost;
-
-                intSpellPointsUsed += Math.Max(Math.Max(0, spells) * spellCost, 0);
-                intRitualPointsUsed += Math.Max(Math.Max(0, rituals) * ritualCost, 0);
-                intPrepPointsUsed += Math.Max(Math.Max(0, preps) * prepCost, 0);
+                //UI Spell UI Update
                 if (blnDoUIUpdate
                     && (lblBuildPrepsBP != null
                         || lblSpellsBP != null
                         || lblBuildRitualsBP != null))
                 {
-                    string strFormat = "{0}" + strSpace + "×" + strSpace + "{1}" + strSpace + LanguageManager.GetString("String_Karma")
-                                       + strSpace + "=" + strSpace + "{2}" + strSpace + LanguageManager.GetString("String_Karma");
-                    lblSpellsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
-                    lblBuildRitualsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
-                    lblBuildPrepsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
-                    if (limit + intLimitMod > 0)
+
+                    int limit = CharacterObject.FreeSpells;
+
+                    //We calc it here and pass it as a param, because SpellVariantReductions() and SpellUIUpdate() need them 
+                    int intLimitMod = CharacterCalculations.CalcLimitMod(CharacterObject);
+
+                    int intPPBought = nudMysticAdeptMAGMagician.ValueAsInt;
+
+                    //Calculates the reduction that needs to be applied to all points and counts
+                    var reductionTuple = CharacterCalculations.SpellVariantReductions(CharacterObject, CharacterObjectSettings, intLimitMod, intPPBought);
+
+                    //Deconstructs the tuple
+                    var (spellReduction, ritualReduction, preperationsReduction) = reductionTuple;
+
+                    //Calcs the points we still do some rudimentary calculations here, but we need all 6 of those variables                 
+                    var spellPoints = limit + intLimitMod - spellReduction;
+                    var ritualPoints = limit + intLimitMod - ritualReduction;
+                    var prepPoints = limit + intLimitMod - preperationsReduction;
+
+                    //calcs how much are left
+                    var spells =
+                        CharacterCalculations.OverallSpells(CharacterObject, CharacterObjectSettings, intPPBought) - spellReduction;
+                    var preperations = CharacterObject.Spells.Count(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus) - preperationsReduction;
+                    var rituals = CharacterObject.Spells.Count(spell =>
+                        spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus) - ritualReduction;
+
+
+
+                    SpellUIUpdate(spells, rituals, preperations, intLimitMod, prepPoints, spellPoints, ritualPoints);
+                }
+
+            }
+
+            void SpellUIUpdate(int spells, int rituals, int preperations, int intLimitMod, int prepPoints,
+                int spellPoints, int ritualPoints)
+            {
+
+
+                string strFormat = "{0}" + strSpace + "×" + strSpace + "{1}" + strSpace + LanguageManager.GetString("String_Karma")
+                                   + strSpace + "=" + strSpace + "{2}" + strSpace + LanguageManager.GetString("String_Karma");
+
+                int spellCost = CharacterObject.SpellKarmaCost("Spells");
+                int prepCost = CharacterObject.SpellKarmaCost("Preparations");
+                int ritualCost = CharacterObject.SpellKarmaCost("Rituals");
+
+                var intSpellPointsUsed = Math.Max(Math.Max(0, spells) * spellCost, 0);
+                var intRitualPointsUsed = Math.Max(Math.Max(0, rituals) * ritualCost, 0);
+                var intPrepPointsUsed = Math.Max(Math.Max(0, preperations) * prepCost, 0);
+
+                lblSpellsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost,
+                    intSpellPointsUsed));
+                lblBuildRitualsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost,
+                    intRitualPointsUsed));
+                lblBuildPrepsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, preperations, spellCost,
+                    intPrepPointsUsed));
+
+                int limit = CharacterObject.FreeSpells;
+
+                if (limit + intLimitMod > 0)
+                {
+                    if (lblBuildPrepsBP != null)
                     {
-                        if (lblBuildPrepsBP != null)
-                        {
-                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, spellPoints + ritualPoints - (limit + intLimitMod));
-                            if (intPrepPointsUsed > 0)
-                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
-                            lblBuildPrepsBP.Text = strText;
-                        }
-                        if (lblSpellsBP != null)
-                        {
-                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + ritualPoints - (limit + intLimitMod));
-                            if (intSpellPointsUsed > 0)
-                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
-                            lblSpellsBP.Text = strText;
-                        }
-                        if (lblBuildRitualsBP != null)
-                        {
-                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + spellPoints - (limit + intLimitMod));
-                            if (intRitualPointsUsed > 0)
-                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
-                            lblBuildRitualsBP.Text = strText;
-                        }
+                        string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
+                            prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf,
+                            spellPoints + ritualPoints - (limit + intLimitMod));
+                        if (intPrepPointsUsed > 0)
+                            strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace,
+                                intPrepPointsUsed, strPoints);
+                        lblBuildPrepsBP.Text = strText;
                     }
-                    else if (intLimitMod == 0)
+
+                    if (lblSpellsBP != null)
                     {
-                        if (lblBuildPrepsBP != null)
-                            lblBuildPrepsBP.Text =
-                                intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-                        if (lblSpellsBP != null)
-                            lblSpellsBP.Text =
-                                intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-                        if (lblBuildRitualsBP != null)
-                            lblBuildRitualsBP.Text =
-                                intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                        string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
+                            prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf,
+                            prepPoints + ritualPoints - (limit + intLimitMod));
+                        if (intSpellPointsUsed > 0)
+                            strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace,
+                                intSpellPointsUsed, strPoints);
+                        lblSpellsBP.Text = strText;
                     }
-                    else
+
+                    if (lblBuildRitualsBP != null)
                     {
-                        //TODO: Make the costs render better, currently looks wrong as hell
-                        strFormat = "{0}" + strOf + "{1}" + strColon + strSpace + "{2}" + strSpace + strPoints;
-                        if (lblBuildPrepsBP != null)
-                            lblBuildPrepsBP.Text =
-                                string.Format(GlobalSettings.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, spellPoints + ritualPoints - intLimitMod, intPrepPointsUsed);
-                        if (lblSpellsBP != null)
-                            lblSpellsBP.Text =
-                                string.Format(GlobalSettings.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + ritualPoints - intLimitMod, intSpellPointsUsed);
-                        if (lblBuildRitualsBP != null)
-                            lblBuildRitualsBP.Text =
-                                string.Format(GlobalSettings.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + spellPoints - intLimitMod, intRitualPointsUsed);
+                        string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
+                            prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf,
+                            prepPoints + spellPoints - (limit + intLimitMod));
+                        if (intRitualPointsUsed > 0)
+                            strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace,
+                                intRitualPointsUsed, strPoints);
+                        lblBuildRitualsBP.Text = strText;
                     }
                 }
-            }
-
-            intFreestyleBP += intSpellPointsUsed + intRitualPointsUsed + intPrepPointsUsed;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Foci.
-            int intFociPointsUsed = 0;
-            StringBuilder sbdFociPointsTooltip = new StringBuilder();
-            foreach (Focus objFocus in CharacterObject.Foci)
-            {
-                intFociPointsUsed += objFocus.BindingKarmaCost();
-
-                if (!blnDoUIUpdate)
-                    continue;
-                if (sbdFociPointsTooltip.Length > 0)
-                    sbdFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
-                sbdFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName + strSpace + '(' + objFocus.BindingKarmaCost().ToString(GlobalSettings.CultureInfo) + ')');
-            }
-            intKarmaPointsRemain -= intFociPointsUsed;
-
-            // Calculate the BP used by Stacked Foci.
-            foreach (StackedFocus objFocus in CharacterObject.StackedFoci)
-            {
-                if (!objFocus.Bonded)
-                    continue;
-                int intBindingCost = objFocus.BindingCost;
-                intKarmaPointsRemain -= intBindingCost;
-                intFociPointsUsed += intBindingCost;
-
-                if (!blnDoUIUpdate)
-                    continue;
-                if (sbdFociPointsTooltip.Length > 0)
-                    sbdFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
-                sbdFociPointsTooltip.Append(objFocus.CurrentDisplayName + strSpace + '(' + intBindingCost.ToString(GlobalSettings.CultureInfo) + ')');
-            }
-
-            intFreestyleBP += intFociPointsUsed;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Spirits and Sprites.
-            int intSpiritPointsUsed = 0;
-            int intSpritePointsUsed = 0;
-            foreach (Spirit objSpirit in CharacterObject.Spirits)
-            {
-                int intLoopKarma = objSpirit.ServicesOwed * CharacterObjectSettings.KarmaSpirit;
-                // Each Sprite costs KarmaSpirit x Services Owed.
-                intKarmaPointsRemain -= intLoopKarma;
-                if (objSpirit.EntityType == SpiritType.Spirit)
+                else if (intLimitMod == 0)
                 {
-                    intSpiritPointsUsed += intLoopKarma;
-                    // Each Fettered Spirit costs 3 x Force.
-                    if (objSpirit.Fettered)
-                    {
-                        intKarmaPointsRemain -= objSpirit.Force * CharacterObjectSettings.KarmaSpiritFettering;
-                        intSpiritPointsUsed += objSpirit.Force * CharacterObjectSettings.KarmaSpiritFettering;
-                    }
+                    if (lblBuildPrepsBP != null)
+                        lblBuildPrepsBP.Text =
+                            intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                    if (lblSpellsBP != null)
+                        lblSpellsBP.Text =
+                            intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                    if (lblBuildRitualsBP != null)
+                        lblBuildRitualsBP.Text =
+                            intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
                 }
                 else
                 {
-                    intSpritePointsUsed += intLoopKarma;
+                    //TODO: Make the costs render better, currently looks wrong as hell
+                    strFormat = "{0}" + strOf + "{1}" + strColon + strSpace + "{2}" + strSpace + strPoints;
+                    if (lblBuildPrepsBP != null)
+                        lblBuildPrepsBP.Text =
+                            string.Format(GlobalSettings.CultureInfo, strFormat,
+                                prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, spellPoints + ritualPoints - intLimitMod,
+                                intPrepPointsUsed);
+                    if (lblSpellsBP != null)
+                        lblSpellsBP.Text =
+                            string.Format(GlobalSettings.CultureInfo, strFormat,
+                                prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + ritualPoints - intLimitMod,
+                                intSpellPointsUsed);
+                    if (lblBuildRitualsBP != null)
+                        lblBuildRitualsBP.Text =
+                            string.Format(GlobalSettings.CultureInfo, strFormat,
+                                prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + spellPoints - intLimitMod,
+                                intRitualPointsUsed);
                 }
             }
-            intFreestyleBP += intSpiritPointsUsed + intSpritePointsUsed;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Complex Forms.
-            int intFormsPointsUsed = 0;
-            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
-            {
-                if (objComplexForm.Grade == 0)
-                    intFormsPointsUsed += 1;
-            }
-            if (intFormsPointsUsed > CharacterObject.CFPLimit)
-                intKarmaPointsRemain -= (intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost;
-            intFreestyleBP += intFormsPointsUsed;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Programs and Advanced Programs.
-            int intAINormalProgramPointsUsed = 0;
-            int intAIAdvancedProgramPointsUsed = 0;
-            foreach (AIProgram objProgram in CharacterObject.AIPrograms)
-            {
-                if (objProgram.CanDelete)
-                {
-                    if (objProgram.IsAdvancedProgram)
-                        intAIAdvancedProgramPointsUsed += 1;
-                    else
-                        intAINormalProgramPointsUsed += 1;
-                }
-            }
-            int intKarmaCost = 0;
-            int intNumAdvancedProgramPointsAsNormalPrograms = 0;
-            if (intAINormalProgramPointsUsed > CharacterObject.AINormalProgramLimit)
-            {
-                if (intAIAdvancedProgramPointsUsed < CharacterObject.AIAdvancedProgramLimit)
-                {
-                    intNumAdvancedProgramPointsAsNormalPrograms = Math.Min(intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit, CharacterObject.AIAdvancedProgramLimit - intAIAdvancedProgramPointsUsed);
-                    intAINormalProgramPointsUsed -= intNumAdvancedProgramPointsAsNormalPrograms;
-                }
-                if (intAINormalProgramPointsUsed > CharacterObject.AINormalProgramLimit)
-                    intKarmaCost += (intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost;
-            }
-            if (intAIAdvancedProgramPointsUsed > CharacterObject.AIAdvancedProgramLimit)
-            {
-                intKarmaCost += (intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost;
-            }
-            intKarmaPointsRemain -= intKarmaCost;
-            intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Initiation.
-            int intInitiationPoints = 0;
-            foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
-            {
-                intInitiationPoints += objGrade.KarmaCost;
-                // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-                int metamagicKarma = Math.Max(CharacterObject.Metamagics.Count(x => x.Grade == objGrade.Grade) - 1, 0);
-                intInitiationPoints += CharacterObjectSettings.KarmaMetamagic * metamagicKarma;
-            }
-
-            // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-            intInitiationPoints += CharacterObject.Enhancements.Count * 2;
-            /*
-            foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
-            {
-                intInitiationPoints += 2;
-            }
-            */
-            foreach (Power objPower in CharacterObject.Powers)
-            {
-                intInitiationPoints += objPower.Enhancements.Count * 2;
-                /*
-                foreach (Enhancement objEnhancement in objPower.Enhancements)
-                    intInitiationPoints += 2;
-                    */
-            }
-
-            // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
-            // Check to see if the character is a member of a Group.
-            if (CharacterObject.GroupMember && CharacterObject.MAGEnabled)
-                intInitiationPoints += CharacterObjectSettings.KarmaJoinGroup;
-
-            intKarmaPointsRemain -= intInitiationPoints;
-            intFreestyleBP += intInitiationPoints;
-
-            // Add the Karma cost of any Critter Powers.
-            foreach (CritterPower objPower in CharacterObject.CritterPowers)
-            {
-                intKarmaPointsRemain -= objPower.Karma;
-            }
-
-            CharacterObject.Karma = intKarmaPointsRemain;
-
-            if (!blnDoUIUpdate)
-                return intKarmaPointsRemain;
-            StringBuilder sbdContactPoints = new StringBuilder(CharacterObject.ContactPointsUsed.ToString(GlobalSettings.CultureInfo));
-            if (CharacterObject.FriendsInHighPlaces)
-            {
-                sbdContactPoints.Append('/' + Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalSettings.CultureInfo));
-            }
-            sbdContactPoints.Append(strOf + intContactPoints.ToString(GlobalSettings.CultureInfo));
-            if (CharacterObject.FriendsInHighPlaces)
-            {
-                sbdContactPoints.Append('/' + (CharacterObject.CHA.Value * 4).ToString(GlobalSettings.CultureInfo));
-            }
-            if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
-            {
-                sbdContactPoints.Append(strSpace + '(' + intPointsInContacts.ToString(GlobalSettings.CultureInfo) +
-                                        strSpace + strPoints + ')');
-            }
-
-            string strContactPoints = sbdContactPoints.ToString();
-            lblContactsBP.Text = strContactPoints;
-            lblContactPoints.Text = strContactPoints;
-
-            lblPositiveQualitiesBP.SetToolTip(sbdPositiveQualityTooltip.ToString());
-            lblNegativeQualitiesBP.SetToolTip(sbdNegativeQualityTooltip.ToString());
-
-            lblAttributesBP.Text = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
-            lblPBuildSpecial.Text = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
-
-            lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-            lblBuildMartialArts.SetToolTip(sbdMartialArtsBPToolTip.ToString());
-
-            lblNuyenBP.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-
-            lblFociBP.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-            lblBuildFoci.SetToolTip(sbdFociPointsTooltip.ToString());
-
-            lblSpiritsBP.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-
-            lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-
-            StringBuilder sbdComplexFormsBP = new StringBuilder();
-            if (CharacterObject.CFPLimit > 0)
-            {
-                sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalSettings.CultureInfo) + strOf + CharacterObject.CFPLimit.ToString(GlobalSettings.CultureInfo));
-                if (intFormsPointsUsed > CharacterObject.CFPLimit)
-                {
-                    sbdComplexFormsBP.Append(strColon + strSpace +
-                                             ((intFormsPointsUsed - CharacterObject.CFPLimit) *
-                                              CharacterObject.ComplexFormKarmaCost)
-                                             .ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-                }
-            }
-            else
-            {
-                sbdComplexFormsBP.Append(
-                    ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(
-                        GlobalSettings.CultureInfo) + strSpace + strPoints);
-            }
-            lblComplexFormsBP.Text = sbdComplexFormsBP.ToString();
-
-            lblAINormalProgramsBP.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-            lblAIAdvancedProgramsBP.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-
-            lblInitiationBP.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-            // ------------------------------------------------------------------------------
-            // Update the number of BP remaining in the StatusBar.
-            tslKarmaRemaining.Text = intKarmaPointsRemain.ToString(GlobalSettings.CultureInfo);
-            if (_blnFreestyle)
-            {
-                tslKarma.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalSettings.CultureInfo);
-                tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin ? ColorManager.ErrorColor : ColorManager.ControlText;
-            }
-            else
-            {
-                tslKarma.Text = CharacterObjectSettings.BuildKarma.ToString(GlobalSettings.CultureInfo);
-                tslKarma.ForeColor = ColorManager.ControlText;
-            }
-
-            return intKarmaPointsRemain;
         }
+
+
+
 
         private void UpdateSkillRelatedInfo()
         {
@@ -12833,7 +12401,7 @@ namespace Chummer
                     }
                 }
 
-                int i = CharacterObject.TotalAttributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
+                int i = CharacterObject.TotalAttributes - CharacterCalculations.CalculateAttributePriorityPoints(CharacterObject, CharacterObject.AttributeSection.AttributeList);
                 // Check if the character has gone over on Primary Attributes
                 if (i < 0)
                 {
@@ -12842,7 +12410,7 @@ namespace Chummer
                     sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidAttributeExcess"), -i));
                 }
 
-                i = CharacterObject.TotalSpecial - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
+                i = CharacterObject.TotalSpecial - CharacterCalculations.CalculateAttributePriorityPoints(CharacterObject, CharacterObject.AttributeSection.SpecialAttributeList);
                 // Check if the character has gone over on Special Attributes
                 if (i < 0)
                 {
@@ -13232,7 +12800,7 @@ namespace Chummer
                     }
                 }
 
-                i = CharacterObject.Attributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
+                i = CharacterObject.Attributes - CharacterCalculations.CalculateAttributePriorityPoints(CharacterObject, CharacterObject.AttributeSection.AttributeList);
                 // Check if the character has gone over on Primary Attributes
                 if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
                     string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
@@ -13244,7 +12812,7 @@ namespace Chummer
                     blnValid = false;
                 }
 
-                i = CharacterObject.Special - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
+                i = CharacterObject.Special - CharacterCalculations.CalculateAttributePriorityPoints(CharacterObject, CharacterObject.AttributeSection.SpecialAttributeList);
                 // Check if the character has gone over on Special Attributes
                 if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
                     string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
@@ -14660,7 +14228,7 @@ namespace Chummer
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteMetamagic(CharacterObject, frmPickMetamagic, objGrade,
+                if (StaticMetamagicAndEcho.InitialiseCompleteMetamagic(CharacterObject, frmPickMetamagic, objGrade,
                         CharacterObjectSettings))
                 {
                     IsCharacterUpdateRequested = true;
@@ -14682,7 +14250,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteArt(CharacterObject, frmPickArt, objGrade))
+                if (StaticMetamagicAndEcho.InitialiseCompleteArt(CharacterObject, frmPickArt, objGrade))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -14703,7 +14271,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                if (StaticMetamagicAndEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -14724,7 +14292,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
+                if (StaticMetamagicAndEcho.InitialiseCompleteEnchantmentOrRitual(CharacterObject, frmPickArt, objGrade))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -14769,7 +14337,7 @@ namespace Chummer
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                if (ChangeMetamagicOrEcho.InitializeCompleteEnhancement(CharacterObject, frmPickArt, objGrade, CharacterObjectSettings))
+                if (StaticMetamagicAndEcho.InitializeCompleteEnhancement(CharacterObject, frmPickArt, objGrade, CharacterObjectSettings))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -15059,7 +14627,7 @@ namespace Chummer
 
                 strSelectedParentID = frmPickMount.SelectedItem;
             }
-            if (ChangeCyberware.ChangeCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
+            if (StaticCyberware.ChangeCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -15097,7 +14665,7 @@ namespace Chummer
                 strSelectedParentID = frmPickMount.SelectedItem;
             }
 
-            if (ChangeCyberware.ChangeVehicleCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
+            if (StaticCyberware.ChangeVehicleCyberwareMount(CharacterObject, objModularCyberware, strSelectedParentID))
             {
                 IsCharacterUpdateRequested = true;
 

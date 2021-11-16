@@ -227,7 +227,7 @@ namespace Chummer.Backend.StaticMethods
                 objCharacter.Enhancements.Add(objEnhancement);
             }
 
-            EnhancementExpendKarma(objCharacter, objCharacterSettings, objEnhancement);
+            EnhancementExpendKarma();
 
             return true;
 
@@ -252,6 +252,8 @@ namespace Chummer.Backend.StaticMethods
                 objCharacter.Karma -= objCharacterSettings.KarmaEnhancement;
             }
         }
+
+
         #endregion
 
 

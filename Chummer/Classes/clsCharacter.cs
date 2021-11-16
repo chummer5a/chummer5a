@@ -8460,7 +8460,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Spell Limit.
+        /// Number of free spells in character creation
         /// </summary>
         public int FreeSpells
         {
