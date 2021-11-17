@@ -11495,44 +11495,44 @@ namespace Chummer
 
         public int GetArmorRating(Improvement.ImprovementType eDamageType = Improvement.ImprovementType.Armor)
         {
-            return GetArmorRatingWithImprovement(eDamageType, out int _);
+            return GetArmorRatingWithImprovement(eDamageType, out int _, out List<Improvement> _);
         }
 
-        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromEquippedArmorImprovements)
+        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromEquippedArmorImprovements, out List<Improvement> lstUsedImprovements)
         {
             intFromEquippedArmorImprovements = 0;
             List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
             decimal decBaseArmorImprovement = 0;
             if (eDamageType != Improvement.ImprovementType.None)
             {
-                decBaseArmorImprovement += ImprovementManager.ValueOf(this, eDamageType);
+                decBaseArmorImprovement += ImprovementManager.ValueOf(this, eDamageType, out lstUsedImprovements);
                 if (eDamageType != Improvement.ImprovementType.Armor)
-                    decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
+                {
+                    decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor, out List<Improvement> lstUsedImprovementsExtra);
+                    lstUsedImprovements.AddRange(lstUsedImprovementsExtra);
+                }
             }
+            else
+                lstUsedImprovements = Improvements.Where(x => (x.ImproveType == Improvement.ImprovementType.Armor || x.ImproveType == eDamageType)).ToList();
             if (lstArmorsToConsider.Count == 0)
                 return decBaseArmorImprovement.StandardRound();
             decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
             Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(objArmor => objArmor, objArmor => decBaseArmorImprovement);
-            foreach (Improvement objImprovement in Improvements)
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
-                if ((objImprovement.ImproveSource == Improvement.ImprovementSource.Armor
-                     || objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod)
-                    && (objImprovement.ImproveType == Improvement.ImprovementType.Armor
-                    || objImprovement.ImproveType == eDamageType)
-                    && objImprovement.Enabled)
+                if ((objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
+                     objImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod))
+                    continue;
+                Armor objSourceArmor =
+                    lstArmorsToConsider.FirstOrDefault(x => x.InternalId == objImprovement.SourceName)
+                    ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
+                if (objSourceArmor == null)
+                    continue;
+                decGeneralArmorImprovementValue -= objImprovement.Value;
+                foreach (Armor objArmor in lstArmorsToConsider)
                 {
-                    Armor objSourceArmor =
-                        lstArmorsToConsider.FirstOrDefault(x => x.InternalId == objImprovement.SourceName)
-                        ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
-                    if (objSourceArmor != null)
-                    {
-                        decGeneralArmorImprovementValue -= objImprovement.Value;
-                        foreach (Armor objArmor in lstArmorsToConsider)
-                        {
-                            if (objArmor != objSourceArmor)
-                                dicArmorImprovementValues[objArmor] -= objImprovement.Value;
-                        }
-                    }
+                    if (objArmor != objSourceArmor)
+                        dicArmorImprovementValues[objArmor] -= objImprovement.Value;
                 }
             }
 
@@ -12405,17 +12405,16 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder(LanguageManager.GetString("Tip_Armor") + strSpace + '(' +
                                                              (GetArmorRatingWithImprovement(
                                                                   Improvement.ImprovementType.Armor,
-                                                                  out int intFromHighestArmorImprovements)
+                                                                  out int intFromHighestArmorImprovements,
+                                                                  out List<Improvement> lstUsedImprovements)
                                                               - ImprovementManager.ValueOf(this,
                                                                   Improvement.ImprovementType.Armor).StandardRound()
                                                               + intFromHighestArmorImprovements)
                                                              .ToString(GlobalSettings.CultureInfo) + ')');
-                foreach (Improvement objLoopImprovement in Improvements)
+                foreach (Improvement objLoopImprovement in lstUsedImprovements)
                 {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor
-                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.Armor
-                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod
-                        && objLoopImprovement.Enabled)
+                    if (objLoopImprovement.ImproveSource != Improvement.ImprovementSource.Armor
+                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod)
                     {
                         sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement) + strSpace +
                                           '(' + objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo) + ')');
