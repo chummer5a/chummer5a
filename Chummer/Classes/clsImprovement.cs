@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -2740,9 +2739,9 @@ namespace Chummer
         private static string _strLimitSelection = string.Empty;
         private static string _strSelectedValue = string.Empty;
         private static string _strForcedValue = string.Empty;
-        private static readonly ConcurrentDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<TransactingImprovement>>(8, 10);
-        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
-        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly LockingDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new LockingDictionary<Character, List<TransactingImprovement>>(10);
+        private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> s_DictionaryCachedValues = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>((int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> s_DictionaryCachedAugmentedValues = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>((int)Improvement.ImprovementType.NumImprovementTypes);
 
         #region Properties
 
@@ -2918,7 +2917,7 @@ namespace Chummer
         /// <param name="lstUsedImprovements">List of the improvements actually used for the value</param>
         /// <param name="funcValueGetter">Function for how to extract values for individual improvements.</param>
         private static decimal MetaValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
-            out List<Improvement> lstUsedImprovements, Func<Improvement, decimal> funcValueGetter, ConcurrentDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
+            out List<Improvement> lstUsedImprovements, Func<Improvement, decimal> funcValueGetter, LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
             bool blnAddToRating, string strImprovedName,
             bool blnUnconditionalOnly, bool blnIncludeNonImproved)
         {

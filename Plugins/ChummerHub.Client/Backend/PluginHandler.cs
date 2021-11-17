@@ -676,7 +676,7 @@ namespace Chummer.Plugins
             }
         }
 
-        public readonly static ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
+        public readonly static LockingDictionary<string, TreeNode> MyTreeNodes2Add = new LockingDictionary<string, TreeNode>();
 
         private void mnuSINners_Click(object sender, EventArgs ea)
         {
