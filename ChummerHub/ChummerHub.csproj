@@ -15,6 +15,7 @@
     <Version>1.2.0</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <Configurations>Debug;Release;Release (for Testing)</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,6 +24,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>ChummerHub.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (for Testing)|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
