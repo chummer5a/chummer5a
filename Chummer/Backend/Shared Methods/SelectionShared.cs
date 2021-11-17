@@ -226,23 +226,12 @@ namespace Chummer
                                 break;
                             }
                         case "technique":
-                            {
-                                List<MartialArtTechnique> objTempList;
-                                if (objParent is MartialArt objArt)
-                                {
-                                    objTempList = new List<MartialArtTechnique>(objArt.Techniques);
-                                }
-                                else
-                                {
-                                    objTempList = new List<MartialArtTechnique>(objCharacter.MartialArts.Count);
-                                    foreach (MartialArt objMartialArt in objCharacter.MartialArts)
-                                    {
-                                        objTempList.AddRange(objMartialArt.Techniques);
-                                    }
-                                }
-                                objListToCheck = objTempList;
-                                break;
-                            }
+                        {
+                            objListToCheck = objParent is MartialArt objArt
+                                ? objArt.Techniques
+                                : objCharacter.MartialArts.SelectMany(x => x.Children);
+                            break;
+                        }
                         case "cyberware":
                         case "bioware":
                             {
@@ -260,46 +249,85 @@ namespace Chummer
                     int intExtendedLimit = intLimit;
                     string strLimitWithInclusions = xmlNode.SelectSingleNode("limitwithinclusions")?.Value;
                     if (!string.IsNullOrEmpty(strLimitWithInclusions))
-                    {
                         intExtendedLimit = Convert.ToInt32(strLimitWithInclusions, GlobalSettings.InvariantCultureInfo);
-                    }
                     int intCount = 0;
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        List<IHasName> lstToCheck = objListToCheck?.ToList();
                         string strNameNode = xmlNode.SelectSingleNode("name")?.Value ?? string.Empty;
-                        if (blnCheckCyberwareChildren)
-                        {
-                            intCount = string.IsNullOrEmpty(strLocation)
-                                ? objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && strNameNode == x.Name && x.IsModularCurrentlyEquipped)
-                                : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && strNameNode == x.Name && x.IsModularCurrentlyEquipped);
-                        }
-                        else
-                            intCount = lstToCheck?.Count(objItem => strNameNode == objItem.Name) ?? 0;
                         intExtendedCount = intCount;
                         // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
                         XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNode("includeinlimit");
                         if (xmlIncludeInLimit != null)
                         {
-                            List<string> lstNamesIncludedInLimit = new List<string>(1);
+                            HashSet<string> setNamesIncludedInLimit = new HashSet<string>(1);
                             if (!string.IsNullOrEmpty(strNameNode))
                             {
-                                lstNamesIncludedInLimit.Add(strNameNode);
+                                setNamesIncludedInLimit.Add(strNameNode);
                             }
                             foreach (XPathNavigator objChildXml in xmlIncludeInLimit.SelectChildren(XPathNodeType.Element))
                             {
-                                lstNamesIncludedInLimit.Add(objChildXml.Value);
+                                setNamesIncludedInLimit.Add(objChildXml.Value);
                             }
 
                             if (blnCheckCyberwareChildren)
                             {
-                                intExtendedCount = string.IsNullOrEmpty(strLocation)
-                                    ? objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && lstNamesIncludedInLimit.Any(objLimitName => objLimitName == x.Name && x.IsModularCurrentlyEquipped))
-                                    : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name) && x.IsModularCurrentlyEquipped);
+                                foreach (Cyberware objItem in objCharacter.Cyberware.GetAllDescendants(x =>
+                                    x.Children))
+                                {
+                                    if (!setNamesIncludedInLimit.Contains(objItem.Name))
+                                        continue;
+                                    if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
+                                        continue;
+                                    if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount) || !objItem.IsModularCurrentlyEquipped)
+                                        continue;
+                                    if (strNameNode == objItem.Name)
+                                        intCount += 1;
+                                    intExtendedCount += 1;
+                                    if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
+                                        return false;
+                                }
                             }
                             else
-                                intExtendedCount = lstToCheck?.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name)) ?? 0;
+                            {
+                                foreach (IHasName objItem in objListToCheck)
+                                {
+                                    if (!setNamesIncludedInLimit.Contains(objItem.Name))
+                                        continue;
+                                    if (strNameNode == objItem.Name)
+                                        intCount += 1;
+                                    intExtendedCount += 1;
+                                    if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
+                                        return false;
+                                }
+                            }
+                        }
+                        else if (blnCheckCyberwareChildren)
+                        {
+                            foreach (Cyberware objItem in objCharacter.Cyberware.GetAllDescendants(x =>
+                                x.Children))
+                            {
+                                if (strNameNode != objItem.Name)
+                                    continue;
+                                if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
+                                    continue;
+                                if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount) || !objItem.IsModularCurrentlyEquipped)
+                                    continue;
+                                intCount += 1;
+                                if (!blnShowMessage && intCount >= intLimit)
+                                    return false;
+                            }
+                        }
+                        else
+                        {
+                            foreach (IHasName objItem in objListToCheck)
+                            {
+                                if (strNameNode != objItem.Name)
+                                    continue;
+                                intCount += 1;
+                                if (!blnShowMessage && intCount >= intLimit)
+                                    return false;
+                            }
                         }
                     }
                     if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
