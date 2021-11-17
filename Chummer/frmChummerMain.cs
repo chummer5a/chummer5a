@@ -1875,11 +1875,11 @@ namespace Chummer
             TopMost = blnOldTopMost;
         }
 
-        private static void ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
+        private static void ProcessCommandLineArguments(IReadOnlyCollection<string> strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
-            setFilesToLoad = new HashSet<string>(strArgs.Length);
-            if (strArgs.Length <= 0)
+            setFilesToLoad = new HashSet<string>(strArgs.Count);
+            if (strArgs.Count <= 0)
                 return;
             try
             {

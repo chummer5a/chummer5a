@@ -59,16 +59,19 @@ namespace ChummerHub.Client.UI
             {
                 if (cb is Control cont)
                     cont.Click += OnGroupBoxTagsClick;
-                if (cb is CheckBox cccb)
+                switch (cb)
                 {
-                    cccb.CheckedChanged += OnGroupBoxTagsClick;
-                    cccb.CheckStateChanged += OnGroupBoxTagsClick;
+                    case CheckBox cccb:
+                        cccb.CheckedChanged += OnGroupBoxTagsClick;
+                        cccb.CheckStateChanged += OnGroupBoxTagsClick;
+                        break;
+                    case ComboBox ccb:
+                        ccb.TextChanged += OnGroupBoxTagsClick;
+                        break;
+                    case TextBox ctb:
+                        ctb.TextChanged += OnGroupBoxTagsClick;
+                        break;
                 }
-
-                if (cb is ComboBox ccb)
-                    ccb.TextChanged += OnGroupBoxTagsClick;
-                if (cb is TextBox ctb)
-                    ctb.TextChanged += OnGroupBoxTagsClick;
             }
 
             _inConstructor = false;
@@ -177,22 +180,25 @@ namespace ChummerHub.Client.UI
                         continue;
 
                     cbTag.Checked = true;
-                    if (objMatchingControl is TextBox tbTagValue)
+                    switch (objMatchingControl)
                     {
-                        tbTagValue.Text = tag.TagValue;
-                    }
-                    else if (objMatchingControl is ComboBox comboTagValue)
-                    {
-                        if (tag.TagValue != null)
+                        case TextBox tbTagValue:
+                            tbTagValue.Text = tag.TagValue;
+                            break;
+                        case ComboBox comboTagValue:
                         {
-                            if (!comboTagValue.Items.Contains(tag.TagValue))
-                                comboTagValue.Items.Add(tag.TagValue);
-                            comboTagValue.SelectedItem = tag.TagValue;
+                            if (tag.TagValue != null)
+                            {
+                                if (!comboTagValue.Items.Contains(tag.TagValue))
+                                    comboTagValue.Items.Add(tag.TagValue);
+                                comboTagValue.SelectedItem = tag.TagValue;
+                            }
+
+                            break;
                         }
-                    }
-                    else if (objMatchingControl is NumericUpDown upDownTagValue && decimal.TryParse(tag.TagValue, out decimal val))
-                    {
-                        upDownTagValue.Value = val;
+                        case NumericUpDown upDownTagValue when decimal.TryParse(tag.TagValue, out decimal val):
+                            upDownTagValue.Value = val;
+                            break;
                     }
                 }
             }
@@ -255,19 +261,17 @@ namespace ChummerHub.Client.UI
                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
                 //search for the value
                 Control objMatchingControl = gpControlValueSeq.FirstOrDefault(x => x.Name == "TagValue" + tag.TagName);
-                if (objMatchingControl == null)
-                    continue;
-                if (objMatchingControl is TextBox tbTagValue)
+                switch (objMatchingControl)
                 {
-                    tag.TagValue = tbTagValue.Text;
-                }
-                else if (objMatchingControl is ComboBox comboTagValue)
-                {
-                    tag.TagValue = comboTagValue.SelectedItem?.ToString();
-                }
-                else if (objMatchingControl is NumericUpDown upDownTagValue)
-                {
-                    tag.TagValue = upDownTagValue.Value.ToString(CultureInfo.InvariantCulture);
+                    case TextBox tbTagValue:
+                        tag.TagValue = tbTagValue.Text;
+                        break;
+                    case ComboBox comboTagValue:
+                        tag.TagValue = comboTagValue.SelectedItem?.ToString();
+                        break;
+                    case NumericUpDown upDownTagValue:
+                        tag.TagValue = upDownTagValue.Value.ToString(CultureInfo.InvariantCulture);
+                        break;
                 }
             }
         }

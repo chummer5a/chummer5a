@@ -151,9 +151,7 @@ namespace Chummer.UI.Table
                 if (SortType == SortOrder.Descending)
                 {
                     // swap top & bottom
-                    int intTemp = intTipY;
-                    intTipY = intBottomY;
-                    intBottomY = intTemp;
+                    (intTipY, intBottomY) = (intBottomY, intTipY);
                 }
                 using (Brush objBrush = new SolidBrush(ColorManager.ControlLightest))
                     e.Graphics.FillPolygon(objBrush,

@@ -31,7 +31,7 @@ namespace ChummerDataViewer
 
         public Mainform()
         {
-            _specificHandlers = new Dictionary<string, Action<StatusChangedEventArgs>>()
+            _specificHandlers = new Dictionary<string, Action<StatusChangedEventArgs>>
             {
                 {"DynamoDBConnection" , DynamoDbStatus}
             };

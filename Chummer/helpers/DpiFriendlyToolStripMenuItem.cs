@@ -84,16 +84,16 @@ namespace Chummer
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
             List<Image> lstImages = new List<Image>(Images);
-            if (lstImages.Count == 0)
+            switch (lstImages.Count)
             {
-                Image = null;
-                return;
+                case 0:
+                    Image = null;
+                    return;
+                case 1:
+                    Image = lstImages[0];
+                    return;
             }
-            if (lstImages.Count == 1)
-            {
-                Image = lstImages[0];
-                return;
-            }
+
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
             int intWidth = Math.Min(Width, Height);
             int intHeight = Math.Min(Width, Height);

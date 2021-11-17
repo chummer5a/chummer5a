@@ -538,22 +538,26 @@ namespace ChummerHub.Client.Sinners
                                        + Environment.NewLine + Environment.NewLine;
                             DialogResult result = PluginHandler.MainForm.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
                                 MessageBoxIcon.Asterisk);
-                            if (result == DialogResult.Cancel)
-                                throw new ArgumentException("User aborted perparation for upload!");
-                            if (result == DialogResult.No)
+                            switch (result)
                             {
-                                MySINnerFile.Id = Guid.NewGuid();
-                            }
-                            else
-                            {
-                                ICollection<SINner> list = res.MySINners;
-                                foreach (SINner sin in list)
+                                case DialogResult.Cancel:
+                                    throw new ArgumentException("User aborted perparation for upload!");
+                                case DialogResult.No:
+                                    MySINnerFile.Id = Guid.NewGuid();
+                                    break;
+                                default:
                                 {
-                                    if (sin.Id != null)
+                                    ICollection<SINner> list = res.MySINners;
+                                    foreach (SINner sin in list)
                                     {
-                                        MySINnerFile.Id = sin.Id;
-                                        break;
+                                        if (sin.Id != null)
+                                        {
+                                            MySINnerFile.Id = sin.Id;
+                                            break;
+                                        }
                                     }
+
+                                    break;
                                 }
                             }
                         }

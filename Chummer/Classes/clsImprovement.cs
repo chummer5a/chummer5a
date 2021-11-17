@@ -543,14 +543,15 @@ namespace Chummer
                 _intRating = _intMax;
                 _intMax = 1;
             }
-            if (_objImprovementType == ImprovementType.LimitModifier && string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude))
+            switch (_objImprovementType)
             {
-                _strCondition = _strExclude;
-                _strExclude = string.Empty;
-            }
-            else if (_objImprovementType == ImprovementType.RestrictedGear && _decVal == 0)
-            {
-                _decVal = 24;
+                case ImprovementType.LimitModifier when string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude):
+                    _strCondition = _strExclude;
+                    _strExclude = string.Empty;
+                    break;
+                case ImprovementType.RestrictedGear when _decVal == 0:
+                    _decVal = 24;
+                    break;
             }
 
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
@@ -642,13 +643,13 @@ namespace Chummer
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, _strImprovedName);
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
 
                     _strImprovedName = value;
 
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -676,13 +677,13 @@ namespace Chummer
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, _objImprovementType, ImprovedName);
                         ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
 
                     _objImprovementType = value;
 
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -698,12 +699,12 @@ namespace Chummer
                 if (_objImprovementSource != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _objImprovementSource = value;
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -723,7 +724,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -743,7 +744,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -763,7 +764,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -783,7 +784,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -803,7 +804,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -823,7 +824,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -840,10 +841,10 @@ namespace Chummer
                 if (_strExclude != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strExclude = value;
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -859,10 +860,10 @@ namespace Chummer
                 if (_strCondition != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strCondition = value;
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -878,12 +879,12 @@ namespace Chummer
                 if (_strUniqueName != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strUniqueName = value;
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -900,12 +901,12 @@ namespace Chummer
                 if (_blnAddToRating != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _blnAddToRating = value;
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -922,10 +923,10 @@ namespace Chummer
                 if (_strTarget != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strTarget = value;
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -942,7 +943,7 @@ namespace Chummer
                 {
                     _blnEnabled = value;
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                    ImprovementManager.ProcessRelevantEvents(this.Yield());
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -2662,17 +2663,15 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            if (obj is ImprovementDictionaryKey objOtherImprovementDictionaryKey)
+            switch (obj)
             {
-                return Equals(objOtherImprovementDictionaryKey);
+                case ImprovementDictionaryKey objOtherImprovementDictionaryKey:
+                    return Equals(objOtherImprovementDictionaryKey);
+                case Tuple<Character, Improvement.ImprovementType, string> objOtherTuple:
+                    return Equals(objOtherTuple);
+                default:
+                    return false;
             }
-
-            if (obj is Tuple<Character, Improvement.ImprovementType, string> objOtherTuple)
-            {
-                return Equals(objOtherTuple);
-            }
-
-            return false;
         }
 
         public bool Equals(ImprovementDictionaryKey other)
@@ -3072,16 +3071,15 @@ namespace Chummer
                         // Run through the list of UniqueNames and pick out the highest value for each one.
                         Improvement objHighestImprovement = null;
                         decimal decHighest = decimal.MinValue;
-                        foreach (Tuple<string, Improvement> objLoopUniquePair in lstUniquePairs)
+                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                         {
-                            if (objLoopUniquePair.Item1 == "precedence0")
+                            if (strUnique != "precedence0")
+                                continue;
+                            decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                            if (decHighest < decInnerLoopValue)
                             {
-                                decimal decInnerLoopValue = funcValueGetter(objLoopUniquePair.Item2);
-                                if (decHighest < decInnerLoopValue)
-                                {
-                                    decHighest = decInnerLoopValue;
-                                    objHighestImprovement = objLoopUniquePair.Item2;
-                                }
+                                decHighest = decInnerLoopValue;
+                                objHighestImprovement = objLoopImprovement;
                             }
                         }
 
@@ -3090,13 +3088,12 @@ namespace Chummer
 
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
-                            foreach (Tuple<string, Improvement> strValues in lstUniquePairs)
+                            foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                             {
-                                if (strValues.Item1 == "precedence-1")
-                                {
-                                    decHighest += funcValueGetter(strValues.Item2);
-                                    lstInnerLoopImprovements.Add(strValues.Item2);
-                                }
+                                if (strUnique != "precedence-1")
+                                    continue;
+                                decHighest += funcValueGetter(objLoopImprovement);
+                                lstInnerLoopImprovements.Add(objLoopImprovement);
                             }
                         }
 
@@ -3111,13 +3108,12 @@ namespace Chummer
                     {
                         // Retrieve all of the items that are precedence1 and nothing else.
                         decimal decHighest = 0;
-                        foreach (Tuple<string, Improvement> strValues in lstUniquePairs)
+                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                         {
-                            if (strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1")
-                            {
-                                decHighest += funcValueGetter(strValues.Item2);
-                                lstInnerLoopImprovements.Add(strValues.Item2);
-                            }
+                            if (strUnique != "precedence1" && strUnique != "precedence-1")
+                                continue;
+                            decHighest += funcValueGetter(objLoopImprovement);
+                            lstInnerLoopImprovements.Add(objLoopImprovement);
                         }
 
                         if (decLoopValue < decHighest)
@@ -3134,16 +3130,15 @@ namespace Chummer
                         {
                             Improvement objHighestImprovement = null;
                             decimal decHighest = decimal.MinValue;
-                            foreach (Tuple<string, Improvement> objLoopUniquePair in lstUniquePairs)
+                            foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                             {
-                                if (objLoopUniquePair.Item1 == strUniqueName)
+                                if (strUnique != strUniqueName)
+                                    continue;
+                                decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                                if (decHighest < decInnerLoopValue)
                                 {
-                                    decimal decInnerLoopValue = funcValueGetter(objLoopUniquePair.Item2);
-                                    if (decHighest < decInnerLoopValue)
-                                    {
-                                        decHighest = decInnerLoopValue;
-                                        objHighestImprovement = objLoopUniquePair.Item2;
-                                    }
+                                    decHighest = decInnerLoopValue;
+                                    objHighestImprovement = objLoopImprovement;
                                 }
                             }
 
@@ -3242,16 +3237,15 @@ namespace Chummer
                     {
                         Improvement objHighestImprovement = null;
                         decimal decHighest = decimal.MinValue;
-                        foreach (Tuple<string, Improvement> objLoopUniquePair in lstUniquePairs)
+                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                         {
-                            if (objLoopUniquePair.Item1 == strUniqueName)
+                            if (strUnique != strUniqueName)
+                                continue;
+                            decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                            if (decHighest < decInnerLoopValue)
                             {
-                                decimal decInnerLoopValue = funcValueGetter(objLoopUniquePair.Item2);
-                                if (decHighest < decInnerLoopValue)
-                                {
-                                    decHighest = decInnerLoopValue;
-                                    objHighestImprovement = objLoopUniquePair.Item2;
-                                }
+                                decHighest = decInnerLoopValue;
+                                objHighestImprovement = objLoopImprovement;
                             }
                         }
 
@@ -4024,45 +4018,48 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.SpecialTab:
-                        // Determine if access to any special tabs have been lost.
-                        if (objImprovement.UniqueName == "enabletab")
+                        switch (objImprovement.UniqueName)
                         {
-                            switch (objImprovement.ImprovedName)
-                            {
-                                case "Magician":
-                                    objCharacter.MagicianEnabled = true;
-                                    break;
+                            // Determine if access to any special tabs have been lost.
+                            case "enabletab":
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Magician":
+                                        objCharacter.MagicianEnabled = true;
+                                        break;
 
-                                case "Adept":
-                                    objCharacter.AdeptEnabled = true;
-                                    break;
+                                    case "Adept":
+                                        objCharacter.AdeptEnabled = true;
+                                        break;
 
-                                case "Technomancer":
-                                    objCharacter.TechnomancerEnabled = true;
-                                    break;
+                                    case "Technomancer":
+                                        objCharacter.TechnomancerEnabled = true;
+                                        break;
 
-                                case "Advanced Programs":
-                                    objCharacter.AdvancedProgramsEnabled = true;
-                                    break;
+                                    case "Advanced Programs":
+                                        objCharacter.AdvancedProgramsEnabled = true;
+                                        break;
 
-                                case "Critter":
-                                    objCharacter.CritterEnabled = true;
-                                    break;
-                            }
-                        }
-                        // Determine if access to any special tabs has been regained
-                        else if (objImprovement.UniqueName == "disabletab")
-                        {
-                            switch (objImprovement.ImprovedName)
-                            {
-                                case "Cyberware":
-                                    objCharacter.CyberwareDisabled = true;
-                                    break;
+                                    case "Critter":
+                                        objCharacter.CritterEnabled = true;
+                                        break;
+                                }
 
-                                case "Initiation":
-                                    objCharacter.InitiationForceDisabled = true;
-                                    break;
-                            }
+                                break;
+                            // Determine if access to any special tabs has been regained
+                            case "disabletab":
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Cyberware":
+                                        objCharacter.CyberwareDisabled = true;
+                                        break;
+
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = true;
+                                        break;
+                                }
+
+                                break;
                         }
                         break;
 
@@ -4314,44 +4311,47 @@ namespace Chummer
                         // Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate)
                         {
-                            if (objImprovement.UniqueName == "enabletab")
+                            switch (objImprovement.UniqueName)
                             {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Magician":
-                                        objCharacter.MagicianEnabled = false;
-                                        break;
+                                case "enabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Magician":
+                                            objCharacter.MagicianEnabled = false;
+                                            break;
 
-                                    case "Adept":
-                                        objCharacter.AdeptEnabled = false;
-                                        break;
+                                        case "Adept":
+                                            objCharacter.AdeptEnabled = false;
+                                            break;
 
-                                    case "Technomancer":
-                                        objCharacter.TechnomancerEnabled = false;
-                                        break;
+                                        case "Technomancer":
+                                            objCharacter.TechnomancerEnabled = false;
+                                            break;
 
-                                    case "Advanced Programs":
-                                        objCharacter.AdvancedProgramsEnabled = false;
-                                        break;
+                                        case "Advanced Programs":
+                                            objCharacter.AdvancedProgramsEnabled = false;
+                                            break;
 
-                                    case "Critter":
-                                        objCharacter.CritterEnabled = false;
-                                        break;
-                                }
-                            }
-                            // Determine if access to any special tabs has been regained
-                            else if (objImprovement.UniqueName == "disabletab")
-                            {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Cyberware":
-                                        objCharacter.CyberwareDisabled = false;
-                                        break;
+                                        case "Critter":
+                                            objCharacter.CritterEnabled = false;
+                                            break;
+                                    }
 
-                                    case "Initiation":
-                                        objCharacter.InitiationForceDisabled = false;
-                                        break;
-                                }
+                                    break;
+                                // Determine if access to any special tabs has been regained
+                                case "disabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Cyberware":
+                                            objCharacter.CyberwareDisabled = false;
+                                            break;
+
+                                        case "Initiation":
+                                            objCharacter.InitiationForceDisabled = false;
+                                            break;
+                                    }
+
+                                    break;
                             }
                         }
                         break;
@@ -4691,44 +4691,47 @@ namespace Chummer
                         // Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate && !blnReapplyImprovements)
                         {
-                            if (objImprovement.UniqueName == "enabletab")
+                            switch (objImprovement.UniqueName)
                             {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Magician":
-                                        objCharacter.MagicianEnabled = false;
-                                        break;
+                                case "enabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Magician":
+                                            objCharacter.MagicianEnabled = false;
+                                            break;
 
-                                    case "Adept":
-                                        objCharacter.AdeptEnabled = false;
-                                        break;
+                                        case "Adept":
+                                            objCharacter.AdeptEnabled = false;
+                                            break;
 
-                                    case "Technomancer":
-                                        objCharacter.TechnomancerEnabled = false;
-                                        break;
+                                        case "Technomancer":
+                                            objCharacter.TechnomancerEnabled = false;
+                                            break;
 
-                                    case "Advanced Programs":
-                                        objCharacter.AdvancedProgramsEnabled = false;
-                                        break;
+                                        case "Advanced Programs":
+                                            objCharacter.AdvancedProgramsEnabled = false;
+                                            break;
 
-                                    case "Critter":
-                                        objCharacter.CritterEnabled = false;
-                                        break;
-                                }
-                            }
-                            // Determine if access to any special tabs has been regained
-                            else if (objImprovement.UniqueName == "disabletab")
-                            {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Cyberware":
-                                        objCharacter.CyberwareDisabled = false;
-                                        break;
+                                        case "Critter":
+                                            objCharacter.CritterEnabled = false;
+                                            break;
+                                    }
 
-                                    case "Initiation":
-                                        objCharacter.InitiationForceDisabled = false;
-                                        break;
-                                }
+                                    break;
+                                // Determine if access to any special tabs has been regained
+                                case "disabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Cyberware":
+                                            objCharacter.CyberwareDisabled = false;
+                                            break;
+
+                                        case "Initiation":
+                                            objCharacter.InitiationForceDisabled = false;
+                                            break;
+                                    }
+
+                                    break;
                             }
                         }
                         break;
@@ -5107,14 +5110,12 @@ namespace Chummer
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicPropertiesChanged = new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
             {
-                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement.GetRelevantPropertyChangers())
                 {
-                    if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1,
-                                                         out HashSet<string> setLoopPropertiesChanged))
-                        setLoopPropertiesChanged.Add(tuplePropertyChanged.Item2);
+                    if (dicPropertiesChanged.TryGetValue(objToNotify, out HashSet<string> setLoopPropertiesChanged))
+                        setLoopPropertiesChanged.Add(strProperty);
                     else
-                        dicPropertiesChanged.Add(tuplePropertyChanged.Item1,
-                                                 new HashSet<string> {tuplePropertyChanged.Item2});
+                        dicPropertiesChanged.Add(objToNotify, new HashSet<string> { strProperty });
                 }
             }
             // Fire each event once

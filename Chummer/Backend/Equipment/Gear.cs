@@ -2774,9 +2774,7 @@ namespace Chummer.Backend.Equipment
                 return decQuantityToUse.ToString(_objCharacter.Settings.NuyenFormat, objCulture);
             if (Category == "Currency")
                 return decQuantityToUse.ToString("#,0.00", objCulture);
-            if (Quantity != 1.0m)
-                return decQuantityToUse.ToString("#,0.##", objCulture);
-            return string.Empty;
+            return Quantity != 1.0m ? decQuantityToUse.ToString("#,0.##", objCulture) : string.Empty;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);

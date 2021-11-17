@@ -77,9 +77,7 @@ namespace Chummer.UI.Editors
             {
                 if (rtbContent.SelectionAlignment != HorizontalAlignment.Right)
                 {
-                    int intTemp = rtbContent.SelectionIndent;
-                    rtbContent.SelectionIndent = rtbContent.SelectionRightIndent;
-                    rtbContent.SelectionRightIndent = intTemp;
+                    (rtbContent.SelectionIndent, rtbContent.SelectionRightIndent) = (rtbContent.SelectionRightIndent, rtbContent.SelectionIndent);
                     rtbContent.SelectionAlignment = HorizontalAlignment.Right;
                 }
             }
@@ -96,9 +94,7 @@ namespace Chummer.UI.Editors
             {
                 if (rtbContent.SelectionAlignment != HorizontalAlignment.Left)
                 {
-                    int intTemp = rtbContent.SelectionIndent;
-                    rtbContent.SelectionIndent = rtbContent.SelectionRightIndent;
-                    rtbContent.SelectionRightIndent = intTemp;
+                    (rtbContent.SelectionIndent, rtbContent.SelectionRightIndent) = (rtbContent.SelectionRightIndent, rtbContent.SelectionIndent);
                     rtbContent.SelectionAlignment = HorizontalAlignment.Left;
                 }
                 if (!tsbAlignLeft.Checked)

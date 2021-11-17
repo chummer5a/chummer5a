@@ -803,30 +803,28 @@ namespace Chummer.Backend.Skills
                         });
                     },
                     () => { Parallel.ForEach(KnowledgeSkills, x => { dicSkills.TryAdd(x.Name, x.Id); }); });
-                UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills,
-                                   EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill,
-                                                                     KarmaExpenseType.ImproveSkill));
-                UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
-            }
-        }
+                UpdateUndoSpecific(dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
+                UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
 
-        private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequreingConverting)
-        {
-            //Build a crazy xpath to get everything we want to convert
-
-            string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
-                              string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'")) +
-                              "]/objectid";
-
-            //Find everything
-            XmlNodeList lstNodesToChange = doc.SelectNodes(strXPath);
-            if (lstNodesToChange != null)
-            {
-                for (int i = 0; i < lstNodesToChange.Count; i++)
+                void UpdateUndoSpecific(IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequiringConverting)
                 {
-                    lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
-                        ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
-                        : StringExtensions.EmptyGuid;
+                    //Build a crazy xpath to get everything we want to convert
+
+                    string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
+                                      string.Join(" or ", typesRequiringConverting.Select(x => "karmatype = " + x.ToString().CleanXPath())) +
+                                      "]/objectid";
+
+                    //Find everything
+                    XmlNodeList lstNodesToChange = xmlSkillOwnerDocument.SelectNodes(strXPath);
+                    if (lstNodesToChange != null)
+                    {
+                        for (int i = 0; i < lstNodesToChange.Count; i++)
+                        {
+                            lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                                ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                : StringExtensions.EmptyGuid;
+                        }
+                    }
                 }
             }
         }

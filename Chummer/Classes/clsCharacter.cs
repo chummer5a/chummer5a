@@ -1467,7 +1467,7 @@ namespace Chummer
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
                 objWare.Create(objXmlCyberwareNode,
-                    GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                    GetGradeList(Improvement.ImprovementSource.Bioware, true)
                         .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                     Weapons, Vehicles, true, true, strForcedValue);
                 Cyberware.Add(objWare);
@@ -3170,24 +3170,24 @@ namespace Chummer
                                 foreach (XmlNode objXmlImprovement in objXmlNodeList)
                                 {
                                     string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
-                                    // Do not load condition monitor improvements from older versions of Chummer
-                                    if (strImprovementSource == "ConditionMonitor")
-                                        continue;
-
-                                    // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
-                                    if (strImprovementSource == "EdgeUse")
+                                    switch (strImprovementSource)
                                     {
-                                        decimal decOldEdgeUsed = 0;
-                                        if (objXmlImprovement.TryGetDecFieldQuickly("aug", ref decOldEdgeUsed))
-                                            EdgeUsed = (-decOldEdgeUsed).StandardRound();
-                                        continue;
+                                        // Do not load condition monitor improvements from older versions of Chummer
+                                        case "ConditionMonitor":
+                                            continue;
+                                        // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
+                                        case "EdgeUse":
+                                            decimal decOldEdgeUsed = 0;
+                                            if (objXmlImprovement.TryGetDecFieldQuickly("aug", ref decOldEdgeUsed))
+                                                EdgeUsed = (-decOldEdgeUsed).StandardRound();
+                                            continue;
+                                        case "EssenceLoss":
+                                        case "EssenceLossChargen":
+                                            // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
+                                            if (_decEssenceAtSpecialStart == decimal.MinValue)
+                                                continue;
+                                            break;
                                     }
-
-                                    // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
-                                    if (_decEssenceAtSpecialStart == decimal.MinValue &&
-                                        (strImprovementSource == "EssenceLoss" ||
-                                         strImprovementSource == "EssenceLossChargen"))
-                                        continue;
 
                                     string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                                     if ((blnRemoveImprovements || showWarnings)
@@ -3902,8 +3902,7 @@ namespace Chummer
                                                             x.Name == objCyberware.Name &&
                                                             x.Extra == objCyberware.Extra);
                                                 if (objMatchingCyberware != null)
-                                                    dicPairableCyberwares[objMatchingCyberware] =
-                                                        dicPairableCyberwares[objMatchingCyberware] + 1;
+                                                    dicPairableCyberwares[objMatchingCyberware] += 1;
                                                 else
                                                     dicPairableCyberwares.Add(objCyberware, 1);
                                             }
@@ -3972,8 +3971,7 @@ namespace Chummer
                                                                 x.Name == objCyberware.Name &&
                                                                 x.Extra == objCyberware.Extra);
                                                     if (objMatchingCyberware != null)
-                                                        dicPairableCyberwares[objMatchingCyberware] =
-                                                            dicPairableCyberwares[objMatchingCyberware] + 1;
+                                                        dicPairableCyberwares[objMatchingCyberware] += 1;
                                                     else
                                                         dicPairableCyberwares.Add(objCyberware, 1);
                                                 }
@@ -6173,7 +6171,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public List<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        public IEnumerable<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             StringBuilder sbdFilter = new StringBuilder();
             if(Settings != null)
@@ -6196,23 +6194,19 @@ namespace Chummer
             }
             else
                 strXPath = "/chummer/grades/grade";
-
-            List<Grade> lstGrades;
+            
             using (XmlNodeList xmlGradeList = LoadData(Grade.GetDataFileNameFromImprovementSource(objSource)).SelectNodes(strXPath))
             {
-                lstGrades = new List<Grade>(xmlGradeList?.Count ?? 0);
                 if (xmlGradeList?.Count > 0)
                 {
                     foreach(XmlNode objNode in xmlGradeList)
                     {
                         Grade objGrade = new Grade(this, objSource);
                         objGrade.Load(objNode);
-                        lstGrades.Add(objGrade);
+                        yield return objGrade;
                     }
                 }
             }
-
-            return lstGrades;
         }
 
         /// <summary>
@@ -6304,20 +6298,12 @@ namespace Chummer
         /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
-        /// <param name="blnMountChangeAllowed">Whether or not <paramref name="objModularCyberware"/> can change its mount</param>
         /// <returns></returns>
-        public List<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
+        public IEnumerable<ListItem> ConstructModularCyberlimbList([NotNull] Cyberware objModularCyberware)
         {
-            if (objModularCyberware == null)
-                throw new ArgumentNullException(nameof(objModularCyberware));
+            yield return new ListItem("None", LanguageManager.GetString("String_None"));
+
             string strSpace = LanguageManager.GetString("String_Space");
-            //Mounted cyberware should always be allowed to be dismounted.
-            //Unmounted cyberware requires that a valid mount be present.
-            blnMountChangeAllowed = objModularCyberware.IsModularCurrentlyEquipped;
-            List<ListItem> lstReturn = new List<ListItem>(Cyberware.Count + Vehicles.Count)
-            {
-                new ListItem("None", LanguageManager.GetString("String_None"))
-            };
 
             foreach(Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children))
             {
@@ -6332,8 +6318,7 @@ namespace Chummer
                 {
                     string strName = objLoopCyberware.Parent?.CurrentDisplayName
                                      ?? objLoopCyberware.CurrentDisplayName;
-                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                    blnMountChangeAllowed = true;
+                    yield return new ListItem(objLoopCyberware.InternalId, strName);
                 }
             }
 
@@ -6354,8 +6339,7 @@ namespace Chummer
                             string strName = objLoopVehicle.CurrentDisplayName
                                              + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
                                                            ?? objLoopVehicleMod.CurrentDisplayName);
-                            lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                            blnMountChangeAllowed = true;
+                            yield return new ListItem(objLoopCyberware.InternalId, strName);
                         }
                     }
                 }
@@ -6377,15 +6361,12 @@ namespace Chummer
                                 string strName = objLoopVehicle.CurrentDisplayName
                                                  + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
                                                                ?? objLoopVehicleMod.CurrentDisplayName);
-                                lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                blnMountChangeAllowed = true;
+                                yield return new ListItem(objLoopCyberware.InternalId, strName);
                             }
                         }
                     }
                 }
             }
-
-            return lstReturn;
         }
 
         public bool SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey)
@@ -9097,9 +9078,7 @@ namespace Chummer
                                     if(decLoopEssencePenalty != 0)
                                     {
                                         if(dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
-                                            dicImprovementEssencePenalties[objImprovement.SourceName] =
-                                                dicImprovementEssencePenalties[objImprovement.SourceName] +
-                                                decLoopEssencePenalty;
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] += decLoopEssencePenalty;
                                         else
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
@@ -9535,9 +9514,7 @@ namespace Chummer
                                     if(decLoopEssencePenalty != 0)
                                     {
                                         if(dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
-                                            dicImprovementEssencePenalties[objImprovement.SourceName] =
-                                                dicImprovementEssencePenalties[objImprovement.SourceName] +
-                                                decLoopEssencePenalty;
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] += decLoopEssencePenalty;
                                         else
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
@@ -9755,9 +9732,7 @@ namespace Chummer
                                     if(decLoopEssencePenalty != 0)
                                     {
                                         if(dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
-                                            dicImprovementEssencePenalties[objImprovement.SourceName] =
-                                                dicImprovementEssencePenalties[objImprovement.SourceName] +
-                                                decLoopEssencePenalty;
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] += decLoopEssencePenalty;
                                         else
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
@@ -12841,13 +12816,8 @@ namespace Chummer
         {
             get
             {
-                if(IsAI)
-                {
-                    if (HomeNode is Vehicle)
-                        return LanguageManager.GetString("Label_OtherPhysicalCM");
-                    else
-                        return LanguageManager.GetString("Label_OtherCoreCM");
-                }
+                if (IsAI)
+                    return LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM");
                 return LanguageManager.GetString("Label_OtherPhysicalCM");
             }
         }

@@ -2630,7 +2630,7 @@ namespace Chummer
                                 {
                                     Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
                                     if (objMatchingCyberware != null)
-                                        dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                                        dicPairableCyberwares[objMatchingCyberware] += 1;
                                     else
                                         dicPairableCyberwares.Add(objCyberware, 1);
                                 }
@@ -17762,21 +17762,23 @@ namespace Chummer
         {
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
+            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
+            //Mounted cyberware should always be allowed to be dismounted.
+            //Unmounted cyberware requires that a valid mount be present.
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            {
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_NoValidModularMount"),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             string strSelectedParentID;
             using (frmSelectItem frmPickMount = new frmSelectItem
             {
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
             })
             {
-                frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
-                if (!blnMountChangeAllowed)
-                {
-                    Program.MainForm.ShowMessageBox(this,
-                        LanguageManager.GetString("Message_NoValidModularMount"),
-                        LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
+                frmPickMount.SetGeneralItemsMode(lstModularMounts);
                 frmPickMount.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
@@ -17849,22 +17851,24 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
-            string strSelectedParentID;
             CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId, out VehicleMod objOldParentVehicleMod);
+            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
+            //Mounted cyberware should always be allowed to be dismounted.
+            //Unmounted cyberware requires that a valid mount be present.
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            {
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_NoValidModularMount"),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            string strSelectedParentID;
             using (frmSelectItem frmPickMount = new frmSelectItem
             {
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
             })
             {
-                frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
-                if (!blnMountChangeAllowed)
-                {
-                    Program.MainForm.ShowMessageBox(this,
-                        LanguageManager.GetString("Message_NoValidModularMount"),
-                        LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
+                frmPickMount.SetGeneralItemsMode(lstModularMounts);
                 frmPickMount.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.

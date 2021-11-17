@@ -328,7 +328,6 @@
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
-    <Compile Include="Backend\Extensions\ReadOnlyCollectionExtensions.cs" />
     <Compile Include="Backend\Extensions\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Backend\Extensions\ReadOnlyListExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
