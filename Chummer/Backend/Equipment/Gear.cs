@@ -3350,7 +3350,10 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0)
                         {
                             if (dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] >= intIllegalQuantityRounded)
+                            {
                                 dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= intIllegalQuantityRounded;
+                                decIllegalQuantity -= intRestrictedGearQuantityUsed;
+                            }
                             else
                             {
                                 intRestrictedGearQuantityUsed = dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];

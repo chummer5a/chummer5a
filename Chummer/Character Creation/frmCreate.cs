@@ -12969,7 +12969,9 @@ namespace Chummer
                 // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
                 // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
                 Dictionary<int, int> dicRestrictedGearLimits = new Dictionary<int, int>();
-                if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedGear) != 0)
+                bool blnHasRestrictedGearAvailable =
+                    ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedGear) != 0;
+                if (blnHasRestrictedGearAvailable)
                 {
                     foreach (Improvement objImprovement in CharacterObject.Improvements.Where(
                         x => x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled))
@@ -13031,11 +13033,11 @@ namespace Chummer
                                           intRestrictedCount,
                                           CharacterObjectSettings.MaximumAvailability));
                     sbdMessage.Append(sbdAvailItems);
-                    if (sbdRestrictedItems.Length > 0)
+                    if (blnHasRestrictedGearAvailable)
                     {
                         sbdMessage.Append(Environment.NewLine + string.Format(GlobalSettings.CultureInfo,
-                                                                              LanguageManager.GetString("Message_RestrictedGearUsed"),
-                                                                              sbdRestrictedItems.ToString()));
+                            LanguageManager.GetString("Message_RestrictedGearUsed"),
+                            sbdRestrictedItems.ToString()));
                     }
                 }
 

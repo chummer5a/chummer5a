@@ -3,6 +3,11 @@ Application Changes:
 - Adding a new non-advanced lifestyle that is eligible for Trust Fund no longer causes a crash. Fixes #4601.
 - Adding a plugin to a custom cyberweapon no longer causes a crash.
 - Cyberware limited by the number of limbs is now not affected by detached modular limbs.
+- Fixed Gear not using Restricted Gear correctly. Possibly needs more testing, but initial efforts seem correct. 
+- Some changes to logic on how usage of restricted gear is displayed
+
+New Strings:
+- String_GameplayOption
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
