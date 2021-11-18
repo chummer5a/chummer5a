@@ -466,18 +466,17 @@ namespace ChummerHub.Client.UI
                         return StaticUtils.UserRoles;
                     ResultAccountGetRoles myresult = await client.GetRolesAsync();
                     await Utils.ShowErrorResponseFormAsync(myresult);
-                    ResultAccountGetRoles myresultbody = myresult;
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
-                        if (myresultbody?.CallSuccess == true)
+                        if (myresult?.CallSuccess == true)
                         {
-                            StaticUtils.UserRoles = myresultbody.Roles.ToList();
+                            StaticUtils.UserRoles = myresult.Roles.ToList();
                             if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Count > 0)
                             {
                                 LoginStatus = true;
                             }
 
-                            StaticUtils.PossibleRoles = myresultbody.PossibleRoles.ToList();
+                            StaticUtils.PossibleRoles = myresult.PossibleRoles.ToList();
                         }
 
                         //bBackup.Visible = StaticUtils.UserRoles.Contains("Administrator");

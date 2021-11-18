@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Specialized;
 
 namespace Chummer
@@ -30,7 +29,7 @@ namespace Chummer
     /// <typeparam name="T"></typeparam>
     public class TaggedObservableCollection<T> : ThreadSafeObservableCollection<T>
     {
-        private readonly ConcurrentDictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedDelegates = new ConcurrentDictionary<object, NotifyCollectionChangedEventHandler>();
+        private readonly LockingDictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedDelegates = new LockingDictionary<object, NotifyCollectionChangedEventHandler>();
 
         /// <summary>
         /// Use in place of CollectionChanged Adder

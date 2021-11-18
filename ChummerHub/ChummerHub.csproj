@@ -15,6 +15,7 @@
     <Version>1.2.0</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <Configurations>Debug;Release;Release (for Testing)</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,6 +24,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>ChummerHub.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (for Testing)|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
@@ -56,13 +61,13 @@
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
     <PackageReference Include="Azure.Identity" Version="1.5.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2453" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.18.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.18.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.18.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.Web" Version="2.18.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer" Version="2.18.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel" Version="2.18.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2502" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.19.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.19.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.19.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.Web" Version="2.19.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer" Version="2.19.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel" Version="2.19.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApplicationInsights.HostingStartup" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="5.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="5.0.11" />
@@ -78,7 +83,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="4.5.1" />
 
     <!--PackageReference Include="Microsoft.AspNetCore.ApplicationInsights.HostingStartup" Version="5.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="5.0.5" />
@@ -112,7 +117,7 @@
   
     <PackageReference Include="Microsoft.OpenApi" Version="1.2.3" />
   
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
   
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
   
@@ -120,7 +125,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Sendgrid" Version="9.24.3" />
+    <PackageReference Include="Sendgrid" Version="9.24.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />

@@ -18,9 +18,7 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -67,11 +65,7 @@ namespace Chummer.Backend.Equipment
             }
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(_eSource == Improvement.ImprovementSource.Bioware
-                        ? "bioware.xml"
-                        : _eSource == Improvement.ImprovementSource.Drug
-                            ? "drugcomponents.xml"
-                            : "cyberware.xml")
+                XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource))
                     .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
@@ -112,11 +106,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData(_eSource == Improvement.ImprovementSource.Bioware
-                    ? "bioware.xml"
-                    : _eSource == Improvement.ImprovementSource.Drug
-                        ? "drugcomponents.xml"
-                        : "cyberware.xml", strLanguage)
+            _objCachedMyXmlNode = _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
                 .SelectSingleNode(SourceId == Guid.Empty
                     ? "/chummer/grades/grade[name = " + Name.CleanXPath() + "]"
                     : "/chummer/grades/grade[id = " + SourceIDString.CleanXPath() + "]");
@@ -139,14 +129,37 @@ namespace Chummer.Backend.Equipment
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            List<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
-            foreach (Grade objGrade in lstGrades)
+            Grade objStandardGrade = null;
+            foreach (Grade objGrade in objCharacter.GetGradeList(objSource, true))
             {
                 if (objGrade.Name == strValue)
                     return objGrade;
+                if (objGrade.Name == "Standard")
+                    objStandardGrade = objGrade;
             }
 
-            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
+            return objStandardGrade;
+        }
+
+        /// <summary>
+        /// Gets the name of the data file to use that corresponds to a particular Improvement Source denoting the type of object being used.
+        /// </summary>
+        /// <param name="eSource">Type of object being looked at that has grades. Should be either drug, bioware, or cyberware.</param>
+        /// <returns>A full file name that can be used with LoadData() or LoadXData() methods.</returns>
+        public static string GetDataFileNameFromImprovementSource(Improvement.ImprovementSource eSource)
+        {
+            switch (eSource)
+            {
+                case Improvement.ImprovementSource.Drug:
+                    return "drugcomponents.xml";
+                case Improvement.ImprovementSource.Bioware:
+                    return "bioware.xml";
+                case Improvement.ImprovementSource.Cyberware:
+                    return "cyberware.xml";
+                default:
+                    Utils.BreakIfDebug();
+                    return "cyberware.xml";
+            }
         }
 
         #endregion Helper Methods

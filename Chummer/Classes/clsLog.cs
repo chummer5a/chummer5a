@@ -136,7 +136,7 @@ namespace Chummer
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
         public static void Error
             (
-            object[] info = null,
+            IEnumerable<object> info = null,
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
@@ -253,7 +253,7 @@ namespace Chummer
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
         public static void Warning
             (
-            object[] info = null,
+            IEnumerable<object> info = null,
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
@@ -291,7 +291,7 @@ namespace Chummer
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
         public static void Info
             (
-            object[] info = null,
+            IEnumerable<object> info = null,
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0

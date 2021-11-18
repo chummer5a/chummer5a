@@ -67,9 +67,7 @@ namespace Chummer
                 }
                 if (j != i && j < modules.Count)
                 {
-                    XmlNode tmp = modules[i];
-                    modules[i] = modules[j];
-                    modules[j] = tmp;
+                    (modules[i], modules[j]) = (modules[j], modules[i]);
                 }
             }
 

@@ -98,7 +98,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            _lstGrades = _objCharacter.GetGradeList(objWareSource);
+            _lstGrades = _objCharacter.GetGradeList(objWareSource).ToList();
             _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceIDString;
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode);
         }
@@ -441,7 +441,11 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            _lstGrades = _objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked);
+            _lstGrades = _objCharacter
+                .GetGradeList(
+                    _objMode == Mode.Bioware
+                        ? Improvement.ImprovementSource.Bioware
+                        : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked).ToList();
             PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
         }
 
@@ -1014,11 +1018,11 @@ namespace Chummer
                         string strBlocksMounts = xmlCyberware.SelectSingleNodeAndCacheExpression("blocksmounts")?.Value;
                         if (!string.IsNullOrEmpty(strBlocksMounts))
                         {
-                            IList<Cyberware> lstWareListToCheck = CyberwareParent != null
-                                ? CyberwareParent.Children
-                                : (ParentVehicle == null
-                                    ? _objCharacter.Cyberware
-                                    : null);
+                            ICollection<Cyberware> lstWareListToCheck = null;
+                            if (CyberwareParent != null)
+                                lstWareListToCheck = CyberwareParent.Children;
+                            else if (ParentVehicle == null)
+                                lstWareListToCheck = _objCharacter.Cyberware;
                             if (xmlCyberware.SelectSingleNodeAndCacheExpression("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
                                 (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                             {

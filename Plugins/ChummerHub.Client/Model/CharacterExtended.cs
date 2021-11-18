@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -71,8 +70,8 @@ namespace ChummerHub.Client.Sinners
             SaveSINnerIds(); //Save it!
         }
 
-        private static readonly ConcurrentDictionary<string, SINner> s_dicCachedPluginFileSINners =
-            new ConcurrentDictionary<string, SINner>();
+        private static readonly LockingDictionary<string, SINner> s_dicCachedPluginFileSINners =
+            new LockingDictionary<string, SINner>();
 
         public static void SaveFromPluginFile(string strPluginFileElement, Character character, SINner mySINnerLoading = null)
         {
@@ -120,10 +119,10 @@ namespace ChummerHub.Client.Sinners
 
 
         // ReSharper disable once InconsistentNaming
-        private static ConcurrentDictionary<string, Guid> _SINnerIds;
+        private static LockingDictionary<string, Guid> _SINnerIds;
 
         // ReSharper disable once InconsistentNaming
-        public static ConcurrentDictionary<string, Guid> MySINnerIds
+        public static LockingDictionary<string, Guid> MySINnerIds
         {
             get
             {
@@ -131,8 +130,8 @@ namespace ChummerHub.Client.Sinners
                     return _SINnerIds;
                 string save = Settings.Default.SINnerIds;
                 _SINnerIds = !string.IsNullOrEmpty(save)
-                    ? JsonConvert.DeserializeObject<ConcurrentDictionary<string, Guid>>(save)
-                    : new ConcurrentDictionary<string, Guid>();
+                    ? JsonConvert.DeserializeObject<LockingDictionary<string, Guid>>(save)
+                    : new LockingDictionary<string, Guid>();
                 return _SINnerIds;
             }
             set
@@ -539,22 +538,26 @@ namespace ChummerHub.Client.Sinners
                                        + Environment.NewLine + Environment.NewLine;
                             DialogResult result = PluginHandler.MainForm.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
                                 MessageBoxIcon.Asterisk);
-                            if (result == DialogResult.Cancel)
-                                throw new ArgumentException("User aborted perparation for upload!");
-                            if (result == DialogResult.No)
+                            switch (result)
                             {
-                                MySINnerFile.Id = Guid.NewGuid();
-                            }
-                            else
-                            {
-                                ICollection<SINner> list = res.MySINners;
-                                foreach (SINner sin in list)
+                                case DialogResult.Cancel:
+                                    throw new ArgumentException("User aborted perparation for upload!");
+                                case DialogResult.No:
+                                    MySINnerFile.Id = Guid.NewGuid();
+                                    break;
+                                default:
                                 {
-                                    if (sin.Id != null)
+                                    ICollection<SINner> list = res.MySINners;
+                                    foreach (SINner sin in list)
                                     {
-                                        MySINnerFile.Id = sin.Id;
-                                        break;
+                                        if (sin.Id != null)
+                                        {
+                                            MySINnerFile.Id = sin.Id;
+                                            break;
+                                        }
                                     }
+
+                                    break;
                                 }
                             }
                         }

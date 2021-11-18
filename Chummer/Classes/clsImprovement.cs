@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -544,14 +543,15 @@ namespace Chummer
                 _intRating = _intMax;
                 _intMax = 1;
             }
-            if (_objImprovementType == ImprovementType.LimitModifier && string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude))
+            switch (_objImprovementType)
             {
-                _strCondition = _strExclude;
-                _strExclude = string.Empty;
-            }
-            else if (_objImprovementType == ImprovementType.RestrictedGear && _decVal == 0)
-            {
-                _decVal = 24;
+                case ImprovementType.LimitModifier when string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude):
+                    _strCondition = _strExclude;
+                    _strExclude = string.Empty;
+                    break;
+                case ImprovementType.RestrictedGear when _decVal == 0:
+                    _decVal = 24;
+                    break;
             }
 
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
@@ -643,13 +643,13 @@ namespace Chummer
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, _strImprovedName);
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
 
                     _strImprovedName = value;
 
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -677,13 +677,13 @@ namespace Chummer
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, _objImprovementType, ImprovedName);
                         ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
 
                     _objImprovementType = value;
 
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -699,12 +699,12 @@ namespace Chummer
                 if (_objImprovementSource != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _objImprovementSource = value;
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -724,7 +724,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -744,7 +744,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -764,7 +764,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -784,7 +784,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -804,7 +804,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -824,7 +824,7 @@ namespace Chummer
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -841,10 +841,10 @@ namespace Chummer
                 if (_strExclude != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strExclude = value;
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -860,10 +860,10 @@ namespace Chummer
                 if (_strCondition != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strCondition = value;
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -879,12 +879,12 @@ namespace Chummer
                 if (_strUniqueName != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strUniqueName = value;
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -901,12 +901,12 @@ namespace Chummer
                 if (_blnAddToRating != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _blnAddToRating = value;
                     if (Enabled)
                     {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     }
                 }
             }
@@ -923,10 +923,10 @@ namespace Chummer
                 if (_strTarget != value)
                 {
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                     _strTarget = value;
                     if (Enabled)
-                        ImprovementManager.ProcessRelevantEvents(this.Yield());
+                        this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -943,7 +943,7 @@ namespace Chummer
                 {
                     _blnEnabled = value;
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                    ImprovementManager.ProcessRelevantEvents(this.Yield());
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -2663,17 +2663,15 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            if (obj is ImprovementDictionaryKey objOtherImprovementDictionaryKey)
+            switch (obj)
             {
-                return Equals(objOtherImprovementDictionaryKey);
+                case ImprovementDictionaryKey objOtherImprovementDictionaryKey:
+                    return Equals(objOtherImprovementDictionaryKey);
+                case Tuple<Character, Improvement.ImprovementType, string> objOtherTuple:
+                    return Equals(objOtherTuple);
+                default:
+                    return false;
             }
-
-            if (obj is Tuple<Character, Improvement.ImprovementType, string> objOtherTuple)
-            {
-                return Equals(objOtherTuple);
-            }
-
-            return false;
         }
 
         public bool Equals(ImprovementDictionaryKey other)
@@ -2740,9 +2738,9 @@ namespace Chummer
         private static string _strLimitSelection = string.Empty;
         private static string _strSelectedValue = string.Empty;
         private static string _strForcedValue = string.Empty;
-        private static readonly ConcurrentDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<TransactingImprovement>>(8, 10);
-        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, decimal> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, decimal>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
-        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, decimal> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, decimal>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly LockingDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new LockingDictionary<Character, List<TransactingImprovement>>(10);
+        private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> s_DictionaryCachedValues = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>((int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> s_DictionaryCachedAugmentedValues = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>((int)Improvement.ImprovementType.NumImprovementTypes);
 
         #region Properties
 
@@ -2779,17 +2777,37 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strImprovementName))
             {
                 ImprovementDictionaryKey objCheckKey = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
-                if (!s_DictionaryCachedValues.TryAdd(objCheckKey, decimal.MinValue))
-                    s_DictionaryCachedValues[objCheckKey] = decimal.MinValue;
-                if (!s_DictionaryCachedAugmentedValues.TryAdd(objCheckKey, decimal.MinValue))
-                    s_DictionaryCachedAugmentedValues[objCheckKey] = decimal.MinValue;
+                if (!s_DictionaryCachedValues.TryAdd(objCheckKey,
+                    new Tuple<decimal, List<Improvement>>(decimal.MinValue, new List<Improvement>())))
+                {
+                    List<Improvement> lstTemp = s_DictionaryCachedValues[objCheckKey].Item2;
+                    lstTemp.Clear();
+                    s_DictionaryCachedValues[objCheckKey] = new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp);
+                }
+
+                if (!s_DictionaryCachedAugmentedValues.TryAdd(objCheckKey,
+                    new Tuple<decimal, List<Improvement>>(decimal.MinValue, new List<Improvement>())))
+                {
+                    List<Improvement> lstTemp = s_DictionaryCachedValues[objCheckKey].Item2;
+                    lstTemp.Clear();
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp);
+                }
             }
             else
             {
                 foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
-                    s_DictionaryCachedValues[objCheckKey] = decimal.MinValue;
+                {
+                    List<Improvement> lstTemp = s_DictionaryCachedValues[objCheckKey].Item2;
+                    lstTemp.Clear();
+                    s_DictionaryCachedValues[objCheckKey] = new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp);
+                }
+
                 foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
-                    s_DictionaryCachedAugmentedValues[objCheckKey] = decimal.MinValue;
+                {
+                    List<Improvement> lstTemp = s_DictionaryCachedValues[objCheckKey].Item2;
+                    lstTemp.Clear();
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp);
+                }
             }
         }
 
@@ -2797,14 +2815,14 @@ namespace Chummer
         {
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.ToList())
             {
-                if (objKey.CharacterObject == objCharacter)
-                    s_DictionaryCachedValues.TryRemove(objKey, out decimal _);
+                if (objKey.CharacterObject == objCharacter && s_DictionaryCachedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
+                    tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
             {
-                if (objKey.CharacterObject == objCharacter)
-                    s_DictionaryCachedAugmentedValues.TryRemove(objKey, out decimal _);
+                if (objKey.CharacterObject == objCharacter && s_DictionaryCachedAugmentedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
+                    tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
             s_DictionaryTransactions.TryRemove(objCharacter, out List<TransactingImprovement> _);
@@ -2824,63 +2842,157 @@ namespace Chummer
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
         public static decimal ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
-                                      bool blnAddToRating = false, string strImprovedName = "",
-                                      bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+            bool blnAddToRating = false, string strImprovedName = "",
+            bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
-            //Log.Enter("ValueOf");
+            return ValueOf(objCharacter, objImprovementType, out List<Improvement> _, blnAddToRating,
+                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+        }
+
+        /// <summary>
+        /// Retrieve the total Improvement value for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        /// <param name="lstUsedImprovements">List of the improvements actually used for the value</param>
+        public static decimal ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
+            out List<Improvement> lstUsedImprovements,
+            bool blnAddToRating = false, string strImprovedName = "",
+            bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+        {
+            return MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements, x => x.Value,
+                s_DictionaryCachedValues, blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+        }
+
+        /// <summary>
+        /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
+            bool blnAddToRating = false, string strImprovedName = "",
+            bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+        {
+            return AugmentedValueOf(objCharacter, objImprovementType, out List<Improvement> _, blnAddToRating,
+                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+        }
+
+        /// <summary>
+        /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="lstUsedImprovements">List of the improvements actually used for the value.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
+            out List<Improvement> lstUsedImprovements, bool blnAddToRating = false, string strImprovedName = "",
+            bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+        {
+            return MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements, x => x.Augmented * x.Rating,
+                s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+        }
+
+        /// <summary>
+        /// Internal function used for fetching some sort of collected value from a character's entire set of improvements
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="dicCachedValuesToUse">The caching dictionary to use. If null, values will not be cached.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        /// <param name="lstUsedImprovements">List of the improvements actually used for the value</param>
+        /// <param name="funcValueGetter">Function for how to extract values for individual improvements.</param>
+        private static decimal MetaValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
+            out List<Improvement> lstUsedImprovements, Func<Improvement, decimal> funcValueGetter, LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
+            bool blnAddToRating, string strImprovedName,
+            bool blnUnconditionalOnly, bool blnIncludeNonImproved)
+        {
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
             //Log.Info("blnAddToRating = " + blnAddToRating.ToString());
             //Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
 
+            if (funcValueGetter == null)
+                throw new ArgumentNullException(nameof(funcValueGetter));
+
             if (objCharacter == null)
             {
-                //Log.Exit("ValueOf");
+                lstUsedImprovements = new List<Improvement>();
                 return 0;
             }
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
             if (!blnAddToRating && blnUnconditionalOnly)
             {
-                if (!string.IsNullOrEmpty(strImprovedName))
+                if (dicCachedValuesToUse == null)
+                {
+                    // The code is breaking here to remind you (the programmer) to add in caching functionality for this type of value.
+                    // The more often this sort of value is used, the more caching is necesary and the more often we will break here,
+                    // and the annoyance of constantly having your debugger break here should push you to adding in caching functionality.
+                    Utils.BreakIfDebug();
+                    lstUsedImprovements = new List<Improvement>();
+                }
+                else if (!string.IsNullOrEmpty(strImprovedName))
                 {
                     ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
-                    if (s_DictionaryCachedValues.TryGetValue(objCacheKey, out decimal decCachedValue) && decCachedValue != decimal.MinValue)
+                    if (dicCachedValuesToUse.TryGetValue(objCacheKey, out Tuple<decimal, List<Improvement>> tupCachedValue))
                     {
-                        return decCachedValue;
+                        lstUsedImprovements = tupCachedValue.Item2; // For reduced memory usage
+                        if (tupCachedValue.Item1 != decimal.MinValue)
+                            return tupCachedValue.Item1;
+                        lstUsedImprovements.Clear();
                     }
+                    else
+                        lstUsedImprovements = new List<Improvement>();
                 }
                 else
                 {
+                    lstUsedImprovements = new List<Improvement>();
                     bool blnDoRecalculate = true;
                     decimal decCachedValue = 0;
                     // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
-                    foreach (KeyValuePair<ImprovementDictionaryKey, decimal> objLoopCachedEntry in s_DictionaryCachedValues)
+                    foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>> objLoopCachedEntry in dicCachedValuesToUse)
                     {
                         ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
-                        if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
+                        if (objLoopKey.CharacterObject != objCharacter ||
+                            objLoopKey.ImprovementType != objImprovementType)
+                            continue;
+                        blnDoRecalculate = false;
+                        decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
+                        if (decLoopCachedValue == decimal.MinValue)
                         {
-                            blnDoRecalculate = false;
-                            decimal decLoopCachedValue = objLoopCachedEntry.Value;
-                            if (decLoopCachedValue == decimal.MinValue)
-                            {
-                                blnDoRecalculate = true;
-                                break;
-                            }
-
-                            decCachedValue += decLoopCachedValue;
+                            blnDoRecalculate = true;
+                            break;
                         }
+
+                        decCachedValue += decLoopCachedValue;
+                        lstUsedImprovements.AddRange(objLoopCachedEntry.Value.Item2);
                     }
 
                     if (!blnDoRecalculate)
-                    {
                         return decCachedValue;
-                    }
+                    lstUsedImprovements.Clear();
                 }
             }
+            else
+                lstUsedImprovements = new List<Improvement>();
 
             Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
-            Dictionary<string, List<Tuple<string, decimal>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, decimal>>>();
+            Dictionary<string, List<Tuple<string, Improvement>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, Improvement>>>();
             Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
+            Dictionary<string, List<Improvement>> dicImprovementsForValues = new Dictionary<string, List<Improvement>>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (objImprovement.ImproveType != objImprovementType || !objImprovement.Enabled ||
@@ -2912,82 +3024,139 @@ namespace Chummer
                     }
 
                     // Add the values to the UniquePair List so we can check them later.
-                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
+                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, Improvement>> lstUniquePairs))
                     {
-                        lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Value));
+                        lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
                     }
                     else
                     {
-                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Value) });
+                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, Improvement>>(1) { new Tuple<string, Improvement>(strUniqueName, objImprovement) });
                     }
 
                     if (!dicValues.ContainsKey(strLoopImprovedName))
                     {
                         dicValues.Add(strLoopImprovedName, 0);
+                        dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
                     }
                 }
                 else if (dicValues.ContainsKey(strLoopImprovedName))
                 {
-                    dicValues[strLoopImprovedName] += objImprovement.Value;
+                    dicValues[strLoopImprovedName] += funcValueGetter(objImprovement);
+                    dicImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                 }
                 else
                 {
-                    dicValues.Add(strLoopImprovedName, objImprovement.Value);
+                    dicValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
+                    dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>(objImprovement.Yield()));
                 }
             }
 
+            List<Improvement> lstLoopImprovements;
+            List<Improvement> lstInnerLoopImprovements = new List<Improvement>();
             foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
                 HashSet<string> lstUniqueNames = objLoopValuePair.Value;
                 bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
+                if (blnValuesDictionaryContains)
+                    dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
+                else
+                    lstLoopImprovements = new List<Improvement>();
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, Improvement>> lstUniquePairs))
                 {
+                    lstInnerLoopImprovements.Clear();
                     if (lstUniqueNames.Contains("precedence0"))
                     {
                         // Retrieve only the highest precedence0 value.
                         // Run through the list of UniqueNames and pick out the highest value for each one.
+                        Improvement objHighestImprovement = null;
                         decimal decHighest = decimal.MinValue;
-                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
+                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                         {
-                            if (objLoopUniquePair.Item1 == "precedence0")
-                                decHighest = Math.Max(decHighest, objLoopUniquePair.Item2);
+                            if (strUnique != "precedence0")
+                                continue;
+                            decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                            if (decHighest < decInnerLoopValue)
+                            {
+                                decHighest = decInnerLoopValue;
+                                objHighestImprovement = objLoopImprovement;
+                            }
                         }
+
+                        if (objHighestImprovement != null)
+                            lstInnerLoopImprovements.Add(objHighestImprovement);
 
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
-                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1")
-                                                        .Sum(strValues => strValues.Item2);
+                            foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                            {
+                                if (strUnique != "precedence-1")
+                                    continue;
+                                decHighest += funcValueGetter(objLoopImprovement);
+                                lstInnerLoopImprovements.Add(objLoopImprovement);
+                            }
                         }
 
-                        decLoopValue = Math.Max(decLoopValue, decHighest);
+                        if (decLoopValue < decHighest)
+                        {
+                            decLoopValue = decHighest;
+                            lstLoopImprovements.Clear();
+                            lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                        }
                     }
                     else if (lstUniqueNames.Contains("precedence1"))
                     {
                         // Retrieve all of the items that are precedence1 and nothing else.
-                        decLoopValue = Math.Max(decLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
+                        decimal decHighest = 0;
+                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                        {
+                            if (strUnique != "precedence1" && strUnique != "precedence-1")
+                                continue;
+                            decHighest += funcValueGetter(objLoopImprovement);
+                            lstInnerLoopImprovements.Add(objLoopImprovement);
+                        }
+
+                        if (decLoopValue < decHighest)
+                        {
+                            decLoopValue = decHighest;
+                            lstLoopImprovements.Clear();
+                            lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                        }
                     }
                     else
                     {
                         // Run through the list of UniqueNames and pick out the highest value for each one.
                         foreach (string strUniqueName in lstUniqueNames)
                         {
-                            decimal decInnerLoopValue = decimal.MinValue;
-                            foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
+                            Improvement objHighestImprovement = null;
+                            decimal decHighest = decimal.MinValue;
+                            foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                             {
-                                if (objLoopUniquePair.Item1 == strUniqueName)
-                                    decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
+                                if (strUnique != strUniqueName)
+                                    continue;
+                                decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                                if (decHighest < decInnerLoopValue)
+                                {
+                                    decHighest = decInnerLoopValue;
+                                    objHighestImprovement = objLoopImprovement;
+                                }
                             }
 
-                            if (decInnerLoopValue != decimal.MinValue)
-                                decLoopValue += decInnerLoopValue;
+                            if (decHighest != decimal.MinValue)
+                            {
+                                decLoopValue += decHighest;
+                                lstLoopImprovements.Add(objHighestImprovement);
+                            }
                         }
                     }
 
                     if (blnValuesDictionaryContains)
                         dicValues[strLoopImprovedName] = decLoopValue;
                     else
+                    {
                         dicValues.Add(strLoopImprovedName, decLoopValue);
+                        dicImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
+                    }
                 }
             }
 
@@ -2995,6 +3164,7 @@ namespace Chummer
             dicUniqueNames.Clear();
             dicUniquePairs.Clear();
             Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
+            Dictionary<string, List<Improvement>> dicCustomImprovementsForValues = new Dictionary<string, List<Improvement>>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (!objImprovement.Custom || !objImprovement.Enabled ||
@@ -3024,27 +3194,30 @@ namespace Chummer
                     }
 
                     // Add the values to the UniquePair List so we can check them later.
-                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
+                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, Improvement>> lstUniquePairs))
                     {
-                        lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Value));
+                        lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
                     }
                     else
                     {
-                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Value) });
+                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, Improvement>>(1) { new Tuple<string, Improvement>(strUniqueName, objImprovement) });
                     }
 
                     if (!dicCustomValues.ContainsKey(strLoopImprovedName))
                     {
                         dicCustomValues.Add(strLoopImprovedName, 0);
+                        dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
                     }
                 }
                 else if (dicCustomValues.ContainsKey(strLoopImprovedName))
                 {
-                    dicCustomValues[strLoopImprovedName] += objImprovement.Value;
+                    dicCustomValues[strLoopImprovedName] += funcValueGetter(objImprovement);
+                    dicCustomImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                 }
                 else
                 {
-                    dicCustomValues.Add(strLoopImprovedName, objImprovement.Value);
+                    dicCustomValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
+                    dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>(objImprovement.Yield()));
                 }
             }
 
@@ -3053,26 +3226,43 @@ namespace Chummer
                 string strLoopImprovedName = objLoopValuePair.Key;
                 HashSet<string> lstUniqueNames = objLoopValuePair.Value;
                 bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
+                if (blnValuesDictionaryContains)
+                    dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
+                else
+                    lstLoopImprovements = new List<Improvement>();
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, Improvement>> lstUniquePairs))
                 {
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     foreach (string strUniqueName in lstUniqueNames)
                     {
-                        decimal decInnerLoopValue = decimal.MinValue;
-                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
+                        Improvement objHighestImprovement = null;
+                        decimal decHighest = decimal.MinValue;
+                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                         {
-                            if (objLoopUniquePair.Item1 == strUniqueName)
-                                decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
+                            if (strUnique != strUniqueName)
+                                continue;
+                            decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                            if (decHighest < decInnerLoopValue)
+                            {
+                                decHighest = decInnerLoopValue;
+                                objHighestImprovement = objLoopImprovement;
+                            }
                         }
 
-                        if (decInnerLoopValue != decimal.MinValue)
-                            decLoopValue += decInnerLoopValue;
+                        if (decHighest != decimal.MinValue)
+                        {
+                            decLoopValue += decHighest;
+                            lstLoopImprovements.Add(objHighestImprovement);
+                        }
                     }
 
                     if (blnValuesDictionaryContains)
                         dicCustomValues[strLoopImprovedName] = decLoopValue;
                     else
+                    {
                         dicCustomValues.Add(strLoopImprovedName, decLoopValue);
+                        dicCustomImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
+                    }
                 }
             }
 
@@ -3082,16 +3272,17 @@ namespace Chummer
                 if (dicValues.ContainsKey(strLoopImprovedName))
                 {
                     dicValues[strLoopImprovedName] += objLoopValuePair.Value;
+                    dicImprovementsForValues[strLoopImprovedName].AddRange(dicCustomImprovementsForValues[strLoopImprovedName]);
                 }
                 else
                 {
                     dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
+                    dicImprovementsForValues.Add(strLoopImprovedName, dicCustomImprovementsForValues[strLoopImprovedName]);
                 }
             }
 
             decimal decReturn = 0;
-
-            //Log.Exit("ValueOf");
+            
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && blnUnconditionalOnly)
             {
@@ -3099,309 +3290,28 @@ namespace Chummer
                 {
                     string strLoopImprovedName = objLoopValuePair.Key;
                     decimal decLoopValue = objLoopValuePair.Value;
-                    ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
-                    if (!s_DictionaryCachedValues.TryAdd(objLoopCacheKey, decLoopValue))
-                        s_DictionaryCachedValues[objLoopCacheKey] = decLoopValue;
+                    Tuple<decimal, List<Improvement>> tupNewValue =
+                        new Tuple<decimal, List<Improvement>>(decLoopValue, dicImprovementsForValues[strLoopImprovedName]);
+                    if (dicCachedValuesToUse != null)
+                    {
+                        ImprovementDictionaryKey objLoopCacheKey =
+                            new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
+                        if (!dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue))
+                        {
+                            List<Improvement> lstTemp = dicCachedValuesToUse[objLoopCacheKey].Item2;
+                            if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
+                            {
+                                lstTemp.Clear();
+                                lstTemp.AddRange(tupNewValue.Item2);
+                                tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
+                            }
+
+                            dicCachedValuesToUse[objLoopCacheKey] = tupNewValue;
+                        }
+                    }
+
                     decReturn += decLoopValue;
-                }
-            }
-
-            return decReturn;
-        }
-
-        /// <summary>
-        /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
-        /// </summary>
-        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
-        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
-        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
-        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
-                                               bool blnAddToRating = false, string strImprovedName = "",
-                                               bool blnUnconditionalOnly = true)
-        {
-            //Log.Enter("AugmentedValueOf");
-            //Log.Info("objImprovementType = " + objImprovementType.ToString());
-            //Log.Info("blnAddToRating = " + blnAddToRating.ToString());
-            //Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
-
-            if (objCharacter == null)
-            {
-                //Log.Exit("AugmentedValueOf");
-                return 0;
-            }
-
-            // If we've got a value cached for the default AugmentedValueOf call for an improvementType, let's just return that
-            if (!blnAddToRating && blnUnconditionalOnly)
-            {
-                if (!string.IsNullOrEmpty(strImprovedName))
-                {
-                    ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
-                    if (s_DictionaryCachedAugmentedValues.TryGetValue(objCacheKey, out decimal decCachedValue) && decCachedValue != decimal.MinValue)
-                    {
-                        return decCachedValue;
-                    }
-                }
-                else
-                {
-                    bool blnDoRecalculate = true;
-                    decimal decCachedValue = 0;
-                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
-                    foreach (KeyValuePair<ImprovementDictionaryKey, decimal> objLoopCachedEntry in s_DictionaryCachedAugmentedValues)
-                    {
-                        ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
-                        if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
-                        {
-                            blnDoRecalculate = false;
-                            decimal decLoopCachedValue = objLoopCachedEntry.Value;
-                            if (decLoopCachedValue == decimal.MinValue)
-                            {
-                                blnDoRecalculate = true;
-                                break;
-                            }
-
-                            decCachedValue += decLoopCachedValue;
-                        }
-                    }
-
-                    if (!blnDoRecalculate)
-                    {
-                        return decCachedValue;
-                    }
-                }
-            }
-
-            Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
-            Dictionary<string, List<Tuple<string, decimal>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, decimal>>>();
-            Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
-            foreach (Improvement objImprovement in objCharacter.Improvements)
-            {
-                if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom
-                    && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
-                {
-                    string strLoopImprovedName = objImprovement.ImprovedName;
-                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
-                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
-                    // Ignore items that apply to a Skill's Rating.
-                          objImprovement.AddToRating == blnAddToRating &&
-                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
-
-                    if (blnAllowed)
-                    {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
-                            {
-                                if (!lstUniqueNames.Contains(strUniqueName))
-                                    lstUniqueNames.Add(strUniqueName);
-                            }
-                            else
-                            {
-                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
-                            }
-
-                            // Add the values to the UniquePair List so we can check them later.
-                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
-                            {
-                                lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
-                            }
-                            else
-                            {
-                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
-                            }
-
-                            if (!dicValues.ContainsKey(strLoopImprovedName))
-                            {
-                                dicValues.Add(strLoopImprovedName, 0);
-                            }
-                        }
-                        else if (dicValues.ContainsKey(strLoopImprovedName))
-                        {
-                            dicValues[strLoopImprovedName] += objImprovement.Augmented * objImprovement.Rating;
-                        }
-                        else
-                        {
-                            dicValues.Add(strLoopImprovedName, objImprovement.Augmented * objImprovement.Rating);
-                        }
-                    }
-                }
-            }
-
-            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
-            {
-                string strLoopImprovedName = objLoopValuePair.Key;
-                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
-                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
-                {
-                    if (lstUniqueNames.Contains("precedence0"))
-                    {
-                        // Retrieve only the highest precedence0 value.
-                        // Run through the list of UniqueNames and pick out the highest value for each one.
-                        decimal decHighest = decimal.MinValue;
-                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
-                        {
-                            if (objLoopUniquePair.Item1 == "precedence0")
-                                decHighest = Math.Max(decHighest, objLoopUniquePair.Item2);
-                        }
-
-                        if (lstUniqueNames.Contains("precedence-1"))
-                        {
-                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1")
-                                                        .Sum(strValues => strValues.Item2);
-                        }
-
-                        decLoopValue = Math.Max(decLoopValue, decHighest);
-                    }
-                    else if (lstUniqueNames.Contains("precedence1"))
-                    {
-                        // Retrieve all of the items that are precedence1 and nothing else.
-                        decLoopValue = Math.Max(decLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
-                    }
-                    else
-                    {
-                        // Run through the list of UniqueNames and pick out the highest value for each one.
-                        foreach (string strUniqueName in lstUniqueNames)
-                        {
-                            decimal decInnerLoopValue = decimal.MinValue;
-                            foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
-                            {
-                                if (objLoopUniquePair.Item1 == strUniqueName)
-                                    decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
-                            }
-
-                            if (decInnerLoopValue != decimal.MinValue)
-                                decLoopValue += decInnerLoopValue;
-                        }
-                    }
-
-                    if (blnValuesDictionaryContains)
-                        dicValues[strLoopImprovedName] = decLoopValue;
-                    else
-                        dicValues.Add(strLoopImprovedName, decLoopValue);
-                }
-            }
-
-            // Factor in Custom Improvements.
-            dicUniqueNames.Clear();
-            dicUniquePairs.Clear();
-            Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
-            foreach (Improvement objImprovement in objCharacter.Improvements)
-            {
-                if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
-                {
-                    string strLoopImprovedName = objImprovement.ImprovedName;
-                    bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
-                        !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-                          objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
-                    // Ignore items that apply to a Skill's Rating.
-                          objImprovement.AddToRating == blnAddToRating &&
-                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                          (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
-
-                    if (blnAllowed)
-                    {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
-                            {
-                                if (!lstUniqueNames.Contains(strUniqueName))
-                                    lstUniqueNames.Add(strUniqueName);
-                            }
-                            else
-                            {
-                                dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
-                            }
-
-                            // Add the values to the UniquePair List so we can check them later.
-                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
-                            {
-                                lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
-                            }
-                            else
-                            {
-                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
-                            }
-
-                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
-                            {
-                                dicCustomValues.Add(strLoopImprovedName, 0);
-                            }
-                        }
-                        else if (dicCustomValues.ContainsKey(strLoopImprovedName))
-                        {
-                            dicCustomValues[strLoopImprovedName] += objImprovement.Augmented * objImprovement.Rating;
-                        }
-                        else
-                        {
-                            dicCustomValues.Add(strLoopImprovedName, objImprovement.Augmented * objImprovement.Rating);
-                        }
-                    }
-                }
-            }
-
-            foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
-            {
-                string strLoopImprovedName = objLoopValuePair.Key;
-                HashSet<string> lstUniqueNames = objLoopValuePair.Value;
-                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
-                {
-                    // Run through the list of UniqueNames and pick out the highest value for each one.
-                    foreach (string strUniqueName in lstUniqueNames)
-                    {
-                        decimal decInnerLoopValue = decimal.MinValue;
-                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
-                        {
-                            if (objLoopUniquePair.Item1 == strUniqueName)
-                                decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
-                        }
-
-                        if (decInnerLoopValue != decimal.MinValue)
-                            decLoopValue += decInnerLoopValue;
-                    }
-
-                    if (blnValuesDictionaryContains)
-                        dicCustomValues[strLoopImprovedName] = decLoopValue;
-                    else
-                        dicCustomValues.Add(strLoopImprovedName, decLoopValue);
-                }
-            }
-
-            foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
-            {
-                string strLoopImprovedName = objLoopValuePair.Key;
-                if (dicValues.ContainsKey(strLoopImprovedName))
-                {
-                    dicValues[strLoopImprovedName] += objLoopValuePair.Value;
-                }
-                else
-                {
-                    dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
-                }
-            }
-
-            decimal decReturn = 0;
-
-            //Log.Exit("AugmentedValueOf");
-            // If this is the default AugmentedValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
-            if (!blnAddToRating && blnUnconditionalOnly)
-            {
-                foreach (KeyValuePair<string, decimal> objLoopValuePair in dicValues)
-                {
-                    string strLoopImprovedName = objLoopValuePair.Key;
-                    decimal decLoopValue = objLoopValuePair.Value;
-                    ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
-                    if (!s_DictionaryCachedAugmentedValues.TryAdd(objLoopCacheKey, decLoopValue))
-                        s_DictionaryCachedAugmentedValues[objLoopCacheKey] = decLoopValue;
-                    decReturn += decLoopValue;
+                    lstUsedImprovements.AddRange(tupNewValue.Item2);
                 }
             }
 
@@ -4108,45 +4018,48 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.SpecialTab:
-                        // Determine if access to any special tabs have been lost.
-                        if (objImprovement.UniqueName == "enabletab")
+                        switch (objImprovement.UniqueName)
                         {
-                            switch (objImprovement.ImprovedName)
-                            {
-                                case "Magician":
-                                    objCharacter.MagicianEnabled = true;
-                                    break;
+                            // Determine if access to any special tabs have been lost.
+                            case "enabletab":
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Magician":
+                                        objCharacter.MagicianEnabled = true;
+                                        break;
 
-                                case "Adept":
-                                    objCharacter.AdeptEnabled = true;
-                                    break;
+                                    case "Adept":
+                                        objCharacter.AdeptEnabled = true;
+                                        break;
 
-                                case "Technomancer":
-                                    objCharacter.TechnomancerEnabled = true;
-                                    break;
+                                    case "Technomancer":
+                                        objCharacter.TechnomancerEnabled = true;
+                                        break;
 
-                                case "Advanced Programs":
-                                    objCharacter.AdvancedProgramsEnabled = true;
-                                    break;
+                                    case "Advanced Programs":
+                                        objCharacter.AdvancedProgramsEnabled = true;
+                                        break;
 
-                                case "Critter":
-                                    objCharacter.CritterEnabled = true;
-                                    break;
-                            }
-                        }
-                        // Determine if access to any special tabs has been regained
-                        else if (objImprovement.UniqueName == "disabletab")
-                        {
-                            switch (objImprovement.ImprovedName)
-                            {
-                                case "Cyberware":
-                                    objCharacter.CyberwareDisabled = true;
-                                    break;
+                                    case "Critter":
+                                        objCharacter.CritterEnabled = true;
+                                        break;
+                                }
 
-                                case "Initiation":
-                                    objCharacter.InitiationForceDisabled = true;
-                                    break;
-                            }
+                                break;
+                            // Determine if access to any special tabs has been regained
+                            case "disabletab":
+                                switch (objImprovement.ImprovedName)
+                                {
+                                    case "Cyberware":
+                                        objCharacter.CyberwareDisabled = true;
+                                        break;
+
+                                    case "Initiation":
+                                        objCharacter.InitiationForceDisabled = true;
+                                        break;
+                                }
+
+                                break;
                         }
                         break;
 
@@ -4398,44 +4311,47 @@ namespace Chummer
                         // Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate)
                         {
-                            if (objImprovement.UniqueName == "enabletab")
+                            switch (objImprovement.UniqueName)
                             {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Magician":
-                                        objCharacter.MagicianEnabled = false;
-                                        break;
+                                case "enabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Magician":
+                                            objCharacter.MagicianEnabled = false;
+                                            break;
 
-                                    case "Adept":
-                                        objCharacter.AdeptEnabled = false;
-                                        break;
+                                        case "Adept":
+                                            objCharacter.AdeptEnabled = false;
+                                            break;
 
-                                    case "Technomancer":
-                                        objCharacter.TechnomancerEnabled = false;
-                                        break;
+                                        case "Technomancer":
+                                            objCharacter.TechnomancerEnabled = false;
+                                            break;
 
-                                    case "Advanced Programs":
-                                        objCharacter.AdvancedProgramsEnabled = false;
-                                        break;
+                                        case "Advanced Programs":
+                                            objCharacter.AdvancedProgramsEnabled = false;
+                                            break;
 
-                                    case "Critter":
-                                        objCharacter.CritterEnabled = false;
-                                        break;
-                                }
-                            }
-                            // Determine if access to any special tabs has been regained
-                            else if (objImprovement.UniqueName == "disabletab")
-                            {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Cyberware":
-                                        objCharacter.CyberwareDisabled = false;
-                                        break;
+                                        case "Critter":
+                                            objCharacter.CritterEnabled = false;
+                                            break;
+                                    }
 
-                                    case "Initiation":
-                                        objCharacter.InitiationForceDisabled = false;
-                                        break;
-                                }
+                                    break;
+                                // Determine if access to any special tabs has been regained
+                                case "disabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Cyberware":
+                                            objCharacter.CyberwareDisabled = false;
+                                            break;
+
+                                        case "Initiation":
+                                            objCharacter.InitiationForceDisabled = false;
+                                            break;
+                                    }
+
+                                    break;
                             }
                         }
                         break;
@@ -4775,44 +4691,47 @@ namespace Chummer
                         // Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate && !blnReapplyImprovements)
                         {
-                            if (objImprovement.UniqueName == "enabletab")
+                            switch (objImprovement.UniqueName)
                             {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Magician":
-                                        objCharacter.MagicianEnabled = false;
-                                        break;
+                                case "enabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Magician":
+                                            objCharacter.MagicianEnabled = false;
+                                            break;
 
-                                    case "Adept":
-                                        objCharacter.AdeptEnabled = false;
-                                        break;
+                                        case "Adept":
+                                            objCharacter.AdeptEnabled = false;
+                                            break;
 
-                                    case "Technomancer":
-                                        objCharacter.TechnomancerEnabled = false;
-                                        break;
+                                        case "Technomancer":
+                                            objCharacter.TechnomancerEnabled = false;
+                                            break;
 
-                                    case "Advanced Programs":
-                                        objCharacter.AdvancedProgramsEnabled = false;
-                                        break;
+                                        case "Advanced Programs":
+                                            objCharacter.AdvancedProgramsEnabled = false;
+                                            break;
 
-                                    case "Critter":
-                                        objCharacter.CritterEnabled = false;
-                                        break;
-                                }
-                            }
-                            // Determine if access to any special tabs has been regained
-                            else if (objImprovement.UniqueName == "disabletab")
-                            {
-                                switch (objImprovement.ImprovedName)
-                                {
-                                    case "Cyberware":
-                                        objCharacter.CyberwareDisabled = false;
-                                        break;
+                                        case "Critter":
+                                            objCharacter.CritterEnabled = false;
+                                            break;
+                                    }
 
-                                    case "Initiation":
-                                        objCharacter.InitiationForceDisabled = false;
-                                        break;
-                                }
+                                    break;
+                                // Determine if access to any special tabs has been regained
+                                case "disabletab":
+                                    switch (objImprovement.ImprovedName)
+                                    {
+                                        case "Cyberware":
+                                            objCharacter.CyberwareDisabled = false;
+                                            break;
+
+                                        case "Initiation":
+                                            objCharacter.InitiationForceDisabled = false;
+                                            break;
+                                    }
+
+                                    break;
                             }
                         }
                         break;
@@ -5191,14 +5110,12 @@ namespace Chummer
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicPropertiesChanged = new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
             {
-                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement.GetRelevantPropertyChangers())
                 {
-                    if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1,
-                                                         out HashSet<string> setLoopPropertiesChanged))
-                        setLoopPropertiesChanged.Add(tuplePropertyChanged.Item2);
+                    if (dicPropertiesChanged.TryGetValue(objToNotify, out HashSet<string> setLoopPropertiesChanged))
+                        setLoopPropertiesChanged.Add(strProperty);
                     else
-                        dicPropertiesChanged.Add(tuplePropertyChanged.Item1,
-                                                 new HashSet<string> {tuplePropertyChanged.Item2});
+                        dicPropertiesChanged.Add(objToNotify, new HashSet<string> { strProperty });
                 }
             }
             // Fire each event once

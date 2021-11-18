@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -106,6 +107,21 @@ namespace Chummer
         public static IEnumerable<T> ToEnumerable<T>(params T[] lstItems)
         {
             return lstItems; // faster and lighter on memory than yield return
+        }
+
+        public static bool Exists<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
+        {
+            return lstCollection.Any(x => predicate(x));
+        }
+
+        public static T Find<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
+        {
+            return lstCollection.FirstOrDefault(x => predicate(x));
+        }
+
+        public static T FindLast<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
+        {
+            return lstCollection.LastOrDefault(x => predicate(x));
         }
     }
 }

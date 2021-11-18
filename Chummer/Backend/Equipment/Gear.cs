@@ -1348,10 +1348,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armorcapacity", ArmorCapacity);
             objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
-            objWriter.WriteElementString("qty",
-                Quantity.ToString(
-                    Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Settings.NuyenFormat :
-                    Category == "Currency" ? "#,0.00" : "#,0.##", objCulture));
+            objWriter.WriteElementString("qty", DisplayQuantity(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("avail_english",
                 TotalAvail(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
@@ -2760,6 +2757,26 @@ namespace Chummer.Backend.Equipment
             return xmlGearDataNode?["translate"]?.InnerText ?? Name;
         }
 
+        /// <summary>
+        /// Quantity to show, formatted for display purposes.
+        /// </summary>
+        /// <param name="objCulture"></param>
+        /// <param name="blnOverrideQuantity"></param>
+        /// <param name="decQuantityToUse"></param>
+        /// <returns></returns>
+        public string DisplayQuantity(CultureInfo objCulture, bool blnOverrideQuantity = false,
+            decimal decQuantityToUse = 0.0m)
+        {
+            if (!blnOverrideQuantity)
+                decQuantityToUse = Quantity;
+
+            if (Name.StartsWith("Nuyen", StringComparison.Ordinal))
+                return decQuantityToUse.ToString(_objCharacter.Settings.NuyenFormat, objCulture);
+            if (Category == "Currency")
+                return decQuantityToUse.ToString("#,0.00", objCulture);
+            return Quantity != 1.0m ? decQuantityToUse.ToString("#,0.##", objCulture) : string.Empty;
+        }
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
@@ -2767,23 +2784,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m)
         {
+            string strQuantity = DisplayQuantity(objCulture, blnOverrideQuantity, decQuantityToUse);
             string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            if (blnOverrideQuantity)
-            {
-                if (decQuantityToUse != 1.0m || Category == "Currency")
-                    strReturn = decQuantityToUse.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal)
-                                                              ? _objCharacter.Settings.NuyenFormat
-                                                              : Category == "Currency"
-                                                                  ? "#,0.00"
-                                                                  : "#,0.##", objCulture) + strSpace + strReturn;
-            }
-            else if (Quantity != 1.0m || Category == "Currency")
-                strReturn = Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal)
-                    ? _objCharacter.Settings.NuyenFormat
-                    : Category == "Currency"
-                        ? "#,0.00"
-                        : "#,0.##", objCulture) + strSpace + strReturn;
+            if (!string.IsNullOrEmpty(strQuantity))
+                strReturn = strQuantity + strSpace + strReturn;
+
             if (Rating > 0)
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
                              Rating.ToString(objCulture) + ')';

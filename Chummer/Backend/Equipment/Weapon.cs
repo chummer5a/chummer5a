@@ -4562,17 +4562,19 @@ namespace Chummer.Backend.Equipment
                                     }
                                 }
 
-                                Cyberware objAttributeSource =
-                                    Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR")
-                                        ? _objMountedVehicle != null
-                                            ? _objMountedVehicle.FindVehicleCyberware(x => x.InternalId == ParentID)
-                                            : _objCharacter.Cyberware.DeepFindById(ParentID)
-                                        : null;
-                                while (objAttributeSource != null
-                                       && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
-                                       && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                Cyberware objAttributeSource = null;
+                                if (Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR"))
                                 {
-                                    objAttributeSource = objAttributeSource.Parent;
+                                    objAttributeSource =
+                                        _objMountedVehicle?.FindVehicleCyberware(x => x.InternalId == ParentID) ??
+                                        _objCharacter.Cyberware.DeepFindById(ParentID);
+
+                                    while (objAttributeSource != null
+                                           && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
+                                           && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                    {
+                                        objAttributeSource = objAttributeSource.Parent;
+                                    }
                                 }
 
                                 strReturn = objSkill.CompileDicepoolTooltip(string.Empty,
