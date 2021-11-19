@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -896,7 +897,6 @@ namespace ChummerHub.Client.Backend
                     };
                 }
 
-               
 
                 using (frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false))
                 {
@@ -1479,12 +1479,12 @@ namespace ChummerHub.Client.Backend
         }
 
 
-        private static void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private static void wc_DownloadProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
                 string substring = "Downloading: " + e.ProgressPercentage;
-                PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle + " " + substring;
+                PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle + ' ' + substring;
             });
         }
 

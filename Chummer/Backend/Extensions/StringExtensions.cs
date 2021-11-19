@@ -490,13 +490,12 @@ namespace Chummer
                     }
                 }
 
-                // If all we had was whitespace, return a string with just a single space character
-                if (intLoopWhitespaceCount >= intCurrent)
-                    return " ";
-
-                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
-                // If the last char is whitespace, we don't copy that, either.
-                return new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                return intLoopWhitespaceCount >= intCurrent
+                    // If all we had was whitespace, return a string with just a single space character
+                    ? " "
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
+                    // If the last char is whitespace, we don't copy that, either.
+                    : new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
             }
         }
 

@@ -175,10 +175,7 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
-                    (x, y) => x.Free == y.Free
-                        ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalSettings.CultureInfo)
-                        : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
             });
         }
 
@@ -195,10 +192,7 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
-                    (x, y) => x.Free == y.Free
-                        ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalSettings.CultureInfo)
-                        : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
             });
             return objExoticSkill;
         }
@@ -264,13 +258,24 @@ namespace Chummer.Backend.Skills
                             Karma = skill.Karma
                         };
                         kno.Specializations.AddRange(skill.Specializations);
-                        KnowledgeSkills.AddWithSort(kno, (x, y) => string.Compare(x.Type, y.Type, StringComparison.Ordinal) == 0 ? CompareSkills(x, y) : (string.Compare(x.Type, y.Type, StringComparison.Ordinal) == -1 ? -1 : 1), (objExistSkill, objNewSkill) =>
+                        KnowledgeSkills.AddWithSort(kno, (x, y) =>
+                        {
+                            switch (string.Compare(x.Type, y.Type, StringComparison.Ordinal))
+                            {
+                                case 0:
+                                    return CompareSkills(x, y);
+                                case -1:
+                                    return -1;
+                                default:
+                                    return 1;
+                            }
+                        }, (objExistSkill, objNewSkill) =>
                         {
                             if (objNewSkill.Base > objExistSkill.Base)
                                 objExistSkill.Base = objNewSkill.Base;
                             if (objNewSkill.Karma > objExistSkill.Karma)
                                 objExistSkill.Karma = objNewSkill.Karma;
-                            objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalSettings.CultureInfo) : (x.Free ? 1 : -1));
+                            objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
                         });
                     }
                 }
@@ -361,11 +366,7 @@ namespace Chummer.Backend.Skills
                                     objExistSkill.Base = objNewSkill.Base;
                                 if (objNewSkill.Karma > objExistSkill.Karma)
                                     objExistSkill.Karma = objNewSkill.Karma;
-                                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
-                                    (x, y) => x.Free == y.Free
-                                        ? string.Compare(x.CurrentDisplayName,
-                                            y.CurrentDisplayName, false, GlobalSettings.CultureInfo)
-                                        : (x.Free ? 1 : -1));
+                                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
                             });
                         }
 
@@ -617,11 +618,7 @@ namespace Chummer.Backend.Skills
                             objExistSkill.Base = objNewSkill.Base;
                         if (objNewSkill.Karma > objExistSkill.Karma)
                             objExistSkill.Karma = objNewSkill.Karma;
-                        objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
-                            (x, y) => x.Free == y.Free
-                                ? string.Compare(x.CurrentDisplayName,
-                                    y.CurrentDisplayName, false, GlobalSettings.CultureInfo)
-                                : (x.Free ? 1 : -1));
+                        objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
                     });
                 }
 
@@ -806,30 +803,28 @@ namespace Chummer.Backend.Skills
                         });
                     },
                     () => { Parallel.ForEach(KnowledgeSkills, x => { dicSkills.TryAdd(x.Name, x.Id); }); });
-                UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills,
-                                   EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill,
-                                                                     KarmaExpenseType.ImproveSkill));
-                UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
-            }
-        }
+                UpdateUndoSpecific(dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
+                UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
 
-        private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequreingConverting)
-        {
-            //Build a crazy xpath to get everything we want to convert
-
-            string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
-                              string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'")) +
-                              "]/objectid";
-
-            //Find everything
-            XmlNodeList lstNodesToChange = doc.SelectNodes(strXPath);
-            if (lstNodesToChange != null)
-            {
-                for (int i = 0; i < lstNodesToChange.Count; i++)
+                void UpdateUndoSpecific(IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequiringConverting)
                 {
-                    lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
-                        ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
-                        : StringExtensions.EmptyGuid;
+                    //Build a crazy xpath to get everything we want to convert
+
+                    string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
+                                      string.Join(" or ", typesRequiringConverting.Select(x => "karmatype = " + x.ToString().CleanXPath())) +
+                                      "]/objectid";
+
+                    //Find everything
+                    XmlNodeList lstNodesToChange = xmlSkillOwnerDocument.SelectNodes(strXPath);
+                    if (lstNodesToChange != null)
+                    {
+                        for (int i = 0; i < lstNodesToChange.Count; i++)
+                        {
+                            lstNodesToChange[i].InnerText = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                                ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                : StringExtensions.EmptyGuid;
+                        }
+                    }
                 }
             }
         }
@@ -1079,6 +1074,20 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int SkillGroupPointsMaximum { get; set; }
 
+        public static int CompareSpecializations(SkillSpecialization lhs, SkillSpecialization rhs)
+        {
+            if (lhs == null)
+                return rhs == null ? 0 : 1;
+            if (rhs == null)
+                return -1;
+            if (lhs.Parent != rhs.Parent)
+                return CompareSkills(rhs.Parent, lhs.Parent);
+            if (lhs.Free != rhs.Free)
+                return lhs.Free ? 1 : -1;
+            return string.Compare(lhs.CurrentDisplayName, rhs.CurrentDisplayName, false,
+                GlobalSettings.CultureInfo);
+        }
+
         public static int CompareSkills(Skill rhs, Skill lhs)
         {
             if (rhs == null && lhs == null)
@@ -1100,10 +1109,11 @@ namespace Chummer.Backend.Skills
         public static int CompareSkillGroups(SkillGroup objXGroup, SkillGroup objYGroup)
         {
             if (objXGroup == null)
-            {
                 return objYGroup == null ? 0 : 1;
-            }
-            return objYGroup == null ? -1 : string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false, GlobalSettings.CultureInfo);
+            if (objYGroup == null)
+                return -1;
+            return string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false,
+                GlobalSettings.CultureInfo);
         }
 
         public IEnumerable<Skill> GetSkillList(FilterOption filter, string strName = "", bool blnFetchFromBackup = false)

@@ -1690,7 +1690,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                        EndForbiddenLoop:
+                            EndForbiddenLoop:
                             if (blnRequirementForbidden)
                                 continue;
                         }
@@ -1738,7 +1738,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                        EndRequiredLoop:
+                            EndRequiredLoop:
                             if (!blnRequirementMet)
                                 continue;
                         }

@@ -36,16 +36,15 @@ namespace ChummerHub.Models
         {
             get
             {
-                if (this is SINner meAsSINner)
+                switch (this)
                 {
-                    return meAsSINner.Id.ToString() + ".chum" + meAsSINner.EditionNumber + "z";
+                    case SINner meAsSINner:
+                        return meAsSINner.Id.ToString() + ".chum" + meAsSINner.EditionNumber + "z";
+                    case SINnerGroupSetting meAsSINnerGroupSetting:
+                        return "GroupSetting_" + meAsSINnerGroupSetting.Id.ToString() + ".chumGroupz";
+                    default:
+                        return this.Id + ".unknown";
                 }
-                else if (this is SINnerGroupSetting meAsSINnerGroupSetting)
-                {
-                    return "GroupSetting_" + meAsSINnerGroupSetting.Id.ToString() + ".chumGroupz";
-                }
-                else
-                    return this.Id + ".unknown";
             }
         }
 

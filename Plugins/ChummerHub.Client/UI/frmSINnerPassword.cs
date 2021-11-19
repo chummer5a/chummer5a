@@ -32,7 +32,7 @@ namespace ChummerHub.Client.UI
         }
 
         [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct SHSTOCKICONINFO
+        public readonly struct SHSTOCKICONINFO
         {
             public readonly uint cbSize;
             public readonly IntPtr hIcon;

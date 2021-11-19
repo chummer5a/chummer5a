@@ -10497,5 +10497,9 @@
       <key>Error_Message_PDF_IndexOutOfBounds</key>
       <text>The PDF File has a wrong page offset value set in the global options.</text>
     </string>
+    <string>
+      <key>String_GameplayOption</key>
+      <text>Missing Gameplay Option</text>
+    </string>
   </strings>
 </chummer>

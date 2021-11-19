@@ -266,6 +266,13 @@ namespace Chummer
         /// </summary>
         public Character()
         {
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                _objSettings = new CharacterSettings(); // Need this because ExpenseCharts is WPF and needs a Character in design mode.
+            else if (SettingsManager.LoadedCharacterSettings.ContainsKey(GlobalSettings.DefaultCharacterSetting))
+                _objSettings = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
+            else
+                _objSettings = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSettingDefaultValue];
+
             Settings.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
             AttributeSection.Reset();
@@ -1460,7 +1467,7 @@ namespace Chummer
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
                 objWare.Create(objXmlCyberwareNode,
-                    GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                    GetGradeList(Improvement.ImprovementSource.Bioware, true)
                         .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                     Weapons, Vehicles, true, true, strForcedValue);
                 Cyberware.Add(objWare);
@@ -3163,24 +3170,24 @@ namespace Chummer
                                 foreach (XmlNode objXmlImprovement in objXmlNodeList)
                                 {
                                     string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
-                                    // Do not load condition monitor improvements from older versions of Chummer
-                                    if (strImprovementSource == "ConditionMonitor")
-                                        continue;
-
-                                    // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
-                                    if (strImprovementSource == "EdgeUse")
+                                    switch (strImprovementSource)
                                     {
-                                        decimal decOldEdgeUsed = 0;
-                                        if (objXmlImprovement.TryGetDecFieldQuickly("aug", ref decOldEdgeUsed))
-                                            EdgeUsed = (-decOldEdgeUsed).StandardRound();
-                                        continue;
+                                        // Do not load condition monitor improvements from older versions of Chummer
+                                        case "ConditionMonitor":
+                                            continue;
+                                        // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
+                                        case "EdgeUse":
+                                            decimal decOldEdgeUsed = 0;
+                                            if (objXmlImprovement.TryGetDecFieldQuickly("aug", ref decOldEdgeUsed))
+                                                EdgeUsed = (-decOldEdgeUsed).StandardRound();
+                                            continue;
+                                        case "EssenceLoss":
+                                        case "EssenceLossChargen":
+                                            // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
+                                            if (_decEssenceAtSpecialStart == decimal.MinValue)
+                                                continue;
+                                            break;
                                     }
-
-                                    // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
-                                    if (_decEssenceAtSpecialStart == decimal.MinValue &&
-                                        (strImprovementSource == "EssenceLoss" ||
-                                         strImprovementSource == "EssenceLossChargen"))
-                                        continue;
 
                                     string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                                     if ((blnRemoveImprovements || showWarnings)
@@ -3895,8 +3902,7 @@ namespace Chummer
                                                             x.Name == objCyberware.Name &&
                                                             x.Extra == objCyberware.Extra);
                                                 if (objMatchingCyberware != null)
-                                                    dicPairableCyberwares[objMatchingCyberware] =
-                                                        dicPairableCyberwares[objMatchingCyberware] + 1;
+                                                    dicPairableCyberwares[objMatchingCyberware] += 1;
                                                 else
                                                     dicPairableCyberwares.Add(objCyberware, 1);
                                             }
@@ -3965,8 +3971,7 @@ namespace Chummer
                                                                 x.Name == objCyberware.Name &&
                                                                 x.Extra == objCyberware.Extra);
                                                     if (objMatchingCyberware != null)
-                                                        dicPairableCyberwares[objMatchingCyberware] =
-                                                            dicPairableCyberwares[objMatchingCyberware] + 1;
+                                                        dicPairableCyberwares[objMatchingCyberware] += 1;
                                                     else
                                                         dicPairableCyberwares.Add(objCyberware, 1);
                                                 }
@@ -6166,7 +6171,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public List<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        public IEnumerable<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             StringBuilder sbdFilter = new StringBuilder();
             if(Settings != null)
@@ -6189,27 +6194,19 @@ namespace Chummer
             }
             else
                 strXPath = "/chummer/grades/grade";
-
-            List<Grade> lstGrades;
-            using (XmlNodeList xmlGradeList = LoadData(objSource == Improvement.ImprovementSource.Bioware
-                    ? "bioware.xml"
-                    : objSource == Improvement.ImprovementSource.Drug
-                        ? "drugcomponents.xml"
-                        : "cyberware.xml").SelectNodes(strXPath))
+            
+            using (XmlNodeList xmlGradeList = LoadData(Grade.GetDataFileNameFromImprovementSource(objSource)).SelectNodes(strXPath))
             {
-                lstGrades = new List<Grade>(xmlGradeList?.Count ?? 0);
                 if (xmlGradeList?.Count > 0)
                 {
                     foreach(XmlNode objNode in xmlGradeList)
                     {
                         Grade objGrade = new Grade(this, objSource);
                         objGrade.Load(objNode);
-                        lstGrades.Add(objGrade);
+                        yield return objGrade;
                     }
                 }
             }
-
-            return lstGrades;
         }
 
         /// <summary>
@@ -6301,20 +6298,12 @@ namespace Chummer
         /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
-        /// <param name="blnMountChangeAllowed">Whether or not <paramref name="objModularCyberware"/> can change its mount</param>
         /// <returns></returns>
-        public List<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
+        public IEnumerable<ListItem> ConstructModularCyberlimbList([NotNull] Cyberware objModularCyberware)
         {
-            if (objModularCyberware == null)
-                throw new ArgumentNullException(nameof(objModularCyberware));
+            yield return new ListItem("None", LanguageManager.GetString("String_None"));
+
             string strSpace = LanguageManager.GetString("String_Space");
-            //Mounted cyberware should always be allowed to be dismounted.
-            //Unmounted cyberware requires that a valid mount be present.
-            blnMountChangeAllowed = objModularCyberware.IsModularCurrentlyEquipped;
-            List<ListItem> lstReturn = new List<ListItem>(Cyberware.Count + Vehicles.Count)
-            {
-                new ListItem("None", LanguageManager.GetString("String_None"))
-            };
 
             foreach(Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children))
             {
@@ -6329,8 +6318,7 @@ namespace Chummer
                 {
                     string strName = objLoopCyberware.Parent?.CurrentDisplayName
                                      ?? objLoopCyberware.CurrentDisplayName;
-                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                    blnMountChangeAllowed = true;
+                    yield return new ListItem(objLoopCyberware.InternalId, strName);
                 }
             }
 
@@ -6351,8 +6339,7 @@ namespace Chummer
                             string strName = objLoopVehicle.CurrentDisplayName
                                              + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
                                                            ?? objLoopVehicleMod.CurrentDisplayName);
-                            lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                            blnMountChangeAllowed = true;
+                            yield return new ListItem(objLoopCyberware.InternalId, strName);
                         }
                     }
                 }
@@ -6374,15 +6361,12 @@ namespace Chummer
                                 string strName = objLoopVehicle.CurrentDisplayName
                                                  + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
                                                                ?? objLoopVehicleMod.CurrentDisplayName);
-                                lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                blnMountChangeAllowed = true;
+                                yield return new ListItem(objLoopCyberware.InternalId, strName);
                             }
                         }
                     }
                 }
             }
-
-            return lstReturn;
         }
 
         public bool SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey)
@@ -7394,11 +7378,7 @@ namespace Chummer
 
         #region Basic Properties
 
-        private CharacterSettings _objSettings = Utils.IsDesignerMode || Utils.IsRunningInVisualStudio // Need this because ExpenseCharts is WPF and needs a Character in design mode.
-            ? new CharacterSettings()
-            : SettingsManager.LoadedCharacterSettings.ContainsKey(GlobalSettings.DefaultCharacterSetting)
-                ? SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting]
-                : SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSettingDefaultValue];
+        private CharacterSettings _objSettings;
 
         /// <summary>
         /// Character Settings object.
@@ -9098,9 +9078,7 @@ namespace Chummer
                                     if(decLoopEssencePenalty != 0)
                                     {
                                         if(dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
-                                            dicImprovementEssencePenalties[objImprovement.SourceName] =
-                                                dicImprovementEssencePenalties[objImprovement.SourceName] +
-                                                decLoopEssencePenalty;
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] += decLoopEssencePenalty;
                                         else
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
@@ -9151,10 +9129,18 @@ namespace Chummer
         /// <summary>
         /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation.
         /// </summary>
-        public int MaxSpiritForce =>
-            ((Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value) > 0)
-                ? (Created ? 2 : 1) * (Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value)
-                : 0;
+        public int MaxSpiritForce
+        {
+            get
+            {
+                int intReturn = Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value;
+                if (intReturn <= 0)
+                    return 0;
+                if (Created)
+                    intReturn *= 2;
+                return intReturn;
+            }
+        }
 
         public int BoundSpiritLimit
         {
@@ -9182,7 +9168,18 @@ namespace Chummer
         /// <summary>
         /// Maximum level of sprites compilable/registrable by the character. Limited to RES at creation.
         /// </summary>
-        public int MaxSpriteLevel => RES.TotalValue > 0 ? (Created ? 2 : 1) * RES.TotalValue : 0;
+        public int MaxSpriteLevel
+        {
+            get
+            {
+                int intReturn = RES.TotalValue;
+                if (intReturn <= 0)
+                    return 0;
+                if (Created)
+                    intReturn *= 2;
+                return intReturn;
+            }
+        }
 
         public int RegisteredSpriteLimit
         {
@@ -9517,9 +9514,7 @@ namespace Chummer
                                     if(decLoopEssencePenalty != 0)
                                     {
                                         if(dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
-                                            dicImprovementEssencePenalties[objImprovement.SourceName] =
-                                                dicImprovementEssencePenalties[objImprovement.SourceName] +
-                                                decLoopEssencePenalty;
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] += decLoopEssencePenalty;
                                         else
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
@@ -9737,9 +9732,7 @@ namespace Chummer
                                     if(decLoopEssencePenalty != 0)
                                     {
                                         if(dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
-                                            dicImprovementEssencePenalties[objImprovement.SourceName] =
-                                                dicImprovementEssencePenalties[objImprovement.SourceName] +
-                                                decLoopEssencePenalty;
+                                            dicImprovementEssencePenalties[objImprovement.SourceName] += decLoopEssencePenalty;
                                         else
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
@@ -11477,44 +11470,44 @@ namespace Chummer
 
         public int GetArmorRating(Improvement.ImprovementType eDamageType = Improvement.ImprovementType.Armor)
         {
-            return GetArmorRatingWithImprovement(eDamageType, out int _);
+            return GetArmorRatingWithImprovement(eDamageType, out int _, out List<Improvement> _);
         }
 
-        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromEquippedArmorImprovements)
+        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromEquippedArmorImprovements, out List<Improvement> lstUsedImprovements)
         {
             intFromEquippedArmorImprovements = 0;
             List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
             decimal decBaseArmorImprovement = 0;
             if (eDamageType != Improvement.ImprovementType.None)
             {
-                decBaseArmorImprovement += ImprovementManager.ValueOf(this, eDamageType);
+                decBaseArmorImprovement += ImprovementManager.ValueOf(this, eDamageType, out lstUsedImprovements);
                 if (eDamageType != Improvement.ImprovementType.Armor)
-                    decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
+                {
+                    decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor, out List<Improvement> lstUsedImprovementsExtra);
+                    lstUsedImprovements.AddRange(lstUsedImprovementsExtra);
+                }
             }
+            else
+                lstUsedImprovements = Improvements.Where(x => (x.ImproveType == Improvement.ImprovementType.Armor || x.ImproveType == eDamageType)).ToList();
             if (lstArmorsToConsider.Count == 0)
                 return decBaseArmorImprovement.StandardRound();
             decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
             Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(objArmor => objArmor, objArmor => decBaseArmorImprovement);
-            foreach (Improvement objImprovement in Improvements)
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
-                if ((objImprovement.ImproveSource == Improvement.ImprovementSource.Armor
-                     || objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod)
-                    && (objImprovement.ImproveType == Improvement.ImprovementType.Armor
-                    || objImprovement.ImproveType == eDamageType)
-                    && objImprovement.Enabled)
+                if ((objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
+                     objImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod))
+                    continue;
+                Armor objSourceArmor =
+                    lstArmorsToConsider.FirstOrDefault(x => x.InternalId == objImprovement.SourceName)
+                    ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
+                if (objSourceArmor == null)
+                    continue;
+                decGeneralArmorImprovementValue -= objImprovement.Value;
+                foreach (Armor objArmor in lstArmorsToConsider)
                 {
-                    Armor objSourceArmor =
-                        lstArmorsToConsider.FirstOrDefault(x => x.InternalId == objImprovement.SourceName)
-                        ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
-                    if (objSourceArmor != null)
-                    {
-                        decGeneralArmorImprovementValue -= objImprovement.Value;
-                        foreach (Armor objArmor in lstArmorsToConsider)
-                        {
-                            if (objArmor != objSourceArmor)
-                                dicArmorImprovementValues[objArmor] -= objImprovement.Value;
-                        }
-                    }
+                    if (objArmor != objSourceArmor)
+                        dicArmorImprovementValues[objArmor] -= objImprovement.Value;
                 }
             }
 
@@ -11591,9 +11584,23 @@ namespace Chummer
             return intArmor + intStacking;
         }
 
-        public int DamageResistancePool =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating +
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).StandardRound();
+        public int DamageResistancePool
+        {
+            get
+            {
+                int intBody = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intBody = objVehicle.TotalBody;
+                }
+                else
+                    intBody = BOD.TotalValue;
+                return intBody +
+                       TotalArmorRating +
+                       ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).StandardRound();
+            }
+        }
 
         public string DamageResistancePoolToolTip
         {
@@ -11603,17 +11610,21 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder();
                 if(IsAI)
                 {
-                    sbdToolTip.Append(LanguageManager.GetString("String_VehicleBody") + strSpace + '(' +
-                                      (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(GlobalSettings
-                                          .CultureInfo) + ')');
+                    if (HomeNode is Vehicle objVehicle)
+                        sbdToolTip.Append(LanguageManager.GetString("String_VehicleBody") + strSpace + '(' +
+                                          objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo) + ')' + strSpace +
+                                          '+' + strSpace);
                 }
                 else
                 {
-                    sbdToolTip.Append(BOD.DisplayAbbrev + strSpace + '(' + BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')');
+                    sbdToolTip.Append(BOD.DisplayAbbrev + strSpace + '(' +
+                                      BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '+' +
+                                      strSpace);
                 }
 
-                sbdToolTip.Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Armor") + strSpace + '(' +
+                sbdToolTip.Append(LanguageManager.GetString("Tip_Armor") + strSpace + '(' +
                                   TotalArmorRating.ToString(GlobalSettings.CultureInfo) + ')');
+
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance &&
@@ -11703,9 +11714,24 @@ namespace Chummer
         }
         #endregion
         #region Indirect Soak
-        public int SpellDefenseIndirectSoak =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + GetArmorRating(Improvement.ImprovementType.SpellResistance)
-            + ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance).StandardRound();
+        public int SpellDefenseIndirectSoak
+        {
+            get
+            {
+                int intAttributes = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intAttributes = objVehicle.TotalBody;
+                }
+                else
+                    intAttributes = BOD.TotalValue;
+
+                return intAttributes +
+                       GetArmorRating(Improvement.ImprovementType.SpellResistance) +
+                       ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).StandardRound();
+            }
+        }
 
         public string DisplaySpellDefenseIndirectSoak => CurrentCounterspellingDice == 0
             ? SpellDefenseIndirectSoak.ToString(GlobalSettings.CultureInfo)
@@ -11795,10 +11821,25 @@ namespace Chummer
         }
         #endregion
         #region Direct Soak Physical
-        public int SpellDefenseDirectSoakPhysical =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue)
-            + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-               + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist)).StandardRound();
+        public int SpellDefenseDirectSoakPhysical
+        {
+            get
+            {
+                int intAttributes = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intAttributes = objVehicle.TotalBody;
+                }
+                else
+                    intAttributes = BOD.TotalValue;
+
+                return intAttributes +
+                       (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist))
+                       .StandardRound();
+            }
+        }
 
         public string DisplaySpellDefenseDirectSoakPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseDirectSoakPhysical.ToString(GlobalSettings.CultureInfo)
@@ -12339,17 +12380,16 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder(LanguageManager.GetString("Tip_Armor") + strSpace + '(' +
                                                              (GetArmorRatingWithImprovement(
                                                                   Improvement.ImprovementType.Armor,
-                                                                  out int intFromHighestArmorImprovements)
+                                                                  out int intFromHighestArmorImprovements,
+                                                                  out List<Improvement> lstUsedImprovements)
                                                               - ImprovementManager.ValueOf(this,
                                                                   Improvement.ImprovementType.Armor).StandardRound()
                                                               + intFromHighestArmorImprovements)
                                                              .ToString(GlobalSettings.CultureInfo) + ')');
-                foreach (Improvement objLoopImprovement in Improvements)
+                foreach (Improvement objLoopImprovement in lstUsedImprovements)
                 {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor
-                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.Armor
-                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod
-                        && objLoopImprovement.Enabled)
+                    if (objLoopImprovement.ImproveSource != Improvement.ImprovementSource.Armor
+                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod)
                     {
                         sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement) + strSpace +
                                           '(' + objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo) + ')');
@@ -12655,10 +12695,25 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseManipulationPhysical =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody * 2 : 0) : BOD.TotalValue + STR.TotalValue) +
-            (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-             + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist)).StandardRound();
+        public int SpellDefenseManipulationPhysical
+        {
+            get
+            {
+                int intAttributes = 0;
+                if (IsAI)
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                        intAttributes = objVehicle.TotalBody * 2;
+                }
+                else
+                    intAttributes = BOD.TotalValue + STR.TotalValue;
+
+                return intAttributes +
+                       (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist))
+                       .StandardRound();
+            }
+        }
 
         public string DisplaySpellDefenseManipulationPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseManipulationPhysical.ToString(GlobalSettings.CultureInfo)
@@ -12761,12 +12816,8 @@ namespace Chummer
         {
             get
             {
-                if(IsAI)
-                {
-                    return HomeNode == null
-                        ? LanguageManager.GetString("Label_OtherCoreCM")
-                        : LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM");
-                }
+                if (IsAI)
+                    return LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM");
                 return LanguageManager.GetString("Label_OtherPhysicalCM");
             }
         }

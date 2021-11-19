@@ -1560,7 +1560,7 @@ namespace Chummer
             }
         }
 
-        private ICollection<SourcebookInfo> ScanFilesForPDFTexts(string[] files, XPathNodeIterator matches, frmLoading frmProgressBar)
+        private ICollection<SourcebookInfo> ScanFilesForPDFTexts(IEnumerable<string> files, XPathNodeIterator matches, frmLoading frmProgressBar)
         {
             ParallelOptions parallelOptions = new ParallelOptions
             {
@@ -1591,7 +1591,7 @@ namespace Chummer
             }
         }
 
-        private SourcebookInfo ScanPDFForMatchingText(FileInfo fileInfo, XPathNodeIterator xmlMatches)
+        private SourcebookInfo ScanPDFForMatchingText(FileSystemInfo fileInfo, XPathNodeIterator xmlMatches)
         {
             //Search the first 10 pages for all the text
             for (int intPage = 1; intPage <= 10; intPage++)
@@ -1619,69 +1619,63 @@ namespace Chummer
                 }
             }
             return null;
-        }
 
-        private string GetPageTextFromPDF(FileInfo fileInfo, int intPage)
-        {
-            PdfDocument objPdfDocument;
-            try
+            string GetPageTextFromPDF(FileSystemInfo objInnerFileInfo, int intPage)
             {
-                objPdfDocument = new PdfDocument(new PdfReader(fileInfo.FullName));
-            }
-            catch (iText.IO.Exceptions.IOException e)
-            {
-                if (e.Message == "PDF header not found.")
+                PdfDocument objPdfDocument;
+                try
+                {
+                    objPdfDocument = new PdfDocument(new PdfReader(objInnerFileInfo.FullName));
+                }
+                catch (iText.IO.Exceptions.IOException e)
+                {
+                    if (e.Message == "PDF header not found.")
+                        return null;
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    //Loading failed, probably not a PDF file
+                    Log.Warn(e, "Could not load file " + objInnerFileInfo.FullName + " and open it as PDF to search for text.");
                     return null;
-                throw;
-            }
-            catch (Exception e)
-            {
-                //Loading failed, probably not a PDF file
-                Log.Warn(e, "Could not load file " + fileInfo.FullName + " and open it as PDF to search for text.");
-                return null;
-            }
+                }
 
-            List<string> lstStringFromPdf = new List<string>(30);
-            int intExtraAllCapsInfo = 0;
-            // Loop through each page, starting at the listed page + offset.
-            if (intPage >= objPdfDocument.GetNumberOfPages())
-                return null;
+                List<string> lstStringFromPdf = new List<string>(30);
+                // Loop through each page, starting at the listed page + offset.
+                if (intPage >= objPdfDocument.GetNumberOfPages())
+                    return null;
 
-            int intProcessedStrings = lstStringFromPdf.Count;
-            try
-            {
-                // each page should have its own text extraction strategy for it to work properly
-                // this way we don't need to check for previous page appearing in the current page
-                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
-                                              objPdfDocument.GetPage(intPage),
-                                              new SimpleTextExtractionStrategy())
-                                          .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+                int intProcessedStrings = lstStringFromPdf.Count;
+                try
+                {
+                    // each page should have its own text extraction strategy for it to work properly
+                    // this way we don't need to check for previous page appearing in the current page
+                    // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                    string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
+                                                  objPdfDocument.GetPage(intPage),
+                                                  new SimpleTextExtractionStrategy())
+                                              .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
 
-                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPdf.AddRange(
-                    strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                               .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                    // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                    lstStringFromPdf.AddRange(
+                        strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                                   .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                }
+                // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
+                catch (Exception e)
+                {
+                    Utils.BreakIfDebug();
+                    Log.Error(e);
+                    return null;
+                }
+                StringBuilder sbdAllLines = new StringBuilder();
+                for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                {
+                    string strCurrentLine = lstStringFromPdf[i];
+                    sbdAllLines.AppendLine(strCurrentLine);
+                }
+                return sbdAllLines.ToString();
             }
-            // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
-            catch (Exception e)
-            {
-                Utils.BreakIfDebug();
-                Log.Error(e);
-                return null;
-            }
-            StringBuilder sbdAllLines = new StringBuilder();
-            for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
-            {
-                // failsafe for languages that don't have case distinction (chinese, japanese, etc)
-                // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
-                if (intExtraAllCapsInfo > 10)
-                    break;
-
-                string strCurrentLine = lstStringFromPdf[i];
-                sbdAllLines.AppendLine(strCurrentLine);
-            }
-            return sbdAllLines.ToString();
         }
     }
 

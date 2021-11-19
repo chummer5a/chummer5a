@@ -1587,12 +1587,10 @@ namespace ChummerHub.Controllers.V1
                     foreach (var child in group.MyGroups)
                     {
                         bool okToShow = false;
-                        if (child.IsPublic == false && user == null)
+                        if (!child.IsPublic)
                         {
-                            continue;
-                        }
-                        if (child.IsPublic == false && user != null)
-                        {
+                            if (user == null)
+                                continue;
                             //check if the user has the right to see this group
                             var roles = await _userManager.GetRolesAsync(user);
                             if (roles.Contains(child.MyAdminIdentityRole))
@@ -1600,7 +1598,7 @@ namespace ChummerHub.Controllers.V1
                                 okToShow = true;
                             }
                         }
-                        else if (child.IsPublic)
+                        else
                         {
                             okToShow = true;
                         }

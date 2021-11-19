@@ -77,7 +77,7 @@ namespace Chummer
             if (_objCharacter.IsAI)
                 return;
 
-            List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource);
+            List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource).ToList();
 
             using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
                 if (xmlSuiteList?.Count > 0)

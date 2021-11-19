@@ -107,10 +107,8 @@ namespace Chummer
         /// </summary>
         private void PopulateGrades()
         {
-            List<Grade> objGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
-
             _lstGrade.Clear();
-            foreach (Grade objGrade in objGradeList)
+            foreach (Grade objGrade in _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug))
             {
                 _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
             }

@@ -450,12 +450,16 @@ namespace Chummer
                     break;
 
                 case TextBox txtControl:
-                    txtControl.ForeColor = txtControl.ForeColor == ErrorColor
-                        ? ErrorColor
-                        : blnLightMode ? WindowTextLight : WindowTextDark;
-                    txtControl.BackColor = txtControl.ReadOnly
-                        ? blnLightMode ? ControlLight : ControlDark
-                        : blnLightMode ? WindowLight : WindowDark;
+                    if (txtControl.ForeColor == ErrorColor)
+                        txtControl.ForeColor = ErrorColor;
+                    else if (blnLightMode)
+                        txtControl.ForeColor = WindowTextLight;
+                    else
+                        txtControl.ForeColor = WindowTextDark;
+                    if (txtControl.ReadOnly)
+                        txtControl.BackColor = blnLightMode ? ControlLight : ControlDark;
+                    else
+                        txtControl.BackColor = blnLightMode ? WindowLight : WindowDark;
                     break;
 
                 case ListView objListView:

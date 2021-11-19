@@ -128,7 +128,7 @@ namespace ChummerHub.Client.UI
         {
             if (e.KeyCode == Keys.Enter)
             {
-                BOk_Click(this, new EventArgs());
+                BOk_Click(this, EventArgs.Empty);
             }
         }
 

@@ -371,9 +371,7 @@ namespace Chummer.Backend.Equipment
             if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]") == null
                 && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + "]") != null)
             {
-                string baselifestyle = _strName;
-                _strName = _strBaseLifestyle;
-                _strBaseLifestyle = baselifestyle;
+                (_strName, _strBaseLifestyle) = (_strBaseLifestyle, _strName);
             }
             if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
             {

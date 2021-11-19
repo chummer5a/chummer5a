@@ -746,17 +746,16 @@ namespace Chummer
         /// <summary>
         /// Does a breadth-first recursion to set the sorting property of any ICanSorts in the tree
         /// </summary>
-        /// <param name="lstNodes">The list if TreeNodes to iterate over</param>
+        /// <param name="lstNodes">The list of TreeNodes to iterate over</param>
         private static void CacheSortOrderRecursive(TreeNodeCollection lstNodes)
         {
-            List<TreeNode> lstEnumerable = lstNodes.Cast<TreeNode>().ToList();
             // Do this as two steps because non-sortables can own sortables
-            lstEnumerable.Where(n => n?.Tag is ICanSort).ToList().ForEach(n =>
-                {
-                    if (n.Tag is ICanSort objSortable)
-                        objSortable.SortOrder = n.Index;
-                });
-            lstEnumerable.ForEach(n => CacheSortOrderRecursive(n.Nodes));
+            foreach (TreeNode objNode in lstNodes)
+            {
+                if (objNode.Tag is ICanSort objSortable)
+                    objSortable.SortOrder = objNode.Index;
+                CacheSortOrderRecursive(objNode.Nodes);
+            }
         }
 
         /// <summary>

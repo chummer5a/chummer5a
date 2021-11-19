@@ -272,7 +272,7 @@ namespace Chummer
             Restore = 9,
             ShowDefault = 10,
             ForceMinimized = 11
-        };
+        }
 
         /// <summary>
         /// Contains data to be passed to another application by the WM_COPYDATA message.

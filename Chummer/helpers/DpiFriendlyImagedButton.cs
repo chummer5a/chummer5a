@@ -44,15 +44,14 @@ namespace Chummer
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
             List<Image> lstImages = new List<Image>(Images);
-            if (lstImages.Count == 0)
+            switch (lstImages.Count)
             {
-                Image = null;
-                return;
-            }
-            if (lstImages.Count == 1)
-            {
-                Image = lstImages[0];
-                return;
+                case 0:
+                    Image = null;
+                    return;
+                case 1:
+                    Image = lstImages[0];
+                    return;
             }
 
             Image objBestImage = null;

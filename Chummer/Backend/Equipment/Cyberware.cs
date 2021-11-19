@@ -157,14 +157,15 @@ namespace Chummer.Backend.Equipment
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            List<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
-            foreach (Grade objGrade in lstGrades)
+            Grade objStandardGrade = null;
+            foreach (Grade objGrade in objCharacter.GetGradeList(objSource, true))
             {
                 if (objGrade.Name == strValue)
                     return objGrade;
+                if (objGrade.Name == "Standard")
+                    objStandardGrade = objGrade;
             }
-
-            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
+            return objStandardGrade;
         }
 
         /// <summary>
@@ -4815,13 +4816,14 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlCyberwareImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                List<Grade> objCyberwareGradeList =
-                    _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware);
-                List<Grade> objBiowareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware);
+                Lazy<List<Grade>> objCyberwareGradeList = new Lazy<List<Grade>>(() =>
+                    _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware).ToList());
+                Lazy<List<Grade>> objBiowareGradeList = new Lazy<List<Grade>>(() =>
+                    _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware).ToList());
                 if (objSelectedGrade == null)
                 {
                     bool blnDoBiowareGradeCheck = true;
-                    foreach (Grade objCyberwareGrade in objCyberwareGradeList)
+                    foreach (Grade objCyberwareGrade in objCyberwareGradeList.Value)
                     {
                         if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')', StringComparison.Ordinal))
                         {
@@ -4834,7 +4836,7 @@ namespace Chummer.Backend.Equipment
 
                     if (blnDoBiowareGradeCheck)
                     {
-                        foreach (Grade objCyberwareGrade in objBiowareGradeList)
+                        foreach (Grade objCyberwareGrade in objBiowareGradeList.Value)
                         {
                             if (strOriginalName.EndsWith(" (" + objCyberwareGrade.Name + ')', StringComparison.Ordinal))
                             {
@@ -5033,7 +5035,7 @@ namespace Chummer.Backend.Equipment
                     if (objSelectedGrade == null)
                     {
                         objSelectedGrade =
-                            (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).FirstOrDefault(x =>
+                            (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).Value.FirstOrDefault(x =>
                                 x.Name == strGradeName);
                     }
 

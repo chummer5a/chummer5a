@@ -618,17 +618,16 @@ namespace Chummer
                 return;
             int intIndex = objNode.Index;
             _dicCharacterCustomDataDirectoryInfos[_dicCharacterCustomDataDirectoryInfos[intIndex].Key] = objNode.Checked;
-            if (objNode.Tag is CustomDataDirectoryInfo objCustomDataDirectoryInfo
-                && _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(objCustomDataDirectoryInfo.CharacterSettingsSaveKey))
+            switch (objNode.Tag)
             {
-                _objCharacterSettings.CustomDataDirectoryKeys[objCustomDataDirectoryInfo.CharacterSettingsSaveKey] = objNode.Checked;
-                _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
-            }
-            else if (objNode.Tag is string strCustomDataDirectoryKey
-                     && _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(strCustomDataDirectoryKey))
-            {
-                _objCharacterSettings.CustomDataDirectoryKeys[strCustomDataDirectoryKey] = objNode.Checked;
-                _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
+                case CustomDataDirectoryInfo objCustomDataDirectoryInfo when _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(objCustomDataDirectoryInfo.CharacterSettingsSaveKey):
+                    _objCharacterSettings.CustomDataDirectoryKeys[objCustomDataDirectoryInfo.CharacterSettingsSaveKey] = objNode.Checked;
+                    _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
+                    break;
+                case string strCustomDataDirectoryKey when _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(strCustomDataDirectoryKey):
+                    _objCharacterSettings.CustomDataDirectoryKeys[strCustomDataDirectoryKey] = objNode.Checked;
+                    _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
+                    break;
             }
         }
 

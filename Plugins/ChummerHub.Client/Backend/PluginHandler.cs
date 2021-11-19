@@ -455,16 +455,20 @@ namespace Chummer.Plugins
 
                                 TabPage tabPage = null;
                                 CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
-                                if (found is frmCreate frm && frm.TabCharacterTabs.TabPages.ContainsKey("SINners"))
+                                switch (found)
                                 {
-                                    int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                    tabPage = frm.TabCharacterTabs.TabPages[index];
-                                }
-                                else if (found is frmCareer frm2 &&
-                                         frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"))
-                                {
-                                    int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                    tabPage = frm2.TabCharacterTabs.TabPages[index];
+                                    case frmCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                    {
+                                        int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                        tabPage = frm.TabCharacterTabs.TabPages[index];
+                                        break;
+                                    }
+                                    case frmCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                    {
+                                        int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                        tabPage = frm2.TabCharacterTabs.TabPages[index];
+                                        break;
+                                    }
                                 }
 
                                 if (tabPage == null)
@@ -676,7 +680,7 @@ namespace Chummer.Plugins
             }
         }
 
-        public readonly static ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
+        public static readonly LockingDictionary<string, TreeNode> MyTreeNodes2Add = new LockingDictionary<string, TreeNode>();
 
         private void mnuSINners_Click(object sender, EventArgs ea)
         {
@@ -837,30 +841,30 @@ namespace Chummer.Plugins
             {
                 TreeNode node = null;
                 Log.Error(e);
-                if (e.StatusCode == 500)
+                switch (e.StatusCode)
                 {
-                    node = new TreeNode("SINers seems to be down (Error 500)")
-                    {
-                        ToolTipText = e.Message,
-                        Tag = e
+                    case 500:
+                        node = new TreeNode("SINers seems to be down (Error 500)")
+                        {
+                            ToolTipText = e.Message,
+                            Tag = e
 
-                    };
-                }
-                else if (e.StatusCode == 200)
-                {
-                    node = new TreeNode("SINersplugin encounterd an error: " + e.StatusCode)
-                    {
-                        ToolTipText = e.Message,
-                        Tag = e
-                    };
-                }
-                else
-                {
-                    node = new TreeNode("SINers encounterd an error: " + e.StatusCode)
-                    {
-                        ToolTipText = e.Message,
-                        Tag = e
-                    };
+                        };
+                        break;
+                    case 200:
+                        node = new TreeNode("SINersplugin encounterd an error: " + e.StatusCode)
+                        {
+                            ToolTipText = e.Message,
+                            Tag = e
+                        };
+                        break;
+                    default:
+                        node = new TreeNode("SINers encounterd an error: " + e.StatusCode)
+                        {
+                            ToolTipText = e.Message,
+                            Tag = e
+                        };
+                        break;
                 }
                 return new List<TreeNode>
                     {
@@ -933,62 +937,65 @@ namespace Chummer.Plugins
         {
             TreeNode t = MainForm.CharacterRoster.treCharacterList.SelectedNode;
 
-            if (t?.Tag is CharacterCache objCache)
+            switch (t?.Tag)
             {
-                try
-                {
-                    string sinneridstring = null;
-                    SinnersClient client = StaticUtils.GetClient();
-                    if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinneridobj))
+                case CharacterCache objCache:
+                    try
                     {
-                        sinneridstring = sinneridobj?.ToString();
+                        string sinneridstring = null;
+                        SinnersClient client = StaticUtils.GetClient();
+                        if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinneridobj))
+                        {
+                            sinneridstring = sinneridobj?.ToString();
+                        }
+
+                        if (Guid.TryParse(sinneridstring, out Guid sinnerid))
+                        {
+                            try
+                            {
+                                SINner res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
+                                object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                if (response != null)
+                                    await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                            }
+                            catch (Exception exception)
+                            {
+                                ChummerHub.Client.Backend.Utils.HandleError(exception);
+                            }
+                            finally
+                            {
+                                //res?.Dispose();
+                            }
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Log.Error(exception);
+                        MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
                     }
 
-                    if (Guid.TryParse(sinneridstring, out Guid sinnerid))
+                    break;
+                case SINnerSearchGroup ssg:
+                    try
                     {
-                        try
+                        SinnersClient client = StaticUtils.GetClient();
+                        ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(ssg.Id, null, Guid.Empty, null, null);
+                        object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                        if (response != null)
                         {
-                            SINner res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
-                            object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                            if (response != null)
-                                await MainForm.CharacterRoster.RefreshPluginNodes(this);
-                        }
-                        catch (Exception exception)
-                        {
-                            ChummerHub.Client.Backend.Utils.HandleError(exception);
-                        }
-                        finally
-                        {
-                            //res?.Dispose();
+                            await MainForm.CharacterRoster.RefreshPluginNodes(this);
                         }
                     }
-                }
-                catch (Exception exception)
-                {
-                    Log.Error(exception);
-                    MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
-                }
-            }
-            else if (t?.Tag is SINnerSearchGroup ssg)
-            {
-                try
-                {
-                    SinnersClient client = StaticUtils.GetClient();
-                    ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(ssg.Id, null, Guid.Empty, null, null);
-                    object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                    if (response != null)
+                    catch (Exception exception)
                     {
-                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                        ChummerHub.Client.Backend.Utils.HandleError(exception);
                     }
-                }
-                catch (Exception exception)
-                {
-                    ChummerHub.Client.Backend.Utils.HandleError(exception);
-                }
-                finally
-                {
-                    //res?.Dispose();
-                }
+                    finally
+                    {
+                        //res?.Dispose();
+                    }
+
+                    break;
             }
         }
 
@@ -996,75 +1003,78 @@ namespace Chummer.Plugins
         {
             TreeNode t = MainForm.CharacterRoster.treCharacterList.SelectedNode;
 
-            if (t?.Tag is CharacterCache objCache)
+            switch (t?.Tag)
             {
-                try
-                {
-                    string sinneridstring = null;
-                    SinnersClient client = StaticUtils.GetClient();
-                    if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinneridobj))
+                case CharacterCache objCache:
+                    try
                     {
-                        sinneridstring = sinneridobj?.ToString();
-                    }
-
-                    if (Guid.TryParse(sinneridstring, out Guid sinnerid))
-                    {
-                        SINner res = null;
-                        try
+                        string sinneridstring = null;
+                        SinnersClient client = StaticUtils.GetClient();
+                        if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinneridobj))
                         {
-                            res = await client.PutSINerInGroupAsync(null, sinnerid, null);
-
-                            object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                            if (response != null)
-                            {
-                                await MainForm.CharacterRoster.RefreshPluginNodes(this);
-                            }
-                            
+                            sinneridstring = sinneridobj?.ToString();
                         }
-                        catch(ApiException e1)
+
+                        if (Guid.TryParse(sinneridstring, out Guid sinnerid))
                         {
-                            if (res != null)
+                            SINner res = null;
+                            try
                             {
+                                res = await client.PutSINerInGroupAsync(null, sinnerid, null);
+
                                 object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                                 if (response != null)
                                 {
                                     await MainForm.CharacterRoster.RefreshPluginNodes(this);
                                 }
+                            
                             }
-                            else
+                            catch(ApiException e1)
                             {
-                                ChummerHub.Client.Backend.Utils.HandleError(e1);
-                            }
+                                if (res != null)
+                                {
+                                    object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                    if (response != null)
+                                    {
+                                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                                    }
+                                }
+                                else
+                                {
+                                    ChummerHub.Client.Backend.Utils.HandleError(e1);
+                                }
 
-                        }
-                        catch (Exception exception)
-                        {
-                            ChummerHub.Client.Backend.Utils.HandleError(exception);
+                            }
+                            catch (Exception exception)
+                            {
+                                ChummerHub.Client.Backend.Utils.HandleError(exception);
+                            }
                         }
                     }
-                }
-                catch (Exception exception)
-                {
-                    Log.Error(exception);
-                    MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
-                }
-            }
-            else if (t?.Tag is SINnerSearchGroup ssg)
-            {
-                try
-                {
-                    SinnersClient client = StaticUtils.GetClient();
-                    ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(ssg.Id, null, null, null, null);
-                    object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                    if (response != null)
+                    catch (Exception exception)
                     {
-                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                        Log.Error(exception);
+                        MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
                     }
-                }
-                catch (Exception exception)
-                {
-                    ChummerHub.Client.Backend.Utils.HandleError(exception);
-                }
+
+                    break;
+                case SINnerSearchGroup ssg:
+                    try
+                    {
+                        SinnersClient client = StaticUtils.GetClient();
+                        ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(ssg.Id, null, null, null, null);
+                        object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                        if (response != null)
+                        {
+                            await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        ChummerHub.Client.Backend.Utils.HandleError(exception);
+                    }
+
+                    break;
             }
         }
 
@@ -1073,44 +1083,51 @@ namespace Chummer.Plugins
         {
             TreeNode t = MainForm.CharacterRoster.treCharacterList.SelectedNode;
 
-            if (t?.Tag is CharacterCache objCache)
+            switch (t?.Tag)
             {
-                using (frmSINnerShare share = new frmSINnerShare
+                case CharacterCache objCache:
                 {
-                    TopMost = true
-                })
-                {
-                    share.MyUcSINnerShare.MyCharacterCache = objCache;
-                    share.Show();
-                    try
+                    using (frmSINnerShare share = new frmSINnerShare
                     {
-                        await share.MyUcSINnerShare.DoWork();
-                    }
-                    catch (Exception exception)
+                        TopMost = true
+                    })
                     {
-                        Log.Error(exception);
-                        MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                        share.MyUcSINnerShare.MyCharacterCache = objCache;
+                        share.Show();
+                        try
+                        {
+                            await share.MyUcSINnerShare.DoWork();
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Error(exception);
+                            MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                        }
                     }
+
+                    break;
                 }
-            }
-            else if (t?.Tag is SINnerSearchGroup ssg)
-            {
-                using (frmSINnerShare share = new frmSINnerShare
+                case SINnerSearchGroup ssg:
                 {
-                    TopMost = true
-                })
-                {
-                    share.MyUcSINnerShare.MySINnerSearchGroup = ssg;
-                    share.Show();
-                    try
+                    using (frmSINnerShare share = new frmSINnerShare
                     {
-                        await share.MyUcSINnerShare.DoWork();
-                    }
-                    catch (Exception exception)
+                        TopMost = true
+                    })
                     {
-                        Log.Error(exception);
-                        MainForm.ShowMessageBox("Error sharing Group: " + exception.Message);
+                        share.MyUcSINnerShare.MySINnerSearchGroup = ssg;
+                        share.Show();
+                        try
+                        {
+                            await share.MyUcSINnerShare.DoWork();
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Error(exception);
+                            MainForm.ShowMessageBox("Error sharing Group: " + exception.Message);
+                        }
                     }
+
+                    break;
                 }
             }
         }

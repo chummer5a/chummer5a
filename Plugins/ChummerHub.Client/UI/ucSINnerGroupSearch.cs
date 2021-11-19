@@ -247,7 +247,7 @@ namespace ChummerHub.Client.UI
                                              ".";
                                 Log.Info(msg);
                                 Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
+                                await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, EventArgs.Empty));
                             }
                             else
                             {
@@ -260,7 +260,7 @@ namespace ChummerHub.Client.UI
                                              ".";
                                 Log.Info(msg);
                                 Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
+                                await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, EventArgs.Empty));
                                 await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                             }
                         }).Unwrap();
@@ -473,7 +473,7 @@ namespace ChummerHub.Client.UI
         {
             if (e.KeyCode == Keys.Enter)
             {
-                bSearch_Click(this, new EventArgs());
+                bSearch_Click(this, EventArgs.Empty);
             }
         }
 

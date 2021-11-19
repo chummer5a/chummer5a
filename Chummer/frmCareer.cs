@@ -2631,7 +2631,7 @@ namespace Chummer
                                 {
                                     Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
                                     if (objMatchingCyberware != null)
-                                        dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                                        dicPairableCyberwares[objMatchingCyberware] += 1;
                                     else
                                         dicPairableCyberwares.Add(objCyberware, 1);
                                 }
@@ -13869,45 +13869,55 @@ namespace Chummer
                             if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                                 cmsAmmoSingleShot.Enabled = true;
 
-                            cmsAmmoSingleShot.Text = cmsAmmoSingleShot.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SingleShot")
+                            if (cmsAmmoSingleShot.Enabled)
+                                cmsAmmoSingleShot.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_SingleShot")
                                     , objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.SingleShot == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_SingleShotNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoSingleShot.Text = LanguageManager.GetString("String_SingleShotNA");
 
-                            cmsAmmoShortBurst.Text = cmsAmmoShortBurst.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_ShortBurst")
+                            if (cmsAmmoShortBurst.Enabled)
+                                cmsAmmoShortBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_ShortBurst")
                                     , objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.ShortBurst == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_ShortBurstNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoShortBurst.Text = LanguageManager.GetString("String_ShortBurstNA");
 
-                            cmsAmmoLongBurst.Text = cmsAmmoLongBurst.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_LongBurst")
+                            if (cmsAmmoLongBurst.Enabled)
+                                cmsAmmoLongBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_LongBurst")
                                     , objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.LongBurst == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_LongBurstNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoLongBurst.Text = LanguageManager.GetString("String_LongBurstNA");
 
-                            cmsAmmoFullBurst.Text = cmsAmmoFullBurst.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_FullBurst")
+                            if (cmsAmmoFullBurst.Enabled)
+                                cmsAmmoFullBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_FullBurst")
                                     , objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
                                     objWeapon.FullBurst == 1
                                         ? LanguageManager.GetString("String_Bullet")
-                                        : LanguageManager.GetString("String_Bullets"))
-                                : LanguageManager.GetString("String_FullBurstNA");
+                                        : LanguageManager.GetString("String_Bullets"));
+                            else
+                                cmsAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurstNA");
 
-                            cmsAmmoSuppressiveFire.Text = cmsAmmoSuppressiveFire.Enabled
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SuppressiveFire")
+                            if (cmsAmmoSuppressiveFire.Enabled)
+                                cmsAmmoSuppressiveFire.Text = string.Format(GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("String_SuppressiveFire")
                                     , objWeapon.Suppressive,
                                     LanguageManager.GetString(objWeapon.Suppressive == 1
                                         ? "String_Bullet"
-                                        : "String_Bullets"))
-                                : LanguageManager.GetString("String_SuppressiveFireNA");
+                                        : "String_Bullets"));
+                            else
+                                cmsAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFireNA");
 
                             List<ListItem> lstAmmo = new List<ListItem>(objWeapon.AmmoSlots);
                             int intCurrentSlot = objWeapon.ActiveAmmoSlot;
@@ -16319,7 +16329,10 @@ namespace Chummer
                         lblVehicleRating.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
                         lblVehicleGearQtyLabel.Visible = true;
                         lblVehicleGearQty.Visible = true;
-                        lblVehicleGearQty.Text = objGear.Quantity.ToString(objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal) ? CharacterObjectSettings.NuyenFormat : objGear.Category == "Currency" ? "#,0.00" : "#,0", GlobalSettings.CultureInfo);
+                        string strQuantity = objGear.DisplayQuantity(GlobalSettings.CultureInfo);
+                        if (string.IsNullOrEmpty(strQuantity))
+                            strQuantity = 1.ToString(GlobalSettings.CultureInfo);
+                        lblVehicleGearQty.Text = strQuantity;
                         cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
                         lblVehicleAvail.Text = objGear.DisplayTotalAvail;
                         lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
@@ -17652,23 +17665,23 @@ namespace Chummer
         {
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
-
+            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
+            //Mounted cyberware should always be allowed to be dismounted.
+            //Unmounted cyberware requires that a valid mount be present.
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            {
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_NoValidModularMount"),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             string strSelectedParentID;
             using (frmSelectItem frmPickMount = new frmSelectItem
             {
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
             })
             {
-                frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
-                if (!blnMountChangeAllowed)
-                {
-                    Program.MainForm.ShowMessageBox(this,
-                        LanguageManager.GetString("Message_NoValidModularMount"),
-                        LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
+                frmPickMount.SetGeneralItemsMode(lstModularMounts);
                 frmPickMount.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
@@ -17691,23 +17704,24 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
-            string strSelectedParentID;
             CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId, out VehicleMod objOldParentVehicleMod);
+            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
+            //Mounted cyberware should always be allowed to be dismounted.
+            //Unmounted cyberware requires that a valid mount be present.
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            {
+                Program.MainForm.ShowMessageBox(this,
+                    LanguageManager.GetString("Message_NoValidModularMount"),
+                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            string strSelectedParentID;
             using (frmSelectItem frmPickMount = new frmSelectItem
             {
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
             })
             {
-                frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
-                if (!blnMountChangeAllowed)
-                {
-                    Program.MainForm.ShowMessageBox(this,
-                        LanguageManager.GetString("Message_NoValidModularMount"),
-                        LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
+                frmPickMount.SetGeneralItemsMode(lstModularMounts);
                 frmPickMount.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
