@@ -24,5 +24,9 @@
 		<avail>12R</avail>
 		<cost>4500</cost>
 	</armor>
+    <armor> <!--Full Body Armor: Chemical Seal-->
+      <id>69423033-a7f8-4b80-96c6-0c4a91cd32aa</id>
+      <cost>3000</cost>
+    </armor>
   </armors>
 </chummer>
