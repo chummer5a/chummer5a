@@ -108,15 +108,12 @@ namespace Chummer
 
             lstMethods.Sort(CompareListItems.CompareNames);
 
-            foreach (CritterPower objPower in _objCharacter.CritterPowers)
-            {
-                string strPowerName = objPower.Name;
-                if (lstMethods.Any(x => strPowerName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
-                {
-                    _strCurrentPossessionMethod = strPowerName;
-                    break;
-                }
-            }
+            _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
+                                                       .FirstOrDefault(
+                                                           y => lstMethods.Any(
+                                                               x => y.Equals(
+                                                                   x.Value.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase)));
 
             cboPossessionMethod.BeginUpdate();
             cboPossessionMethod.PopulateWithListItems(lstMethods);

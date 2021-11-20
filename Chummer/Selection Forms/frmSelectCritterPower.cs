@@ -273,14 +273,14 @@ namespace Chummer
                 {
                     bool blnAddPower = true;
                     // Make sure the Critter doesn't already have the Power.
-                    foreach (CritterPower objCheckPower in _objCharacter.CritterPowers)
+                    foreach (string strCheckPowerName in _objCharacter.CritterPowers.Select(x => x.Name))
                     {
-                        if (objCheckPower.Name == objXmlCritterPower.Value)
+                        if (strCheckPowerName == objXmlCritterPower.Value)
                         {
                             blnAddPower = false;
                             break;
                         }
-                        if ((objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation") && blnPhysicalPresence)
+                        if ((strCheckPowerName == "Materialization" || strCheckPowerName == "Possession" || strCheckPowerName == "Inhabitation") && blnPhysicalPresence)
                         {
                             blnAddPower = false;
                             break;

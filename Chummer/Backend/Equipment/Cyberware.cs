@@ -4044,11 +4044,12 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
-                    foreach (Cyberware objChild in Children)
+                    foreach (int intChildTotalStrength in Children.Select(x => x.TotalStrength))
                     {
-                        if (objChild.TotalStrength <= 0) continue;
+                        if (intChildTotalStrength <= 0)
+                            continue;
                         intCyberlimbChildrenNumber += 1;
-                        intAverageAttribute += objChild.TotalStrength;
+                        intAverageAttribute += intChildTotalStrength;
                     }
 
                     if (intCyberlimbChildrenNumber == 0)
@@ -4146,11 +4147,12 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
-                    foreach (Cyberware objChild in Children)
+                    foreach (int intChildTotalAgility in Children.Select(x => x.TotalAgility))
                     {
-                        if (objChild.TotalAgility <= 0) continue;
+                        if (intChildTotalAgility <= 0)
+                            continue;
                         intCyberlimbChildrenNumber += 1;
-                        intAverageAttribute += objChild.TotalAgility;
+                        intAverageAttribute += intChildTotalAgility;
                     }
 
                     if (intCyberlimbChildrenNumber == 0)

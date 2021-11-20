@@ -40,6 +40,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
+        private MartialArt _objParent;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -202,6 +203,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Martial art to which this technique is applied.
+        /// </summary>
+        public MartialArt Parent
+        {
+            get => _objParent;
+            set => _objParent = value;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayName(string strLanguage)
@@ -296,14 +306,11 @@ namespace Chummer
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
                 return false;
-            // Find the selected Technique object.
-            //TODO: Techniques should know what their parent is.
-            _objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
 
             ImprovementManager.RemoveImprovements(_objCharacter,
                 Improvement.ImprovementSource.MartialArtTechnique, InternalId);
 
-            objMartialArt.Techniques.Remove(this);
+            Parent?.Techniques.Remove(this);
             return true;
         }
 

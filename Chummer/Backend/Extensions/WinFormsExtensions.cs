@@ -722,7 +722,7 @@ namespace Chummer
         /// <summary>
         /// Custom comparer used by SortCustomOrder
         /// </summary>
-        private class CustomNodeSorter : System.Collections.IComparer
+        private sealed class CustomNodeSorter : System.Collections.IComparer
         {
             public int Compare(object x, object y)
             {

@@ -543,7 +543,7 @@ namespace Chummer
             _dicUnorderedData.OnDeserialization(sender);
         }
 
-        private class KeyValueToKeyComparer : IComparer<TKey>
+        private sealed class KeyValueToKeyComparer : IComparer<TKey>
         {
             private readonly TypedOrderedDictionary<TKey, TValue> _dicMyDictionary;
             private readonly IComparer<KeyValuePair<TKey, TValue>> _objMyComparer;
@@ -582,7 +582,7 @@ namespace Chummer
             }
         }
 
-        private class TypedOrderedDictionaryEnumerator : IDictionaryEnumerator
+        private sealed class TypedOrderedDictionaryEnumerator : IDictionaryEnumerator
         {
             // A copy of the SimpleDictionary object's key/value pairs.
             private readonly TypedOrderedDictionary<TKey, TValue> _dicMyDictionary;

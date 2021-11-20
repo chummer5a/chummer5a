@@ -247,11 +247,11 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
 
             objWriter.WriteStartElement("qualities");
-            foreach (XmlNode nodQuality in Qualities)
+            foreach (string strQualityText in Qualities.Select(x => x.InnerText))
             {
                 objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(nodQuality.InnerText, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", nodQuality.InnerText);
+                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(strQualityText, strLanguageToPrint));
+                objWriter.WriteElementString("name_english", strQualityText);
                 objWriter.WriteEndElement();
             }
             objWriter.WriteEndElement();
@@ -434,9 +434,8 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the Accessories and add in their availability.
-                foreach (DrugComponent objComponent in Components)
+                foreach (AvailabilityValue objLoopAvail in Components.Select(x => x.TotalAvailTuple))
                 {
-                    AvailabilityValue objLoopAvail = objComponent.TotalAvailTuple;
                     if (objLoopAvail.AddToParent)
                         intAvail += objLoopAvail.Value;
                     if (objLoopAvail.Suffix == 'F')

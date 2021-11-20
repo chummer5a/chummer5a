@@ -1071,9 +1071,9 @@ namespace Chummer.Backend.Equipment
                     decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
-                    foreach (Cyberware objChildCyberware in Cyberware)
+                    foreach (string strLoopCapacity in Cyberware.Select(x => x.CalculatedCapacity))
                     {
-                        string strCapacity = objChildCyberware.CalculatedCapacity;
+                        string strCapacity = strLoopCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
                             strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
@@ -1090,9 +1090,9 @@ namespace Chummer.Backend.Equipment
                     decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalSettings.CultureInfo);
 
                     // Run through its Children and deduct the Capacity costs.
-                    foreach (Cyberware objChildCyberware in Cyberware)
+                    foreach (string strLoopCapacity in Cyberware.Select(x => x.CalculatedCapacity))
                     {
-                        string strCapacity = objChildCyberware.CalculatedCapacity;
+                        string strCapacity = strLoopCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
                             strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);

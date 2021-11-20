@@ -6083,14 +6083,11 @@ namespace Chummer
 
                     break;
                 case Improvement.ImprovementSource.MartialArtTechnique:
-                    foreach(MartialArt objMartialArt in MartialArts)
+                    foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
                     {
-                        foreach(MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                        if (objTechnique.InternalId == objImprovement.SourceName)
                         {
-                            if(objTechnique.InternalId == objImprovement.SourceName)
-                            {
-                                return objTechnique.DisplayName(strLanguage);
-                            }
+                            return objTechnique.DisplayName(strLanguage);
                         }
                     }
 
@@ -6562,14 +6559,12 @@ namespace Chummer
 
                 intTemp = 0;
                 // Value from skill group points
-                foreach(SkillGroup objLoopSkillGroup in SkillsSection.SkillGroups)
+                foreach(int intLoopRating in SkillsSection.SkillGroups.Select(x => x.Base))
                 {
-                    int intLoopRating = objLoopSkillGroup.Base;
-                    if(intLoopRating > 0)
-                    {
-                        intTemp += Settings.KarmaNewSkillGroup;
-                        intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Settings.KarmaImproveSkillGroup;
-                    }
+                    if (intLoopRating <= 0)
+                        continue;
+                    intTemp += Settings.KarmaNewSkillGroup;
+                    intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Settings.KarmaImproveSkillGroup;
                 }
 
                 if(intTemp != 0)

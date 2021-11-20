@@ -1624,25 +1624,23 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool UpdateDealerConnectionDiscount()
         {
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled))
+            foreach (string strUniqueName in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled).Select(x => x.UniqueName))
             {
-                if (
-                        objImprovement.UniqueName == "Drones" && _strCategory.StartsWith("Drones", StringComparison.Ordinal) ||
-                        objImprovement.UniqueName == "Aircraft" && (
-                            _strCategory == "Fixed-Wing Aircraft" ||
-                            _strCategory == "LTAV" ||
-                            _strCategory == "Rotorcraft" ||
-                            _strCategory == "VTOL/VSTOL") ||
-                        objImprovement.UniqueName == "Watercraft" && (
-                            _strCategory == "Boats" ||
-                            _strCategory == "Submarines") ||
-                        objImprovement.UniqueName == "Groundcraft" && (
-                            _strCategory == "Bikes" ||
-                            _strCategory == "Cars" ||
-                            _strCategory == "Trucks" ||
-                            _strCategory == "Municipal/Construction" ||
-                            _strCategory == "Corpsec/Police/Military")
-                        )
+                if (strUniqueName == "Drones" && _strCategory.StartsWith("Drones", StringComparison.Ordinal) ||
+                    strUniqueName == "Aircraft" && (
+                        _strCategory == "Fixed-Wing Aircraft" ||
+                        _strCategory == "LTAV" ||
+                        _strCategory == "Rotorcraft" ||
+                        _strCategory == "VTOL/VSTOL") ||
+                    strUniqueName == "Watercraft" && (
+                        _strCategory == "Boats" ||
+                        _strCategory == "Submarines") ||
+                    strUniqueName == "Groundcraft" && (
+                        _strCategory == "Bikes" ||
+                        _strCategory == "Cars" ||
+                        _strCategory == "Trucks" ||
+                        _strCategory == "Municipal/Construction" ||
+                        _strCategory == "Corpsec/Police/Military"))
                 {
                     return true;
                 }

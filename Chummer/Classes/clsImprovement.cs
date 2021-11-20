@@ -5086,10 +5086,10 @@ namespace Chummer
             if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
                 // Remove all of the Improvements that were added.
-                foreach (TransactingImprovement objTransactingImprovement in lstTransaction.ToList())
+                foreach (Improvement objTransactingImprovement in lstTransaction.Select(x => x.ImprovementObject).ToList())
                 {
-                    RemoveImprovements(objCharacter, objTransactingImprovement.ImprovementObject.ImproveSource, objTransactingImprovement.ImprovementObject.SourceName);
-                    ClearCachedValue(objCharacter, objTransactingImprovement.ImprovementObject.ImproveType, objTransactingImprovement.ImprovementObject.ImprovedName);
+                    RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource, objTransactingImprovement.SourceName);
+                    ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType, objTransactingImprovement.ImprovedName);
                 }
 
                 lstTransaction.Clear();

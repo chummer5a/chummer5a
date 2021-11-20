@@ -255,18 +255,6 @@ namespace Chummer
         #region Find Functions
 
         /// <summary>
-        /// Locate a piece of Gear within the character's Vehicles.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Gear to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
-        {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
-            return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
-        }
-
-        /// <summary>
         /// Locate a piece of Gear by matching on its Weapon ID.
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
@@ -282,6 +270,18 @@ namespace Chummer
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="lstVehicles">List of Vehicles to search.</param>
+        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
         }
 
         /// <summary>
@@ -828,47 +828,6 @@ namespace Chummer
                 }
             }
 
-            return null;
-        }
-
-        /// <summary>
-        /// Locate a Martial Art Technique within the character's Martial Arts.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
-        /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
-        {
-            if (lstMartialArts == null)
-                throw new ArgumentNullException(nameof(lstMartialArts));
-            return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt _);
-        }
-
-        /// <summary>
-        /// Locate a Martial Art Technique within the character's Martial Arts.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
-        /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        /// <param name="objFoundMartialArt">MartialArt the Technique was found in.</param>
-        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
-        {
-            if (lstMartialArts == null)
-                throw new ArgumentNullException(nameof(lstMartialArts));
-            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
-            {
-                foreach (MartialArt objArt in lstMartialArts)
-                {
-                    foreach (MartialArtTechnique objTechnique in objArt.Techniques)
-                    {
-                        if (objTechnique.InternalId == strGuid)
-                        {
-                            objFoundMartialArt = objArt;
-                            return objTechnique;
-                        }
-                    }
-                }
-            }
-
-            objFoundMartialArt = null;
             return null;
         }
 

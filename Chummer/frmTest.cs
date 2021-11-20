@@ -897,10 +897,10 @@ namespace Chummer
                             {
                                 int intMaxRating = intForce;
                                 // Determine the highest Skill Rating the Critter has.
-                                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                                foreach (int intLoopRatingMaximum in _objCharacter.SkillsSection.Skills.Select(x => x.RatingMaximum))
                                 {
-                                    if (objSkill.RatingMaximum > intMaxRating)
-                                        intMaxRating = objSkill.RatingMaximum;
+                                    if (intLoopRatingMaximum > intMaxRating)
+                                        intMaxRating = intLoopRatingMaximum;
                                 }
 
                                 // Now that we know the upper limit, set all of the Skill Rating Maximums to match.
