@@ -39,12 +39,7 @@ namespace Chummer
             this.TranslateWinForm();
             _frmMain = frmMainForm;
             nudDice.Value = intDice;
-            if (lstQualities != null)
-            {
-                int intGremlinsRating = lstQualities.Count(x => x.Name == "Gremlins");
-                if (intGremlinsRating > 0)
-                    nudGremlins.Value = intGremlinsRating;
-            }
+            ProcessGremlins(lstQualities);
 
             List<ListItem> lstMethod = new List<ListItem>(3)
             {
@@ -345,21 +340,19 @@ namespace Chummer
         }
 
         /// <summary>
-        /// List of Qualities the character has to determine whether or not they have Gremlins and at which Rating.
+        /// Process whether or not a character has Gremlins and at which Rating.
         /// </summary>
-        public IEnumerable<Quality> Qualities
+        /// <param name="lstQualities">Qualities that the character has.</param>
+        public void ProcessGremlins(IEnumerable<Quality> lstQualities)
         {
-            set
+            nudGremlins.Value = 0;
+            if (lstQualities == null)
+                return;
+            foreach (Quality objQuality in lstQualities)
             {
-                nudGremlins.Value = 0;
-                if (value == null)
-                    return;
-                foreach (Quality objQuality in value)
+                if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
                 {
-                    if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
-                    {
-                        nudGremlins.Value = objQuality.Levels;
-                    }
+                    nudGremlins.Value = objQuality.Levels;
                 }
             }
         }

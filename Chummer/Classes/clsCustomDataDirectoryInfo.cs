@@ -280,36 +280,35 @@ namespace Chummer
         {
             StringBuilder sbdReturn = new StringBuilder();
             List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
-            foreach (var incompatibility in IncompatibilitiesList)
+            foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
             {
                 //Use the fast HasSet.Contains to determine if any dependency is present
+                if (!objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
+                    continue;
+                //We still need to filter out all the matching incompatibilities from objCharacterSettings.EnabledCustomDataDirectoryInfos to check their versions
+                lstEnabledCustomData.Clear();
                 if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
+                    lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
+                if (lstEnabledCustomData.Count <= 0)
+                    continue;
+                CustomDataDirectoryInfo objInfoToDisplay;
+                if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
                 {
-                    //We still need to filter out all the matching incompatibilities from objCharacterSettings.EnabledCustomDataDirectoryInfos to check their versions
-                    lstEnabledCustomData.Clear();
-                    if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
-                        lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
-                    if (lstEnabledCustomData.Count <= 0)
-                        continue;
-                    CustomDataDirectoryInfo objInfoToDisplay;
-                    if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
-                    {
-                        objInfoToDisplay = lstEnabledCustomData.FirstOrDefault(x =>
-                            (incompatibility.MinimumVersion != default &&
-                             x.MyVersion >= incompatibility.MinimumVersion)
-                            || (incompatibility.MaximumVersion != default &&
-                                x.MyVersion <= incompatibility.MaximumVersion));
-                    }
-                    else
-                        objInfoToDisplay = lstEnabledCustomData[0];
+                    objInfoToDisplay = lstEnabledCustomData.FirstOrDefault(x =>
+                                                                               (incompatibility.MinimumVersion != default &&
+                                                                                   x.MyVersion >= incompatibility.MinimumVersion)
+                                                                               || (incompatibility.MaximumVersion != default &&
+                                                                                   x.MyVersion <= incompatibility.MaximumVersion));
+                }
+                else
+                    objInfoToDisplay = lstEnabledCustomData[0];
 
-                    //if the version is within the version range add it to the list.
-                    if (objInfoToDisplay != default)
-                    {
-                        sbdReturn.AppendLine(string.Format(
-                                                 LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
-                                                 objInfoToDisplay.DisplayName, incompatibility.DisplayName));
-                    }
+                //if the version is within the version range add it to the list.
+                if (objInfoToDisplay != default)
+                {
+                    sbdReturn.AppendLine(string.Format(
+                                             LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                                             objInfoToDisplay.DisplayName, incompatibility.DisplayName));
                 }
             }
 

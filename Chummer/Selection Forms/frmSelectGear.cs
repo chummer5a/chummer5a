@@ -595,13 +595,12 @@ namespace Chummer
                     int intHighestCostNode = 0;
                     foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                     {
-                        if (objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                        if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                            continue;
+                        string strLoopCostString = objLoopNode.Name.Substring(4);
+                        if (int.TryParse(strLoopCostString, out int intTmp))
                         {
-                            string strLoopCostString = objLoopNode.Name.Substring(4);
-                            if (int.TryParse(strLoopCostString, out int intTmp))
-                            {
-                                intHighestCostNode = Math.Max(intHighestCostNode, intTmp);
-                            }
+                            intHighestCostNode = Math.Max(intHighestCostNode, intTmp);
                         }
                     }
                     objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);

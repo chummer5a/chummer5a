@@ -542,22 +542,32 @@ namespace Chummer
             }
 
             string strCheckBoxFormat = LanguageManager.GetString("String_Space") + "({0})";
-            foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
+            foreach (Control objControl in flpModifiers.Controls)
             {
-                if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                switch (objControl)
                 {
-                    chkCheckbox.Visible = true;
-                    chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
-                }
-            }
-            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
-            {
-                foreach (CheckBox chkCheckbox in panChild.Controls.OfType<CheckBox>())
-                {
-                    if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                    case CheckBox chkCheckbox:
                     {
-                        chkCheckbox.Visible = true;
-                        chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
+                        if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                        {
+                            chkCheckbox.Visible = true;
+                            chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
+                        }
+
+                        break;
+                    }
+                    case Panel pnlControl:
+                    {
+                        foreach (CheckBox chkInnerCheckbox in pnlControl.Controls.OfType<CheckBox>())
+                        {
+                            if (!string.IsNullOrEmpty(chkInnerCheckbox.Text))
+                            {
+                                chkInnerCheckbox.Visible = true;
+                                chkInnerCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkInnerCheckbox.Tag);
+                            }
+                        }
+
+                        break;
                     }
                 }
             }

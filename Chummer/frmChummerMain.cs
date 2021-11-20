@@ -1738,7 +1738,7 @@ namespace Chummer
                 else
                 {
                     _frmRoller.Dice = intDice;
-                    _frmRoller.Qualities = objCharacter?.Qualities;
+                    _frmRoller.ProcessGremlins(objCharacter?.Qualities);
                     _frmRoller.Activate();
                 }
             }
