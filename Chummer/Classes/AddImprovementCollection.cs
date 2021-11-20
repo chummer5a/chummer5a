@@ -633,37 +633,37 @@ namespace Chummer.Classes
             {
                 if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.Name == strSelectedSkill))
                 {
-                    foreach (KnowledgeSkill k in _objCharacter.SkillsSection.KnowledgeSkills)
+                    foreach (string strName in _objCharacter.SkillsSection.KnowledgeSkills.Select(x => x.Name))
                     {
-                        if (k.Name != strSelectedSkill)
+                        if (strName != strSelectedSkill)
                             continue;
                         // We've found the selected Skill.
                         if (!string.IsNullOrEmpty(strVal))
                         {
                             Log.Info("Calling CreateImprovement");
-                            CreateImprovement(k.Name, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.Skill,
-                                _strUnique,
-                                ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
-                                blnAddToRating);
+                            CreateImprovement(strName, _objImprovementSource, SourceName,
+                                              Improvement.ImprovementType.Skill,
+                                              _strUnique,
+                                              ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
+                                              blnAddToRating);
                         }
 
                         if (blnDisableSpec)
                         {
                             Log.Info("Calling CreateImprovement");
-                            CreateImprovement(k.Name, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.DisableSpecializationEffects,
-                                _strUnique);
+                            CreateImprovement(strName, _objImprovementSource, SourceName,
+                                              Improvement.ImprovementType.DisableSpecializationEffects,
+                                              _strUnique);
                         }
 
                         if (!string.IsNullOrEmpty(strMax))
                         {
                             Log.Info("Calling CreateImprovement");
-                            CreateImprovement(k.Name, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.Skill,
-                                _strUnique,
-                                0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                                blnAddToRating);
+                            CreateImprovement(strName, _objImprovementSource, SourceName,
+                                              Improvement.ImprovementType.Skill,
+                                              _strUnique,
+                                              0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
+                                              blnAddToRating);
                         }
                     }
                 }
@@ -746,38 +746,38 @@ namespace Chummer.Classes
             }
             else
             {
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                foreach (string strName in _objCharacter.SkillsSection.Skills.Select(x => x.Name))
                 {
-                    if (objSkill.Name != strSelectedSkill)
+                    if (strName != strSelectedSkill)
                         continue;
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0,
-                            string.Empty,
-                            blnAddToRating);
+                        CreateImprovement(strName, _objImprovementSource, SourceName,
+                                          Improvement.ImprovementType.Skill,
+                                          _strUnique,
+                                          ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0,
+                                          string.Empty,
+                                          blnAddToRating);
                     }
 
                     if (blnDisableSpec)
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.DisableSpecializationEffects,
-                            _strUnique);
+                        CreateImprovement(strName, _objImprovementSource, SourceName,
+                                          Improvement.ImprovementType.DisableSpecializationEffects,
+                                          _strUnique);
                     }
 
                     if (!string.IsNullOrEmpty(strMax))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                            blnAddToRating);
+                        CreateImprovement(strName, _objImprovementSource, SourceName,
+                                          Improvement.ImprovementType.Skill,
+                                          _strUnique,
+                                          0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
+                                          blnAddToRating);
                     }
                 }
             }

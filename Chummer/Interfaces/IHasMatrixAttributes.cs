@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -357,16 +358,14 @@ namespace Chummer
                 new StringBuilder(strCyberdeckArray[2]),
                 new StringBuilder(strCyberdeckArray[3])
             };
-            foreach (IHasMatrixAttributes objChild in objThis.ChildrenWithMatrixAttributes)
+            foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(x => x.ModAttributeArray))
             {
-                string strLoopArrayText = objChild.ModAttributeArray;
-                if (!string.IsNullOrEmpty(strLoopArrayText))
+                if (string.IsNullOrEmpty(strLoopArrayText))
+                    continue;
+                string[] strLoopArray = strLoopArrayText.Split(',');
+                for (int i = 0; i < 4; ++i)
                 {
-                    string[] strLoopArray = strLoopArrayText.Split(',');
-                    for (int i = 0; i < 4; ++i)
-                    {
-                        asbdCyberdeckArray[i].Append("+(" + strLoopArray[i] + ')');
-                    }
+                    asbdCyberdeckArray[i].Append("+(" + strLoopArray[i] + ')');
                 }
             }
             for (int i = 0; i < 4; ++i)

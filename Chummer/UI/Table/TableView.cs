@@ -22,6 +22,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 
@@ -171,7 +172,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private class ColumnHolder
+        private sealed class ColumnHolder
         {
             public readonly HeaderCell header;
             public readonly IList<TableCell> cells;
@@ -544,9 +545,8 @@ namespace Chummer.UI.Table
                     break;
 
                 case ListChangedType.ItemMoved:
-                    foreach (ColumnHolder col in _lstCells)
+                    foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
                     {
-                        IList<TableCell> cells = col.cells;
                         TableCell cell = cells[e.OldIndex];
                         cells.RemoveAt(e.OldIndex);
                         cells.Insert(e.NewIndex, cell);
@@ -630,9 +630,8 @@ namespace Chummer.UI.Table
                 else
                 {
                     intLimit = intNewCount;
-                    foreach (ColumnHolder col in _lstCells)
+                    foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
                     {
-                        IList<TableCell> cells = col.cells;
                         cells.RemoveRange(intNewCount, intOldCount - intNewCount);
                     }
                     for (int i = intNewCount; i < intOldCount; i++)

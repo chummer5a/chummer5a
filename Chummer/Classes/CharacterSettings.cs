@@ -1503,11 +1503,11 @@ namespace Chummer
             }
 
             // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
-            foreach (CustomDataDirectoryInfo objMissingDirectory in GlobalSettings.CustomDataDirectoryInfos)
+            foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(x => x.CharacterSettingsSaveKey))
             {
-                if (!_dicCustomDataDirectoryKeys.ContainsKey(objMissingDirectory.CharacterSettingsSaveKey))
+                if (!_dicCustomDataDirectoryKeys.ContainsKey(strCharacterSettingsSaveKey))
                 {
-                    _dicCustomDataDirectoryKeys.Add(objMissingDirectory.CharacterSettingsSaveKey, false);
+                    _dicCustomDataDirectoryKeys.Add(strCharacterSettingsSaveKey, false);
                 }
             }
 

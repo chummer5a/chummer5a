@@ -8127,11 +8127,8 @@ namespace Chummer
                         // Locate the Spell that was added.
                         foreach (Spell objSpell in CharacterObject.Spells.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
-                            // Remove any Improvements that it created.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId);
-
                             // Remove the Spell from the character.
-                            CharacterObject.Spells.Remove(objSpell);
+                            objSpell.Remove(false);
                         }
                         break;
                     }
@@ -8202,11 +8199,8 @@ namespace Chummer
                         // Locate the Metamagic that was affected.
                         foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
-                            // Remove any Improvements created by the Metamagic.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-
                             // Remove the Metamagic from the character.
-                            CharacterObject.Metamagics.Remove(objMetamagic);
+                            objMetamagic.Remove(false);
                         }
                         break;
                     }
@@ -8216,7 +8210,7 @@ namespace Chummer
                         foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
                             // Remove the Grade from the character.
-                            CharacterObject.InitiationGrades.Remove(objGrade);
+                            objGrade.Remove(false);
                         }
                         break;
                     }
@@ -8225,29 +8219,19 @@ namespace Chummer
                         // Locate the Martial Art that was affected.
                         foreach (MartialArt objMartialArt in CharacterObject.MartialArts.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
-                            // Remove any Improvements created by the Martial Art.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
-
                             // Remove the Martial Art from the character.
-                            CharacterObject.MartialArts.Remove(objMartialArt);
+                            objMartialArt.Remove(false);
                         }
                         break;
                     }
                 case KarmaExpenseType.AddMartialArtTechnique:
                     {
                         // Locate the Martial Art Technique that was affected.
-                        foreach (MartialArt objArt in CharacterObject.MartialArts.ToList())
+                        foreach (MartialArtTechnique objTechnique in CharacterObject.MartialArts.SelectMany(x => x.Techniques).Where(x =>
+                            x.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
-                            foreach (MartialArtTechnique objTechnique in objArt.Techniques.Where(x =>
-                                x.InternalId == objExpense.Undo.ObjectId).ToList())
-                            {
-                                // Remove any Improvements created by the Technique.
-                                ImprovementManager.RemoveImprovements(CharacterObject,
-                                    Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId);
-
-                                // Remove the Technique from the character.
-                                objArt.Techniques.Remove(objTechnique);
-                            }
+                            // Remove the Technique from the character.
+                            objTechnique.Remove(false);
                         }
                     }
                     break;
@@ -8257,11 +8241,8 @@ namespace Chummer
                         // Locate the Complex Form that was affected.
                         foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
-                            // Remove any Improvements created by the Complex Form.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
-
                             // Remove the Complex Form from the character.
-                            CharacterObject.ComplexForms.Remove(objComplexForm);
+                            objComplexForm.Remove(false);
                         }
                         break;
                     }
@@ -8338,9 +8319,8 @@ namespace Chummer
                     {
                         foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(objPower => objPower.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
-                            // Remove any Improvements created by the Critter Power.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
-                            CharacterObject.CritterPowers.Remove(objPower);
+                            // Remove the Critter Power.
+                            objPower.Remove(false);
                         }
                     }
                     break;
@@ -17765,7 +17745,7 @@ namespace Chummer
             List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
             //Mounted cyberware should always be allowed to be dismounted.
             //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
             {
                 Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_NoValidModularMount"),
@@ -17855,7 +17835,7 @@ namespace Chummer
             List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
             //Mounted cyberware should always be allowed to be dismounted.
             //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
             {
                 Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_NoValidModularMount"),

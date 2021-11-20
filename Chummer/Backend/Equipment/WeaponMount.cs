@@ -853,9 +853,8 @@ namespace Chummer.Backend.Equipment
             }
 
             // Run through the Accessories and add in their availability.
-            foreach (WeaponMountOption objWeaponMountOption in WeaponMountOptions)
+            foreach (AvailabilityValue objLoopAvailTuple in WeaponMountOptions.Select(x => x.TotalAvailTuple))
             {
-                AvailabilityValue objLoopAvailTuple = objWeaponMountOption.TotalAvailTuple;
                 //if (objLoopAvailTuple.Item3)
                 intAvail += objLoopAvailTuple.Value;
                 if (objLoopAvailTuple.Suffix == 'F')
