@@ -255,18 +255,6 @@ namespace Chummer
         #region Find Functions
 
         /// <summary>
-        /// Locate a piece of Gear within the character's Vehicles.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Gear to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
-        {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
-            return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
-        }
-
-        /// <summary>
         /// Locate a piece of Gear by matching on its Weapon ID.
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
@@ -282,6 +270,18 @@ namespace Chummer
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="lstVehicles">List of Vehicles to search.</param>
+        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
         }
 
         /// <summary>
@@ -831,47 +831,6 @@ namespace Chummer
             return null;
         }
 
-        /// <summary>
-        /// Locate a Martial Art Technique within the character's Martial Arts.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
-        /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
-        {
-            if (lstMartialArts == null)
-                throw new ArgumentNullException(nameof(lstMartialArts));
-            return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt _);
-        }
-
-        /// <summary>
-        /// Locate a Martial Art Technique within the character's Martial Arts.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
-        /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        /// <param name="objFoundMartialArt">MartialArt the Technique was found in.</param>
-        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
-        {
-            if (lstMartialArts == null)
-                throw new ArgumentNullException(nameof(lstMartialArts));
-            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
-            {
-                foreach (MartialArt objArt in lstMartialArts)
-                {
-                    foreach (MartialArtTechnique objTechnique in objArt.Techniques)
-                    {
-                        if (objTechnique.InternalId == strGuid)
-                        {
-                            objFoundMartialArt = objArt;
-                            return objTechnique;
-                        }
-                    }
-                }
-            }
-
-            objFoundMartialArt = null;
-            return null;
-        }
-
         #endregion Find Functions
 
         /// <summary>
@@ -931,6 +890,46 @@ namespace Chummer
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Fetch the in-book description of a given object.
+        /// </summary>
+        /// <param name="objNode"></param>
+        /// <param name="strName"></param>
+        /// <param name="strDisplayName"></param>
+        /// <param name="strSource"></param>
+        /// <param name="strPage"></param>
+        /// <param name="strDisplayPage"></param>
+        /// <param name="objCharacter"></param>
+        /// <returns></returns>
+        public static string GetBookNotes(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter)
+        {
+            string strEnglishNameOnPage = strName;
+            string strNameOnPage = string.Empty;
+            // make sure we have something and not just an empty tag
+            if (objNode.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
+                !string.IsNullOrEmpty(strNameOnPage))
+                strEnglishNameOnPage = strNameOnPage;
+
+            string strGearNotes =
+                CommonFunctions.GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
+
+            if (!string.IsNullOrEmpty(strGearNotes) || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                StringComparison.OrdinalIgnoreCase)) return strGearNotes;
+            string strTranslatedNameOnPage = strDisplayName;
+
+            // don't check again it is not translated
+            if (strTranslatedNameOnPage == strName) return strGearNotes;
+            // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+            if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                strTranslatedNameOnPage = strNameOnPage;
+
+            strGearNotes = CommonFunctions.GetTextFromPdf(strSource + ' ' + strDisplayPage,
+                strTranslatedNameOnPage, objCharacter);
+
+            return strGearNotes;
         }
 
         /// <summary>

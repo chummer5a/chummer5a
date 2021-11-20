@@ -61,25 +61,60 @@ namespace Chummer
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add && _objCharacter?.IsLoading == false)
+            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>();
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (MartialArtTechnique objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (MartialArtTechnique objOldItem in e.OldItems)
+                    {
+                        if (objOldItem.Parent != this)
+                            continue;
+                        objOldItem.Parent = null;
+                        lstImprovementSourcesToProcess.Add(objOldItem);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (MartialArtTechnique objOldItem in e.OldItems)
+                    {
+                        if (objOldItem.Parent != this)
+                            continue;
+                        objOldItem.Parent = null;
+                        lstImprovementSourcesToProcess.Add(objOldItem);
+                    }
+                    foreach (MartialArtTechnique objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+            }
+            if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
             {
                 Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                     new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-                foreach (MartialArtTechnique objNewItem in e.NewItems)
+                foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
                 {
                     // Needed in order to properly process named sources where
                     // the tooltip was built before the object was added to the character
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
-                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                            continue;
+                        foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in objImprovement.GetRelevantPropertyChangers())
                         {
-                            foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in objImprovement.GetRelevantPropertyChangers())
-                            {
-                                if (dicChangedProperties.TryGetValue(objToUpdate, out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(strPropertyName);
-                                else
-                                    dicChangedProperties.Add(objToUpdate, new HashSet<string> { strPropertyName });
-                            }
+                            if (dicChangedProperties.TryGetValue(objToUpdate, out HashSet<string> setChangedProperties))
+                                setChangedProperties.Add(strPropertyName);
+                            else
+                                dicChangedProperties.Add(objToUpdate, new HashSet<string> { strPropertyName });
                         }
                     }
                 }
@@ -120,33 +155,8 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(Notes))
             {
-                string strEnglishNameOnPage = Name;
-                string strNameOnPage = string.Empty;
-                // make sure we have something and not just an empty tag
-                if (objXmlArtNode.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
-                    !string.IsNullOrEmpty(strNameOnPage))
-                    strEnglishNameOnPage = strNameOnPage;
-
-                string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
-
-                if (string.IsNullOrEmpty(strQualityNotes) && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                {
-                    string strTranslatedNameOnPage = CurrentDisplayName;
-
-                    // don't check again it is not translated
-                    if (strTranslatedNameOnPage != _strName)
-                    {
-                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
-                        if (objXmlArtNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
-                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
-                            strTranslatedNameOnPage = strNameOnPage;
-
-                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language),
-                            strTranslatedNameOnPage, _objCharacter);
-                    }
-                }
-                else
-                    Notes = strQualityNotes;
+                Notes = CommonFunctions.GetBookNotes(objXmlArtNode, Name, CurrentDisplayName, Source, Page,
+                    DisplayPage(GlobalSettings.Language), _objCharacter);
             }
         }
 
@@ -536,10 +546,9 @@ namespace Chummer
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
                 InternalId);
             // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-            foreach (MartialArtTechnique objTechnique in Techniques)
+            foreach (MartialArtTechnique objTechnique in Techniques.ToList()) // Need ToList() because removing techniques alters parent Art's Techniques list
             {
-                ImprovementManager.RemoveImprovements(_objCharacter,
-                    Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId);
+                objTechnique.Remove(false);
             }
 
             _objCharacter.MartialArts.Remove(this);

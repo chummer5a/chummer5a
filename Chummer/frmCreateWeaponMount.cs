@@ -128,9 +128,8 @@ namespace Chummer
                 List<ListItem> lstVisibility = cboVisibility.Items.Cast<ListItem>().ToList();
                 List<ListItem> lstFlexibility = cboFlexibility.Items.Cast<ListItem>().ToList();
                 List<ListItem> lstControl = cboControl.Items.Cast<ListItem>().ToList();
-                foreach (WeaponMountOption objExistingOption in _objMount.WeaponMountOptions)
+                foreach (string strLoopId in _objMount.WeaponMountOptions.Select(x => x.SourceIDString))
                 {
-                    string strLoopId = objExistingOption.SourceIDString;
                     if (lstVisibility.Any(x => x.Value.ToString() == strLoopId))
                         cboVisibility.SelectedValue = strLoopId;
                     else if (lstFlexibility.Any(x => x.Value.ToString() == strLoopId))

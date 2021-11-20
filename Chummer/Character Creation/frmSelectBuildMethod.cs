@@ -45,9 +45,9 @@ namespace Chummer
 
             // Populate the Character Settings list.
             List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
-            foreach (KeyValuePair<string, CharacterSettings> objLoopOptions in SettingsManager.LoadedCharacterSettings)
+            foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
             {
-                lstCharacterSettings.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
+                lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
             }
             lstCharacterSettings.Sort(CompareListItems.CompareNames);
             cboCharacterSetting.BeginUpdate();

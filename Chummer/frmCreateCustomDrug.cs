@@ -193,11 +193,11 @@ namespace Chummer
             //restriction for maximum level of block (CF 191)
             if (objNodeData.Level + 1 > 2)
             {
-                foreach (DrugNodeData objFoundationNodeData in _lstSelectedDrugComponents)
+                foreach (DrugComponent objFoundationComponent in _lstSelectedDrugComponents.Select(x => x.DrugComponent))
                 {
-                    if (objFoundationNodeData.DrugComponent.Category != "Foundation")
+                    if (objFoundationComponent.Category != "Foundation")
                         continue;
-                    Dictionary<string, decimal> dctFoundationAttributes = objFoundationNodeData.DrugComponent.DrugEffects[0].Attributes;
+                    Dictionary<string, decimal> dctFoundationAttributes = objFoundationComponent.DrugEffects[0].Attributes;
                     Dictionary<string, decimal> dctBlockAttributes = objNodeData.DrugComponent.DrugEffects[objNodeData.Level].Attributes;
                     foreach (KeyValuePair<string, decimal> objItem in dctFoundationAttributes)
                     {
@@ -207,7 +207,7 @@ namespace Chummer
                         {
                             string message = LanguageManager.GetString("String_MaximumDrugBlockLevel") +
                                              Environment.NewLine + Environment.NewLine +
-                                             objFoundationNodeData.DrugComponent.CurrentDisplayName + strColonString +
+                                             objFoundationComponent.CurrentDisplayName + strColonString +
                                              strSpaceString + objItem.Key +
                                              objItem.Value.ToString("+#;-#;", GlobalSettings.CultureInfo) +
                                              objNodeData.DrugComponent.CurrentDisplayName + strColonString +
@@ -305,7 +305,7 @@ namespace Chummer
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
-        private class DrugNodeData
+        private sealed class DrugNodeData
         {
             public DrugComponent DrugComponent { get; }
             public int Level { get; }

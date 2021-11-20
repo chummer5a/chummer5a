@@ -256,35 +256,11 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
+
             if (string.IsNullOrEmpty(Notes))
             {
-                string strEnglishNameOnPage = Name;
-                string strNameOnPage = string.Empty;
-                // make sure we have something and not just an empty tag
-                if (objXmlArmorNode.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
-                    !string.IsNullOrEmpty(strNameOnPage))
-                    strEnglishNameOnPage = strNameOnPage;
-
-                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
-
-                if (string.IsNullOrEmpty(strGearNotes) && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                {
-                    string strTranslatedNameOnPage = CurrentDisplayName;
-
-                    // don't check again it is not translated
-                    if (strTranslatedNameOnPage != _strName)
-                    {
-                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
-                        if (objXmlArmorNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
-                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
-                            strTranslatedNameOnPage = strNameOnPage;
-
-                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language),
-                            strTranslatedNameOnPage, _objCharacter);
-                    }
-                }
-                else
-                    Notes = strGearNotes;
+                Notes = CommonFunctions.GetBookNotes(objXmlArmorNode, Name, CurrentDisplayName, Source, Page,
+                    DisplayPage(GlobalSettings.Language), _objCharacter);
             }
 
             objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
@@ -1857,24 +1833,24 @@ namespace Chummer.Backend.Equipment
                 else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn))
                     strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
 
-                foreach (ArmorMod objArmorMod in ArmorMods)
+                foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
                 {
-                    if (objArmorMod.ArmorCapacity.StartsWith('-') || objArmorMod.ArmorCapacity.StartsWith("[-", StringComparison.Ordinal))
-                    {
-                        // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
-                        // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                        string strCapacity = objArmorMod.ArmorCapacity
-                            .FastEscape('[', ']')
-                            .CheapReplace("Capacity", () => TotalArmorCapacity)
-                            .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    if (!strArmorModCapacity.StartsWith('-')
+                        && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
+                        continue;
+                    // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
+                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                    string strCapacity = strArmorModCapacity
+                                         .FastEscape('[', ']')
+                                         .CheapReplace("Capacity", () => TotalArmorCapacity)
+                                         .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
-                        if (blnIsSuccess)
-                        {
-                            strCapacity = (Convert.ToDecimal(strReturn, GlobalSettings.CultureInfo) - Convert.ToDecimal(objProcess, GlobalSettings.CultureInfo)).ToString("#,0.##", GlobalSettings.CultureInfo);
-                        }
-                        strReturn = strCapacity;
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                    {
+                        strCapacity = (Convert.ToDecimal(strReturn, GlobalSettings.CultureInfo) - Convert.ToDecimal(objProcess, GlobalSettings.CultureInfo)).ToString("#,0.##", GlobalSettings.CultureInfo);
                     }
+                    strReturn = strCapacity;
                 }
 
                 return strReturn;

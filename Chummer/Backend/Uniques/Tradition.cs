@@ -58,6 +58,7 @@ namespace Chummer.Backend.Uniques
         private string _strSpiritHealth = string.Empty;
         private string _strSpiritIllusion = string.Empty;
         private string _strSpiritManipulation = string.Empty;
+        private string _strNotes = string.Empty;
         private readonly List<string> _lstAvailableSpirits = new List<string>(5);
         private XmlNode _nodBonus;
         private TraditionType _eTraditionType = TraditionType.None;
@@ -131,16 +132,11 @@ namespace Chummer.Backend.Uniques
                 ImprovementManager.ForcedValue = strOldFocedValue;
                 ImprovementManager.SelectedValue = strOldSelectedValue;
             }
-            /*
-            if (string.IsNullOrEmpty(_strNotes))
+            if (string.IsNullOrEmpty(Notes))
             {
-                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
-                if (string.IsNullOrEmpty(_strNotes))
-                {
-                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
-                }
+                Notes = CommonFunctions.GetBookNotes(xmlTraditionNode, Name, CurrentDisplayName, Source, Page,
+                    DisplayPage(GlobalSettings.Language), _objCharacter);
             }
-            */
             RebuildSpiritList();
             OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
             return true;
@@ -869,6 +865,15 @@ namespace Chummer.Backend.Uniques
         {
             get => _strPage;
             set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Description of the object. 
+        /// </summary>
+        public string Notes
+        {
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>

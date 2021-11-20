@@ -32,8 +32,6 @@ namespace Chummer
 {
     public static class SelectionShared
     {
-        #region XmlNode overloads for selection methods.
-
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
         /// <param name="xmlNode">XmlNode of the object.</param>
         /// <param name="objCharacter">Character object against which to check.</param>
@@ -52,26 +50,6 @@ namespace Chummer
             // Ignore the rules.
             return objCharacter.IgnoreRules || xmlNode.CreateNavigator().RequirementsMet(objCharacter, objParent, strLocalName, strIgnoreQuality, strSourceName, strLocation, blnIgnoreLimit);
         }
-
-        /// <summary>
-        ///     Evaluates the availability of a given node against Availability Limits in Create Mode
-        /// </summary>
-        /// <param name="objXmlGear"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="intRating"></param>
-        /// <param name="intAvailModifier"></param>
-        /// <returns></returns>
-        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
-        {
-            return objXmlGear != null && objXmlGear.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier);
-        }
-
-        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
-        {
-            return objXmlGear != null && objXmlGear.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating);
-        }
-
-        #endregion XmlNode overloads for selection methods.
 
         //TODO: Might be a better location for this; Class names are screwy.
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
@@ -290,11 +268,11 @@ namespace Chummer
                             }
                             else
                             {
-                                foreach (IHasName objItem in objListToCheck)
+                                foreach (string strItemName in objListToCheck.Select(x => x.Name))
                                 {
-                                    if (!setNamesIncludedInLimit.Contains(objItem.Name))
+                                    if (!setNamesIncludedInLimit.Contains(strItemName))
                                         continue;
-                                    if (strNameNode == objItem.Name)
+                                    if (strNameNode == strItemName)
                                         intCount += 1;
                                     intExtendedCount += 1;
                                     if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
@@ -867,16 +845,15 @@ namespace Chummer
                         return false;
                     }
                 case "martialtechnique":
-                    {
-                        foreach (MartialArt objMartialArt in objCharacter.MartialArts)
+                {
+                    MartialArtTechnique objMartialArtTechnique = objCharacter.MartialArts.SelectMany(x => x.Techniques)
+                                                                             .FirstOrDefault(
+                                                                                 x => x.Name == strNodeInnerText);
+                        if (objMartialArtTechnique != null)
                         {
-                            MartialArtTechnique objMartialArtTechnique = objMartialArt.Techniques.FirstOrDefault(x => x.Name == strNodeInnerText);
-                            if (objMartialArtTechnique != null)
-                            {
-                                if (blnShowMessage)
-                                    strName = objMartialArtTechnique.CurrentDisplayName;
-                                return true;
-                            }
+                            if (blnShowMessage)
+                                strName = objMartialArtTechnique.CurrentDisplayName;
+                            return true;
                         }
                         if (blnShowMessage)
                         {
@@ -930,11 +907,11 @@ namespace Chummer
 
                             if (xmlMetamagicDoc == null) return true;
                             // Loop through the data file for each metamagic to find the Required and Forbidden nodes.
-                            foreach (Metamagic metamagic in objCharacter.Metamagics)
+                            foreach (string strMetamagicNameForXPath in objCharacter.Metamagics.Select(x => x.Name.CleanXPath()))
                             {
                                 XPathNavigator xmlMetamagicNode =
                                     xmlMetamagicDoc.SelectSingleNode(
-                                        "metamagics/metamagic[name = " + metamagic.Name.CleanXPath() + ']');
+                                        "metamagics/metamagic[name = " + strMetamagicNameForXPath + ']');
                                 if (xmlMetamagicNode != null)
                                 {
                                     if (xmlMetamagicNode.SelectSingleNode(
@@ -954,7 +931,7 @@ namespace Chummer
                                     // We couldn't find a metamagic with this name, so it's probably an art. Try and find the node.
                                     // If we can't, it's probably a data entry error.
                                     xmlMetamagicNode =
-                                        xmlMetamagicDoc.SelectSingleNode("arts/art[name = " + metamagic.Name.CleanXPath() + ']');
+                                        xmlMetamagicDoc.SelectSingleNode("arts/art[name = " + strMetamagicNameForXPath + ']');
                                     if (xmlMetamagicNode == null)
                                         Utils.BreakIfDebug();
                                     else
@@ -1406,6 +1383,19 @@ namespace Chummer
         /// <summary>
         ///     Evaluates the availability of a given node against Availability Limits in Create Mode
         /// </summary>
+        /// <param name="objXmlGear"></param>
+        /// <param name="objCharacter"></param>
+        /// <param name="intRating"></param>
+        /// <param name="intAvailModifier"></param>
+        /// <returns></returns>
+        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
+        {
+            return objXmlGear != null && objXmlGear.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier);
+        }
+
+        /// <summary>
+        ///     Evaluates the availability of a given node against Availability Limits in Create Mode
+        /// </summary>
         /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
         /// <param name="objCharacter">Character that we're comparing the Availability against.</param>
         /// <param name="intRating">Effective Rating of the object.</param>
@@ -1426,13 +1416,12 @@ namespace Chummer
                 int intHighestAvailNode = 0;
                 foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
-                    if (objLoopNode.Name.StartsWith("avail", StringComparison.Ordinal))
+                    if (!objLoopNode.Name.StartsWith("avail", StringComparison.Ordinal))
+                        continue;
+                    string strLoopCostString = objLoopNode.Name.Substring(5);
+                    if (int.TryParse(strLoopCostString, out int intTmp))
                     {
-                        string strLoopCostString = objLoopNode.Name.Substring(5);
-                        if (int.TryParse(strLoopCostString, out int intTmp))
-                        {
-                            intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
-                        }
+                        intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
                     }
                 }
                 objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
@@ -1469,6 +1458,11 @@ namespace Chummer
             return intAvail <= objCharacter.Settings.MaximumAvailability;
         }
 
+        public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
+        {
+            return objXmlGear != null && objXmlGear.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating);
+        }
+
         /// <summary>
         ///     Evaluates whether a given node can be purchased.
         /// </summary>
@@ -1489,13 +1483,12 @@ namespace Chummer
                 int intCostRating = 1;
                 foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                 {
-                    if (objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                    if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                        continue;
+                    string strLoopCostString = objLoopNode.Name.Substring(4);
+                    if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
                     {
-                        string strLoopCostString = objLoopNode.Name.Substring(4);
-                        if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
-                        {
-                            intCostRating = Math.Max(intCostRating, intTmp);
-                        }
+                        intCostRating = Math.Max(intCostRating, intTmp);
                     }
                 }
 

@@ -191,40 +191,6 @@ namespace Chummer.Backend.Equipment
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlGear.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
-
-            if (string.IsNullOrEmpty(Notes))
-            {
-                string strEnglishNameOnPage = Name;
-                string strNameOnPage = string.Empty;
-                // make sure we have something and not just an empty tag
-                if (objXmlGear.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
-                    !string.IsNullOrEmpty(strNameOnPage))
-                    strEnglishNameOnPage = strNameOnPage;
-
-                string strGearNotes =
-                    CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
-
-                if (string.IsNullOrEmpty(strGearNotes) && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                    StringComparison.OrdinalIgnoreCase))
-                {
-                    string strTranslatedNameOnPage = CurrentDisplayName;
-
-                    // don't check again it is not translated
-                    if (strTranslatedNameOnPage != _strName)
-                    {
-                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
-                        if (objXmlGear.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
-                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
-                            strTranslatedNameOnPage = strNameOnPage;
-
-                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language),
-                            strTranslatedNameOnPage, _objCharacter);
-                    }
-                }
-                else
-                    Notes = strGearNotes;
-            }
-
             _intRating = Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue);
             objXmlGear.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             objXmlGear.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
@@ -237,6 +203,12 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
             objXmlGear.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objXmlGear.TryGetBoolFieldQuickly("isflechetteammo", ref _blnIsFlechetteAmmo);
+            
+            if (string.IsNullOrEmpty(Notes))
+            {
+                Notes = CommonFunctions.GetBookNotes(objXmlGear, Name, CurrentDisplayName, Source, Page,
+                    DisplayPage(GlobalSettings.Language), _objCharacter);
+            }
 
             // Check for a Custom name
             if (_strName == "Custom Item")
@@ -2760,12 +2732,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Quantity to show, formatted for display purposes.
         /// </summary>
-        /// <param name="objCulture"></param>
-        /// <param name="blnOverrideQuantity"></param>
-        /// <param name="decQuantityToUse"></param>
-        /// <returns></returns>
-        public string DisplayQuantity(CultureInfo objCulture, bool blnOverrideQuantity = false,
-            decimal decQuantityToUse = 0.0m)
+        /// <param name="objCulture">CultureInfo in which number formatting should be done.</param>
+        /// <param name="blnBlankOnOneQuantity">Whether to return an empty string if there is only one of an item.</param>
+        /// <param name="blnOverrideQuantity">Whether or not to override the quantity to display.</param>
+        /// <param name="decQuantityToUse">If <paramref name="blnOverrideQuantity"/> is true, the override value to use for it.</param>
+        /// <returns>A formatted string for the quantity of this piece of gear.</returns>
+        public string DisplayQuantity(CultureInfo objCulture, bool blnBlankOnOneQuantity = false, bool blnOverrideQuantity = false,
+                                      decimal decQuantityToUse = 0.0m)
         {
             if (!blnOverrideQuantity)
                 decQuantityToUse = Quantity;
@@ -2774,7 +2747,7 @@ namespace Chummer.Backend.Equipment
                 return decQuantityToUse.ToString(_objCharacter.Settings.NuyenFormat, objCulture);
             if (Category == "Currency")
                 return decQuantityToUse.ToString("#,0.00", objCulture);
-            return Quantity != 1.0m ? decQuantityToUse.ToString("#,0.##", objCulture) : string.Empty;
+            return !blnBlankOnOneQuantity || Quantity != 1.0m ? decQuantityToUse.ToString("#,0.##", objCulture) : string.Empty;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -2784,7 +2757,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m)
         {
-            string strQuantity = DisplayQuantity(objCulture, blnOverrideQuantity, decQuantityToUse);
+            string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
             string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(strQuantity))

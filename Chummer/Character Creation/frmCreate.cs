@@ -12586,23 +12586,22 @@ namespace Chummer
                     int intIllegalDowngrades = 0;
                     foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                     {
-                        if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
+                        if (!objVehicle.IsDrone || !CharacterObjectSettings.DroneMods)
+                            continue;
+                        foreach (string strModCategory in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Downgrade).Select(x => x.Category))
                         {
-                            foreach (VehicleMod objMod in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Downgrade))
+                            //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
+                            if (strModCategory == "Handling" && Convert.ToInt32(objVehicle.TotalHandling, GlobalSettings.InvariantCultureInfo) < 1 ||
+                                strModCategory == "Speed" && Convert.ToInt32(objVehicle.TotalSpeed, GlobalSettings.InvariantCultureInfo) < 0 ||
+                                strModCategory == "Acceleration" && Convert.ToInt32(objVehicle.TotalAccel, GlobalSettings.InvariantCultureInfo) < 1 ||
+                                strModCategory == "Body" && objVehicle.TotalBody < 1 ||
+                                strModCategory == "Armor" && objVehicle.TotalArmor < 1 ||
+                                strModCategory == "Sensor" && objVehicle.CalculatedSensor < 1)
                             {
-                                //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
-                                if (objMod.Category == "Handling" && Convert.ToInt32(objVehicle.TotalHandling, GlobalSettings.InvariantCultureInfo) < 1 ||
-                                    objMod.Category == "Speed" && Convert.ToInt32(objVehicle.TotalSpeed, GlobalSettings.InvariantCultureInfo) < 0 ||
-                                    objMod.Category == "Acceleration" && Convert.ToInt32(objVehicle.TotalAccel, GlobalSettings.InvariantCultureInfo) < 1 ||
-                                    objMod.Category == "Body" && objVehicle.TotalBody < 1 ||
-                                    objMod.Category == "Armor" && objVehicle.TotalArmor < 1 ||
-                                    objMod.Category == "Sensor" && objVehicle.CalculatedSensor < 1)
-                                {
-                                    blnIllegalDowngrades = true;
-                                    intIllegalDowngrades++;
-                                    lstDronesIllegalDowngrades.Add(objVehicle.Name);
-                                    break;
-                                }
+                                blnIllegalDowngrades = true;
+                                intIllegalDowngrades++;
+                                lstDronesIllegalDowngrades.Add(objVehicle.Name);
+                                break;
                             }
                         }
                     }
@@ -14419,7 +14418,7 @@ namespace Chummer
             List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
             //Mounted cyberware should always be allowed to be dismounted.
             //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
             {
                 Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_NoValidModularMount"),
@@ -14458,7 +14457,7 @@ namespace Chummer
             List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
             //Mounted cyberware should always be allowed to be dismounted.
             //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => x.Value != "None"))
+            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
             {
                 Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_NoValidModularMount"),

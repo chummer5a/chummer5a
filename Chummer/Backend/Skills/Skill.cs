@@ -1437,12 +1437,17 @@ namespace Chummer.Backend.Skills
                 if (_lstCachedSuggestedSpecializations == null)
                 {
                     _lstCachedSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
-                    foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x =>
-                        x.ImprovedName == DictionaryKey && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption &&
-                        _lstCachedSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
+                    foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
+                        if (objImprovement.ImprovedName != DictionaryKey
+                            || objImprovement.ImproveType != Improvement.ImprovementType.SkillSpecializationOption
+                            || _lstCachedSuggestedSpecializations.Any(y => y.Value?.ToString() == objImprovement.UniqueName)
+                            || !objImprovement.Enabled)
+                            continue;
                         string strSpecializationName = objImprovement.UniqueName;
-                        _lstCachedSuggestedSpecializations.Add(new ListItem(strSpecializationName, CharacterObject.TranslateExtra(strSpecializationName)));
+                        _lstCachedSuggestedSpecializations.Add(
+                            new ListItem(strSpecializationName,
+                                         CharacterObject.TranslateExtra(strSpecializationName)));
                     }
                 }
 

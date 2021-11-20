@@ -20,7 +20,6 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -148,7 +147,7 @@ namespace Chummer
 
             if (_owner != null)
             {
-                _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, s_HookProc, IntPtr.Zero, Thread.CurrentThread.ManagedThreadId);
+                _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, s_HookProc, IntPtr.Zero, Environment.CurrentManagedThreadId);
             }
         }
 
