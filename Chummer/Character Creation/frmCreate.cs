@@ -8851,7 +8851,7 @@ namespace Chummer
                 lblPBuildSpecial.Text = StaticCharacterStrings.FormAttributeCostString(CharacterObject,
                     CharacterObject.AttributeSection.SpecialAttributeList, null, true);
 
-                var intMartialArtsPoints = CharacterObject.CalculateMartialArtsPoints(CharacterObjectSettings);
+                var intMartialArtsPoints = CharacterCalculations.CalculateMartialArtsPoints(CharacterObject, CharacterObjectSettings);
                 lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
 
                 string martialArtsBPToolTip =
@@ -10443,7 +10443,7 @@ namespace Chummer
                     if (!CharacterObject.Save())
                     {
                         CharacterObject.Created = false;
-                        return SaveAsCreatedFailed(lstAttributesToAdd);
+                        return StaticExpenses.SaveAsCreatedFailed(lstAttributesToAdd, CharacterObject);
                     }
 
                     IsDirty = false;
@@ -10455,29 +10455,6 @@ namespace Chummer
             }
             return true;
         }
-
-        /// <summary>
-        /// Clears the expense log and Attribute list if the save to xml failed.
-        /// </summary>
-        /// <param name="lstAttributesToAdd"></param>
-        /// <returns>Always false</returns>
-        private bool SaveAsCreatedFailed(List<CharacterAttrib> lstAttributesToAdd)
-        {
-            CharacterObject.ExpenseEntries.Clear();
-            if (lstAttributesToAdd != null)
-            {
-                foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
-                {
-                    CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
-                }
-            }
-
-            return false;
-        }
-
-
-
-
 
 
         /// <summary>

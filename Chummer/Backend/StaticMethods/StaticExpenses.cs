@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.StaticMethods
 {
@@ -33,5 +35,28 @@ namespace Chummer.Backend.StaticMethods
             objNuyenUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
             objNuyen.Undo = objNuyenUndo;
         }
+
+        /// <summary>
+        /// Clears the expense log and Attribute list if the save to xml failed.
+        /// </summary>
+        /// <param name="lstAttributesToAdd"></param>
+        /// <returns>Always false</returns>
+        public static bool SaveAsCreatedFailed(List<CharacterAttrib> lstAttributesToAdd, Character character)
+        {
+            character.ExpenseEntries.Clear();
+            if (lstAttributesToAdd != null)
+            {
+                foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                {
+                    character.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                }
+            }
+
+            return false;
+        }
+
+
+
+
     }
 }

@@ -39,8 +39,7 @@ namespace Chummer.Backend.StaticMethods
         /// <param name="groupInitiation">Is it a Group Initiation?</param>
         /// <param name="initiationOrdeal">Is it a initiation with ordeal?</param>
         /// <param name="initiationSchooling">Is it a initiation with schooling?</param>
-        public static void CreateInitiateGradeObject(Character objCharacter, bool groupInitiation, bool initiationOrdeal,
-            bool initiationSchooling)
+        public static void CreateInitiateGradeObject(Character objCharacter, bool groupInitiation, bool initiationOrdeal, bool initiationSchooling)
         {
             int grade = objCharacter.InitiateGrade;
             bool isTechno = false;

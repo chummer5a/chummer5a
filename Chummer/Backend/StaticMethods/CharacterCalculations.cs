@@ -13,6 +13,8 @@ namespace Chummer.Backend.StaticMethods
     /// </summary>
     public static class CharacterCalculations
     {
+        #region Extensions
+
         public static int CalculateAttributeBP(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
         {
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
@@ -25,8 +27,7 @@ namespace Chummer.Backend.StaticMethods
             return intBP;
         }
 
-        public static int CalculateAttributePriorityPoints(Character objCharacter, IEnumerable<CharacterAttrib> attribs,
-            IEnumerable<CharacterAttrib> extraAttribs = null)
+        public static int CalculateAttributePriorityPoints(Character objCharacter, IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
         {
             int intAtt = 0;
             if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
@@ -147,25 +148,7 @@ namespace Chummer.Backend.StaticMethods
             return intSpritePointsUsed;
         }
 
-        private static int PointsUsedByFettered(Character objCharacter, CharacterSettings objCharacterSettings)
-        {
-            return objCharacter.Spirits.Where(spirit => spirit.Fettered && (spirit.EntityType == SpiritType.Spirit))
-                .Sum(spirit => spirit.Force * objCharacterSettings.KarmaSpiritFettering);
-        }
-
-        private static int StackedFocusBindingCost(Character objCharacter)
-        {
-            return objCharacter.StackedFoci.Where(stackedFocus => stackedFocus.Bonded).Sum(stackedFocus => stackedFocus.BindingCost);
-        }
-
-        private static int FocusBindingCost(Character objCharacter)
-        {
-            return objCharacter.Foci.Sum(focus => focus.BindingKarmaCost());
-        }
-
-
-        public static int OverallSpells(Character objCharacter, CharacterSettings objCharacterSettings,
-            int intPPBought)
+        public static int OverallSpells(Character objCharacter, CharacterSettings objCharacterSettings, int intPPBought)
         {
             int limit = objCharacter.FreeSpells;
 
@@ -299,74 +282,6 @@ namespace Chummer.Backend.StaticMethods
 
         }
 
-        private static int RegainMasteryQualityKarma(Character objCharacter, CharacterSettings objCharacterSettings)
-        {
-            int spellCost = objCharacter.SpellKarmaCost("Spells");
-            // Regain Karma for efficient usage in mastery qualities
-            // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-            if (spellCost > objCharacterSettings.KarmaSpell || objCharacter.FreeSpells <= 0) return 0;
-
-
-            int limit = objCharacter.FreeSpells;
-            // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-            int intQualityKarmaToSpellPoints = objCharacterSettings.KarmaSpell;
-            if (objCharacterSettings.KarmaSpell != 0)
-                intQualityKarmaToSpellPoints = Math.Min(limit,
-                    objCharacter.Qualities
-                        .Where(objQuality => objQuality.CanBuyWithSpellPoints && objQuality.ContributeToBP)
-                        .Sum(objQuality => objQuality.BP) * objCharacterSettings.KarmaQuality /
-                    objCharacterSettings.KarmaSpell);
-
-            // Add the karma paid for by spell points back into the available karma pool.
-            var karmaRegained = intQualityKarmaToSpellPoints * objCharacterSettings.KarmaSpell;
-
-            return karmaRegained;
-        }
-
-        private static int KarmaForMysAdeptPowerPoints(Character objCharacter, CharacterSettings objCharacterSettings, int powerPointsBought)
-        {
-            int limit = objCharacter.FreeSpells;
-            if (objCharacterSettings.PrioritySpellsAsAdeptPowers)
-            {
-                powerPointsBought = Math.Max(0, powerPointsBought - limit);
-            }
-
-            int intAttributePointsUsed = powerPointsBought * objCharacter.Settings.KarmaMysticAdeptPowerPoint;
-            return intAttributePointsUsed;
-        }
-
-        private static int CalcLimitModTouchOnly(Character objCharacter)
-        {
-            //Touch Only
-            int intLimitModTouchOnly = 0;
-            foreach (Improvement imp in objCharacter.Improvements.Where(i =>
-                         i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
-            {
-                int intAttValue = objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
-                if (imp.UniqueName.Contains("half"))
-                    intAttValue = (intAttValue + 1) / 2;
-
-                if (imp.UniqueName.Contains("touchonly"))
-                    intLimitModTouchOnly += intAttValue;
-            }
-
-            foreach (Improvement imp in objCharacter.Improvements.Where(i =>
-                         i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
-            {
-                Skill skill = objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
-                if (skill == null) continue;
-                int intSkillValue = skill.TotalBaseRating;
-
-                if (imp.UniqueName.Contains("half"))
-                    intSkillValue = (intSkillValue + 1) / 2;
-
-                if (imp.UniqueName.Contains("touchonly"))
-                    intLimitModTouchOnly += intSkillValue;
-            }
-
-            return intLimitModTouchOnly;
-        }
-
         public static int CalcLimitMod(Character objCharacter)
         {
             //Normal Spells
@@ -402,7 +317,7 @@ namespace Chummer.Backend.StaticMethods
             return intLimitMod;
         }
 
-        static int CalculateMartialArtsPoints(this Character objCharacter, CharacterSettings objCharacterSettings)
+        public static int CalculateMartialArtsPoints(Character objCharacter, CharacterSettings objCharacterSettings)
         {
             int intMartialArtsPoints = 0;
             foreach (MartialArt objectMartialArt in objCharacter.MartialArts)
@@ -416,25 +331,6 @@ namespace Chummer.Backend.StaticMethods
             }
 
             return intMartialArtsPoints;
-        }
-
-        /// <summary>
-        /// Calculates the BP that are used by LifeModule Qualities
-        /// </summary>
-        /// <param name="objCharacter"></param>
-        /// <param name="objCharacterSettings"></param>
-        /// <returns></returns>
-        private static int LifeModuleQualities(Character objCharacter, CharacterSettings objCharacterSettings)
-        {
-            int intLifeModuleQualities = 0;
-            foreach (Quality objLoopQuality in objCharacter.Qualities.Where(q => q.ContributeToBP))
-            {
-                if (objLoopQuality.Type == QualityType.LifeModule)
-                {
-                    intLifeModuleQualities += objLoopQuality.BP * objCharacterSettings.KarmaQuality;
-                }
-            }
-            return intLifeModuleQualities;
         }
 
         public static int PointsInContacts(Character objCharacter)
@@ -468,19 +364,6 @@ namespace Chummer.Backend.StaticMethods
             return intPointsInContacts;
         }
 
-        private static int PointsInHighPlacesFriend(Character objCharacter, int intPointsInContacts)
-        {
-            var intHighPlacesFriends = NumberHighPlacesFriends(objCharacter);
-
-            int pointsInHighPlacesFriend = 0;
-            if (intPointsInContacts > 0 || objCharacter.CHA.Value * 4 < intHighPlacesFriends)
-            {
-                pointsInHighPlacesFriend = Math.Max(0, intHighPlacesFriends - objCharacter.CHA.Value * 4);
-            }
-
-            return pointsInHighPlacesFriend;
-        }
-
         public static int NumberHighPlacesFriends(Character objCharacter)
         {
             int intHighPlacesFriends = 0;
@@ -498,24 +381,6 @@ namespace Chummer.Backend.StaticMethods
             }
 
             return intHighPlacesFriends;
-        }
-
-        private static int PointsUsedByMetaType(Character objCharacter, CharacterSettings objCharacterSettings)
-        {
-            int pointsUsedByMetaType;
-
-            // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
-            if (!objCharacter.EffectiveBuildMethodUsesPriorityTables)
-            {
-                // Subtract the BP used for Metatype.
-                pointsUsedByMetaType = objCharacter.MetatypeBP * objCharacterSettings.MetatypeCostsKarmaMultiplier;
-            }
-            else
-            {
-                pointsUsedByMetaType = objCharacter.MetatypeBP;
-            }
-
-            return pointsUsedByMetaType;
         }
 
         public static (int, int) CalculateRemainingBP(Character character, CharacterSettings characterSettings, int powerPointsBought)
@@ -605,9 +470,9 @@ namespace Chummer.Backend.StaticMethods
             if (character.MagicianEnabled
                 || character.AdeptEnabled
                 || character.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
-                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
-                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                                                                      && objImprovement.Enabled))
+                                                                 || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
+                                                                 || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+                                                                && objImprovement.Enabled))
             {
                 int limit = character.FreeSpells;
 
@@ -721,7 +586,6 @@ namespace Chummer.Backend.StaticMethods
             return intFociPointsUsed;
         }
 
-
         /// <summary>
         /// Calculate the amount of Nuyen the character has remaining.
         /// </summary>
@@ -797,6 +661,142 @@ namespace Chummer.Backend.StaticMethods
                 ImprovementManager.ValueOf(character, Improvement.ImprovementType.Nuyen, false, "Stolen") -
                 decStolenDeductions;
             return character.Nuyen = character.TotalStartingNuyen - decDeductions;
+        }
+
+        #endregion
+
+        private static int PointsUsedByFettered(Character objCharacter, CharacterSettings objCharacterSettings)
+        {
+            return objCharacter.Spirits.Where(spirit => spirit.Fettered && (spirit.EntityType == SpiritType.Spirit))
+                .Sum(spirit => spirit.Force * objCharacterSettings.KarmaSpiritFettering);
+        }
+
+        private static int FocusBindingCost(Character objCharacter)
+        {
+            return objCharacter.Foci.Sum(focus => focus.BindingKarmaCost());
+        }
+
+        private static int RegainMasteryQualityKarma(Character objCharacter, CharacterSettings objCharacterSettings)
+        {
+            int spellCost = objCharacter.SpellKarmaCost("Spells");
+            // Regain Karma for efficient usage in mastery qualities
+            // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+            if (spellCost > objCharacterSettings.KarmaSpell || objCharacter.FreeSpells <= 0) return 0;
+
+
+            int limit = objCharacter.FreeSpells;
+            // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+            int intQualityKarmaToSpellPoints = objCharacterSettings.KarmaSpell;
+            if (objCharacterSettings.KarmaSpell != 0)
+                intQualityKarmaToSpellPoints = Math.Min(limit,
+                    objCharacter.Qualities
+                        .Where(objQuality => objQuality.CanBuyWithSpellPoints && objQuality.ContributeToBP)
+                        .Sum(objQuality => objQuality.BP) * objCharacterSettings.KarmaQuality /
+                    objCharacterSettings.KarmaSpell);
+
+            // Add the karma paid for by spell points back into the available karma pool.
+            var karmaRegained = intQualityKarmaToSpellPoints * objCharacterSettings.KarmaSpell;
+
+            return karmaRegained;
+        }
+
+        private static int KarmaForMysAdeptPowerPoints(Character objCharacter, CharacterSettings objCharacterSettings, int powerPointsBought)
+        {
+            int limit = objCharacter.FreeSpells;
+            if (objCharacterSettings.PrioritySpellsAsAdeptPowers)
+            {
+                powerPointsBought = Math.Max(0, powerPointsBought - limit);
+            }
+
+            int intAttributePointsUsed = powerPointsBought * objCharacter.Settings.KarmaMysticAdeptPowerPoint;
+            return intAttributePointsUsed;
+        }
+
+        private static int CalcLimitModTouchOnly(Character objCharacter)
+        {
+            //Touch Only
+            int intLimitModTouchOnly = 0;
+            foreach (Improvement imp in objCharacter.Improvements.Where(i =>
+                         i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
+            {
+                int intAttValue = objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
+                if (imp.UniqueName.Contains("half"))
+                    intAttValue = (intAttValue + 1) / 2;
+
+                if (imp.UniqueName.Contains("touchonly"))
+                    intLimitModTouchOnly += intAttValue;
+            }
+
+            foreach (Improvement imp in objCharacter.Improvements.Where(i =>
+                         i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
+            {
+                Skill skill = objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
+                if (skill == null) continue;
+                int intSkillValue = skill.TotalBaseRating;
+
+                if (imp.UniqueName.Contains("half"))
+                    intSkillValue = (intSkillValue + 1) / 2;
+
+                if (imp.UniqueName.Contains("touchonly"))
+                    intLimitModTouchOnly += intSkillValue;
+            }
+
+            return intLimitModTouchOnly;
+        }
+
+        /// <summary>
+        /// Calculates the BP that are used by LifeModule Qualities
+        /// </summary>
+        /// <param name="objCharacter"></param>
+        /// <param name="objCharacterSettings"></param>
+        /// <returns></returns>
+        private static int LifeModuleQualities(Character objCharacter, CharacterSettings objCharacterSettings)
+        {
+            int intLifeModuleQualities = 0;
+            foreach (Quality objLoopQuality in objCharacter.Qualities.Where(q => q.ContributeToBP))
+            {
+                if (objLoopQuality.Type == QualityType.LifeModule)
+                {
+                    intLifeModuleQualities += objLoopQuality.BP * objCharacterSettings.KarmaQuality;
+                }
+            }
+            return intLifeModuleQualities;
+        }
+
+        private static int StackedFocusBindingCost(Character objCharacter)
+        {
+            return objCharacter.StackedFoci.Where(stackedFocus => stackedFocus.Bonded).Sum(stackedFocus => stackedFocus.BindingCost);
+        }
+
+        private static int PointsInHighPlacesFriend(Character objCharacter, int intPointsInContacts)
+        {
+            var intHighPlacesFriends = NumberHighPlacesFriends(objCharacter);
+
+            int pointsInHighPlacesFriend = 0;
+            if (intPointsInContacts > 0 || objCharacter.CHA.Value * 4 < intHighPlacesFriends)
+            {
+                pointsInHighPlacesFriend = Math.Max(0, intHighPlacesFriends - objCharacter.CHA.Value * 4);
+            }
+
+            return pointsInHighPlacesFriend;
+        }
+
+        private static int PointsUsedByMetaType(Character objCharacter, CharacterSettings objCharacterSettings)
+        {
+            int pointsUsedByMetaType;
+
+            // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
+            if (!objCharacter.EffectiveBuildMethodUsesPriorityTables)
+            {
+                // Subtract the BP used for Metatype.
+                pointsUsedByMetaType = objCharacter.MetatypeBP * objCharacterSettings.MetatypeCostsKarmaMultiplier;
+            }
+            else
+            {
+                pointsUsedByMetaType = objCharacter.MetatypeBP;
+            }
+
+            return pointsUsedByMetaType;
         }
     }
 }
