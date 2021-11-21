@@ -2045,7 +2045,7 @@
       <source>R5</source>
       <accel>3</accel>
       <armor>16</armor>
-      <avail>0</avail>
+      <avail>14R</avail>
       <body>18</body>
       <category>Corpsec/Police/Military</category>
       <cost>398000</cost>

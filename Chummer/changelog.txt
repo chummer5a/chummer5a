@@ -13,6 +13,7 @@ New Strings:
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
+- Fixed missing availability for the BMW Luxus.
 
 Build 216
 Application Changes:
