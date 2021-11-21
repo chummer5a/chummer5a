@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -104,14 +105,9 @@ namespace Chummer
             //If it have already left we don't want to check again
             if (_left) return;
 
-            foreach (Control control in _controls)
-            {
-                //Check if the mouse is inside any control
-                if (control.ClientRectangle.Contains(control.PointToClient(Control.MousePosition)))
-                {
-                    return;
-                }
-            }
+            //Check if the mouse is inside any control
+            if (_controls.Any(x => x.ClientRectangle.Contains(x.PointToClient(Control.MousePosition))))
+                return;
 
             _left = true; //Don't do again flag
 

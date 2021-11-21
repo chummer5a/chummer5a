@@ -1245,11 +1245,15 @@ namespace Chummer
                     //Add to set for O(N log M) runtime instead of O(N * M)
                     HashSet<string> qualityForbidden = new HashSet<string>();
                     using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
+                    {
                         if (xmlNodeList != null)
+                        {
                             foreach (XmlNode node in xmlNodeList)
                             {
                                 qualityForbidden.Add(node.InnerText);
                             }
+                        }
+                    }
 
                     foreach (Quality quality in objCharacter.Qualities)
                     {
@@ -1275,9 +1279,9 @@ namespace Chummer
         {
             if (xmlDoc == null)
                 throw new ArgumentNullException(nameof(xmlDoc));
-            var node = xmlDoc.SelectSingleNode("//*[id = " + id.CleanXPath() + "]");
+            XmlNode node = xmlDoc.SelectSingleNode("//*[id = " + id.CleanXPath() + ']');
             if (node == null)
-                throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + ".");
+                throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + '.');
             return GetNodeOverrideable(node);
         }
 
@@ -1286,28 +1290,25 @@ namespace Chummer
             XmlNode workNode = n.Clone();  //clone as to not mess up the acctual xml document
 
             XmlNode parentNode = n.SelectSingleNode("../..");
-            if (parentNode?["id"] != null)
+            if (parentNode?["id"] == null)
+                return workNode;
+            XmlNode sourceNode = GetNodeOverrideable(parentNode);
+            if (sourceNode == null)
+                return workNode;
+            foreach (XmlNode node in sourceNode.ChildNodes)
             {
-                XmlNode sourceNode = GetNodeOverrideable(parentNode);
-                if (sourceNode != null)
+                if (workNode[node.LocalName] == null && node.LocalName != "versions")
                 {
-                    foreach (XmlNode node in sourceNode.ChildNodes)
+                    workNode.AppendChild(node.Clone());
+                }
+                else if (node.LocalName == "bonus")
+                {
+                    XmlNode xmlBonusNode = workNode["bonus"];
+                    if (xmlBonusNode == null)
+                        continue;
+                    foreach (XmlNode childNode in node.ChildNodes)
                     {
-                        if (workNode[node.LocalName] == null && node.LocalName != "versions")
-                        {
-                            workNode.AppendChild(node.Clone());
-                        }
-                        else if (node.LocalName == "bonus")
-                        {
-                            XmlNode xmlBonusNode = workNode["bonus"];
-                            if (xmlBonusNode != null)
-                            {
-                                foreach (XmlNode childNode in node.ChildNodes)
-                                {
-                                    xmlBonusNode.AppendChild(childNode.Clone());
-                                }
-                            }
-                        }
+                        xmlBonusNode.AppendChild(childNode.Clone());
                     }
                 }
             }

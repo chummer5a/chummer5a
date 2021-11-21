@@ -1322,7 +1322,7 @@ namespace Chummer.Backend.Equipment
                     objClip.Save(objWriter);
                 }
 
-                foreach (Gear reloadClipGear in GetAmmoReloadable(lstGearToSearch, false))
+                foreach (Gear reloadClipGear in GetAmmoReloadable(lstGearToSearch))
                 {
                     Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
                     reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
@@ -5439,17 +5439,22 @@ namespace Chummer.Backend.Equipment
                 };
             }
 
-            try
+            if (RequireAmmo)
             {
                 lstAmmo.AddRange(GetAmmoReloadable(lstGears));
-                if (objExternalSource != null)
-                    lstAmmo.Add(objExternalSource);
+                // Make sure the character has some form of Ammunition for this Weapon.
+                if (lstAmmo.Count <= 0)
+                {
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString("Message_OutOfAmmoType"),
+                                                                  CurrentDisplayName),
+                                                    LanguageManager.GetString("Message_OutOfAmmo"),
+                                                    icon: MessageBoxIcon.Warning);
+                    return;
+                }
             }
-            catch (ArgumentException ae)
-            {
-                Program.MainForm.ShowMessageBox(ae.Message);
-                return;
-            }
+            if (objExternalSource != null)
+                lstAmmo.Add(objExternalSource);
 
             // Show the Ammunition Selection window.
             using (frmReload frmReloadWeapon = new frmReload(this)
@@ -5537,11 +5542,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public IEnumerable<Gear> GetAmmoReloadable(IEnumerable<Gear> lstGears, bool throwExceptions = true)
+        public IEnumerable<Gear> GetAmmoReloadable(IEnumerable<Gear> lstGears)
         {
             if (!RequireAmmo)
                 yield break;
-            bool blnAnyAmmo = false;
             // Find all of the Ammo for the current Weapon that the character is carrying.
             if (AmmoCategory == "Gear")
             {
@@ -5550,7 +5554,6 @@ namespace Chummer.Backend.Equipment
                     && Name == x.Name
                     && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)))
                 {
-                    blnAnyAmmo = true;
                     yield return objGear;
                 }
             }
@@ -5564,7 +5567,6 @@ namespace Chummer.Backend.Equipment
                         || x.Extra == AmmoCategory
                         || (UseSkill == "Throwing Weapons" && Name == x.Name))))
                 {
-                    blnAnyAmmo = true;
                     yield return objGear;
                 }
             }
@@ -5577,16 +5579,8 @@ namespace Chummer.Backend.Equipment
                         || x.Extra == AmmoCategory
                         || (UseSkill == "Throwing Weapons" && Name == x.Name))))
                 {
-                    blnAnyAmmo = true;
                     yield return objGear;
                 }
-            }
-
-            // Make sure the character has some form of Ammunition for this Weapon.
-            if (!blnAnyAmmo && throwExceptions)
-            {
-                throw new ArgumentException(string.Format(GlobalSettings.CultureInfo
-                    , LanguageManager.GetString("Message_OutOfAmmoType"), CurrentDisplayName));
             }
         }
 

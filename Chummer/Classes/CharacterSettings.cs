@@ -874,13 +874,13 @@ namespace Chummer
                         .SelectAndCacheExpression("/chummer/books/book[not(hide)]/code");
                     HashSet<string> setAllowedBooks = new HashSet<string>(lstAllowedBooksCodes.Count);
                     foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
-                        setAllowedBooks.Add(objAllowedBook.Value);
+                        if (_lstBooks.Contains(objAllowedBook.Value))
+                            setAllowedBooks.Add(objAllowedBook.Value);
 
                     // <books>
                     objWriter.WriteStartElement("books");
-                    foreach (string strBook in _lstBooks)
-                        if (setAllowedBooks.Contains(strBook))
-                            objWriter.WriteElementString("book", strBook);
+                    foreach (string strBook in setAllowedBooks)
+                        objWriter.WriteElementString("book", strBook);
                     // </books>
                     objWriter.WriteEndElement();
 

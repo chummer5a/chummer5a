@@ -796,30 +796,53 @@ namespace Chummer
                         foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
                             objImprovement.GetRelevantPropertyChangers())
                         {
-                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                            if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                 out HashSet<string> setChangedProperties))
-                                setChangedProperties.Add(strPropertyToUpdate);
-                            else
-                                dicChangedProperties.Add(objItemToUpdate,
-                                    new HashSet<string> { strPropertyToUpdate });
+                            {
+                                setChangedProperties = new HashSet<string>(1);
+                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                            }
+                            setChangedProperties.Add(strPropertyToUpdate);
                         }
                     }
                 }
 
-                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
                 {
-                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToArray());
                 }
             }
         }
 
         private void MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add && !IsLoading)
+            if (IsLoading)
+                return;
+            List<Metamagic> lstImprovementSourcesToProcess = new List<Metamagic>();
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Metamagic objNewItem in e.NewItems)
+                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Metamagic objOldItem in e.OldItems)
+                        lstImprovementSourcesToProcess.Add(objOldItem);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Metamagic objOldItem in e.OldItems)
+                        lstImprovementSourcesToProcess.Add(objOldItem);
+                    foreach (Metamagic objNewItem in e.NewItems)
+                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+            }
+            if (lstImprovementSourcesToProcess.Count > 0)
             {
                 Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                     new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-                foreach (Metamagic objNewItem in e.NewItems)
+                foreach (Metamagic objNewItem in lstImprovementSourcesToProcess)
                 {
                     // Needed in order to properly process named sources where
                     // the tooltip was built before the object was added to the character
@@ -830,19 +853,19 @@ namespace Chummer
                         foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
                             objImprovement.GetRelevantPropertyChangers())
                         {
-                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                out HashSet<string> setChangedProperties))
-                                setChangedProperties.Add(strPropertyToUpdate);
-                            else
-                                dicChangedProperties.Add(objItemToUpdate,
-                                    new HashSet<string> { strPropertyToUpdate });
+                            if (!dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = new HashSet<string>(1);
+                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                            }
+                            setChangedProperties.Add(strPropertyToUpdate);
                         }
                     }
                 }
 
-                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
                 {
-                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToArray());
                 }
             }
         }
