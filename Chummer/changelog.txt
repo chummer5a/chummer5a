@@ -7,6 +7,7 @@ Application Changes:
 - Fixed Gear not using Restricted Gear correctly. Possibly needs more testing, but initial efforts seem correct. 
 - Some changes to logic on how usage of restricted gear is displayed.
 - Adept Powers, AI Programs, Metamagic Arts, Complex Forms, Critter Powers, Mentor Spirits, Metamagics, Spells, and Weapon Mounts should now automatically fetch notes from linked PDFs.
+- Mugshot compression settings should now properly get saved with other global settings.
 
 New Strings:
 - String_GameplayOption

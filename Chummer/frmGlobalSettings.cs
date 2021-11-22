@@ -348,7 +348,9 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            nudMugshotCompressionQuality.Enabled = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
+            bool blnJpegSelected = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
+            lblMugshotCompressionQuality.Visible = blnJpegSelected;
+            nudMugshotCompressionQuality.Visible = blnJpegSelected;
             OptionsChanged(sender, e);
         }
 
@@ -1064,7 +1066,9 @@ namespace Chummer
                                                       ?? GlobalSettings.DefaultMasterIndexSettingDefaultValue;
             GlobalSettings.AllowEasterEggs = chkAllowEasterEggs.Checked;
             GlobalSettings.PluginsEnabled = chkEnablePlugins.Checked;
-            GlobalSettings.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;
+            GlobalSettings.SavedImageQuality = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg)
+                ? decimal.ToInt32(nudMugshotCompressionQuality.Value)
+                : int.MaxValue;
             GlobalSettings.CustomDateTimeFormats = chkCustomDateTimeFormats.Checked;
             if (GlobalSettings.CustomDateTimeFormats)
             {
@@ -1152,7 +1156,9 @@ namespace Chummer
             }
 
             cboMugshotCompression.EndUpdate();
-            nudMugshotCompressionQuality.Enabled = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
+            bool blnJpegSelected = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
+            lblMugshotCompressionQuality.Visible = blnJpegSelected;
+            nudMugshotCompressionQuality.Visible = blnJpegSelected;
         }
 
         private void PopulatePdfParameters()
