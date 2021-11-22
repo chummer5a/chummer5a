@@ -18816,7 +18816,11 @@
     <PostBuildEvent>copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"</PreBuildEvent>
+    <PreBuildEvent>if exist "$(SolutionDir).git\hooks\" (
+copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
+) else (
+echo "No .git directory found, skipping copying of hooks."
+)</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
