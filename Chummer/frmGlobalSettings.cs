@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -348,9 +347,9 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            bool blnJpegSelected = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
-            lblMugshotCompressionQuality.Visible = blnJpegSelected;
-            nudMugshotCompressionQuality.Visible = blnJpegSelected;
+            bool blnShowQualitySelector = Equals(cboMugshotCompression.SelectedValue, "jpeg_manual");
+            lblMugshotCompressionQuality.Visible = blnShowQualitySelector;
+            nudMugshotCompressionQuality.Visible = blnShowQualitySelector;
             OptionsChanged(sender, e);
         }
 
@@ -1066,9 +1065,18 @@ namespace Chummer
                                                       ?? GlobalSettings.DefaultMasterIndexSettingDefaultValue;
             GlobalSettings.AllowEasterEggs = chkAllowEasterEggs.Checked;
             GlobalSettings.PluginsEnabled = chkEnablePlugins.Checked;
-            GlobalSettings.SavedImageQuality = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg)
-                ? decimal.ToInt32(nudMugshotCompressionQuality.Value)
-                : int.MaxValue;
+            switch (cboMugshotCompression.SelectedValue)
+            {
+                case "jpeg_automatic":
+                    GlobalSettings.SavedImageQuality = -1;
+                    break;
+                case "jpeg_manual":
+                    GlobalSettings.SavedImageQuality = nudMugshotCompressionQuality.ValueAsInt;
+                    break;
+                default:
+                    GlobalSettings.SavedImageQuality = int.MaxValue;
+                    break;
+            }
             GlobalSettings.CustomDateTimeFormats = chkCustomDateTimeFormats.Checked;
             if (GlobalSettings.CustomDateTimeFormats)
             {
@@ -1140,11 +1148,33 @@ namespace Chummer
         {
             List<ListItem> lstMugshotCompressionOptions = new List<ListItem>(2)
             {
-                new ListItem(ImageFormat.Png, LanguageManager.GetString("String_Lossless_Compression_Option")),
-                new ListItem(ImageFormat.Jpeg, LanguageManager.GetString("String_Lossy_Compression_Option"))
+                new ListItem("png", LanguageManager.GetString("String_Lossless_Compression_Option")),
+                new ListItem("jpeg_automatic", LanguageManager.GetString("String_Lossy_Automatic_Compression_Option")),
+                new ListItem("jpeg_manual", LanguageManager.GetString("String_Lossy_Manual_Compression_Option"))
             };
 
             string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
+
+            if (_blnLoading)
+            {
+                int intQuality = GlobalSettings.SavedImageQuality;
+                if (intQuality == int.MaxValue)
+                {
+                    strOldSelected = "png";
+                    intQuality = 90;
+                }
+                else if (intQuality < 0)
+                {
+                    strOldSelected = "jpeg_automatic";
+                    intQuality = 90;
+                }
+                else
+                {
+                    strOldSelected = "jpeg_manual";
+                }
+
+                nudMugshotCompressionQuality.ValueAsInt = intQuality;
+            }
 
             cboMugshotCompression.BeginUpdate();
             cboMugshotCompression.PopulateWithListItems(lstMugshotCompressionOptions);
@@ -1156,9 +1186,9 @@ namespace Chummer
             }
 
             cboMugshotCompression.EndUpdate();
-            bool blnJpegSelected = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
-            lblMugshotCompressionQuality.Visible = blnJpegSelected;
-            nudMugshotCompressionQuality.Visible = blnJpegSelected;
+            bool blnShowQualitySelector = Equals(cboMugshotCompression.SelectedValue, "jpeg_manual");
+            lblMugshotCompressionQuality.Visible = blnShowQualitySelector;
+            nudMugshotCompressionQuality.Visible = blnShowQualitySelector;
         }
 
         private void PopulatePdfParameters()

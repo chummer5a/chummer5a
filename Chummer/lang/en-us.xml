@@ -7923,8 +7923,12 @@
       <text>Lossless (PNG)</text>
     </string>
     <string>
-      <key>String_Lossy_Compression_Option</key>
-      <text>Lossy (JPG)</text>
+      <key>String_Lossy_Automatic_Compression_Option</key>
+      <text>Lossy (JPG, Automatic)</text>
+    </string>
+    <string>
+      <key>String_Lossy_Manual_Compression_Option</key>
+      <text>Lossy (JPG, Manual)</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Options -->
