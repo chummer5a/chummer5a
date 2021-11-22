@@ -39,10 +39,10 @@ namespace Chummer
         /// Takes a Base64 String that is meant to represent an Image and turns it into a Base64 String that is meant to represent a JPEG
         /// </summary>
         /// <param name="strBase64String">String representing image to compress.</param>
-        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CompressBase64String(this string strBase64String, int intQuality = 90)
+        public static string CompressBase64String(this string strBase64String, int intQuality = -1)
         {
             if (string.IsNullOrEmpty(strBase64String))
                 return string.Empty;
@@ -56,10 +56,10 @@ namespace Chummer
         /// Takes a Base64 String that is meant to represent an Image and turns it into a Base64 String that is meant to represent a JPEG
         /// </summary>
         /// <param name="strBase64String">String representing image to compress.</param>
-        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = 90)
+        public static async Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = -1)
         {
             if (string.IsNullOrEmpty(strBase64String))
                 return string.Empty;
@@ -76,11 +76,11 @@ namespace Chummer
         /// <param name="intThumbWidth">Width of the thumbnail.</param>
         /// <param name="intThumbHeight">Height of the thumbnail.</param>
         /// <param name="blnKeepAspectRatio">Whether or not to make sure we retain the aspect ratio of the old image.</param>
-        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Image GetCompressedThumbnailImage(this Image imgToConvert, int intThumbWidth, int intThumbHeight,
-            bool blnKeepAspectRatio = true, int intQuality = 90)
+            bool blnKeepAspectRatio = true, int intQuality = -1)
         {
             if (imgToConvert == null)
                 return null;
@@ -120,10 +120,10 @@ namespace Chummer
         /// <param name="intThumbWidth">Width of the thumbnail.</param>
         /// <param name="intThumbHeight">Height of the thumbnail.</param>
         /// <param name="blnKeepAspectRatio">Whether or not to make sure we retain the aspect ratio of the old image.</param>
-        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = 90)
+        public static async Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = -1)
         {
             if (imgToConvert == null)
                 return null;
@@ -157,19 +157,19 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get a clone of an image that is compressed as a JPEG.
+        /// Get a clone of an image that is compressed as a Jpeg.
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
-        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Image GetCompressedImage(this Image imgToConvert, int intQuality = 90)
+        public static Image GetCompressedImage(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
                 return null;
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
             using (Bitmap bmpClone = new Bitmap(imgToConvert))
@@ -184,19 +184,19 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get a clone of an image that is compressed as a JPEG.
+        /// Get a clone of an image that is compressed as a Jpeg.
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
-        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = 90)
+        public static async Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
                 return null;
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
             return await Task.Run(() =>
             {
@@ -442,16 +442,16 @@ namespace Chummer
         /// Converts an Image into a Base64 string of its Jpeg version with a custom quality setting (default ImageFormat.Jpeg quality is 50).
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
-        /// <param name="intQuality">Jpeg quality to use. 90 by default.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToBase64StringAsJpeg(this Image imgToConvert, int intQuality = 90)
+        public static string ToBase64StringAsJpeg(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
                 return string.Empty;
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
             return imgToConvert.ToBase64String(s_LzyJpegEncoder.Value, lstJpegParameters);
         }
@@ -460,16 +460,16 @@ namespace Chummer
         /// Converts an Image into a Base64 string of its Jpeg version with a custom quality setting (default ImageFormat.Jpeg quality is 50).
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
-        /// <param name="intQuality">Jpeg quality to use. 90 by default.</param>
+        /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = 90)
+        public static async Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
                 return string.Empty;
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
             return await imgToConvert.ToBase64StringAsync(s_LzyJpegEncoder.Value, lstJpegParameters);
         }
@@ -494,6 +494,24 @@ namespace Chummer
         public static ImageCodecInfo GetEncoder(this ImageFormat eFormat)
         {
             return ImageCodecInfo.GetImageDecoders().FirstOrDefault(objCodec => objCodec.FormatID == eFormat.Guid);
+        }
+
+        /// <summary>
+        /// Process Jpeg quality settings in a way that's uniform across all methods that export an image to a Jpeg.
+        /// </summary>
+        /// <param name="imgToConvert">Image for which the Jpeg will be generated.</param>
+        /// <param name="intQuality">Jpeg quality to use. Values less than 0 are treated as "automatic" where quality is adjusted between 50 and 100 depending on image size.</param>
+        /// <returns>A valid Jpeg quality setting for <paramref name="imgToConvert"/>.</returns>
+        private static int ProcessJpegQualitySetting(this Image imgToConvert, int intQuality)
+        {
+            if (intQuality >= 0)
+                return intQuality > 100 ? 100 : intQuality;
+            double dblPixelCount = imgToConvert.Height;
+            dblPixelCount *= imgToConvert.Width;
+            // Jpeg encoding works in 8x8 blocks, so we should ideally scale based on a logarithm based on a power of 2 (2^10 in this case)
+            return dblPixelCount <= 1024
+                ? 100
+                : (50.0 * (1.0 + 0.8.RaiseToPower(Math.Log(dblPixelCount, 1024.0)))).StandardRound(); // Sub-50 quality gets iffy for a lot of stuff, so just scale between 50 and 100 to be on the safe side
         }
     }
 }
