@@ -810,6 +810,7 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (new CursorWait(this))
             {
+                string strNewFileName;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
                     Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' +
@@ -822,12 +823,32 @@ namespace Chummer
                         openFileDialog.FileName = Path.GetFileName(txtPDFLocation.Text);
                     }
 
-                    if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    {
-                        UpdateSourcebookInfoPath(openFileDialog.FileName);
-                        txtPDFLocation.Text = openFileDialog.FileName;
-                    }
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+
+                    strNewFileName = openFileDialog.FileName;
                 }
+
+                try
+                {
+                    PdfReader objPdfReader = new PdfReader(strNewFileName);
+                    objPdfReader.Close();
+                }
+                catch (Exception)
+                {
+                    Program.MainForm.ShowMessageBox(this, string.Format(
+                                                        LanguageManager.GetString(
+                                                            "Message_Options_FileIsNotPDF",
+                                                            _strSelectedLanguage), Path.GetFileName(strNewFileName)),
+                                                    LanguageManager.GetString(
+                                                        "MessageTitle_Options_FileIsNotPDF",
+                                                        _strSelectedLanguage), MessageBoxButtons.OK,
+                                                    MessageBoxIcon.Error);
+                    return;
+                }
+
+                UpdateSourcebookInfoPath(strNewFileName);
+                txtPDFLocation.Text = strNewFileName;
             }
         }
 
@@ -1658,59 +1679,75 @@ namespace Chummer
 
             string GetPageTextFromPDF(FileSystemInfo objInnerFileInfo, int intPage)
             {
-                PdfDocument objPdfDocument;
+                PdfReader objPdfReader = null;
+                PdfDocument objPdfDocument = null;
                 try
                 {
-                    objPdfDocument = new PdfDocument(new PdfReader(objInnerFileInfo.FullName));
-                }
-                catch (iText.IO.Exceptions.IOException e)
-                {
-                    if (e.Message == "PDF header not found.")
+                    try
+                    {
+                        objPdfReader = new PdfReader(objInnerFileInfo.FullName);
+                        objPdfDocument = new PdfDocument(objPdfReader);
+                    }
+                    catch (iText.IO.Exceptions.IOException e)
+                    {
+                        if (e.Message == "PDF header not found.")
+                            return string.Empty;
+                        throw;
+                    }
+                    catch (Exception e)
+                    {
+                        //Loading failed, probably not a PDF file
+                        Log.Warn(
+                            e,
+                            "Could not load file " + objInnerFileInfo.FullName
+                                                   + " and open it as PDF to search for text.");
                         return null;
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    //Loading failed, probably not a PDF file
-                    Log.Warn(e, "Could not load file " + objInnerFileInfo.FullName + " and open it as PDF to search for text.");
-                    return null;
-                }
+                    }
 
-                List<string> lstStringFromPdf = new List<string>(30);
-                // Loop through each page, starting at the listed page + offset.
-                if (intPage >= objPdfDocument.GetNumberOfPages())
-                    return null;
+                    List<string> lstStringFromPdf = new List<string>(30);
+                    // Loop through each page, starting at the listed page + offset.
+                    if (intPage >= objPdfDocument.GetNumberOfPages())
+                        return null;
 
-                int intProcessedStrings = lstStringFromPdf.Count;
-                try
-                {
-                    // each page should have its own text extraction strategy for it to work properly
-                    // this way we don't need to check for previous page appearing in the current page
-                    // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                    string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
-                                                  objPdfDocument.GetPage(intPage),
-                                                  new SimpleTextExtractionStrategy())
-                                              .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+                    int intProcessedStrings = lstStringFromPdf.Count;
+                    try
+                    {
+                        // each page should have its own text extraction strategy for it to work properly
+                        // this way we don't need to check for previous page appearing in the current page
+                        // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                        string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
+                                                      objPdfDocument.GetPage(intPage),
+                                                      new SimpleTextExtractionStrategy())
+                                                  .CleanStylisticLigatures().NormalizeWhiteSpace()
+                                                  .NormalizeLineEndings();
 
-                    // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                    lstStringFromPdf.AddRange(
-                        strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                                   .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                        // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                        lstStringFromPdf.AddRange(
+                            strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                                       .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                    }
+                    // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
+                    catch (Exception e)
+                    {
+                        Utils.BreakIfDebug();
+                        Log.Error(e);
+                        return null;
+                    }
+
+                    StringBuilder sbdAllLines = new StringBuilder();
+                    for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                    {
+                        string strCurrentLine = lstStringFromPdf[i];
+                        sbdAllLines.AppendLine(strCurrentLine);
+                    }
+
+                    return sbdAllLines.ToString();
                 }
-                // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
-                catch (Exception e)
+                finally
                 {
-                    Utils.BreakIfDebug();
-                    Log.Error(e);
-                    return null;
+                    objPdfDocument?.Close();
+                    objPdfReader?.Close();
                 }
-                StringBuilder sbdAllLines = new StringBuilder();
-                for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
-                {
-                    string strCurrentLine = lstStringFromPdf[i];
-                    sbdAllLines.AppendLine(strCurrentLine);
-                }
-                return sbdAllLines.ToString();
             }
         }
     }

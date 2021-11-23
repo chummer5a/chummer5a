@@ -78,6 +78,7 @@ namespace Chummer
     public sealed class SourcebookInfo : IDisposable
     {
         private string _strPath = string.Empty;
+        private PdfReader _objPdfReader;
         private PdfDocument _objPdfDocument;
 
         #region Properties
@@ -89,12 +90,13 @@ namespace Chummer
             get => _strPath;
             set
             {
-                if (_strPath != value)
-                {
-                    _strPath = value;
-                    _objPdfDocument?.Close();
-                    _objPdfDocument = null;
-                }
+                if (_strPath == value)
+                    return;
+                _strPath = value;
+                _objPdfDocument?.Close();
+                _objPdfDocument = null;
+                _objPdfReader?.Close();
+                _objPdfReader = null;
             }
         }
 
@@ -109,7 +111,18 @@ namespace Chummer
                     Uri uriPath = new Uri(Path);
                     if (File.Exists(uriPath.LocalPath))
                     {
-                        _objPdfDocument = new PdfDocument(new PdfReader(uriPath.LocalPath));
+                        try
+                        {
+                            _objPdfReader = new PdfReader(uriPath.LocalPath);
+                            _objPdfDocument = new PdfDocument(_objPdfReader);
+                        }
+                        catch (Exception)
+                        {
+                            _objPdfDocument?.Close();
+                            _objPdfDocument = null;
+                            _objPdfReader?.Close();
+                            _objPdfReader = null;
+                        }
                     }
                 }
                 return _objPdfDocument;
@@ -127,6 +140,7 @@ namespace Chummer
                 if (disposing)
                 {
                     _objPdfDocument?.Close();
+                    _objPdfReader?.Close();
                 }
 
                 _disposedValue = true;

@@ -1356,6 +1356,10 @@ namespace Chummer
                 return string.Empty;
             intPage += objBookInfo.Offset;
 
+            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
+            if (objPdfDocument == null)
+                return string.Empty;
+
             // due to the tag <nameonpage> for the qualities those variants are no longer needed,
             // as such the code would run at most half of the comparisons with the variants
             // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
@@ -1366,7 +1370,6 @@ namespace Chummer
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
-            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
             List<string> lstStringFromPdf = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
