@@ -61,7 +61,7 @@ namespace Chummer
             for (int i = 0; i < Length; ++i)
             {
                 array[arrayIndex] = this[i];
-                arrayIndex += 1;
+                ++arrayIndex;
             }
         }
 

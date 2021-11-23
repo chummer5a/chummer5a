@@ -868,7 +868,7 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
-        /// Description of the object. 
+        /// Description of the object.
         /// </summary>
         public string Notes
         {

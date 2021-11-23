@@ -1081,28 +1081,28 @@ namespace Chummer
         /// </summary>
         private Improvement CompareFocusPower(Improvement objImprovement)
         {
-            var list = _objCharacter.Foci
-                .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).ToList();
+            List<Focus> list = _objCharacter.Foci.FindAll(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded);
             if (list.Count > 0)
             {
                 // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                var powerFocusRating = list.Select(x => x.Rating).Max();
+                int powerFocusRating = list.Max(x => x.Rating);
 
                 // If our focus is higher, add in a partial bonus
-                if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
+                if (powerFocusRating > 0)
                 {
                     // This is hackz -- because we don't want to lose the original improvement's value
                     // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                    return new Improvement(_objCharacter)
-                    {
-                        Value = objImprovement.Value - powerFocusRating,
-                        SourceName = objImprovement.SourceName,
-                        ImprovedName = objImprovement.ImprovedName,
-                        ImproveSource = objImprovement.ImproveSource,
-                        ImproveType = objImprovement.ImproveType,
-                    };
+                    if (powerFocusRating < objImprovement.Value)
+                        return new Improvement(_objCharacter)
+                        {
+                            Value = objImprovement.Value - powerFocusRating,
+                            SourceName = objImprovement.SourceName,
+                            ImprovedName = objImprovement.ImprovedName,
+                            ImproveSource = objImprovement.ImproveSource,
+                            ImproveType = objImprovement.ImproveType,
+                        };
+                    return null;
                 }
-                return powerFocusRating > 0 ? null : objImprovement;
             }
 
             return objImprovement;

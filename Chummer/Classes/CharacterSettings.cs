@@ -354,11 +354,8 @@ namespace Chummer
             PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
             foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead))
             {
-                PropertyInfo objProperty = aobjProperties.FirstOrDefault(x => x.Name == objOtherProperty.Name && x.CanWrite);
-                if (objProperty != null)
-                {
-                    objProperty.SetValue(this, objOtherProperty.GetValue(objOther, null), null);
-                }
+                PropertyInfo objProperty = Array.Find(aobjProperties, x => x.Name == objOtherProperty.Name && x.CanWrite);
+                objProperty?.SetValue(this, objOtherProperty.GetValue(objOther, null), null);
             }
 
             OnPropertyChanged(nameof(SourceId));
@@ -401,7 +398,7 @@ namespace Chummer
             PropertyInfo[] aobjOtherProperties = other.GetType().GetProperties();
             foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
             {
-                PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
+                PropertyInfo objOtherProperty = Array.Find(aobjOtherProperties, x => x.Name == objProperty.Name);
                 if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(other))
                 {
                     return false;
@@ -1375,7 +1372,7 @@ namespace Chummer
                         && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intOrder))
                     {
                         while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
-                            intOrder += 1;
+                            ++intOrder;
                         intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
                         intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
                         dicLoadingCustomDataDirectories.Add(intOrder,

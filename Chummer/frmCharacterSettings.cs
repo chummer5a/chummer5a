@@ -262,7 +262,7 @@ namespace Chummer
                         uintAccumulator = 0;
                         strSeparator += '_';
                     }
-                    uintAccumulator += 1;
+                    ++uintAccumulator;
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
@@ -1007,7 +1007,7 @@ namespace Chummer
                         continue;
                     if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
                         continue;
-                    ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
+                    ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
                     if (objExistingCoveredGrade.Value != null)
                         lstGrades.Remove(objExistingCoveredGrade);
                     lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
@@ -1024,7 +1024,7 @@ namespace Chummer
                         continue;
                     if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
                         continue;
-                    ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
+                    ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
                     if (objExistingCoveredGrade.Value != null)
                         lstGrades.Remove(objExistingCoveredGrade);
                     lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));

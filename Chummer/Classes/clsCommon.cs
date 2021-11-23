@@ -946,7 +946,7 @@ namespace Chummer
             string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
             // Construct a second needle for French where we have zero-width spaces between a starting consonant and an apostrophe in order to fix ListView's weird way of alphabetically sorting names
             string strSearchText2 = string.Empty;
-            if (GlobalSettings.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
+            if (GlobalSettings.Language.StartsWith("FR", StringComparison.InvariantCultureIgnoreCase) && strSearchText.Contains('\''))
             {
                 strSearchText2 = strSearchText
                                  .Replace("D\'A", "D\u200B\'A")

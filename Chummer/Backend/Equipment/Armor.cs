@@ -2067,7 +2067,7 @@ namespace Chummer.Backend.Equipment
 
             if (Overclocked == strAttributeName)
             {
-                intReturn += 1;
+                ++intReturn;
             }
 
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
@@ -2302,10 +2302,10 @@ namespace Chummer.Backend.Equipment
                                                          || intValidAvail < intLowestValidRestrictedGearAvail))
                         intLowestValidRestrictedGearAvail = intValidAvail;
                 }
-                
+
                 if (intLowestValidRestrictedGearAvail >= 0 && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                 {
-                    dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                    --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
                     sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
                 }
                 else

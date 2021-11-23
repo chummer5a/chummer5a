@@ -2676,8 +2676,6 @@ namespace Chummer
 
         public bool Equals(ImprovementDictionaryKey other)
         {
-            if (other == null)
-                return false;
             return CharacterObject == other.CharacterObject &&
                    ImprovementType == other.ImprovementType &&
                    ImprovementName == other.ImprovementName;
@@ -2709,12 +2707,12 @@ namespace Chummer
 
         public static bool operator ==(object x, ImprovementDictionaryKey y)
         {
-            return x?.Equals(y) ?? y == null;
+            return x?.Equals(y) ?? false;
         }
 
         public static bool operator !=(object x, ImprovementDictionaryKey y)
         {
-            return !(x?.Equals(y) ?? y == null);
+            return !(x?.Equals(y) ?? false);
         }
     }
 
@@ -3282,7 +3280,7 @@ namespace Chummer
             }
 
             decimal decReturn = 0;
-            
+
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && blnUnconditionalOnly)
             {
@@ -5086,7 +5084,7 @@ namespace Chummer
             if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
                 // Remove all of the Improvements that were added.
-                foreach (Improvement objTransactingImprovement in lstTransaction.Select(x => x.ImprovementObject).ToList())
+                foreach (Improvement objTransactingImprovement in lstTransaction.ConvertAll(x => x.ImprovementObject))
                 {
                     RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource, objTransactingImprovement.SourceName);
                     ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType, objTransactingImprovement.ImprovedName);

@@ -351,7 +351,7 @@ namespace Chummer
             {
                 //swallow this
             }
-            
+
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
@@ -937,7 +937,7 @@ namespace Chummer
         {
             if (treCharacterList.IsNullOrDisposed())
                 return;
-            
+
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t?.Tag is CharacterCache objCache)

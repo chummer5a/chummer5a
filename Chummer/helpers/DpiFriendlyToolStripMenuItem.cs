@@ -106,9 +106,9 @@ namespace Chummer
                 int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) + (intWidth - objLoopImage.Width).RaiseToPower(2);
                 // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
                 if (objLoopImage.Height >= intHeight)
-                    intLoopMetric -= 1;
+                    --intLoopMetric;
                 if (objLoopImage.Width >= intWidth)
-                    intLoopMetric -= 1;
+                    --intLoopMetric;
                 if (objBestImage == null || intLoopMetric < intBestImageMetric)
                 {
                     objBestImage = objLoopImage;

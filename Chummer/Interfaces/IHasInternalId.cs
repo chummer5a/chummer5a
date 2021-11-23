@@ -51,7 +51,7 @@ namespace Chummer
                         {
                             AddToTree(objGear, intNewIndex);
                             objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                     }
                     break;
@@ -81,7 +81,7 @@ namespace Chummer
                         {
                             AddToTree(objGear, intNewIndex);
                             objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treGear.SelectedNode = treGear.FindNode(strSelectedId);
                     }
@@ -100,7 +100,7 @@ namespace Chummer
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objGear, intNewIndex);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treGear.SelectedNode = treGear.FindNode(strSelectedId);
                     }
@@ -179,7 +179,7 @@ namespace Chummer
                         {
                             AddToTree(objCyberware, intNewIndex);
                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                     }
                     break;
@@ -209,7 +209,7 @@ namespace Chummer
                         {
                             AddToTree(objCyberware, intNewIndex);
                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware, cmsCyberwareGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treCyberware.SelectedNode = treCyberware.FindNode(strSelectedId);
                     }
@@ -228,7 +228,7 @@ namespace Chummer
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objCyberware, intNewIndex);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treCyberware.SelectedNode = treCyberware.FindNode(strSelectedId);
                     }
@@ -285,7 +285,7 @@ namespace Chummer
                         {
                             AddToTree(objWeapon, intNewIndex);
                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                     }
                     break;
@@ -315,7 +315,7 @@ namespace Chummer
                         {
                             AddToTree(objWeapon, intNewIndex);
                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
@@ -332,7 +332,7 @@ namespace Chummer
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeapon, intNewIndex);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
@@ -390,7 +390,7 @@ namespace Chummer
                             objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
                             foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                     }
                     break;
@@ -426,7 +426,7 @@ namespace Chummer
                             objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
                             foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
@@ -445,7 +445,7 @@ namespace Chummer
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
@@ -505,7 +505,7 @@ namespace Chummer
                             objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                     }
                     break;
@@ -550,7 +550,7 @@ namespace Chummer
                             objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
@@ -569,7 +569,7 @@ namespace Chummer
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objVehicleMod, intNewIndex);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
@@ -637,7 +637,7 @@ namespace Chummer
                                 foreach (Weapon objWeapon in objMod.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                             }
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                     }
                     break;
@@ -707,7 +707,7 @@ namespace Chummer
                                 foreach (Weapon objWeapon in objMod.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                             }
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
@@ -724,7 +724,7 @@ namespace Chummer
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponMount, intNewIndex);
-                            intNewIndex += 1;
+                            ++intNewIndex;
                         }
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }

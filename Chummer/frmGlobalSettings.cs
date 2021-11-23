@@ -140,7 +140,7 @@ namespace Chummer
             {
                 _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
             }
-            
+
             imgLanguageFlag.Image = Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height) >= 32
                 ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strSelectedLanguage.Substring(3, 2))
                 : FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
@@ -1563,7 +1563,6 @@ namespace Chummer
 
         #endregion Methods
 
-        
         private async void bScanForPDFs_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
@@ -1608,9 +1607,8 @@ namespace Chummer
                                    .AppendLine("-------------------------------------------------------------");
                         Log.Info(sbdFeedback.ToString());
 
-                        var message = string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FoundPDFsInFolder", _strSelectedLanguage), list.Count, fbd.SelectedPath);
-                        var title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder", _strSelectedLanguage);
-                    
+                        string message = string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FoundPDFsInFolder", _strSelectedLanguage), list.Count, fbd.SelectedPath);
+                        string title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder", _strSelectedLanguage);
                         Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
@@ -1751,5 +1749,4 @@ namespace Chummer
             }
         }
     }
-
 }

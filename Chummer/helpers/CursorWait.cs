@@ -42,7 +42,7 @@ namespace Chummer
                 _objControl = null;
                 lock (s_ObjApplicationWaitCursorsLock)
                 {
-                    _intApplicationWaitCursors += 1;
+                    ++_intApplicationWaitCursors;
                     if (_intApplicationWaitCursors > 0)
                         Application.UseWaitCursor = true;
                 }
@@ -83,8 +83,10 @@ namespace Chummer
                 lstNew.Dispose();
                 CursorWait objLastCursorWait = null;
                 // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
-                do
+                bool blnDoLoop = true;
+                while (blnDoLoop)
                 {
+                    blnDoLoop = false;
                     int intIndex = lstExisting.Count - 1;
                     if (intIndex >= 0)
                     {
@@ -94,11 +96,10 @@ namespace Chummer
                         }
                         catch (ArgumentOutOfRangeException)
                         {
-                            continue;
+                            blnDoLoop = true;
                         }
                     }
-                    break;
-                } while (true);
+                }
                 lstExisting.Add(this);
                 if (blnAppStarting)
                 {
@@ -118,7 +119,7 @@ namespace Chummer
                 _frmControlTopParent = null;
                 lock (s_ObjApplicationWaitCursorsLock)
                 {
-                    _intApplicationWaitCursors += 1;
+                    ++_intApplicationWaitCursors;
                     if (_intApplicationWaitCursors > 0)
                         Application.UseWaitCursor = true;
                 }
@@ -164,7 +165,7 @@ namespace Chummer
             {
                 lock (s_ObjApplicationWaitCursorsLock)
                 {
-                    _intApplicationWaitCursors -= 1;
+                    --_intApplicationWaitCursors;
                     if (_intApplicationWaitCursors <= 0)
                         Application.UseWaitCursor = false;
                 }
@@ -190,8 +191,10 @@ namespace Chummer
             {
                 CursorWait objPreviousCursorWait = null;
                 // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
-                do
+                bool blnDoLoop = true;
+                while (blnDoLoop)
                 {
+                    blnDoLoop = false;
                     int intIndex = lstCursorWaits.Count - 1;
                     if (intIndex >= 0)
                     {
@@ -201,11 +204,10 @@ namespace Chummer
                         }
                         catch (ArgumentOutOfRangeException)
                         {
-                            continue;
+                            blnDoLoop = true;
                         }
                     }
-                    break;
-                } while (true);
+                }
                 SetControlCursor(objPreviousCursorWait?.CursorToUse);
             }
             if (lstCursorWaits.Count != 0)

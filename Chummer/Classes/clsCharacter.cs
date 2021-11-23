@@ -109,7 +109,7 @@ namespace Chummer
         private string _strPlayerName = string.Empty;
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
-        
+
         public static readonly ReadOnlyCollection<string> LimbStrings = Array.AsReadOnly(new[]
             {"skull", "torso", "arm", "leg"});
 
@@ -1185,7 +1185,7 @@ namespace Chummer
         #region Create, Save, Load and Print Methods
 
         /// <summary>
-        /// 
+        /// Set up a character with a metatype and new attributes to match.
         /// </summary>
         public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "")
         {
@@ -1225,7 +1225,7 @@ namespace Chummer
             MetatypeGuid = new Guid(strMetatypeId);
             Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
             MetatypeCategory = strSelectedMetatypeCategory;
-            MetavariantGuid = strMetavariantId == string.Empty ? Guid.Empty : new Guid(strMetavariantId);
+            MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
             Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? "None" : "None";
             // We only reverted to the base metatype to get the attributes.
             if (strSelectedMetatypeCategory == "Shapeshifter")
@@ -2410,10 +2410,8 @@ namespace Chummer
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
-                    catch (UnauthorizedAccessException)
+                    catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                     {
-                        if (Utils.IsUnitTest)
-                            throw;
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
@@ -3010,7 +3008,6 @@ namespace Chummer
                                     _strMetatype = GetNode(true).SelectSingleNode("name")?.Value ?? "Human";
                                 }
 
-
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid",
                                         ref _guiMetavariant) &&
                                     !string.IsNullOrEmpty(_strMetavariant))
@@ -3563,7 +3560,6 @@ namespace Chummer
 
                             using (_ = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
                             {
-
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
                                 if (_blnAdeptEnabled && _blnMagicianEnabled)
                                 {
@@ -6214,7 +6210,7 @@ namespace Chummer
             }
             else
                 strXPath = "/chummer/grades/grade";
-            
+
             using (XmlNodeList xmlGradeList = LoadData(Grade.GetDataFileNameFromImprovementSource(objSource)).SelectNodes(strXPath))
             {
                 if (xmlGradeList?.Count > 0)
@@ -6234,10 +6230,9 @@ namespace Chummer
         /// </summary>
         public string CalculateFreeSpiritPowerPoints()
         {
-            string strReturn;
             string strSpace = LanguageManager.GetString("String_Space");
 
-            if(Metatype == "Free Spirit" && !IsCritter)
+            if (Metatype == "Free Spirit" && !IsCritter)
             {
                 // PC Free Spirit.
                 decimal decPowerPoints = 0;
@@ -6255,8 +6250,9 @@ namespace Chummer
                     intPowerPoints = MAG.TotalValue + ImprovementManager.ValueOf(this,
                                          Improvement.ImprovementType.FreeSpiritPowerPoints).StandardRound();
 
-                strReturn = intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
-                            + (intPowerPoints - decPowerPoints).ToString(GlobalSettings.CultureInfo) + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
+                       + (intPowerPoints - decPowerPoints).ToString(GlobalSettings.CultureInfo) + strSpace
+                       + LanguageManager.GetString("String_Remaining") + ')';
             }
             else
             {
@@ -6278,18 +6274,12 @@ namespace Chummer
                         break;
                 }
 
-                int intUsed = 0; // _objCharacter.CritterPowers.Count - intExisting;
-                foreach(CritterPower objPower in CritterPowers)
-                {
-                    if(objPower.Category != "Weakness" && objPower.CountTowardsLimit)
-                        intUsed += 1;
-                }
+                int intUsed = CritterPowers.Count(x => x.Category != "Weakness" && x.CountTowardsLimit); // _objCharacter.CritterPowers.Count - intExisting;
 
-                strReturn = intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
-                            + (intPowerPoints - intUsed).ToString(GlobalSettings.CultureInfo) + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
+                       + (intPowerPoints - intUsed).ToString(GlobalSettings.CultureInfo) + strSpace
+                       + LanguageManager.GetString("String_Remaining") + ')';
             }
-
-            return strReturn;
         }
 
         /// <summary>
@@ -10546,7 +10536,6 @@ namespace Chummer
 
                 string strSpace = LanguageManager.GetString("String_Space");
 
-
                 string strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo) + ')';
                 if(ActiveCommlink != null)
                 {
@@ -11510,14 +11499,14 @@ namespace Chummer
             if (lstArmorsToConsider.Count == 0)
                 return decBaseArmorImprovement.StandardRound();
             decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
-            Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(objArmor => objArmor, objArmor => decBaseArmorImprovement);
+            Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(x => x, y => decBaseArmorImprovement);
             foreach (Improvement objImprovement in lstUsedImprovements)
             {
                 if ((objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
                      objImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod))
                     continue;
                 Armor objSourceArmor =
-                    lstArmorsToConsider.FirstOrDefault(x => x.InternalId == objImprovement.SourceName)
+                    lstArmorsToConsider.Find(x => x.InternalId == objImprovement.SourceName)
                     ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
                 if (objSourceArmor == null)
                     continue;
@@ -13959,24 +13948,21 @@ namespace Chummer
 
             if(objCulture == null)
                 objCulture = GlobalSettings.CultureInfo;
-            string strReturn;
             string strSpace = LanguageManager.GetString("String_Space");
             if(strMovementType == "Swim")
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
-                strReturn = decWalk.ToString("#,0.##", objCulture) + ',' + strSpace +
-                            decSprint.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_MetersPerHit");
+                return decWalk.ToString("#,0.##", objCulture) + ',' + strSpace +
+                       decSprint.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_MetersPerHit");
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
-                strReturn = decWalk.ToString("#,0.##", objCulture) + '/' + decRun.ToString("#,0.##", objCulture) + ',' +
-                            strSpace + decSprint.ToString("#,0.##", objCulture) +
-                            LanguageManager.GetString("String_MetersPerHit");
+                return decWalk.ToString("#,0.##", objCulture) + '/' + decRun.ToString("#,0.##", objCulture) + ',' +
+                       strSpace + decSprint.ToString("#,0.##", objCulture) +
+                       LanguageManager.GetString("String_MetersPerHit");
             }
-
-            return strReturn;
         }
 
         public string DisplaySwim => GetSwim(GlobalSettings.CultureInfo, GlobalSettings.Language);
@@ -14160,7 +14146,7 @@ namespace Chummer
                 {
                     _blnPsycheActive = value;
                     OnPropertyChanged();
-                } 
+                }
             }
         }
 
@@ -15465,9 +15451,9 @@ namespace Chummer
             for(int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
             {
                 string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
-                Improvement objImprove = lstSeekerImprovements.FirstOrDefault(x =>
-                    x.SourceName == strSeekerAttribute
-                    && x.Value == (strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount));
+                Improvement objImprove = lstSeekerImprovements.Find(x =>
+                                                                        x.SourceName == strSeekerAttribute
+                                                                        && x.Value == (strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount));
                 if(objImprove != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
@@ -16903,7 +16889,7 @@ namespace Chummer
                     PostLoadMethods.Enqueue(RefreshSustainingPenalties);
                 return true;
             }
-            
+
             int intDicePenaltySustainedSpell = Settings.DicePenaltySustaining;
 
             //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
@@ -16966,7 +16952,7 @@ namespace Chummer
                 }
             }
             int intModifierPerSpell = PsycheActive ? -1 : -intDicePenaltySustainedSpell;
-                                                                                                               
+
             SustainingPenalty = lstSustainedSpells.Count * intModifierPerSpell;
 
             return true;
@@ -17996,7 +17982,6 @@ namespace Chummer
         }
 
         #region Hero Lab Importing
-        
         public static readonly ReadOnlyCollection<string> HeroLabPluginNodeNames = Array.AsReadOnly(new[]
             {"modifications", "accessories", "ammunition", "programs", "othergear"});
 
@@ -20881,7 +20866,7 @@ namespace Chummer
                                         break;
                                     }
 
-                                    intIndex += 1;
+                                    ++intIndex;
                                 }
                             }
                         }

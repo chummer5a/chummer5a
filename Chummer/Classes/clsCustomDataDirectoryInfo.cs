@@ -294,11 +294,11 @@ namespace Chummer
                 CustomDataDirectoryInfo objInfoToDisplay;
                 if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
                 {
-                    objInfoToDisplay = lstEnabledCustomData.FirstOrDefault(x =>
-                                                                               (incompatibility.MinimumVersion != default &&
-                                                                                   x.MyVersion >= incompatibility.MinimumVersion)
-                                                                               || (incompatibility.MaximumVersion != default &&
-                                                                                   x.MyVersion <= incompatibility.MaximumVersion));
+                    objInfoToDisplay = lstEnabledCustomData.Find(x =>
+                                                                     (incompatibility.MinimumVersion != default &&
+                                                                      x.MyVersion >= incompatibility.MinimumVersion)
+                                                                     || (incompatibility.MaximumVersion != default &&
+                                                                         x.MyVersion <= incompatibility.MaximumVersion));
                 }
                 else
                     objInfoToDisplay = lstEnabledCustomData[0];

@@ -1181,7 +1181,7 @@ namespace Chummer
                             cmdAddMetamagic.SetToolTip(strInitTip);
                             chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork");
 
-                            if (CharacterObject.AttributeSection.Attributes != null && !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
+                            if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.RES) == false)
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
                             }
@@ -1191,7 +1191,7 @@ namespace Chummer
                             if (!CharacterObject.MAGEnabled)
                                 tabCharacterTabs.TabPages.Remove(tabInitiation);
 
-                            if (CharacterObject.AttributeSection.Attributes != null && CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
+                            if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.RES) == true)
                             {
                                 CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.RES);
                             }
@@ -1205,12 +1205,12 @@ namespace Chummer
                     {
                         if (CharacterObject.DEPEnabled)
                         {
-                            if (CharacterObject.AttributeSection.Attributes != null && !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.DEP))
+                            if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.DEP) == false)
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.DEP);
                             }
                         }
-                        else if (CharacterObject.AttributeSection.Attributes != null && CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.DEP))
+                        else if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.DEP) == true)
                         {
                             CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
                         }
@@ -3684,7 +3684,7 @@ namespace Chummer
 
                         blnAddAgain = frmPickQuality.AddAgain;
                         int intRatingToAdd = frmPickQuality.SelectedRating;
-                        
+
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.SelectedQuality.CleanXPath() + "]");
                         int intDummy = 0;
                         if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
@@ -8033,7 +8033,7 @@ namespace Chummer
             if (!e.Node.Checked)
             {
                 if (!(e.Node.Tag is IHasInternalId objId)) return;
-                Focus objFocus = CharacterObject.Foci.FirstOrDefault(x => x.GearObject.InternalId == objId.InternalId);
+                Focus objFocus = CharacterObject.Foci.Find(x => x.GearObject.InternalId == objId.InternalId);
 
                 // Mark the Gear as not Bonded and remove any Improvements.
                 Gear objGear = objFocus?.GearObject;
@@ -8047,7 +8047,7 @@ namespace Chummer
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == objId.InternalId);
+                    StackedFocus objStack = CharacterObject.StackedFoci.Find(x => x.InternalId == objId.InternalId);
 
                     if (objStack != null)
                     {
@@ -8082,7 +8082,7 @@ namespace Chummer
             else
             {
                 // This is a Stacked Focus.
-                intFociTotal = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == strSelectedId)?.TotalForce ?? 0;
+                intFociTotal = CharacterObject.StackedFoci.Find(x => x.InternalId == strSelectedId)?.TotalForce ?? 0;
             }
 
             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
@@ -8093,7 +8093,7 @@ namespace Chummer
                 string strNodeId = objNode.Tag.ToString();
                 intFociCount += 1;
                 intFociTotal += CharacterObject.Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)?.Rating ?? 0;
-                intFociTotal += CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)?.TotalForce ?? 0;
+                intFociTotal += CharacterObject.StackedFoci.Find(x => x.InternalId == strNodeId && x.Bonded)?.TotalForce ?? 0;
             }
 
             if (!CharacterObject.IgnoreRules)
@@ -8157,7 +8157,7 @@ namespace Chummer
             else
             {
                 // This is a Stacked Focus.
-                StackedFocus objStack = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == strSelectedId);
+                StackedFocus objStack = CharacterObject.StackedFoci.Find(x => x.InternalId == strSelectedId);
                 if (objStack != null)
                 {
                     Gear objStackGear = CharacterObject.Gear.DeepFindById(objStack.GearId);
@@ -9807,10 +9807,7 @@ namespace Chummer
                         lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalSettings.Language);
                         // Cyberware Grade is not available for Genetech items.
                         // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
-                        if (objCyberware.Parent == null && !objCyberware.Suite && string.IsNullOrWhiteSpace(objCyberware.ForceGrade))
-                            cboCyberwareGrade.Enabled = true;
-                        else
-                            cboCyberwareGrade.Enabled = false;
+                        cboCyberwareGrade.Enabled = objCyberware.Parent == null && !objCyberware.Suite && string.IsNullOrWhiteSpace(objCyberware.ForceGrade);
                         bool blnIgnoreSecondHand = objCyberware.GetNode()?["nosecondhand"] != null;
                         PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand, cboCyberwareGrade.Enabled ? string.Empty : objCyberware.Grade.Name);
                         lblCyberwareGradeLabel.Visible = true;
@@ -12984,7 +12981,7 @@ namespace Chummer
                     if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intLoopCount)
                         && intLoopCount <= 0)
                         dicRestrictedGearLimits.Remove(intLoopAvailability);
-                
+
                 StringBuilder sbdAvailItems = new StringBuilder();
                 StringBuilder sbdRestrictedItems = new StringBuilder();
                 int intRestrictedCount = 0;
@@ -14651,7 +14648,7 @@ namespace Chummer
         {
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
-            
+
             using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
             {
                 frmPickMetamagic.ShowDialog(this);

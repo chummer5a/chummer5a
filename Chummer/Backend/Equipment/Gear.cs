@@ -203,7 +203,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
             objXmlGear.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objXmlGear.TryGetBoolFieldQuickly("isflechetteammo", ref _blnIsFlechetteAmmo);
-            
+
             if (string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlGear, Name, CurrentDisplayName, Source, Page,
@@ -449,7 +449,7 @@ namespace Chummer.Backend.Equipment
                 // Create Gear by looking up the name of the item we're provided with.
                 using (XmlNodeList xmlUseGearList = objGearsNode.SelectNodes("usegear"))
                 {
-                    if (xmlUseGearList != null && xmlUseGearList.Count > 0)
+                    if (xmlUseGearList?.Count > 0)
                     {
                         foreach (XmlNode objXmlChild in xmlUseGearList)
                         {
@@ -461,7 +461,7 @@ namespace Chummer.Backend.Equipment
                 // Create Gear by choosing from pre-determined lists.
                 using (XmlNodeList xmlChooseGearList = objGearsNode.SelectNodes("choosegear"))
                 {
-                    if (xmlChooseGearList != null && xmlChooseGearList.Count > 0)
+                    if (xmlChooseGearList?.Count > 0)
                     {
                         XmlDocument xmlDocument = xmlParentGearNode.OwnerDocument ?? _objCharacter.LoadData("gear.xml");
                         bool blnCancelledDialog = false;
@@ -1967,7 +1967,7 @@ namespace Chummer.Backend.Equipment
 
             if (Overclocked == strAttributeName)
             {
-                intReturn += 1;
+                ++intReturn;
             }
 
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
@@ -3216,7 +3216,7 @@ namespace Chummer.Backend.Equipment
                 // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
                 case "Stacked Focus":
                     {
-                        StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
+                        StackedFocus objStack = _objCharacter.StackedFoci.Find(x => x.GearId == InternalId);
                         if (objStack != null)
                         {
                             decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
@@ -3237,14 +3237,14 @@ namespace Chummer.Backend.Equipment
             Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
             // We're only re-apply improvements a list of items, not all of them
-            if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(InternalId))
+            if (lstInternalIdFilter?.Contains(InternalId) != false)
             {
                 XmlNode objNode = GetNode();
                 if (objNode != null)
                 {
                     if (Category == "Stacked Focus")
                     {
-                        StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
+                        StackedFocus objStack = _objCharacter.StackedFoci.Find(x => x.GearId == InternalId);
                         if (objStack != null)
                         {
                             foreach (Gear objFociGear in objStack.Gear)

@@ -427,7 +427,7 @@ namespace Chummer
                                 // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
                                 intStartPosition = i;
                             }
-                            intBracketLevel += 1;
+                            ++intBracketLevel;
                             break;
                         }
                     case '}':
@@ -435,7 +435,7 @@ namespace Chummer
                             // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
                             if (intBracketLevel > 0)
                             {
-                                intBracketLevel -= 1;
+                                --intBracketLevel;
                                 if (intBracketLevel == 0)
                                 {
                                     // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True

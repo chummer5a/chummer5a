@@ -185,7 +185,7 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            
+
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
             List<string> lstKey = new List<string> {strLanguage, strPath};
@@ -675,7 +675,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
         /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
-        /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in in <paramref name="lstPaths"/>.</returns>
+        /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in <paramref name="lstPaths"/>.</returns>
         private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyCollection<string> lstPaths)
         {
             List<string> lstReturn = new List<string>();
@@ -1155,7 +1155,7 @@ namespace Chummer
                                                                 continue;
                                                             }
                                                         }
-                                                        
+
                                                         break;
                                                     }
                                                 }

@@ -155,7 +155,7 @@ namespace Chummer
                 RefreshList();
             UpdateSelectedVehicle();
         }
-        
+
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)

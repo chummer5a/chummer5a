@@ -1103,25 +1103,29 @@ namespace Chummer.Classes
             Log.Info("selectlimit = " + bonusNode.OuterXml);
 
             List<string> strLimits = new List<string>(4);
-            XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit");
-            if (xmlDefinedLimits != null && xmlDefinedLimits.Count > 0)
+            using (XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit"))
             {
-                foreach (XmlNode objXmlAttribute in xmlDefinedLimits)
-                    strLimits.Add(objXmlAttribute.InnerText);
-            }
-            else
-            {
-                strLimits.Add("Physical");
-                strLimits.Add("Mental");
-                strLimits.Add("Social");
+                if (xmlDefinedLimits?.Count > 0)
+                {
+                    foreach (XmlNode objXmlAttribute in xmlDefinedLimits)
+                        strLimits.Add(objXmlAttribute.InnerText);
+                }
+                else
+                {
+                    strLimits.Add("Physical");
+                    strLimits.Add("Mental");
+                    strLimits.Add("Social");
+                }
             }
 
-            XmlNodeList xmlExcludeLimits = bonusNode.SelectNodes("excludelimit");
-            if (xmlExcludeLimits != null && xmlExcludeLimits.Count > 0)
+            using (XmlNodeList xmlExcludeLimits = bonusNode.SelectNodes("excludelimit"))
             {
-                foreach (XmlNode objXmlAttribute in xmlExcludeLimits)
+                if (xmlExcludeLimits?.Count > 0)
                 {
-                    strLimits.Remove(objXmlAttribute.InnerText);
+                    foreach (XmlNode objXmlAttribute in xmlExcludeLimits)
+                    {
+                        strLimits.Remove(objXmlAttribute.InnerText);
+                    }
                 }
             }
 
@@ -6093,7 +6097,7 @@ namespace Chummer.Classes
                         string strName = objXmlAddQuality.InnerText;
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                         // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlQuality != null && objXmlQuality.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        if (objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName) == true)
                         {
                             lstQualities.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
                         }

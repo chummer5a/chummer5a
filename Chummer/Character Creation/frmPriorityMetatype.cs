@@ -464,7 +464,7 @@ namespace Chummer
                                         int intNewIndex = cboSkill3.SelectedIndex;
                                         do
                                         {
-                                            intNewIndex += 1;
+                                            ++intNewIndex;
                                             if (intNewIndex >= cboSkill3.Items.Count)
                                                 intNewIndex = 0;
                                         }
@@ -875,7 +875,7 @@ namespace Chummer
                                         Quality objQuality = new Quality(_objCharacter);
                                         string strForceValue = objXmlQualityItem.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
                                         objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);
-                                        Quality objExistingQuality = lstOldPriorityQualities.FirstOrDefault(x => x.SourceIDString == objQuality.SourceIDString && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
+                                        Quality objExistingQuality = lstOldPriorityQualities.Find(x => x.SourceIDString == objQuality.SourceIDString && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
                                         if (objExistingQuality != null)
                                             lstOldPriorityQualities.Remove(objExistingQuality);
                                         else
@@ -1142,7 +1142,7 @@ namespace Chummer
                 bool blnCommit = false;
                 if (!string.IsNullOrEmpty(strSkill1))
                 {
-                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill1 && x.Value == intFreeLevels);
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.Find(x => x.ImprovedName == strSkill1 && x.Value == intFreeLevels);
                     if (objOldSkillImprovement != null)
                         lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
                     else
@@ -1156,7 +1156,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strSkill2))
                 {
-                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill2 && x.Value == intFreeLevels);
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.Find(x => x.ImprovedName == strSkill2 && x.Value == intFreeLevels);
                     if (objOldSkillImprovement != null)
                         lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
                     else
@@ -1170,7 +1170,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strSkill3))
                 {
-                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill3 && x.Value == intFreeLevels);
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.Find(x => x.ImprovedName == strSkill3 && x.Value == intFreeLevels);
                     if (objOldSkillImprovement != null)
                         lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
                     else
@@ -1234,7 +1234,7 @@ namespace Chummer
                 return;
             string strComboBoxSelected = comboBox.SelectedValue.ToString();
 
-            string strMissing = lstCurrentPriorities.First();
+            string strMissing = lstCurrentPriorities[0];
 
             // Find the combo with the same value as this one and change it to the missing value.
             //_blnInitializing = true;
@@ -1270,7 +1270,7 @@ namespace Chummer
                 if (lstCurrentPriorities.Count <= 0) // Just in case
                     return;
 
-                strMissing = lstCurrentPriorities.First();
+                strMissing = lstCurrentPriorities[0];
 
                 // Find the combo with the same value as this one and change it to the missing value.
                 //_blnInitializing = true;
@@ -1421,9 +1421,7 @@ namespace Chummer
                             strQuality += strSpace + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
-                    {
-                        dicQualities[strQuality] += 1;
-                    }
+                        ++dicQualities[strQuality];
                     else
                         dicQualities.Add(strQuality, 1);
                 }
@@ -1491,9 +1489,7 @@ namespace Chummer
                             strQuality += strSpace + '(' + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
-                    {
-                        dicQualities[strQuality] += 1;
-                    }
+                        ++dicQualities[strQuality];
                     else
                         dicQualities.Add(strQuality, 1);
                 }
@@ -1822,7 +1818,7 @@ namespace Chummer
                         {
                             if (intPos > 0)
                             {
-                                intPos -= 1;
+                                --intPos;
                                 lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
                                 nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1), GlobalSettings.InvariantCultureInfo) * 6;
                             }
@@ -1901,7 +1897,7 @@ namespace Chummer
                         foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select("metatypes/metatype[(" + _objCharacter.Settings.BookXPath() + ") and category = " + strSelectedCategory.CleanXPath() + "]"))
                         {
                             string strName = objXmlMetatype.SelectSingleNode("name")?.Value;
-                            if (!string.IsNullOrEmpty(strName) && null != xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strName.CleanXPath() + "]"))
+                            if (!string.IsNullOrEmpty(strName) && xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strName.CleanXPath() + "]") != null)
                             {
                                 lstMetatype.Add(new ListItem(strName, objXmlMetatype.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                             }
@@ -1970,7 +1966,7 @@ namespace Chummer
                     {
                         foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select("metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and (" + _objCharacter.Settings.BookXPath() + ")]"))
                         {
-                            if (null != xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + (objXmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty).CleanXPath() + "]"))
+                            if (xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + (objXmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty).CleanXPath() + ']') != null)
                             {
                                 blnRemoveCategory = false;
                                 break;

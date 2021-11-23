@@ -292,7 +292,7 @@ namespace Chummer
                 try
                 {
                     string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
-                    
+
                     XslCompiledTransform objXslTransform;
                     try
                     {

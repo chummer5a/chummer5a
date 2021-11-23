@@ -96,7 +96,7 @@ namespace Chummer.Plugins
                         {
                             if (subkey == null)
                                 reregisterKey = true;
-                            else if (subkey.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
+                            else if (subkey.GetValue(string.Empty)?.ToString() != startupExe + " %1")
                                 reregisterKey = true;
                         }
                     }
@@ -194,7 +194,7 @@ namespace Chummer.Plugins
                             return false;
                         }
 
-                        keyShellCommand.SetValue(string.Empty, myAppPath + " " + "%1");
+                        keyShellCommand.SetValue(string.Empty, myAppPath + " %1");
                         //%1 represents the argument - this tells windows to open this program with an argument / parameter
                     }
                 }
@@ -319,10 +319,8 @@ namespace Chummer.Plugins
                 msg += e.ToString();
                 Log.Warn(e, msg);
             }
-            catch (Exception e)
+            catch (Exception e) when (!(e is ApplicationException))
             {
-                if (e is ApplicationException)
-                    throw;
                 Log.Fatal(e);
                 throw;
             }
@@ -483,7 +481,7 @@ namespace Chummer.Plugins
                 }
             }
         }
-        
+
         private bool _blnDisposed;
 
         protected virtual void Dispose(bool disposing)

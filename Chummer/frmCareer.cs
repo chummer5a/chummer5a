@@ -2707,7 +2707,7 @@ namespace Chummer
                 foreach (Armor objArmor in CharacterObject.Armor)
                 {
                     // We're only re-apply improvements a list of items, not all of them
-                    if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objArmor.InternalId))
+                    if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
                     {
                         XmlNode objNode = objArmor.GetNode();
                         if (objNode != null)
@@ -5139,8 +5139,7 @@ namespace Chummer
                     {
                         objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
                         XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
-                        if (xmlDiscountNode != null &&
-                            xmlDiscountNode.CreateNavigator().RequirementsMet(CharacterObject))
+                        if (xmlDiscountNode?.CreateNavigator().RequirementsMet(CharacterObject) == true)
                         {
                             int intTemp = 0;
                             xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
@@ -5570,7 +5569,7 @@ namespace Chummer
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
                         XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNode("costdiscount");
-                        if (xpnDiscountNode != null && xpnDiscountNode.RequirementsMet(CharacterObject))
+                        if (xpnDiscountNode?.RequirementsMet(CharacterObject) == true)
                         {
                             int intTemp = 0;
                             xpnDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
@@ -6717,7 +6716,7 @@ namespace Chummer
 
         private void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
-            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
+            while (treVehicles.SelectedNode?.Level > 1)
                 treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
 
             TreeNode objSelectedNode = treVehicles.SelectedNode;
@@ -11743,7 +11742,7 @@ namespace Chummer
             if (!e.Node.Checked)
             {
                 if (!(e.Node.Tag is IHasInternalId objId)) return;
-                Focus objFocus = CharacterObject.Foci.FirstOrDefault(x => x.GearObject.InternalId == objId.InternalId);
+                Focus objFocus = CharacterObject.Foci.Find(x => x.GearObject.InternalId == objId.InternalId);
 
                 // Mark the Gear as not Bonded and remove any Improvements.
                 Gear objGear = objFocus?.GearObject;
@@ -11757,7 +11756,7 @@ namespace Chummer
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == objId.InternalId);
+                    StackedFocus objStack = CharacterObject.StackedFoci.Find(x => x.InternalId == objId.InternalId);
 
                     if (objStack != null)
                     {
@@ -11814,7 +11813,7 @@ namespace Chummer
                     string strNodeId = objNode.Tag.ToString();
                     intFociCount += 1;
                     intFociTotal += CharacterObject.Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)?.Rating ?? 0;
-                    intFociTotal += CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)?.TotalForce ?? 0;
+                    intFociTotal += CharacterObject.StackedFoci.Find(x => x.InternalId == strNodeId && x.Bonded)?.TotalForce ?? 0;
                 }
             }
 
@@ -13303,7 +13302,7 @@ namespace Chummer
                 TreeNode objVehicleNode = treVehicles.SelectedNode;
                 while (objVehicleNode?.Level > 1)
                     objVehicleNode = objVehicleNode.Parent;
-                
+
                 if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                     ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i);
             }
@@ -14400,7 +14399,7 @@ namespace Chummer
                             chkArmorEquipped.Enabled = true;
                             chkIncludedInArmor.Visible = true;
                             chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
-                            
+
                             break;
                         }
                     case Location objLocation:
@@ -14551,7 +14550,6 @@ namespace Chummer
                 else
                     gpbArmorMatrix.Visible = false;
             }
-            
 
             IsRefreshing = false;
             flpArmor.ResumeLayout();
