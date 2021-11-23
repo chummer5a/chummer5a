@@ -802,7 +802,7 @@ namespace Chummer.Backend.Skills
                                 dicSkills.TryAdd(x.Name, x.Id);
                         });
                     },
-                    () => { Parallel.ForEach(KnowledgeSkills, x => { dicSkills.TryAdd(x.Name, x.Id); }); });
+                    () => Parallel.ForEach(KnowledgeSkills, x => dicSkills.TryAdd(x.Name, x.Id)));
                 UpdateUndoSpecific(dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
                 UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
 

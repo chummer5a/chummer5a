@@ -505,7 +505,7 @@ namespace Chummer.Backend.Equipment
                                 lstGears.Add(new ListItem(strName, strDisplayName));
                             }
 
-                            if (lstGears.Count <= 0)
+                            if (lstGears.Count == 0)
                             {
                                 if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                                 {
@@ -1613,7 +1613,7 @@ namespace Chummer.Backend.Equipment
                                 GlobalSettings.InvariantCultureInfo));
                     objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
                         () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
-                    if (Children.Count <= 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                    if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                         continue;
                     int intTotalChildrenValue = Children.Where(g => g.Equipped)
                         .Sum(loopGear => loopGear.GetBaseMatrixAttribute(strMatrixAttribute));

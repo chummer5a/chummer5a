@@ -3399,7 +3399,7 @@ namespace Chummer
 
         private void cmdDeleteMugshot_Click(object sender, EventArgs e)
         {
-            if (CharacterObject.Mugshots.Count <= 0)
+            if (CharacterObject.Mugshots.Count == 0)
                 return;
             RemoveMugshot(nudMugshotIndex.ValueAsInt - 1);
 

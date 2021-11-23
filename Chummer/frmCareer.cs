@@ -4027,7 +4027,7 @@ namespace Chummer
 
         private void cmdDeleteMugshot_Click(object sender, EventArgs e)
         {
-            if (CharacterObject.Mugshots.Count <= 0)
+            if (CharacterObject.Mugshots.Count == 0)
                 return;
             RemoveMugshot(nudMugshotIndex.ValueAsInt - 1);
 
@@ -6162,7 +6162,7 @@ namespace Chummer
                                                                && (objImprovement.CustomGroup == strSelectedId
                                                                    || strSelectedId == "Node_SelectedImprovements"
                                                                    && string.IsNullOrEmpty(objImprovement.CustomGroup))).ToArray();
-            if (aobjImprovementsEnabled.Length <= 0)
+            if (aobjImprovementsEnabled.Length == 0)
                 return;
             ImprovementManager.EnableImprovements(CharacterObject, aobjImprovementsEnabled);
             IsCharacterUpdateRequested = true;
@@ -6180,7 +6180,7 @@ namespace Chummer
                                                                    || strSelectedId == "Node_SelectedImprovements"
                                                                    && string.IsNullOrEmpty(objImprovement.CustomGroup))).ToArray();
 
-            if (aobjImprovementsDisabled.Length <= 0)
+            if (aobjImprovementsDisabled.Length == 0)
                 return;
             ImprovementManager.DisableImprovements(CharacterObject, aobjImprovementsDisabled);
             IsCharacterUpdateRequested = true;

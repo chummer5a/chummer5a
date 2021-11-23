@@ -248,7 +248,7 @@ namespace Chummer
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
-        Version _verSavedVersion = new Version();
+        private Version _verSavedVersion = new Version();
 
         /// <summary>
         /// Set of unique methods to run after the character's Save() method is otherwise finished.
@@ -16947,7 +16947,7 @@ namespace Chummer
                     // Remove all sustained objects that supported as penalty-free
                     lstSustainedSpells.RemoveAll(x => lstSupportedObjects.Contains(x));
                     // If we have no more sustained objects in need of penalty removal, exit out early
-                    if (lstSustainedSpells.Count <= 0)
+                    if (lstSustainedSpells.Count == 0)
                         break;
                 }
             }

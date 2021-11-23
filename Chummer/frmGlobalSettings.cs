@@ -1583,10 +1583,7 @@ namespace Chummer
                     using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
                     {
                         List<SourcebookInfo> list = null;
-                        await Task.Run(() =>
-                        {
-                            list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList();
-                        });
+                        await Task.Run(() => list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList());
                         sw.Stop();
                         StringBuilder sbdFeedback = new StringBuilder(Environment.NewLine + Environment.NewLine)
                                                     .AppendLine(

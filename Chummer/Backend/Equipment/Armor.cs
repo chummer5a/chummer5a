@@ -256,7 +256,6 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-
             if (string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlArmorNode, Name, CurrentDisplayName, Source, Page,

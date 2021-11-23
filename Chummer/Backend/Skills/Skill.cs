@@ -444,7 +444,6 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-
         //TODO CACHE INVALIDATE
 
         /// <summary>
@@ -1920,7 +1919,7 @@ namespace Chummer.Backend.Skills
 
         public int GetSpecializationBonus(string strSpecialization = "")
         {
-            if (IsExoticSkill || TotalBaseRating == 0 || Specializations.Count <= 0)
+            if (IsExoticSkill || TotalBaseRating == 0 || Specializations.Count == 0)
                 return 0;
             SkillSpecialization objTargetSpecialization = default;
             if (string.IsNullOrEmpty(strSpecialization))

@@ -1311,7 +1311,7 @@ namespace Chummer
                     }
                 }
 
-                if (lstFilesToOpen.Count <= 0)
+                if (lstFilesToOpen.Count == 0)
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
@@ -1879,7 +1879,7 @@ namespace Chummer
         {
             blnShowTest = false;
             setFilesToLoad = new HashSet<string>(strArgs.Count);
-            if (strArgs.Count <= 0)
+            if (strArgs.Count == 0)
                 return;
             try
             {

@@ -1427,7 +1427,7 @@ namespace Chummer
                                 {
                                     intTitleExtraLines++;
                                     // add the content plus a space
-                                    sbdCurrentLine.Append(' ' + lstStringFromPdf[i + intTitleExtraLines]);
+                                    sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
                                 }
 
                                 strCurrentLine = sbdCurrentLine.ToString();
@@ -1542,7 +1542,7 @@ namespace Chummer
                         switch (chrLastChar)
                         {
                             case '-':
-                                sbdResultContent.Append(strContentString.Substring(0, strContentString.Length - 1));
+                                sbdResultContent.Append(strContentString, 0, strContentString.Length - 1);
                                 break;
                             // Line ending with a sentence-ending punctuation = line is end of paragraph.
                             // Not fantastic, has plenty of false positives, but simple text extraction strategy cannot
@@ -1561,7 +1561,7 @@ namespace Chummer
                                 break;
 
                             default:
-                                sbdResultContent.Append(strContentString + ' ');
+                                sbdResultContent.Append(strContentString).Append(' ');
                                 break;
                         }
                     }

@@ -289,7 +289,7 @@ namespace Chummer
                 lstEnabledCustomData.Clear();
                 if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
                     lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
-                if (lstEnabledCustomData.Count <= 0)
+                if (lstEnabledCustomData.Count == 0)
                     continue;
                 CustomDataDirectoryInfo objInfoToDisplay;
                 if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)

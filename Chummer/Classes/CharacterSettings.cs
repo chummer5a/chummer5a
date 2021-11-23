@@ -1948,7 +1948,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
                 {
-                    sbdBookXPath.Append("source = " + strBook.CleanXPath() + " or ");
+                    sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
                 }
             }
             if (sbdBookXPath.Length >= 4)

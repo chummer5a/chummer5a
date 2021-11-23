@@ -525,7 +525,6 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-
             _blnInheritAttributes = objXmlCyberware["inheritattributes"] != null;
             _objGrade = objGrade;
             objXmlCyberware.TryGetStringFieldQuickly("ess", ref _strESS);

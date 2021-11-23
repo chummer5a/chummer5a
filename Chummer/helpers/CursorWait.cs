@@ -173,7 +173,7 @@ namespace Chummer
             }
             Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + _guidInstance + "\" after " + _objTimer.ElapsedMilliseconds + "ms.");
             _objTimer.Stop();
-            if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstCursorWaits) || lstCursorWaits == null || lstCursorWaits.Count <= 0)
+            if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstCursorWaits) || lstCursorWaits == null || lstCursorWaits.Count == 0)
             {
                 Utils.BreakIfDebug();
                 Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + _guidInstance + "\" somehow does not have a CursorWait list defined for it");

@@ -5433,7 +5433,7 @@ namespace Chummer.Backend.Equipment
             {
                 lstAmmo.AddRange(GetAmmoReloadable(lstGears));
                 // Make sure the character has some form of Ammunition for this Weapon.
-                if (lstAmmo.Count <= 0)
+                if (lstAmmo.Count == 0)
                 {
                     Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString("Message_OutOfAmmoType"),

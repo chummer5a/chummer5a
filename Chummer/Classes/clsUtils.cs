@@ -288,7 +288,7 @@ namespace Chummer
             StringBuilder sbdArguments = new StringBuilder();
             foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
             {
-                sbdArguments.Append('\"' + objOpenCharacterForm.CharacterObject.FileName + "\" ");
+                sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
             }
             if (sbdArguments.Length > 0)
                 --sbdArguments.Length;

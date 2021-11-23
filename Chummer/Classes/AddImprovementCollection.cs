@@ -976,7 +976,7 @@ namespace Chummer.Classes
                     {
                         if (sBld.Length > 0)
                         {
-                            sBld.Append(',' + strSpace);
+                            sBld.Append(',').Append(strSpace);
                         }
 
                         sBld.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
@@ -1897,7 +1897,6 @@ namespace Chummer.Classes
                 Page = bonusNode["page"]?.InnerText ?? "0",
                 ParentID = SourceName
             };
-
 
             _objCharacter.Weapons.Add(objWeapon);
 
@@ -3673,7 +3672,6 @@ namespace Chummer.Classes
              * and feed what remains to a dragon that eats unholy 
              * abominations
              */
-
 
             Log.Info("weaponcategorydv");
             Log.Info("weaponcategorydv = " + bonusNode.OuterXml);
@@ -5646,7 +5644,7 @@ namespace Chummer.Classes
                 }
             }
 
-            if (list.Count <= 0)
+            if (list.Count == 0)
                 throw new AbortedException();
             using (frmSelectItem frmPickItem = new frmSelectItem
             {

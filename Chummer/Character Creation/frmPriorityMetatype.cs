@@ -1230,7 +1230,7 @@ namespace Chummer
             lstCurrentPriorities.Remove(strTalentSelected);
             lstCurrentPriorities.Remove(strSkillsSelected);
             lstCurrentPriorities.Remove(strResourcesSelected);
-            if (lstCurrentPriorities.Count <= 0)
+            if (lstCurrentPriorities.Count == 0)
                 return;
             string strComboBoxSelected = comboBox.SelectedValue.ToString();
 
@@ -1267,7 +1267,7 @@ namespace Chummer
                 lstCurrentPriorities.Remove(strTalentSelected);
                 lstCurrentPriorities.Remove(strSkillsSelected);
                 lstCurrentPriorities.Remove(strResourcesSelected);
-                if (lstCurrentPriorities.Count <= 0) // Just in case
+                if (lstCurrentPriorities.Count == 0) // Just in case
                     return;
 
                 strMissing = lstCurrentPriorities[0];

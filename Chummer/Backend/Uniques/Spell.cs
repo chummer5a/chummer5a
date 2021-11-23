@@ -535,7 +535,7 @@ namespace Chummer
                 }
 
                 List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).ToList();
-                if (lstDrainImprovements.Count <= 0)
+                if (lstDrainImprovements.Count == 0)
                     return sbdTip.ToString();
                 sbdTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
                 foreach (Improvement objLoopImprovement in lstDrainImprovements)
