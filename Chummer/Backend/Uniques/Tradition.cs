@@ -631,8 +631,9 @@ namespace Chummer.Backend.Uniques
                         Type == TraditionType.MAG && objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance) &&
                         objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objLoopImprovement)
-                                          + strSpace + '(' + objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
                 }
 

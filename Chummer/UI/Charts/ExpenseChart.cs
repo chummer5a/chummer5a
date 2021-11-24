@@ -87,7 +87,7 @@ namespace Chummer.UI.Charts
 
         public void NormalizeYAxis()
         {
-            if (ExpenseValues.Count <= 0)
+            if (ExpenseValues.Count == 0)
                 return;
             double dblActualMin = ExpenseValues[0].Value;
             double dblActualMax = dblActualMin;

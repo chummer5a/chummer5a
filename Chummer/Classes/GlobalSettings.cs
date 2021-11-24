@@ -169,7 +169,7 @@ namespace Chummer
 
         public static string ErrorMessage { get; }
 
-        public static event TextEventHandler MruChanged;
+        public static event EventHandler<TextEventArgs> MruChanged;
 
         public static event PropertyChangedEventHandler ClipboardChanged;
 
@@ -881,13 +881,10 @@ namespace Chummer
                 Program.MainForm.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
-                if (e.ParamName == nameof(Registry))
-                    Program.MainForm.ShowMessageBox(
-                        LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
-                else
-                    throw;
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }
 

@@ -575,7 +575,7 @@ namespace Chummer
                     foreach (string strKey in lstEnglish)
                     {
                         if (!lstLanguage.Contains(strKey))
-                            sbdMissingMessage.AppendLine("Missing String: " + strKey);
+                            sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
                     }
                 }),
                 Task.Run(() =>
@@ -584,7 +584,7 @@ namespace Chummer
                     foreach (string strKey in lstLanguage)
                     {
                         if (!lstEnglish.Contains(strKey))
-                            sbdUnusedMessage.AppendLine("Unused String: " + strKey);
+                            sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
                     }
                 }));
 
@@ -1217,12 +1217,7 @@ namespace Chummer
                                 string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
                                 string strText = objNode.SelectSingleNodeAndCacheExpression("text")?.Value;
                                 if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
-                                {
-                                    if (TranslatedStrings.ContainsKey(strKey))
-                                        TranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
-                                    else
-                                        TranslatedStrings.Add(strKey, strText.NormalizeLineEndings(true));
-                                }
+                                    TranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
                             }
                         }
                         else

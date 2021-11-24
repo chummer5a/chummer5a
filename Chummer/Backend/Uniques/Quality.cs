@@ -1266,7 +1266,7 @@ namespace Chummer
                 }
             }
 
-            return conflictingQualities.Count <= 0 && reason == QualityFailureReasons.None;
+            return conflictingQualities.Count == 0 && reason == QualityFailureReasons.None;
         }
 
         /// <summary>

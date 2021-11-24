@@ -131,7 +131,7 @@ namespace Chummer
                 int intBubbleDieResult = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
                 if (lviCur.IsGlitch)
-                    intGlitchCount += 1;
+                    ++intGlitchCount;
                 _lstResults.Add(lviCur);
             }
 
@@ -282,7 +282,7 @@ namespace Chummer
                 int intBubbleDieResult = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
                 if (lviCur.IsGlitch)
-                    intGlitchCount += 1;
+                    ++intGlitchCount;
                 _lstResults.Add(lviCur);
             }
 

@@ -328,11 +328,12 @@ namespace Chummer
                     objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
 
                 objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
+                string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 bool blnExtrasAdded = false;
                 foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     blnExtrasAdded = true;
-                    sbdExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint) + ", ");
+                    sbdExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(',').Append(strSpace);
                 }
                 if (blnExtrasAdded)
                     sbdExtra.Length -= 2;

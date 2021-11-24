@@ -3775,7 +3775,6 @@ namespace Chummer
 
                             using (_ = Timekeeper.StartSyncron("load_char_wloc", loadActivity))
                             {
-
                                 // Weapon Locations.
                                 XmlNodeList objXmlWeaponLocationList =
                                     objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
@@ -4532,7 +4531,6 @@ namespace Chummer
 
                             using (_ = Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
                             {
-
                                 // converting from old dwarven resistance to new dwarven resistance
                                 if (Metatype.Equals("dwarf", StringComparison.OrdinalIgnoreCase))
                                 {
@@ -4712,15 +4710,11 @@ namespace Chummer
                         }
 
                         //// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
-                        //      if (blnHasOldQualities)
-                        //      {
+                        //if (blnHasOldQualities)
+                        //{
                         //    Timekeeper.Start("load_char_resav");  //Lets not silently save file on load?
-
-
                         //    Save();
                         //    Timekeeper.Finish("load_char_resav");
-
-
                         //}
                         loadActivity.SetSuccess(true);
                     }
@@ -5058,7 +5052,6 @@ namespace Chummer
                 Math.Min(StunCMThresholdOffset, intStunCM).ToString(objCulture));
             // <cmoverflow>
             objWriter.WriteElementString("cmoverflow", CMOverflow.ToString(objCulture));
-
 
             // <psyche>
             objWriter.WriteElementString("psyche", _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo));
@@ -6158,7 +6151,6 @@ namespace Chummer
 
             return string.Empty;
         }
-
 
         public void FormatImprovementModifiers(StringBuilder sbdToolTip, ICollection<Improvement.ImprovementType> improvements, string strSpace, int intModifiers)
         {
@@ -9280,7 +9272,6 @@ namespace Chummer
             set => _objTradition = value;
         }
 
-
         /// <summary>
         /// Initiate Grade.
         /// </summary>
@@ -10241,7 +10232,7 @@ namespace Chummer
                     return 0;
                 }
 
-                int intINI = (INT.TotalValue + REA.TotalValue) + WoundModifier;
+                int intINI = INT.TotalValue + REA.TotalValue + WoundModifier;
                 intINI += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative).StandardRound();
                 if(intINI < 0)
                     intINI = 0;
@@ -10446,7 +10437,6 @@ namespace Chummer
                 int intINTAttributeModifiers = INT.AttributeModifiers;
 
                 string strSpace = LanguageManager.GetString("String_Space");
-
 
                 string strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalSettings.CultureInfo) + ')';
                 if(ActiveCommlink != null)
@@ -11314,7 +11304,6 @@ namespace Chummer
         /// </summary>
         public ObservableCollection<SustainedObject> SustainedCollection => _lstSustainedObjects;
 
-
         /// <summary>
         /// Foci.
         /// </summary>
@@ -11502,8 +11491,8 @@ namespace Chummer
             Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(x => x, y => decBaseArmorImprovement);
             foreach (Improvement objImprovement in lstUsedImprovements)
             {
-                if ((objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
-                     objImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod))
+                if (objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
+                    objImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod)
                     continue;
                 Armor objSourceArmor =
                     lstArmorsToConsider.Find(x => x.InternalId == objImprovement.SourceName)
@@ -14133,7 +14122,6 @@ namespace Chummer
             }
         }
 
-
         /// <summary>
         /// Whether or not the Drug Psyche is active
         /// </summary>
@@ -15404,14 +15392,12 @@ namespace Chummer
         [HubTag]
         public SkillsSection SkillsSection { get; }
 
-
         public int RedlinerBonus
         {
             get
             {
                 if(_intCachedRedlinerBonus == int.MinValue)
                     RefreshRedlinerImprovements();
-
                 return _intCachedRedlinerBonus;
             }
         }
@@ -18860,7 +18846,6 @@ namespace Chummer
                             AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, op_load);
                             using (_ = Timekeeper.StartSyncron("load_char_misc2", op_load))
                             {
-
                                 /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
                                 if (_blnAdeptEnabled && _blnMagicianEnabled)
@@ -18896,9 +18881,8 @@ namespace Chummer
                             using (var op_load_char_skills =
                                 Timekeeper.StartSyncron("load_char_skills", op_load)) //slightly messy
                             {
-
                                 SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("skills"),
-                                    op_load_char_skills);
+                                                              op_load_char_skills);
 
                                 //Timekeeper.Finish("load_char_skills");
                             }
@@ -18993,7 +18977,6 @@ namespace Chummer
                             */
                             using (_ = Timekeeper.StartSyncron("load_char_contacts", op_load))
                             {
-
                                 // Contacts.
                                 foreach (XPathNavigator xmlContactToImport in xmlStatBlockBaseNode.Select(
                                     "contacts/contact[@useradded != \"no\"]"))
@@ -20149,8 +20132,6 @@ namespace Chummer
                                 ClearInitiations();
                             //Timekeeper.Finish("load_char_improvementrefreshers");
                         }
-
-
                     }
                     catch (Exception e)
                     {
@@ -20159,7 +20140,6 @@ namespace Chummer
                         Log.Error(e);
                     }
                 }
-
                 return true;
             }
             finally
@@ -20675,7 +20655,6 @@ namespace Chummer
         }
         public bool IsLoadMethodRunning { get; set; }
 
-
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
@@ -20685,7 +20664,6 @@ namespace Chummer
 
         public bool Created { get; set; }
         public string SettingsFile { get; set; }
-
 
         [JsonIgnore]
         [XmlIgnore]
@@ -20745,7 +20723,6 @@ namespace Chummer
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
-
 
         public void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
         {

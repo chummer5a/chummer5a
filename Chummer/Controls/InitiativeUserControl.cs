@@ -233,7 +233,7 @@ namespace Chummer
                 }
 
                 chkBoxChummer.SelectedIndex = _intIndex;
-                _intIndex += 1;
+                ++_intIndex;
             }
         }
 
@@ -283,7 +283,7 @@ namespace Chummer
                 _lstCharacters.RemoveAt(index);
                 _lstCharacters.Insert(tempIndex, character);
                 // back up one for indexing purposes
-                _intIndex -= 1;
+                --_intIndex;
                 ResetListBoxChummers();
             }
         }

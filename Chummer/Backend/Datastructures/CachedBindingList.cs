@@ -24,9 +24,7 @@ namespace Chummer
 {
     public class CachedBindingList<T> : BindingList<T>
     {
-        public delegate void BeforeRemoveEventHandler(object sender, RemovingOldEventArgs e);
-
-        public event BeforeRemoveEventHandler BeforeRemove;
+        public event EventHandler<RemovingOldEventArgs> BeforeRemove;
 
         protected override void RemoveItem(int index)
         {

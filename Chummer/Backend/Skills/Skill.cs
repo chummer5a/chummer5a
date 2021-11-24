@@ -685,7 +685,7 @@ namespace Chummer.Backend.Skills
             {
                 if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
                 {
-                    return (SkillGroupObject == null || SkillGroupObject.Rating <= 0);
+                    return SkillGroupObject == null || SkillGroupObject.Rating <= 0;
                 }
 
                 return true;
@@ -1763,7 +1763,7 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0
             ? LanguageManager.GetString("Tip_ImproveItemAtMaximum")
-            : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"), (Rating + 1), UpgradeKarmaCost);
+            : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"), Rating + 1, UpgradeKarmaCost);
 
         public string AddSpecToolTip
         {

@@ -412,13 +412,13 @@ namespace Chummer
                             break;
                     }
 
-                    objReturn.Append(',' + strSpace);
+                    objReturn.Append(',').Append(strSpace);
                 }
             }
 
             // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
             if (Extended && _blnCustomExtended)
-                objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage) + ',' + strSpace);
+                objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage)).Append(',').Append(strSpace);
 
             // Remove the trailing comma.
             if (objReturn.Length >= strSpace.Length + 1)
@@ -514,7 +514,10 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        sbdTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force") + strSpace + i.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Colon") + strSpace + intDV.ToString(GlobalSettings.CultureInfo));
+                        sbdTip.AppendLine().Append(LanguageManager.GetString("String_Force"))
+                              .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
+                              .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
+                              .Append(intDV.ToString(GlobalSettings.CultureInfo));
 
                         string strLabelFormat = strSpace + "({0}" + LanguageManager.GetString("String_Colon") + strSpace + "{1})";
                         if (Limited)
@@ -537,10 +540,10 @@ namespace Chummer
                 List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).ToList();
                 if (lstDrainImprovements.Count == 0)
                     return sbdTip.ToString();
-                sbdTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
+                sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
                 foreach (Improvement objLoopImprovement in lstDrainImprovements)
                 {
-                    sbdTip.Append(Environment.NewLine + _objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
+                    sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
                 }
 
                 return sbdTip.ToString();
@@ -943,7 +946,7 @@ namespace Chummer
                     if (objAttrib != null)
                         intPool -= objAttrib.TotalValue;
                     if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace + '+' + strSpace);
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
                     sbdReturn.Append(objSkill.FormattedDicePool(intPool, Category));
                 }
 
@@ -951,7 +954,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.SpellCategory || x.ImproveType == Improvement.ImprovementType.SpellDicePool))
                 {
                     if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace + '+' + strSpace);
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
                     sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
                         _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                 }

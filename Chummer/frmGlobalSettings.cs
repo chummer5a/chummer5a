@@ -1632,12 +1632,7 @@ namespace Chummer
                     resultCollection.TryAdd(info.Code, info);
                 });
                 foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)
-                {
-                    if (_dicSourcebookInfos.ContainsKey(kvpInfo.Key))
-                        _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
-                    else
-                        _dicSourcebookInfos.Add(kvpInfo.Key, kvpInfo.Value);
-                }
+                    _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
 
                 return resultCollection.Values;
             }

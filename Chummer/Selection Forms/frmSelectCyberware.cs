@@ -926,7 +926,7 @@ namespace Chummer
                 {
                     string strItem = objItem.Value.ToString();
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
+                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
@@ -934,10 +934,12 @@ namespace Chummer
                 }
             }
             if (sbdCategoryFilter.Length > 0)
-                sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
 
             if (ParentVehicle == null && _objCharacter.IsAI)
-                sbdFilter.Append(" and (id = " + Cyberware.EssenceHoleGUID.ToString().CleanXPath() + " or id = " + Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath() + " or mountsto)");
+                sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
+                         .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
+                         .Append(" or mountsto)");
             else if (_objParentNode != null)
                 sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
             else
@@ -946,12 +948,12 @@ namespace Chummer
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = " + objCurrentGrade.Name.CleanXPath() + ")");
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ").Append(objCurrentGrade.Name.CleanXPath()).Append(')');
                 if (objCurrentGrade.SecondHand)
                     sbdFilter.Append(" and not(nosecondhand)");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             XPathNodeIterator node = null;
             try
             {

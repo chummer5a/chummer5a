@@ -119,7 +119,7 @@ namespace Chummer
                 foreach (string strAllowedMount in _setAllowedCategories)
                 {
                     if (!string.IsNullOrEmpty(strAllowedMount))
-                        sbdMount.Append(". = " + strAllowedMount.CleanXPath() + " or ");
+                        sbdMount.Append(". = ").Append(strAllowedMount.CleanXPath()).Append(" or ");
                 }
                 sbdMount.Append(". = \"General\"");
                 objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + "]");
@@ -354,7 +354,7 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down when lstGear.SelectedIndex + 1 < lstGear.Items.Count:
-                    lstGear.SelectedIndex += 1;
+                    ++lstGear.SelectedIndex;
                     break;
 
                 case Keys.Down:
@@ -367,7 +367,7 @@ namespace Chummer
                         break;
                     }
                 case Keys.Up when lstGear.SelectedIndex - 1 >= 0:
-                    lstGear.SelectedIndex -= 1;
+                    --lstGear.SelectedIndex;
                     break;
 
                 case Keys.Up:
@@ -876,7 +876,7 @@ namespace Chummer
                 {
                     while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt, _intAvailModifier))
                     {
-                        nudRating.Maximum -= 1;
+                        --nudRating.Maximum;
                     }
                 }
 
@@ -890,7 +890,7 @@ namespace Chummer
                         decCostMultiplier *= 0.9m;
                     while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                     {
-                        nudRating.Maximum -= 1;
+                        --nudRating.Maximum;
                     }
                 }
 
@@ -919,19 +919,19 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder(_objCharacter.Settings.BookXPath());
             // Only add in category filter if we either are not searching or we have the option set to only search in categories
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = " + strCategory.CleanXPath());
+                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
             else if (_setAllowedCategories.Count > 0)
             {
                 StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
+                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
             }
             if (_setAllowedNames.Count > 0)
@@ -939,12 +939,12 @@ namespace Chummer
                 StringBuilder sbdNameFilter = new StringBuilder();
                 foreach (string strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
                 {
-                    sbdNameFilter.Append("name = " + strItem.CleanXPath() + " or ");
+                    sbdNameFilter.Append("name = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdNameFilter.Length > 0)
                 {
                     sbdNameFilter.Length -= 4;
-                    sbdFilter.Append(" and (" + sbdNameFilter + ')');
+                    sbdFilter.Append(" and (").Append(sbdNameFilter).Append(')');
                 }
             }
             if (ShowArmorCapacityOnly)
@@ -958,9 +958,9 @@ namespace Chummer
             if (_objGearParent == null)
                 sbdFilter.Append(" and not(requireparent)");
             if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
-                sbdFilter.Append(" and ammoforweapontype = " + ForceItemAmmoForWeaponType.CleanXPath());
+                sbdFilter.Append(" and ammoforweapontype = ").Append(ForceItemAmmoForWeaponType.CleanXPath());
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }

@@ -248,7 +248,7 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down when lstLifestyleQualities.SelectedIndex + 1 < lstLifestyleQualities.Items.Count:
-                    lstLifestyleQualities.SelectedIndex += 1;
+                    ++lstLifestyleQualities.SelectedIndex;
                     break;
 
                 case Keys.Down:
@@ -261,7 +261,7 @@ namespace Chummer
                         break;
                     }
                 case Keys.Up when lstLifestyleQualities.SelectedIndex - 1 >= 0:
-                    lstLifestyleQualities.SelectedIndex -= 1;
+                    --lstLifestyleQualities.SelectedIndex;
                     break;
 
                 case Keys.Up:

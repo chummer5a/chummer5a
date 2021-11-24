@@ -256,18 +256,18 @@ namespace Chummer
             strReturn.Append(Grade.ToString(GlobalSettings.CultureInfo));
             if (Group || Ordeal)
             {
-                strReturn.Append(strSpace + '(');
+                strReturn.Append(strSpace).Append('(');
                 if (Group)
                 {
-                    strReturn.Append(Technomancer ? LanguageManager.GetString("String_Network", strLanguage) : LanguageManager.GetString("String_Group", strLanguage));
+                    strReturn.Append(LanguageManager.GetString(Technomancer ? "String_Network" : "String_Group", strLanguage));
                     if (Ordeal || Schooling)
-                        strReturn.Append(',' + strSpace);
+                        strReturn.Append(',').Append(strSpace);
                 }
                 if (Ordeal)
                 {
-                    strReturn.Append(Technomancer ? LanguageManager.GetString("String_Task", strLanguage) : LanguageManager.GetString("String_Ordeal", strLanguage));
+                    strReturn.Append(LanguageManager.GetString(Technomancer ? "String_Task" : "String_Ordeal", strLanguage));
                     if (Schooling)
-                        strReturn.Append(',' + strSpace);
+                        strReturn.Append(',').Append(strSpace);
                 }
                 if (Schooling)
                 {

@@ -186,7 +186,7 @@ namespace Chummer
                         {
                             char chrLoopChar = strReturn[i];
                             if (chrLoopChar == '{')
-                                intBracketCount += 1;
+                                ++intBracketCount;
                             else if (chrLoopChar == '}')
                             {
                                 if (intBracketCount == 1)
@@ -195,7 +195,7 @@ namespace Chummer
                                     break;
                                 }
 
-                                intBracketCount -= 1;
+                                --intBracketCount;
                             }
                         }
 

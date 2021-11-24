@@ -214,7 +214,7 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down when lstQualities.SelectedIndex + 1 < lstQualities.Items.Count:
-                    lstQualities.SelectedIndex += 1;
+                    ++lstQualities.SelectedIndex;
                     break;
 
                 case Keys.Down:
@@ -227,7 +227,7 @@ namespace Chummer
                         break;
                     }
                 case Keys.Up when lstQualities.SelectedIndex - 1 >= 0:
-                    lstQualities.SelectedIndex -= 1;
+                    --lstQualities.SelectedIndex;
                     break;
 
                 case Keys.Up:
@@ -433,7 +433,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
             {
-                sbdFilter.Append(" and category = " + strCategory.CleanXPath());
+                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
             }
             else
             {
@@ -441,12 +441,12 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
+                        objCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (objCategoryFilter.Length > 0)
                 {
                     objCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (" + objCategoryFilter + ')');
+                    sbdFilter.Append(" and (").Append(objCategoryFilter).Append(')');
                 }
             }
             if (chkMetagenic.Checked)
@@ -463,30 +463,32 @@ namespace Chummer
                 if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases && nudValueBP.Value > 0)
                 {
                     string strValueBPHalved = (nudValueBP.Value / 2).ToString(GlobalSettings.InvariantCultureInfo);
-                    sbdFilter.Append(" and ((doublecareer = 'False' and (karma = " + strValueBP +
-                                     " or (not(nolevels) and limit != 'False' and (karma mod " + strValueBP +
-                                     ") = 0 and karma * karma * limit <= karma * " + strValueBP +
-                                     "))) or (not(doublecareer = 'False') and (karma = " + strValueBPHalved +
-                                     " or (not(nolevels) and limit != 'False' and (karma mod " + strValueBPHalved +
-                                     ") = 0 and karma * karma * limit <= karma * " + strValueBPHalved + "))))");
+                    sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ").Append(strValueBP)
+                             .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                             .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
+                             .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
+                             .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBPHalved)
+                             .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
+                             .Append("))))");
                 }
                 else
                 {
-                    sbdFilter.Append(" and (karma = " + strValueBP +
-                                     " or (not(nolevels) and limit != 'False' and (karma mod " + strValueBP +
-                                     ") = 0 and karma * karma * limit <= karma * " + strValueBP + "))");
+                    sbdFilter.Append(" and (karma = ").Append(strValueBP)
+                             .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                             .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
                 }
             }
             else if (nudMinimumBP.Value != 0 || nudMaximumBP.Value != 0)
             {
                 if (nudMinimumBP.Value < 0 == nudMaximumBP.Value < 0)
                 {
-                    sbdFilter.Append(" and (" + GetKarmaRangeString(nudMaximumBP.ValueAsInt, nudMinimumBP.ValueAsInt) + ")");
+                    sbdFilter.Append(" and (")
+                             .Append(GetKarmaRangeString(nudMaximumBP.ValueAsInt, nudMinimumBP.ValueAsInt)).Append(')');
                 }
                 else
                 {
-                    sbdFilter.Append("and ((" + GetKarmaRangeString(nudMaximumBP.ValueAsInt, 0)
-                                              + ") or (" + GetKarmaRangeString(-1, nudMinimumBP.ValueAsInt) + "))");
+                    sbdFilter.Append("and ((").Append(GetKarmaRangeString(nudMaximumBP.ValueAsInt, 0)).Append(") or (")
+                             .Append(GetKarmaRangeString(-1, nudMinimumBP.ValueAsInt)).Append("))");
                 }
 
                 string GetKarmaRangeString(int intMax, int intMin)
@@ -519,7 +521,7 @@ namespace Chummer
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
             List<ListItem> lstQuality = new List<ListItem>();

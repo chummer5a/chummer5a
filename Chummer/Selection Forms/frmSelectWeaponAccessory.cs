@@ -93,11 +93,11 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Settings.BookXPath() + ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (string strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
-                sbdFilter.Append(" or contains(mount, " + strAllowedMount.CleanXPath() + ")");
+                sbdFilter.Append(" or contains(mount, ").Append(strAllowedMount.CleanXPath()).Append(')');
             }
             sbdFilter.Append(')');
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             int intOverLimit = 0;
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[" + sbdFilter + "]"))
             {
@@ -110,9 +110,9 @@ namespace Chummer
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_blnIsParentWeaponBlackMarketAllowed)
                     decCostMultiplier *= 0.9m;
-                if ((!chkHideOverAvailLimit.Checked || objXmlAccessory.CheckAvailRestriction(_objCharacter) &&
-                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                      objXmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))))
+                if (!chkHideOverAvailLimit.Checked || objXmlAccessory.CheckAvailRestriction(_objCharacter) &&
+                    (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
+                     objXmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
                     lstAccessories.Add(new ListItem(strId,
                         objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value ??
@@ -303,9 +303,9 @@ namespace Chummer
                 while (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None" && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
                 {
                     if (boolChangeExtraMountFirst)
-                        cboExtraMount.SelectedIndex += 1;
+                        ++cboExtraMount.SelectedIndex;
                     else
-                        cboMount.SelectedIndex += 1;
+                        ++cboMount.SelectedIndex;
                 }
             }
         }
@@ -346,7 +346,7 @@ namespace Chummer
                 {
                     while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt))
                     {
-                        nudRating.Maximum -= 1;
+                        --nudRating.Maximum;
                     }
                 }
                 if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
@@ -356,7 +356,7 @@ namespace Chummer
                         decCostMultiplier *= 0.9m;
                     while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                     {
-                        nudRating.Maximum -= 1;
+                        --nudRating.Maximum;
                     }
                 }
                 nudRating.Enabled = nudRating.Maximum != nudRating.Minimum;
@@ -435,7 +435,7 @@ namespace Chummer
                 cboExtraMount.SelectedIndex = 0;
                 if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
                                                                && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
-                    cboExtraMount.SelectedIndex += 1;
+                    ++cboExtraMount.SelectedIndex;
                 cboExtraMount.Visible = cboExtraMount.Enabled && cboExtraMount.SelectedItem.ToString() != "None";
                 lblExtraMountLabel.Visible = cboExtraMount.Visible;
             }

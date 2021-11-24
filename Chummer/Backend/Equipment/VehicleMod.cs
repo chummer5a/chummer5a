@@ -184,11 +184,11 @@ namespace Chummer.Backend.Equipment
                     if (xmlSubsystemList != null)
                         foreach (XmlNode objXmlSubsystem in xmlSubsystemList)
                         {
-                            objSubsystem.Append(objXmlSubsystem.InnerText + ",");
+                            objSubsystem.Append(objXmlSubsystem.InnerText).Append(',');
                         }
                 // Remove last ","
                 if (objSubsystem.Length > 0)
-                    objSubsystem.Length -= 1;
+                    --objSubsystem.Length;
                 _strSubsystems = objSubsystem.ToString();
             }
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -1471,14 +1471,14 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
-                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                     }
                 }

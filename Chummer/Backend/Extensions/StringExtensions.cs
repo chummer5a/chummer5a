@@ -65,10 +65,10 @@ namespace Chummer
             // intHead already set to the index of the first instance, for loop's initializer can be left empty
             for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
             {
-                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace) + strNewValue);
+                sbdReturn.Append(strInput, intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace).Append(strNewValue);
                 intEndPositionOfLastReplace = intHead + strOldValue.Length;
             }
-            sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace));
+            sbdReturn.Append(strInput, intEndPositionOfLastReplace, strInput.Length - intEndPositionOfLastReplace);
             return sbdReturn.ToString();
         }
 
@@ -430,7 +430,7 @@ namespace Chummer
                     // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
                     if (funcIsWhiteSpace(chrLoop))
                     {
-                        intLoopWhitespaceCount += 1;
+                        ++intLoopWhitespaceCount;
                         if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
                         {
                             achrNewChars[intCurrent++] = chrLoop;
@@ -474,7 +474,7 @@ namespace Chummer
                     // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
                     if (funcIsWhiteSpace(chrLoop))
                     {
-                        intLoopWhitespaceCount += 1;
+                        ++intLoopWhitespaceCount;
                         if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
                         {
                             achrNewChars[intCurrent++] = chrLoop;
@@ -768,7 +768,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StartsWith(this string strInput, char chrToCheck)
         {
-            return (strInput?.Length > 0 && strInput[0] == chrToCheck);
+            return strInput?.Length > 0 && strInput[0] == chrToCheck;
         }
 
         /// <summary>
@@ -827,7 +827,7 @@ namespace Chummer
             if (strInput == null)
                 return false;
             int intLength = strInput.Length;
-            return (intLength > 0 && strInput[intLength - 1] == chrToCheck);
+            return intLength > 0 && strInput[intLength - 1] == chrToCheck;
         }
 
         /// <summary>
@@ -1251,7 +1251,7 @@ namespace Chummer
                         // Trim whitespace following break
                         intCurrentPosition += intLengthToRead;
                         while (intCurrentPosition < intEndOfLinePosition && char.IsWhiteSpace(strText[intCurrentPosition]) && !char.IsControl(strText[intCurrentPosition]))
-                            intCurrentPosition += 1;
+                            ++intCurrentPosition;
                     }
                     while (intEndOfLinePosition > intCurrentPosition);
                 }
@@ -1328,10 +1328,10 @@ namespace Chummer
             int intSubStringStart = 0;
             for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"', intSubStringStart))
             {
-                sbdReturn.Append(strSearch.Substring(intSubStringStart, intQuotePos - intSubStringStart) + "\", '\"', \"");
+                sbdReturn.Append(strSearch, intSubStringStart, intQuotePos - intSubStringStart).Append("\", '\"', \"");
                 intSubStringStart = intQuotePos + 1;
             }
-            return sbdReturn.Append(strSearch.Substring(intSubStringStart) + "\")").ToString();
+            return sbdReturn.Append(strSearch, intSubStringStart, strSearch.Length - intSubStringStart).Append("\")").ToString();
         }
 
         /// <summary>
@@ -1382,7 +1382,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strInputTrimmed = strInput.TrimStart();
-            if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
+            if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
                 lock (s_RtbRtfManipulatorLock)
@@ -1421,7 +1421,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strInput))
             {
                 string strInputTrimmed = strInput.TrimStart();
-                if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
+                if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
                     lock (s_RtbRtfManipulatorLock)

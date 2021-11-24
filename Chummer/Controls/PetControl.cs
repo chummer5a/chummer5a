@@ -32,7 +32,7 @@ namespace Chummer
         private bool _blnLoading = true;
 
         // Events.
-        public event TextEventHandler ContactDetailChanged;
+        public event EventHandler<TextEventArgs> ContactDetailChanged;
 
         public event EventHandler DeleteContact;
 

@@ -1169,7 +1169,7 @@ namespace Chummer
 
             if (owner.InvokeRequired)
             {
-                if ((_blnShowDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
+                if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
                 {
                     _blnShowDevWarningAboutDebuggingOnlyOnce = false;
                     //it works on my installation even in the debugger, so maybe we can ignore that...

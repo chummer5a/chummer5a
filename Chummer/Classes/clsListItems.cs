@@ -238,7 +238,7 @@ namespace Chummer
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;
-            return (-intCompareResult);
+            return -intCompareResult;
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Chummer
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;
-            return (-intCompareResult);
+            return -intCompareResult;
         }
 
         /// <summary>

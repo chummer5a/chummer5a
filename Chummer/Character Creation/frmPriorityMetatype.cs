@@ -1434,10 +1434,9 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(strSpace);
-                            strQualities.Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
+                            strQualities.Append(strSpace).Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
                         }
-                        strQualities.Append(',' + strSpace);
+                        strQualities.Append(',').Append(strSpace);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();
@@ -1502,10 +1501,9 @@ namespace Chummer
                         strQualities.Append(objLoopQuality.Key);
                         if (objLoopQuality.Value > 1)
                         {
-                            strQualities.Append(strSpace);
-                            strQualities.Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
+                            strQualities.Append(strSpace).Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
                         }
-                        strQualities.Append(',' + strSpace);
+                        strQualities.Append(',').Append(strSpace);
                     }
                     strQualities.Length -= 2;
                     lblMetavariantQualities.Text = strQualities.ToString();
@@ -2037,7 +2035,7 @@ namespace Chummer
                 sbdGroups.Append('[');
                 foreach (XPathNavigator xmlSkillGroup in objSkillList)
                 {
-                    sbdGroups.Append(". = " + xmlSkillGroup.Value.CleanXPath() + " or ");
+                    sbdGroups.Append(". = ").Append(xmlSkillGroup.Value.CleanXPath()).Append(" or ");
                 }
                 sbdGroups.Length -= 4;
                 sbdGroups.Append(']');
@@ -2054,7 +2052,7 @@ namespace Chummer
                 sbdGroups.Append('[');
                 foreach (XPathNavigator xmlSkillGroup in objSkillList)
                 {
-                    sbdGroups.Append("name = " + xmlSkillGroup.Value.CleanXPath() + " or ");
+                    sbdGroups.Append("name = ").Append(xmlSkillGroup.Value.CleanXPath()).Append(" or ");
                 }
                 sbdGroups.Length -= 4;
                 sbdGroups.Append(']');

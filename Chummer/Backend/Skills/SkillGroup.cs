@@ -291,7 +291,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int RatingMaximum => (_objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6);
+        public int RatingMaximum => _objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6;
 
         public void Upgrade()
         {
@@ -595,7 +595,8 @@ namespace Chummer.Backend.Skills
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    s.AppendLine(LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpace + string.Join(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)));
+                    s.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
+                     .AppendJoin(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)).AppendLine();
                 }
 
                 if (IsDisabled)

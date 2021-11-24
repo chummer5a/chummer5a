@@ -688,7 +688,7 @@ namespace Chummer
                             new StringBuilder(LanguageManager.GetString("Message_Files_Cannot_Be_Removed"));
                         foreach (string strFile in lstBlocked)
                         {
-                            sbdOutput.Append(Environment.NewLine + strFile);
+                            sbdOutput.AppendLine().Append(strFile);
                         }
                         Program.MainForm.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
                             MessageBoxIcon.Information);

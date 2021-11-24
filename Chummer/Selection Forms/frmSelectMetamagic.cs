@@ -175,7 +175,7 @@ namespace Chummer
                 strFilter += " and (";
                 StringBuilder sbdFilter = new StringBuilder();
                 foreach (string strMetamagic in _lstMetamagicLimits)
-                    sbdFilter.Append("name = '" + strMetamagic + "' or ");
+                    sbdFilter.Append("name = ").Append(strMetamagic.CleanXPath()).Append(" or ");
                 sbdFilter.Length -= 4;
                 strFilter += sbdFilter.ToString() + ')';
             }

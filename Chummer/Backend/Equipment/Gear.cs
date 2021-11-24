@@ -3343,7 +3343,7 @@ namespace Chummer.Backend.Equipment
                         if (decIllegalQuantity > 0)
                         {
                             ++intRestrictedCount;
-                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity));
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity));
                         }
                         if (intRestrictedGearQuantityUsed > 0)
                         {
@@ -3355,7 +3355,7 @@ namespace Chummer.Backend.Equipment
                                                             intRestrictedGearQuantityUsed),
                                                 LanguageManager.GetString("String_Space"),
                                                 Parent);
-                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                     }
                 }

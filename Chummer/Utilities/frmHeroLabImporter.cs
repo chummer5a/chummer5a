@@ -228,8 +228,8 @@ namespace Chummer
                                            .SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
                         objCache.BuildMethod
                             = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.Value == "25"
-                                ? CharacterBuildMethod.Priority.ToString()
-                                : CharacterBuildMethod.Karma.ToString();
+                                ? nameof(CharacterBuildMethod.Priority)
+                                : nameof(CharacterBuildMethod.Karma);
 
                         objCache.Created = objCache.Karma != "0";
                         if (!objCache.Created)

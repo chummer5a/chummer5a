@@ -912,24 +912,23 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            string strGearNotes =
-                CommonFunctions.GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
+            string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
 
-            if (!string.IsNullOrEmpty(strGearNotes) || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                StringComparison.OrdinalIgnoreCase)) return strGearNotes;
+            if (!string.IsNullOrEmpty(strGearNotes) || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return strGearNotes;
             string strTranslatedNameOnPage = strDisplayName;
 
             // don't check again it is not translated
-            if (strTranslatedNameOnPage == strName) return strGearNotes;
+            if (strTranslatedNameOnPage == strName)
+                return strGearNotes;
+
             // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
             if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
                 && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                 strTranslatedNameOnPage = strNameOnPage;
 
-            strGearNotes = CommonFunctions.GetTextFromPdf(strSource + ' ' + strDisplayPage,
-                strTranslatedNameOnPage, objCharacter);
-
-            return strGearNotes;
+            return GetTextFromPdf(strSource + ' ' + strDisplayPage,
+                                  strTranslatedNameOnPage, objCharacter);
         }
 
         /// <summary>

@@ -3128,9 +3128,9 @@ namespace Chummer.Backend.Equipment
         /// Ghetto workaround for flagging an object as geneware.
         /// </summary>
         public bool IsGeneware =>
-            (SourceType == Improvement.ImprovementSource.Bioware &&
-             (Category.StartsWith("Genetech", StringComparison.Ordinal) || Category.StartsWith("Genetic Infusions", StringComparison.Ordinal) ||
-              Category.StartsWith("Genemods", StringComparison.Ordinal)));
+            SourceType == Improvement.ImprovementSource.Bioware &&
+            (Category.StartsWith("Genetech", StringComparison.Ordinal) || Category.StartsWith("Genetic Infusions", StringComparison.Ordinal) ||
+             Category.StartsWith("Genemods", StringComparison.Ordinal));
 
         /// <summary>
         /// Total Availability in the program's current language.

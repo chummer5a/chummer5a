@@ -368,23 +368,23 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = " + strCategory.CleanXPath());
+                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
             else
             {
                 StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
+                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle[" + sbdFilter + ']'));
         }

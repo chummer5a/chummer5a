@@ -72,7 +72,7 @@ namespace Chummer
                     StringBuilder sbdPlugins = new StringBuilder();
                     foreach (Gear objChild in objGear.Children)
                     {
-                        sbdPlugins.Append(objChild.DisplayNameShort(GlobalSettings.Language) + ',' + strSpace);
+                        sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',').Append(strSpace);
                     }
                     // Remove the trailing comma.
                     sbdPlugins.Length -= 1 + strSpace.Length;

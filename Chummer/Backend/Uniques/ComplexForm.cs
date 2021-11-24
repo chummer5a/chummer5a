@@ -87,7 +87,6 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-
             if (string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlComplexFormNode, Name, CurrentDisplayName, Source, Page,
@@ -376,8 +375,10 @@ namespace Chummer
                         // Fading cannot be lower than 2.
                         if (intFv < 2)
                             intFv = 2;
-                        sbdTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level") + strSpace + i.ToString(GlobalSettings.CultureInfo)
-                                      + LanguageManager.GetString("String_Colon") + strSpace + intFv.ToString(GlobalSettings.CultureInfo));
+                        sbdTip.AppendLine().Append(LanguageManager.GetString("String_Level")).Append(strSpace).Append(
+                                  i.ToString(GlobalSettings.CultureInfo))
+                              .Append(LanguageManager.GetString("String_Colon"))
+                              .Append(strSpace).Append(intFv.ToString(GlobalSettings.CultureInfo));
                     }
                     else
                     {
@@ -390,10 +391,11 @@ namespace Chummer
                 List<Improvement> lstFadingImprovements = _objCharacter.Improvements.Where(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled).ToList();
                 if (lstFadingImprovements.Count > 0)
                 {
-                    sbdTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
+                    sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
                     foreach (Improvement objLoopImprovement in lstFadingImprovements)
                     {
-                        sbdTip.Append(Environment.NewLine + _objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
+                        sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
+                              .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
                     }
                 }
 
@@ -596,7 +598,7 @@ namespace Chummer
                 if (Skill != null)
                 {
                     if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace + '+' + strSpace);
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
                     sbdReturn.Append(Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
                                                             (objResonanceAttrib?.TotalValue ?? 0), CurrentDisplayName));
                 }
@@ -607,7 +609,7 @@ namespace Chummer
                     && objImprovement.ImprovedName == "Threading"))
                 {
                     if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace + '+' + strSpace);
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
                     sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                 }
 
