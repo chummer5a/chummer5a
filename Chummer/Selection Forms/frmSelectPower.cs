@@ -124,7 +124,7 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down when lstPowers.SelectedIndex + 1 < lstPowers.Items.Count:
-                    lstPowers.SelectedIndex += 1;
+                    ++lstPowers.SelectedIndex;
                     break;
 
                 case Keys.Down:
@@ -137,7 +137,7 @@ namespace Chummer
                         break;
                     }
                 case Keys.Up when lstPowers.SelectedIndex - 1 >= 0:
-                    lstPowers.SelectedIndex -= 1;
+                    --lstPowers.SelectedIndex;
                     break;
 
                 case Keys.Up:

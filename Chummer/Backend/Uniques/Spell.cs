@@ -598,9 +598,9 @@ namespace Chummer
                 return LanguageManager.GetString("String_None", strLanguage);
             StringBuilder sBld = new StringBuilder("0");
 
-            foreach (var improvement in RelevantImprovements(i =>
-                i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage ||
-                i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
+            foreach (Improvement improvement in RelevantImprovements(
+                i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
+                     || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
                 sBld.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
             string output = sBld.ToString();
 

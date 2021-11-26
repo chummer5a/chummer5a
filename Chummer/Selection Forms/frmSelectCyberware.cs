@@ -1025,7 +1025,7 @@ namespace Chummer
                             else if (ParentVehicle == null)
                                 lstWareListToCheck = _objCharacter.Cyberware;
                             if (xmlCyberware.SelectSingleNodeAndCacheExpression("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
-                                (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
+                                lstWareListToCheck?.Any(x => x.Location == "Left") == true && lstWareListToCheck.Any(x => x.Location == "Right"))
                             {
                                 string[] astrBlockedMounts = strBlocksMounts.Split(',', StringSplitOptions.RemoveEmptyEntries);
                                 if (_strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(strLoop => astrBlockedMounts.Contains(strLoop)))

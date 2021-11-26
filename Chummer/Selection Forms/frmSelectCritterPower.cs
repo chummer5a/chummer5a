@@ -65,21 +65,22 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.SelectAndCacheExpression("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if (_objCharacter.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.AllowCritterPowerCategory &&
-                        strInnerText.Contains(imp.ImprovedName)) &&
-                    objXmlCategory.SelectSingleNodeAndCacheExpression("@whitelist")?.Value == bool.TrueString ||
-                    _objCharacter.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory &&
-                        strInnerText.Contains(imp.ImprovedName)))
+                if (_objCharacter.Improvements.Any(
+                        imp => imp.ImproveType == Improvement.ImprovementType.AllowCritterPowerCategory
+                               && strInnerText.Contains(imp.ImprovedName))
+                    && objXmlCategory.SelectSingleNodeAndCacheExpression("@whitelist")?.Value == bool.TrueString
+                    || _objCharacter.Improvements.Any(
+                        imp => imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory
+                               && strInnerText.Contains(imp.ImprovedName)))
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
                         objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                     continue;
                 }
-                if (_objCharacter.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory &&
-                        !strInnerText.Contains(imp.ImprovedName)))
+
+                if (_objCharacter.Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory
+                           && !strInnerText.Contains(imp.ImprovedName)))
                 {
                     continue;
                 }

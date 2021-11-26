@@ -377,8 +377,10 @@ namespace Chummer.Backend.Equipment
             {
                 List<ListItem> lstQualities = new List<ListItem>(1);
                 foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression("/chummer/qualities/quality"))
+                {
                     lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
-                        xmlNode.SelectSingleNode("translate")?.Value ?? xmlNode.SelectSingleNode("name")?.Value));
+                                                  xmlNode.SelectSingleNode("translate")?.Value ?? xmlNode.SelectSingleNode("name")?.Value));
+                }
 
                 using (frmSelectItem frmSelect = new frmSelectItem
                 {

@@ -110,14 +110,16 @@ namespace Chummer
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_blnIsParentWeaponBlackMarketAllowed)
                     decCostMultiplier *= 0.9m;
-                if (!chkHideOverAvailLimit.Checked || objXmlAccessory.CheckAvailRestriction(_objCharacter) &&
-                    (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                     objXmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
+                if (!chkHideOverAvailLimit.Checked || objXmlAccessory.CheckAvailRestriction(_objCharacter)
+                    && (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked
+                                            || objXmlAccessory.CheckNuyenRestriction(
+                                                _objCharacter.Nuyen, decCostMultiplier)))
                 {
-                    lstAccessories.Add(new ListItem(strId,
-                        objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value ??
-                        objXmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value ??
-                        LanguageManager.GetString("String_Unknown")));
+                    lstAccessories.Add(new ListItem(
+                                           strId,
+                                           objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                           ?? objXmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value
+                                           ?? LanguageManager.GetString("String_Unknown")));
                 }
                 else
                     ++intOverLimit;

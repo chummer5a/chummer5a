@@ -681,8 +681,9 @@ namespace Chummer
             get
             {
                 if (_intCachedAllowFettering < 0)
-                    _intCachedAllowFettering = (EntityType == SpiritType.Spirit ||
-                    EntityType == SpiritType.Sprite && CharacterObject.AllowSpriteFettering)
+                    _intCachedAllowFettering = EntityType == SpiritType.Spirit
+                                               || EntityType == SpiritType.Sprite
+                                               && CharacterObject.AllowSpriteFettering
                         ? 1
                         : 0;
                 return _intCachedAllowFettering > 0;

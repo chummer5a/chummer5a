@@ -871,8 +871,10 @@ namespace Chummer
                         .SelectAndCacheExpression("/chummer/books/book[not(hide)]/code");
                     HashSet<string> setAllowedBooks = new HashSet<string>(lstAllowedBooksCodes.Count);
                     foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
+                    {
                         if (_lstBooks.Contains(objAllowedBook.Value))
                             setAllowedBooks.Add(objAllowedBook.Value);
+                    }
 
                     // <books>
                     objWriter.WriteStartElement("books");
@@ -1344,8 +1346,10 @@ namespace Chummer
             if (xmlLegacyCharacterNavigator != null)
             {
                 foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression("sources/source"))
+                {
                     if (!string.IsNullOrEmpty(xmlBook.Value))
                         _lstBooks.Add(xmlBook.Value);
+                }
             }
             RecalculateBookXPath();
 
@@ -1510,9 +1514,13 @@ namespace Chummer
 
             RecalculateEnabledCustomDataDirectories();
 
-            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths).SelectAndCacheExpression("/chummer/books/book[permanent]/code"))
+            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
+                                                         .SelectAndCacheExpression(
+                                                             "/chummer/books/book[permanent]/code"))
+            {
                 if (!string.IsNullOrEmpty(xmlBook.Value))
                     _lstBooks.Add(xmlBook.Value);
+            }
 
             // Used to legacy sweep build settings.
             XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild");

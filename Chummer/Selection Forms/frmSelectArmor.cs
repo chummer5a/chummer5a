@@ -413,9 +413,11 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                             decCostMultiplier *= 0.9m;
-                        if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) &&
-                            (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                             SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
+                        if (!chkHideOverAvailLimit.Checked
+                            || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) && (chkFreeItem.Checked
+                                || !chkShowOnlyAffordItems.Checked
+                                || SelectionShared.CheckNuyenRestriction(
+                                    objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
                         {
                             Armor objArmor = new Armor(_objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();

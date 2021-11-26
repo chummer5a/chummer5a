@@ -176,8 +176,10 @@ namespace Chummer
             if (arrayIndex + Count >= array.Length)
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex));
             for (int i = 0; i < Count; ++i)
+            {
                 array[i + arrayIndex] =
                     new Tuple<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
+            }
         }
 
         public void CopyTo(Array array, int index)

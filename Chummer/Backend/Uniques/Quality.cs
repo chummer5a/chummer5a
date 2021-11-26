@@ -1186,11 +1186,15 @@ namespace Chummer
                     //Add to set for O(N log M) runtime instead of O(N * M)
                     HashSet<string> lstRequired = new HashSet<string>();
                     using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
-                        if (xmlNodeList != null)
+                    {
+                        if (xmlNodeList?.Count > 0)
+                        {
                             foreach (XmlNode node in xmlNodeList)
                             {
                                 lstRequired.Add(node.InnerText);
                             }
+                        }
+                    }
 
                     if (!objCharacter.Qualities.Any(quality => lstRequired.Contains(quality.Name)))
                     {
@@ -1199,7 +1203,9 @@ namespace Chummer
 
                     reason |= QualityFailureReasons.MetatypeRequired;
                     using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("metatype"))
-                        if (xmlNodeList != null)
+                    {
+                        if (xmlNodeList?.Count > 0)
+                        {
                             foreach (XmlNode objNode in xmlNodeList)
                             {
                                 if (objNode.InnerText == objCharacter.Metatype)
@@ -1208,6 +1214,8 @@ namespace Chummer
                                     break;
                                 }
                             }
+                        }
+                    }
                 }
                 XmlNode xmlAllOfNode = xmlRequiredNode["allof"];
                 if (xmlAllOfNode != null)
@@ -1512,8 +1520,7 @@ namespace Chummer
                     lstNamesOfChangedProperties = s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in s_QualityDependencyGraph.GetWithAllDependents(
-                        this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

@@ -604,7 +604,7 @@ namespace Chummer
             else
             {
                 StringBuilder sbdCategoryFilter = new StringBuilder();
-                if (_hashLimitToCategories != null && _hashLimitToCategories.Count > 0)
+                if (_hashLimitToCategories?.Count > 0)
                 {
                     foreach (string strLoopCategory in _hashLimitToCategories)
                     {

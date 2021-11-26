@@ -2998,13 +2998,16 @@ namespace Chummer
                     (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))) continue;
                 string strLoopImprovedName = objImprovement.ImprovedName;
                 bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
-                                  !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
+                                  !(objCharacter.RESEnabled
+                                    && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
                                     objImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
                                   // Ignore items that apply to a Skill's Rating.
                                   objImprovement.AddToRating == blnAddToRating &&
                                   // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                                  (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName ||
-                                   blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName));
+                                  (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName
+                                                                         || blnIncludeNonImproved
+                                                                         && string.IsNullOrWhiteSpace(
+                                                                             strLoopImprovedName));
 
                 if (!blnAllowed) continue;
                 string strUniqueName = objImprovement.UniqueName;

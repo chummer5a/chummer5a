@@ -420,7 +420,7 @@ namespace Chummer
         {
             HeroLabCharacterCache objCache = null;
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if (objSelectedNode != null && objSelectedNode.Level > 0)
+            if (objSelectedNode?.Level > 0)
             {
                 int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)

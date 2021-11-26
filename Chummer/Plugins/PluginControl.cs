@@ -374,7 +374,8 @@ namespace Chummer.Plugins
             try
             {
                 using (_ = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
-                    CustomActivity.OperationType.DependencyOperation, _objMyDirectoryCatalog?.FullPath))
+                                                   CustomActivity.OperationType.DependencyOperation,
+                                                   _objMyDirectoryCatalog?.FullPath))
                     Initialize();
             }
             catch (System.Security.SecurityException e)

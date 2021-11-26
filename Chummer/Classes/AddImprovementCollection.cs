@@ -6317,10 +6317,10 @@ namespace Chummer.Classes
                 // Display the Select Spell window.
                 using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellCategory"),
-                    ExcludeCategories = bonusNode.Attributes?["exclude"]?.InnerText.Split(',').ToHashSet()
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
+                    frmPickSpellCategory.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(','));
                     frmPickSpellCategory.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.

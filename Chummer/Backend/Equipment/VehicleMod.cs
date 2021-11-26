@@ -181,11 +181,16 @@ namespace Chummer.Backend.Equipment
             {
                 StringBuilder objSubsystem = new StringBuilder();
                 using (XmlNodeList xmlSubsystemList = xmlSubsystemsNode.SelectNodes("subsystem"))
-                    if (xmlSubsystemList != null)
+                {
+                    if (xmlSubsystemList?.Count > 0)
+                    {
                         foreach (XmlNode objXmlSubsystem in xmlSubsystemList)
                         {
                             objSubsystem.Append(objXmlSubsystem.InnerText).Append(',');
                         }
+                    }
+                }
+
                 // Remove last ","
                 if (objSubsystem.Length > 0)
                     --objSubsystem.Length;
@@ -402,7 +407,9 @@ namespace Chummer.Backend.Equipment
 
             XmlNode xmlChildrenNode = objNode["weapons"];
             using (XmlNodeList xmlNodeList = xmlChildrenNode?.SelectNodes("weapon"))
-                if (xmlNodeList != null)
+            {
+                if (xmlNodeList?.Count > 0)
+                {
                     foreach (XmlNode nodChild in xmlNodeList)
                     {
                         Weapon objWeapon = new Weapon(_objCharacter)
@@ -413,10 +420,14 @@ namespace Chummer.Backend.Equipment
                         objWeapon.Load(nodChild, blnCopy);
                         _lstVehicleWeapons.Add(objWeapon);
                     }
+                }
+            }
 
             xmlChildrenNode = objNode["cyberwares"];
             using (XmlNodeList xmlNodeList = xmlChildrenNode?.SelectNodes("cyberware"))
-                if (xmlNodeList != null)
+            {
+                if (xmlNodeList?.Count > 0)
+                {
                     foreach (XmlNode nodChild in xmlNodeList)
                     {
                         Cyberware objCyberware = new Cyberware(_objCharacter)
@@ -426,6 +437,8 @@ namespace Chummer.Backend.Equipment
                         objCyberware.Load(nodChild, blnCopy);
                         _lstCyberware.Add(objCyberware);
                     }
+                }
+            }
 
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];

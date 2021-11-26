@@ -562,7 +562,7 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
 
-            if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality))
+            if (objNode?.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality) != true)
                 return;
 
             _strSelectedQuality = strSelectedQuality;

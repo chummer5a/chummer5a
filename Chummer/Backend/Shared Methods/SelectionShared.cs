@@ -1390,7 +1390,7 @@ namespace Chummer
         /// <returns></returns>
         public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
         {
-            return objXmlGear != null && objXmlGear.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier);
+            return objXmlGear?.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier) == true;
         }
 
         /// <summary>
@@ -1406,7 +1406,7 @@ namespace Chummer
             if (objXmlGear == null)
                 return false;
             //TODO: Better handler for restricted gear
-            if (objCharacter == null || objCharacter.Created || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
+            if (objCharacter?.Created != false || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
                 return true;
             // Avail.
 
@@ -1460,7 +1460,7 @@ namespace Chummer
 
         public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
-            return objXmlGear != null && objXmlGear.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating);
+            return objXmlGear?.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating) == true;
         }
 
         /// <summary>

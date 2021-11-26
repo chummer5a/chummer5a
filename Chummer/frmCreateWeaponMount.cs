@@ -182,30 +182,50 @@ namespace Chummer
             {
                 string strStringToCheck = xmlSelectedControl["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
+                {
                     using (XmlNodeList xmlControlNodeList = xmlForbiddenNode.SelectNodes("control"))
+                    {
                         if (xmlControlNodeList?.Count > 0)
+                        {
                             foreach (XmlNode xmlLoopNode in xmlControlNodeList)
+                            {
                                 if (xmlLoopNode.InnerText == strStringToCheck)
                                     return;
+                            }
+                        }
+                    }
+                }
 
                 strStringToCheck = xmlSelectedFlexibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
                     using (XmlNodeList xmlFlexibilityNodeList = xmlForbiddenNode.SelectNodes("flexibility"))
+                    {
                         if (xmlFlexibilityNodeList?.Count > 0)
+                        {
                             foreach (XmlNode xmlLoopNode in xmlFlexibilityNodeList)
+                            {
                                 if (xmlLoopNode.InnerText == strStringToCheck)
                                     return;
+                            }
+                        }
+                    }
                 }
 
                 strStringToCheck = xmlSelectedVisibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
                     using (XmlNodeList xmlVisibilityNodeList = xmlForbiddenNode.SelectNodes("visibility"))
+                    {
                         if (xmlVisibilityNodeList?.Count > 0)
+                        {
                             foreach (XmlNode xmlLoopNode in xmlVisibilityNodeList)
+                            {
                                 if (xmlLoopNode.InnerText == strStringToCheck)
                                     return;
+                            }
+                        }
+                    }
                 }
             }
             XmlNode xmlRequiredNode = xmlSelectedMount["required"];
