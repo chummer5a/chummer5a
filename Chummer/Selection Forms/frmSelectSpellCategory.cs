@@ -51,7 +51,7 @@ namespace Chummer
                 : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if (_setExcludeCategories.Contains(strInnerText)) continue;
+                if (_setExcludeCategories != null && _setExcludeCategories.Contains(strInnerText)) continue;
                 lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
 
