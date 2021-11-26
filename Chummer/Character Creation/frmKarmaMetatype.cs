@@ -76,9 +76,9 @@ namespace Chummer
                     if (!lstAlreadyProcessed.Contains(strInnerText))
                     {
                         lstAlreadyProcessed.Add(strInnerText);
-                        if (null != xmlMetatypesNode.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
+                        if (xmlMetatypesNode.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
                             "metatype[category = {0} and ({1})]",
-                            strInnerText.CleanXPath(), _objCharacter.Settings.BookXPath())))
+                            strInnerText.CleanXPath(), _objCharacter.Settings.BookXPath())) != null)
                         {
                             lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                                          ?? strInnerText));
@@ -341,9 +341,8 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
-                            sbdQualities.Append(')');
+                            sbdQualities.Append(strSpace).Append('(')
+                                        .Append(_objCharacter.TranslateExtra(strSelect)).Append(')');
                         }
                     }
                     else
@@ -352,9 +351,7 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(strSelect);
-                            sbdQualities.Append(')');
+                            sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
                         }
                     }
                     sbdQualities.Append(Environment.NewLine);
@@ -434,9 +431,8 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
-                            sbdQualities.Append(')');
+                            sbdQualities.Append(strSpace).Append('(').Append(_objCharacter.TranslateExtra(strSelect))
+                                        .Append(')');
                         }
                     }
                     else
@@ -445,9 +441,7 @@ namespace Chummer
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
-                            sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(strSelect);
-                            sbdQualities.Append(')');
+                            sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
                         }
                     }
                     sbdQualities.Append(Environment.NewLine);
@@ -566,7 +560,7 @@ namespace Chummer
                     {
                         if (intPos > 0)
                         {
-                            intPos -= 1;
+                            --intPos;
                             lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
                             nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1), GlobalSettings.InvariantCultureInfo) * 6;
                         }

@@ -56,7 +56,7 @@ namespace Chummer
                     {
                         StringBuilder sbdExclude = new StringBuilder();
                         foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                            sbdExclude.Append("category != " + strCategory.CleanXPath() + " and ");
+                            sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
                         // Remove the trailing " and ";
                         if (sbdExclude.Length > 0)
                             sbdExclude.Length -= 5;

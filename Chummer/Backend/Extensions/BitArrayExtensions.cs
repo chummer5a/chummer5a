@@ -63,7 +63,7 @@ namespace Chummer
             int intMaskSize = ablnToCount.Count >> 5;
             int intArraySizeModulo32 = ablnToCount.Count % 32;
             if (intArraySizeModulo32 != 0)
-                intMaskSize += 1;
+                ++intMaskSize;
             // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
             int[] aintToCountMask = intMaskSize > GlobalSettings.MaxStackLimit ? ArrayPool<int>.Shared.Rent(intMaskSize) : new int[intMaskSize];
             ablnToCount.CopyTo(aintToCountMask, 0);

@@ -783,8 +783,10 @@ namespace Chummer.Backend.Attributes
                     else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                     {
                         decimal decValue = objImprovement.Augmented * objImprovement.Rating;
-                        sbdModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language)
-                                           + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                   .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                   .Append(strSpace).Append('(').Append(decValue.ToString(GlobalSettings.CultureInfo))
+                                   .Append(')');
                         decBaseValue += decValue;
                     }
                 }
@@ -811,7 +813,9 @@ namespace Chummer.Backend.Attributes
                             if (strGroupName == "precedence-1")
                             {
                                 decHighest += decValue;
-                                sbdNewModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                                sbdNewModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                              .Append(strSpace).Append('(')
+                                              .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                             }
                         }
                     }
@@ -840,7 +844,9 @@ namespace Chummer.Backend.Attributes
                             if (strGroupName == strName && decValue > decHighest)
                             {
                                 decHighest = decValue;
-                                sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                           .Append(strSpace).Append('(')
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                             }
                         }
                     }
@@ -865,8 +871,11 @@ namespace Chummer.Backend.Attributes
                     }
                     else
                     {
-                        sbdModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language)
-                                           + strSpace + '(' + (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalSettings.CultureInfo) + ')');
+                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                   .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                   .Append(strSpace).Append('(')
+                                   .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
+                                               GlobalSettings.CultureInfo)).Append(')');
                     }
                 }
 
@@ -879,7 +888,9 @@ namespace Chummer.Backend.Attributes
                         if (strGroupName == strName && decValue > decHighest)
                         {
                             decHighest = decValue;
-                            sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                            sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                       .Append(strSpace).Append('(')
+                                       .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         }
                     }
                 }
@@ -891,9 +902,9 @@ namespace Chummer.Backend.Attributes
                     {
                         if (objCyberware.Category == "Cyberlimb")
                         {
-                            sbdModifier.Append(Environment.NewLine + objCyberware.CurrentDisplayName + strSpace + '(' + (Abbrev == "AGI"
+                            sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName).Append(strSpace).Append('(').Append(Abbrev == "AGI"
                                     ? objCyberware.TotalAgility.ToString(GlobalSettings.CultureInfo)
-                                    : objCyberware.TotalStrength.ToString(GlobalSettings.CultureInfo)) + ')');
+                                    : objCyberware.TotalStrength.ToString(GlobalSettings.CultureInfo)).Append(')');
                         }
                     }
                 }
@@ -1330,7 +1341,7 @@ namespace Chummer.Backend.Attributes
                     _objCharacter.Karma -= intPrice;
                 }
 
-                Karma += 1;
+                ++Karma;
             }
         }
 
@@ -1340,16 +1351,16 @@ namespace Chummer.Backend.Attributes
             {
                 if (Karma > 0)
                 {
-                    Karma -= 1;
+                    --Karma;
                 }
                 else if (Base > 0)
                 {
-                    Base -= 1;
+                    --Base;
                 }
                 else if (Abbrev == "EDG" && _objCharacter.Created && TotalMinimum > 0)
                 {
                     //Edge can reduce the metatype minimum below zero.
-                    MetatypeMinimum -= 1;
+                    --MetatypeMinimum;
                 }
                 else
                     return;

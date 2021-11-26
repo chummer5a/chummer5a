@@ -61,7 +61,7 @@ namespace Chummer
                 if (intIntervalStart == intIntervalEnd)
                 {
                     if (intCompareResult > 0)
-                        intTargetIndex += 1;
+                        ++intTargetIndex;
                     break;
                 }
                 if (intCompareResult > 0)
@@ -109,7 +109,7 @@ namespace Chummer
                 if (intIntervalStart == intIntervalEnd)
                 {
                     if (intCompareResult > 0)
-                        intTargetIndex += 1;
+                        ++intTargetIndex;
                     break;
                 }
                 if (intCompareResult > 0)
@@ -157,7 +157,7 @@ namespace Chummer
                 if (intIntervalStart == intIntervalEnd)
                 {
                     if (intCompareResult > 0)
-                        intTargetIndex += 1;
+                        ++intTargetIndex;
                     break;
                 }
                 if (intCompareResult > 0)

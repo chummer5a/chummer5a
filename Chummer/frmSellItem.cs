@@ -50,7 +50,7 @@ namespace Chummer
         /// <summary>
         /// The percentage the item will be sold at.
         /// </summary>
-        public decimal SellPercent => (nudPercent.Value / 100.0m);
+        public decimal SellPercent => nudPercent.Value / 100.0m;
 
         #endregion Properties
     }

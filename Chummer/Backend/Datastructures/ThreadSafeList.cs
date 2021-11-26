@@ -370,7 +370,7 @@ namespace Chummer
             using (new EnterReadLock(_rwlThis))
                 return base.TrueForAll(match);
         }
-        
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

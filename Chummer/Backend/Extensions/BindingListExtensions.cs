@@ -66,7 +66,7 @@ namespace Chummer
                 if (intOldIndex > intNewIndex)
                 {
                     // Account for removal happening before removal
-                    intOldIndex -= 1;
+                    --intOldIndex;
                     if (blnOldRaiseListChangedEvents)
                     {
                         for (int j = intNewIndex; j <= intOldIndex; ++j)
@@ -76,7 +76,7 @@ namespace Chummer
                 else
                 {
                     // Account for removal happening before removal
-                    intNewIndex -= 1;
+                    --intNewIndex;
                     if (blnOldRaiseListChangedEvents)
                     {
                         for (int j = intOldIndex; j <= intNewIndex; ++j)
@@ -131,7 +131,7 @@ namespace Chummer
                 if (intOldIndex > intNewIndex)
                 {
                     // Account for removal happening before removal
-                    intOldIndex -= 1;
+                    --intOldIndex;
                     if (blnOldRaiseListChangedEvents)
                     {
                         for (int j = intNewIndex; j <= intOldIndex; ++j)
@@ -141,7 +141,7 @@ namespace Chummer
                 else
                 {
                     // Account for removal happening before removal
-                    intNewIndex -= 1;
+                    --intNewIndex;
                     if (blnOldRaiseListChangedEvents)
                     {
                         for (int j = intOldIndex; j <= intNewIndex; ++j)
@@ -197,7 +197,7 @@ namespace Chummer
                 if (intOldIndex > intNewIndex)
                 {
                     // Account for removal happening before removal
-                    intOldIndex -= 1;
+                    --intOldIndex;
                     if (blnOldRaiseListChangedEvents)
                     {
                         for (int j = intNewIndex; j <= intOldIndex; ++j)
@@ -207,7 +207,7 @@ namespace Chummer
                 else
                 {
                     // Account for removal happening before removal
-                    intNewIndex -= 1;
+                    --intNewIndex;
                     if (blnOldRaiseListChangedEvents)
                     {
                         for (int j = intOldIndex; j <= intNewIndex; ++j)

@@ -467,7 +467,7 @@ namespace Chummer
 
         public void RemoveAt(int index)
         {
-            TKey objKeyToRemove = _lstIndexes.ElementAt(index);
+            TKey objKeyToRemove = _lstIndexes[index];
             if (objKeyToRemove.Equals(default))
                 return;
             _dicUnorderedData.Remove(objKeyToRemove);
@@ -630,7 +630,7 @@ namespace Chummer
             // Advance to the next item.
             public bool MoveNext()
             {
-                _intIndex += 1;
+                ++_intIndex;
                 return _intIndex < _dicMyDictionary.Count;
             }
 

@@ -519,16 +519,7 @@ namespace Chummer.UI.Shared
                 }
             }
 
-            public bool Visible
-            {
-                get
-                {
-                    if (_visible == null)
-                        _visible = _parent._visibleFilter(Item);
-
-                    return _visible.Value;
-                }
-            }
+            public bool Visible => _visible ?? (_visible = _parent._visibleFilter(Item)).Value;
 
             private readonly BindingListDisplay<TType> _parent;
             private Control _control;

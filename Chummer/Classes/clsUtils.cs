@@ -100,7 +100,6 @@ namespace Chummer
         /// <summary>
         /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
-
         public static string GetStartupPath => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath;
 
         public static string GetAutosavesFolderPath => Path.Combine(GetStartupPath, "saves", "autosave");
@@ -275,7 +274,7 @@ namespace Chummer
                                 // We saved a character as created, which closed the current form and added a new one
                                 // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
                                 if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
-                                    i -= 1;
+                                    --i;
                                 break;
                             }
                         case DialogResult.Cancel:
@@ -289,10 +288,10 @@ namespace Chummer
             StringBuilder sbdArguments = new StringBuilder();
             foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
             {
-                sbdArguments.Append('\"' + objOpenCharacterForm.CharacterObject.FileName + "\" ");
+                sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
             }
             if (sbdArguments.Length > 0)
-                sbdArguments.Length -= 1;
+                --sbdArguments.Length;
             // Restart current application, with same arguments/parameters
             foreach (Form objForm in Program.MainForm.MdiChildren)
             {

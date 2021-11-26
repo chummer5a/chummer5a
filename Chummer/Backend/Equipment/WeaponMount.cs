@@ -94,8 +94,9 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(objNewWeapon.ParentID) && _lstWeapons.DeepFindById(objNewWeapon.ParentID) != null)
                         continue;
                     _lstWeapons.Remove(objNewWeapon);
-                    intNumFullWeapons -= 1;
-                    if (intNumFullWeapons <= _intWeaponCapacity) break;
+                    --intNumFullWeapons;
+                    if (intNumFullWeapons <= _intWeaponCapacity)
+                        break;
                 }
             }
         }
@@ -1078,7 +1079,7 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
                             sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
                         }
                         else
@@ -1576,7 +1577,7 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
                             sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
                         }
                         else

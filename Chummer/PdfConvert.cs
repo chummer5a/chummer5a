@@ -35,11 +35,27 @@ namespace Codaxy.WkHtmlToPdf
         public PdfConvertException(string msg) : base(msg)
         {
         }
+
+        public PdfConvertException()
+        {
+        }
+
+        public PdfConvertException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 
     public class PdfConvertTimeoutException : PdfConvertException
     {
         public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.")
+        {
+        }
+
+        public PdfConvertTimeoutException(string msg) : base(msg)
+        {
+        }
+
+        public PdfConvertTimeoutException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
@@ -93,7 +109,7 @@ namespace Codaxy.WkHtmlToPdf
 
             if (customPath != null)
             {
-                filePath = Path.Combine(customPath, @"wkhtmltopdf.exe");
+                filePath = Path.Combine(customPath, "wkhtmltopdf.exe");
 
                 if (File.Exists(filePath))
                     return filePath;

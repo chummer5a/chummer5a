@@ -260,8 +260,8 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount) || !objItem.IsModularCurrentlyEquipped)
                                         continue;
                                     if (strNameNode == objItem.Name)
-                                        intCount += 1;
-                                    intExtendedCount += 1;
+                                        ++intCount;
+                                    ++intExtendedCount;
                                     if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
                                         return false;
                                 }
@@ -273,8 +273,8 @@ namespace Chummer
                                     if (!setNamesIncludedInLimit.Contains(strItemName))
                                         continue;
                                     if (strNameNode == strItemName)
-                                        intCount += 1;
-                                    intExtendedCount += 1;
+                                        ++intCount;
+                                    ++intExtendedCount;
                                     if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
                                         return false;
                                 }
@@ -291,7 +291,7 @@ namespace Chummer
                                     continue;
                                 if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount) || !objItem.IsModularCurrentlyEquipped)
                                     continue;
-                                intCount += 1;
+                                ++intCount;
                                 if (!blnShowMessage && intCount >= intLimit)
                                     return false;
                             }
@@ -302,7 +302,7 @@ namespace Chummer
                             {
                                 if (strNameNode != objItem.Name)
                                     continue;
-                                intCount += 1;
+                                ++intCount;
                                 if (!blnShowMessage && intCount >= intLimit)
                                     return false;
                             }
@@ -1178,7 +1178,7 @@ namespace Chummer
                                 {
                                     if (objGroup.Name != strGroups[i]) continue;
                                     if (blnShowMessage)
-                                        objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                        objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
                                     intTotal += objGroup.Rating;
                                     break;
                                 }
@@ -1192,7 +1192,7 @@ namespace Chummer
                                 {
                                     if (objGroup.Name != strGroups[i]) continue;
                                     if (blnShowMessage)
-                                        objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                        objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
                                     intTotal += objGroup.Rating;
                                     break;
                                 }
@@ -1221,7 +1221,7 @@ namespace Chummer
                                     if (objGroup.Name == strGroups[i])
                                     {
                                         if (blnShowMessage)
-                                            objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                            objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
                                         intTotal += objGroup.Rating;
                                         break;
                                     }

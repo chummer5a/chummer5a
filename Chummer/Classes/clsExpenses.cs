@@ -498,7 +498,7 @@ namespace Chummer
                     intReturn = _objExpenseType.CompareTo(other._objExpenseType);
                     if (intReturn == 0)
                     {
-                        intReturn = string.Compare(Reason, other.Reason, StringComparison.Ordinal);
+                        intReturn = string.CompareOrdinal(Reason, other.Reason);
                         if (intReturn == 0)
                         {
                             intReturn = Refund.CompareTo(other.Refund);
@@ -515,10 +515,10 @@ namespace Chummer
                 return -intReturn;
             }
 
-            int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, other._objCharacter?.FileName ?? string.Empty, StringComparison.Ordinal);
+            int intBackupReturn = string.CompareOrdinal(_objCharacter?.FileName ?? string.Empty, other._objCharacter?.FileName ?? string.Empty);
             if (intBackupReturn == 0)
             {
-                intBackupReturn = string.Compare(_objCharacter?.CharacterName ?? string.Empty, other._objCharacter?.CharacterName ?? string.Empty, StringComparison.Ordinal);
+                intBackupReturn = string.CompareOrdinal(_objCharacter?.CharacterName ?? string.Empty, other._objCharacter?.CharacterName ?? string.Empty);
                 if (intBackupReturn == 0)
                 {
                     intBackupReturn = Date.CompareTo(other.Date);
@@ -527,7 +527,7 @@ namespace Chummer
                         intBackupReturn = _objExpenseType.CompareTo(other._objExpenseType);
                         if (intBackupReturn == 0)
                         {
-                            intBackupReturn = string.Compare(Reason, other.Reason, StringComparison.Ordinal);
+                            intBackupReturn = string.CompareOrdinal(Reason, other.Reason);
                             if (intBackupReturn == 0)
                             {
                                 intBackupReturn = Refund.CompareTo(other.Refund);

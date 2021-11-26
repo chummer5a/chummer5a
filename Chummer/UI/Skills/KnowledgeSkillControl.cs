@@ -117,7 +117,7 @@ namespace Chummer.UI.Skills
                     btnCareerIncrease.DoOneWayDataBinding("Visible", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
                     btnCareerIncrease.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
                     btnCareerIncrease.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.UpgradeToolTip));
-                    
+
                     tlpMain.Controls.Add(lblRating, 1, 0);
                     tlpMain.Controls.Add(btnCareerIncrease, 2, 0);
 
@@ -150,7 +150,7 @@ namespace Chummer.UI.Skills
                     btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
                     btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
                     btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
-                    
+
                     tlpMiddle.SetColumnSpan(lblSpec, 2);
                     tlpMiddle.Controls.Add(lblSpec, 1, 0);
                     tlpMiddle.Controls.Add(btnAddSpec, 3, 0);
@@ -184,7 +184,7 @@ namespace Chummer.UI.Skills
                     nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
                     nudKarma.DoDataBinding("Value", objSkill, nameof(Skill.Karma));
                     nudKarma.InterceptMouseWheel = GlobalSettings.InterceptMode;
-                    
+
                     tlpMain.Controls.Add(nudSkill, 1, 0);
                     tlpMain.Controls.Add(nudKarma, 2, 0);
 
@@ -235,7 +235,7 @@ namespace Chummer.UI.Skills
 
                     chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                     chkKarma.DoDataBinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
-                    
+
                     tlpMiddle.Controls.Add(chkNativeLanguage, 1, 0);
                     tlpMiddle.Controls.Add(cboSpec, 2, 0);
                     tlpMiddle.Controls.Add(chkKarma, 3, 0);
@@ -446,7 +446,6 @@ namespace Chummer.UI.Skills
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
-
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;

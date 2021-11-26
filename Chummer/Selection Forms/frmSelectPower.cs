@@ -212,7 +212,7 @@ namespace Chummer
             {
                 StringBuilder sbdFilter = new StringBuilder();
                 foreach (string strPower in _strLimitToPowers.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                    sbdFilter.Append("name = " + strPower.CleanXPath() + " or ");
+                    sbdFilter.Append("name = ").Append(strPower.CleanXPath()).Append(" or ");
                 if (sbdFilter.Length > 0)
                 {
                     sbdFilter.Length -= 4;

@@ -285,7 +285,7 @@ namespace Chummer.Backend.Equipment
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlWeapon.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
-            
+
             _intRating = Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue);
             if (objXmlWeapon["accessorymounts"] != null)
             {
@@ -295,11 +295,10 @@ namespace Chummer.Backend.Equipment
                     StringBuilder strMounts = new StringBuilder();
                     foreach (XmlNode objXmlMount in objXmlMountList)
                     {
-                        strMounts.Append(objXmlMount.InnerText);
-                        strMounts.Append('/');
+                        strMounts.Append(objXmlMount.InnerText).Append('/');
                     }
                     if (strMounts.Length > 0)
-                        strMounts.Length -= 1;
+                        --strMounts.Length;
                     _strWeaponSlots = strMounts.ToString();
                 }
             }
@@ -311,11 +310,10 @@ namespace Chummer.Backend.Equipment
                     StringBuilder strMounts = new StringBuilder();
                     foreach (XmlNode objXmlMount in objXmlMountList)
                     {
-                        strMounts.Append(objXmlMount.InnerText);
-                        strMounts.Append('/');
+                        strMounts.Append(objXmlMount.InnerText).Append('/');
                     }
                     if (strMounts.Length > 0)
-                        strMounts.Length -= 1;
+                        --strMounts.Length;
                     _strDoubledCostWeaponSlots = strMounts.ToString();
                 }
             }
@@ -1093,11 +1091,10 @@ namespace Chummer.Backend.Equipment
                         StringBuilder strMounts = new StringBuilder();
                         foreach (XmlNode objXmlMount in objXmlMountList)
                         {
-                            strMounts.Append(objXmlMount.InnerText);
-                            strMounts.Append('/');
+                            strMounts.Append(objXmlMount.InnerText).Append('/');
                         }
                         if (strMounts.Length > 0)
-                            strMounts.Length -= 1;
+                            --strMounts.Length;
                         _strWeaponSlots = strMounts.ToString();
                     }
                 }
@@ -1113,11 +1110,10 @@ namespace Chummer.Backend.Equipment
                         StringBuilder strMounts = new StringBuilder();
                         foreach (XmlNode objXmlMount in objXmlMountList)
                         {
-                            strMounts.Append(objXmlMount.InnerText);
-                            strMounts.Append('/');
+                            strMounts.Append(objXmlMount.InnerText).Append('/');
                         }
                         if (strMounts.Length > 0)
-                            strMounts.Length -= 1;
+                            --strMounts.Length;
                         _strDoubledCostWeaponSlots = strMounts.ToString();
                     }
                 }
@@ -2230,13 +2226,7 @@ namespace Chummer.Backend.Equipment
             // Factor in the character's Concealability modifiers.
             intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability).StandardRound();
 
-            string strReturn;
-            if (intReturn >= 0)
-                strReturn = '+' + intReturn.ToString(objCulture);
-            else
-                strReturn = intReturn.ToString(objCulture);
-
-            return strReturn;
+            return intReturn >= 0 ? '+' + intReturn.ToString(objCulture) : intReturn.ToString(objCulture);
         }
 
         /// <summary>
@@ -2990,7 +2980,7 @@ namespace Chummer.Backend.Equipment
 
             // Remove the trailing "/".
             if (sbdReturn.Length > 0)
-                sbdReturn.Length -= 1;
+                --sbdReturn.Length;
 
             return sbdReturn.ToString();
         }
@@ -3828,7 +3818,7 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")?.ValueAsInt ?? 0;
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
-            
+
             string strNameUpper = Name.ToUpperInvariant();
             decimal decImproveAccuracy = (from objImprovement in _objCharacter.Improvements
                 where objImprovement.ImproveType == Improvement.ImprovementType.WeaponRangeModifier &&
@@ -4716,7 +4706,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                return objThis != null && objThis.IsProgram;
+                return objThis?.IsProgram == true;
             }
         }
 
@@ -4983,7 +4973,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                return objThis != null && objThis.IsCommlink;
+                return objThis?.IsCommlink == true;
             }
         }
 
@@ -5291,7 +5281,7 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
                             sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
                         }
                         else
@@ -5443,7 +5433,7 @@ namespace Chummer.Backend.Equipment
             {
                 lstAmmo.AddRange(GetAmmoReloadable(lstGears));
                 // Make sure the character has some form of Ammunition for this Weapon.
-                if (lstAmmo.Count <= 0)
+                if (lstAmmo.Count == 0)
                 {
                     Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString("Message_OutOfAmmoType"),
@@ -5510,7 +5500,7 @@ namespace Chummer.Backend.Equipment
                             (objParent.Name.StartsWith("Spare Clip", StringComparison.Ordinal) || objParent.Name.StartsWith("Speed Loader", StringComparison.Ordinal)))
                         {
                             if (objParent.Quantity > 0)
-                                objParent.Quantity -= 1;
+                                --objParent.Quantity;
                             TreeNode objNode = treGearView.FindNode(objParent.InternalId);
                             objNode.Text = objParent.CurrentDisplayName;
                         }
@@ -6044,7 +6034,7 @@ namespace Chummer.Backend.Equipment
 
             if (Overclocked == strAttributeName)
             {
-                intReturn += 1;
+                ++intReturn;
             }
 
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))

@@ -146,7 +146,7 @@ namespace Chummer
                             return;
                         }
                         if (blnLoadSuccessful)
-                            prgProgress.DoThreadSafe(() => prgProgress.Value += 1);
+                            prgProgress.DoThreadSafe(() => ++prgProgress.Value);
                     });
                     if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         return;

@@ -158,7 +158,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
-                    intReturn += 1;
+                    ++intReturn;
                 intReturn += funcGetChildrenMethod(objLoopChild).DeepCount(funcGetChildrenMethod, predicate);
             }
             return intReturn;

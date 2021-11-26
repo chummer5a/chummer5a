@@ -225,7 +225,7 @@ namespace Chummer
                                 {
                                     // Always process newest autosave if all MRUs are empty
                                     bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                               GlobalSettings.FavoriteCharacters.Count == 0; 
+                                                               GlobalSettings.FavoriteCharacters.Count == 0;
                                     FileInfo objMostRecentAutosave = null;
                                     List<string> lstOldAutosaves = new List<string>();
                                     DateTime objOldAutosaveTimeThreshold =
@@ -880,9 +880,9 @@ namespace Chummer
                         if (intSelectTab > 0)
                         {
                             if (intSelectTab + 1 >= tabForms.TabCount)
-                                intSelectTab -= 1;
+                                --intSelectTab;
                             else
-                                intSelectTab += 1;
+                                ++intSelectTab;
                             tabForms.SelectedIndex = intSelectTab;
                         }
                     }
@@ -1169,7 +1169,7 @@ namespace Chummer
 
             if (owner.InvokeRequired)
             {
-                if ((_blnShowDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
+                if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
                 {
                     _blnShowDevWarningAboutDebuggingOnlyOnce = false;
                     //it works on my installation even in the debugger, so maybe we can ignore that...
@@ -1311,7 +1311,7 @@ namespace Chummer
                     }
                 }
 
-                if (lstFilesToOpen.Count <= 0)
+                if (lstFilesToOpen.Count == 0)
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
@@ -1879,7 +1879,7 @@ namespace Chummer
         {
             blnShowTest = false;
             setFilesToLoad = new HashSet<string>(strArgs.Count);
-            if (strArgs.Count <= 0)
+            if (strArgs.Count == 0)
                 return;
             try
             {

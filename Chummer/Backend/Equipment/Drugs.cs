@@ -885,7 +885,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Creates the improvements necessary to to 'activate' a given drug.
+        /// Creates the improvements necessary to 'activate' a given drug.
         /// TODO: I'm really not happy with the lack of extensibility on this.
         /// TODO: Refactor drug effects to just use XML nodes, which can then be passed to Improvement Manager?
         /// TODO: Refactor Improvement Manager to automatically collapse improvements of the same type into a single improvement?
@@ -1353,7 +1353,7 @@ namespace Chummer.Backend.Equipment
 
         public List<DrugEffect> DrugEffects { get; } = new List<DrugEffect>();
 
-        public DrugEffect ActiveDrugEffect => DrugEffects.FirstOrDefault(effect => effect.Level == Level);
+        public DrugEffect ActiveDrugEffect => DrugEffects.Find(effect => effect.Level == Level);
 
         public string Cost
         {

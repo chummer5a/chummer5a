@@ -354,11 +354,8 @@ namespace Chummer
             PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
             foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead))
             {
-                PropertyInfo objProperty = aobjProperties.FirstOrDefault(x => x.Name == objOtherProperty.Name && x.CanWrite);
-                if (objProperty != null)
-                {
-                    objProperty.SetValue(this, objOtherProperty.GetValue(objOther, null), null);
-                }
+                PropertyInfo objProperty = Array.Find(aobjProperties, x => x.Name == objOtherProperty.Name && x.CanWrite);
+                objProperty?.SetValue(this, objOtherProperty.GetValue(objOther, null), null);
             }
 
             OnPropertyChanged(nameof(SourceId));
@@ -401,7 +398,7 @@ namespace Chummer
             PropertyInfo[] aobjOtherProperties = other.GetType().GetProperties();
             foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
             {
-                PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
+                PropertyInfo objOtherProperty = Array.Find(aobjOtherProperties, x => x.Name == objProperty.Name);
                 if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(other))
                 {
                     return false;
@@ -431,8 +428,8 @@ namespace Chummer
             unchecked
             {
                 int hashCode = _guiSourceId.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strFileName != null ? _strFileName.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strName != null ? _strName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strFileName?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strName?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnAllow2ndMaxAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowBiowareSuites.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowCyberwareESSDiscounts.GetHashCode();
@@ -475,15 +472,15 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnUnrestrictedNuyen.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnUseCalculatedPublicAwareness.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnUsePointsOnBrokenGroups.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strContactPointsExpression != null ? _strContactPointsExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strKnowledgePointsExpression != null ? _strKnowledgePointsExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression != null ? _strChargenKarmaToNuyenExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression != null ? _strBoundSpiritExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression != null ? _strRegisteredSpriteExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strContactPointsExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strKnowledgePointsExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnDoNotRoundEssenceInternally.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnableEnemyTracking.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnemyKarmaQualityLimit.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strEssenceFormat != null ? _strEssenceFormat.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strEssenceFormat?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _intForbiddenCostMultiplier;
                 hashCode = (hashCode * 397) ^ _intDroneArmorMultiplier;
                 hashCode = (hashCode * 397) ^ _intLimbCount;
@@ -497,14 +494,14 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnMysAdeptAllowPpCareer.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMysAdeptSecondMAGAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnReverseAttributePriorityOrder.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strNuyenFormat != null ? _strNuyenFormat.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strNuyenFormat?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnCompensateSkillGroupKarmaDifference.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnIncreasedImprovedAbilityMultiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowFreeGrids.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowTechnomancerSchooling.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnCyberlimbAttributeBonusCapOverride.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strBookXPath != null ? _strBookXPath.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strExcludeLimbSlot != null ? _strExcludeLimbSlot.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strBookXPath?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strExcludeLimbSlot?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _intCyberlimbAttributeBonusCap;
                 hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
@@ -556,18 +553,18 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ (int) _eBuildMethod;
                 hashCode = (hashCode * 397) ^ _intBuildPoints;
                 hashCode = (hashCode * 397) ^ _intQualityKarmaLimit;
-                hashCode = (hashCode * 397) ^ (_strPriorityArray != null ? _strPriorityArray.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strPriorityTable != null ? _strPriorityTable.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strPriorityArray?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strPriorityTable?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _intSumtoTen;
                 hashCode = (hashCode * 397) ^ _decNuyenMaximumBP.GetHashCode();
                 hashCode = (hashCode * 397) ^ _intAvailability;
-                hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys != null ? _dicCustomDataDirectoryKeys.GetEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories != null ? _setEnabledCustomDataDirectories.GetEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids != null ? _setEnabledCustomDataDirectoryGuids.GetOrderInvariantEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths != null ? _lstEnabledCustomDataDirectoryPaths.GetEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_lstBooks != null ? _lstBooks.GetOrderInvariantEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (BannedWareGrades != null ? BannedWareGrades.GetOrderInvariantEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (RedlinerExcludes != null ? RedlinerExcludes.GetOrderInvariantEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys?.GetEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths?.GetEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_lstBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (BannedWareGrades?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (RedlinerExcludes?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationGroupPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ KarmaRESInitiationGroupPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationOrdealPercent.GetHashCode();
@@ -1375,7 +1372,7 @@ namespace Chummer
                         && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intOrder))
                     {
                         while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
-                            intOrder += 1;
+                            ++intOrder;
                         intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
                         intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
                         dicLoadingCustomDataDirectories.Add(intOrder,
@@ -1951,7 +1948,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
                 {
-                    sbdBookXPath.Append("source = " + strBook.CleanXPath() + " or ");
+                    sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
                 }
             }
             if (sbdBookXPath.Length >= 4)

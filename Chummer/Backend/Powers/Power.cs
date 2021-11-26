@@ -209,7 +209,7 @@ namespace Chummer
                     }
                 }
             }
-            if (blnCreateImprovements && Bonus != null && Bonus.HasChildNodes)
+            if (blnCreateImprovements && Bonus?.HasChildNodes == true)
             {
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
@@ -230,8 +230,6 @@ namespace Chummer
             }
             return true;
         }
-
-
 
         private SourceString _objCachedSourceDetail;
 
@@ -261,7 +259,7 @@ namespace Chummer
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalSettings.Language);
-                if (!(node.TryGetField("id", Guid.TryParse, out _guiSourceID)))
+                if (!node.TryGetField("id", Guid.TryParse, out _guiSourceID))
                 {
                     string strPowerName = Name;
                     int intPos = strPowerName.IndexOf('(');
@@ -657,11 +655,11 @@ namespace Chummer
                     decExtraCost -= (PointsPerLevel + ExtraPointCost);
                     if (decExtraCost >= 0)
                     {
-                        intReturn += 1;
+                        ++intReturn;
                     }
                     for (decimal i = decExtraCost; i >= 1; --i)
                     {
-                        intReturn += 1;
+                        ++intReturn;
                     }
                 }
                 //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
@@ -669,7 +667,7 @@ namespace Chummer
                 {
                     for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
                     {
-                        intReturn += 1;
+                        ++intReturn;
                     }
                 }
                 return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
@@ -1166,8 +1164,9 @@ namespace Chummer
                     + '(' + Rating.ToString(GlobalSettings.CultureInfo) + strSpace + '×' + strSpace + PointsPerLevel.ToString(GlobalSettings.CultureInfo) + ')');
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
                 {
-                    sbdModifier.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement)
-                                       + strSpace + '(' + objImprovement.Rating.ToString(GlobalSettings.CultureInfo) + ')');
+                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                               .Append(CharacterObject.GetObjectName(objImprovement)).Append(strSpace).Append('(')
+                               .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
                 }
                 return sbdModifier.ToString();
             }

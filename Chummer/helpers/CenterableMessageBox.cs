@@ -28,7 +28,7 @@ namespace Chummer
     /// MessageBox "Extension" that also centers itself based on the location of its parent, since the built-in MessageBox cannot do that
     /// https://stackoverflow.com/questions/1732443/center-messagebox-in-parent-form
     /// </summary>
-    public class CenterableMessageBox
+    public static class CenterableMessageBox
     {
         private static IWin32Window _owner;
         private static readonly NativeMethods.HookProc s_HookProc = MessageBoxHookProc;

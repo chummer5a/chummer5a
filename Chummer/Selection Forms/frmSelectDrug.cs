@@ -69,7 +69,7 @@ namespace Chummer
             this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug).ToList();
-            _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
+            _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode);
         }
 
@@ -213,7 +213,7 @@ namespace Chummer
                         int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
                         while (nudRating.Maximum > intMinRating && !xmlDrug.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt, intAvailModifier))
                         {
-                            nudRating.Maximum -= 1;
+                            --nudRating.Maximum;
                         }
                     }
 
@@ -224,7 +224,7 @@ namespace Chummer
                             decCostMultiplier *= 0.9m;
                         while (nudRating.Maximum > intMinRating && !xmlDrug.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                         {
-                            nudRating.Maximum -= 1;
+                            --nudRating.Maximum;
                         }
                     }
                     nudRating.Value = nudRating.Minimum;
@@ -256,7 +256,7 @@ namespace Chummer
                     // Force the Drug to be a particular Grade.
                     if (cboGrade.Enabled)
                         cboGrade.Enabled = false;
-                    objForcedGrade = _lstGrades.FirstOrDefault(x => x.Name == strForceGrade);
+                    objForcedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
                     strForceGrade = objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
                 }
                 else
@@ -265,7 +265,7 @@ namespace Chummer
                     if (_blnLockGrade)
                     {
                         strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
-                        objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
+                        objForcedGrade = _objForcedGrade ?? _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
                     }
                 }
 
@@ -307,7 +307,7 @@ namespace Chummer
                 if (_blnLockGrade)
                 {
                     strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
-                    objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
+                    objForcedGrade = _objForcedGrade ?? _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
                 }
                 PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade);
                 chkBlackMarketDiscount.Checked = false;
@@ -658,15 +658,15 @@ namespace Chummer
                 return new List<ListItem>();
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
+            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = " + objCurrentGrade.Name.CleanXPath() + ")");
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ").Append(objCurrentGrade.Name.CleanXPath()).Append(')');
                 if (objCurrentGrade.SecondHand)
                     sbdFilter.Append(" and not(nosecondhand)");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }
@@ -679,7 +679,7 @@ namespace Chummer
             List<ListItem> lstDrugs = new List<ListItem>();
             int intOverLimit = 0;
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
+            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
             foreach (XPathNavigator xmlDrug in objXmlDrugList)
             {
                 bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
@@ -788,13 +788,13 @@ namespace Chummer
             string strForceGrade = objDrugNode.SelectSingleNode("forcegrade")?.Value;
             if (!string.IsNullOrEmpty(strForceGrade))
             {
-                SelectedGrade = _lstGrades.FirstOrDefault(x => x.Name == strForceGrade);
+                SelectedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
             }
             else
             {
                 strForceGrade = cboGrade.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strForceGrade))
-                    SelectedGrade = _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == cboGrade.SelectedValue?.ToString());
+                    SelectedGrade = _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == cboGrade.SelectedValue?.ToString());
                 else
                     return;
             }

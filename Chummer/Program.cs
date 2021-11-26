@@ -450,7 +450,7 @@ namespace Chummer
                                     string strParameter = strWhatPlugin.Substring(intEndPlugin + 1);
                                     strWhatPlugin = strWhatPlugin.Substring(0, intEndPlugin);
                                     IPlugin objActivePlugin =
-                                        PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == strWhatPlugin);
+                                        PluginLoader.MyActivePlugins.Find(a => a.ToString() == strWhatPlugin);
                                     if (objActivePlugin == null)
                                     {
                                         if (PluginLoader.MyPlugins.All(a => a.ToString() != strWhatPlugin))

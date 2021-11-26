@@ -30,10 +30,7 @@ namespace Chummer.UI.Attributes
 {
     public partial class AttributeControl : UserControl
     {
-        // ConnectionRatingChanged Event Handler.
-        public delegate void ValueChangedHandler(object sender, EventArgs e);
-
-        public event ValueChangedHandler ValueChanged;
+        public event EventHandler ValueChanged;
 
         private readonly CharacterAttrib _objAttribute;
         private int _oldBase;
@@ -103,7 +100,7 @@ namespace Chummer.UI.Attributes
             else
             {
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
-                    _objAttribute.Base -= 1;
+                    --_objAttribute.Base;
                 // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
                 if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
                     _objAttribute.Karma = _objAttribute.KarmaMaximum;
@@ -383,7 +380,6 @@ namespace Chummer.UI.Attributes
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
-
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;

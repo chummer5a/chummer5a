@@ -118,12 +118,12 @@ namespace Chummer
 
             public static bool operator ==(object objX, TransportWrapper objY)
             {
-                return objX?.Equals(objY) ?? objY == null;
+                return objX?.Equals(objY) ?? false;
             }
 
             public static bool operator !=(object objX, TransportWrapper objY)
             {
-                return objX?.Equals(objY) ?? objY == null;
+                return objX?.Equals(objY) ?? false;
             }
 
             public override int GetHashCode()
@@ -1080,7 +1080,7 @@ namespace Chummer
                                 foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objGrade, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
                             }
                             break;
@@ -1105,7 +1105,7 @@ namespace Chummer
                                 foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objGrade, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
                             }
                             break;
@@ -1120,7 +1120,7 @@ namespace Chummer
                                     {
                                         nodGrade.Remove();
                                         treMetamagic.Nodes.Insert(intNewIndex, nodGrade);
-                                        intNewIndex += 1;
+                                        ++intNewIndex;
                                     }
                                 }
                             }
@@ -2102,7 +2102,7 @@ namespace Chummer
                                     ContextMenuStrip = cmsImprovementLocation
                                 };
                                 treImprovements.Nodes.Insert(intNewIndex, objLocation);
-                                intNewIndex += 1;
+                                ++intNewIndex;
                             }
                         }
                         break;
@@ -2154,7 +2154,7 @@ namespace Chummer
                                         objNode.Text = objNewLocation;
                                     }
 
-                                    intNewItemsIndex += 1;
+                                    ++intNewItemsIndex;
                                 }
                             }
                         }
@@ -2178,11 +2178,11 @@ namespace Chummer
                             foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 Tuple<string, TreeNode> objLocationTuple =
-                                    lstMoveNodes.FirstOrDefault(x => x.Item1 == strLocation);
+                                    lstMoveNodes.Find(x => x.Item1 == strLocation);
                                 if (objLocationTuple != null)
                                 {
                                     treImprovements.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                     lstMoveNodes.Remove(objLocationTuple);
                                 }
                             }
@@ -2257,7 +2257,7 @@ namespace Chummer
                                     nodRoot.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
                                 }
 
-                                intNewIndex += 1;
+                                ++intNewIndex;
                             }
                         }
                         break;
@@ -2308,7 +2308,7 @@ namespace Chummer
                                         objNode.Text = objNewLocation.DisplayName();
                                     }
 
-                                    intNewItemsIndex += 1;
+                                    ++intNewItemsIndex;
                                 }
                             }
                         }
@@ -2332,11 +2332,11 @@ namespace Chummer
                             foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 Tuple<Location, TreeNode> objLocationTuple =
-                                    lstMoveNodes.FirstOrDefault(x => x.Item1 == objLocation);
+                                    lstMoveNodes.Find(x => x.Item1 == objLocation);
                                 if (objLocationTuple != null)
                                 {
                                     treSelected.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                     lstMoveNodes.Remove(objLocationTuple);
                                 }
                             }
@@ -2426,7 +2426,7 @@ namespace Chummer
                                 foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objWeapon, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
                                         cmsWeaponAccessory, cmsWeaponAccessoryGear);
                                 }
@@ -2460,7 +2460,7 @@ namespace Chummer
                                 foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objWeapon, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
                                         cmsWeaponAccessory, cmsWeaponAccessoryGear);
                                 }
@@ -2485,7 +2485,7 @@ namespace Chummer
                                 foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objWeapon, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
 
                                 if (nodRoot != null && nodRoot.Nodes.Count == 0)
@@ -2593,7 +2593,7 @@ namespace Chummer
                                 foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objArmor, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                     objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
@@ -2659,7 +2659,7 @@ namespace Chummer
                                 foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objArmor, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                     objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
@@ -2696,7 +2696,7 @@ namespace Chummer
                                 foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objArmor, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
 
                                 if (nodRoot != null && nodRoot.Nodes.Count == 0)
@@ -2768,7 +2768,7 @@ namespace Chummer
                                     (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                 foreach (Gear objGear in objArmorMod.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
-                                intNewIndex += 1;
+                                ++intNewIndex;
                             }
                         }
                         break;
@@ -2805,7 +2805,7 @@ namespace Chummer
                                     (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                 foreach (Gear objGear in objArmorMod.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
-                                intNewIndex += 1;
+                                ++intNewIndex;
                             }
 
                             treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
@@ -2825,7 +2825,7 @@ namespace Chummer
                             foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objArmorMod, intNewIndex);
-                                intNewIndex += 1;
+                                ++intNewIndex;
                             }
 
                             treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
@@ -2907,7 +2907,7 @@ namespace Chummer
                                 {
                                     AddToTree(objGear, intNewIndex);
                                     objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
                             }
                             break;
@@ -2937,7 +2937,7 @@ namespace Chummer
                                     objGear.Children.AddTaggedCollectionChanged(treGear,
                                         (x, y) => objGear.RefreshChildrenGears(treGear, cmsGear, null, y));
                                     objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
 
                                 treGear.SelectedNode = treGear.FindNode(strSelectedId);
@@ -2955,7 +2955,7 @@ namespace Chummer
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objGear, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
 
                                 treGear.SelectedNode = treGear.FindNode(strSelectedId);
@@ -3041,7 +3041,7 @@ namespace Chummer
                                 foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(d, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
                             }
                             break;
@@ -3067,7 +3067,7 @@ namespace Chummer
                                 foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(d, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
 
                                 treGear.SelectedNode = treGear.FindNode(strSelectedId);
@@ -3502,7 +3502,7 @@ namespace Chummer
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
                                                   (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) +
                                                   objVehicle.GearChildren.Count(z => z.Location == null), y));
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
                             }
                             break;
@@ -3674,7 +3674,7 @@ namespace Chummer
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
                                                   (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) +
                                                   objVehicle.GearChildren.Count(z => z.Location != null), y));
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
 
                                 treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -3692,7 +3692,7 @@ namespace Chummer
                                 foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objVehicle, intNewIndex);
-                                    intNewIndex += 1;
+                                    ++intNewIndex;
                                 }
 
                                 treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -5423,8 +5423,8 @@ namespace Chummer
                                                 MakeDirtyWithCharacterUpdate;
                                             objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
                                             objSustainedSpellControl.Dispose();
-                                            i -= 1;
-                                            intSustainedObjects -= 1;
+                                            --i;
+                                            --intSustainedObjects;
                                         }
                                         else if (intMoveUpAmount != 0)
                                         {
@@ -5462,8 +5462,8 @@ namespace Chummer
                                                 MakeDirtyWithCharacterUpdate;
                                             objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
                                             objSustainedSpellControl.Dispose();
-                                            i -= 1;
-                                            intSustainedObjects -= 1;
+                                            --i;
+                                            --intSustainedObjects;
                                         }
                                         else if (intMoveUpAmount != 0)
                                         {
@@ -6152,13 +6152,13 @@ namespace Chummer
 
                         if (blnIsSpirit)
                         {
-                            intSpirits += 1;
+                            ++intSpirits;
                             objSpiritControl.Top = intSpirits * objSpiritControl.Height;
                             panSpirits.Controls.Add(objSpiritControl);
                         }
                         else
                         {
-                            intSprites += 1;
+                            ++intSprites;
                             objSpiritControl.Top = intSprites * objSpiritControl.Height;
                             panSprites.Controls.Add(objSpiritControl);
                         }
@@ -6198,13 +6198,13 @@ namespace Chummer
                                     {
                                         objSpiritControl.Top = intSpirits * objSpiritControl.Height;
                                         panSpirits.Controls.Add(objSpiritControl);
-                                        intSpirits += 1;
+                                        ++intSpirits;
                                     }
                                     else
                                     {
                                         objSpiritControl.Top = intSprites * objSpiritControl.Height;
                                         panSprites.Controls.Add(objSpiritControl);
-                                        intSprites += 1;
+                                        ++intSprites;
                                     }
                                 }
                             }
@@ -6231,8 +6231,8 @@ namespace Chummer
                                                 objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                                 objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                                 objSpiritControl.Dispose();
-                                                i -= 1;
-                                                intSpirits -= 1;
+                                                --i;
+                                                --intSpirits;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
@@ -6254,8 +6254,8 @@ namespace Chummer
                                                 objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                                 objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                                 objSpiritControl.Dispose();
-                                                i -= 1;
-                                                intSprites -= 1;
+                                                --i;
+                                                --intSprites;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
@@ -6289,8 +6289,8 @@ namespace Chummer
                                                 objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                                 objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                                 objSpiritControl.Dispose();
-                                                i -= 1;
-                                                intSpirits -= 1;
+                                                --i;
+                                                --intSpirits;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
@@ -6311,8 +6311,8 @@ namespace Chummer
                                                 objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                                 objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                                 objSpiritControl.Dispose();
-                                                i -= 1;
-                                                intSprites -= 1;
+                                                --i;
+                                                --intSprites;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
@@ -6345,13 +6345,13 @@ namespace Chummer
                                     {
                                         objSpiritControl.Top = intSpirits * objSpiritControl.Height;
                                         panSpirits.Controls.Add(objSpiritControl);
-                                        intSpirits += 1;
+                                        ++intSpirits;
                                     }
                                     else
                                     {
                                         objSpiritControl.Top = intSprites * objSpiritControl.Height;
                                         panSprites.Controls.Add(objSpiritControl);
-                                        intSprites += 1;
+                                        ++intSprites;
                                     }
                                 }
                             }
@@ -6543,7 +6543,7 @@ namespace Chummer
             }
             else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
             {
-                _objCharacter.MainMugshotIndex -= 1;
+                --_objCharacter.MainMugshotIndex;
             }
         }
 

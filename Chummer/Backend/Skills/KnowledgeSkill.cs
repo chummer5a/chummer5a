@@ -322,7 +322,7 @@ namespace Chummer.Backend.Skills
                 foreach (SkillSpecialization objSpec in Specializations)
                 {
                     if (!objSpec.Free && BuyWithKarma)
-                        intSpecCount += 1;
+                        ++intSpecCount;
                 }
                 decimal decSpecCost = CharacterObject.Settings.KarmaKnowledgeSpecialization * intSpecCount;
                 decimal decExtraSpecCost = 0;

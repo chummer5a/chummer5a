@@ -33,7 +33,4 @@ namespace Chummer
 
         public string Text { get; }
     }
-
-    [ComVisible(true)]
-    public delegate void TextEventHandler(object sender, TextEventArgs e);
 }

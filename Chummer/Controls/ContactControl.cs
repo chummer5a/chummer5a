@@ -38,7 +38,7 @@ namespace Chummer
         //private readonly int _intFullHeight = 156;
 
         // Events.
-        public event TextEventHandler ContactDetailChanged;
+        public event EventHandler<TextEventArgs> ContactDetailChanged;
 
         public event EventHandler DeleteContact;
 

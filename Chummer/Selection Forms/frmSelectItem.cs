@@ -65,11 +65,18 @@ namespace Chummer
                             if (objGear.Children.Count > 0)
                             {
                                 // Append the plugin information to the name.
-                                sbdAmmoName.Append(strSpace + '[' + string.Join(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalSettings.Language))) + ']');
+                                sbdAmmoName.Append(strSpace).Append('[')
+                                           .AppendJoin(',' + strSpace,
+                                                       objGear.Children.Select(x => x.CurrentDisplayNameShort))
+                                           .Append(']');
                             }
+
                             if (objGear.Rating > 0)
-                                sbdAmmoName.Append(strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')');
-                            sbdAmmoName.Append(strSpace + 'x' + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdAmmoName.Append(strSpace).Append('(')
+                                           .Append(LanguageManager.GetString(objGear.RatingLabel)).Append(strSpace)
+                                           .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdAmmoName.Append(strSpace).Append('x')
+                                       .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                             lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                         }
 

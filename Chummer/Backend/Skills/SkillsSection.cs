@@ -260,7 +260,7 @@ namespace Chummer.Backend.Skills
                         kno.Specializations.AddRange(skill.Specializations);
                         KnowledgeSkills.AddWithSort(kno, (x, y) =>
                         {
-                            switch (string.Compare(x.Type, y.Type, StringComparison.Ordinal))
+                            switch (string.CompareOrdinal(x.Type, y.Type))
                             {
                                 case 0:
                                     return CompareSkills(x, y);
@@ -802,7 +802,7 @@ namespace Chummer.Backend.Skills
                                 dicSkills.TryAdd(x.Name, x.Id);
                         });
                     },
-                    () => { Parallel.ForEach(KnowledgeSkills, x => { dicSkills.TryAdd(x.Name, x.Id); }); });
+                    () => Parallel.ForEach(KnowledgeSkills, x => dicSkills.TryAdd(x.Name, x.Id)));
                 UpdateUndoSpecific(dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
                 UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
 
@@ -1356,7 +1356,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Replaces substring in the form of {Skill} with 'Skill (Pool)'. Intended to be used by tooltips and similar. 
+        /// Replaces substring in the form of {Skill} with 'Skill (Pool)'. Intended to be used by tooltips and similar.
         /// </summary>
         /// <param name="strInput">Stringbuilder object that contains the input.</param>
         /// <param name="objCultureInfo">Culture type used by the language. Defaults to null, which is then system defaults.</param>
@@ -1398,7 +1398,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Replaces Stringbuilder content in the form of {Active Skill Name} with 'Active Skill Name (Pool)', ie {Athletics} becomes 'Athletics (1)'. Intended to be used by tooltips and similar. 
+        /// Replaces Stringbuilder content in the form of {Active Skill Name} with 'Active Skill Name (Pool)', ie {Athletics} becomes 'Athletics (1)'. Intended to be used by tooltips and similar.
         /// </summary>
         /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
         /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>

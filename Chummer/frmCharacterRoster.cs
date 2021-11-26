@@ -276,7 +276,7 @@ namespace Chummer
                 await Task.WhenAll(
                     Task.Run(() =>
                     {
-                        if (lstFavoritesNodes == null || lstFavorites.Count <= 0 ||
+                        if (lstFavoritesNodes == null || lstFavorites.Count == 0 ||
                             _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                             return;
                         Parallel.For(0, lstFavorites.Count, (i, objState) =>
@@ -312,7 +312,7 @@ namespace Chummer
                     }, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token),
                     Task.Run(() =>
                     {
-                        if (lstRecentsNodes == null || lstRecents.Count <= 0 ||
+                        if (lstRecentsNodes == null || lstRecents.Count == 0 ||
                             _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                             return;
                         Parallel.For(0, lstRecents.Count, (i, objState) =>
@@ -351,7 +351,7 @@ namespace Chummer
             {
                 //swallow this
             }
-            
+
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
@@ -458,7 +458,7 @@ namespace Chummer
 
             await Task.Run(() =>
             {
-                if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count <= 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count == 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                     return;
                 using (LockingDictionary<TreeNode, string> dicWatchNodes = new LockingDictionary<TreeNode, string>())
                 {
@@ -937,7 +937,7 @@ namespace Chummer
         {
             if (treCharacterList.IsNullOrDisposed())
                 return;
-            
+
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t?.Tag is CharacterCache objCache)

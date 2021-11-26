@@ -243,9 +243,9 @@ namespace Chummer
                             (dependency.MinimumVersion != default && x.MyVersion < dependency.MinimumVersion)
                             || (dependency.MaximumVersion != default && x.MyVersion > dependency.MaximumVersion)))
                         {
-                            sbdReturn.AppendLine(string.Format(
-                                                     LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
-                                                     lstEnabledCustomData[0].DisplayName, dependency.DisplayName));
+                            sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
+                                                   lstEnabledCustomData[0].DisplayName, dependency.DisplayName)
+                                     .AppendLine();
                             continue;
                         }
 
@@ -256,9 +256,8 @@ namespace Chummer
                     }
                     if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterSettings.EnabledCustomDataDirectoryInfos.FindLastIndex(x => lstEnabledCustomData.Contains(x)))
                     {
-                        sbdReturn.AppendLine(string.Format(
-                                                 LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
-                                                 lstEnabledCustomData[0].Name, Name));
+                        sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
+                                               lstEnabledCustomData[0].Name, Name).AppendLine();
                     }
                 }
                 else
@@ -289,16 +288,16 @@ namespace Chummer
                 lstEnabledCustomData.Clear();
                 if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
                     lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
-                if (lstEnabledCustomData.Count <= 0)
+                if (lstEnabledCustomData.Count == 0)
                     continue;
                 CustomDataDirectoryInfo objInfoToDisplay;
                 if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
                 {
-                    objInfoToDisplay = lstEnabledCustomData.FirstOrDefault(x =>
-                                                                               (incompatibility.MinimumVersion != default &&
-                                                                                   x.MyVersion >= incompatibility.MinimumVersion)
-                                                                               || (incompatibility.MaximumVersion != default &&
-                                                                                   x.MyVersion <= incompatibility.MaximumVersion));
+                    objInfoToDisplay = lstEnabledCustomData.Find(x =>
+                                                                     (incompatibility.MinimumVersion != default &&
+                                                                      x.MyVersion >= incompatibility.MinimumVersion)
+                                                                     || (incompatibility.MaximumVersion != default &&
+                                                                         x.MyVersion <= incompatibility.MaximumVersion));
                 }
                 else
                     objInfoToDisplay = lstEnabledCustomData[0];
@@ -306,9 +305,8 @@ namespace Chummer
                 //if the version is within the version range add it to the list.
                 if (objInfoToDisplay != default)
                 {
-                    sbdReturn.AppendLine(string.Format(
-                                             LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
-                                             objInfoToDisplay.DisplayName, incompatibility.DisplayName));
+                    sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                                           objInfoToDisplay.DisplayName, incompatibility.DisplayName).AppendLine();
                 }
             }
 

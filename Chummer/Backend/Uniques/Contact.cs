@@ -434,7 +434,7 @@ namespace Chummer
                     return 0;
                 decimal decReturn = Connection + Loyalty;
                 if (Family)
-                    decReturn += 1;
+                    ++decReturn;
                 if (Blackmail)
                     decReturn += 2;
                 decReturn +=

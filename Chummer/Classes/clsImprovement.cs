@@ -2676,8 +2676,6 @@ namespace Chummer
 
         public bool Equals(ImprovementDictionaryKey other)
         {
-            if (other == null)
-                return false;
             return CharacterObject == other.CharacterObject &&
                    ImprovementType == other.ImprovementType &&
                    ImprovementName == other.ImprovementName;
@@ -2709,12 +2707,12 @@ namespace Chummer
 
         public static bool operator ==(object x, ImprovementDictionaryKey y)
         {
-            return x?.Equals(y) ?? y == null;
+            return x?.Equals(y) ?? false;
         }
 
         public static bool operator !=(object x, ImprovementDictionaryKey y)
         {
-            return !(x?.Equals(y) ?? y == null);
+            return !(x?.Equals(y) ?? false);
         }
     }
 
@@ -3282,7 +3280,7 @@ namespace Chummer
             }
 
             decimal decReturn = 0;
-            
+
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && blnUnconditionalOnly)
             {
@@ -3508,7 +3506,7 @@ namespace Chummer
                         sbdFilter.Append('(');
                         foreach (string strCategory in setAllowedCategories)
                         {
-                            sbdFilter.Append("category = " + strCategory.CleanXPath() + " or ");
+                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
                         }
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
@@ -3518,7 +3516,7 @@ namespace Chummer
                         sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                         foreach (string strCategory in setForbiddenCategories)
                         {
-                            sbdFilter.Append("category = " + strCategory.CleanXPath() + " or ");
+                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
                         }
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
@@ -3528,7 +3526,7 @@ namespace Chummer
                         sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
                         foreach (string strName in setAllowedNames)
                         {
-                            sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
+                            sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
                         }
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
@@ -3538,7 +3536,7 @@ namespace Chummer
                         sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                         foreach (string strName in setProcessedSkillNames)
                         {
-                            sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
+                            sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
                         }
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
@@ -3548,7 +3546,7 @@ namespace Chummer
                         sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
                         foreach (string strAttribute in setAllowedLinkedAttributes)
                         {
-                            sbdFilter.Append("attribute = " + strAttribute.CleanXPath() + " or ");
+                            sbdFilter.Append("attribute = ").Append(strAttribute.CleanXPath()).Append(" or ");
                         }
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
@@ -5086,7 +5084,7 @@ namespace Chummer
             if (s_DictionaryTransactions.TryGetValue(objCharacter, out List<TransactingImprovement> lstTransaction))
             {
                 // Remove all of the Improvements that were added.
-                foreach (Improvement objTransactingImprovement in lstTransaction.Select(x => x.ImprovementObject).ToList())
+                foreach (Improvement objTransactingImprovement in lstTransaction.ConvertAll(x => x.ImprovementObject))
                 {
                     RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource, objTransactingImprovement.SourceName);
                     ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType, objTransactingImprovement.ImprovedName);

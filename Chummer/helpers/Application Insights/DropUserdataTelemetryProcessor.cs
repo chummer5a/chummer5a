@@ -76,12 +76,12 @@ namespace Chummer
             switch (item)
             {
                 case TraceTelemetry trace:
-                    trace.Message = trace.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    trace.Message = trace.Message?.Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
                     return;
 
                 case RequestTelemetry req:
                     {
-                        string newurl = req.Url?.ToString().Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                        string newurl = req.Url?.ToString().Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
                         if (!string.IsNullOrEmpty(newurl))
                             req.Url = new Uri(newurl);
                         return;
@@ -95,13 +95,13 @@ namespace Chummer
                         }
                         if (exception.Message == null)
                         {
-                            exception.Message = exception.Exception.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                            exception.Message = exception.Exception.Message?.Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
                         }
 
                         break;
                     }
                 case ExceptionTelemetry exception:
-                    exception.Message = exception.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    exception.Message = exception.Message?.Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
                     break;
             }
         }

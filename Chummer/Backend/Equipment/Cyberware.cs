@@ -525,7 +525,6 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-
             _blnInheritAttributes = objXmlCyberware["inheritattributes"] != null;
             _objGrade = objGrade;
             objXmlCyberware.TryGetStringFieldQuickly("ess", ref _strESS);
@@ -598,7 +597,7 @@ namespace Chummer.Backend.Equipment
                     sbdSubsystem.Append(lstSubSystems[i].InnerText + ',');
                 }
                 if (sbdSubsystem.Length > 0)
-                    sbdSubsystem.Length -= 1;
+                    --sbdSubsystem.Length;
                 _strAllowSubsystems = sbdSubsystem.ToString();
             }
 
@@ -812,10 +811,10 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objPairableCyberware.Location != Location)
                                 // We have found a cyberware with which this one could be paired, so increase count by 1
-                                intCount += 1;
+                                ++intCount;
                             else
                                 // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                intCount -= 1;
+                                --intCount;
                         }
 
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -1581,10 +1580,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (objPairableCyberware.Location != Location)
                                     // We have found a cyberware with which this one could be paired, so increase count by 1
-                                    intCount += 1;
+                                    ++intCount;
                                 else
                                     // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                    intCount -= 1;
+                                    --intCount;
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -1612,10 +1611,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (objPairableCyberware.Location != Location)
                                     // We have found a cyberware with which this one could be paired, so increase count by 1
-                                    intCount += 1;
+                                    ++intCount;
                                 else
                                     // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                    intCount -= 1;
+                                    --intCount;
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -2303,10 +2302,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (objPairableCyberware.Location != Location)
                                     // We have found a cyberware with which this one could be paired, so increase count by 1
-                                    intCount += 1;
+                                    ++intCount;
                                 else
                                     // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                    intCount -= 1;
+                                    --intCount;
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -2345,7 +2344,7 @@ namespace Chummer.Backend.Equipment
                                     objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                             }
 
-                            intCount -= 1;
+                            --intCount;
                         }
                     }
                 }
@@ -2383,9 +2382,9 @@ namespace Chummer.Backend.Equipment
                             foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                             {
                                 if (objPairableCyberware.Location != Location)
-                                    intNotMatchLocationCount += 1;
+                                    ++intNotMatchLocationCount;
                                 else
-                                    intMatchLocationCount += 1;
+                                    ++intMatchLocationCount;
                             }
 
                             // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -2413,7 +2412,7 @@ namespace Chummer.Backend.Equipment
                                     objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                             }
 
-                            intCount -= 1;
+                            --intCount;
                         }
                     }
                 }
@@ -2479,10 +2478,10 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objPairableCyberware.Location != Location)
                                 // We have found a cyberware with which this one could be paired, so increase count by 1
-                                intCount += 1;
+                                ++intCount;
                             else
                                 // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                intCount -= 1;
+                                --intCount;
                         }
 
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -2518,9 +2517,9 @@ namespace Chummer.Backend.Equipment
                         foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                         {
                             if (objPairableCyberware.Location != Location)
-                                intNotMatchLocationCount += 1;
+                                ++intNotMatchLocationCount;
                             else
-                                intMatchLocationCount += 1;
+                                ++intMatchLocationCount;
                         }
 
                         // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -2539,7 +2538,7 @@ namespace Chummer.Backend.Equipment
                                 objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                         }
 
-                        intCount -= 1;
+                        --intCount;
                     }
                 }
             }
@@ -3129,9 +3128,9 @@ namespace Chummer.Backend.Equipment
         /// Ghetto workaround for flagging an object as geneware.
         /// </summary>
         public bool IsGeneware =>
-            (SourceType == Improvement.ImprovementSource.Bioware &&
-             (Category.StartsWith("Genetech", StringComparison.Ordinal) || Category.StartsWith("Genetic Infusions", StringComparison.Ordinal) ||
-              Category.StartsWith("Genemods", StringComparison.Ordinal)));
+            SourceType == Improvement.ImprovementSource.Bioware &&
+            (Category.StartsWith("Genetech", StringComparison.Ordinal) || Category.StartsWith("Genetic Infusions", StringComparison.Ordinal) ||
+             Category.StartsWith("Genemods", StringComparison.Ordinal));
 
         /// <summary>
         /// Total Availability in the program's current language.
@@ -3543,7 +3542,7 @@ namespace Chummer.Backend.Equipment
 
             decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
 
-            if (_objCharacter != null && !_objCharacter.Settings.DontRoundEssenceInternally)
+            if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
             decReturn += Children.Where(objChild => objChild.AddToParentESS).AsParallel()
                 .Sum(objChild => _objCharacter.IsPrototypeTranshuman && objChild.PrototypeTranshuman ? 0 : objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
@@ -3645,7 +3644,7 @@ namespace Chummer.Backend.Equipment
 
             if (Overclocked == strAttributeName)
             {
-                intReturn += 1;
+                ++intReturn;
             }
 
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
@@ -4023,7 +4022,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intValue = lstCustomizationWare.Count > 1
                             ? lstCustomizationWare.Max(s => s.Rating)
-                            : lstCustomizationWare.First().Rating;
+                            : lstCustomizationWare[0].Rating;
                     }
                 }
 
@@ -4048,7 +4047,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (intChildTotalStrength <= 0)
                             continue;
-                        intCyberlimbChildrenNumber += 1;
+                        ++intCyberlimbChildrenNumber;
                         intAverageAttribute += intChildTotalStrength;
                     }
 
@@ -4077,7 +4076,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intBonus = lstEnhancementWare.Count > 1
                             ? lstEnhancementWare.Max(s => s.Rating)
-                            : lstEnhancementWare.First().Rating;
+                            : lstEnhancementWare[0].Rating;
                     }
                 }
                 if (ParentVehicle == null)
@@ -4126,7 +4125,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intValue = lstCustomizationWare.Count > 1
                             ? lstCustomizationWare.Max(s => s.Rating)
-                            : lstCustomizationWare.First().Rating;
+                            : lstCustomizationWare[0].Rating;
                     }
                 }
 
@@ -4151,7 +4150,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (intChildTotalAgility <= 0)
                             continue;
-                        intCyberlimbChildrenNumber += 1;
+                        ++intCyberlimbChildrenNumber;
                         intAverageAttribute += intChildTotalAgility;
                     }
 
@@ -4180,7 +4179,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intBonus = lstEnhancementWare.Count > 1
                             ? lstEnhancementWare.Max(s => s.Rating)
-                            : lstEnhancementWare.First().Rating;
+                            : lstEnhancementWare[0].Rating;
                     }
                 }
                 if (ParentVehicle == null)
@@ -4525,9 +4524,9 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                     {
                         if (objPairableCyberware.Location != Location)
-                            intNotMatchLocationCount += 1;
+                            ++intNotMatchLocationCount;
                         else
-                            intMatchLocationCount += 1;
+                            ++intMatchLocationCount;
                     }
 
                     // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -4546,7 +4545,7 @@ namespace Chummer.Backend.Equipment
                             objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                     }
 
-                    intCount -= 1;
+                    --intCount;
                 }
             }
 
@@ -4567,9 +4566,9 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                     {
                         if (objPairableCyberware.Location != Location)
-                            intNotMatchLocationCount += 1;
+                            ++intNotMatchLocationCount;
                         else
-                            intMatchLocationCount += 1;
+                            ++intMatchLocationCount;
                     }
 
                     // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -4593,7 +4592,7 @@ namespace Chummer.Backend.Equipment
                             objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                     }
 
-                    intCount -= 1;
+                    --intCount;
                 }
             }
 
@@ -4656,7 +4655,7 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
                             sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
                         }
                         else
@@ -5012,7 +5011,7 @@ namespace Chummer.Backend.Equipment
                     if (objSelectedGrade == null)
                     {
                         objSelectedGrade =
-                            (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).Value.FirstOrDefault(x =>
+                            (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).Value.Find(x =>
                                 x.Name == strGradeName);
                     }
 
