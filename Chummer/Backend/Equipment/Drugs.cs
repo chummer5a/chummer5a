@@ -45,10 +45,10 @@ namespace Chummer.Backend.Equipment
         private string _strDuration;
         private string _strDescription = string.Empty;
         private string _strEffectDescription = string.Empty;
-        private Dictionary<string, decimal> _dicCachedAttributes = new Dictionary<string, decimal>();
-        private List<string> _lstCachedInfos = new List<string>();
-        private Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
-        private List<XmlNode> _lstCachedQualities = new List<XmlNode>();
+        private readonly Dictionary<string, decimal> _dicCachedAttributes = new Dictionary<string, decimal>();
+        private readonly List<string> _lstCachedInfos = new List<string>();
+        private readonly Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
+        private readonly List<XmlNode> _lstCachedQualities = new List<XmlNode>();
         private string _strGrade = string.Empty;
         private decimal _decCost;
         private int _intAddictionThreshold;
@@ -487,10 +487,16 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_blnCachedLimitFlag) return _dicCachedLimits;
-                _dicCachedLimits = Components.Where(d => d.ActiveDrugEffect?.Limits.Count > 0)
-                    .SelectMany(d => d.ActiveDrugEffect.Limits)
-                    .GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
+                if (_blnCachedLimitFlag)
+                    return _dicCachedLimits;
+                _dicCachedLimits.Clear();
+                foreach (KeyValuePair<string, int> kvpLimit in Components.Where(d => d.ActiveDrugEffect?.Limits.Count > 0).SelectMany(d => d.ActiveDrugEffect.Limits))
+                {
+                    if (_dicCachedLimits.ContainsKey(kvpLimit.Key))
+                        _dicCachedLimits[kvpLimit.Key] += kvpLimit.Value;
+                    else
+                        _dicCachedLimits.Add(kvpLimit.Key, kvpLimit.Value);
+                }
                 _blnCachedLimitFlag = true;
                 return _dicCachedLimits;
             }
@@ -502,13 +508,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_blnCachedQualityFlag) return _lstCachedQualities;
-                foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
+                if (_blnCachedQualityFlag)
+                    return _lstCachedQualities;
+                foreach (XmlNode objEffect in Components.Where(d => d.ActiveDrugEffect != null).SelectMany(d => d.ActiveDrugEffect.Qualities))
                 {
-                    _lstCachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
+                    if (!_lstCachedQualities.Contains(objEffect))
+                        _lstCachedQualities.Add(objEffect);
                 }
 
-                _lstCachedQualities = _lstCachedQualities.Distinct().ToList();
                 _blnCachedQualityFlag = true;
                 return _lstCachedQualities;
             }
@@ -520,13 +527,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_blnCachedInfoFlag) return _lstCachedInfos;
-                foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
+                if (_blnCachedInfoFlag)
+                    return _lstCachedInfos;
+                foreach (string strInfo in Components.Where(d => d.ActiveDrugEffect != null).SelectMany(d => d.ActiveDrugEffect.Infos))
                 {
-                    _lstCachedInfos.AddRange(d.ActiveDrugEffect.Infos);
+                    if (!_lstCachedInfos.Contains(strInfo))
+                        _lstCachedInfos.Add(strInfo);
                 }
 
-                _lstCachedInfos = _lstCachedInfos.Distinct().ToList();
                 _blnCachedInfoFlag = true;
                 return _lstCachedInfos;
             }
@@ -693,7 +701,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_blnCachedAttributeFlag)
                     return _dicCachedAttributes;
-                _dicCachedAttributes = new Dictionary<string, decimal>();
+                _dicCachedAttributes.Clear();
                 foreach (DrugComponent objComponent in Components)
                 {
                     foreach (DrugEffect objDrugEffect in objComponent.DrugEffects)

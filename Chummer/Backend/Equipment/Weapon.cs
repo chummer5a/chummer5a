@@ -59,7 +59,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoCategory = string.Empty;
         private string _strWeaponType = string.Empty;
         private int _intConceal;
-        private List<Clip> _lstAmmo = new List<Clip>(1);
+        private readonly List<Clip> _lstAmmo = new List<Clip>(1);
 
         //private int _intAmmoRemaining = 0;
         //private int _intAmmoRemaining2 = 0;
@@ -761,7 +761,7 @@ namespace Chummer.Backend.Equipment
             if (objCurrentClip != null)
                 intAmmoCount = objCurrentClip.Ammo;
 
-            _lstAmmo = new List<Clip>(1);
+            _lstAmmo.Clear();
             _intActiveAmmoSlot = 1;
 
             // First try to get the max ammo capacity for this weapon because that will be the capacity of the internal clip
@@ -947,14 +947,14 @@ namespace Chummer.Backend.Equipment
 
             if (blnCopy)
             {
-                _lstAmmo = new List<Clip>(1);
+                _lstAmmo.Clear();
                 _intActiveAmmoSlot = 1;
             }
             else if (!RequireAmmo)
             {
                 if (objNode["clips"] != null)
                 {
-                    _lstAmmo = new List<Clip>(1);
+                    _lstAmmo.Clear();
                     _intActiveAmmoSlot = 1;
                     XmlNode clipNode = objNode["clips"];
 

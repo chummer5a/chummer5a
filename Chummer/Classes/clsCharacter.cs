@@ -243,7 +243,7 @@ namespace Chummer
 
         private readonly ObservableCollection<Drug> _lstDrugs = new ObservableCollection<Drug>();
 
-        //private List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
+        //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>(1);
 
         // Character Version

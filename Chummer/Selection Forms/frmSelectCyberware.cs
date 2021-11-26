@@ -33,7 +33,7 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
-        private List<Grade> _lstGrades;
+        private readonly List<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
@@ -441,11 +441,11 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            _lstGrades = _objCharacter
-                .GetGradeList(
-                    _objMode == Mode.Bioware
-                        ? Improvement.ImprovementSource.Bioware
-                        : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked).ToList();
+            _lstGrades.Clear();
+            _lstGrades.AddRange(_objCharacter.GetGradeList(
+                                    _objMode == Mode.Bioware
+                                        ? Improvement.ImprovementSource.Bioware
+                                        : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked));
             PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
         }
 

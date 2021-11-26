@@ -1415,16 +1415,19 @@ namespace Chummer.Backend.Skills
 
         public virtual string SkillCategory { get; } = string.Empty;
 
-        private List<ListItem> _lstCachedSuggestedSpecializations;
+        private bool _blnRecalculateCachedSuggestedSpecializations = true;
+
+        private readonly List<ListItem> _lstCachedSuggestedSpecializations = new List<ListItem>();
 
         // ReSharper disable once InconsistentNaming
         public IReadOnlyList<ListItem> CGLSpecializations
         {
             get
             {
-                if (_lstCachedSuggestedSpecializations == null)
+                if (_blnRecalculateCachedSuggestedSpecializations)
                 {
-                    _lstCachedSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
+                    _blnRecalculateCachedSuggestedSpecializations = false;
+                    _lstCachedSuggestedSpecializations.Clear();
                     foreach (Improvement objImprovement in CharacterObject.Improvements)
                     {
                         if (objImprovement.ImprovedName != DictionaryKey
@@ -2267,7 +2270,7 @@ namespace Chummer.Backend.Skills
             if (lstNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                 ResetCachedCyberwareRating();
             if (lstNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
-                _lstCachedSuggestedSpecializations = null;
+                _blnRecalculateCachedSuggestedSpecializations = true;
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));

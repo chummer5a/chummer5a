@@ -30,7 +30,7 @@ namespace Chummer
     public partial class frmSelectDrug : Form
     {
         private readonly Character _objCharacter;
-        private List<Grade> _lstGrades;
+        private readonly List<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
@@ -354,7 +354,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug, chkHideBannedGrades.Checked).ToList();
+            _lstGrades.Clear();
+            _lstGrades.AddRange(_objCharacter.GetGradeList(Improvement.ImprovementSource.Drug, chkHideBannedGrades.Checked));
             PopulateGrades();
         }
 

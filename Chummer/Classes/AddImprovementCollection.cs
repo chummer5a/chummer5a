@@ -6320,7 +6320,7 @@ namespace Chummer.Classes
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
-                    frmPickSpellCategory.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(','));
+                    frmPickSpellCategory.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
                     frmPickSpellCategory.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.

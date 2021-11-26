@@ -39,7 +39,7 @@ namespace Chummer
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
-        private HashSet<string> _hashLimitToCategories = new HashSet<string>();
+        private readonly HashSet<string> _setLimitToCategories = new HashSet<string>();
         private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
@@ -97,7 +97,7 @@ namespace Chummer
                     foreach (XmlNode objXmlCategory in xmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
-                        if ((_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
+                        if ((_setLimitToCategories.Count == 0 || _setLimitToCategories.Contains(strInnerText))
                             && BuildWeaponList(_objXmlDocument.SelectNodes(strFilterPrefix + strInnerText.CleanXPath() + "]"), true))
                             _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
@@ -584,8 +584,14 @@ namespace Chummer
         /// </summary>
         public string LimitToCategories
         {
-            // If passed an empty string, consume it and keep _strLimitToCategories as an empty hash.
-            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
+            set
+            {
+                _setLimitToCategories.Clear();
+                if (string.IsNullOrWhiteSpace(value))
+                    return; // If passed an empty string, consume it and keep _strLimitToCategories as an empty hash.
+                foreach (string strCategory in value.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                    _setLimitToCategories.Add(strCategory);
+            }
         }
 
         public Weapon ParentWeapon { get; set; }
@@ -604,9 +610,9 @@ namespace Chummer
             else
             {
                 StringBuilder sbdCategoryFilter = new StringBuilder();
-                if (_hashLimitToCategories?.Count > 0)
+                if (_setLimitToCategories?.Count > 0)
                 {
-                    foreach (string strLoopCategory in _hashLimitToCategories)
+                    foreach (string strLoopCategory in _setLimitToCategories)
                     {
                         sbdCategoryFilter.Append("category = ").Append(strLoopCategory.CleanXPath()).Append(" or ");
                     }

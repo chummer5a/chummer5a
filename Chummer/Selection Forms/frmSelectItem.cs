@@ -29,9 +29,9 @@ namespace Chummer
 {
     public partial class frmSelectItem : Form
     {
-        private List<Gear> _lstGear = new List<Gear>();
-        private List<Vehicle> _lstVehicles = new List<Vehicle>();
-        private List<ListItem> _lstGeneralItems = new List<ListItem>();
+        private readonly List<Gear> _lstGear = new List<Gear>();
+        private readonly List<Vehicle> _lstVehicles = new List<Vehicle>();
+        private readonly List<ListItem> _lstGeneralItems = new List<ListItem>();
         private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
@@ -345,7 +345,8 @@ namespace Chummer
         /// </summary>
         public void SetGearMode(IEnumerable<Gear> lstGears)
         {
-            _lstGear = new List<Gear>(lstGears);
+            _lstGear.Clear();
+            _lstGear.AddRange(lstGears);
             _strMode = "Gear";
         }
 
@@ -354,7 +355,8 @@ namespace Chummer
         /// </summary>
         public void SetVehiclesMode(IEnumerable<Vehicle> lstVehicles)
         {
-            _lstVehicles = new List<Vehicle>(lstVehicles);
+            _lstVehicles.Clear();
+            _lstVehicles.AddRange(lstVehicles);
             _strMode = "Vehicles";
         }
 
@@ -363,7 +365,8 @@ namespace Chummer
         /// </summary>
         public void SetGeneralItemsMode(IEnumerable<ListItem> lstItems)
         {
-            _lstGeneralItems = new List<ListItem>(lstItems);
+            _lstGeneralItems.Clear();
+            _lstGeneralItems.AddRange(lstItems);
             _strMode = "General";
         }
 
@@ -372,7 +375,8 @@ namespace Chummer
         /// </summary>
         public void SetDropdownItemsMode(IEnumerable<ListItem> lstItems)
         {
-            _lstGeneralItems = new List<ListItem>(lstItems);
+            _lstGeneralItems.Clear();
+            _lstGeneralItems.AddRange(lstItems);
             _strMode = "Dropdown";
         }
 

@@ -669,7 +669,7 @@ namespace Chummer.UI.Shared
 
         private sealed class IndexComparer : IComparer<TType>
         {
-            private Dictionary<TType, int> _index;
+            private readonly Dictionary<TType, int> _index = new Dictionary<TType, int>();
 
             public int Compare(TType x, TType y)
             {
@@ -698,7 +698,7 @@ namespace Chummer.UI.Shared
 
             public void Reset(IReadOnlyList<TType> source)
             {
-                _index = new Dictionary<TType, int>();
+                _index.Clear();
                 for (int i = 0; i < source.Count; i++)
                 {
                     _index.Add(source[i], i);
