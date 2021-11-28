@@ -381,7 +381,7 @@ namespace Chummer
                     }
                 }
 
-                if (!_dicCustomDataDirectoryKeys.CollectionEqual(objOther.CustomDataDirectoryKeys))
+                if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
                 {
                     lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
                     _dicCustomDataDirectoryKeys.Clear();
@@ -432,17 +432,41 @@ namespace Chummer
             if (GetHashCode() != other.GetHashCode())
                 return false;
 
-            PropertyInfo[] aobjProperties = GetType().GetProperties();
-            PropertyInfo[] aobjOtherProperties = other.GetType().GetProperties();
-            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
+            PropertyInfo[] aobjPropertyInfos = GetType().GetProperties();
+            List<PropertyInfo> lstPropertyInfos
+                = new List<PropertyInfo>(aobjPropertyInfos.Length);
+            lstPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
+            aobjPropertyInfos = other.GetType().GetProperties();
+            List<PropertyInfo> lstOtherPropertyInfos
+                = new List<PropertyInfo>(aobjPropertyInfos.Length);
+            lstOtherPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
+
+            if (lstPropertyInfos.Count != lstOtherPropertyInfos.Count)
+                return false;
+
+            for (int i = lstPropertyInfos.Count - 1; i >= 0; --i)
             {
-                PropertyInfo objOtherProperty = Array.Find(aobjOtherProperties, x => x.Name == objProperty.Name);
-                if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(other))
+                PropertyInfo objPropertyInfo = lstPropertyInfos[i];
+                int intOtherIndex
+                    = lstOtherPropertyInfos.FindIndex(x => x.Name == objPropertyInfo.Name
+                                                           && x.PropertyType == objPropertyInfo.PropertyType);
+                if (intOtherIndex < 0)
+                    return false;
+                PropertyInfo objOtherPropertyInfo = lstOtherPropertyInfos[intOtherIndex];
+                object objMyValue = objPropertyInfo.GetValue(this);
+                object objOtherValue = objOtherPropertyInfo.GetValue(other);
+                if (objMyValue.Equals(objOtherValue))
+                {
+                    // Removed checked property from the other list, both to speed up future checks and to make last check easier
+                    lstOtherPropertyInfos.RemoveAt(intOtherIndex);
+                }
+                else
                 {
                     return false;
                 }
             }
-            if (aobjOtherProperties.Any(x => x.PropertyType.IsValueType && aobjProperties.All(y => y.Name != x.Name)))
+            // This will only happen if there are any properties in other that haven't been accounted for in this object
+            if (lstOtherPropertyInfos.Count > 0)
                 return false;
 
             if (!_dicCustomDataDirectoryKeys.SequenceEqual(other._dicCustomDataDirectoryKeys))
@@ -450,7 +474,7 @@ namespace Chummer
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return _lstBooks.SequenceEqual(other._lstBooks) && BannedWareGrades.SequenceEqual(other.BannedWareGrades);
+            return _lstBooks.SetEquals(other._lstBooks) && BannedWareGrades.SetEquals(other.BannedWareGrades);
         }
 
         /// <inheritdoc />

@@ -1250,8 +1250,6 @@ namespace Chummer
             if (!_blnLoading)
             {
                 IsDirty = !_objCharacterSettings.Equals(_objReferenceCharacterSettings);
-                cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
-                cmdSave.Enabled = cmdSaveAs.Enabled && !_objCharacterSettings.BuiltInOption;
                 switch (e.PropertyName)
                 {
                     case nameof(CharacterSettings.EnabledCustomDataDirectoryPaths):
@@ -1268,8 +1266,7 @@ namespace Chummer
                 switch (e.PropertyName)
                 {
                     case nameof(CharacterSettings.BuiltInOption):
-                        cmdSave.Enabled = cmdSaveAs.Enabled
-                                          && !_objCharacterSettings.BuiltInOption;
+                        cmdSave.Enabled = IsDirty && IsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption;
                         break;
 
                     case nameof(CharacterSettings.PriorityArray):
@@ -1304,16 +1301,21 @@ namespace Chummer
             get => _blnDirty;
             set
             {
-                if (_blnDirty != value)
+                if (_blnDirty == value)
+                    return;
+                _blnDirty = value;
+                cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
+                if (value)
                 {
-                    _blnDirty = value;
-                    cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
-                    if (!value)
-                    {
-                        _blnWasRenamed = false;
-                        cmdSaveAs.Enabled = false;
-                        cmdSave.Enabled = false;
-                    }
+                    bool blnIsAllTextBoxesLegal = IsAllTextBoxesLegal;
+                    cmdSaveAs.Enabled = blnIsAllTextBoxesLegal;
+                    cmdSave.Enabled = blnIsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption;
+                }
+                else
+                {
+                    _blnWasRenamed = false;
+                    cmdSaveAs.Enabled = false;
+                    cmdSave.Enabled = false;
                 }
             }
         }
