@@ -156,7 +156,7 @@ namespace Chummer
             if (Program.MainForm.ShowMessageBox(
                 string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CharacterOptions_ConfirmDelete"),
                     _objReferenceCharacterSettings.Name),
-                LanguageManager.GetString("MessageTitle_Options_ConfirmDelete"),
+                LanguageManager.GetString("MessageTitle_CharacterOptions_ConfirmDelete"),
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
