@@ -12,6 +12,7 @@ Application Changes:
 - If the prompt asking the user if they wish to automatically apply a Chummer updater is dismissed, it no longer re-appears until the user has closed and later re-opened Chummer.
 - Non-PDF files can no longer be linked in as a sourcebook's PDF file.
 - Fixed a crash when taking the Apprentice quality.
+- Qualities can no longer mysteriously disappear but still leave behind their bonuses when changing priorities.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

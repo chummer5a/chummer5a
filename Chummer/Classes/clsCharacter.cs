@@ -748,26 +748,72 @@ namespace Chummer
                     dicChangedProperties.Add(objPower, new HashSet<string> {nameof(Power.AdeptWayDiscountEnabled)});
                 }
 
-                if (e.Action == NotifyCollectionChangedAction.Add && !IsLoading)
+                if (!IsLoading)
                 {
-                    foreach (Quality objNewItem in e.NewItems)
+                    switch (e.Action)
                     {
-                        // Needed in order to properly process named sources where
-                        // the tooltip was built before the object was added to the character
-                        foreach (Improvement objImprovement in Improvements)
+                        case NotifyCollectionChangedAction.Add:
                         {
-                            if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                continue;
-                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                                objImprovement.GetRelevantPropertyChangers())
+                            foreach (Quality objNewItem in e.NewItems)
                             {
-                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                    out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(strPropertyToUpdate);
-                                else
-                                    dicChangedProperties.Add(objItemToUpdate,
-                                        new HashSet<string> { strPropertyToUpdate });
+                                // Needed in order to properly process named sources where
+                                // the tooltip was built before the object was added to the character
+                                foreach (Improvement objImprovement in Improvements)
+                                {
+                                    if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                        continue;
+                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                        objImprovement.GetRelevantPropertyChangers())
+                                    {
+                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                                             out HashSet<string> setChangedProperties))
+                                            setChangedProperties.Add(strPropertyToUpdate);
+                                        else
+                                            dicChangedProperties.Add(objItemToUpdate,
+                                                                     new HashSet<string> {strPropertyToUpdate});
+                                    }
+                                }
                             }
+
+                            break;
+                        }
+                        case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Quality objOldItem in e.OldItems)
+                            {
+                                objOldItem.DeleteQuality();
+                            }
+
+                            break;
+                        }
+                        case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Quality objOldItem in e.OldItems)
+                            {
+                                objOldItem.DeleteQuality();
+                            }
+                            foreach (Quality objNewItem in e.NewItems)
+                            {
+                                // Needed in order to properly process named sources where
+                                // the tooltip was built before the object was added to the character
+                                foreach (Improvement objImprovement in Improvements)
+                                {
+                                    if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                        continue;
+                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                        objImprovement.GetRelevantPropertyChangers())
+                                    {
+                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                                             out HashSet<string> setChangedProperties))
+                                            setChangedProperties.Add(strPropertyToUpdate);
+                                        else
+                                            dicChangedProperties.Add(objItemToUpdate,
+                                                                     new HashSet<string> { strPropertyToUpdate });
+                                    }
+                                }
+                            }
+
+                            break;
                         }
                     }
                 }
@@ -1203,8 +1249,6 @@ namespace Chummer
                 objQuality.OriginSource == QualitySource.MetatypeRemovable ||
                 objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen).ToList())
             {
-                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
-                    objQuality.InternalId);
                 Qualities.Remove(objQuality);
             }
 

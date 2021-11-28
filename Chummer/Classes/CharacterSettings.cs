@@ -994,7 +994,7 @@ namespace Chummer
                 return false;
             }
 
-            return Load(objXmlDocument.CreateNavigator().SelectSingleNode("//settings"));
+            return Load(objXmlDocument.CreateNavigator().SelectSingleNode(".//settings"));
         }
 
         /// <summary>

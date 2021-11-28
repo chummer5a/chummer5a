@@ -4620,10 +4620,11 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objNode in xmlOldAddQualitiesList)
                 {
                     Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
-                    if (objQuality == null) continue;
+                    if (objQuality == null)
+                        continue;
+                    decReturn += objQuality.DeleteQuality(); // We need to add in the return cost of deleting the quality, so call this manually
                     _objCharacter.Qualities.Remove(objQuality);
-                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
-                        Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
                 }
             }
 

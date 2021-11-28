@@ -222,7 +222,7 @@ namespace Chummer
                                 continue;
                             XmlNode xmlRestrictionNode = objQuality.GetNode()?["required"];
                             if (xmlRestrictionNode != null &&
-                                (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                                (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                             {
                                 lstQualitiesToCheck.Add(objQuality);
                             }
@@ -230,7 +230,7 @@ namespace Chummer
                             {
                                 xmlRestrictionNode = objQuality.GetNode()?["forbidden"];
                                 if (xmlRestrictionNode != null &&
-                                    (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                                    (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                                 {
                                     lstQualitiesToCheck.Add(objQuality);
                                 }

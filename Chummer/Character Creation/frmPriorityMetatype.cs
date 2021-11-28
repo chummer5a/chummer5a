@@ -777,7 +777,7 @@ namespace Chummer
                                 continue;
                             XmlNode xmlRestrictionNode = objQuality.GetNode()?["required"];
                             if (xmlRestrictionNode != null &&
-                                (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                                (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                             {
                                 lstQualitiesToCheck.Add(objQuality);
                             }
@@ -785,7 +785,7 @@ namespace Chummer
                             {
                                 xmlRestrictionNode = objQuality.GetNode()?["forbidden"];
                                 if (xmlRestrictionNode != null &&
-                                    (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                                    (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                                 {
                                     lstQualitiesToCheck.Add(objQuality);
                                 }
@@ -796,8 +796,12 @@ namespace Chummer
                             _xmlCritterPowerDocumentPowersNode, null, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
-                            if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
+                            // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
+                            if (objQuality.GetNode()?.CreateNavigator()
+                                          .RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name) == false)
+                            {
                                 _objCharacter.Qualities.Remove(objQuality);
+                            }
                         }
                     }
 
@@ -884,7 +888,6 @@ namespace Chummer
 
                                     foreach (Quality objQuality in lstOldPriorityQualities)
                                     {
-                                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                                         _objCharacter.Qualities.Remove(objQuality);
                                     }
 

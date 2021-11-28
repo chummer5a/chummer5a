@@ -5468,56 +5468,15 @@ namespace Chummer
                 for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities[i];
-                    if (objLoopQuality.SourceIDString != objSelectedQuality.SourceIDString
-                        || objLoopQuality.Extra != objSelectedQuality.Extra
-                        || objLoopQuality.SourceName != objSelectedQuality.SourceName
-                        || objLoopQuality.Type != objSelectedQuality.Type)
-                        continue;
-                    // Remove the Improvements that were created by the Quality.
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objLoopQuality.InternalId);
-
-                    // Remove any Weapons created by the Quality if applicable.
-                    if (!objLoopQuality.WeaponID.IsEmptyGuid())
-                    {
-                        List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objLoopQuality.InternalId).ToList();
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            if (objWeapon.ParentID != objLoopQuality.InternalId)
-                                continue;
-                            objWeapon.DeleteWeapon();
-                            // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                            if (objWeapon.Parent != null)
-                                objWeapon.Parent.Children.Remove(objWeapon);
-                            else
-                                CharacterObject.Weapons.Remove(objWeapon);
-                        }
-                    }
-
-                    CharacterObject.Qualities.RemoveAt(i);
+                    if (objLoopQuality.SourceIDString == objSelectedQuality.SourceIDString
+                        && objLoopQuality.Extra == objSelectedQuality.Extra
+                        && objLoopQuality.SourceName == objSelectedQuality.SourceName
+                        && objLoopQuality.Type == objSelectedQuality.Type)
+                        CharacterObject.Qualities.RemoveAt(i);
                 }
             }
             else
             {
-                // Remove the Improvements that were created by the Quality.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objSelectedQuality.InternalId);
-
-                // Remove any Weapons created by the Quality if applicable.
-                if (!objSelectedQuality.WeaponID.IsEmptyGuid())
-                {
-                    List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objSelectedQuality.InternalId).ToList();
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        if (objWeapon.ParentID != objSelectedQuality.InternalId)
-                            continue;
-                        objWeapon.DeleteWeapon();
-                        // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                        if (objWeapon.Parent != null)
-                            objWeapon.Parent.Children.Remove(objWeapon);
-                        else
-                            CharacterObject.Weapons.Remove(objWeapon);
-                    }
-                }
-
                 CharacterObject.Qualities.Remove(objSelectedQuality);
             }
             return true;
@@ -8101,26 +8060,8 @@ namespace Chummer
                         // Locate the Quality that was added.
                         foreach (Quality objQuality in CharacterObject.Qualities.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
                         {
-                            // Remove any Improvements that it created.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-
                             // Remove the Quality from thc character.
                             CharacterObject.Qualities.Remove(objQuality);
-
-                            // Remove any Weapons created by the Quality if applicable.
-                            if (!objQuality.WeaponID.IsEmptyGuid())
-                            {
-                                List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objQuality.InternalId).ToList();
-                                foreach (Weapon objWeapon in lstWeapons)
-                                {
-                                    objWeapon.DeleteWeapon();
-                                    // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                                    if (objWeapon.Parent != null)
-                                        objWeapon.Parent.Children.Remove(objWeapon);
-                                    else
-                                        CharacterObject.Weapons.Remove(objWeapon);
-                                }
-                            }
                         }
                     }
                     break;

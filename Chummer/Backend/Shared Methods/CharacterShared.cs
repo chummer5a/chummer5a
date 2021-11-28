@@ -1997,7 +1997,7 @@ namespace Chummer
                     {
                         _objCharacter.Qualities.Remove(objQuality);
                         ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower,
-                            objQuality.InternalId);
+                                                              objQuality.InternalId);
                     }
                 }
             }

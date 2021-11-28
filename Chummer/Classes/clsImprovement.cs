@@ -4894,7 +4894,7 @@ namespace Chummer
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
                         if (objQuality != null)
                         {
-                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                            decReturn += objQuality.DeleteQuality(); // We need to add in the return cost of deleting the quality, so call this manually
                             objCharacter.Qualities.Remove(objQuality);
                         }
                         break;
