@@ -53,7 +53,7 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyPropertyChanged, IEquatable<CharacterSettings>
+    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IEquatable<CharacterSettings>
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -1904,21 +1904,17 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true)
         {
-            string strPath = string.Empty;
-
-            if (excludeHidden)
-            {
-                strPath += "not(hide)";
-            }
+            StringBuilder sbdPath = excludeHidden ? new StringBuilder("not(hide)") : new StringBuilder();
+            
             if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
             {
                 RecalculateBookXPath();
             }
             if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                if (strPath.Length != 0)
-                    strPath += " and ";
-                strPath += _strBookXPath;
+                if (sbdPath.Length != 0)
+                    sbdPath.Append(" and ");
+                sbdPath.Append(_strBookXPath);
             }
             else
             {
@@ -1927,21 +1923,18 @@ namespace Chummer
             }
             if (!DroneMods)
             {
-                if (strPath.Length != 0)
-                    strPath += " and ";
-                strPath += "not(optionaldrone)";
+                if (sbdPath.Length != 0)
+                    sbdPath.Append(" and ");
+                sbdPath.Append("not(optionaldrone)");
             }
 
-            if (strPath.Length > 1)
-                strPath = '(' + strPath + ')';
-            else
-            {
-                // We have only the opening parentheses; clear the string builder so that we return an empty string
-                strPath = string.Empty;
-                // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
-                Utils.BreakIfDebug();
-            }
-            return strPath;
+            if (sbdPath.Length > 1)
+                return '(' + sbdPath.ToString() + ')';
+
+            // We have only the opening parentheses; return an empty string
+            // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
+            Utils.BreakIfDebug();
+            return string.Empty;
         }
 
         /// <summary>

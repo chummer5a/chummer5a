@@ -4790,6 +4790,7 @@ namespace Chummer
             this.cmdSave.AutoSize = true;
             this.cmdSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSave.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdSave.Enabled = false;
             this.cmdSave.Location = new System.Drawing.Point(395, 0);
             this.cmdSave.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdSave.Name = "cmdSave";
@@ -4805,6 +4806,7 @@ namespace Chummer
             this.cmdSaveAs.AutoSize = true;
             this.cmdSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdSaveAs.Enabled = false;
             this.cmdSaveAs.Location = new System.Drawing.Point(297, 0);
             this.cmdSaveAs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdSaveAs.Name = "cmdSaveAs";
