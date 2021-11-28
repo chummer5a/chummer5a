@@ -444,7 +444,7 @@ namespace Chummer
             {
                 IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
-            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true, true));
+            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.Never));
         }
 
         /// <summary>
@@ -462,7 +462,7 @@ namespace Chummer
             {
                 IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
-            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true));
+            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged));
         }
 
         /// <summary>

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -24,37 +25,52 @@ namespace Chummer
     /// <summary>
     /// Helper class that allows inverting the state of a property for databinding.
     /// </summary>
-    internal class NegatableBinding
+    internal class NegatableBinding : Binding
     {
-        private string PropertyName { get; }
-        public object DataSource { get; }
-        public string DataMember { get; }
-        public bool Negate { get; }
-        public bool OneWay { get; }
-
-        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool negate = false, bool oneway = false)
+        /// <inheritdoc />
+        public NegatableBinding(string propertyName, object dataSource, string dataMember) : base(propertyName, dataSource, dataMember)
         {
-            PropertyName = propertyName;
-            DataSource = dataSource;
-            DataMember = dataMember;
-            Negate = negate;
-            OneWay = oneway;
+            ConstructorCommon();
         }
 
-        public static implicit operator Binding(NegatableBinding eb)
+        /// <inheritdoc />
+        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool formattingEnabled) : base(propertyName, dataSource, dataMember, formattingEnabled)
         {
-            var binding = new Binding(eb.PropertyName, eb.DataSource, eb.DataMember, false,
-                eb.OneWay ? DataSourceUpdateMode.Never : DataSourceUpdateMode.OnPropertyChanged);
-            if (!eb.Negate) return binding;
-            binding.Parse += NegateValue;
-            binding.Format += NegateValue;
-
-            return binding;
+            ConstructorCommon();
         }
 
-        private static void NegateValue(object sender, ConvertEventArgs e)
+        /// <inheritdoc />
+        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool formattingEnabled, DataSourceUpdateMode dataSourceUpdateMode) : base(propertyName, dataSource, dataMember, formattingEnabled, dataSourceUpdateMode)
         {
-            e.Value = !(bool)e.Value;
+        }
+
+        /// <inheritdoc />
+        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool formattingEnabled, DataSourceUpdateMode dataSourceUpdateMode, object nullValue) : base(propertyName, dataSource, dataMember, formattingEnabled, dataSourceUpdateMode, nullValue)
+        {
+            ConstructorCommon();
+        }
+
+        /// <inheritdoc />
+        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool formattingEnabled, DataSourceUpdateMode dataSourceUpdateMode, object nullValue, string formatString) : base(propertyName, dataSource, dataMember, formattingEnabled, dataSourceUpdateMode, nullValue, formatString)
+        {
+            ConstructorCommon();
+        }
+
+        /// <inheritdoc />
+        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool formattingEnabled, DataSourceUpdateMode dataSourceUpdateMode, object nullValue, string formatString, IFormatProvider formatInfo) : base(propertyName, dataSource, dataMember, formattingEnabled, dataSourceUpdateMode, nullValue, formatString, formatInfo)
+        {
+            ConstructorCommon();
+        }
+
+        private void ConstructorCommon()
+        {
+            Parse += NegateValue;
+            Format += NegateValue;
+
+            void NegateValue(object sender, ConvertEventArgs e)
+            {
+                e.Value = !(bool)e.Value;
+            }
         }
     }
 }
