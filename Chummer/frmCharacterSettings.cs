@@ -62,6 +62,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objReferenceCharacterSettings = objExistingSettings ?? SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
+            _objCharacterSettings.PropertyChanged += SettingsChanged;
             RebuildCustomDataDirectoryInfos();
         }
 
@@ -521,7 +522,6 @@ namespace Chummer
                 }
             }
             _blnLoading = false;
-            _objCharacterSettings.RecalculateBookXPath();
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
             _blnSourcebookToggle = !_blnSourcebookToggle;
         }
@@ -545,7 +545,6 @@ namespace Chummer
                 _objCharacterSettings.BooksWritable.Add(strBookCode);
             else
                 _objCharacterSettings.BooksWritable.Remove(strBookCode);
-            _objCharacterSettings.RecalculateBookXPath();
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
         }
 
@@ -790,7 +789,8 @@ namespace Chummer
                 if (objXmlBook.SelectSingleNodeAndCacheExpression("permanent") != null)
                 {
                     _setPermanentSourcebooks.Add(strCode);
-                    _objCharacterSettings.BooksWritable.Add(strCode);
+                    if (_objCharacterSettings.BooksWritable.Add(strCode))
+                        _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
                     blnChecked = true;
                 }
                 TreeNode objNode = new TreeNode
@@ -1218,8 +1218,6 @@ namespace Chummer
             nudKarmaSummoningFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSummoningFocus));
             nudKarmaSustainingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSustainingFocus));
             nudKarmaWeaponFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaWeaponFocus));
-
-            _objCharacterSettings.PropertyChanged += SettingsChanged;
         }
 
         private void PopulateSettingsList()

@@ -58,6 +58,7 @@ namespace Chummer
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
         private string _strName = "Standard";
+        private bool _blnDoingCopy;
 
         // Settings.
         // ReSharper disable once InconsistentNaming
@@ -241,6 +242,8 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
+            if (_blnDoingCopy)
+                return;
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
@@ -262,6 +265,10 @@ namespace Chummer
                 _intCachedMinNuyenDecimals = -1;
             if (lstNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
                 _intCachedEssenceDecimals = -1;
+            if (lstNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                RecalculateEnabledCustomDataDirectories();
+            if (lstNamesOfChangedProperties.Contains(nameof(Books)))
+                RecalculateBookXPath();
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
@@ -333,54 +340,85 @@ namespace Chummer
         {
             if (objOther != null)
                 CopyValues(objOther);
-            PropertyChanged += OnPropertyChanged;
         }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(CustomDataDirectoryKeys))
-                RecalculateEnabledCustomDataDirectories();
-        }
-
+        
         public void CopyValues(CharacterSettings objOther)
         {
             if (objOther == null)
                 return;
-            _guiSourceId = objOther._guiSourceId;
-            _strFileName = objOther._strFileName;
-
-            // Copy over via properties in order to trigger OnPropertyChanged as appropriate
-            PropertyInfo[] aobjProperties = GetType().GetProperties();
-            PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
-            foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead))
+            _blnDoingCopy = true;
+            List<string> lstPropertiesToUpdate = new List<string>();
+            try
             {
-                PropertyInfo objProperty = Array.Find(aobjProperties, x => x.Name == objOtherProperty.Name && x.CanWrite);
-                objProperty?.SetValue(this, objOtherProperty.GetValue(objOther, null), null);
+                if (!_guiSourceId.Equals(objOther._guiSourceId))
+                {
+                    lstPropertiesToUpdate.Add(nameof(SourceId));
+                    _guiSourceId = objOther._guiSourceId;
+                }
+
+                if (!_strFileName.Equals(objOther._strFileName))
+                {
+                    lstPropertiesToUpdate.Add(nameof(FileName));
+                    _strFileName = objOther._strFileName;
+                }
+
+                // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+                PropertyInfo[] aobjProperties = GetType().GetProperties();
+                PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
+                foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead && x.CanWrite))
+                {
+                    foreach (PropertyInfo objProperty in Array.FindAll(aobjProperties,
+                                                                       x => x.Name == objOtherProperty.Name
+                                                                            && x.PropertyType
+                                                                            == objOtherProperty.PropertyType))
+                    {
+                        object objMyValue = objProperty.GetValue(this);
+                        object objOtherValue = objOtherProperty.GetValue(objOther);
+                        if (objMyValue.Equals(objOtherValue))
+                            continue;
+                        lstPropertiesToUpdate.Add(objProperty.Name);
+                        objProperty.SetValue(this, objOtherValue);
+                    }
+                }
+
+                if (!_dicCustomDataDirectoryKeys.CollectionEqual(objOther.CustomDataDirectoryKeys))
+                {
+                    lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                    _dicCustomDataDirectoryKeys.Clear();
+                    foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+                    {
+                        _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
+                    }
+                }
+
+                if (!_lstBooks.SetEquals(objOther._lstBooks))
+                {
+                    lstPropertiesToUpdate.Add(nameof(Books));
+                    _lstBooks.Clear();
+                    foreach (string strBook in objOther._lstBooks)
+                    {
+                        _lstBooks.Add(strBook);
+                    }
+                }
+
+                if (!BannedWareGrades.SetEquals(objOther.BannedWareGrades))
+                {
+                    lstPropertiesToUpdate.Add(nameof(BannedWareGrades));
+                    BannedWareGrades.Clear();
+                    foreach (string strGrade in objOther.BannedWareGrades)
+                    {
+                        BannedWareGrades.Add(strGrade);
+                    }
+                }
+
+                // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
+            }
+            finally
+            {
+                _blnDoingCopy = false;
             }
 
-            OnPropertyChanged(nameof(SourceId));
-
-            _dicCustomDataDirectoryKeys.Clear();
-            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
-            {
-                _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
-            }
-            RecalculateEnabledCustomDataDirectories();
-
-            _lstBooks.Clear();
-            foreach (string strBook in objOther._lstBooks)
-            {
-                _lstBooks.Add(strBook);
-            }
-            RecalculateBookXPath();
-
-            BannedWareGrades.Clear();
-            foreach (string strGrade in objOther.BannedWareGrades)
-            {
-                BannedWareGrades.Add(strGrade);
-            }
-
-            // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
+            OnMultiplePropertyChanged(lstPropertiesToUpdate.ToArray());
         }
 
         public bool Equals(CharacterSettings other)
@@ -1351,7 +1389,6 @@ namespace Chummer
                         _lstBooks.Add(xmlBook.Value);
                 }
             }
-            RecalculateBookXPath();
 
             // Load Custom Data Directory names.
             int intTopMostOrder = 0;
@@ -1521,6 +1558,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(xmlBook.Value))
                     _lstBooks.Add(xmlBook.Value);
             }
+
+            RecalculateBookXPath();
 
             // Used to legacy sweep build settings.
             XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild");
