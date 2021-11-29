@@ -973,55 +973,94 @@ namespace Chummer.Backend.Equipment
                         () =>
                         {
                             blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                               string.Empty, "Left")
-                                           && (string.IsNullOrEmpty(BlocksMounts)
-                                               || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                && x.Location == "Left"
-                                                                                && BlocksMounts
-                                                                                    .SplitNoAlloc(',',
-                                                                                        StringSplitOptions.RemoveEmptyEntries)
-                                                                                    .Contains(x.HasModularMount)
-                                                                                && (string.IsNullOrEmpty(
-                                                                                        MountToLimbType(x.HasModularMount))
-                                                                                    || _objCharacter.LimbCount(
-                                                                                        MountToLimbType(x.HasModularMount)) /
-                                                                                    2 <= (dicNumLeftMountBlockers.ContainsKey(
-                                                                                        x.HasModularMount)
-                                                                                        ? dicNumLeftMountBlockers[
-                                                                                              x.HasModularMount] + LimbSlotCount
-                                                                                        : LimbSlotCount))))
-                                           && (string.IsNullOrEmpty(HasModularMount)
-                                               || !dicNumLeftMountBlockers.ContainsKey(HasModularMount)
-                                               || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
-                                                    || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
-                                                    dicNumLeftMountBlockers[HasModularMount]));
+                                               string.Empty, "Left");
+                            if (!blnAllowLeft)
+                                return;
+                            if (!string.IsNullOrEmpty(HasModularMount)
+                                && dicNumLeftMountBlockers.ContainsKey(HasModularMount))
+                            {
+                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                                blnAllowLeft = !string.IsNullOrEmpty(strLimbTypeOfMount)
+                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= dicNumLeftMountBlockers[HasModularMount];
+                                if (!blnAllowLeft)
+                                    return;
+                            }
+                            if (string.IsNullOrEmpty(BlocksMounts))
+                                return;
+                            HashSet<string> setBlocksMounts = BlocksMounts
+                                                              .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                              .ToHashSet();
+                            foreach (Cyberware x in lstCyberwareToCheck)
+                            {
+                                if (string.IsNullOrEmpty(x.HasModularMount))
+                                    continue;
+                                if (x.Location != "Left")
+                                    continue;
+                                if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    continue;
+                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                {
+                                    blnAllowLeft = false;
+                                    return;
+                                }
+
+                                int intLimbSlotCount = LimbSlotCount;
+                                if (dicNumLeftMountBlockers.ContainsKey(x.HasModularMount))
+                                    intLimbSlotCount += dicNumLeftMountBlockers[x.HasModularMount];
+
+                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                {
+                                    blnAllowLeft = false;
+                                    return;
+                                }
+                            }
                         },
                         () =>
                         {
                             blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                                string.Empty, "Right")
-                                            && (string.IsNullOrEmpty(BlocksMounts)
-                                                || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                 && x.Location == "Right"
-                                                                                 && BlocksMounts
-                                                                                     .SplitNoAlloc(',',
-                                                                                         StringSplitOptions.RemoveEmptyEntries)
-                                                                                     .Contains(x.HasModularMount)
-                                                                                 && (string.IsNullOrEmpty(
-                                                                                         MountToLimbType(x.HasModularMount))
-                                                                                     || _objCharacter.LimbCount(
-                                                                                         MountToLimbType(x.HasModularMount)) /
-                                                                                     2 <= (dicNumRightMountBlockers.ContainsKey(
-                                                                                         x.HasModularMount)
-                                                                                         ? dicNumRightMountBlockers[
-                                                                                               x.HasModularMount] +
-                                                                                           LimbSlotCount
-                                                                                         : LimbSlotCount))))
-                                            && (string.IsNullOrEmpty(HasModularMount)
-                                                || !dicNumRightMountBlockers.ContainsKey(HasModularMount)
-                                                || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
-                                                     || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
-                                                     dicNumRightMountBlockers[HasModularMount]));
+                                               string.Empty, "Right");
+                            if (!blnAllowRight)
+                                return;
+                            if (!string.IsNullOrEmpty(HasModularMount)
+                                && dicNumRightMountBlockers.ContainsKey(HasModularMount))
+                            {
+                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                                blnAllowRight = !string.IsNullOrEmpty(strLimbTypeOfMount)
+                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= dicNumRightMountBlockers[HasModularMount];
+                                if (!blnAllowRight)
+                                    return;
+                            }
+                            if (string.IsNullOrEmpty(BlocksMounts))
+                                return;
+                            HashSet<string> setBlocksMounts = BlocksMounts
+                                                              .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                              .ToHashSet();
+                            foreach (Cyberware x in lstCyberwareToCheck)
+                            {
+                                if (string.IsNullOrEmpty(x.HasModularMount))
+                                    continue;
+                                if (x.Location != "Right")
+                                    continue;
+                                if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    continue;
+                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                {
+                                    blnAllowRight = false;
+                                    return;
+                                }
+
+                                int intLimbSlotCount = LimbSlotCount;
+                                if (dicNumRightMountBlockers.ContainsKey(x.HasModularMount))
+                                    intLimbSlotCount += dicNumRightMountBlockers[x.HasModularMount];
+
+                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                {
+                                    blnAllowRight = false;
+                                    return;
+                                }
+                            }
                         });
                     // Only one side is allowed.
                     if (blnAllowLeft != blnAllowRight)

@@ -14,6 +14,9 @@ Application Changes:
 - Fixed a crash when taking the Apprentice quality.
 - Qualities can no longer mysteriously disappear but still leave behind their bonuses when changing priorities.
 - Settings in the Character Settings menu are now properly updated when the settings selection is changed. Fixes #4620.
+- Encumbrance penalties and custom improvements can now drop attribute values to zero. Having all limbs replaced with cyberlimbs with attribute values of zero can also drop attribute values to zero now as well.
+- Cyberarms and modular shoulder arms can now interact properly with Shiva Arms 2.
+- Encumbrance penalties to Agility that are greater than the attribute's base value no longer artificially lower the character's average Agility when they also have cyberlimbs. Fixes #4625.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
