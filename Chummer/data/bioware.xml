@@ -286,16 +286,12 @@
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 31000</cost>
       <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -309,16 +305,12 @@
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 32000</cost>
       <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -3471,17 +3463,13 @@
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 25000</cost>
-      <bonus>
+      <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name precedence="0">AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>
@@ -3495,16 +3483,12 @@
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 20000</cost>
       <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>
