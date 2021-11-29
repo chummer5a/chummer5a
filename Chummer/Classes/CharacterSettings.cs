@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -53,7 +52,7 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IEquatable<CharacterSettings>
+    public sealed class CharacterSettings : INotifyMultiplePropertyChanged
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -421,22 +420,22 @@ namespace Chummer
             OnMultiplePropertyChanged(lstPropertiesToUpdate.ToArray());
         }
 
-        public bool Equals(CharacterSettings other)
+        public bool HasIdenticalSettings(CharacterSettings objOther)
         {
-            if (other == null)
+            if (objOther == null)
                 return false;
-            if (_guiSourceId != other._guiSourceId)
+            if (_guiSourceId != objOther._guiSourceId)
                 return false;
-            if (_strFileName != other._strFileName)
+            if (_strFileName != objOther._strFileName)
                 return false;
-            if (GetHashCode() != other.GetHashCode())
+            if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
                 return false;
 
             PropertyInfo[] aobjPropertyInfos = GetType().GetProperties();
             List<PropertyInfo> lstPropertyInfos
                 = new List<PropertyInfo>(aobjPropertyInfos.Length);
             lstPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
-            aobjPropertyInfos = other.GetType().GetProperties();
+            aobjPropertyInfos = objOther.GetType().GetProperties();
             List<PropertyInfo> lstOtherPropertyInfos
                 = new List<PropertyInfo>(aobjPropertyInfos.Length);
             lstOtherPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
@@ -454,7 +453,7 @@ namespace Chummer
                     return false;
                 PropertyInfo objOtherPropertyInfo = lstOtherPropertyInfos[intOtherIndex];
                 object objMyValue = objPropertyInfo.GetValue(this);
-                object objOtherValue = objOtherPropertyInfo.GetValue(other);
+                object objOtherValue = objOtherPropertyInfo.GetValue(objOther);
                 if (objMyValue.Equals(objOtherValue))
                 {
                     // Removed checked property from the other list, both to speed up future checks and to make last check easier
@@ -469,23 +468,21 @@ namespace Chummer
             if (lstOtherPropertyInfos.Count > 0)
                 return false;
 
-            if (!_dicCustomDataDirectoryKeys.SequenceEqual(other._dicCustomDataDirectoryKeys))
+            if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther._dicCustomDataDirectoryKeys))
                 return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return _lstBooks.SetEquals(other._lstBooks) && BannedWareGrades.SetEquals(other.BannedWareGrades);
+            return _lstBooks.SetEquals(objOther._lstBooks) && BannedWareGrades.SetEquals(objOther.BannedWareGrades);
         }
 
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            return obj is CharacterSettings objOther && Equals(objOther);
-        }
-
-        /// <inheritdoc />
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-        public override int GetHashCode()
+        /// <summary>
+        /// Needed because it's not a strict replacement for GetHashCode().
+        /// Gets a number based on every single private property of the setting.
+        /// If two settings have unequal Hash Codes, they will never actually be equal.
+        /// </summary>
+        /// <returns></returns>
+        public int GetEquatableHashCode()
         {
             unchecked
             {

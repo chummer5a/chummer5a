@@ -7434,7 +7434,7 @@ namespace Chummer
             {
                 if (ReferenceEquals(_objSettings, value))
                     return;
-                bool blnActuallyDifferentSettings = !_objSettings.Equals(value);
+                bool blnActuallyDifferentSettings = !_objSettings.HasIdenticalSettings(value);
                 if (_objSettings != null)
                     _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
                 _objSettings = value;

@@ -1249,7 +1249,7 @@ namespace Chummer
         {
             if (!_blnLoading)
             {
-                IsDirty = !_objCharacterSettings.Equals(_objReferenceCharacterSettings);
+                IsDirty = !_objCharacterSettings.HasIdenticalSettings(_objReferenceCharacterSettings);
                 switch (e.PropertyName)
                 {
                     case nameof(CharacterSettings.EnabledCustomDataDirectoryPaths):
