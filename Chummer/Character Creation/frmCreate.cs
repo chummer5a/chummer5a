@@ -8849,7 +8849,7 @@ namespace Chummer
                 var intSpritePointsUsed = CharacterCalculations.SpritePointsUsed(CharacterObject, CharacterObjectSettings);
                 lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
 
-                var intFormsPointsUsed = CharacterCalculations.CalculateIntFormsPointsUsed(CharacterObject);
+                var intFormsPointsUsed = CharacterCalculations.CalculateBPUsedByComplexForms(CharacterObject);
                 lblComplexFormsBP.Text =
                     StaticCharacterStrings.FormComplexFormsBPString(CharacterObject, strPoints, strColon, strOf,
                         intFormsPointsUsed);
