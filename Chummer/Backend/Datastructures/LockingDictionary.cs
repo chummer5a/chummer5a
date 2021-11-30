@@ -172,7 +172,7 @@ namespace Chummer
             }
             return true;
         }
-        
+
         /// <summary>
         /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
         /// </summary>

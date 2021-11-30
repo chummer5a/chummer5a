@@ -109,16 +109,37 @@ namespace Chummer
             return lstItems; // faster and lighter on memory than yield return
         }
 
+        /// <summary>
+        /// Syntactic sugar for LINQ Any() call.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool Exists<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             return lstCollection.Any(x => predicate(x));
         }
 
+        /// <summary>
+        /// Syntactic sugar for LINQ FirstOrDefault call.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static T Find<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             return lstCollection.FirstOrDefault(x => predicate(x));
         }
 
+        /// <summary>
+        /// Syntactic sugar for LINQ LastOrDefault call.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static T FindLast<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             return lstCollection.LastOrDefault(x => predicate(x));

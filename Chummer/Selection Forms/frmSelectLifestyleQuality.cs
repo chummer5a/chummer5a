@@ -72,7 +72,9 @@ namespace Chummer
         {
             // Populate the Quality Category list.
             using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            {
                 if (objXmlCategoryList?.Count > 0)
+                {
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         string strCategory = objXmlCategory.InnerText;
@@ -81,6 +83,9 @@ namespace Chummer
                             _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                         }
                     }
+                }
+            }
+
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -248,7 +253,7 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down when lstLifestyleQualities.SelectedIndex + 1 < lstLifestyleQualities.Items.Count:
-                    lstLifestyleQualities.SelectedIndex += 1;
+                    ++lstLifestyleQualities.SelectedIndex;
                     break;
 
                 case Keys.Down:
@@ -261,7 +266,7 @@ namespace Chummer
                         break;
                     }
                 case Keys.Up when lstLifestyleQualities.SelectedIndex - 1 >= 0:
-                    lstLifestyleQualities.SelectedIndex -= 1;
+                    --lstLifestyleQualities.SelectedIndex;
                     break;
 
                 case Keys.Up:
@@ -335,7 +340,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
-                sbdFilter.Append(" and category = " + strCategory.CleanXPath());
+                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
             }
             else
             {
@@ -343,12 +348,12 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
+                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
             }
 
@@ -357,7 +362,7 @@ namespace Chummer
                 sbdFilter.Append(" and (name != \"Dug a Hole\")");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
             using (XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + sbdFilter + "]"))
@@ -465,7 +470,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        sbdForbidden.Append(Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalSettings.Language));
+                                        sbdForbidden.AppendLine().Append('\t').Append(objQuality.CurrentDisplayNameShort);
                                     }
                                 }
                                 break;
@@ -478,7 +483,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        sbdForbidden.Append(Environment.NewLine + '\t' + objQuality.CurrentDisplayName);
+                                        sbdForbidden.AppendLine().Append('\t').Append(objQuality.CurrentDisplayName);
                                     }
                                 }
                                 break;
@@ -490,7 +495,7 @@ namespace Chummer
                                     blnRequirementForbidden = true;
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objXmlForbidden.InnerText.CleanXPath() + "]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objXmlForbidden.InnerText.CleanXPath() + "]");
-                                    sbdForbidden.Append(Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText));
+                                    sbdForbidden.AppendLine().Append('\t').Append(objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                 }
                                 break;
 
@@ -501,7 +506,7 @@ namespace Chummer
                                     blnRequirementForbidden = true;
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = " + objXmlForbidden.InnerText.CleanXPath() + "]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/categories/category[. = " + objXmlForbidden.InnerText.CleanXPath() + "]");
-                                    sbdForbidden.Append(Environment.NewLine + '\t' + (objNode.Attributes["translate"]?.InnerText ?? objXmlForbidden.InnerText));
+                                    sbdForbidden.AppendLine().Append('\t').Append(objNode.Attributes["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                 }
                                 break;
 
@@ -512,7 +517,7 @@ namespace Chummer
                                     blnRequirementForbidden = true;
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = " + objXmlForbidden.InnerText.CleanXPath() + "]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = " + objXmlForbidden.InnerText.CleanXPath() + "]");
-                                    sbdForbidden.Append(Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText));
+                                    sbdForbidden.AppendLine().Append('\t').Append(objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                 }
                                 break;
 
@@ -524,7 +529,7 @@ namespace Chummer
                                     if (objXmlCheck["metagenic"]?.InnerText == bool.TrueString)
                                     {
                                         blnRequirementForbidden = true;
-                                        sbdForbidden.Append(Environment.NewLine + '\t' + objQuality.CurrentDisplayName);
+                                        sbdForbidden.AppendLine().Append('\t').Append(objQuality.CurrentDisplayName);
                                         break;
                                     }
                                 }
@@ -650,12 +655,12 @@ namespace Chummer
                                         _objCritterDocument.SelectSingleNode(
                                             "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
                                             objXmlRequired.InnerText.CleanXPath() + "]");
-                                    sbdThisRequirement.Append(Environment.NewLine + '\t' + objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t').Append(objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
 
                             case "inherited":
-                                sbdThisRequirement.Append(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit"));
+                                sbdThisRequirement.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_SelectQuality_Inherit"));
                                 break;
 
                             case "careerkarma":
@@ -664,10 +669,10 @@ namespace Chummer
                                     GlobalSettings.InvariantCultureInfo))
                                     blnOneOfMet = true;
                                 else
-                                    sbdThisRequirement.Append(Environment.NewLine + '\t' + string.Format(
+                                    sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
                                         GlobalSettings.CultureInfo,
                                         LanguageManager.GetString("Message_SelectQuality_RequireKarma"),
-                                        objXmlRequired.InnerText));
+                                        objXmlRequired.InnerText);
                                 break;
 
                             case "ess":
@@ -937,15 +942,13 @@ namespace Chummer
                                         _objCritterDocument.SelectSingleNode(
                                             "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
                                             objXmlRequired.InnerText.CleanXPath() + "]");
-                                    sbdThisRequirement.Append(
-                                        Environment.NewLine + '\t' + objNode["translate"]?.InnerText ??
-                                        objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t').Append(objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
 
                             case "inherited":
-                                sbdThisRequirement.Append(Environment.NewLine + '\t' +
-                                                          LanguageManager.GetString("Message_SelectQuality_Inherit"));
+                                sbdThisRequirement.AppendLine().Append('\t')
+                                                  .Append(LanguageManager.GetString("Message_SelectQuality_Inherit"));
                                 break;
 
                             case "careerkarma":
@@ -954,11 +957,10 @@ namespace Chummer
                                     GlobalSettings.InvariantCultureInfo))
                                     blnFound = true;
                                 else
-                                    sbdThisRequirement.Append(Environment.NewLine + '\t' +
-                                                              string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString(
-                                                                      "Message_SelectQuality_RequireKarma"),
-                                                                  objXmlRequired.InnerText));
+                                    sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
+                                        GlobalSettings.CultureInfo,
+                                        LanguageManager.GetString("Message_SelectQuality_RequireKarma"),
+                                        objXmlRequired.InnerText);
                                 break;
 
                             case "ess":

@@ -411,7 +411,7 @@ namespace Chummer
                             objFilter.Append("not(");
                             foreach (string strName in setProcessedSkillNames)
                             {
-                                objFilter.Append("name = " + strName.CleanXPath() + " or ");
+                                objFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
                             }
                             objFilter.Length -= 4;
                             objFilter.Append(')');

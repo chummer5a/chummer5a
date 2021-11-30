@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -39,7 +38,7 @@ namespace Chummer
 
         #endregion Properties
 
-        private List<Character> _lstCharacters = new List<Character>(5);
+        private readonly List<Character> _lstCharacters = new List<Character>(5);
         private int _intIndex;
         private int _intRound;
         private bool _blnFinishedCombatTurn;
@@ -233,7 +232,7 @@ namespace Chummer
                 }
 
                 chkBoxChummer.SelectedIndex = _intIndex;
-                _intIndex += 1;
+                ++_intIndex;
             }
         }
 
@@ -243,7 +242,7 @@ namespace Chummer
 
         private void btnSort_Click(object sender, EventArgs e)
         {
-            _lstCharacters = _lstCharacters.OrderByDescending(o => o.InitRoll).ToList();
+            _lstCharacters.Sort((a, b) => -a.InitRoll.CompareTo(b.InitRoll));
             chkBoxChummer.Items.Clear();
             foreach (Character character in _lstCharacters)
                 chkBoxChummer.Items.Add(character);
@@ -283,7 +282,7 @@ namespace Chummer
                 _lstCharacters.RemoveAt(index);
                 _lstCharacters.Insert(tempIndex, character);
                 // back up one for indexing purposes
-                _intIndex -= 1;
+                --_intIndex;
                 ResetListBoxChummers();
             }
         }

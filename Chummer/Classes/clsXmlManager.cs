@@ -185,7 +185,7 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            
+
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
             List<string> lstKey = new List<string> {strLanguage, strPath};
@@ -675,7 +675,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
         /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
-        /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in in <paramref name="lstPaths"/>.</returns>
+        /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in <paramref name="lstPaths"/>.</returns>
         private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyCollection<string> lstPaths)
         {
             List<string> lstReturn = new List<string>();
@@ -729,12 +729,12 @@ namespace Chummer
                                 StringBuilder sbdFilter = new StringBuilder();
                                 XmlNode xmlIdNode = objType["id"];
                                 if (xmlIdNode != null)
-                                    sbdFilter.Append("id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    sbdFilter.Append("id = ").Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
                                 else
                                 {
                                     xmlIdNode = objType["name"];
                                     if (xmlIdNode != null)
-                                        sbdFilter.Append("name = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                        sbdFilter.Append("name = ").Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
                                 }
 
                                 // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -746,7 +746,7 @@ namespace Chummer
                                         {
                                             if (sbdFilter.Length > 0)
                                                 sbdFilter.Append(" and ");
-                                            sbdFilter.Append(objExtraId.Name + " = " + objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                            sbdFilter.Append(objExtraId.Name).Append(" = ").Append(objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
                                         }
                                     }
                                 }
@@ -939,7 +939,7 @@ namespace Chummer
                     XmlNode objAmendingNodeId = xmlAmendingNode["id"];
                     if (objAmendingNodeId != null)
                     {
-                        sbdFilter.Append("id = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
+                        sbdFilter.Append("id = ").Append(objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                     }
                     else
                     {
@@ -948,7 +948,7 @@ namespace Chummer
                         {
                             // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node
                             // if there are other nodes present in the amending node or if a remove operation is specified (since that only requires an id node).
-                            sbdFilter.Append("name = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
+                            sbdFilter.Append("name = ").Append(objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                         }
                     }
                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -960,7 +960,7 @@ namespace Chummer
                             {
                                 if (sbdFilter.Length > 0)
                                     sbdFilter.Append(" and ");
-                                sbdFilter.Append(objExtraId.Name + " = " + objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                sbdFilter.Append(objExtraId.Name).Append(" = ").Append(objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
                             }
                         }
                     }
@@ -1155,7 +1155,7 @@ namespace Chummer
                                                                 continue;
                                                             }
                                                         }
-                                                        
+
                                                         break;
                                                     }
                                                 }

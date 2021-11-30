@@ -220,7 +220,7 @@ namespace Chummer.Backend.Skills
                         _intCachedCareerIncrease = 0;
                     else
                     {
-                        var firstOrDefault = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                        var firstOrDefault = _lstAffectedSkills.Find(x => x.Enabled);
                         if (firstOrDefault != null)
                         {
                             int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;
@@ -238,7 +238,7 @@ namespace Chummer.Backend.Skills
 
                     if (_intCachedCareerIncrease > 0)
                     {
-                        Skill objSkill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                        Skill objSkill = _lstAffectedSkills.Find(x => x.Enabled);
                         if (objSkill != null)
                         {
                             foreach (Skill objDisabledSkill in _lstAffectedSkills)
@@ -291,7 +291,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int RatingMaximum => (_objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6);
+        public int RatingMaximum => _objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6;
 
         public void Upgrade()
         {
@@ -317,7 +317,7 @@ namespace Chummer.Backend.Skills
                 CharacterObject.Karma -= intPrice;
             }
 
-            Karma += 1;
+            ++Karma;
         }
 
         #endregion Core calculations
@@ -347,12 +347,11 @@ namespace Chummer.Backend.Skills
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
             objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup,
-                (l, r) => string.Compare(l.CurrentDisplayName, r.CurrentDisplayName, StringComparison.Ordinal),
+                (l, r) => string.CompareOrdinal(l.CurrentDisplayName, r.CurrentDisplayName),
                 (l, r) =>
                 {
-                    foreach (Skill x in r.SkillList)
-                        if (!l.SkillList.Contains(x))
-                            l.SkillList.Add(x);
+                    foreach (Skill x in r.SkillList.Where(x => !l.SkillList.Contains(x)))
+                        l.SkillList.Add(x);
                 });
 
             return objNewGroup;
@@ -596,7 +595,8 @@ namespace Chummer.Backend.Skills
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    s.AppendLine(LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpace + string.Join(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)));
+                    s.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
+                     .AppendJoin(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)).AppendLine();
                 }
 
                 if (IsDisabled)

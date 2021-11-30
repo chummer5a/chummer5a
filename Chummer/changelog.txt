@@ -7,12 +7,31 @@ Application Changes:
 - Fixed Gear not using Restricted Gear correctly. Possibly needs more testing, but initial efforts seem correct. 
 - Some changes to logic on how usage of restricted gear is displayed.
 - Adept Powers, AI Programs, Metamagic Arts, Complex Forms, Critter Powers, Mentor Spirits, Metamagics, Spells, and Weapon Mounts should now automatically fetch notes from linked PDFs.
-
-New Strings:
-- String_GameplayOption
+- Mugshot compression settings should now properly get saved with other global settings.
+- Added an option to have Chummer automatically set the lossy compression quality for mugshots in save files instead of using the same, manually defined setting for all images. Using this automatic setting, larger images will be saved with lower Jpeg quality settings because Jpeg artifacts will be less visible in them, while smaller images get saved with higher quality settings.
+- If the prompt asking the user if they wish to automatically apply a Chummer updater is dismissed, it no longer re-appears until the user has closed and later re-opened Chummer.
+- Non-PDF files can no longer be linked in as a sourcebook's PDF file.
+- Fixed a crash when taking the Apprentice quality.
+- Qualities can no longer mysteriously disappear but still leave behind their bonuses when changing priorities.
+- Settings in the Character Settings menu are now properly updated when the settings selection is changed. Fixes #4620.
+- Encumbrance penalties and custom improvements can now drop attribute values to zero. Having all limbs replaced with cyberlimbs with attribute values of zero can also drop attribute values to zero now as well.
+- Cyberarms and modular shoulder arms can now interact properly with Shiva Arms 2.
+- Encumbrance penalties to Agility that are greater than the attribute's base value no longer artificially lower the character's average Agility when they also have cyberlimbs. Fixes #4625.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
+- Fixed missing availability for the BMW Luxus.
+- Muscle Augmentation and Muscle Toner now just disable Celerity instead of being forbidden from being bought if the character has Celerity. Fixes #4621.
+
+Changed/New Strings:
+- String_GameplayOption
+- String_Lossy_Automatic_Compression_Option
+- String_Lossy_Manual_Compression_Option
+- Message_Options_FileIsNotPDF
+- MessageTitle_Options_FileIsNotPDF
+
+Deleted Strings:
+- String_Lossy_Compression_Option
 
 Build 216
 Application Changes:

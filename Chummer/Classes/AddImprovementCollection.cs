@@ -976,7 +976,7 @@ namespace Chummer.Classes
                     {
                         if (sBld.Length > 0)
                         {
-                            sBld.Append(',' + strSpace);
+                            sBld.Append(',').Append(strSpace);
                         }
 
                         sBld.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
@@ -1103,25 +1103,29 @@ namespace Chummer.Classes
             Log.Info("selectlimit = " + bonusNode.OuterXml);
 
             List<string> strLimits = new List<string>(4);
-            XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit");
-            if (xmlDefinedLimits != null && xmlDefinedLimits.Count > 0)
+            using (XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit"))
             {
-                foreach (XmlNode objXmlAttribute in xmlDefinedLimits)
-                    strLimits.Add(objXmlAttribute.InnerText);
-            }
-            else
-            {
-                strLimits.Add("Physical");
-                strLimits.Add("Mental");
-                strLimits.Add("Social");
+                if (xmlDefinedLimits?.Count > 0)
+                {
+                    foreach (XmlNode objXmlAttribute in xmlDefinedLimits)
+                        strLimits.Add(objXmlAttribute.InnerText);
+                }
+                else
+                {
+                    strLimits.Add("Physical");
+                    strLimits.Add("Mental");
+                    strLimits.Add("Social");
+                }
             }
 
-            XmlNodeList xmlExcludeLimits = bonusNode.SelectNodes("excludelimit");
-            if (xmlExcludeLimits != null && xmlExcludeLimits.Count > 0)
+            using (XmlNodeList xmlExcludeLimits = bonusNode.SelectNodes("excludelimit"))
             {
-                foreach (XmlNode objXmlAttribute in xmlExcludeLimits)
+                if (xmlExcludeLimits?.Count > 0)
                 {
-                    strLimits.Remove(objXmlAttribute.InnerText);
+                    foreach (XmlNode objXmlAttribute in xmlExcludeLimits)
+                    {
+                        strLimits.Remove(objXmlAttribute.InnerText);
+                    }
                 }
             }
 
@@ -1893,7 +1897,6 @@ namespace Chummer.Classes
                 Page = bonusNode["page"]?.InnerText ?? "0",
                 ParentID = SourceName
             };
-
 
             _objCharacter.Weapons.Add(objWeapon);
 
@@ -3669,7 +3672,6 @@ namespace Chummer.Classes
              * and feed what remains to a dragon that eats unholy 
              * abominations
              */
-
 
             Log.Info("weaponcategorydv");
             Log.Info("weaponcategorydv = " + bonusNode.OuterXml);
@@ -5642,7 +5644,7 @@ namespace Chummer.Classes
                 }
             }
 
-            if (list.Count <= 0)
+            if (list.Count == 0)
                 throw new AbortedException();
             using (frmSelectItem frmPickItem = new frmSelectItem
             {
@@ -6093,7 +6095,7 @@ namespace Chummer.Classes
                         string strName = objXmlAddQuality.InnerText;
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                         // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlQuality != null && objXmlQuality.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        if (objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName) == true)
                         {
                             lstQualities.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
                         }
@@ -6315,10 +6317,10 @@ namespace Chummer.Classes
                 // Display the Select Spell window.
                 using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
                 {
-                    Description = LanguageManager.GetString("Title_SelectSpellCategory"),
-                    ExcludeCategories = bonusNode.Attributes?["exclude"]?.InnerText.Split(',').ToHashSet()
+                    Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
+                    frmPickSpellCategory.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
                     frmPickSpellCategory.ShowDialog(Program.MainForm);
 
                     // Make sure the dialogue window was not canceled.

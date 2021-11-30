@@ -56,7 +56,10 @@ namespace Chummer.Backend
             foreach (KeyValuePair<string, int> exception in _map.OrderBy(i => -i.Value))
             {
                 length = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), length);
-                builder.AppendLine("\t\t" + exception.Value.ToString("D" + length.ToString(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo) + " - " + exception.Key);
+                builder.Append("\t\t")
+                       .Append(exception.Value.ToString("D" + length.ToString(GlobalSettings.InvariantCultureInfo),
+                                                        GlobalSettings.InvariantCultureInfo)).Append(" - ")
+                       .AppendLine(exception.Key);
             }
 
             return builder.ToString();

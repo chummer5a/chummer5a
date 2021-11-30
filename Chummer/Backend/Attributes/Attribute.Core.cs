@@ -541,11 +541,12 @@ namespace Chummer.Backend.Attributes
             }
             int intReturn = intMeat;
 
-            //// If this is AGI or STR, factor in any Cyberlimbs.
+            int intPureCyberValue = 0;
+            int intLimbCount = 0;
+            // If this is AGI or STR, factor in any Cyberlimbs.
             if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Settings.DontUseCyberlimbCalculation && blnIncludeCyberlimbs)
             {
                 int intLimbTotal = 0;
-                int intLimbCount = 0;
                 foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                 {
                     intLimbCount += objCyberware.LimbSlotCount;
@@ -584,8 +585,9 @@ namespace Chummer.Backend.Attributes
                 {
                     int intMaxLimbs = _objCharacter.LimbCount();
                     int intMissingLimbCount = Math.Max(intMaxLimbs - intLimbCount, 0);
+                    intPureCyberValue = intLimbTotal;
                     // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
-                    intLimbTotal += intMeat * intMissingLimbCount;
+                    intLimbTotal += Math.Max(intMeat, 0) * intMissingLimbCount;
                     intReturn = (intLimbTotal + intMaxLimbs - 1) / intMaxLimbs;
                 }
             }
@@ -593,11 +595,51 @@ namespace Chummer.Backend.Attributes
             if (intReturn > TotalAugmentedMaximum)
                 intReturn = TotalAugmentedMaximum;
 
-            // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
+            // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, the Metatype Maximum is 0, or it is caused by encumbrance (or a custom improvement).
             if (intReturn < 1)
             {
                 if (_objCharacter.CritterEnabled || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
                     return 0;
+                if (ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute,
+                                                        out List<Improvement> lstUsedImprovements,
+                                                        strImprovedName: Abbrev) < 0)
+                {
+                    decimal decTotalCustomImprovements = lstUsedImprovements
+                                                         .Where(x => x.Custom).Sum(x => x.Augmented * x.Rating);
+                    if (decTotalCustomImprovements < 0)
+                        return 0;
+                }
+                switch (Abbrev)
+                {
+                    case "STR":
+                    {
+                        // Special case for cyberlimbs: if every limb has been replaced with a modular connector with an attribute of 0, we allow the augmented attribute to be 0
+                        if (intLimbCount > 0 && intPureCyberValue == 0)
+                            return 0;
+                        break;
+                    }
+                    case "REA":
+                    {
+                        decimal decTotalEncumbrance = lstUsedImprovements
+                                                      .Where(x => x.ImproveSource == Improvement.ImprovementSource
+                                                                 .ArmorEncumbrance).Sum(x => x.Augmented * x.Rating);
+                        if (decTotalEncumbrance < 0)
+                            return 0;
+                        break;
+                    }
+                    case "AGI":
+                    {
+                        // Special case for cyberlimbs: if every limb has been replaced with a modular connector with an attribute of 0, we allow the augmented attribute to be 0
+                        if (intLimbCount > 0 && intPureCyberValue == 0)
+                            return 0;
+                        decimal decTotalEncumbrance = lstUsedImprovements
+                                                      .Where(x => x.ImproveSource == Improvement.ImprovementSource
+                                                                 .ArmorEncumbrance).Sum(x => x.Augmented * x.Rating);
+                        if (decTotalEncumbrance < 0)
+                            return 0;
+                        break;
+                    }
+                }
                 return 1;
             }
             return intReturn;
@@ -783,8 +825,10 @@ namespace Chummer.Backend.Attributes
                     else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                     {
                         decimal decValue = objImprovement.Augmented * objImprovement.Rating;
-                        sbdModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language)
-                                           + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                   .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                   .Append(strSpace).Append('(').Append(decValue.ToString(GlobalSettings.CultureInfo))
+                                   .Append(')');
                         decBaseValue += decValue;
                     }
                 }
@@ -811,7 +855,9 @@ namespace Chummer.Backend.Attributes
                             if (strGroupName == "precedence-1")
                             {
                                 decHighest += decValue;
-                                sbdNewModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                                sbdNewModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                              .Append(strSpace).Append('(')
+                                              .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                             }
                         }
                     }
@@ -840,7 +886,9 @@ namespace Chummer.Backend.Attributes
                             if (strGroupName == strName && decValue > decHighest)
                             {
                                 decHighest = decValue;
-                                sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                           .Append(strSpace).Append('(')
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                             }
                         }
                     }
@@ -865,8 +913,11 @@ namespace Chummer.Backend.Attributes
                     }
                     else
                     {
-                        sbdModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language)
-                                           + strSpace + '(' + (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalSettings.CultureInfo) + ')');
+                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                   .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                   .Append(strSpace).Append('(')
+                                   .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
+                                               GlobalSettings.CultureInfo)).Append(')');
                     }
                 }
 
@@ -879,7 +930,9 @@ namespace Chummer.Backend.Attributes
                         if (strGroupName == strName && decValue > decHighest)
                         {
                             decHighest = decValue;
-                            sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalSettings.CultureInfo) + ')');
+                            sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                       .Append(strSpace).Append('(')
+                                       .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                         }
                     }
                 }
@@ -891,9 +944,9 @@ namespace Chummer.Backend.Attributes
                     {
                         if (objCyberware.Category == "Cyberlimb")
                         {
-                            sbdModifier.Append(Environment.NewLine + objCyberware.CurrentDisplayName + strSpace + '(' + (Abbrev == "AGI"
+                            sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName).Append(strSpace).Append('(').Append(Abbrev == "AGI"
                                     ? objCyberware.TotalAgility.ToString(GlobalSettings.CultureInfo)
-                                    : objCyberware.TotalStrength.ToString(GlobalSettings.CultureInfo)) + ')');
+                                    : objCyberware.TotalStrength.ToString(GlobalSettings.CultureInfo)).Append(')');
                         }
                     }
                 }
@@ -1157,7 +1210,7 @@ namespace Chummer.Backend.Attributes
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
@@ -1330,7 +1383,7 @@ namespace Chummer.Backend.Attributes
                     _objCharacter.Karma -= intPrice;
                 }
 
-                Karma += 1;
+                ++Karma;
             }
         }
 
@@ -1340,16 +1393,16 @@ namespace Chummer.Backend.Attributes
             {
                 if (Karma > 0)
                 {
-                    Karma -= 1;
+                    --Karma;
                 }
                 else if (Base > 0)
                 {
-                    Base -= 1;
+                    --Base;
                 }
                 else if (Abbrev == "EDG" && _objCharacter.Created && TotalMinimum > 0)
                 {
                     //Edge can reduce the metatype minimum below zero.
-                    MetatypeMinimum -= 1;
+                    --MetatypeMinimum;
                 }
                 else
                     return;

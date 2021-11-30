@@ -110,7 +110,6 @@ namespace Chummer
         private async void frmMasterIndex_Load(object sender, EventArgs e)
         {
             await LoadContent();
-            
             _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
         }
 
@@ -226,15 +225,14 @@ namespace Chummer
                         string strKey = objEntry.DisplayName.ToUpperInvariant();
                         if (dicHelper.TryGetValue(strKey, out List<ListItem> lstExistingItems))
                         {
-                            ListItem objExistingItem = lstExistingItems.FirstOrDefault(x =>
-                                objEntry.DisplaySource.Equals(((MasterIndexEntry)x.Value).DisplaySource));
+                            ListItem objExistingItem = lstExistingItems.Find(x => objEntry.DisplaySource.Equals(((MasterIndexEntry)x.Value).DisplaySource));
                             if (objExistingItem.Value != null)
                             {
                                 ((MasterIndexEntry)objExistingItem.Value).FileNames.UnionWith(objEntry.FileNames);
                             }
                             else
                             {
-                                List<ListItem> lstItemsNeedingNameChanges = lstExistingItems.Where(x => !objEntry.FileNames.IsSubsetOf(((MasterIndexEntry)x.Value).FileNames)).ToList();
+                                List<ListItem> lstItemsNeedingNameChanges = lstExistingItems.FindAll(x => !objEntry.FileNames.IsSubsetOf(((MasterIndexEntry)x.Value).FileNames));
                                 if (lstItemsNeedingNameChanges.Count == 0)
                                 {
                                     _lstItems.Add(objItem); // Not using AddRange because of potential memory issues

@@ -38,6 +38,7 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private bool _blnSilentMode;
+        private bool _blnSilentModeUpdateWasDenied;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
@@ -106,6 +107,14 @@ namespace Chummer
 
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // If we have automatic updates on, make sure we don't close the updater, just hide it
+            if (e.CloseReason == CloseReason.UserClosing && GlobalSettings.AutomaticUpdate)
+            {
+                e.Cancel = true;
+                Hide();
+                SilentMode = true;
+                return;
+            }
             _blnFormClosing = true;
             _objConnectionLoaderCancellationTokenSource?.Cancel(false);
             _clientDownloader.CancelAsync();
@@ -145,7 +154,7 @@ namespace Chummer
                 await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
             if (_blnIsConnected)
             {
-                if (SilentMode)
+                if (SilentMode && !_blnSilentModeUpdateWasDenied)
                 {
                     await DownloadUpdates();
                 }
@@ -342,6 +351,8 @@ namespace Chummer
             get => _blnSilentMode;
             set
             {
+                if (_blnSilentMode == value)
+                    return;
                 _blnSilentMode = value;
                 if (value && (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                     _tskConnectionLoader.IsFaulted))))
@@ -677,7 +688,7 @@ namespace Chummer
                             new StringBuilder(LanguageManager.GetString("Message_Files_Cannot_Be_Removed"));
                         foreach (string strFile in lstBlocked)
                         {
-                            sbdOutput.Append(Environment.NewLine + strFile);
+                            sbdOutput.AppendLine().Append(strFile);
                         }
                         Program.MainForm.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
@@ -776,6 +787,7 @@ namespace Chummer
                 }
                 else
                 {
+                    _blnSilentModeUpdateWasDenied = true; // only actually go through with the attempt in Silent Mode once, don't prompt user any more if they canceled out once already
                     _blnIsConnected = false;
                     this.DoThreadSafe(Close);
                 }

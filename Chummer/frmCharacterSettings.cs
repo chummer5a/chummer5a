@@ -62,6 +62,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objReferenceCharacterSettings = objExistingSettings ?? SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
+            _objCharacterSettings.PropertyChanged += SettingsChanged;
             RebuildCustomDataDirectoryInfos();
         }
 
@@ -155,7 +156,7 @@ namespace Chummer
             if (Program.MainForm.ShowMessageBox(
                 string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CharacterOptions_ConfirmDelete"),
                     _objReferenceCharacterSettings.Name),
-                LanguageManager.GetString("MessageTitle_Options_ConfirmDelete"),
+                LanguageManager.GetString("MessageTitle_CharacterOptions_ConfirmDelete"),
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
@@ -262,7 +263,7 @@ namespace Chummer
                         uintAccumulator = 0;
                         strSeparator += '_';
                     }
-                    uintAccumulator += 1;
+                    ++uintAccumulator;
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
@@ -521,7 +522,6 @@ namespace Chummer
                 }
             }
             _blnLoading = false;
-            _objCharacterSettings.RecalculateBookXPath();
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
             _blnSourcebookToggle = !_blnSourcebookToggle;
         }
@@ -545,7 +545,6 @@ namespace Chummer
                 _objCharacterSettings.BooksWritable.Add(strBookCode);
             else
                 _objCharacterSettings.BooksWritable.Remove(strBookCode);
-            _objCharacterSettings.RecalculateBookXPath();
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
         }
 
@@ -790,7 +789,8 @@ namespace Chummer
                 if (objXmlBook.SelectSingleNodeAndCacheExpression("permanent") != null)
                 {
                     _setPermanentSourcebooks.Add(strCode);
-                    _objCharacterSettings.BooksWritable.Add(strCode);
+                    if (_objCharacterSettings.BooksWritable.Add(strCode))
+                        _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
                     blnChecked = true;
                 }
                 TreeNode objNode = new TreeNode
@@ -1007,7 +1007,7 @@ namespace Chummer
                         continue;
                     if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
                         continue;
-                    ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
+                    ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
                     if (objExistingCoveredGrade.Value != null)
                         lstGrades.Remove(objExistingCoveredGrade);
                     lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
@@ -1024,7 +1024,7 @@ namespace Chummer
                         continue;
                     if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
                         continue;
-                    ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
+                    ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
                     if (objExistingCoveredGrade.Value != null)
                         lstGrades.Remove(objExistingCoveredGrade);
                     lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
@@ -1218,8 +1218,6 @@ namespace Chummer
             nudKarmaSummoningFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSummoningFocus));
             nudKarmaSustainingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSustainingFocus));
             nudKarmaWeaponFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaWeaponFocus));
-
-            _objCharacterSettings.PropertyChanged += SettingsChanged;
         }
 
         private void PopulateSettingsList()
@@ -1251,9 +1249,7 @@ namespace Chummer
         {
             if (!_blnLoading)
             {
-                IsDirty = !_objCharacterSettings.Equals(_objReferenceCharacterSettings);
-                cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
-                cmdSave.Enabled = cmdSaveAs.Enabled && !_objCharacterSettings.BuiltInOption;
+                IsDirty = !_objCharacterSettings.HasIdenticalSettings(_objReferenceCharacterSettings);
                 switch (e.PropertyName)
                 {
                     case nameof(CharacterSettings.EnabledCustomDataDirectoryPaths):
@@ -1270,8 +1266,7 @@ namespace Chummer
                 switch (e.PropertyName)
                 {
                     case nameof(CharacterSettings.BuiltInOption):
-                        cmdSave.Enabled = cmdSaveAs.Enabled
-                                          && !_objCharacterSettings.BuiltInOption;
+                        cmdSave.Enabled = IsDirty && IsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption;
                         break;
 
                     case nameof(CharacterSettings.PriorityArray):
@@ -1306,16 +1301,21 @@ namespace Chummer
             get => _blnDirty;
             set
             {
-                if (_blnDirty != value)
+                if (_blnDirty == value)
+                    return;
+                _blnDirty = value;
+                cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
+                if (value)
                 {
-                    _blnDirty = value;
-                    cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
-                    if (!value)
-                    {
-                        _blnWasRenamed = false;
-                        cmdSaveAs.Enabled = false;
-                        cmdSave.Enabled = false;
-                    }
+                    bool blnIsAllTextBoxesLegal = IsAllTextBoxesLegal;
+                    cmdSaveAs.Enabled = blnIsAllTextBoxesLegal;
+                    cmdSave.Enabled = blnIsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption;
+                }
+                else
+                {
+                    _blnWasRenamed = false;
+                    cmdSaveAs.Enabled = false;
+                    cmdSave.Enabled = false;
                 }
             }
         }

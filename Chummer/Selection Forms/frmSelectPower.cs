@@ -124,7 +124,7 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down when lstPowers.SelectedIndex + 1 < lstPowers.Items.Count:
-                    lstPowers.SelectedIndex += 1;
+                    ++lstPowers.SelectedIndex;
                     break;
 
                 case Keys.Down:
@@ -137,7 +137,7 @@ namespace Chummer
                         break;
                     }
                 case Keys.Up when lstPowers.SelectedIndex - 1 >= 0:
-                    lstPowers.SelectedIndex -= 1;
+                    --lstPowers.SelectedIndex;
                     break;
 
                 case Keys.Up:
@@ -212,7 +212,7 @@ namespace Chummer
             {
                 StringBuilder sbdFilter = new StringBuilder();
                 foreach (string strPower in _strLimitToPowers.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                    sbdFilter.Append("name = " + strPower.CleanXPath() + " or ");
+                    sbdFilter.Append("name = ").Append(strPower.CleanXPath()).Append(" or ");
                 if (sbdFilter.Length > 0)
                 {
                     sbdFilter.Length -= 4;

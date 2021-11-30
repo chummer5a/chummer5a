@@ -260,8 +260,8 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount) || !objItem.IsModularCurrentlyEquipped)
                                         continue;
                                     if (strNameNode == objItem.Name)
-                                        intCount += 1;
-                                    intExtendedCount += 1;
+                                        ++intCount;
+                                    ++intExtendedCount;
                                     if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
                                         return false;
                                 }
@@ -273,8 +273,8 @@ namespace Chummer
                                     if (!setNamesIncludedInLimit.Contains(strItemName))
                                         continue;
                                     if (strNameNode == strItemName)
-                                        intCount += 1;
-                                    intExtendedCount += 1;
+                                        ++intCount;
+                                    ++intExtendedCount;
                                     if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
                                         return false;
                                 }
@@ -291,7 +291,7 @@ namespace Chummer
                                     continue;
                                 if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount) || !objItem.IsModularCurrentlyEquipped)
                                     continue;
-                                intCount += 1;
+                                ++intCount;
                                 if (!blnShowMessage && intCount >= intLimit)
                                     return false;
                             }
@@ -302,7 +302,7 @@ namespace Chummer
                             {
                                 if (strNameNode != objItem.Name)
                                     continue;
-                                intCount += 1;
+                                ++intCount;
                                 if (!blnShowMessage && intCount >= intLimit)
                                     return false;
                             }
@@ -1178,7 +1178,7 @@ namespace Chummer
                                 {
                                     if (objGroup.Name != strGroups[i]) continue;
                                     if (blnShowMessage)
-                                        objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                        objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
                                     intTotal += objGroup.Rating;
                                     break;
                                 }
@@ -1192,7 +1192,7 @@ namespace Chummer
                                 {
                                     if (objGroup.Name != strGroups[i]) continue;
                                     if (blnShowMessage)
-                                        objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                        objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
                                     intTotal += objGroup.Rating;
                                     break;
                                 }
@@ -1221,7 +1221,7 @@ namespace Chummer
                                     if (objGroup.Name == strGroups[i])
                                     {
                                         if (blnShowMessage)
-                                            objOutputString.Append(objGroup.CurrentDisplayName + ',' + strSpace);
+                                            objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
                                         intTotal += objGroup.Rating;
                                         break;
                                     }
@@ -1390,7 +1390,7 @@ namespace Chummer
         /// <returns></returns>
         public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0)
         {
-            return objXmlGear != null && objXmlGear.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier);
+            return objXmlGear?.CreateNavigator().CheckAvailRestriction(objCharacter, intRating, intAvailModifier) == true;
         }
 
         /// <summary>
@@ -1406,7 +1406,7 @@ namespace Chummer
             if (objXmlGear == null)
                 return false;
             //TODO: Better handler for restricted gear
-            if (objCharacter == null || objCharacter.Created || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
+            if (objCharacter?.Created != false || objCharacter.RestrictedGear > 0 || objCharacter.IgnoreRules)
                 return true;
             // Avail.
 
@@ -1460,7 +1460,7 @@ namespace Chummer
 
         public static bool CheckNuyenRestriction(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1)
         {
-            return objXmlGear != null && objXmlGear.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating);
+            return objXmlGear?.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating) == true;
         }
 
         /// <summary>

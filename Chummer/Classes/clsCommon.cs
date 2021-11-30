@@ -912,24 +912,23 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            string strGearNotes =
-                CommonFunctions.GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
+            string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
 
-            if (!string.IsNullOrEmpty(strGearNotes) || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                StringComparison.OrdinalIgnoreCase)) return strGearNotes;
+            if (!string.IsNullOrEmpty(strGearNotes) || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return strGearNotes;
             string strTranslatedNameOnPage = strDisplayName;
 
             // don't check again it is not translated
-            if (strTranslatedNameOnPage == strName) return strGearNotes;
+            if (strTranslatedNameOnPage == strName)
+                return strGearNotes;
+
             // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
             if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
                 && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                 strTranslatedNameOnPage = strNameOnPage;
 
-            strGearNotes = CommonFunctions.GetTextFromPdf(strSource + ' ' + strDisplayPage,
-                strTranslatedNameOnPage, objCharacter);
-
-            return strGearNotes;
+            return GetTextFromPdf(strSource + ' ' + strDisplayPage,
+                                  strTranslatedNameOnPage, objCharacter);
         }
 
         /// <summary>
@@ -946,7 +945,7 @@ namespace Chummer
             string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
             // Construct a second needle for French where we have zero-width spaces between a starting consonant and an apostrophe in order to fix ListView's weird way of alphabetically sorting names
             string strSearchText2 = string.Empty;
-            if (GlobalSettings.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
+            if (GlobalSettings.Language.StartsWith("FR", StringComparison.InvariantCultureIgnoreCase) && strSearchText.Contains('\''))
             {
                 strSearchText2 = strSearchText
                                  .Replace("D\'A", "D\u200B\'A")
@@ -1356,6 +1355,10 @@ namespace Chummer
                 return string.Empty;
             intPage += objBookInfo.Offset;
 
+            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
+            if (objPdfDocument == null)
+                return string.Empty;
+
             // due to the tag <nameonpage> for the qualities those variants are no longer needed,
             // as such the code would run at most half of the comparisons with the variants
             // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
@@ -1366,7 +1369,6 @@ namespace Chummer
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
-            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
             List<string> lstStringFromPdf = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
@@ -1424,7 +1426,7 @@ namespace Chummer
                                 {
                                     intTitleExtraLines++;
                                     // add the content plus a space
-                                    sbdCurrentLine.Append(' ' + lstStringFromPdf[i + intTitleExtraLines]);
+                                    sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
                                 }
 
                                 strCurrentLine = sbdCurrentLine.ToString();
@@ -1539,7 +1541,7 @@ namespace Chummer
                         switch (chrLastChar)
                         {
                             case '-':
-                                sbdResultContent.Append(strContentString.Substring(0, strContentString.Length - 1));
+                                sbdResultContent.Append(strContentString, 0, strContentString.Length - 1);
                                 break;
                             // Line ending with a sentence-ending punctuation = line is end of paragraph.
                             // Not fantastic, has plenty of false positives, but simple text extraction strategy cannot
@@ -1558,7 +1560,7 @@ namespace Chummer
                                 break;
 
                             default:
-                                sbdResultContent.Append(strContentString + ' ');
+                                sbdResultContent.Append(strContentString).Append(' ');
                                 break;
                         }
                     }

@@ -541,7 +541,7 @@ namespace Chummer
                     {
                         while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt))
                         {
-                            nudRating.Maximum -= 1;
+                            --nudRating.Maximum;
                         }
                     }
 
@@ -552,7 +552,7 @@ namespace Chummer
                             decCostMultiplier *= 0.9m;
                         while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                         {
-                            nudRating.Maximum -= 1;
+                            --nudRating.Maximum;
                         }
                     }
                     nudRating.Minimum = intMinRating;

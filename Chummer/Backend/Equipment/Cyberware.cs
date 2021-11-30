@@ -525,7 +525,6 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-
             _blnInheritAttributes = objXmlCyberware["inheritattributes"] != null;
             _objGrade = objGrade;
             objXmlCyberware.TryGetStringFieldQuickly("ess", ref _strESS);
@@ -595,10 +594,10 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
                 for (int i = 0; i < lstSubSystems?.Count; i++)
                 {
-                    sbdSubsystem.Append(lstSubSystems[i].InnerText + ',');
+                    sbdSubsystem.Append(lstSubSystems[i].InnerText).Append(',');
                 }
                 if (sbdSubsystem.Length > 0)
-                    sbdSubsystem.Length -= 1;
+                    --sbdSubsystem.Length;
                 _strAllowSubsystems = sbdSubsystem.ToString();
             }
 
@@ -812,10 +811,10 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objPairableCyberware.Location != Location)
                                 // We have found a cyberware with which this one could be paired, so increase count by 1
-                                intCount += 1;
+                                ++intCount;
                             else
                                 // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                intCount -= 1;
+                                --intCount;
                         }
 
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -974,55 +973,94 @@ namespace Chummer.Backend.Equipment
                         () =>
                         {
                             blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                               string.Empty, "Left")
-                                           && (string.IsNullOrEmpty(BlocksMounts)
-                                               || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                && x.Location == "Left"
-                                                                                && BlocksMounts
-                                                                                    .SplitNoAlloc(',',
-                                                                                        StringSplitOptions.RemoveEmptyEntries)
-                                                                                    .Contains(x.HasModularMount)
-                                                                                && (string.IsNullOrEmpty(
-                                                                                        MountToLimbType(x.HasModularMount))
-                                                                                    || _objCharacter.LimbCount(
-                                                                                        MountToLimbType(x.HasModularMount)) /
-                                                                                    2 <= (dicNumLeftMountBlockers.ContainsKey(
-                                                                                        x.HasModularMount)
-                                                                                        ? dicNumLeftMountBlockers[
-                                                                                              x.HasModularMount] + LimbSlotCount
-                                                                                        : LimbSlotCount))))
-                                           && (string.IsNullOrEmpty(HasModularMount)
-                                               || !dicNumLeftMountBlockers.ContainsKey(HasModularMount)
-                                               || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
-                                                    || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
-                                                    dicNumLeftMountBlockers[HasModularMount]));
+                                               string.Empty, "Left");
+                            if (!blnAllowLeft)
+                                return;
+                            if (!string.IsNullOrEmpty(HasModularMount)
+                                && dicNumLeftMountBlockers.ContainsKey(HasModularMount))
+                            {
+                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                                blnAllowLeft = !string.IsNullOrEmpty(strLimbTypeOfMount)
+                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= dicNumLeftMountBlockers[HasModularMount];
+                                if (!blnAllowLeft)
+                                    return;
+                            }
+                            if (string.IsNullOrEmpty(BlocksMounts))
+                                return;
+                            HashSet<string> setBlocksMounts = BlocksMounts
+                                                              .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                              .ToHashSet();
+                            foreach (Cyberware x in lstCyberwareToCheck)
+                            {
+                                if (string.IsNullOrEmpty(x.HasModularMount))
+                                    continue;
+                                if (x.Location != "Left")
+                                    continue;
+                                if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    continue;
+                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                {
+                                    blnAllowLeft = false;
+                                    return;
+                                }
+
+                                int intLimbSlotCount = LimbSlotCount;
+                                if (dicNumLeftMountBlockers.ContainsKey(x.HasModularMount))
+                                    intLimbSlotCount += dicNumLeftMountBlockers[x.HasModularMount];
+
+                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                {
+                                    blnAllowLeft = false;
+                                    return;
+                                }
+                            }
                         },
                         () =>
                         {
                             blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                                string.Empty, "Right")
-                                            && (string.IsNullOrEmpty(BlocksMounts)
-                                                || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                 && x.Location == "Right"
-                                                                                 && BlocksMounts
-                                                                                     .SplitNoAlloc(',',
-                                                                                         StringSplitOptions.RemoveEmptyEntries)
-                                                                                     .Contains(x.HasModularMount)
-                                                                                 && (string.IsNullOrEmpty(
-                                                                                         MountToLimbType(x.HasModularMount))
-                                                                                     || _objCharacter.LimbCount(
-                                                                                         MountToLimbType(x.HasModularMount)) /
-                                                                                     2 <= (dicNumRightMountBlockers.ContainsKey(
-                                                                                         x.HasModularMount)
-                                                                                         ? dicNumRightMountBlockers[
-                                                                                               x.HasModularMount] +
-                                                                                           LimbSlotCount
-                                                                                         : LimbSlotCount))))
-                                            && (string.IsNullOrEmpty(HasModularMount)
-                                                || !dicNumRightMountBlockers.ContainsKey(HasModularMount)
-                                                || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
-                                                     || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
-                                                     dicNumRightMountBlockers[HasModularMount]));
+                                               string.Empty, "Right");
+                            if (!blnAllowRight)
+                                return;
+                            if (!string.IsNullOrEmpty(HasModularMount)
+                                && dicNumRightMountBlockers.ContainsKey(HasModularMount))
+                            {
+                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                                blnAllowRight = !string.IsNullOrEmpty(strLimbTypeOfMount)
+                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= dicNumRightMountBlockers[HasModularMount];
+                                if (!blnAllowRight)
+                                    return;
+                            }
+                            if (string.IsNullOrEmpty(BlocksMounts))
+                                return;
+                            HashSet<string> setBlocksMounts = BlocksMounts
+                                                              .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                              .ToHashSet();
+                            foreach (Cyberware x in lstCyberwareToCheck)
+                            {
+                                if (string.IsNullOrEmpty(x.HasModularMount))
+                                    continue;
+                                if (x.Location != "Right")
+                                    continue;
+                                if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    continue;
+                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                {
+                                    blnAllowRight = false;
+                                    return;
+                                }
+
+                                int intLimbSlotCount = LimbSlotCount;
+                                if (dicNumRightMountBlockers.ContainsKey(x.HasModularMount))
+                                    intLimbSlotCount += dicNumRightMountBlockers[x.HasModularMount];
+
+                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                {
+                                    blnAllowRight = false;
+                                    return;
+                                }
+                            }
                         });
                     // Only one side is allowed.
                     if (blnAllowLeft != blnAllowRight)
@@ -1057,6 +1095,7 @@ namespace Chummer.Backend.Equipment
             {
                 // Load Cyberware subsystems first
                 using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
+                {
                     if (objXmlSubSystemNameList?.Count > 0)
                     {
                         XmlDocument objXmlDocument = _objCharacter.LoadData("cyberware.xml");
@@ -1071,23 +1110,25 @@ namespace Chummer.Backend.Equipment
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                             GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                 objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Cyberware,
-                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
                                 // If the <subsystem> tag itself contains extra children, add those, too
                                 objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                    blnCreateImprovements);
+                                                            blnCreateImprovements);
 
                                 _lstChildren.Add(objSubsystem);
                             }
                         }
                     }
+                }
 
                 // Load bioware subsystems next
                 using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("bioware"))
+                {
                     if (objXmlSubSystemNameList?.Count > 0)
                     {
                         XmlDocument objXmlDocument = _objCharacter.LoadData("bioware.xml");
@@ -1102,20 +1143,21 @@ namespace Chummer.Backend.Equipment
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
                                 int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                             GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
                                 objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Bioware,
-                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                                 objSubsystem.ParentID = InternalId;
                                 objSubsystem.Cost = "0";
                                 // If the <subsystem> tag itself contains extra children, add those, too
                                 objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                    blnCreateImprovements);
+                                                            blnCreateImprovements);
 
                                 _lstChildren.Add(objSubsystem);
                             }
                         }
                     }
+                }
             }
 
             // Check to see if there are any child elements.
@@ -1403,9 +1445,13 @@ namespace Chummer.Backend.Equipment
             if (xmlPairIncludeNode != null)
             {
                 using (XmlNodeList xmlNameList = xmlPairIncludeNode.SelectNodes("name"))
-                    if (xmlNameList != null)
+                {
+                    if (xmlNameList?.Count > 0)
+                    {
                         foreach (XmlNode xmlNameNode in xmlNameList)
                             _lstIncludeInPairBonus.Add(xmlNameNode.InnerText);
+                    }
+                }
             }
 
             _nodWirelessPairBonus = objNode["wirelesspairbonus"];
@@ -1419,9 +1465,13 @@ namespace Chummer.Backend.Equipment
             if (xmlPairIncludeNode != null)
             {
                 using (XmlNodeList xmlNameList = xmlPairIncludeNode.SelectNodes("name"))
-                    if (xmlNameList != null)
+                {
+                    if (xmlNameList?.Count > 0)
+                    {
                         foreach (XmlNode xmlNameNode in xmlNameList)
                             _lstIncludeInWirelessPairBonus.Add(xmlNameNode.InnerText);
+                    }
+                }
             }
 
             _nodWirelessBonus = objNode["wirelessbonus"];
@@ -1581,10 +1631,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (objPairableCyberware.Location != Location)
                                     // We have found a cyberware with which this one could be paired, so increase count by 1
-                                    intCount += 1;
+                                    ++intCount;
                                 else
                                     // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                    intCount -= 1;
+                                    --intCount;
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -1612,10 +1662,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (objPairableCyberware.Location != Location)
                                     // We have found a cyberware with which this one could be paired, so increase count by 1
-                                    intCount += 1;
+                                    ++intCount;
                                 else
                                     // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                    intCount -= 1;
+                                    --intCount;
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -2303,10 +2353,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (objPairableCyberware.Location != Location)
                                     // We have found a cyberware with which this one could be paired, so increase count by 1
-                                    intCount += 1;
+                                    ++intCount;
                                 else
                                     // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                    intCount -= 1;
+                                    --intCount;
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -2345,7 +2395,7 @@ namespace Chummer.Backend.Equipment
                                     objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                             }
 
-                            intCount -= 1;
+                            --intCount;
                         }
                     }
                 }
@@ -2383,9 +2433,9 @@ namespace Chummer.Backend.Equipment
                             foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                             {
                                 if (objPairableCyberware.Location != Location)
-                                    intNotMatchLocationCount += 1;
+                                    ++intNotMatchLocationCount;
                                 else
-                                    intMatchLocationCount += 1;
+                                    ++intMatchLocationCount;
                             }
 
                             // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -2413,7 +2463,7 @@ namespace Chummer.Backend.Equipment
                                     objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                             }
 
-                            intCount -= 1;
+                            --intCount;
                         }
                     }
                 }
@@ -2479,10 +2529,10 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objPairableCyberware.Location != Location)
                                 // We have found a cyberware with which this one could be paired, so increase count by 1
-                                intCount += 1;
+                                ++intCount;
                             else
                                 // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
-                                intCount -= 1;
+                                --intCount;
                         }
 
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
@@ -2518,9 +2568,9 @@ namespace Chummer.Backend.Equipment
                         foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                         {
                             if (objPairableCyberware.Location != Location)
-                                intNotMatchLocationCount += 1;
+                                ++intNotMatchLocationCount;
                             else
-                                intMatchLocationCount += 1;
+                                ++intMatchLocationCount;
                         }
 
                         // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -2539,7 +2589,7 @@ namespace Chummer.Backend.Equipment
                                 objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                         }
 
-                        intCount -= 1;
+                        --intCount;
                     }
                 }
             }
@@ -3129,9 +3179,9 @@ namespace Chummer.Backend.Equipment
         /// Ghetto workaround for flagging an object as geneware.
         /// </summary>
         public bool IsGeneware =>
-            (SourceType == Improvement.ImprovementSource.Bioware &&
-             (Category.StartsWith("Genetech", StringComparison.Ordinal) || Category.StartsWith("Genetic Infusions", StringComparison.Ordinal) ||
-              Category.StartsWith("Genemods", StringComparison.Ordinal)));
+            SourceType == Improvement.ImprovementSource.Bioware &&
+            (Category.StartsWith("Genetech", StringComparison.Ordinal) || Category.StartsWith("Genetic Infusions", StringComparison.Ordinal) ||
+             Category.StartsWith("Genemods", StringComparison.Ordinal));
 
         /// <summary>
         /// Total Availability in the program's current language.
@@ -3323,7 +3373,7 @@ namespace Chummer.Backend.Equipment
                                 strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
                             if (strLoopCapacity == "*")
                                 strLoopCapacity = "0";
-                            sbdSecondHalf.Append("+(" + strLoopCapacity + ')');
+                            sbdSecondHalf.Append("+(").Append(strLoopCapacity).Append(')');
                         }
                         strSecondHalf += sbdSecondHalf.ToString();
                     }
@@ -3379,7 +3429,7 @@ namespace Chummer.Backend.Equipment
                                     strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
                                 if (strLoopCapacity == "*")
                                     strLoopCapacity = "0";
-                                sbdCapacity.Append("+(" + strLoopCapacity + ')');
+                                sbdCapacity.Append("+(").Append(strLoopCapacity).Append(')');
                             }
 
                             strCapacity += sbdCapacity.ToString();
@@ -3543,7 +3593,7 @@ namespace Chummer.Backend.Equipment
 
             decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
 
-            if (_objCharacter != null && !_objCharacter.Settings.DontRoundEssenceInternally)
+            if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
             decReturn += Children.Where(objChild => objChild.AddToParentESS).AsParallel()
                 .Sum(objChild => _objCharacter.IsPrototypeTranshuman && objChild.PrototypeTranshuman ? 0 : objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
@@ -3645,7 +3695,7 @@ namespace Chummer.Backend.Equipment
 
             if (Overclocked == strAttributeName)
             {
-                intReturn += 1;
+                ++intReturn;
             }
 
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
@@ -4023,7 +4073,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intValue = lstCustomizationWare.Count > 1
                             ? lstCustomizationWare.Max(s => s.Rating)
-                            : lstCustomizationWare.First().Rating;
+                            : lstCustomizationWare[0].Rating;
                     }
                 }
 
@@ -4048,7 +4098,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (intChildTotalStrength <= 0)
                             continue;
-                        intCyberlimbChildrenNumber += 1;
+                        ++intCyberlimbChildrenNumber;
                         intAverageAttribute += intChildTotalStrength;
                     }
 
@@ -4077,7 +4127,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intBonus = lstEnhancementWare.Count > 1
                             ? lstEnhancementWare.Max(s => s.Rating)
-                            : lstEnhancementWare.First().Rating;
+                            : lstEnhancementWare[0].Rating;
                     }
                 }
                 if (ParentVehicle == null)
@@ -4126,7 +4176,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intValue = lstCustomizationWare.Count > 1
                             ? lstCustomizationWare.Max(s => s.Rating)
-                            : lstCustomizationWare.First().Rating;
+                            : lstCustomizationWare[0].Rating;
                     }
                 }
 
@@ -4151,7 +4201,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (intChildTotalAgility <= 0)
                             continue;
-                        intCyberlimbChildrenNumber += 1;
+                        ++intCyberlimbChildrenNumber;
                         intAverageAttribute += intChildTotalAgility;
                     }
 
@@ -4180,7 +4230,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intBonus = lstEnhancementWare.Count > 1
                             ? lstEnhancementWare.Max(s => s.Rating)
-                            : lstEnhancementWare.First().Rating;
+                            : lstEnhancementWare[0].Rating;
                     }
                 }
                 if (ParentVehicle == null)
@@ -4525,9 +4575,9 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                     {
                         if (objPairableCyberware.Location != Location)
-                            intNotMatchLocationCount += 1;
+                            ++intNotMatchLocationCount;
                         else
-                            intMatchLocationCount += 1;
+                            ++intMatchLocationCount;
                     }
 
                     // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -4546,7 +4596,7 @@ namespace Chummer.Backend.Equipment
                             objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                     }
 
-                    intCount -= 1;
+                    --intCount;
                 }
             }
 
@@ -4567,9 +4617,9 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                     {
                         if (objPairableCyberware.Location != Location)
-                            intNotMatchLocationCount += 1;
+                            ++intNotMatchLocationCount;
                         else
-                            intMatchLocationCount += 1;
+                            ++intMatchLocationCount;
                     }
 
                     // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -4593,7 +4643,7 @@ namespace Chummer.Backend.Equipment
                             objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
                     }
 
-                    intCount -= 1;
+                    --intCount;
                 }
             }
 
@@ -4609,10 +4659,11 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objNode in xmlOldAddQualitiesList)
                 {
                     Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
-                    if (objQuality == null) continue;
+                    if (objQuality == null)
+                        continue;
+                    decReturn += objQuality.DeleteQuality(); // We need to add in the return cost of deleting the quality, so call this manually
                     _objCharacter.Qualities.Remove(objQuality);
-                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
-                        Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
                 }
             }
 
@@ -4656,14 +4707,14 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
-                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                     }
                 }
@@ -4684,7 +4735,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(ParentID) && _objCharacter.Settings.BannedWareGrades.Any(s => Grade.Name.Contains(s)))
             {
-                sbdBannedItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
+                sbdBannedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
             }
             foreach (Cyberware objChild in Children)
             {
@@ -4763,8 +4814,11 @@ namespace Chummer.Backend.Equipment
                     (x, y) => this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y));
 
                 foreach (Cyberware objChild in Children)
+                {
                     objChild.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
-                        cmsCyberwareGear);
+                                                                     cmsCyberwareGear);
+                }
+
                 foreach (Gear objGear in GearChildren)
                     objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear);
             }
@@ -5012,7 +5066,7 @@ namespace Chummer.Backend.Equipment
                     if (objSelectedGrade == null)
                     {
                         objSelectedGrade =
-                            (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).Value.FirstOrDefault(x =>
+                            (blnCyberware ? objCyberwareGradeList : objBiowareGradeList).Value.Find(x =>
                                 x.Name == strGradeName);
                     }
 
@@ -5425,8 +5479,11 @@ namespace Chummer.Backend.Equipment
                     x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                 {
                     foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(','))
+                    {
                         if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                             setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                    }
+
                     strLoopHasModularMount = objLoopCyberware.HasModularMount;
                     if (string.IsNullOrEmpty(strLoopHasModularMount)) continue;
                     if (!setHasMounts.Contains(strLoopHasModularMount))

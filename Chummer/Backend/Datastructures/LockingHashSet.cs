@@ -29,7 +29,7 @@ namespace Chummer
         private readonly HashSet<T> _setData;
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-        
+
         public LockingHashSet()
         {
             _setData = new HashSet<T>();
@@ -75,7 +75,7 @@ namespace Chummer
             using (new EnterWriteLock(_rwlThis))
                 return _setData.Add(item);
         }
-        
+
         /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {

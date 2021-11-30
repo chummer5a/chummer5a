@@ -256,7 +256,6 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-
             if (string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlArmorNode, Name, CurrentDisplayName, Source, Page,
@@ -2067,7 +2066,7 @@ namespace Chummer.Backend.Equipment
 
             if (Overclocked == strAttributeName)
             {
-                intReturn += 1;
+                ++intReturn;
             }
 
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
@@ -2302,17 +2301,17 @@ namespace Chummer.Backend.Equipment
                                                          || intValidAvail < intLowestValidRestrictedGearAvail))
                         intLowestValidRestrictedGearAvail = intValidAvail;
                 }
-                
+
                 if (intLowestValidRestrictedGearAvail >= 0 && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                 {
-                    dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
-                    sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
+                    --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
+                    sbdRestrictedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
                 }
                 else
                 {
                     dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                     ++intRestrictedCount;
-                    sbdAvailItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
+                    sbdAvailItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
                 }
             }
 

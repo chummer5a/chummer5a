@@ -39,12 +39,7 @@ namespace Chummer
             this.TranslateWinForm();
             _frmMain = frmMainForm;
             nudDice.Value = intDice;
-            if (lstQualities != null)
-            {
-                int intGremlinsRating = lstQualities.Count(x => x.Name == "Gremlins");
-                if (intGremlinsRating > 0)
-                    nudGremlins.Value = intGremlinsRating;
-            }
+            ProcessGremlins(lstQualities);
 
             List<ListItem> lstMethod = new List<ListItem>(3)
             {
@@ -136,7 +131,7 @@ namespace Chummer
                 int intBubbleDieResult = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
                 if (lviCur.IsGlitch)
-                    intGlitchCount += 1;
+                    ++intGlitchCount;
                 _lstResults.Add(lviCur);
             }
 
@@ -148,7 +143,10 @@ namespace Chummer
                 {
                     if (nudThreshold.Value > 0)
                     {
-                        sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure") + strSpace + '(');
+                        sbdResults.Append(LanguageManager.GetString(
+                                              intHitCount >= nudThreshold.Value
+                                                  ? "String_DiceRoller_Success"
+                                                  : "String_DiceRoller_Failure")).Append(strSpace).Append('(');
                     }
                     sbdResults.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount);
                     if (nudThreshold.Value > 0)
@@ -159,15 +157,18 @@ namespace Chummer
             }
             else if (nudThreshold.Value > 0)
             {
-                sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure")
-                                  + strSpace + '(' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount + ')'));
+                sbdResults
+                    .Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value
+                                                          ? "String_DiceRoller_Success"
+                                                          : "String_DiceRoller_Failure")).Append(strSpace).Append('(')
+                    .AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"),
+                                  intHitCount + ')');
             }
             else
                 sbdResults.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
 
-            sbdResults.Append(Environment.NewLine + Environment.NewLine +
-                              LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace +
-                              _lstResults.Sum(x => x.Result).ToString(GlobalSettings.CultureInfo));
+            sbdResults.AppendLine().AppendLine().Append(LanguageManager.GetString("Label_DiceRoller_Sum"))
+                      .Append(strSpace).Append(_lstResults.Sum(x => x.Result).ToString(GlobalSettings.CultureInfo));
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
@@ -287,7 +288,7 @@ namespace Chummer
                 int intBubbleDieResult = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
                 if (lviCur.IsGlitch)
-                    intGlitchCount += 1;
+                    ++intGlitchCount;
                 _lstResults.Add(lviCur);
             }
 
@@ -299,8 +300,10 @@ namespace Chummer
                 {
                     if (nudThreshold.Value > 0)
                     {
-                        sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure")
-                                          + strSpace + '(');
+                        sbdResults.Append(LanguageManager.GetString(
+                                              intHitCount >= nudThreshold.Value
+                                                  ? "String_DiceRoller_Success"
+                                                  : "String_DiceRoller_Failure")).Append(strSpace).Append('(');
                     }
                     sbdResults.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount);
                     if (nudThreshold.Value > 0)
@@ -311,15 +314,18 @@ namespace Chummer
             }
             else if (nudThreshold.Value > 0)
             {
-                sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure")
-                                  + strSpace + '(' + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount) + ')');
+                sbdResults
+                    .Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value
+                                                          ? "String_DiceRoller_Success"
+                                                          : "String_DiceRoller_Failure")).Append(strSpace).Append('(')
+                    .AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"),
+                                  intHitCount).Append(')');
             }
             else
                 sbdResults.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
 
-            sbdResults.Append(Environment.NewLine + Environment.NewLine +
-                              LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace +
-                              _lstResults.Sum(x => x.Result).ToString(GlobalSettings.CultureInfo));
+            sbdResults.AppendLine().AppendLine().Append(LanguageManager.GetString("Label_DiceRoller_Sum"))
+                      .Append(strSpace).Append(_lstResults.Sum(x => x.Result).ToString(GlobalSettings.CultureInfo));
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
@@ -345,21 +351,19 @@ namespace Chummer
         }
 
         /// <summary>
-        /// List of Qualities the character has to determine whether or not they have Gremlins and at which Rating.
+        /// Process whether or not a character has Gremlins and at which Rating.
         /// </summary>
-        public IEnumerable<Quality> Qualities
+        /// <param name="lstQualities">Qualities that the character has.</param>
+        public void ProcessGremlins(IEnumerable<Quality> lstQualities)
         {
-            set
+            nudGremlins.Value = 0;
+            if (lstQualities == null)
+                return;
+            foreach (Quality objQuality in lstQualities)
             {
-                nudGremlins.Value = 0;
-                if (value == null)
-                    return;
-                foreach (Quality objQuality in value)
+                if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
                 {
-                    if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
-                    {
-                        nudGremlins.Value = objQuality.Levels;
-                    }
+                    nudGremlins.Value = objQuality.Levels;
                 }
             }
         }

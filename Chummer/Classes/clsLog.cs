@@ -350,7 +350,7 @@ namespace Chummer
                     if (string.IsNullOrWhiteSpace(time))
                         continue;
                     blnItemAdded = true;
-                    sbdTimeStamper.Append(time + ", ");
+                    sbdTimeStamper.Append(time).Append(", ");
                 }
 
                 sbdTimeStamper.Length -= blnItemAdded ? 2 : 1;

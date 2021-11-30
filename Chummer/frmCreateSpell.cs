@@ -542,22 +542,32 @@ namespace Chummer
             }
 
             string strCheckBoxFormat = LanguageManager.GetString("String_Space") + "({0})";
-            foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
+            foreach (Control objControl in flpModifiers.Controls)
             {
-                if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                switch (objControl)
                 {
-                    chkCheckbox.Visible = true;
-                    chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
-                }
-            }
-            foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
-            {
-                foreach (CheckBox chkCheckbox in panChild.Controls.OfType<CheckBox>())
-                {
-                    if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                    case CheckBox chkCheckbox:
                     {
-                        chkCheckbox.Visible = true;
-                        chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
+                        if (!string.IsNullOrEmpty(chkCheckbox.Text))
+                        {
+                            chkCheckbox.Visible = true;
+                            chkCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkCheckbox.Tag);
+                        }
+
+                        break;
+                    }
+                    case Panel pnlControl:
+                    {
+                        foreach (CheckBox chkInnerCheckbox in pnlControl.Controls.OfType<CheckBox>())
+                        {
+                            if (!string.IsNullOrEmpty(chkInnerCheckbox.Text))
+                            {
+                                chkInnerCheckbox.Visible = true;
+                                chkInnerCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkInnerCheckbox.Tag);
+                            }
+                        }
+
+                        break;
                     }
                 }
             }
@@ -588,43 +598,26 @@ namespace Chummer
             int intDV = 0;
 
             // Type DV.
-            if (cboType.SelectedValue.ToString() == "M")
-                intDV += 0;
-            else
-                intDV += 1;
+            if (cboType.SelectedValue.ToString() != "M")
+                ++intDV;
 
             // Range DV.
-            switch (cboRange.SelectedValue.ToString())
-            {
-                case "T":
-                    intDV -= 2;
-                    break;
+            if (cboRange.SelectedValue.ToString() == "T")
+                intDV -= 2;
 
-                default:
-                    // LOS
-                    intDV += 0;
-                    break;
-            }
             if (chkArea.Checked)
                 intDV += 2;
 
             // Restriction DV.
             if (chkRestricted.Checked)
-                intDV -= 1;
+                --intDV;
             if (chkVeryRestricted.Checked)
                 intDV -= 2;
 
             // Duration DV.
-            if (cboDuration.SelectedValue.ToString() == "P")
-            {
-                // Curative Health Spells do not have a modifier for Permanant duration.
-                if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
-                    intDV += 0;
-                else
-                    intDV += 2;
-            }
-            else
-                intDV += 0;
+            // Curative Health Spells do not have a modifier for Permanent duration.
+            if (cboDuration.SelectedValue.ToString() == "P" && (cboCategory.SelectedValue.ToString() != "Health" || !chkModifier1.Checked))
+                intDV += 2;
 
             // Include any checked modifiers.
             foreach (CheckBox chkModifier in flpModifiers.Controls.OfType<CheckBox>())

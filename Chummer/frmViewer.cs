@@ -41,7 +41,7 @@ namespace Chummer
     public partial class frmViewer : Form
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        private List<Character> _lstCharacters = new List<Character>(1);
+        private readonly List<Character> _lstCharacters = new List<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalSettings.DefaultCharacterSheet;
         private bool _blnLoading;
@@ -755,7 +755,9 @@ namespace Chummer
             {
                 objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
             }
-            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>(1);
+            _lstCharacters.Clear();
+            if (lstCharacters != null)
+                _lstCharacters.AddRange(lstCharacters);
             foreach (Character objCharacter in _lstCharacters)
             {
                 objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;

@@ -7839,6 +7839,14 @@
       <text>Restore Defaults</text>
     </string>
     <string>
+      <key>Message_Options_FileIsNotPDF</key>
+      <text>The selected file ({0}) could not be processed as a PDF file. Only PDF files are allowed to be linked to sourcebooks.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_FileIsNotPDF</key>
+      <text>File Is Not a PDF</text>
+    </string>
+    <string>
       <key>Label_Options_PDFApplicationPath</key>
       <text>Location of PDF application:</text>
     </string>
@@ -7923,8 +7931,12 @@
       <text>Lossless (PNG)</text>
     </string>
     <string>
-      <key>String_Lossy_Compression_Option</key>
-      <text>Lossy (JPG)</text>
+      <key>String_Lossy_Automatic_Compression_Option</key>
+      <text>Lossy (JPG, Automatic)</text>
+    </string>
+    <string>
+      <key>String_Lossy_Manual_Compression_Option</key>
+      <text>Lossy (JPG, Manual)</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Options -->

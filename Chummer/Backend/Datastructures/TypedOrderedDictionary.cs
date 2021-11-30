@@ -176,8 +176,10 @@ namespace Chummer
             if (arrayIndex + Count >= array.Length)
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex));
             for (int i = 0; i < Count; ++i)
+            {
                 array[i + arrayIndex] =
                     new Tuple<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
+            }
         }
 
         public void CopyTo(Array array, int index)
@@ -467,7 +469,7 @@ namespace Chummer
 
         public void RemoveAt(int index)
         {
-            TKey objKeyToRemove = _lstIndexes.ElementAt(index);
+            TKey objKeyToRemove = _lstIndexes[index];
             if (objKeyToRemove.Equals(default))
                 return;
             _dicUnorderedData.Remove(objKeyToRemove);
@@ -630,7 +632,7 @@ namespace Chummer
             // Advance to the next item.
             public bool MoveNext()
             {
-                _intIndex += 1;
+                ++_intIndex;
                 return _intIndex < _dicMyDictionary.Count;
             }
 

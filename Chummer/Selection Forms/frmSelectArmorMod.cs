@@ -234,7 +234,7 @@ namespace Chummer
             {
                 while (nudRating.Maximum > 1 && !objXmlMod.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt))
                 {
-                    nudRating.Maximum -= 1;
+                    --nudRating.Maximum;
                 }
             }
 
@@ -245,7 +245,7 @@ namespace Chummer
                     decCostMultiplier *= 0.9m;
                 while (nudRating.Maximum > 1 && !objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                 {
-                    nudRating.Maximum -= 1;
+                    --nudRating.Maximum;
                 }
             }
 
@@ -408,15 +408,15 @@ namespace Chummer
             foreach (string strCategory in AllowedCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 if (!string.IsNullOrEmpty(strCategory))
-                    sbdCategoryFilter.Append("category = " + strCategory.CleanXPath() + " or ");
+                    sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
             }
             if (sbdCategoryFilter.Length > 0)
             {
                 sbdCategoryFilter.Length -= 4;
-                sbdFilter.Append(" and (" + sbdCategoryFilter + ")");
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             int intOverLimit = 0;
             XPathNodeIterator objXmlModList =

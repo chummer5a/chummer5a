@@ -29,9 +29,9 @@ namespace Chummer
 {
     public partial class frmSelectItem : Form
     {
-        private List<Gear> _lstGear = new List<Gear>();
-        private List<Vehicle> _lstVehicles = new List<Vehicle>();
-        private List<ListItem> _lstGeneralItems = new List<ListItem>();
+        private readonly List<Gear> _lstGear = new List<Gear>();
+        private readonly List<Vehicle> _lstVehicles = new List<Vehicle>();
+        private readonly List<ListItem> _lstGeneralItems = new List<ListItem>();
         private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
@@ -65,11 +65,18 @@ namespace Chummer
                             if (objGear.Children.Count > 0)
                             {
                                 // Append the plugin information to the name.
-                                sbdAmmoName.Append(strSpace + '[' + string.Join(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalSettings.Language))) + ']');
+                                sbdAmmoName.Append(strSpace).Append('[')
+                                           .AppendJoin(',' + strSpace,
+                                                       objGear.Children.Select(x => x.CurrentDisplayNameShort))
+                                           .Append(']');
                             }
+
                             if (objGear.Rating > 0)
-                                sbdAmmoName.Append(strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')');
-                            sbdAmmoName.Append(strSpace + 'x' + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdAmmoName.Append(strSpace).Append('(')
+                                           .Append(LanguageManager.GetString(objGear.RatingLabel)).Append(strSpace)
+                                           .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdAmmoName.Append(strSpace).Append('x')
+                                       .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                             lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                         }
 
@@ -338,7 +345,8 @@ namespace Chummer
         /// </summary>
         public void SetGearMode(IEnumerable<Gear> lstGears)
         {
-            _lstGear = new List<Gear>(lstGears);
+            _lstGear.Clear();
+            _lstGear.AddRange(lstGears);
             _strMode = "Gear";
         }
 
@@ -347,7 +355,8 @@ namespace Chummer
         /// </summary>
         public void SetVehiclesMode(IEnumerable<Vehicle> lstVehicles)
         {
-            _lstVehicles = new List<Vehicle>(lstVehicles);
+            _lstVehicles.Clear();
+            _lstVehicles.AddRange(lstVehicles);
             _strMode = "Vehicles";
         }
 
@@ -356,7 +365,8 @@ namespace Chummer
         /// </summary>
         public void SetGeneralItemsMode(IEnumerable<ListItem> lstItems)
         {
-            _lstGeneralItems = new List<ListItem>(lstItems);
+            _lstGeneralItems.Clear();
+            _lstGeneralItems.AddRange(lstItems);
             _strMode = "General";
         }
 
@@ -365,7 +375,8 @@ namespace Chummer
         /// </summary>
         public void SetDropdownItemsMode(IEnumerable<ListItem> lstItems)
         {
-            _lstGeneralItems = new List<ListItem>(lstItems);
+            _lstGeneralItems.Clear();
+            _lstGeneralItems.AddRange(lstItems);
             _strMode = "Dropdown";
         }
 

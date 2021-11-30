@@ -427,7 +427,7 @@ namespace Chummer
                                 // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
                                 intStartPosition = i;
                             }
-                            intBracketLevel += 1;
+                            ++intBracketLevel;
                             break;
                         }
                     case '}':
@@ -435,7 +435,7 @@ namespace Chummer
                             // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
                             if (intBracketLevel > 0)
                             {
-                                intBracketLevel -= 1;
+                                --intBracketLevel;
                                 if (intBracketLevel == 0)
                                 {
                                     // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
@@ -575,7 +575,7 @@ namespace Chummer
                     foreach (string strKey in lstEnglish)
                     {
                         if (!lstLanguage.Contains(strKey))
-                            sbdMissingMessage.AppendLine("Missing String: " + strKey);
+                            sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
                     }
                 }),
                 Task.Run(() =>
@@ -584,7 +584,7 @@ namespace Chummer
                     foreach (string strKey in lstLanguage)
                     {
                         if (!lstEnglish.Contains(strKey))
-                            sbdUnusedMessage.AppendLine("Unused String: " + strKey);
+                            sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
                     }
                 }));
 
@@ -1217,12 +1217,7 @@ namespace Chummer
                                 string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
                                 string strText = objNode.SelectSingleNodeAndCacheExpression("text")?.Value;
                                 if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
-                                {
-                                    if (TranslatedStrings.ContainsKey(strKey))
-                                        TranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
-                                    else
-                                        TranslatedStrings.Add(strKey, strText.NormalizeLineEndings(true));
-                                }
+                                    TranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
                             }
                         }
                         else

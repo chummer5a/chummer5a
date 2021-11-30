@@ -228,8 +228,8 @@ namespace Chummer
                                            .SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
                         objCache.BuildMethod
                             = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.Value == "25"
-                                ? CharacterBuildMethod.Priority.ToString()
-                                : CharacterBuildMethod.Karma.ToString();
+                                ? nameof(CharacterBuildMethod.Priority)
+                                : nameof(CharacterBuildMethod.Karma);
 
                         objCache.Created = objCache.Karma != "0";
                         if (!objCache.Created)
@@ -420,7 +420,7 @@ namespace Chummer
         {
             HeroLabCharacterCache objCache = null;
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if (objSelectedNode != null && objSelectedNode.Level > 0)
+            if (objSelectedNode?.Level > 0)
             {
                 int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)

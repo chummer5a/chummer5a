@@ -67,7 +67,7 @@ namespace Chummer
         {
             if (obj is ListItem objItem)
                 return CompareTo(objItem);
-            return string.Compare(ToString(), obj?.ToString() ?? string.Empty, StringComparison.Ordinal);
+            return string.CompareOrdinal(ToString(), obj?.ToString() ?? string.Empty);
         }
 
         public int CompareTo(ListItem other)
@@ -92,12 +92,12 @@ namespace Chummer
 
         public static bool operator ==(object x, ListItem y)
         {
-            return x?.Equals(y) ?? y == null;
+            return x?.Equals(y) ?? false;
         }
 
         public static bool operator !=(object x, ListItem y)
         {
-            return !(x?.Equals(y) ?? y == null);
+            return !(x?.Equals(y) ?? false);
         }
 
         public static bool operator <(ListItem left, ListItem right)
@@ -238,7 +238,7 @@ namespace Chummer
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;
-            return (-intCompareResult);
+            return -intCompareResult;
         }
 
         /// <summary>
@@ -291,7 +291,6 @@ namespace Chummer
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decX))
             {
                 if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decY))
-
                     intCompareResult = decimal.Compare(decX, decY);
                 else
                     intCompareResult = -1;
@@ -306,7 +305,7 @@ namespace Chummer
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;
-            return (-intCompareResult);
+            return -intCompareResult;
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace ChummerHub.Client.Sinners
     {
         private readonly List<string> errors = new List<string>();
 
-        partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings)
+        partial void UpdateJsonSerializerSettings(JsonSerializerSettings settings)
         {
             settings.NullValueHandling = NullValueHandling.Ignore;
             settings.DateParseHandling = DateParseHandling.None;

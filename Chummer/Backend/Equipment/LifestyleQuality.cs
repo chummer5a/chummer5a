@@ -168,7 +168,6 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
 
-
             if (string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlLifestyleQuality, Name, CurrentDisplayName, Source, Page,
@@ -378,8 +377,10 @@ namespace Chummer.Backend.Equipment
             {
                 List<ListItem> lstQualities = new List<ListItem>(1);
                 foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression("/chummer/qualities/quality"))
+                {
                     lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
-                        xmlNode.SelectSingleNode("translate")?.Value ?? xmlNode.SelectSingleNode("name")?.Value));
+                                                  xmlNode.SelectSingleNode("translate")?.Value ?? xmlNode.SelectSingleNode("name")?.Value));
+                }
 
                 using (frmSelectItem frmSelect = new frmSelectItem
                 {

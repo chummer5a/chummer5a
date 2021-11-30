@@ -111,16 +111,18 @@ namespace Chummer
                             continue;
                         foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in objImprovement.GetRelevantPropertyChangers())
                         {
-                            if (dicChangedProperties.TryGetValue(objToUpdate, out HashSet<string> setChangedProperties))
-                                setChangedProperties.Add(strPropertyName);
-                            else
-                                dicChangedProperties.Add(objToUpdate, new HashSet<string> { strPropertyName });
+                            if (!dicChangedProperties.TryGetValue(objToUpdate, out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = new HashSet<string>(1);
+                                dicChangedProperties.Add(objToUpdate, setChangedProperties);
+                            }
+                            setChangedProperties.Add(strPropertyName);
                         }
                     }
                 }
-                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
                 {
-                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToArray());
                 }
             }
         }

@@ -1186,11 +1186,15 @@ namespace Chummer
                     //Add to set for O(N log M) runtime instead of O(N * M)
                     HashSet<string> lstRequired = new HashSet<string>();
                     using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
-                        if (xmlNodeList != null)
+                    {
+                        if (xmlNodeList?.Count > 0)
+                        {
                             foreach (XmlNode node in xmlNodeList)
                             {
                                 lstRequired.Add(node.InnerText);
                             }
+                        }
+                    }
 
                     if (!objCharacter.Qualities.Any(quality => lstRequired.Contains(quality.Name)))
                     {
@@ -1199,7 +1203,9 @@ namespace Chummer
 
                     reason |= QualityFailureReasons.MetatypeRequired;
                     using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("metatype"))
-                        if (xmlNodeList != null)
+                    {
+                        if (xmlNodeList?.Count > 0)
+                        {
                             foreach (XmlNode objNode in xmlNodeList)
                             {
                                 if (objNode.InnerText == objCharacter.Metatype)
@@ -1208,6 +1214,8 @@ namespace Chummer
                                     break;
                                 }
                             }
+                        }
+                    }
                 }
                 XmlNode xmlAllOfNode = xmlRequiredNode["allof"];
                 if (xmlAllOfNode != null)
@@ -1245,11 +1253,15 @@ namespace Chummer
                     //Add to set for O(N log M) runtime instead of O(N * M)
                     HashSet<string> qualityForbidden = new HashSet<string>();
                     using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
+                    {
                         if (xmlNodeList != null)
+                        {
                             foreach (XmlNode node in xmlNodeList)
                             {
                                 qualityForbidden.Add(node.InnerText);
                             }
+                        }
+                    }
 
                     foreach (Quality quality in objCharacter.Qualities)
                     {
@@ -1262,7 +1274,7 @@ namespace Chummer
                 }
             }
 
-            return conflictingQualities.Count <= 0 && reason == QualityFailureReasons.None;
+            return conflictingQualities.Count == 0 && reason == QualityFailureReasons.None;
         }
 
         /// <summary>
@@ -1275,9 +1287,9 @@ namespace Chummer
         {
             if (xmlDoc == null)
                 throw new ArgumentNullException(nameof(xmlDoc));
-            var node = xmlDoc.SelectSingleNode("//*[id = " + id.CleanXPath() + "]");
+            XmlNode node = xmlDoc.SelectSingleNode(".//*[id = " + id.CleanXPath() + ']');
             if (node == null)
-                throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + ".");
+                throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + '.');
             return GetNodeOverrideable(node);
         }
 
@@ -1286,28 +1298,25 @@ namespace Chummer
             XmlNode workNode = n.Clone();  //clone as to not mess up the acctual xml document
 
             XmlNode parentNode = n.SelectSingleNode("../..");
-            if (parentNode?["id"] != null)
+            if (parentNode?["id"] == null)
+                return workNode;
+            XmlNode sourceNode = GetNodeOverrideable(parentNode);
+            if (sourceNode == null)
+                return workNode;
+            foreach (XmlNode node in sourceNode.ChildNodes)
             {
-                XmlNode sourceNode = GetNodeOverrideable(parentNode);
-                if (sourceNode != null)
+                if (workNode[node.LocalName] == null && node.LocalName != "versions")
                 {
-                    foreach (XmlNode node in sourceNode.ChildNodes)
+                    workNode.AppendChild(node.Clone());
+                }
+                else if (node.LocalName == "bonus")
+                {
+                    XmlNode xmlBonusNode = workNode["bonus"];
+                    if (xmlBonusNode == null)
+                        continue;
+                    foreach (XmlNode childNode in node.ChildNodes)
                     {
-                        if (workNode[node.LocalName] == null && node.LocalName != "versions")
-                        {
-                            workNode.AppendChild(node.Clone());
-                        }
-                        else if (node.LocalName == "bonus")
-                        {
-                            XmlNode xmlBonusNode = workNode["bonus"];
-                            if (xmlBonusNode != null)
-                            {
-                                foreach (XmlNode childNode in node.ChildNodes)
-                                {
-                                    xmlBonusNode.AppendChild(childNode.Clone());
-                                }
-                            }
-                        }
+                        xmlBonusNode.AppendChild(childNode.Clone());
                     }
                 }
             }
@@ -1412,47 +1421,14 @@ namespace Chummer
                     return false;
             }
 
-            // Remove any Improvements for the old Quality.
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objOldQuality.InternalId);
+            // Removing the old quality from the character
             _objCharacter.Qualities.Remove(objOldQuality);
-
-            // Remove any Weapons created by the old Quality if applicable.
-            if (!objOldQuality.WeaponID.IsEmptyGuid())
-            {
-                List<Weapon> lstOldWeapons = _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objOldQuality.InternalId).ToList();
-                foreach (Weapon objWeapon in lstOldWeapons)
-                {
-                    objWeapon.DeleteWeapon();
-                    // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else
-                        _objCharacter.Weapons.Remove(objWeapon);
-                }
-            }
 
             foreach (Quality objOldQualityLevels in _objCharacter.Qualities.Where(x =>
                 x.SourceIDString == SourceIDString && x.Extra == Extra &&
                 x.SourceName == SourceName && x.Type == Type).ToList())
             {
-                // Remove any Improvements for the old Quality.
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objOldQualityLevels.InternalId);
                 _objCharacter.Qualities.Remove(objOldQualityLevels);
-
-                // Remove any Weapons created by the old Quality if applicable.
-                if (!objOldQualityLevels.WeaponID.IsEmptyGuid())
-                {
-                    List<Weapon> lstOldWeapons = _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objOldQualityLevels.InternalId).ToList();
-                    foreach (Weapon objWeapon in lstOldWeapons)
-                    {
-                        objWeapon.DeleteWeapon();
-                        // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                        if (objWeapon.Parent != null)
-                            objWeapon.Parent.Children.Remove(objWeapon);
-                        else
-                            _objCharacter.Weapons.Remove(objWeapon);
-                    }
-                }
             }
 
             // Add the new Quality to the character.
@@ -1511,8 +1487,7 @@ namespace Chummer
                     lstNamesOfChangedProperties = s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in s_QualityDependencyGraph.GetWithAllDependents(
-                        this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -1526,6 +1501,37 @@ namespace Chummer
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
+        }
+
+        /// <summary>
+        /// Removes a quality from the character, assuming we have already gone through all the necessary UI prompts.
+        /// TODO: make Quality properly inherit from ICanRemove by also putting the UI stuff in here as well
+        /// </summary>
+        /// <returns>Nuyen cost of the actual removal (necessary for removing some stuff that adds qualities as part of their effects).</returns>
+        public decimal DeleteQuality()
+        {
+            // Remove the Improvements that were created by the Quality.
+            decimal decReturn = ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
+
+            // Remove any Weapons created by the Quality if applicable.
+            if (!WeaponID.IsEmptyGuid())
+            {
+                List<Weapon> lstWeapons = _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList();
+                foreach (Weapon objWeapon in lstWeapons)
+                {
+                    if (objWeapon.ParentID == InternalId)
+                    {
+                        decReturn += objWeapon.DeleteWeapon();
+                        // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
+                        if (objWeapon.Parent != null)
+                            objWeapon.Parent.Children.Remove(objWeapon);
+                        else
+                            _objCharacter.Weapons.Remove(objWeapon);
+                    }
+                }
+            }
+
+            return decReturn;
         }
     }
 }

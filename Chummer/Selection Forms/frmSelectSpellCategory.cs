@@ -28,7 +28,7 @@ namespace Chummer
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory    = string.Empty;
-        private HashSet<string> _setExcludeCategories;
+        private readonly HashSet<string> _setExcludeCategories = new HashSet<string>();
 
         private readonly XPathNavigator _objXmlDocument;
 
@@ -51,7 +51,8 @@ namespace Chummer
                 : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if (_setExcludeCategories.Contains(strInnerText)) continue;
+                if (_setExcludeCategories.Contains(strInnerText))
+                    continue;
                 lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
             }
 
@@ -95,15 +96,19 @@ namespace Chummer
             set => _strForceCategory = value;
         }
 
+        #endregion Properties
+
         /// <summary>
         /// Exclude a Category from the list.
         /// </summary>
-        public HashSet<string> ExcludeCategories
+        public void SetExcludeCategories(IEnumerable<string> lstCategories)
         {
-            set => _setExcludeCategories = value;
+            _setExcludeCategories.Clear();
+            if (lstCategories == null)
+                return;
+            foreach (string strCategory in lstCategories)
+                _setExcludeCategories.Add(strCategory);
         }
-
-        #endregion Properties
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {

@@ -65,21 +65,22 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.SelectAndCacheExpression("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if (_objCharacter.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.AllowCritterPowerCategory &&
-                        strInnerText.Contains(imp.ImprovedName)) &&
-                    objXmlCategory.SelectSingleNodeAndCacheExpression("@whitelist")?.Value == bool.TrueString ||
-                    _objCharacter.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory &&
-                        strInnerText.Contains(imp.ImprovedName)))
+                if (_objCharacter.Improvements.Any(
+                        imp => imp.ImproveType == Improvement.ImprovementType.AllowCritterPowerCategory
+                               && strInnerText.Contains(imp.ImprovedName))
+                    && objXmlCategory.SelectSingleNodeAndCacheExpression("@whitelist")?.Value == bool.TrueString
+                    || _objCharacter.Improvements.Any(
+                        imp => imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory
+                               && strInnerText.Contains(imp.ImprovedName)))
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
                         objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                     continue;
                 }
-                if (_objCharacter.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory &&
-                        !strInnerText.Contains(imp.ImprovedName)))
+
+                if (_objCharacter.Improvements.Any(
+                    imp => imp.ImproveType == Improvement.ImprovementType.LimitCritterPowerCategory
+                           && !strInnerText.Contains(imp.ImprovedName)))
                 {
                     continue;
                 }
@@ -328,7 +329,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
-                sbdFilter.Append(" and (contains(category," + strCategory.CleanXPath() + "))");
+                sbdFilter.Append(" and (contains(category,").Append(strCategory.CleanXPath()).Append("))");
             }
             else
             {
@@ -338,7 +339,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strItem))
                     {
-                        sbdCategoryFilter.Append("(contains(category," + strItem.CleanXPath() + ")) or ");
+                        sbdCategoryFilter.Append("(contains(category,").Append(strItem.CleanXPath()).Append(")) or ");
                         if (strItem == "Toxic Critter Powers")
                         {
                             sbdCategoryFilter.Append("toxic = \"True\" or ");
@@ -349,13 +350,13 @@ namespace Chummer
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
                 if (!blnHasToxic)
                     sbdFilter.Append(" and (not(toxic) or toxic != \"True\")");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter + "]"))
             {
                 string strPowerName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");

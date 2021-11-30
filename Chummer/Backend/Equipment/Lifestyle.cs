@@ -516,7 +516,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 XmlNode xmlLifestyleNode = GetNode();
-                if (xmlLifestyleNode != null && xmlLifestyleNode.TryGetStringFieldQuickly("increment", ref strTemp))
+                if (xmlLifestyleNode?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
                 {
                     _eIncrement = ConvertToLifestyleIncrement(strTemp);
                 }
@@ -870,16 +870,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total LP cost of the Lifestyle, including all qualities, roommates, bonus LP, etc.
         /// </summary>
-        public int TotalLP
-        {
-            get
-            {
-                int i = LP - Comforts - Area - Security + Roommates + BonusLP;
-                i = LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn).Aggregate(i, (current, lq) => current - lq.LP);
-
-                return i;
-            }
-        }
+        public int TotalLP => LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Count(x => x.OriginSource != QualitySource.BuiltIn);
 
         /// <summary>
         /// Free Lifestyle points from Traveler lifestyle.
@@ -1302,7 +1293,7 @@ namespace Chummer.Backend.Equipment
                         break;
 
                     case LifestyleIncrement.Week:
-                        decContractCost /= (4.34812m);
+                        decContractCost /= 4.34812m;
                         break;
                 }
 
@@ -1370,7 +1361,7 @@ namespace Chummer.Backend.Equipment
             objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
             objExpense.Undo = objUndo;
 
-            Increments += 1;
+            ++Increments;
         }
 
         private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

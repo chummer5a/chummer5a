@@ -111,7 +111,7 @@ namespace Chummer
                     var regex = new Regex(pattern);
 
                     var replacePattern = translated;
-                    replacePattern = Regex.Replace(replacePattern, @"{([0-9]+)}", @"${group$1}");
+                    replacePattern = Regex.Replace(replacePattern, "{([0-9]+)}", "${group$1}");
                     replacePattern = replacePattern.Replace("\\$", "$");
 
                     result = regex.Replace(result, replacePattern);

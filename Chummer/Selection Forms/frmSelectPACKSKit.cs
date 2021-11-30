@@ -117,7 +117,7 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
+                        objCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (objCategoryFilter.Length > 0)
                 {

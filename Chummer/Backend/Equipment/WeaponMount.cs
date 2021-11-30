@@ -94,8 +94,9 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(objNewWeapon.ParentID) && _lstWeapons.DeepFindById(objNewWeapon.ParentID) != null)
                         continue;
                     _lstWeapons.Remove(objNewWeapon);
-                    intNumFullWeapons -= 1;
-                    if (intNumFullWeapons <= _intWeaponCapacity) break;
+                    --intNumFullWeapons;
+                    if (intNumFullWeapons <= _intWeaponCapacity)
+                        break;
                 }
             }
         }
@@ -963,21 +964,21 @@ namespace Chummer.Backend.Equipment
             {
                 StringBuilder sbdReturn = new StringBuilder(strReturn);
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                sbdReturn.Append(strSpace + '(');
+                sbdReturn.Append(strSpace).Append('(');
                 bool blnCloseParantheses = false;
                 foreach (WeaponMountOption objOption in WeaponMountOptions)
                 {
                     if (objOption.Name != "None")
                     {
                         blnCloseParantheses = true;
-                        sbdReturn.Append(objOption.DisplayName(strLanguage) + ',' + strSpace);
+                        sbdReturn.Append(objOption.DisplayName(strLanguage)).Append(',').Append(strSpace);
                     }
                 }
                 sbdReturn.Length -= 1 + strSpace.Length;
                 if (blnCloseParantheses)
                     sbdReturn.Append(')');
                 if (!string.IsNullOrWhiteSpace(Location))
-                    sbdReturn.Append(strSpace + '-' + strSpace + Location);
+                    sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(Location);
                 strReturn = sbdReturn.ToString();
             }
 
@@ -1078,14 +1079,14 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
-                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                     }
                 }
@@ -1576,14 +1577,14 @@ namespace Chummer.Backend.Equipment
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
-                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
                         }
                     }
                 }

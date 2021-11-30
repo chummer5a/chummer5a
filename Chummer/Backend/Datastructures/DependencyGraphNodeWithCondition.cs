@@ -34,7 +34,7 @@ namespace Chummer
 
         public static bool operator ==(DependencyGraphNodeWithCondition<T, T2> objFirstEdge, DependencyGraphNodeWithCondition<T, T2> objSecondEdge)
         {
-            return ((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
+            return (objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true;
         }
 
         public static bool operator !=(DependencyGraphNodeWithCondition<T, T2> objFirstEdge, DependencyGraphNodeWithCondition<T, T2> objSecondEdge)

@@ -259,7 +259,7 @@ namespace Chummer.Backend.Equipment
             }
             objXmlVehicle.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlVehicle.TryGetStringFieldQuickly("page", ref _strPage);
-            
+
             if (string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlVehicle, Name, CurrentDisplayName, Source, Page,
@@ -1726,7 +1726,7 @@ namespace Chummer.Backend.Equipment
                                 if (!blnHandling)
                                 {
                                     blnHandling = true;
-                                    intActualSlots -= 1;
+                                    --intActualSlots;
                                 }
                                 break;
 
@@ -1735,7 +1735,7 @@ namespace Chummer.Backend.Equipment
                                 if (!blnSpeed)
                                 {
                                     blnSpeed = true;
-                                    intActualSlots -= 1;
+                                    --intActualSlots;
                                 }
                                 break;
 
@@ -1744,7 +1744,7 @@ namespace Chummer.Backend.Equipment
                                 if (!blnAccel)
                                 {
                                     blnAccel = true;
-                                    intActualSlots -= 1;
+                                    --intActualSlots;
                                 }
                                 break;
 
@@ -1767,7 +1767,7 @@ namespace Chummer.Backend.Equipment
                                 if (!blnSensor)
                                 {
                                     blnSensor = true;
-                                    intActualSlots -= 1;
+                                    --intActualSlots;
                                 }
                                 break;
                         }
@@ -3162,14 +3162,14 @@ namespace Chummer.Backend.Equipment
 
                         if (intLowestValidRestrictedGearAvail >= 0 && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
-                            dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] -= 1;
-                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
+                            --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + CurrentDisplayName);
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
                         }
                     }
                 }
@@ -3570,7 +3570,7 @@ namespace Chummer.Backend.Equipment
 
             if (Overclocked == strAttributeName)
             {
-                intReturn += 1;
+                ++intReturn;
             }
 
             string strAttributeNodeName = string.Empty;

@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -53,11 +52,12 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyPropertyChanged, IEquatable<CharacterSettings>
+    public sealed class CharacterSettings : INotifyMultiplePropertyChanged
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
         private string _strName = "Standard";
+        private bool _blnDoingCopy;
 
         // Settings.
         // ReSharper disable once InconsistentNaming
@@ -241,6 +241,8 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
+            if (_blnDoingCopy)
+                return;
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
@@ -262,6 +264,10 @@ namespace Chummer
                 _intCachedMinNuyenDecimals = -1;
             if (lstNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
                 _intCachedEssenceDecimals = -1;
+            if (lstNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                RecalculateEnabledCustomDataDirectories();
+            if (lstNamesOfChangedProperties.Contains(nameof(Books)))
+                RecalculateBookXPath();
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
@@ -333,106 +339,156 @@ namespace Chummer
         {
             if (objOther != null)
                 CopyValues(objOther);
-            PropertyChanged += OnPropertyChanged;
         }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(CustomDataDirectoryKeys))
-                RecalculateEnabledCustomDataDirectories();
-        }
-
+        
         public void CopyValues(CharacterSettings objOther)
         {
             if (objOther == null)
                 return;
-            _guiSourceId = objOther._guiSourceId;
-            _strFileName = objOther._strFileName;
-
-            // Copy over via properties in order to trigger OnPropertyChanged as appropriate
-            PropertyInfo[] aobjProperties = GetType().GetProperties();
-            PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
-            foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead))
+            _blnDoingCopy = true;
+            List<string> lstPropertiesToUpdate = new List<string>();
+            try
             {
-                PropertyInfo objProperty = aobjProperties.FirstOrDefault(x => x.Name == objOtherProperty.Name && x.CanWrite);
-                if (objProperty != null)
+                if (!_guiSourceId.Equals(objOther._guiSourceId))
                 {
-                    objProperty.SetValue(this, objOtherProperty.GetValue(objOther, null), null);
+                    lstPropertiesToUpdate.Add(nameof(SourceId));
+                    _guiSourceId = objOther._guiSourceId;
                 }
+
+                if (!_strFileName.Equals(objOther._strFileName))
+                {
+                    lstPropertiesToUpdate.Add(nameof(FileName));
+                    _strFileName = objOther._strFileName;
+                }
+
+                // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+                PropertyInfo[] aobjProperties = GetType().GetProperties();
+                PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
+                foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead && x.CanWrite))
+                {
+                    foreach (PropertyInfo objProperty in Array.FindAll(aobjProperties,
+                                                                       x => x.Name == objOtherProperty.Name
+                                                                            && x.PropertyType
+                                                                            == objOtherProperty.PropertyType))
+                    {
+                        object objMyValue = objProperty.GetValue(this);
+                        object objOtherValue = objOtherProperty.GetValue(objOther);
+                        if (objMyValue.Equals(objOtherValue))
+                            continue;
+                        lstPropertiesToUpdate.Add(objProperty.Name);
+                        objProperty.SetValue(this, objOtherValue);
+                    }
+                }
+
+                if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                {
+                    lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                    _dicCustomDataDirectoryKeys.Clear();
+                    foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+                    {
+                        _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
+                    }
+                }
+
+                if (!_lstBooks.SetEquals(objOther._lstBooks))
+                {
+                    lstPropertiesToUpdate.Add(nameof(Books));
+                    _lstBooks.Clear();
+                    foreach (string strBook in objOther._lstBooks)
+                    {
+                        _lstBooks.Add(strBook);
+                    }
+                }
+
+                if (!BannedWareGrades.SetEquals(objOther.BannedWareGrades))
+                {
+                    lstPropertiesToUpdate.Add(nameof(BannedWareGrades));
+                    BannedWareGrades.Clear();
+                    foreach (string strGrade in objOther.BannedWareGrades)
+                    {
+                        BannedWareGrades.Add(strGrade);
+                    }
+                }
+
+                // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
             }
-
-            OnPropertyChanged(nameof(SourceId));
-
-            _dicCustomDataDirectoryKeys.Clear();
-            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+            finally
             {
-                _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
-            }
-            RecalculateEnabledCustomDataDirectories();
-
-            _lstBooks.Clear();
-            foreach (string strBook in objOther._lstBooks)
-            {
-                _lstBooks.Add(strBook);
-            }
-            RecalculateBookXPath();
-
-            BannedWareGrades.Clear();
-            foreach (string strGrade in objOther.BannedWareGrades)
-            {
-                BannedWareGrades.Add(strGrade);
+                _blnDoingCopy = false;
             }
 
-            // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
+            OnMultiplePropertyChanged(lstPropertiesToUpdate.ToArray());
         }
 
-        public bool Equals(CharacterSettings other)
+        public bool HasIdenticalSettings(CharacterSettings objOther)
         {
-            if (other == null)
+            if (objOther == null)
                 return false;
-            if (_guiSourceId != other._guiSourceId)
+            if (_guiSourceId != objOther._guiSourceId)
                 return false;
-            if (_strFileName != other._strFileName)
+            if (_strFileName != objOther._strFileName)
                 return false;
-            if (GetHashCode() != other.GetHashCode())
+            if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
                 return false;
 
-            PropertyInfo[] aobjProperties = GetType().GetProperties();
-            PropertyInfo[] aobjOtherProperties = other.GetType().GetProperties();
-            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
+            PropertyInfo[] aobjPropertyInfos = GetType().GetProperties();
+            List<PropertyInfo> lstPropertyInfos
+                = new List<PropertyInfo>(aobjPropertyInfos.Length);
+            lstPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
+            aobjPropertyInfos = objOther.GetType().GetProperties();
+            List<PropertyInfo> lstOtherPropertyInfos
+                = new List<PropertyInfo>(aobjPropertyInfos.Length);
+            lstOtherPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
+
+            if (lstPropertyInfos.Count != lstOtherPropertyInfos.Count)
+                return false;
+
+            for (int i = lstPropertyInfos.Count - 1; i >= 0; --i)
             {
-                PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
-                if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(other))
+                PropertyInfo objPropertyInfo = lstPropertyInfos[i];
+                int intOtherIndex
+                    = lstOtherPropertyInfos.FindIndex(x => x.Name == objPropertyInfo.Name
+                                                           && x.PropertyType == objPropertyInfo.PropertyType);
+                if (intOtherIndex < 0)
+                    return false;
+                PropertyInfo objOtherPropertyInfo = lstOtherPropertyInfos[intOtherIndex];
+                object objMyValue = objPropertyInfo.GetValue(this);
+                object objOtherValue = objOtherPropertyInfo.GetValue(objOther);
+                if (objMyValue.Equals(objOtherValue))
+                {
+                    // Removed checked property from the other list, both to speed up future checks and to make last check easier
+                    lstOtherPropertyInfos.RemoveAt(intOtherIndex);
+                }
+                else
                 {
                     return false;
                 }
             }
-            if (aobjOtherProperties.Any(x => x.PropertyType.IsValueType && aobjProperties.All(y => y.Name != x.Name)))
+            // This will only happen if there are any properties in other that haven't been accounted for in this object
+            if (lstOtherPropertyInfos.Count > 0)
                 return false;
 
-            if (!_dicCustomDataDirectoryKeys.SequenceEqual(other._dicCustomDataDirectoryKeys))
+            if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther._dicCustomDataDirectoryKeys))
                 return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return _lstBooks.SequenceEqual(other._lstBooks) && BannedWareGrades.SequenceEqual(other.BannedWareGrades);
+            return _lstBooks.SetEquals(objOther._lstBooks) && BannedWareGrades.SetEquals(objOther.BannedWareGrades);
         }
 
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            return obj is CharacterSettings objOther && Equals(objOther);
-        }
-
-        /// <inheritdoc />
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-        public override int GetHashCode()
+        /// <summary>
+        /// Needed because it's not a strict replacement for GetHashCode().
+        /// Gets a number based on every single private property of the setting.
+        /// If two settings have unequal Hash Codes, they will never actually be equal.
+        /// </summary>
+        /// <returns></returns>
+        public int GetEquatableHashCode()
         {
             unchecked
             {
                 int hashCode = _guiSourceId.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strFileName != null ? _strFileName.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strName != null ? _strName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strFileName?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strName?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnAllow2ndMaxAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowBiowareSuites.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowCyberwareESSDiscounts.GetHashCode();
@@ -475,15 +531,15 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnUnrestrictedNuyen.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnUseCalculatedPublicAwareness.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnUsePointsOnBrokenGroups.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strContactPointsExpression != null ? _strContactPointsExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strKnowledgePointsExpression != null ? _strKnowledgePointsExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression != null ? _strChargenKarmaToNuyenExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression != null ? _strBoundSpiritExpression.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression != null ? _strRegisteredSpriteExpression.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strContactPointsExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strKnowledgePointsExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnDoNotRoundEssenceInternally.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnableEnemyTracking.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnemyKarmaQualityLimit.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strEssenceFormat != null ? _strEssenceFormat.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strEssenceFormat?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _intForbiddenCostMultiplier;
                 hashCode = (hashCode * 397) ^ _intDroneArmorMultiplier;
                 hashCode = (hashCode * 397) ^ _intLimbCount;
@@ -497,14 +553,14 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnMysAdeptAllowPpCareer.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnMysAdeptSecondMAGAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnReverseAttributePriorityOrder.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strNuyenFormat != null ? _strNuyenFormat.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strNuyenFormat?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnCompensateSkillGroupKarmaDifference.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnIncreasedImprovedAbilityMultiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowFreeGrids.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowTechnomancerSchooling.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnCyberlimbAttributeBonusCapOverride.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strBookXPath != null ? _strBookXPath.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strExcludeLimbSlot != null ? _strExcludeLimbSlot.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strBookXPath?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strExcludeLimbSlot?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _intCyberlimbAttributeBonusCap;
                 hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
@@ -556,18 +612,18 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ (int) _eBuildMethod;
                 hashCode = (hashCode * 397) ^ _intBuildPoints;
                 hashCode = (hashCode * 397) ^ _intQualityKarmaLimit;
-                hashCode = (hashCode * 397) ^ (_strPriorityArray != null ? _strPriorityArray.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_strPriorityTable != null ? _strPriorityTable.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_strPriorityArray?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strPriorityTable?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _intSumtoTen;
                 hashCode = (hashCode * 397) ^ _decNuyenMaximumBP.GetHashCode();
                 hashCode = (hashCode * 397) ^ _intAvailability;
-                hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys != null ? _dicCustomDataDirectoryKeys.GetEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories != null ? _setEnabledCustomDataDirectories.GetEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids != null ? _setEnabledCustomDataDirectoryGuids.GetOrderInvariantEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths != null ? _lstEnabledCustomDataDirectoryPaths.GetEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_lstBooks != null ? _lstBooks.GetOrderInvariantEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (BannedWareGrades != null ? BannedWareGrades.GetOrderInvariantEnsembleHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (RedlinerExcludes != null ? RedlinerExcludes.GetOrderInvariantEnsembleHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys?.GetEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths?.GetEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_lstBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (BannedWareGrades?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (RedlinerExcludes?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationGroupPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ KarmaRESInitiationGroupPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationOrdealPercent.GetHashCode();
@@ -874,13 +930,15 @@ namespace Chummer
                         .SelectAndCacheExpression("/chummer/books/book[not(hide)]/code");
                     HashSet<string> setAllowedBooks = new HashSet<string>(lstAllowedBooksCodes.Count);
                     foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
-                        setAllowedBooks.Add(objAllowedBook.Value);
+                    {
+                        if (_lstBooks.Contains(objAllowedBook.Value))
+                            setAllowedBooks.Add(objAllowedBook.Value);
+                    }
 
                     // <books>
                     objWriter.WriteStartElement("books");
-                    foreach (string strBook in _lstBooks)
-                        if (setAllowedBooks.Contains(strBook))
-                            objWriter.WriteElementString("book", strBook);
+                    foreach (string strBook in setAllowedBooks)
+                        objWriter.WriteElementString("book", strBook);
                     // </books>
                     objWriter.WriteEndElement();
 
@@ -995,7 +1053,7 @@ namespace Chummer
                 return false;
             }
 
-            return Load(objXmlDocument.CreateNavigator().SelectSingleNode("//settings"));
+            return Load(objXmlDocument.CreateNavigator().SelectSingleNode(".//settings"));
         }
 
         /// <summary>
@@ -1347,10 +1405,11 @@ namespace Chummer
             if (xmlLegacyCharacterNavigator != null)
             {
                 foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression("sources/source"))
+                {
                     if (!string.IsNullOrEmpty(xmlBook.Value))
                         _lstBooks.Add(xmlBook.Value);
+                }
             }
-            RecalculateBookXPath();
 
             // Load Custom Data Directory names.
             int intTopMostOrder = 0;
@@ -1375,7 +1434,7 @@ namespace Chummer
                         && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intOrder))
                     {
                         while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
-                            intOrder += 1;
+                            ++intOrder;
                         intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
                         intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
                         dicLoadingCustomDataDirectories.Add(intOrder,
@@ -1513,9 +1572,15 @@ namespace Chummer
 
             RecalculateEnabledCustomDataDirectories();
 
-            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths).SelectAndCacheExpression("/chummer/books/book[permanent]/code"))
+            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
+                                                         .SelectAndCacheExpression(
+                                                             "/chummer/books/book[permanent]/code"))
+            {
                 if (!string.IsNullOrEmpty(xmlBook.Value))
                     _lstBooks.Add(xmlBook.Value);
+            }
+
+            RecalculateBookXPath();
 
             // Used to legacy sweep build settings.
             XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild");
@@ -1899,21 +1964,17 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true)
         {
-            string strPath = string.Empty;
-
-            if (excludeHidden)
-            {
-                strPath += "not(hide)";
-            }
+            StringBuilder sbdPath = excludeHidden ? new StringBuilder("not(hide)") : new StringBuilder();
+            
             if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
             {
                 RecalculateBookXPath();
             }
             if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                if (strPath.Length != 0)
-                    strPath += " and ";
-                strPath += _strBookXPath;
+                if (sbdPath.Length != 0)
+                    sbdPath.Append(" and ");
+                sbdPath.Append(_strBookXPath);
             }
             else
             {
@@ -1922,21 +1983,18 @@ namespace Chummer
             }
             if (!DroneMods)
             {
-                if (strPath.Length != 0)
-                    strPath += " and ";
-                strPath += "not(optionaldrone)";
+                if (sbdPath.Length != 0)
+                    sbdPath.Append(" and ");
+                sbdPath.Append("not(optionaldrone)");
             }
 
-            if (strPath.Length > 1)
-                strPath = '(' + strPath + ')';
-            else
-            {
-                // We have only the opening parentheses; clear the string builder so that we return an empty string
-                strPath = string.Empty;
-                // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
-                Utils.BreakIfDebug();
-            }
-            return strPath;
+            if (sbdPath.Length > 1)
+                return '(' + sbdPath.ToString() + ')';
+
+            // We have only the opening parentheses; return an empty string
+            // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
+            Utils.BreakIfDebug();
+            return string.Empty;
         }
 
         /// <summary>
@@ -1951,7 +2009,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
                 {
-                    sbdBookXPath.Append("source = " + strBook.CleanXPath() + " or ");
+                    sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
                 }
             }
             if (sbdBookXPath.Length >= 4)
