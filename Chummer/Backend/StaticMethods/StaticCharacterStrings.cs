@@ -15,22 +15,21 @@ namespace Chummer.Backend.StaticMethods
             StringBuilder sbdComplexFormsBP = new StringBuilder();
             if (objCharacter.CFPLimit > 0)
             {
-                sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalSettings.CultureInfo) + strOf + objCharacter.CFPLimit.ToString(GlobalSettings.CultureInfo));
+                sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalSettings.CultureInfo)).Append(strOf).Append(objCharacter.CFPLimit.ToString(GlobalSettings.CultureInfo));
                 if (intFormsPointsUsed > objCharacter.CFPLimit)
                 {
-                    sbdComplexFormsBP.Append(strColon + strSpace +
-                                             ((intFormsPointsUsed - objCharacter.CFPLimit) *
-                                              objCharacter.ComplexFormKarmaCost)
-                                             .ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
+                    sbdComplexFormsBP.Append(strColon).Append(strSpace)
+                        .Append(((intFormsPointsUsed - objCharacter.CFPLimit)
+                                 * objCharacter.ComplexFormKarmaCost)
+                            .ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append(strPoints);
                 }
                 return sbdComplexFormsBP.ToString();
             }
-            else
-            {
-                sbdComplexFormsBP.Append(
-                    ((intFormsPointsUsed - objCharacter.CFPLimit) * objCharacter.ComplexFormKarmaCost).ToString(
-                        GlobalSettings.CultureInfo) + strSpace + strPoints);
-            }
+
+            sbdComplexFormsBP
+                .Append(((intFormsPointsUsed - objCharacter.CFPLimit) * objCharacter.ComplexFormKarmaCost)
+                    .ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append(strPoints);
+
 
             return sbdComplexFormsBP.ToString();
         }
@@ -45,17 +44,18 @@ namespace Chummer.Backend.StaticMethods
             StringBuilder sbdContactPoints = new StringBuilder(objCharacter.ContactPointsUsed.ToString(GlobalSettings.CultureInfo));
             if (objCharacter.FriendsInHighPlaces)
             {
-                sbdContactPoints.Append('/' + Math.Max(0, objCharacter.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalSettings.CultureInfo));
+                sbdContactPoints.Append('/').Append(Math.Max(0, objCharacter.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalSettings.CultureInfo));
             }
-            sbdContactPoints.Append(strOf + intContactPoints.ToString(GlobalSettings.CultureInfo));
+            sbdContactPoints.Append(strOf).Append(intContactPoints.ToString(GlobalSettings.CultureInfo));
             if (objCharacter.FriendsInHighPlaces)
             {
-                sbdContactPoints.Append('/' + (objCharacter.CHA.Value * 4).ToString(GlobalSettings.CultureInfo));
+                sbdContactPoints.Append('/').Append((objCharacter.CHA.Value * 4).ToString(GlobalSettings.CultureInfo));
             }
             if (intPointsInContacts > 0 || objCharacter.CHA.Value * 4 < intHighPlacesFriends)
             {
-                sbdContactPoints.Append(strSpace + '(' + intPointsInContacts.ToString(GlobalSettings.CultureInfo) +
-                                        strSpace + strPoints + ')');
+                sbdContactPoints.Append(strSpace).Append('(')
+                    .Append(intPointsInContacts.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                    .Append(strPoints).Append(')'); ;
             }
 
             string strContactPoints = sbdContactPoints.ToString();
@@ -73,9 +73,9 @@ namespace Chummer.Backend.StaticMethods
                 int intLoopCost = objMartialArt.Cost;
 
                 if (sbdMartialArtsBPToolTip.Length > 0)
-                    sbdMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace);
-                sbdMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName + strSpace + '(' +
-                                               intLoopCost.ToString(GlobalSettings.CultureInfo) + ')');
+                    sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
+                sbdMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName).Append(strSpace).Append('(')
+                    .Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).Append(')');
 
                 bool blnIsFirst = true;
                 foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
@@ -87,9 +87,9 @@ namespace Chummer.Backend.StaticMethods
                     }
                     intLoopCost = objCharacterSettings.KarmaTechnique;
 
-                    sbdMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace +
-                                                   objTechnique.CurrentDisplayName + strSpace + '('
-                                                   + intLoopCost.ToString(GlobalSettings.CultureInfo) + ')');
+                    sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace)
+                        .Append(objTechnique.CurrentDisplayName).Append(strSpace).Append('(')
+                        .Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).Append(')');
                 }
             }
 
@@ -189,9 +189,10 @@ namespace Chummer.Backend.StaticMethods
             foreach (Focus objFocus in objCharacter.Foci)
             {
                 if (sbdFociPointsTooltip.Length > 0)
-                    sbdFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
-                sbdFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName + strSpace + '(' +
-                                            objFocus.BindingKarmaCost().ToString(GlobalSettings.CultureInfo) + ')');
+                    sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
+                sbdFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName).Append(strSpace).Append('(')
+                    .Append(objFocus.BindingKarmaCost().ToString(GlobalSettings.CultureInfo))
+                    .Append(')');
             }
 
             //Update the stacked Focus UI
@@ -203,9 +204,9 @@ namespace Chummer.Backend.StaticMethods
                 int intBindingCost = objFocus.BindingCost;
 
                 if (sbdFociPointsTooltip.Length > 0)
-                    sbdFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
-                sbdFociPointsTooltip.Append(objFocus.CurrentDisplayName + strSpace + '(' +
-                                            intBindingCost.ToString(GlobalSettings.CultureInfo) + ')');
+                    sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
+                sbdFociPointsTooltip.Append(objFocus.CurrentDisplayName).Append(strSpace).Append('(')
+                    .Append(intBindingCost.ToString(GlobalSettings.CultureInfo)).Append(')');
             }
 
             return sbdFociPointsTooltip.ToString();

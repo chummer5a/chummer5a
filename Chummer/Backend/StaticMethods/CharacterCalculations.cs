@@ -114,7 +114,7 @@ namespace Chummer.Backend.StaticMethods
             intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
         }
 
-        public static int CalculateIntFormsPointsUsed(Character objCharacter)
+        public static int CalculateBPUsedByComplexForms(Character objCharacter)
         {
             return objCharacter.ComplexForms.Count(objComplexForm => objComplexForm.Grade == 0);
         }
@@ -550,7 +550,7 @@ namespace Chummer.Backend.StaticMethods
             // ------------------------------------------------------------------------------
 
             // Calculate the BP used by Complex Forms.
-            var intFormsPointsUsed = CalculateIntFormsPointsUsed(character);
+            var intFormsPointsUsed = CalculateBPUsedByComplexForms(character);
 
             if (intFormsPointsUsed > character.CFPLimit)
                 intKarmaPointsRemain -= (intFormsPointsUsed - character.CFPLimit) * character.ComplexFormKarmaCost;
