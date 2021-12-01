@@ -2189,6 +2189,11 @@ namespace Chummer.Backend.Equipment
             set => _blnStolen = value;
         }
 
+        /// <summary>
+        /// Name of Autosoft that is used for a weapon's dicepool. Melee weapons use Melee autosoft per R5 127
+        /// </summary>
+        private string RelevantAutosoft => WeaponType == "melee" ? "[Weapon] Melee Autosoft" : "[Weapon] Targeting Autosoft";
+
         #endregion Properties
 
         #region Complex Properties
@@ -4021,7 +4026,7 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.DogBrain:
                         {
                             intDicePool = ParentVehicle.Pilot;
-                            Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == CurrentDisplayName));
+                            Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName));
 
                             intDicePool += objAutosoft?.Rating ?? -1;
 
@@ -4426,7 +4431,7 @@ namespace Chummer.Backend.Equipment
                             strReturn = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2})",
                                 strSpace, LanguageManager.GetString("String_Pilot"), ParentVehicle?.Pilot ?? 0);
                             Gear objAutosoft = ParentVehicle?.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                x => x.Name == "[Weapon] Targeting Autosoft" &&
+                                x => x.Name == RelevantAutosoft &&
                                      (x.Extra == Name || x.Extra == CurrentDisplayName));
                             if (objAutosoft != null)
                             {

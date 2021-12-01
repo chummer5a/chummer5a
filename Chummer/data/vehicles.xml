@@ -3508,7 +3508,7 @@
       <sensor>3</sensor>
       <speed>2</speed>
       <gears>
-        <gear select="Melee Bite">[Weapon] Melee Autosoft</gear>
+        <gear select="Melee Bite" rating="1">[Weapon] Melee Autosoft</gear>
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
