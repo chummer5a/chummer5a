@@ -1414,6 +1414,7 @@ namespace Chummer
                 if (objSkill != null) //More or less a safeguard only. Should not be empty at that point any longer.
                 {
                     string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
+                    if (string.IsNullOrEmpty(strSpec)) continue;
                     if (objSkill.Specializations.All(x => x.Name != strSpec))
                     {
                         SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);

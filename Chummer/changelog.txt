@@ -18,6 +18,7 @@ Application Changes:
 - Cyberarms and modular shoulder arms can now interact properly with Shiva Arms 2.
 - Encumbrance penalties to Agility that are greater than the attribute's base value no longer artificially lower the character's average Agility when they also have cyberlimbs. Fixes #4625.
 - Fixed Vehicle-mounted Weapons that use melee autosofts not picking up the proper autosoft rating.
+- Fixed character types (NPCs, critters) that are given a skill on creation incorrectly being provided with an empty Specialisation
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
