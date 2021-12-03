@@ -1486,7 +1486,6 @@ namespace Chummer
                             else
                                 s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
@@ -1498,7 +1497,6 @@ namespace Chummer
                             else
                                 s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
@@ -1516,7 +1514,6 @@ namespace Chummer
                                     s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                             }
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Move:
@@ -1541,7 +1538,6 @@ namespace Chummer
                         {
                             s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), s_LstFavoriteCharacters[i]);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Reset:
@@ -1553,10 +1549,10 @@ namespace Chummer
                             else
                                 s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
             }
+            MruChanged?.Invoke(null, new TextEventArgs("stickymru"));
         }
 
         private static void LstMostRecentlyUsedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1572,7 +1568,6 @@ namespace Chummer
                             else
                                 s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
@@ -1584,7 +1579,6 @@ namespace Chummer
                             else
                                 s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
@@ -1604,7 +1598,6 @@ namespace Chummer
                                     s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                             }
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Move:
@@ -1629,7 +1622,6 @@ namespace Chummer
                         {
                             s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo), s_LstMostRecentlyUsedCharacters[i]);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Reset:
@@ -1641,10 +1633,10 @@ namespace Chummer
                             else
                                 s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
             }
+            MruChanged?.Invoke(null, new TextEventArgs("mru"));
         }
 
         public static ObservableCollection<string> FavoriteCharacters => s_LstFavoriteCharacters;
