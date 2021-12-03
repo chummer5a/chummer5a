@@ -19,6 +19,7 @@ Application Changes:
 - Encumbrance penalties to Agility that are greater than the attribute's base value no longer artificially lower the character's average Agility when they also have cyberlimbs. Fixes #4625.
 - Fixed Vehicle-mounted Weapons that use melee autosofts not picking up the proper autosoft rating.
 - Fixed character types (NPCs, critters) that are given a skill on creation incorrectly being provided with an empty Specialisation
+- Dealer Connection's discount is now properly shown and processed for non-drones in the vehicle selection screen. Fixes #4616.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

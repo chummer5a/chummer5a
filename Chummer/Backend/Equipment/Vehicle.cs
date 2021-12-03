@@ -1624,28 +1624,28 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool UpdateDealerConnectionDiscount()
         {
-            foreach (string strUniqueName in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled).Select(x => x.UniqueName))
-            {
-                if (strUniqueName == "Drones" && _strCategory.StartsWith("Drones", StringComparison.Ordinal) ||
-                    strUniqueName == "Aircraft" && (
-                        _strCategory == "Fixed-Wing Aircraft" ||
-                        _strCategory == "LTAV" ||
-                        _strCategory == "Rotorcraft" ||
-                        _strCategory == "VTOL/VSTOL") ||
-                    strUniqueName == "Watercraft" && (
-                        _strCategory == "Boats" ||
-                        _strCategory == "Submarines") ||
-                    strUniqueName == "Groundcraft" && (
-                        _strCategory == "Bikes" ||
-                        _strCategory == "Cars" ||
-                        _strCategory == "Trucks" ||
-                        _strCategory == "Municipal/Construction" ||
-                        _strCategory == "Corpsec/Police/Military"))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled && DoesDealerConnectionApply(x.UniqueName, _strCategory));
+        }
+
+        public static bool DoesDealerConnectionApply(string strUnique, string strCategory)
+        {
+            return !string.IsNullOrEmpty(strUnique) && !string.IsNullOrEmpty(strCategory)
+                                                    && (strUnique == "Drones"
+                                                        && strCategory.StartsWith("Drones", StringComparison.Ordinal) ||
+                                                        strUnique == "Aircraft" && (
+                                                            strCategory == "Fixed-Wing Aircraft" ||
+                                                            strCategory == "LTAV" ||
+                                                            strCategory == "Rotorcraft" ||
+                                                            strCategory == "VTOL/VSTOL") ||
+                                                        strUnique == "Watercraft" && (
+                                                            strCategory == "Boats" ||
+                                                            strCategory == "Submarines") ||
+                                                        strUnique == "Groundcraft" && (
+                                                            strCategory == "Bikes" ||
+                                                            strCategory == "Cars" ||
+                                                            strCategory == "Trucks" ||
+                                                            strCategory == "Municipal/Construction" ||
+                                                            strCategory == "Corpsec/Police/Military"));
         }
 
         #endregion Properties
