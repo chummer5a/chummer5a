@@ -93,15 +93,9 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
 
-            // Build the list of advantages gained through the Mentor Spirit.
-            if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altadvantage", ref _strAdvantage))
-            {
-                xmlMentor.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
-            }
-            if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref _strDisadvantage))
-            {
-                xmlMentor.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
-            }
+            // Cache the English list of advantages gained through the Mentor Spirit.
+            xmlMentor.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
+            xmlMentor.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
 
             _nodBonus = xmlMentor["bonus"];
             if (_nodBonus != null)
@@ -266,8 +260,28 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
-            objNode.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
+            if (_objCharacter.LastSavedVersion <= new Version(5, 217, 31))
+            {
+                // Cache advantages from data file because localized version used to be cached directly.
+                XmlNode node = GetNode(GlobalSettings.DefaultLanguage);
+                if (node != null)
+                {
+                    if (!node.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage))
+                        objNode.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
+                    if (!node.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage))
+                        objNode.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
+                }
+                else
+                {
+                    objNode.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
+                    objNode.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
+                }
+            }
+            else
+            {
+                objNode.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
+                objNode.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
+            }
             objNode.TryGetBoolFieldQuickly("mentormask", ref _blnMentorMask);
             _nodBonus = objNode["bonus"];
             _nodChoice1 = objNode["choice1"];
@@ -290,8 +304,10 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("mentortype", _eMentorType.ToString());
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("advantage", Advantage);
-            objWriter.WriteElementString("disadvantage", Disadvantage);
+            objWriter.WriteElementString("advantage", DisplayAdvantage(strLanguageToPrint));
+            objWriter.WriteElementString("disadvantage", DisplayDisadvantage(strLanguageToPrint));
+            objWriter.WriteElementString("advantage_english", Advantage);
+            objWriter.WriteElementString("disadvantage_english", Disadvantage);
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
@@ -367,21 +383,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Advantage of the Mentor Spirit or Paragon.
+        /// Advantage of the Mentor Spirit or Paragon (in English).
         /// </summary>
-        public string Advantage
-        {
-            get => _strAdvantage;
-            set
-            {
-                if (_strAdvantage != value)
-                {
-                    _strAdvantage = value;
-                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
-                }
-            }
-        }
+        public string Advantage => _strAdvantage;
 
         /// <summary>
         /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
@@ -389,6 +393,12 @@ namespace Chummer
         public string DisplayAdvantage(string strLanguage)
         {
             string strReturn = Advantage;
+            if (strLanguage != GlobalSettings.DefaultLanguage)
+            {
+                string strTemp = string.Empty;
+                if (GetNode(strLanguage)?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
+                    strReturn = strTemp;
+            }
 
             if (!string.IsNullOrEmpty(Extra))
             {
@@ -400,20 +410,30 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Disadvantage of the Mentor Spirit or Paragon.
+        /// Disadvantage of the Mentor Spirit or Paragon (in English).
         /// </summary>
-        public string Disadvantage
+        public string Disadvantage => _strDisadvantage;
+
+        /// <summary>
+        /// Disadvantage of the mentor as it should be displayed in the UI. Disadvantage (Extra).
+        /// </summary>
+        public string DisplayDisadvantage(string strLanguage)
         {
-            get => _strDisadvantage;
-            set
+            string strReturn = Disadvantage;
+            if (strLanguage != GlobalSettings.DefaultLanguage)
             {
-                if (_strDisadvantage != value)
-                {
-                    _strDisadvantage = value;
-                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
-                }
+                string strTemp = string.Empty;
+                if (GetNode(strLanguage)?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
+                    strReturn = strTemp;
             }
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+            }
+
+            return strReturn;
         }
 
         /// <summary>

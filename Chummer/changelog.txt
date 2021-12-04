@@ -20,6 +20,10 @@ Application Changes:
 - Fixed Vehicle-mounted Weapons that use melee autosofts not picking up the proper autosoft rating.
 - Fixed character types (NPCs, critters) that are given a skill on creation incorrectly being provided with an empty Specialisation
 - Dealer Connection's discount is now properly shown and processed for non-drones in the vehicle selection screen. Fixes #4616.
+- All items with names and/or categories now output the English versions of their names when exporting. Previously, cyberware, bioware, vehicles, vehicle mods, weapon accessories, and weapon mounts did not do this.
+- Vehicles now output whether or not they are drones when exporting.
+- Data about characters' mentor spirit(s) and/or paragon(s) are now printed when exporting.
+- Mentor spirit and paragon advantages and disadvantages are now properly translated when save files are opened in a different language than what was set when the mentor spirit or paragon in question was added to a character.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

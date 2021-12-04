@@ -5365,6 +5365,16 @@ namespace Chummer
             // </limitmodifierssoc>
             objWriter.WriteEndElement();
 
+            // <mentorspirits>
+            objWriter.WriteStartElement("mentorspirits");
+            foreach (MentorSpirit objMentorSpirit in MentorSpirits)
+            {
+                objMentorSpirit.Print(objWriter, strLanguageToPrint);
+            }
+
+            // </mentorspirits>
+            objWriter.WriteEndElement();
+
             // <spells>
             objWriter.WriteStartElement("spells");
             foreach(Spell objSpell in Spells)
@@ -13484,8 +13494,11 @@ namespace Chummer
 
                 MentorSpirit objMentorSpirit = MentorSpirits[0];
                 string strSpace = LanguageManager.GetString("String_Space");
-                return (LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace + objMentorSpirit.DisplayAdvantage(GlobalSettings.Language)
-                        + Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + strSpace + objMentorSpirit.Disadvantage).WordWrap();
+                return (LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace
+                    + objMentorSpirit.DisplayAdvantage(GlobalSettings.Language)
+                    + Environment.NewLine + Environment.NewLine
+                    + LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + strSpace
+                    + objMentorSpirit.DisplayDisadvantage(GlobalSettings.Language)).WordWrap();
             }
         }
 
