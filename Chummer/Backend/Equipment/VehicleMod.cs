@@ -470,8 +470,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
+            objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));

@@ -1699,7 +1699,10 @@ namespace Chummer.Backend.Equipment
                 return;
             objWriter.WriteStartElement("cyberware");
             if (string.IsNullOrWhiteSpace(LimbSlot) && _strCategory != "Cyberlimb")
+            {
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+                objWriter.WriteElementString("name_english", Name);
+            }
             else
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
@@ -1709,9 +1712,14 @@ namespace Chummer.Backend.Equipment
                                                      + strSpace + TotalAgility.ToString(objCulture) + ',' + strSpace + _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint)
                                                      + strSpace + TotalStrength.ToString(objCulture) + ',' + strSpace + LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint)
                                                      + strSpace + intLimit.ToString(objCulture) + ')');
+                objWriter.WriteElementString("name_english", Name + strSpace + '(' + _objCharacter.AGI.Abbrev
+                                                     + strSpace + TotalAgility.ToString(GlobalSettings.InvariantCultureInfo) + ',' + strSpace + _objCharacter.STR.Abbrev
+                                                     + strSpace + TotalStrength.ToString(GlobalSettings.InvariantCultureInfo) + ',' + strSpace + LanguageManager.GetString("String_LimitPhysicalShort", GlobalSettings.DefaultLanguage)
+                                                     + strSpace + intLimit.ToString(GlobalSettings.InvariantCultureInfo) + ')');
             }
 
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
+            objWriter.WriteElementString("category_english", Category);
 
             objWriter.WriteElementString("ess",
                 CalculatedESS.ToString(_objCharacter.Settings.EssenceFormat, objCulture));

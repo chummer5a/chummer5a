@@ -523,6 +523,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("mount", Mount);
             objWriter.WriteElementString("extramount", ExtraMount);
             objWriter.WriteElementString("rc", RC);
