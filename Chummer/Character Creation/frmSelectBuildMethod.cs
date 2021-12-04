@@ -54,13 +54,14 @@ namespace Chummer
             cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
             if (blnUseCurrentValues)
             {
-                cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[_objCharacter.SettingsKey];
-                if (cboCharacterSetting.SelectedIndex == -1)
-                    cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
+                if (SettingsManager.LoadedCharacterSettings.TryGetValue(_objCharacter.SettingsKey, out CharacterSettings objSetting))
+                    cboCharacterSetting.SelectedValue = objSetting;
+                if (cboCharacterSetting.SelectedIndex == -1 && SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out objSetting))
+                    cboCharacterSetting.SelectedValue = objSetting;
                 chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
             }
-            else
-                cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
+            else if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out CharacterSettings objSetting))
+                cboCharacterSetting.SelectedValue = objSetting;
             if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
                 cboCharacterSetting.SelectedIndex = 0;
             cboCharacterSetting.EndUpdate();
@@ -121,9 +122,11 @@ namespace Chummer
                 cboCharacterSetting.BeginUpdate();
                 cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
                 cboCharacterSetting.SelectedValue = objOldSelected;
-                if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
-                    cboCharacterSetting.SelectedValue =
-                        SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
+                if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0
+                                                            && SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                                GlobalSettings.DefaultCharacterSetting,
+                                                                out CharacterSettings objSetting))
+                    cboCharacterSetting.SelectedValue = objSetting;
                 if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                     cboCharacterSetting.SelectedIndex = 0;
                 cboCharacterSetting.EndUpdate();

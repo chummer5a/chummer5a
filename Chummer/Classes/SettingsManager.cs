@@ -46,7 +46,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static IDictionary<string, CharacterSettings> LoadedCharacterSettingsAsModifiable
+        public static LockingDictionary<string, CharacterSettings> LoadedCharacterSettingsAsModifiable
         {
             get
             {

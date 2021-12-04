@@ -31,10 +31,21 @@ namespace Chummer
     public partial class frmMasterIndex : Form
     {
         private bool _blnSkipRefresh = true;
-        private CharacterSettings _objSelectedSetting = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultMasterIndexSetting];
+        private CharacterSettings _objSelectedSetting = GetInitialSetting();
         private readonly List<ListItem> _lstFileNamesWithItems;
         private readonly LockingDictionary<MasterIndexEntry, string> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, string>();
         private readonly List<ListItem> _lstItems = new List<ListItem>(short.MaxValue);
+
+        private static CharacterSettings GetInitialSetting()
+        {
+            if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
+                                                                    out CharacterSettings objReturn))
+                return objReturn;
+            if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSettingDefaultValue,
+                                                                    out objReturn))
+                return objReturn;
+            return SettingsManager.LoadedCharacterSettings.Values.First();
+        }
 
         private readonly List<string> _lstFileNames = new List<string>
         {
@@ -81,28 +92,31 @@ namespace Chummer
         {
             // Populate the Character Settings list.
             List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
-            foreach (KeyValuePair<string, CharacterSettings> objLoopOptions in SettingsManager.LoadedCharacterSettings)
+            foreach (CharacterSettings objLoopSettings in SettingsManager.LoadedCharacterSettings.Select(x => x.Value))
             {
-                lstCharacterSettings.Add(new ListItem(objLoopOptions.Key, objLoopOptions.Value.DisplayName));
+                lstCharacterSettings.Add(new ListItem(objLoopSettings, objLoopSettings.DisplayName));
             }
             lstCharacterSettings.Sort(CompareListItems.CompareNames);
 
-            string strOldSetting = cboCharacterSetting.SelectedValue?.ToString();
+            string strOldSettingKey = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey ?? _objSelectedSetting?.DictionaryKey;
 
             bool blnOldSkipRefresh = _blnSkipRefresh;
             _blnSkipRefresh = true;
 
             cboCharacterSetting.BeginUpdate();
             cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
-            if (!string.IsNullOrEmpty(strOldSetting) && SettingsManager.LoadedCharacterSettings.ContainsKey(strOldSetting))
-                cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[strOldSetting];
+            if (!string.IsNullOrEmpty(strOldSettingKey) && SettingsManager.LoadedCharacterSettings.TryGetValue(strOldSettingKey, out CharacterSettings objSettings))
+                cboCharacterSetting.SelectedValue = objSettings;
             cboCharacterSetting.EndUpdate();
 
             _blnSkipRefresh = blnOldSkipRefresh;
 
             if (cboCharacterSetting.SelectedIndex != -1)
                 return;
-            cboCharacterSetting.SelectedValue = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultMasterIndexSetting];
+            if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting, out objSettings))
+                cboCharacterSetting.SelectedValue = objSettings;
+            else if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
+                cboCharacterSetting.SelectedValue = objSettings;
             if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
                 cboCharacterSetting.SelectedIndex = 0;
         }
@@ -126,15 +140,21 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            string strSelectedSetting = cboCharacterSetting.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedSetting) || !SettingsManager.LoadedCharacterSettings.ContainsKey(strSelectedSetting))
-                strSelectedSetting = GlobalSettings.DefaultMasterIndexSetting;
+            string strSelectedSetting = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey;
+            if ((string.IsNullOrEmpty(strSelectedSetting)
+                 || !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                     strSelectedSetting, out CharacterSettings objSettings))
+                && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
+                                                                        out objSettings)
+                && !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                    GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
+                objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
 
-            if (strSelectedSetting == _objSelectedSetting.DictionaryKey)
+            if (objSettings == _objSelectedSetting)
                 return;
 
             _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
-            _objSelectedSetting = SettingsManager.LoadedCharacterSettings[strSelectedSetting];
+            _objSelectedSetting = objSettings;
             _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
 
             using (new CursorWait(this))

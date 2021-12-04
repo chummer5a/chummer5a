@@ -24,6 +24,7 @@ Application Changes:
 - Vehicles now output whether or not they are drones when exporting.
 - Data about characters' mentor spirit(s) and/or paragon(s) are now printed when exporting.
 - Mentor spirit and paragon advantages and disadvantages are now properly translated when save files are opened in a different language than what was set when the mentor spirit or paragon in question was added to a character.
+- Fixed crashes caused by discrepancies between character settings and the system that oversees their management. Fixes #4626.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

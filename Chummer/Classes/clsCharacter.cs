@@ -268,10 +268,9 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 _objSettings = new CharacterSettings(); // Need this because ExpenseCharts is WPF and needs a Character in design mode.
-            else if (SettingsManager.LoadedCharacterSettings.ContainsKey(GlobalSettings.DefaultCharacterSetting))
-                _objSettings = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
-            else
-                _objSettings = SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSettingDefaultValue];
+            else if (!SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out _objSettings)
+                     && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSettingDefaultValue, out _objSettings))
+                _objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
 
             Settings.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
@@ -2773,33 +2772,40 @@ namespace Chummer
                                 if (!xmlCharacterNavigator.TryGetStringFieldQuickly("buildmethod", ref strDummy)
                                     || !Enum.TryParse(strDummy, true, out CharacterBuildMethod eSavedBuildMethod))
                                 {
-                                    eSavedBuildMethod =
-                                        SettingsManager.LoadedCharacterSettings.ContainsKey(GlobalSettings
-                                            .DefaultCharacterSettingDefaultValue)
-                                            ? SettingsManager
-                                                .LoadedCharacterSettings[
-                                                    GlobalSettings.DefaultCharacterSettingDefaultValue]
-                                                .BuildMethod
-                                            : CharacterBuildMethod.Priority;
+                                    eSavedBuildMethod = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                        GlobalSettings.DefaultCharacterSettingDefaultValue,
+                                        out CharacterSettings objSettings) ? objSettings.BuildMethod : CharacterBuildMethod.Priority;
                                 }
 
+                                if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                        GlobalSettings.DefaultCharacterSetting,
+                                        out CharacterSettings objDefaultSettings)
+                                    && !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                        GlobalSettings.DefaultCharacterSettingDefaultValue, out objDefaultSettings))
+                                    objDefaultSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+
                                 HashSet<string> setSavedBooks = new HashSet<string>();
-                                foreach (XPathNavigator xmlBook in xmlCharacterNavigator.SelectAndCacheExpression("sources/source"))
+                                foreach (XPathNavigator xmlBook in xmlCharacterNavigator.SelectAndCacheExpression(
+                                    "sources/source"))
+                                {
                                     if (!string.IsNullOrEmpty(xmlBook.Value))
                                         setSavedBooks.Add(xmlBook.Value);
+                                }
                                 if (setSavedBooks.Count == 0)
-                                    setSavedBooks = SettingsManager
-                                        .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].Books.ToHashSet();
+                                    setSavedBooks = objDefaultSettings.Books.ToHashSet();
+
                                 List<string> lstSavedCustomDataDirectoryNames = new List<string>();
-                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.SelectAndCacheExpression(
-                                    "customdatadirectorynames/directoryname"))
+                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator
+                                    .SelectAndCacheExpression(
+                                        "customdatadirectorynames/directoryname"))
+                                {
                                     if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
                                         lstSavedCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
-                                decimal decLegacyMaxNuyen = SettingsManager
-                                    .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].NuyenMaximumBP;
+                                }
+
+                                decimal decLegacyMaxNuyen = objDefaultSettings.NuyenMaximumBP;
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref decLegacyMaxNuyen);
-                                int intLegacyMaxKarma = SettingsManager
-                                    .LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting].BuildKarma;
+                                int intLegacyMaxKarma = objDefaultSettings.BuildKarma;
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref intLegacyMaxKarma);
 
                                 // Calculate a score for a character option that roughly coincides with how suitable it is as a replacement for the current one the character save contains
@@ -2855,7 +2861,7 @@ namespace Chummer
                                 }
 
                                 bool blnShowSelectBP = false;
-                                if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_strSettingsKey))
+                                if (!SettingsManager.LoadedCharacterSettings.TryGetValue(_strSettingsKey, out CharacterSettings objProspectiveSettings))
                                 {
                                     // Prompt if we want to switch options or leave
                                     if (!Utils.IsUnitTest && showWarnings)
@@ -2887,14 +2893,23 @@ namespace Chummer
                                         }
                                     }
 
-                                    if (string.IsNullOrEmpty(strReplacementSettingsKey))
+                                    if (string.IsNullOrEmpty(strReplacementSettingsKey)
+                                        || !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            strReplacementSettingsKey, out objProspectiveSettings))
+                                    {
                                         strReplacementSettingsKey = GlobalSettings.DefaultCharacterSettingDefaultValue;
+                                        if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            strReplacementSettingsKey, out objProspectiveSettings))
+                                        {
+                                            objProspectiveSettings
+                                                = SettingsManager.LoadedCharacterSettings.Values.First();
+                                            strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                        }
+                                    }
                                     _strSettingsKey = strReplacementSettingsKey;
                                     LoadAsDirty = true;
                                 }
-                                else if (!Created &&
-                                         SettingsManager.LoadedCharacterSettings[_strSettingsKey].BuildMethod !=
-                                         eSavedBuildMethod)
+                                else if (!Created && objProspectiveSettings.BuildMethod != eSavedBuildMethod)
                                 {
                                     // Prompt if we want to switch options or leave
                                     if (!Utils.IsUnitTest && showWarnings)
@@ -2902,8 +2917,7 @@ namespace Chummer
                                         if (Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                 LanguageManager.GetString("Message_CharacterOptions_DesyncBuildMethod"),
                                                 Path.GetFileNameWithoutExtension(_strSettingsKey),
-                                                LanguageManager.GetString("String_" + SettingsManager
-                                                    .LoadedCharacterSettings[_strSettingsKey].BuildMethod),
+                                                LanguageManager.GetString("String_" + objProspectiveSettings.BuildMethod),
                                                 LanguageManager.GetString("String_" + eSavedBuildMethod)),
                                             LanguageManager.GetString(
                                                 "MessageTitle_CharacterOptions_DesyncBuildMethod"),
@@ -2929,8 +2943,19 @@ namespace Chummer
                                         }
                                     }
 
-                                    if (string.IsNullOrEmpty(strReplacementSettingsKey))
+                                    if (string.IsNullOrEmpty(strReplacementSettingsKey)
+                                        || !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            strReplacementSettingsKey, out objProspectiveSettings))
+                                    {
                                         strReplacementSettingsKey = GlobalSettings.DefaultCharacterSettingDefaultValue;
+                                        if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            strReplacementSettingsKey, out objProspectiveSettings))
+                                        {
+                                            objProspectiveSettings
+                                                = SettingsManager.LoadedCharacterSettings.Values.First();
+                                            strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                        }
+                                    }
                                     _strSettingsKey = strReplacementSettingsKey;
                                     LoadAsDirty = true;
                                 }
@@ -2938,8 +2963,7 @@ namespace Chummer
                                 else if (!Utils.IsUnitTest && showWarnings &&
                                          (setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
                                 {
-                                    CharacterSettings objCurrentlyLoadedSettings =
-                                        SettingsManager.LoadedCharacterSettings[_strSettingsKey];
+                                    CharacterSettings objCurrentlyLoadedSettings = objProspectiveSettings;
                                     // More books is fine, so just test if the stored book list is a subset of the current option's book list
                                     bool blnPromptConfirmSetting =
                                         !setSavedBooks.IsSubsetOf(objCurrentlyLoadedSettings.Books);
@@ -2983,7 +3007,7 @@ namespace Chummer
                                     }
                                 }
 
-                                Settings = SettingsManager.LoadedCharacterSettings[_strSettingsKey];
+                                Settings = objProspectiveSettings;
 
                                 if (blnShowSelectBP)
                                 {
@@ -7696,12 +7720,13 @@ namespace Chummer
             get => _strSettingsKey;
             set
             {
-                if(_strSettingsKey != value)
-                {
-                    _strSettingsKey = value;
-                    OnPropertyChanged();
-                    Settings = SettingsManager.LoadedCharacterSettings[value];
-                }
+                if (_strSettingsKey == value)
+                    return;
+                if (!SettingsManager.LoadedCharacterSettings.TryGetValue(value, out CharacterSettings objNewSettings))
+                    throw new InvalidOperationException(nameof(SettingsKey));
+                _strSettingsKey = value;
+                OnPropertyChanged();
+                Settings = objNewSettings;
             }
         }
 
@@ -20875,10 +20900,14 @@ namespace Chummer
                     Essence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless")?.Value;
                     string strSettings = xmlSourceNode.SelectSingleNodeAndCacheExpression("settings")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
-                        SettingsFile = SettingsManager.LoadedCharacterSettings.ContainsKey(strSettings)
-                            ? SettingsManager.LoadedCharacterSettings[strSettings].DisplayName
-                            : LanguageManager.GetString("MessageTitle_FileNotFound") +
-                              LanguageManager.GetString("String_Space") + '[' + strSettings + ']';
+                    {
+                        if (SettingsManager.LoadedCharacterSettings.TryGetValue(
+                            strSettings, out CharacterSettings objSettings))
+                            SettingsFile = objSettings.DisplayName;
+                        else
+                            SettingsFile = LanguageManager.GetString("MessageTitle_FileNotFound") +
+                                           LanguageManager.GetString("String_Space") + '[' + strSettings + ']';
+                    }
                     else
                         SettingsFile = string.Empty;
                     string strMugshotBase64 = xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot")?.Value ?? string.Empty;

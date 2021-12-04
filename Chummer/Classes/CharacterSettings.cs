@@ -2406,7 +2406,7 @@ namespace Chummer
                     // A safety check to make sure that we always still account for Priority-given Nuyen
                     if (SettingsManager.LoadedCharacterSettings.ContainsKey(DictionaryKey) && !_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
                     {
-                        _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                        _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
                     }
                     OnPropertyChanged();
                 }

@@ -60,7 +60,19 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objReferenceCharacterSettings = objExistingSettings ?? SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultCharacterSetting];
+            _objReferenceCharacterSettings = objExistingSettings;
+            if (_objReferenceCharacterSettings == null)
+            {
+                if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting,
+                                                                        out CharacterSettings objSetting))
+                    _objReferenceCharacterSettings = objSetting;
+                else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
+                    GlobalSettings.DefaultCharacterSettingDefaultValue,
+                    out objSetting))
+                    _objReferenceCharacterSettings = objSetting;
+                else
+                    _objReferenceCharacterSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+            }
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
             _objCharacterSettings.PropertyChanged += SettingsChanged;
             RebuildCustomDataDirectoryInfos();
@@ -126,26 +138,34 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                if (cboSetting.SelectedIndex >= 0)
+                try
                 {
-                    int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
-                    ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value, _objCharacterSettings.DisplayName);
-                    _blnLoading = true;
-                    cboSetting.BeginUpdate();
-                    _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
-                    cboSetting.PopulateWithListItems(_lstSettings);
-                    cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
-                    cboSetting.EndUpdate();
-                    _blnLoading = false;
+                    if (cboSetting.SelectedIndex >= 0)
+                    {
+                        int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
+                        ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
+                                                               _objCharacterSettings.DisplayName);
+                        _blnLoading = true;
+                        cboSetting.BeginUpdate();
+                        _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
+                        cboSetting.PopulateWithListItems(_lstSettings);
+                        cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
+                        cboSetting.EndUpdate();
+                        _blnLoading = false;
+                    }
+
+                    _blnWasRenamed = true;
+                    IsDirty = true;
+                }
+                finally
+                {
+                    if (blnDoResumeLayout)
+                    {
+                        _blnIsLayoutSuspended = false;
+                        ResumeLayout();
+                    }
                 }
 
-                _blnWasRenamed = true;
-                IsDirty = true;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = false;
-                    ResumeLayout();
-                }
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
         }
@@ -160,12 +180,19 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            if (!Utils.SafeDeleteFile(Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
-                return;
-
             using (new CursorWait(this))
             {
-                SettingsManager.LoadedCharacterSettingsAsModifiable.Remove(_objReferenceCharacterSettings.DictionaryKey);
+                if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemove(
+                    _objReferenceCharacterSettings.DictionaryKey, out CharacterSettings objDeletedSettings))
+                    return;
+                if (!Utils.SafeDeleteFile(
+                    Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
+                {
+                    // Revert removal of setting if we cannot delete the file
+                    SettingsManager.LoadedCharacterSettingsAsModifiable.Add(objDeletedSettings.DictionaryKey, objDeletedSettings);
+                    return;
+                }
+
                 // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
                 _blnForceMasterIndexRepopulateOnClose = true;
                 KeyValuePair<string, CharacterSettings> kvpReplacementOption =
@@ -182,15 +209,21 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                _objReferenceCharacterSettings = kvpReplacementOption.Value;
-                _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
-                RebuildCustomDataDirectoryInfos();
-                IsDirty = false;
-                PopulateSettingsList();
-                if (blnDoResumeLayout)
+                try
                 {
-                    _blnIsLayoutSuspended = false;
-                    ResumeLayout();
+                    _objReferenceCharacterSettings = kvpReplacementOption.Value;
+                    _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
+                    RebuildCustomDataDirectoryInfos();
+                    IsDirty = false;
+                    PopulateSettingsList();
+                }
+                finally
+                {
+                    if (blnDoResumeLayout)
+                    {
+                        _blnIsLayoutSuspended = false;
+                        ResumeLayout();
+                    }
                 }
             }
         }
@@ -270,8 +303,6 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 _objCharacterSettings.Name = strSelectedName;
-                if (!_objCharacterSettings.Save(strSelectedFullFileName, true))
-                    return;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
                 {
@@ -279,20 +310,32 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                objNewCharacterSettings.CopyValues(_objCharacterSettings);
-                SettingsManager.LoadedCharacterSettingsAsModifiable.Add(
-                    objNewCharacterSettings.DictionaryKey,
-                    objNewCharacterSettings);
-                // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
-                _blnForceMasterIndexRepopulateOnClose = true;
-                _objReferenceCharacterSettings = objNewCharacterSettings;
-                IsDirty = false;
-                PopulateSettingsList();
-                if (blnDoResumeLayout)
+                try
                 {
-                    _blnIsLayoutSuspended = false;
-                    ResumeLayout();
+                    CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                    objNewCharacterSettings.CopyValues(_objCharacterSettings);
+                    if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryAdd(objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
+                        return;
+                    if (!_objCharacterSettings.Save(strSelectedFullFileName, true))
+                    {
+                        // Revert addition of settings if we cannot create a file
+                        SettingsManager.LoadedCharacterSettingsAsModifiable.Remove(
+                            objNewCharacterSettings.DictionaryKey);
+                        return;
+                    }
+                    // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
+                    _blnForceMasterIndexRepopulateOnClose = true;
+                    _objReferenceCharacterSettings = objNewCharacterSettings;
+                    IsDirty = false;
+                    PopulateSettingsList();
+                }
+                finally
+                {
+                    if (blnDoResumeLayout)
+                    {
+                        _blnIsLayoutSuspended = false;
+                        ResumeLayout();
+                    }
                 }
             }
         }
@@ -328,12 +371,18 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                _objReferenceCharacterSettings.CopyValues(_objCharacterSettings);
-                IsDirty = false;
-                if (blnDoResumeLayout)
+                try
                 {
-                    _blnIsLayoutSuspended = false;
-                    ResumeLayout();
+                    _objReferenceCharacterSettings.CopyValues(_objCharacterSettings);
+                    IsDirty = false;
+                }
+                finally
+                {
+                    if (blnDoResumeLayout)
+                    {
+                        _blnIsLayoutSuspended = false;
+                        ResumeLayout();
+                    }
                 }
             }
         }
@@ -372,29 +421,37 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                if (_blnWasRenamed && _intOldSelectedSettingIndex >= 0)
+                try
                 {
-                    int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
-                    ListItem objNewListItem =
-                        new ListItem(_lstSettings[_intOldSelectedSettingIndex].Value, _objReferenceCharacterSettings.DisplayName);
-                    cboSetting.BeginUpdate();
-                    _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
-                    cboSetting.PopulateWithListItems(_lstSettings);
-                    cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
-                    cboSetting.EndUpdate();
+                    if (_blnWasRenamed && _intOldSelectedSettingIndex >= 0)
+                    {
+                        int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
+                        ListItem objNewListItem =
+                            new ListItem(_lstSettings[_intOldSelectedSettingIndex].Value,
+                                         _objReferenceCharacterSettings.DisplayName);
+                        cboSetting.BeginUpdate();
+                        _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
+                        cboSetting.PopulateWithListItems(_lstSettings);
+                        cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
+                        cboSetting.EndUpdate();
+                    }
+
+                    _objReferenceCharacterSettings = objNewOption;
+                    _objCharacterSettings.CopyValues(objNewOption);
+                    RebuildCustomDataDirectoryInfos();
+                    PopulateOptions();
+                    _blnLoading = false;
+                    IsDirty = false;
+                }
+                finally
+                {
+                    if (blnDoResumeLayout)
+                    {
+                        _blnIsLayoutSuspended = false;
+                        ResumeLayout();
+                    }
                 }
 
-                _objReferenceCharacterSettings = objNewOption;
-                _objCharacterSettings.CopyValues(objNewOption);
-                RebuildCustomDataDirectoryInfos();
-                PopulateOptions();
-                _blnLoading = false;
-                IsDirty = false;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = false;
-                    ResumeLayout();
-                }
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
         }
@@ -418,28 +475,36 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                if (_blnWasRenamed && cboSetting.SelectedIndex >= 0)
+                try
                 {
-                    int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
-                    ListItem objNewListItem =
-                        new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value, _objReferenceCharacterSettings.DisplayName);
-                    cboSetting.BeginUpdate();
-                    _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
-                    cboSetting.PopulateWithListItems(_lstSettings);
-                    cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
-                    cboSetting.EndUpdate();
+                    if (_blnWasRenamed && cboSetting.SelectedIndex >= 0)
+                    {
+                        int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
+                        ListItem objNewListItem =
+                            new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
+                                         _objReferenceCharacterSettings.DisplayName);
+                        cboSetting.BeginUpdate();
+                        _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
+                        cboSetting.PopulateWithListItems(_lstSettings);
+                        cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
+                        cboSetting.EndUpdate();
+                    }
+
+                    _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
+                    RebuildCustomDataDirectoryInfos();
+                    PopulateOptions();
+                    _blnLoading = false;
+                    IsDirty = false;
+                }
+                finally
+                {
+                    if (blnDoResumeLayout)
+                    {
+                        _blnIsLayoutSuspended = false;
+                        ResumeLayout();
+                    }
                 }
 
-                _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
-                RebuildCustomDataDirectoryInfos();
-                PopulateOptions();
-                _blnLoading = false;
-                IsDirty = false;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = false;
-                    ResumeLayout();
-                }
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
         }
@@ -920,15 +985,22 @@ namespace Chummer
                 _blnIsLayoutSuspended = true;
                 SuspendLayout();
             }
-            PopulateSourcebookTreeView();
-            PopulatePriorityTableList();
-            PopulateLimbCountList();
-            PopulateAllowedGrades();
-            PopulateCustomDataDirectoryTreeView();
-            if (blnDoResumeLayout)
+
+            try
             {
-                _blnIsLayoutSuspended = false;
-                ResumeLayout();
+                PopulateSourcebookTreeView();
+                PopulatePriorityTableList();
+                PopulateLimbCountList();
+                PopulateAllowedGrades();
+                PopulateCustomDataDirectoryTreeView();
+            }
+            finally
+            {
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = false;
+                    ResumeLayout();
+                }
             }
         }
 
