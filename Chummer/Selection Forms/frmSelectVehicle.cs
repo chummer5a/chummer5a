@@ -350,22 +350,19 @@ namespace Chummer
             else
             {
                 decimal decCost = 0.0m;
-                if (!chkFreeItem.Checked)
+                if (!chkFreeItem.Checked && decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTmp))
                 {
-                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTmp))
-                    {
-                        decCost = decTmp;
+                    decCost = decTmp;
 
-                        if (chkUsedVehicle.Checked)
-                            decCost *= 1.0m - (nudUsedVehicleDiscount.Value / 100.0m);
-                        // Apply the markup if applicable.
-                        decCost *= 1 + (nudMarkup.Value / 100.0m);
+                    if (chkUsedVehicle.Checked)
+                        decCost *= 1.0m - (nudUsedVehicleDiscount.Value / 100.0m);
+                    // Apply the markup if applicable.
+                    decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                        if (chkBlackMarketDiscount.Checked)
-                            decCost *= 0.9m;
-                        if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, objXmlVehicle.SelectSingleNode("category")?.Value))
-                            decCost *= 0.9m;
-                    }
+                    if (chkBlackMarketDiscount.Checked)
+                        decCost *= 0.9m;
+                    if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, objXmlVehicle.SelectSingleNode("category")?.Value))
+                        decCost *= 0.9m;
                 }
 
                 lblVehicleCost.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
