@@ -41,7 +41,7 @@ namespace Chummer
         public Story(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNode("/chummer");
+            _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstStoryModules.CollectionChanged += LstStoryModulesOnCollectionChanged;
         }
 
@@ -89,15 +89,15 @@ namespace Chummer
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + "]");
             if (xmlStoryPool != null)
             {
-                XPathNodeIterator xmlPossibleStoryList = xmlStoryPool.Select("story");
+                XPathNodeIterator xmlPossibleStoryList = xmlStoryPool.SelectAndCacheExpression("story");
                 Dictionary<string, int> dicStoriesListWithWeights = new Dictionary<string, int>(xmlPossibleStoryList.Count);
                 int intTotalWeight = 0;
                 foreach (XPathNavigator xmlStory in xmlPossibleStoryList)
                 {
-                    string strStoryId = xmlStory.SelectSingleNode("id")?.Value;
+                    string strStoryId = xmlStory.SelectSingleNodeAndCacheExpression("id")?.Value;
                     if (!string.IsNullOrEmpty(strStoryId))
                     {
-                        if (!int.TryParse(xmlStory.SelectSingleNode("weight")?.Value ?? "1", out int intWeight))
+                        if (!int.TryParse(xmlStory.SelectSingleNodeAndCacheExpression("weight")?.Value ?? "1", out int intWeight))
                             intWeight = 1;
                         intTotalWeight += intWeight;
                         if (dicStoriesListWithWeights.ContainsKey(strStoryId))

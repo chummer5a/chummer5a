@@ -601,7 +601,7 @@ namespace Chummer.Backend.Equipment
                 _strAllowSubsystems = sbdSubsystem.ToString();
             }
 
-            if (objXmlCyberware.SelectSingleNode("pairinclude")?.Attributes?["includeself"]?.InnerText !=
+            if (objXmlCyberware.SelectSingleNode("pairinclude/@includeself")?.Value !=
                 bool.FalseString)
             {
                 _lstIncludeInPairBonus.Add(Name);
@@ -611,7 +611,7 @@ namespace Chummer.Backend.Equipment
                 _lstIncludeInPairBonus.Add(objPairNameNode.InnerText);
             }
 
-            if (objXmlCyberware.SelectSingleNode("wirelesspairinclude")?.Attributes?["includeself"]?.InnerText !=
+            if (objXmlCyberware.SelectSingleNode("wirelesspairinclude/@includeself")?.Value !=
                 bool.FalseString)
             {
                 _lstIncludeInWirelessPairBonus.Add(Name);
@@ -2332,7 +2332,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                     {
-                        if (WirelessBonus?.Attributes?.Count > 0 && WirelessBonus.Attributes["mode"].InnerText == "replace")
+                        if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
                         {
                             ImprovementManager.DisableImprovements(_objCharacter,
                                 _objCharacter.Improvements
@@ -2371,9 +2371,9 @@ namespace Chummer.Backend.Equipment
                             intCount = intCount > 0 ? 1 : 0;
                         }
 
-                        if (WirelessPairBonus.Attributes?.Count > 0 && intCount % 2 == 1)
+                        if (intCount % 2 == 1)
                         {
-                            if (WirelessPairBonus.Attributes["mode"].InnerText == "replace")
+                            if (WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
                             {
                                 ImprovementManager.RemoveImprovements(_objCharacter,
                                     _objCharacter.Improvements
@@ -2388,7 +2388,7 @@ namespace Chummer.Backend.Equipment
                         {
                             ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                                 objLoopCyberware.InternalId + "WirelessPair");
-                            if (objLoopCyberware.WirelessPairBonus?.Attributes?["mode"]?.InnerText == "replace")
+                            if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
                             {
                                 ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                                     objLoopCyberware.InternalId);
@@ -2411,7 +2411,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                     {
-                        if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                        if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                         {
                             ImprovementManager.EnableImprovements(_objCharacter,
                                 _objCharacter.Improvements
@@ -2450,7 +2450,7 @@ namespace Chummer.Backend.Equipment
                             intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
                         }
 
-                        if (WirelessPairBonus.Attributes?.Count > 0 && WirelessPairBonus.Attributes["mode"].InnerText == "replace")
+                        if (WirelessPairBonus.SelectSingleNode("@mode")?.Value == "replace")
                         {
                             ImprovementManager.EnableImprovements(_objCharacter,
                                 _objCharacter.Improvements
@@ -4638,7 +4638,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                         objLoopCyberware.InternalId + "WirelessPair");
-                    if (objLoopCyberware.WirelessPairBonus?.Attributes?["mode"]?.InnerText == "replace")
+                    if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                             objLoopCyberware.InternalId);

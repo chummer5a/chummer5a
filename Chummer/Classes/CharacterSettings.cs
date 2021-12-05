@@ -1053,7 +1053,7 @@ namespace Chummer
                 return false;
             }
 
-            return Load(objXmlDocument.CreateNavigator().SelectSingleNode(".//settings"));
+            return Load(objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression(".//settings"));
         }
 
         /// <summary>
@@ -1285,7 +1285,7 @@ namespace Chummer
             //House Rule: The DicePenalty per sustained spell or form
             objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
 
-            XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNode("karmacost");
+            XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost");
             // Attempt to populate the Karma values.
             if (xmlKarmaCostNode != null)
             {
@@ -1339,7 +1339,7 @@ namespace Chummer
 
             XPathNavigator xmlLegacyCharacterNavigator = null;
             // Legacy sweep by looking at MRU
-            if (!BuiltInOption && objXmlNode.SelectSingleNode("books/book") == null && objXmlNode.SelectSingleNode("customdatadirectorynames/directoryname") == null)
+            if (!BuiltInOption && objXmlNode.SelectSingleNodeAndCacheExpression("books/book") == null && objXmlNode.SelectSingleNodeAndCacheExpression("customdatadirectorynames/directoryname") == null)
             {
                 foreach (string strMruCharacterFile in GlobalSettings.MostRecentlyUsedCharacters)
                 {
@@ -1356,12 +1356,12 @@ namespace Chummer
                     {
                         continue;
                     }
-                    xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNode("/character");
+                    xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/character");
 
                     if (xmlLegacyCharacterNavigator == null)
                         continue;
 
-                    string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNode("settings")?.Value;
+                    string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNodeAndCacheExpression("settings")?.Value;
                     if (strLoopSettingsFile == _strFileName)
                         break;
                     xmlLegacyCharacterNavigator = null;
@@ -1384,12 +1384,12 @@ namespace Chummer
                         {
                             continue;
                         }
-                        xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNode("/character");
+                        xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/character");
 
                         if (xmlLegacyCharacterNavigator == null)
                             continue;
 
-                        string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNode("settings")?.Value;
+                        string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNodeAndCacheExpression("settings")?.Value;
                         if (strLoopSettingsFile == _strFileName)
                             break;
                         xmlLegacyCharacterNavigator = null;

@@ -743,8 +743,8 @@ namespace Chummer.Backend.Attributes
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
 
-            objNewAttribute.Base = objCharacterNode.SelectSingleNode("base")?.ValueAsInt ?? 0;
-            objNewAttribute.Karma = objCharacterNode.SelectSingleNode("base")?.ValueAsInt ?? 0;
+            objNewAttribute.Base = objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0;
+            objNewAttribute.Karma = objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0;
             objNewAttribute.AssignLimits(intMinValue, intMaxValue, intAugValue);
             return objNewAttribute;
         }
@@ -757,7 +757,7 @@ namespace Chummer.Backend.Attributes
 
                 if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                 {
-                    objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.Value ?? _objCharacter.Metatype);
+                    objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNodeAndCacheExpression("name/@translate")?.Value ?? _objCharacter.Metatype);
                 }
                 else
                 {

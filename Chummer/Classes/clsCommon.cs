@@ -883,7 +883,7 @@ namespace Chummer
                     .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]");
                 if (xmlBook != null)
                 {
-                    string strReturn = xmlBook.SelectSingleNode("translate")?.Value ?? xmlBook.SelectSingleNode("name")?.Value;
+                    string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
                     if (!string.IsNullOrWhiteSpace(strReturn))
                         return strReturn;
                 }

@@ -63,7 +63,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             // Load the Weapon information.
             _objXmlDocument = _objCharacter.LoadData("weapons.xml");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer"));
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer"));
         }
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)

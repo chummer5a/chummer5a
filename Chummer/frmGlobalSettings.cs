@@ -1344,7 +1344,7 @@ namespace Chummer
                     continue;
                 }
 
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNode("/chummer/name");
+                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name");
                 if (node == null)
                     continue;
 

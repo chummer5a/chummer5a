@@ -356,14 +356,14 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
             objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
             objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
-            if (objNode.SelectSingleNode("colour") != null)
+            if (objNode.SelectSingleNodeAndCacheExpression("colour") != null)
             {
                 int intTmp = _objColour.ToArgb();
                 if (objNode.TryGetInt32FieldQuickly("colour", ref intTmp))
                     _objColour = Color.FromArgb(intTmp);
             }
 
-            _blnReadOnly = objNode.SelectSingleNode("readonly") != null;
+            _blnReadOnly = objNode.SelectSingleNodeAndCacheExpression("readonly") != null;
 
             if (!objNode.TryGetBoolFieldQuickly("groupenabled", ref _blnGroupEnabled))
             {
@@ -552,14 +552,14 @@ namespace Chummer
                 // Update character information fields.
                 XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? _objCharacter.TranslateExtra(LinkedCharacter.Metatype, strLanguage, "metatypes.xml");
+                strReturn = objMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? _objCharacter.TranslateExtra(LinkedCharacter.Metatype, strLanguage, "metatypes.xml");
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                     return strReturn;
                 objMetatypeNode = objMetatypeNode
                     .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
 
-                string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
+                string strMetatypeTranslate = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value;
                 strReturn += LanguageManager.GetString("String_Space", strLanguage)
                              + '('
                              + (!string.IsNullOrEmpty(strMetatypeTranslate)

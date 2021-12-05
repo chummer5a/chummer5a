@@ -1228,7 +1228,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && Parent.WirelessOn)
                 {
-                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -1243,7 +1243,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>

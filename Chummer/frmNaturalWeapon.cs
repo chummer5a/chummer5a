@@ -163,8 +163,8 @@ namespace Chummer
                     Avail = "0",
                     Cost = "0",
                     UseSkill = cboSkill.SelectedValue.ToString(),
-                    Source = objPower.SelectSingleNode("source")?.Value,
-                    Page = objPower.SelectSingleNode("page")?.Value
+                    Source = objPower.SelectSingleNodeAndCacheExpression("source")?.Value,
+                    Page = objPower.SelectSingleNodeAndCacheExpression("page")?.Value
                 };
 
                 DialogResult = DialogResult.OK;

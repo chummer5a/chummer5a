@@ -942,7 +942,7 @@ namespace Chummer
                     {
                         string strMetavariantName = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
                         if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
-                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalSettings.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNode("translate")?.Value ?? strMetavariantName)));
+                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalSettings.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strMetavariantName)));
                     }
                 }
             }

@@ -39,10 +39,10 @@ namespace Chummer.Backend.Skills
                     Dictionary<string, string> dicReturn = new Dictionary<string, string>();
                     foreach (XPathNavigator objXmlSkill in CharacterObject.LoadDataXPath("skills.xml").SelectAndCacheExpression("/chummer/knowledgeskills/skill"))
                     {
-                        string strCategory = objXmlSkill.SelectSingleNode("category")?.Value;
+                        string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")?.Value;
                         if (!string.IsNullOrWhiteSpace(strCategory))
                         {
-                            dicReturn[strCategory] = objXmlSkill.SelectSingleNode("attribute")?.Value;
+                            dicReturn[strCategory] = objXmlSkill.SelectSingleNodeAndCacheExpression("attribute")?.Value;
                         }
                     }
                     return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
@@ -59,8 +59,8 @@ namespace Chummer.Backend.Skills
             XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage);
             foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression("/chummer/knowledgeskills/skill"))
             {
-                string strName = xmlSkill.SelectSingleNode("name")?.Value ?? string.Empty;
-                lstReturn.Add(new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                lstReturn.Add(new ListItem(strName, xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
             }
             lstReturn.Sort(CompareListItems.CompareNames);
             return lstReturn;
@@ -156,14 +156,14 @@ namespace Chummer.Backend.Skills
                 ? guidTemp
                 : Guid.Empty;
 
-            string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value;
+            string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value;
 
             if (!string.IsNullOrEmpty(strCategory))
             {
                 Type = strCategory;
             }
 
-            string strAttribute = xmlSkillNode.SelectSingleNode("attribute")?.Value;
+            string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value;
 
             if (!string.IsNullOrEmpty(strAttribute))
             {
@@ -185,7 +185,7 @@ namespace Chummer.Backend.Skills
                 return CharacterObject.ReverseTranslateExtra(strInputSkillName, GlobalSettings.Language, "skills.xml");
             }
 
-            return xmlSkillTranslationNode.SelectSingleNode("name")?.Value ?? strInputSkillName;
+            return xmlSkillTranslationNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? strInputSkillName;
         }
 
         public override string SkillCategory => Type;

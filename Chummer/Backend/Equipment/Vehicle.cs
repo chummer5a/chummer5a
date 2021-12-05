@@ -345,7 +345,7 @@ namespace Chummer.Backend.Equipment
                                     {
                                         IncludedInVehicle = true
                                     };
-                                    string strForcedValue = objXmlVehicleMod["name"].Attributes?["select"]?.InnerText ?? string.Empty;
+                                    string strForcedValue = objXmlVehicleMod.SelectSingleNode("name/@select")?.Value ?? string.Empty;
                                     if (!int.TryParse(objXmlVehicleMod["rating"]?.InnerText, out int intRating))
                                         intRating = 0;
 

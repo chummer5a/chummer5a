@@ -381,18 +381,18 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
                         List<ListItem> lstTraditions = new List<ListItem>(20);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
                             foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
                             {
-                                string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                                string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
                                 if (!string.IsNullOrEmpty(strName))
                                     lstTraditions.Add(new ListItem(
-                                        xmlTradition.SelectSingleNode("id")?.Value ?? strName,
-                                        xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                                        xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
+                                        xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                             }
                         }
 
@@ -421,10 +421,10 @@ namespace Chummer
                             foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
                                 "drainattributes/drainattribute"))
                             {
-                                string strName = xmlDrain.SelectSingleNode("name")?.Value;
+                                string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
                                 if (!string.IsNullOrEmpty(strName))
                                     lstDrainAttributes.Add(new ListItem(strName,
-                                        xmlDrain.SelectSingleNode("translate")?.Value ?? strName));
+                                        xmlDrain.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                             }
                         }
 
@@ -473,11 +473,11 @@ namespace Chummer
                         {
                             foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
                             {
-                                string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
+                                string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
                                 if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                 {
                                     lstSpirit.Add(new ListItem(strSpiritName,
-                                        xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
+                                        xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
                                 }
                             }
                         }
@@ -536,17 +536,17 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
                         List<ListItem> lstStreams = new List<ListItem>(3);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
                             foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
                             {
-                                string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                                string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
                                 if (!string.IsNullOrEmpty(strName))
-                                    lstStreams.Add(new ListItem(xmlTradition.SelectSingleNode("id")?.Value ?? strName,
-                                        xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                                    lstStreams.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
+                                        xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                             }
                         }
 
@@ -1616,18 +1616,18 @@ namespace Chummer
                             treCritterPowers.SortCustomOrder();
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
+                                CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
                             List<ListItem> lstTraditions = new List<ListItem>(30);
                             if (xmlTraditionsBaseChummerNode != null)
                             {
                                 foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
                                 {
-                                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                         lstTraditions.Add(new ListItem(
-                                            xmlTradition.SelectSingleNode("id")?.Value ?? strName,
-                                            xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                                            xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
+                                            xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                                 }
                             }
 
@@ -1661,10 +1661,10 @@ namespace Chummer
                                 foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.SelectAndCacheExpression(
                                     "drainattributes/drainattribute"))
                                 {
-                                    string strName = xmlDrain.SelectSingleNode("name")?.Value;
+                                    string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                         lstDrainAttributes.Add(new ListItem(strName,
-                                            xmlDrain.SelectSingleNode("translate")?.Value ?? strName));
+                                            xmlDrain.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                                 }
                             }
 
@@ -1691,11 +1691,11 @@ namespace Chummer
                             {
                                 foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
                                 {
-                                    string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
+                                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
                                     if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                     {
                                         lstSpirit.Add(new ListItem(strSpiritName,
-                                            xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
+                                            xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
                                     }
                                 }
                             }
@@ -1731,17 +1731,17 @@ namespace Chummer
 
                             // Populate the Technomancer Streams list.
                             xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
+                                CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
                             List<ListItem> lstStreams = new List<ListItem>(5);
                             if (xmlTraditionsBaseChummerNode != null)
                             {
                                 foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
                                 {
-                                    string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
-                                        lstStreams.Add(new ListItem(xmlTradition.SelectSingleNode("id")?.Value ?? strName,
-                                            xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                                        lstStreams.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
+                                            xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                                 }
                             }
 
@@ -9850,7 +9850,7 @@ namespace Chummer
                             chkCyberwareBlackMarketDiscount.Enabled = CharacterObject.GenerateBlackMarketMappings(CharacterObject
                                     .LoadDataXPath(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
                                         ? "cyberware.xml"
-                                        : "bioware.xml").SelectSingleNode("/chummer"))
+                                        : "bioware.xml").SelectSingleNodeAndCacheExpression("/chummer"))
                                 .Contains(objCyberware.Category);
                             chkCyberwareBlackMarketDiscount.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
                                 ? (objCyberware.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
@@ -9942,7 +9942,7 @@ namespace Chummer
                         {
                             chkCyberwareBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objGear.Category);
                             chkCyberwareBlackMarketDiscount.Checked = objGear.IncludedInParent
                                 ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                                 : objGear.DiscountCost;
@@ -10086,7 +10086,7 @@ namespace Chummer
                         {
                             chkWeaponBlackMarketDiscount.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objWeapon.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objWeapon.Category);
                             chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
                                 ? objWeapon.Parent.DiscountCost
                                 : objWeapon.DiscountCost;
@@ -10259,7 +10259,7 @@ namespace Chummer
                         {
                             chkWeaponBlackMarketDiscount.Enabled = !objSelectedAccessory.IncludedInWeapon && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objSelectedAccessory.Parent.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objSelectedAccessory.Parent.Category);
                             chkWeaponBlackMarketDiscount.Checked = objSelectedAccessory.IncludedInWeapon
                                 ? objSelectedAccessory.Parent.DiscountCost
                                 : objSelectedAccessory.DiscountCost;
@@ -10396,7 +10396,7 @@ namespace Chummer
                         {
                             chkWeaponBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objGear.Category);
                             chkWeaponBlackMarketDiscount.Checked = objGear.IncludedInParent
                                 ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                                 : objGear.DiscountCost;
@@ -10522,7 +10522,7 @@ namespace Chummer
                 {
                     chkArmorBlackMarketDiscount.Enabled = CharacterObject
                         .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("armor.xml")
-                            .SelectSingleNode("/chummer")).Contains(objArmor.Category);
+                            .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objArmor.Category);
                     chkArmorBlackMarketDiscount.Checked = objArmor.DiscountCost;
                 }
                 else
@@ -10605,7 +10605,7 @@ namespace Chummer
                 {
                     chkArmorBlackMarketDiscount.Enabled = !objArmorMod.IncludedInArmor && CharacterObject
                         .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("armor.xml")
-                            .SelectSingleNode("/chummer/modcategories")).Contains(objArmorMod.Category);
+                            .SelectSingleNodeAndCacheExpression("/chummer/modcategories")).Contains(objArmorMod.Category);
                     chkArmorBlackMarketDiscount.Checked = objArmorMod.IncludedInArmor
                         ? (objArmorMod.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                         : objArmorMod.DiscountCost;
@@ -10667,7 +10667,7 @@ namespace Chummer
                         {
                             chkArmorBlackMarketDiscount.Enabled = !objSelectedGear.IncludedInParent && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objSelectedGear.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objSelectedGear.Category);
                             chkArmorBlackMarketDiscount.Checked = objSelectedGear.IncludedInParent
                                 ? (objSelectedGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                                 : objSelectedGear.DiscountCost;
@@ -10908,7 +10908,7 @@ namespace Chummer
                 {
                     chkGearBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
                         .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
-                            .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                            .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objGear.Category);
                     chkGearBlackMarketDiscount.Checked = objGear.IncludedInParent
                         ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                         : objGear.DiscountCost;
@@ -11846,7 +11846,7 @@ namespace Chummer
                         {
                             chkWeaponBlackMarketDiscount.Enabled = CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("vehicles.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objVehicle.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objVehicle.Category);
                             chkWeaponBlackMarketDiscount.Checked = objVehicle.DiscountCost;
                         }
                         else
@@ -11975,7 +11975,7 @@ namespace Chummer
                     {
                         chkWeaponBlackMarketDiscount.Enabled = !objWeaponMount.IncludedInVehicle && CharacterObject
                             .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("vehicles.xml")
-                                .SelectSingleNode("/chummer/weaponmountcategories")).Contains(objWeaponMount.Category);
+                                .SelectSingleNodeAndCacheExpression("/chummer/weaponmountcategories")).Contains(objWeaponMount.Category);
                         chkWeaponBlackMarketDiscount.Checked = objWeaponMount.IncludedInVehicle
                             ? objWeaponMount.Parent.DiscountCost
                             : objWeaponMount.DiscountCost;
@@ -12059,7 +12059,7 @@ namespace Chummer
                         {
                             chkWeaponBlackMarketDiscount.Enabled = !objMod.IncludedInVehicle && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
-                                    .SelectSingleNode("/chummer/modcategories")).Contains(objMod.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer/modcategories")).Contains(objMod.Category);
                             chkWeaponBlackMarketDiscount.Checked = objMod.IncludedInVehicle
                                 ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.Parent.DiscountCost)
                                 : objMod.DiscountCost;
@@ -12118,7 +12118,7 @@ namespace Chummer
                         {
                             chkWeaponBlackMarketDiscount.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objWeapon.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objWeapon.Category);
                             chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
                                 ? objWeapon.Parent.DiscountCost
                                 : objWeapon.DiscountCost;
@@ -12279,7 +12279,7 @@ namespace Chummer
                         {
                             chkWeaponBlackMarketDiscount.Enabled = !objAccessory.IncludedInWeapon && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objAccessory.Parent.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objAccessory.Parent.Category);
                             chkWeaponBlackMarketDiscount.Checked = objAccessory.IncludedInWeapon
                                 ? objAccessory.Parent.DiscountCost
                                 : objAccessory.DiscountCost;
@@ -12405,7 +12405,7 @@ namespace Chummer
                             chkCyberwareBlackMarketDiscount.Enabled = CharacterObject.GenerateBlackMarketMappings(CharacterObject
                                     .LoadDataXPath(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
                                         ? "cyberware.xml"
-                                        : "bioware.xml").SelectSingleNode("/chummer"))
+                                        : "bioware.xml").SelectSingleNodeAndCacheExpression("/chummer"))
                                 .Contains(objCyberware.Category);
                             chkCyberwareBlackMarketDiscount.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
                                 ? (objCyberware.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
@@ -12511,7 +12511,7 @@ namespace Chummer
                         {
                             chkCyberwareBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
-                                    .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objGear.Category);
                             chkCyberwareBlackMarketDiscount.Checked = objGear.IncludedInParent
                                 ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                                 : objGear.DiscountCost;

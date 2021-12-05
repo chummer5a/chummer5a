@@ -73,7 +73,7 @@ namespace Chummer
             // See if the character is in career mode but would want to add a chargen-only Quality
             if (objCharacter.Created)
             {
-                if (xmlNode.SelectSingleNode("chargenonly") != null)
+                if (xmlNode.SelectSingleNodeAndCacheExpression("chargenonly") != null)
                 {
                     if (blnShowMessage)
                     {
@@ -94,7 +94,7 @@ namespace Chummer
             // See if the character is using priority-based gen and is trying to add a Quality that can only be added through priorities
             else
             {
-                if (xmlNode.SelectSingleNode("careeronly") != null)
+                if (xmlNode.SelectSingleNodeAndCacheExpression("careeronly") != null)
                 {
                     if (blnShowMessage)
                     {
@@ -111,7 +111,7 @@ namespace Chummer
                     }
                     return false;
                 }
-                if (objCharacter.EffectiveBuildMethodUsesPriorityTables && xmlNode.SelectSingleNode("onlyprioritygiven") != null)
+                if (objCharacter.EffectiveBuildMethodUsesPriorityTables && xmlNode.SelectSingleNodeAndCacheExpression("onlyprioritygiven") != null)
                 {
                     if (blnShowMessage)
                     {
@@ -133,10 +133,10 @@ namespace Chummer
             {
                 // See if the character already has this Quality and whether or not multiple copies are allowed.
                 // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
-                string strLimitString = xmlNode.SelectSingleNode("chargenlimit")?.Value;
+                string strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("chargenlimit")?.Value;
                 if (string.IsNullOrWhiteSpace(strLimitString) || objCharacter.Created)
                 {
-                    strLimitString = xmlNode.SelectSingleNode("limit")?.Value;
+                    strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("limit")?.Value;
                     // Default case is each quality can only be taken once
                     if (string.IsNullOrWhiteSpace(strLimitString))
                     {
@@ -225,17 +225,17 @@ namespace Chummer
 
                     int intLimit = Convert.ToInt32(strLimitString, GlobalSettings.InvariantCultureInfo);
                     int intExtendedLimit = intLimit;
-                    string strLimitWithInclusions = xmlNode.SelectSingleNode("limitwithinclusions")?.Value;
+                    string strLimitWithInclusions = xmlNode.SelectSingleNodeAndCacheExpression("limitwithinclusions")?.Value;
                     if (!string.IsNullOrEmpty(strLimitWithInclusions))
                         intExtendedLimit = Convert.ToInt32(strLimitWithInclusions, GlobalSettings.InvariantCultureInfo);
                     int intCount = 0;
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        string strNameNode = xmlNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                        string strNameNode = xmlNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
                         intExtendedCount = intCount;
                         // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
-                        XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNode("includeinlimit");
+                        XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNodeAndCacheExpression("includeinlimit");
                         if (xmlIncludeInLimit != null)
                         {
                             HashSet<string> setNamesIncludedInLimit = new HashSet<string>(1);
@@ -456,14 +456,14 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
             string strNodeInnerText = xmlNode.Value;
-            string strNodeName = xmlNode.SelectSingleNode("name")?.Value ?? string.Empty;
+            string strNodeName = xmlNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
             switch (xmlNode.Name)
             {
                 case "attribute":
                     {
                         // Check to see if an Attribute meets a requirement.
                         CharacterAttrib objAttribute = objCharacter.GetAttribute(strNodeName);
-                        int intTargetValue = xmlNode.SelectSingleNode("total")?.ValueAsInt ?? 0;
+                        int intTargetValue = xmlNode.SelectSingleNodeAndCacheExpression("total")?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine, objAttribute.DisplayAbbrev, strSpace, intTargetValue);
                         // Special cases for when we want to check if a special attribute is enabled
@@ -485,7 +485,7 @@ namespace Chummer
                             }
                         }
 
-                        if (xmlNode.SelectSingleNode("natural") != null)
+                        if (xmlNode.SelectSingleNodeAndCacheExpression("natural") != null)
                         {
                             return objAttribute.Value >= intTargetValue;
                         }
@@ -493,8 +493,8 @@ namespace Chummer
                     }
                 case "attributetotal":
                     {
-                        string strNodeAttributes = xmlNode.SelectSingleNode("attributes")?.Value ?? string.Empty;
-                        int intNodeVal = xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0;
+                        string strNodeAttributes = xmlNode.SelectSingleNodeAndCacheExpression("attributes")?.Value ?? string.Empty;
+                        int intNodeVal = xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0;
                         // Check if the character's Attributes add up to a particular total.
                         string strValue = strNodeAttributes;
                         strValue = objCharacter.AttributeSection.ProcessAttributesInXPath(strValue);
@@ -549,7 +549,7 @@ namespace Chummer
                     }
                 case "bioware":
                     {
-                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
@@ -557,14 +557,14 @@ namespace Chummer
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}",
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Bioware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
                         }
-                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name == strNodeInnerText &&
                                 objCyberware.SourceType == Improvement.ImprovementSource.Bioware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
                                (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
                     }
                 case "cyberware":
                     {
-                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
@@ -578,14 +578,14 @@ namespace Chummer
                                 return objCyberware.Children.Any(mod => mod.Name == strNodeInnerText);
                             return false;
                         }
-                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name == strNodeInnerText &&
                                 objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
                                (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
                     }
                 case "biowarecategory":
                 {
-                    int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                    int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
@@ -599,14 +599,14 @@ namespace Chummer
                             return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
                         return false;
                     }
-                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
                     return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Category == strNodeInnerText &&
                         objCyberware.SourceType == Improvement.ImprovementSource.Bioware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
                         (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
                 }
                 case "cyberwarecategory":
                 {
-                    int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                    int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
                     if (blnShowMessage)
                     {
                         string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
@@ -620,14 +620,14 @@ namespace Chummer
                             return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
                         return false;
                     }
-                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
                     return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Category == strNodeInnerText &&
                         objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
                         (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
                 }
                 case "biowarecontains":
                     {
-                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
@@ -635,14 +635,14 @@ namespace Chummer
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}",
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Bioware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
                         }
-                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name.Contains(strNodeInnerText) &&
                                 objCyberware.SourceType == Improvement.ImprovementSource.Bioware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
                                (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
                     }
                 case "cyberwarecontains":
                     {
-                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
@@ -650,7 +650,7 @@ namespace Chummer
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}",
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Cyberware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
                         }
-                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name.Contains(strNodeInnerText) &&
                                 objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
                                (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
@@ -670,7 +670,7 @@ namespace Chummer
 
                 case "ess":
                     {
-                        string strEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
+                        string strEssNodeGradeAttributeText = xmlNode.SelectSingleNodeAndCacheExpression("@grade")?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
                             HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
@@ -753,19 +753,19 @@ namespace Chummer
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
                         //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
 
-                        if (xmlNode.SelectSingleNode("@minrating") != null)
+                        if (xmlNode.SelectSingleNodeAndCacheExpression("@minrating") != null)
                         {
-                            int rating = xmlNode.SelectSingleNode("@minrating")?.ValueAsInt ?? 0;
+                            int rating = xmlNode.SelectSingleNodeAndCacheExpression("@minrating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating >= rating);
                         }
-                        else if (xmlNode.SelectSingleNode("@rating") != null)
+                        else if (xmlNode.SelectSingleNodeAndCacheExpression("@rating") != null)
                         {
-                            int rating = xmlNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0;
+                            int rating = xmlNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating == rating);
                         }
-                        else if (xmlNode.SelectSingleNode("@maxrating") != null)
+                        else if (xmlNode.SelectSingleNodeAndCacheExpression("@maxrating") != null)
                         {
-                            int rating = xmlNode.SelectSingleNode("@maxrating")?.ValueAsInt ?? 0;
+                            int rating = xmlNode.SelectSingleNodeAndCacheExpression("@maxrating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating <= rating);
                         }
                         if (objGear != null)
@@ -896,7 +896,7 @@ namespace Chummer
                             }
 
                             XPathNavigator xmlMetamagicDoc = objCharacter.LoadDataXPath("metamagic.xml")
-                                .SelectSingleNode("/chummer");
+                                .SelectSingleNodeAndCacheExpression("/chummer");
                             if (blnShowMessage)
                             {
                                 string strTranslateArt = xmlMetamagicDoc
@@ -1062,7 +1062,7 @@ namespace Chummer
                     }
                 case "quality":
                     {
-                        string strExtra = xmlNode.SelectSingleNode("@extra")?.Value;
+                        string strExtra = xmlNode.SelectSingleNodeAndCacheExpression("@extra")?.Value;
                         Quality quality = !string.IsNullOrEmpty(strExtra)
                             ? objCharacter.Qualities.FirstOrDefault(q => q.Name == strNodeInnerText && q.Extra == strExtra && q.Name != strIgnoreQuality)
                             : objCharacter.Qualities.FirstOrDefault(q => q.Name == strNodeInnerText && q.Name != strIgnoreQuality);
@@ -1087,11 +1087,11 @@ namespace Chummer
 
                 case "skill":
                     {
-                        string strSpec = xmlNode.SelectSingleNode("spec")?.Value;
-                        string strValue = xmlNode.SelectSingleNode("val")?.Value;
-                        int intValue = xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0;
+                        string strSpec = xmlNode.SelectSingleNodeAndCacheExpression("spec")?.Value;
+                        string strValue = xmlNode.SelectSingleNodeAndCacheExpression("val")?.Value;
+                        int intValue = xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0;
                         // Check if the character has the required Skill.
-                        if (xmlNode.SelectSingleNode("type") != null)
+                        if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
                         {
                             KnowledgeSkill objKnowledgeSkill = objCharacter.SkillsSection.KnowledgeSkills
                                 .FirstOrDefault(objSkill => objSkill.Name == strNodeName &&
@@ -1124,7 +1124,7 @@ namespace Chummer
                                 // Exotic Skill
                                 if (objSkill == null && !string.IsNullOrEmpty(strSpec))
                                     objSkill = objCharacter.SkillsSection.GetActiveSkill(strNodeName + strSpace + '(' + strSpec + ')');
-                                if (objSkill != null && (xmlNode.SelectSingleNode("spec") == null || objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)) && objSkill.TotalBaseRating >= intValue)
+                                if (objSkill != null && (xmlNode.SelectSingleNodeAndCacheExpression("spec") == null || objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)) && objSkill.TotalBaseRating >= intValue)
                                 {
                                     if (blnShowMessage)
                                     {
@@ -1145,7 +1145,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             XPathNavigator xmlSkillDoc = objCharacter.LoadDataXPath("skills.xml");
-                            string strSkillName = xmlNode.SelectSingleNode("name")?.Value;
+                            string strSkillName = xmlNode.SelectSingleNodeAndCacheExpression("name")?.Value;
                             string strTranslate = xmlSkillDoc.SelectSingleNode("/chummer/skills/skill[name = " + strSkillName.CleanXPath() + "]/translate")?.Value
                                                   ?? xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath() + "]/translate")?.Value;
                             strName = Environment.NewLine + '\t' + (!string.IsNullOrEmpty(strTranslate) ? strTranslate : strSkillName);
@@ -1165,12 +1165,12 @@ namespace Chummer
                     {
                     // Check if the total combined Ratings of Skills adds up to a particular total.
                     int intTotal = 0;
-                    string[] strGroups = xmlNode.SelectSingleNode("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
+                    string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
                     StringBuilder objOutputString = new StringBuilder(Environment.NewLine + '\t');
                     if (strGroups != null)
                     {
                         // If the xmlnode contains Type element, assume that it is a Knowledge skill. 
-                        if (xmlNode.SelectSingleNode("type") != null)
+                        if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
                         {
                             for (int i = 0; i <= strGroups.Length - 1; ++i)
                             {
@@ -1200,17 +1200,17 @@ namespace Chummer
                         }
                     }
 
-                    if (!blnShowMessage) return intTotal >= (xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0);
+                    if (!blnShowMessage) return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
                     if (objOutputString.Length > 0)
                         objOutputString.Length -= 2;
                     strName = objOutputString + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
-                    return intTotal >= (xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0);
+                    return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
                     }
                 case "skillgrouptotal":
                     {
                         // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                         int intTotal = 0;
-                        string[] strGroups = xmlNode.SelectSingleNode("skillgroups")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
+                        string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skillgroups")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
                         StringBuilder objOutputString = new StringBuilder(Environment.NewLine + '\t');
                         if (strGroups != null)
                         {
@@ -1235,7 +1235,7 @@ namespace Chummer
                                 objOutputString.Length -= 2;
                             strName = objOutputString + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkillGroup") + ')';
                         }
-                        return intTotal >= (xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0);
+                        return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
                     }
                 case "specialmodificationlimit":
                     {
@@ -1283,15 +1283,15 @@ namespace Chummer
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}({3})",
                                 Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_SpellCategory"));
                         }
-                        return objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName) >= (xmlNode.SelectSingleNode("count")?.ValueAsInt ?? 0);
+                        return objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName) >= (xmlNode.SelectSingleNodeAndCacheExpression("count")?.ValueAsInt ?? 0);
                     }
                 case "spelldescriptor":
                     {
-                        string strCount = xmlNode.SelectSingleNode("count")?.Value ?? string.Empty;
+                        string strCount = xmlNode.SelectSingleNodeAndCacheExpression("count")?.Value ?? string.Empty;
                         // Check for a specified amount of a particular Spell Descriptor.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Descriptors") + strSpace + '≥' + strSpace + strCount;
-                        return objCharacter.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= (xmlNode.SelectSingleNode("count")?.ValueAsInt ?? 0);
+                        return objCharacter.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= (xmlNode.SelectSingleNodeAndCacheExpression("count")?.ValueAsInt ?? 0);
                     }
                 case "streetcredvsnotoriety":
                     {
@@ -1410,7 +1410,7 @@ namespace Chummer
                 return true;
             // Avail.
 
-            XPathNavigator objAvailNode = objXmlGear.SelectSingleNode("avail");
+            XPathNavigator objAvailNode = objXmlGear.SelectSingleNodeAndCacheExpression("avail");
             if (objAvailNode == null)
             {
                 int intHighestAvailNode = 0;
@@ -1477,7 +1477,7 @@ namespace Chummer
                 return false;
             // Cost.
             decimal decCost = 0.0m;
-            XPathNavigator objCostNode = objXmlGear.SelectSingleNode("cost");
+            XPathNavigator objCostNode = objXmlGear.SelectSingleNodeAndCacheExpression("cost");
             if (objCostNode == null)
             {
                 int intCostRating = 1;

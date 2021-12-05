@@ -1346,7 +1346,7 @@ namespace Chummer
                     // Retrieve the SourcebookInfo objects.
                     foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml").SelectAndCacheExpression("/chummer/books/book"))
                     {
-                        string strCode = xmlBook.SelectSingleNode("code")?.Value;
+                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
                         if (string.IsNullOrEmpty(strCode))
                             continue;
                         SourcebookInfo objSource = new SourcebookInfo

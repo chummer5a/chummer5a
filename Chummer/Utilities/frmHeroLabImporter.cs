@@ -208,7 +208,7 @@ namespace Chummer
                                 }
 
                                 foreach (XPathNavigator xmlMetavariant in
-                                    xmlMetatype.Select("metavariants/metavariant"))
+                                    xmlMetatype.SelectAndCacheExpression("metavariants/metavariant"))
                                 {
                                     string strMetavariantName
                                         = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
@@ -234,7 +234,7 @@ namespace Chummer
                         objCache.Created = objCache.Karma != "0";
                         if (!objCache.Created)
                         {
-                            XPathNodeIterator xmlJournalEntries = xmlBaseCharacterNode.Select("journals/journal");
+                            XPathNodeIterator xmlJournalEntries = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal");
                             if (xmlJournalEntries?.Count > 1)
                             {
                                 objCache.Created = true;

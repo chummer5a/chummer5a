@@ -6776,7 +6776,7 @@ namespace Chummer
                 // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter.
                 if (xmlCategoryList.Name == "chummer")
                 {
-                    xmlCategoryList = xmlCategoryList.SelectSingleNode("categories");
+                    xmlCategoryList = xmlCategoryList.SelectSingleNodeAndCacheExpression("categories");
                     if (xmlCategoryList == null)
                         return new HashSet<string>();
                 }
@@ -6790,9 +6790,9 @@ namespace Chummer
                 }
 
                 // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                foreach(XPathNavigator xmlCategoryNode in xmlCategoryList.Select("category"))
+                foreach(XPathNavigator xmlCategoryNode in xmlCategoryList.SelectAndCacheExpression("category"))
                 {
-                    string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNode("@blackmarket")?.Value;
+                    string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNodeAndCacheExpression("@blackmarket")?.Value;
                     if(!string.IsNullOrEmpty(strBlackMarketAttribute) &&
                         strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(x => setNames.Contains(x)))
                     {
@@ -7640,7 +7640,7 @@ namespace Chummer
         {
             // Mugshots
             xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-            XPathNodeIterator xmlMugshotsList = xmlSavedNode.Select("mugshots/mugshot");
+            XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
             List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
             foreach(XPathNavigator objXmlMugshot in xmlMugshotsList)
             {
@@ -14433,23 +14433,23 @@ namespace Chummer
             if (BlackMarketDiscount)
             {
                 HashSet<string> setArmorBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNode("/chummer"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer"));
                 HashSet<string> setArmorModBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNode("/chummer/modcategories"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer/modcategories"));
                 HashSet<string> setBiowareBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("bioware.xml").SelectSingleNode("/chummer"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("bioware.xml").SelectSingleNodeAndCacheExpression("/chummer"));
                 HashSet<string> setCyberwareBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml").SelectSingleNode("/chummer"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml").SelectSingleNodeAndCacheExpression("/chummer"));
                 HashSet<string> setGearBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("gear.xml").SelectSingleNode("/chummer"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer"));
                 HashSet<string> setVehicleBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer"));
                 HashSet<string> setVehicleModBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer/modcategories"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer/modcategories"));
                 HashSet<string> setWeaponMountBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer/weaponmountcategories"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer/weaponmountcategories"));
                 HashSet<string> setWeaponBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("weapons.xml").SelectSingleNode("/chummer"));
+                    = GenerateBlackMarketMappings(LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer"));
 
                 foreach (Armor objArmor in Armor)
                 {
@@ -18622,7 +18622,7 @@ namespace Chummer
                                 if (!_blnCreated)
                                 {
                                     XPathNodeIterator xmlJournalEntries =
-                                        xmlStatBlockBaseNode.Select("journals/journal");
+                                        xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal");
                                     if (xmlJournalEntries.Count > 1)
                                     {
                                         _blnCreated = true;
@@ -18655,7 +18655,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             ? LoadDataXPath("metatypes.xml")
                                             : await LoadDataXPathAsync("metatypes.xml"))
-                                        .Select("/chummer/metatypes/metatype"))
+                                        .SelectAndCacheExpression("/chummer/metatypes/metatype"))
                                     {
                                         string strMetatypeName = xmlMetatype.SelectSingleNode("name").Value;
                                         if (strMetatypeName == strRaceString)
@@ -18947,7 +18947,7 @@ namespace Chummer
                                         }
 
                                         _lstPrioritySkills.Clear();
-                                        foreach (XPathNavigator xmlField in xmlPriorityTalentPick.Select("field"))
+                                        foreach (XPathNavigator xmlField in xmlPriorityTalentPick.SelectAndCacheExpression("field"))
                                         {
                                             string strInnerText = xmlField.Value;
                                             if (!string.IsNullOrEmpty(strInnerText))
@@ -19742,7 +19742,7 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
                             {
                                 // Spells.
-                                xmlNodeList = xmlStatBlockBaseNode.Select("magic/spells/spell");
+                                xmlNodeList = xmlStatBlockBaseNode.SelectAndCacheExpression("magic/spells/spell");
                                 XmlDocument xmlSpellDocument = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LoadData("spells.xml")
@@ -20017,7 +20017,7 @@ namespace Chummer
                             using (var _ = Timekeeper.StartSyncron("load_char_powers", op_load))
                             {
                                 // Powers.
-                                xmlNodeList = xmlStatBlockBaseNode.Select("magic/adeptpowers/adeptpower");
+                                xmlNodeList = xmlStatBlockBaseNode.SelectAndCacheExpression("magic/adeptpowers/adeptpower");
                                 XmlDocument xmlPowersDocument = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LoadData("powers.xml")
@@ -20106,7 +20106,7 @@ namespace Chummer
                             Timekeeper.Start("load_char_spirits");
         
                             // Spirits/Sprites.
-                            foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
+                            foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.SelectAndCacheExpression("spirits/spirit"))
                             {
                                 Spirit objSpirit = new Spirit(this);
                                 objSpirit.Load(xmlSpirit);
@@ -20251,7 +20251,7 @@ namespace Chummer
                                     xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake SIN']");
                                 XmlNode xmlFakeLicenseDataNode =
                                     xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
-                                xmlNodeList = xmlStatBlockBaseNode.Select("identities/identity");
+                                xmlNodeList = xmlStatBlockBaseNode.SelectAndCacheExpression("identities/identity");
                                 foreach (XPathNavigator xmlHeroLabIdentity in xmlNodeList)
                                 {
                                     string strIdentityName = xmlHeroLabIdentity.SelectSingleNode("@name")?.Value;

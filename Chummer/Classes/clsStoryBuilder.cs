@@ -72,7 +72,7 @@ namespace Chummer
             }
 
             string[] story = new string[modules.Count];
-            XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNode("/chummer/storybuilder/macros");
+            XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNodeAndCacheExpression("/chummer/storybuilder/macros");
             //Actually "write" the story
             await Task.Run(() => Parallel.For(0, modules.Count,
                 i => story[i] = Write(new StringBuilder(), modules[i]["story"]?.InnerText ?? string.Empty, 5,
@@ -241,7 +241,7 @@ namespace Chummer
                             return strSelected;
                     }
 
-                    string strDefault = xmlUserMacroFirstChild.SelectSingleNode("default")?.Value;
+                    string strDefault = xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpression("default")?.Value;
                     if (!string.IsNullOrEmpty(strDefault))
                     {
                         return strDefault;

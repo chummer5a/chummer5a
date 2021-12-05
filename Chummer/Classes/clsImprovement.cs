@@ -3756,7 +3756,7 @@ namespace Chummer
                             Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
                         })
                         {
-                            string strXPath = nodBonus["selecttext"].Attributes["xpath"]?.InnerText;
+                            string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
                             if (string.IsNullOrEmpty(strXPath))
                             {
                                 Rollback(objCharacter);
@@ -3796,7 +3796,7 @@ namespace Chummer
                                 return false;
                             }
 
-                            if (Convert.ToBoolean(nodBonus["selecttext"].Attributes["allowedit"]?.InnerText, GlobalSettings.InvariantCultureInfo))
+                            if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value, GlobalSettings.InvariantCultureInfo))
                             {
                                 frmSelect.SetDropdownItemsMode(lstItems);
                             }

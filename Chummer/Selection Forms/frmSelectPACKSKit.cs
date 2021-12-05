@@ -62,19 +62,19 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the PACKS information.
-            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").SelectSingleNode("/chummer");
-            _xmlGearsBaseGearsNode = _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/gears");
-            _xmlWeaponsBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer");
-            _xmlArmorBaseChummerNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer");
-            _xmlQualitiesBaseQualitiesNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/qualities");
-            _xmlSkillsBaseChummerNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer");
-            _xmlSpellsBaseSpellsNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
-            _xmlComplexFormsBaseChummerNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNode("/chummer");
-            _xmlVehiclesBaseChummerNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer");
-            _xmlBiowareBaseChummerNode = _objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode("/chummer");
-            _xmlCyberwareBaseChummerNode = _objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode("/chummer");
-            _xmlPowersBasePowersNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers");
-            _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlGearsBaseGearsNode = _objCharacter.LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer/gears");
+            _xmlWeaponsBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlArmorBaseChummerNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlQualitiesBaseQualitiesNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer/qualities");
+            _xmlSkillsBaseChummerNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlSpellsBaseSpellsNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
+            _xmlComplexFormsBaseChummerNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlVehiclesBaseChummerNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlBiowareBaseChummerNode = _objCharacter.LoadDataXPath("bioware.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlCyberwareBaseChummerNode = _objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlPowersBasePowersNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer/powers");
+            _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
         private void frmSelectPACKSKit_Load(object sender, EventArgs e)
@@ -245,7 +245,7 @@ namespace Chummer
                     case "skills":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Skills");
                         treContents.Nodes.Add(objParent);
-                        foreach (XPathNavigator objXmlSkill in objXmlItem.Select("skill"))
+                        foreach (XPathNavigator objXmlSkill in objXmlItem.SelectAndCacheExpression("skill"))
                         {
                             if (objXmlSkill.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
@@ -373,7 +373,7 @@ namespace Chummer
                         {
                             objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Powers");
                             treContents.Nodes.Add(objParent);
-                            foreach (XPathNavigator objXmlPower in objXmlItem.Select("power"))
+                            foreach (XPathNavigator objXmlPower in objXmlItem.SelectAndCacheExpression("power"))
                             {
                                 if (objXmlPower.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;

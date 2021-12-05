@@ -72,7 +72,7 @@ namespace Chummer
 
             foreach (XPathNavigator xmlOperationChildNode in xmlOperationNode.SelectChildren(XPathNodeType.Element))
             {
-                bool blnInvert = xmlOperationChildNode.SelectSingleNode("@NOT") != null;
+                bool blnInvert = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@NOT") != null;
 
                 bool blnOperationChildNodeResult = blnInvert;
                 string strNodeName = xmlOperationChildNode.Name;
@@ -106,7 +106,7 @@ namespace Chummer
                         {
                             if (xmlParentNode != null)
                             {
-                                string strOperationType = xmlOperationChildNode.SelectSingleNode("@operation")?.Value ?? "==";
+                                string strOperationType = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@operation")?.Value ?? "==";
                                 XPathNodeIterator objXmlTargetNodeList = xmlParentNode.Select(strNodeName);
                                 // If we're just checking for existence of a node, no need for more processing
                                 if (strOperationType == "exists")
@@ -115,9 +115,9 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    bool blnOperationChildNodeAttributeOr = xmlOperationChildNode.SelectSingleNode("@OR") != null;
+                                    bool blnOperationChildNodeAttributeOr = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@OR") != null;
                                     // default is "any", replace with switch() if more check modes are necessary
-                                    bool blnCheckAll = xmlOperationChildNode.SelectSingleNode("@checktype")?.Value == "all";
+                                    bool blnCheckAll = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype")?.Value == "all";
                                     blnOperationChildNodeResult = blnCheckAll;
                                     string strOperationChildNodeText = xmlOperationChildNode.Value;
                                     bool blnOperationChildNodeEmpty = string.IsNullOrWhiteSpace(strOperationChildNodeText);
@@ -243,7 +243,18 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XPathNavigator node, string field, ref string read)
         {
-            XPathNavigator objField = node?.SelectSingleNode(field) ?? node?.SelectSingleNode("@" + field);
+            if (node == null)
+                return false;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+                ? node.SelectSingleNode(objCachedExpression)
+                : node.SelectSingleNode(field);
+            if (objField == null && !field.StartsWith('@'))
+            {
+                field = '@' + field;
+                objField = s_dicCachedExpressions.TryGetValue(field, out objCachedExpression)
+                    ? node.SelectSingleNode(objCachedExpression)
+                    : node.SelectSingleNode(field);
+            }
             if (objField != null)
             {
                 read = objField.Value;
@@ -273,7 +284,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetInt32FieldQuickly(this XPathNavigator node, string field, ref int read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node?.SelectSingleNode(field);
+            if (node == null)
+                return false;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+                ? node.SelectSingleNode(objCachedExpression)
+                : node.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -293,7 +308,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetBoolFieldQuickly(this XPathNavigator node, string field, ref bool read)
         {
-            XPathNavigator objField = node?.SelectSingleNode(field);
+            if (node == null)
+                return false;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+                ? node.SelectSingleNode(objCachedExpression)
+                : node.SelectSingleNode(field);
             if (objField != null && bool.TryParse(objField.Value, out bool blnTmp))
             {
                 read = blnTmp;
@@ -308,7 +327,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDecFieldQuickly(this XPathNavigator node, string field, ref decimal read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node?.SelectSingleNode(field);
+            if (node == null)
+                return false;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+                ? node.SelectSingleNode(objCachedExpression)
+                : node.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -328,7 +351,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDoubleFieldQuickly(this XPathNavigator node, string field, ref double read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node?.SelectSingleNode(field);
+            if (node == null)
+                return false;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+                ? node.SelectSingleNode(objCachedExpression)
+                : node.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -348,7 +375,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetFloatFieldQuickly(this XPathNavigator node, string field, ref float read, IFormatProvider objCulture = null)
         {
-            XPathNavigator objField = node?.SelectSingleNode(field);
+            if (node == null)
+                return false;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+                ? node.SelectSingleNode(objCachedExpression)
+                : node.SelectSingleNode(field);
             if (objField != null)
             {
                 if (objCulture == null)
@@ -372,7 +403,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetGuidFieldQuickly(this XPathNavigator node, string field, ref Guid read, bool falseIfEmpty = true)
         {
-            XPathNavigator objField = node?.SelectSingleNode(field);
+            if (node == null)
+                return false;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+                ? node.SelectSingleNode(objCachedExpression)
+                : node.SelectSingleNode(field);
             if (objField == null)
                 return false;
             if (!Guid.TryParse(objField.Value, out Guid guidTmp))
@@ -393,9 +428,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool NodeExists(this XPathNavigator xmlNode, string strName)
         {
-            if (string.IsNullOrEmpty(strName))
+            if (string.IsNullOrEmpty(strName) || xmlNode == null)
                 return false;
-            return xmlNode?.SelectSingleNode(strName) != null;
+            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(strName, out XPathExpression objCachedExpression)
+                ? xmlNode.SelectSingleNode(objCachedExpression)
+                : xmlNode.SelectSingleNode(strName);
+            return objField != null;
         }
 
         /// <summary>

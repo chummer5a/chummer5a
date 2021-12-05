@@ -384,7 +384,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
                     List<ListItem> lstQualities = new List<ListItem>(1);
-                    foreach (XmlNode xmlLifestyle in xmlLifestyles.Select("/chummer/lifestyles/lifestyle"))
+                    foreach (XmlNode xmlLifestyle in xmlLifestyles.SelectAndCacheExpression("/chummer/lifestyles/lifestyle"))
                     {
                         string strName = xmlLifestyle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Error");
                         lstQualities.Add(new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));

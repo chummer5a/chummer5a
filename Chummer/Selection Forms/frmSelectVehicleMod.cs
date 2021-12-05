@@ -57,9 +57,9 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
             // Load the Vehicle information.
-            _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer");
+            _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (_xmlBaseVehicleDataNode != null)
-                _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode.SelectSingleNode("modcategories"));
+                _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode.SelectSingleNodeAndCacheExpression("modcategories"));
             if (lstExistingMods != null)
                 _lstMods.AddRange(lstExistingMods);
         }

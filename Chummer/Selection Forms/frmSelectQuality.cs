@@ -51,7 +51,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Quality information.
-            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer");
+            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
         }
 

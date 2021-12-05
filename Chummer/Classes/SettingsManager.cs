@@ -73,7 +73,7 @@ namespace Chummer
                 }
 
                 IEnumerable<XPathNavigator> xmlSettingsIterator = XmlManager.LoadXPath("settings.xml")
-                    .Select("/chummer/settings/setting").Cast<XPathNavigator>();
+                    .SelectAndCacheExpression("/chummer/settings/setting").Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                 {
                     CharacterSettings objNewCharacterSettings = new CharacterSettings();

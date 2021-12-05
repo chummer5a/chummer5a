@@ -342,7 +342,7 @@ namespace Chummer.Backend.Skills
                 if (objSkill is ExoticSkill objExoticSkill)
                 {
                     //don't need to do more load then.
-                    objExoticSkill.Specific = xmlSkillNode.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
+                    objExoticSkill.Specific = xmlSkillNode.SelectSingleNode("skillspecializations/skillspecialization/name")?.Value ?? string.Empty;
                     return objSkill;
                 }
 

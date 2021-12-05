@@ -295,7 +295,7 @@ namespace Chummer.Backend.Equipment
             string strAmmoWeaponType = string.Empty;
             bool blnDoExtra = false;
             if (objXmlGear.TryGetStringFieldQuickly("ammoforweapontype", ref strAmmoWeaponType))
-                blnDoExtra = objXmlGear["ammoforweapontype"].Attributes["noextra"]?.InnerText != bool.TrueString;
+                blnDoExtra = objXmlGear.SelectSingleNode("ammoforweapontype/@noextra")?.Value != bool.TrueString;
             if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
             {
                 frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter)
@@ -3072,7 +3072,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
                 {
-                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -3089,7 +3089,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -3439,7 +3439,7 @@ namespace Chummer.Backend.Equipment
                 {
                     objParentNode.Nodes.Add(objChildNode);
                     if (objChild.ParentID != InternalId ||
-                        (GetNode()?.SelectSingleNode("gears/@startcollapsed")?.InnerText != bool.TrueString))
+                        (GetNode()?.SelectSingleNode("gears/@startcollapsed")?.Value != bool.TrueString))
                         blnExpandNode = true;
                 }
             }

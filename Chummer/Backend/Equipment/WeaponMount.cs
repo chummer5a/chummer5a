@@ -1215,13 +1215,13 @@ namespace Chummer.Backend.Equipment
                         {
                             if (!string.IsNullOrEmpty(AllowedWeapons))
                             {
-                                string strCheckValue = GlobalSettings.Clipboard.SelectSingleNode("name")?.InnerText;
+                                string strCheckValue = GlobalSettings.Clipboard.SelectSingleNode("name")?.Value;
                                 if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
                                     return false;
                             }
                             if (!string.IsNullOrEmpty(AllowedWeaponCategories))
                             {
-                                string strCheckValue = GlobalSettings.Clipboard.SelectSingleNode("category")?.InnerText;
+                                string strCheckValue = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
                                 if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
                                     return false;
                             }

@@ -82,7 +82,7 @@ namespace Chummer
             }
 
             // Load the Gear information.
-            _xmlBaseGearDataNode = objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer");
+            _xmlBaseGearDataNode = objCharacter.LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
             foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {

@@ -48,11 +48,11 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
-            _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer");
+            _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _objArmor = objParentNode;
             _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
             if (_xmlBaseDataNode != null)
-                _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDataNode.SelectSingleNode("modcategories"));
+                _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDataNode.SelectSingleNodeAndCacheExpression("modcategories"));
         }
 
         private void frmSelectArmorMod_Load(object sender, EventArgs e)

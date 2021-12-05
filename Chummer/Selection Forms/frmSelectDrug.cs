@@ -63,7 +63,7 @@ namespace Chummer
 
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
-            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNode("/chummer");
+            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
 
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

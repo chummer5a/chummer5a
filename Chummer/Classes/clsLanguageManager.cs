@@ -521,9 +521,9 @@ namespace Chummer
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             objEnglishDocument = new XPathDocument(objXmlReader);
-                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
+                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string"))
                         {
-                            string strKey = objNode.SelectSingleNode("key")?.Value;
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
                             if (!string.IsNullOrEmpty(strKey))
                                 lstEnglish.Add(strKey);
                         }
@@ -547,9 +547,9 @@ namespace Chummer
                         using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             objLanguageDocument = new XPathDocument(objXmlReader);
-                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().Select("/chummer/strings/string"))
+                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string"))
                         {
-                            string strKey = objNode.SelectSingleNode("key")?.Value;
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
                             if (!string.IsNullOrEmpty(strKey))
                                 lstLanguage.Add(strKey);
                         }
@@ -1148,7 +1148,7 @@ namespace Chummer
                     continue;
                 }
 
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNode("/chummer/name");
+                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name");
 
                 if (node == null)
                     continue;

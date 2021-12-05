@@ -544,7 +544,7 @@ namespace Chummer.Backend.Equipment
                     : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
 
                 int intAddWeaponRating = 0;
-                string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                string strLoopRating = objXmlAddWeapon.SelectSingleNode("@rating")?.Value;
                 if (!string.IsNullOrEmpty(strLoopRating))
                 {
                     strLoopRating = strLoopRating.CheapReplace("{Rating}",
@@ -2162,7 +2162,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped)
                 {
-                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -2177,7 +2177,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>

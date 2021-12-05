@@ -221,8 +221,8 @@ namespace Chummer
                 {
                     //Dump skills, (optional)powers if present to output
 
-                    XPathNavigator xmlSpiritPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
-                    XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
+                    XPathNavigator xmlSpiritPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).SelectSingleNodeAndCacheExpression("/chummer");
+                    XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).SelectSingleNodeAndCacheExpression("/chummer");
 
                     XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                     if (xmlPowersNode != null)
@@ -345,7 +345,7 @@ namespace Chummer
 
                 strCategory = xmlSpiritPowersBaseChummerNode.SelectSingleNode("categories/category[. = " + strEnglishCategory.CleanXPath() + "]/@translate")?.Value ?? strEnglishCategory;
 
-                switch (objXmlPowerNode.SelectSingleNode("type")?.Value)
+                switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type")?.Value)
                 {
                     case "M":
                         strDisplayType = LanguageManager.GetString("String_SpellTypeMana", strLanguageToPrint);
@@ -355,7 +355,7 @@ namespace Chummer
                         strDisplayType = LanguageManager.GetString("String_SpellTypePhysical", strLanguageToPrint);
                         break;
                 }
-                switch (objXmlPowerNode.SelectSingleNode("action")?.Value)
+                switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action")?.Value)
                 {
                     case "Auto":
                         strDisplayAction = LanguageManager.GetString("String_ActionAutomatic", strLanguageToPrint);
@@ -377,7 +377,7 @@ namespace Chummer
                         strDisplayAction = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
                         break;
                 }
-                switch (objXmlPowerNode.SelectSingleNode("duration")?.Value)
+                switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration")?.Value)
                 {
                     case "Instant":
                         strDisplayDuration = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguageToPrint);

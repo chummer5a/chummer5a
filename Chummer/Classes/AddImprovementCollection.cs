@@ -5503,7 +5503,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
-            XPathNodeIterator nodeList = _objCharacter.LoadDataXPath("options.xml").Select("/chummer/blackmarketpipelinecategories/category");
+            XPathNodeIterator nodeList = _objCharacter.LoadDataXPath("options.xml").SelectAndCacheExpression("/chummer/blackmarketpipelinecategories/category");
             SelectedValue = string.Empty;
             if (nodeList.Count > 0)
             {
@@ -6126,9 +6126,9 @@ namespace Chummer.Classes
             Quality objAddQuality = new Quality(_objCharacter);
             List<Weapon> lstWeapons = new List<Weapon>(1);
 
-            string strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
+            string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
             objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
-            if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText != bool.TrueString)
+            if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
             {
                 objAddQuality.BP = 0;
                 objAddQuality.ContributeToLimit = false;
@@ -6176,12 +6176,12 @@ namespace Chummer.Classes
                     {
                         objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + frmPickItem.SelectedItem.CleanXPath() + "]");
                         objXmlBonusQuality = bonusNode.SelectSingleNode("discountqualities/quality[" + frmPickItem.SelectedItem.CleanXPath() + "]");
-                        int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.Attributes?["discount"].InnerText, GlobalSettings.InvariantCultureInfo);
+                        int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value, GlobalSettings.InvariantCultureInfo);
                         Quality discountQuality = new Quality(_objCharacter)
                         {
                             BP = 0
                         };
-                        strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
+                        strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
                         discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
                         _objCharacter.Qualities.Add(discountQuality);
                         objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);

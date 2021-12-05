@@ -45,7 +45,7 @@ namespace Chummer
             _objMount = objWeaponMount;
             _objCharacter = objCharacter;
             _xmlDoc = _objCharacter.LoadData("vehicles.xml");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer/weaponmountcategories"));
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer/weaponmountcategories"));
             InitializeComponent();
         }
 

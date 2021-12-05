@@ -815,8 +815,18 @@ namespace Chummer
                                     string strParentNodeFilter = string.Empty;
                                     if (objParentNode.Attributes?.Count > 0)
                                     {
-                                        strParentNodeFilter = string.Join(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
-                                            "@" + x.Name + " = " + x.Value.Replace("&amp;", "&").CleanXPath()));
+                                        StringBuilder sbdParentNodeFilter = new StringBuilder();
+                                        
+                                        foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
+                                        {
+                                            sbdParentNodeFilter.Append('@').Append(objLoopAttribute.Name).Append(" = ")
+                                                               .Append(objLoopAttribute.Value.Replace("&amp;", "&")
+                                                                           .CleanXPath()).Append(" and ");
+                                        }
+
+                                        sbdParentNodeFilter.Length -= 5;
+
+                                        strParentNodeFilter = sbdParentNodeFilter.ToString();
                                     }
                                     XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
                                         ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
@@ -834,23 +844,35 @@ namespace Chummer
 
                             XmlNode xmlExistingNode = objDocElement[objNode.Name];
                             if (xmlExistingNode != null
-                                && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count
-                                && xmlExistingNode.Attributes?.Cast<XmlAttribute>().All(x => objNode.Attributes?.Cast<XmlAttribute>().Any(y => x.Name == y.Name && x.Value == y.Value) == true) != false)
+                                && xmlExistingNode.Attributes?.Count == objNode.Attributes?.Count)
                             {
-                                /* We need to do this to avoid creating multiple copies of the root node, ie
-                                        <chummer>
-                                            <metatypes>
-                                                <metatype>Standard</metatype>
-                                            </metatypes>
-                                            <metatypes>
-                                                <metatype>Custom</metatype>
-                                            </metatypes>
-                                        </chummer>
-                                        Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
-                                    */
-                                foreach (XmlNode childNode in objNode.ChildNodes)
+                                bool blnAllMatching = true;
+                                foreach (XmlAttribute x in xmlExistingNode.Attributes)
                                 {
-                                    xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                    if (objNode.Attributes.GetNamedItem(x.Name)?.Value != x.Value)
+                                    {
+                                        blnAllMatching = false;
+                                        break;
+                                    }
+                                }
+
+                                if (!blnAllMatching)
+                                {
+                                    /* We need to do this to avoid creating multiple copies of the root node, ie
+                                       <chummer>
+                                           <metatypes>
+                                               <metatype>Standard</metatype>
+                                           </metatypes>
+                                           <metatypes>
+                                               <metatype>Custom</metatype>
+                                           </metatypes>
+                                       </chummer>
+                                       Otherwise xpathnavigators that to a selectsinglenode will only grab the first instance of the name. TODO: fix better?
+                                   */
+                                    foreach (XmlNode childNode in objNode.ChildNodes)
+                                    {
+                                        xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
+                                    }
                                 }
                             }
                             else
@@ -1449,7 +1471,7 @@ namespace Chummer
                         continue;
                     // Load the current English file.
                     XPathNavigator objEnglishDoc = LoadXPath(strFileName);
-                    XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNode("/chummer");
+                    XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNodeAndCacheExpression("/chummer");
 
                     // First pass: make sure the document exists.
                     bool blnExists = false;
@@ -1648,7 +1670,7 @@ namespace Chummer
                                     }
                                     else if (strFile.EndsWith("tips.xml", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        XPathNavigator xmlText = objChild.SelectSingleNode("text");
+                                        XPathNavigator xmlText = objChild.SelectSingleNodeAndCacheExpression("text");
                                         // Look for a matching entry in the Language file.
                                         if (xmlText != null)
                                         {

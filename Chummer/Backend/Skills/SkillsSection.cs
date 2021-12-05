@@ -488,7 +488,7 @@ namespace Chummer.Backend.Skills
                     string.Format(GlobalSettings.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
                         _objCharacter.Settings.BookXPath(), SkillFilter(FilterOption.NonSpecial))))
                 {
-                    string strName = node.SelectSingleNode("name")?.Value;
+                    string strName = node.SelectSingleNodeAndCacheExpression("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))
                         hashSkillGuids.Add(strName);
                 }
