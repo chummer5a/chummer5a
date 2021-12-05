@@ -42,6 +42,7 @@ namespace Chummer
         /// <inheritdoc />
         public NegatableBinding(string propertyName, object dataSource, string dataMember, bool formattingEnabled, DataSourceUpdateMode dataSourceUpdateMode) : base(propertyName, dataSource, dataMember, formattingEnabled, dataSourceUpdateMode)
         {
+            ConstructorCommon();
         }
 
         /// <inheritdoc />
