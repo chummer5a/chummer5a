@@ -1622,6 +1622,10 @@ namespace Chummer
                     break;
 
                 case ImprovementType.DealerConnection:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                            nameof(Character.DealerConnectionDiscount));
+                    }
                     break;
 
                 case ImprovementType.AllowSkillDefault:

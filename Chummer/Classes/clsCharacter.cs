@@ -4753,6 +4753,10 @@ namespace Chummer
                         // Refresh certain improvements
                         using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                         {
+                            // Refresh Black Market Discounts
+                            RefreshBlackMarketDiscounts();
+                            // Refresh Dealer Connection discounts
+                            RefreshDealerConnectionDiscounts();
                             // Refresh permanent attribute changes due to essence loss
                             RefreshEssenceLossImprovements();
                             // Refresh dicepool modifiers due to filled condition monitor boxes
@@ -5711,10 +5715,35 @@ namespace Chummer
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
             _intAIAdvancedProgramLimit = 0;
-            _intCachedRedlinerBonus = int.MinValue;
+            _intCachedAllowSpriteFettering = int.MinValue;
+            _intCachedAmbidextrous = int.MinValue;
+            _intCachedBlackMarketDiscount = int.MinValue;
+            _intCachedCareerKarma = int.MinValue;
             _intCachedContactPoints = int.MinValue;
+            _intCachedDealerConnectionDiscount = int.MinValue;
+            _intCachedEnemyKarma = int.MinValue;
+            _intCachedErased = int.MinValue;
+            _intCachedExCon = int.MinValue;
+            _intCachedFame = int.MinValue;
+            _intCachedFriendsInHighPlaces = int.MinValue;
+            _intCachedInitiationEnabled = int.MinValue;
+            _intCachedMadeMan = int.MinValue;
+            _intCachedMetagenicNegativeQualities = int.MinValue;
+            _intCachedMetagenicPositiveQualities = int.MinValue;
+            _intCachedNegativeQualities = int.MinValue;
+            _intCachedNegativeQualityLimitKarma = int.MinValue;
+            _intCachedOverclocker = int.MinValue;
+            _intCachedPositiveQualities = int.MinValue;
+            _intCachedPositiveQualitiesTotal = int.MinValue;
+            _intCachedRedlinerBonus = int.MinValue;
+            _intCachedRestrictedGear = int.MinValue;
+            _intCachedTotalAcidArmorRating = int.MinValue;
+            _intCachedTotalArmorRating = int.MinValue;
+            _intCachedTotalColdArmorRating = int.MinValue;
+            _intCachedTotalElectricityArmorRating = int.MinValue;
+            _intCachedTotalFallingArmorRating = int.MinValue;
+            _intCachedTotalFireArmorRating = int.MinValue;
             _intCurrentCounterspellingDice = 0;
-            _intCachedInitiationEnabled = -1;
             _decCachedBiowareEssence = decimal.MinValue;
             _decCachedCyberwareEssence = decimal.MinValue;
             ResetCachedEssence();
@@ -7510,11 +7539,10 @@ namespace Chummer
             get => _blnCreated;
             set
             {
-                if(_blnCreated != value)
-                {
-                    _blnCreated = value;
-                    OnPropertyChanged();
-                }
+                if (_blnCreated == value)
+                    return;
+                _blnCreated = value;
+                OnPropertyChanged();
             }
         }
 
@@ -14330,6 +14358,50 @@ namespace Chummer
             }
         }
 
+        private int _intCachedDealerConnectionDiscount = -1;
+
+        /// <summary>
+        /// Whether or not Black Market Discount is enabled.
+        /// </summary>
+        public bool DealerConnectionDiscount
+        {
+            get
+            {
+                if (_intCachedDealerConnectionDiscount < 0)
+                    _intCachedDealerConnectionDiscount = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled)
+                        ? 1
+                        : 0;
+
+                return _intCachedDealerConnectionDiscount > 0;
+            }
+        }
+
+        public void RefreshDealerConnectionDiscounts()
+        {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+
+            if (Created)
+                return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
+
+            if (DealerConnectionDiscount)
+                return;
+
+            HashSet<string> setDealerConnectionMaps = new HashSet<string>();
+            foreach (Improvement objImprovement in Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled))
+            {
+                setDealerConnectionMaps.Add(objImprovement.UniqueName);
+            }
+
+            foreach (Vehicle objVehicle in Vehicles)
+            {
+                objVehicle.DealerConnectionDiscount = objVehicle.DealerConnectionDiscount
+                                                      && Vehicle.DoesDealerConnectionApply(
+                                                          setDealerConnectionMaps, objVehicle.Category);
+            }
+        }
+
         private int _intCachedBlackMarketDiscount = -1;
 
         /// <summary>
@@ -14346,6 +14418,233 @@ namespace Chummer
                         : 0;
 
                 return _intCachedBlackMarketDiscount > 0;
+            }
+        }
+
+        public void RefreshBlackMarketDiscounts()
+        {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+
+            if (Created)
+                return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
+
+            if (BlackMarketDiscount)
+            {
+                HashSet<string> setArmorBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNode("/chummer"));
+                HashSet<string> setArmorModBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNode("/chummer/modcategories"));
+                HashSet<string> setBiowareBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("bioware.xml").SelectSingleNode("/chummer"));
+                HashSet<string> setCyberwareBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml").SelectSingleNode("/chummer"));
+                HashSet<string> setGearBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("gear.xml").SelectSingleNode("/chummer"));
+                HashSet<string> setVehicleBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer"));
+                HashSet<string> setVehicleModBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer/modcategories"));
+                HashSet<string> setWeaponMountBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer/weaponmountcategories"));
+                HashSet<string> setWeaponBlackMarketMaps
+                    = GenerateBlackMarketMappings(LoadDataXPath("weapons.xml").SelectSingleNode("/chummer"));
+
+                foreach (Armor objArmor in Armor)
+                {
+                    objArmor.DiscountCost = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        objMod.DiscountCost = objMod.DiscountCost && setArmorModBlackMarketMaps.Contains(objMod.Category);
+                        foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
+                            objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                    }
+
+                    foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
+                        objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                }
+
+                foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
+                {
+                    if (objCyberware.DiscountCost)
+                    {
+                        objCyberware.DiscountCost
+                            = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                ? setBiowareBlackMarketMaps
+                                : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                    }
+                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                        objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                }
+
+                foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
+                    objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+
+                foreach (Vehicle objVehicle in Vehicles)
+                {
+                    objVehicle.DiscountCost = objVehicle.DiscountCost && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
+                    foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                        objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        objMod.DiscountCost = objMod.DiscountCost && setVehicleModBlackMarketMaps.Contains(objMod.Category);
+                        foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                        {
+                            if (objCyberware.DiscountCost)
+                            {
+                                objCyberware.DiscountCost
+                                    = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                        ? setBiowareBlackMarketMaps
+                                        : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                            }
+                            foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                                objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                        }
+                    }
+                    foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                    {
+                        objWeapon.DiscountCost = objWeapon.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        {
+                            objAccessory.DiscountCost = objAccessory.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                                objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        objMount.DiscountCost = objMount.DiscountCost && setWeaponMountBlackMarketMaps.Contains(objMount.Category);
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            objMod.DiscountCost = objMod.DiscountCost && setVehicleModBlackMarketMaps.Contains(objMod.Category);
+                            foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                            {
+                                if (objCyberware.DiscountCost)
+                                {
+                                    objCyberware.DiscountCost
+                                        = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                            ? setBiowareBlackMarketMaps
+                                            : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                                }
+                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                                    objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
+                        }
+                        foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                        {
+                            objWeapon.DiscountCost = objWeapon.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                objAccessory.DiscountCost = objAccessory.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                                foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                                    objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
+                        }
+                    }
+                }
+
+                foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
+                {
+                    objWeapon.DiscountCost = objWeapon.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                    {
+                        objAccessory.DiscountCost = objAccessory.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                        foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                            objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                    }
+                }
+            }
+            else
+            {
+                // Forcefully disable all Black Market Discounts that don't apply.
+                foreach (Armor objArmor in Armor)
+                {
+                    objArmor.DiscountCost = false;
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        objMod.DiscountCost = false;
+                        foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
+                            objGear.DiscountCost = false;
+                    }
+
+                    foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
+                        objGear.DiscountCost = false;
+                }
+
+                foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
+                {
+                    objCyberware.DiscountCost = false;
+                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                        objGear.DiscountCost = false;
+                }
+
+                foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
+                    objGear.DiscountCost = false;
+
+                foreach (Vehicle objVehicle in Vehicles)
+                {
+                    objVehicle.DiscountCost = false;
+                    foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                        objGear.DiscountCost = false;
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        objMod.DiscountCost = false;
+                        foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                        {
+                            objCyberware.DiscountCost = false;
+                            foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                                objGear.DiscountCost = false;
+                        }
+                    }
+                    foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                    {
+                        objWeapon.DiscountCost = false;
+                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        {
+                            objAccessory.DiscountCost = false;
+                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                                objGear.DiscountCost = false;
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        objMount.DiscountCost = false;
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            objMod.DiscountCost = false;
+                            foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                            {
+                                objCyberware.DiscountCost = false;
+                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                                    objGear.DiscountCost = false;
+                            }
+                        }
+                        foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                        {
+                            objWeapon.DiscountCost = false;
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                objAccessory.DiscountCost = false;
+                                foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                                    objGear.DiscountCost = false;
+                            }
+                        }
+                    }
+                }
+
+                foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
+                {
+                    objWeapon.DiscountCost = false;
+                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                    {
+                        objAccessory.DiscountCost = false;
+                        foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                            objGear.DiscountCost = false;
+                    }
+                }
             }
         }
 
@@ -17901,9 +18200,16 @@ namespace Chummer
                 _intCachedAmbidextrous = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
+            if (lstNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
+            {
+                _intCachedDealerConnectionDiscount = int.MinValue;
+                RefreshDealerConnectionDiscounts();
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
             {
                 _intCachedBlackMarketDiscount = int.MinValue;
+                RefreshBlackMarketDiscounts();
             }
 
             if(lstNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
@@ -20197,6 +20503,10 @@ namespace Chummer
                         // Refresh certain improvements
                         using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                         {
+                            // Refresh Black Market discounts
+                            RefreshBlackMarketDiscounts();
+                            // Refresh Dealer Connection discounts
+                            RefreshDealerConnectionDiscounts();
                             // Refresh permanent attribute changes due to essence loss
                             RefreshEssenceLossImprovements();
                             // Refresh dicepool modifiers due to filled condition monitor boxes

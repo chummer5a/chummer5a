@@ -78,6 +78,7 @@ namespace Chummer.Backend.Equipment
         private Location _objLocation;
         private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnDiscountCost;
+        private bool _blnDealerConnectionDiscount;
         private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
@@ -257,6 +258,9 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
+            DealerConnectionDiscount = DoesDealerConnectionCurrentlyApply();
+
             objXmlVehicle.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlVehicle.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -610,6 +614,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("dealerconnection", _blnDealerConnectionDiscount.ToString(GlobalSettings.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
                 // <locations>
@@ -956,6 +961,10 @@ namespace Chummer.Backend.Equipment
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
+            if (!objNode.TryGetBoolFieldQuickly("dealerconnection", ref _blnDealerConnectionDiscount))
+            {
+                _blnDealerConnectionDiscount = DoesDealerConnectionCurrentlyApply();
+            }
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -1604,7 +1613,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool DiscountCost
         {
-            get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
+            get => _blnDiscountCost;
             set => _blnDiscountCost = value;
         }
 
@@ -1620,35 +1629,83 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
         /// </summary>
-        public bool DealerConnectionDiscount => UpdateDealerConnectionDiscount();
-
-        /// <summary>
-        /// Update info on Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
-        /// </summary>
-        public bool UpdateDealerConnectionDiscount()
+        public bool DealerConnectionDiscount
         {
-            return _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled && DoesDealerConnectionApply(x.UniqueName, _strCategory));
+            get => _blnDealerConnectionDiscount;
+            set => _blnDealerConnectionDiscount = value;
         }
 
-        public static bool DoesDealerConnectionApply(string strUnique, string strCategory)
+        /// <summary>
+        /// Check whether or not a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
+        /// </summary>
+        public bool DoesDealerConnectionCurrentlyApply()
         {
-            return !string.IsNullOrEmpty(strUnique) && !string.IsNullOrEmpty(strCategory)
-                                                    && (strUnique == "Drones"
-                                                        && strCategory.StartsWith("Drones", StringComparison.Ordinal) ||
-                                                        strUnique == "Aircraft" && (
-                                                            strCategory == "Fixed-Wing Aircraft" ||
-                                                            strCategory == "LTAV" ||
-                                                            strCategory == "Rotorcraft" ||
-                                                            strCategory == "VTOL/VSTOL") ||
-                                                        strUnique == "Watercraft" && (
-                                                            strCategory == "Boats" ||
-                                                            strCategory == "Submarines") ||
-                                                        strUnique == "Groundcraft" && (
-                                                            strCategory == "Bikes" ||
-                                                            strCategory == "Cars" ||
-                                                            strCategory == "Trucks" ||
-                                                            strCategory == "Municipal/Construction" ||
-                                                            strCategory == "Corpsec/Police/Military"));
+            if (_objCharacter?.DealerConnectionDiscount != true || string.IsNullOrEmpty(_strCategory))
+                return false;
+            string strUniqueToSearchFor = string.Empty;
+            if (_strCategory.StartsWith("Drones", StringComparison.Ordinal))
+            {
+                strUniqueToSearchFor = "Drones";
+            }
+            else
+            {
+                switch (_strCategory)
+                {
+                    case "Fixed-Wing Aircraft":
+                    case "LTAV":
+                    case "Rotorcraft":
+                    case "VTOL/VSTOL":
+                        strUniqueToSearchFor = "Aircraft";
+                        break;
+                    case "Boats":
+                    case "Submarines":
+                        strUniqueToSearchFor = "Watercraft";
+                        break;
+                    case "Bikes":
+                    case "Cars":
+                    case "Trucks":
+                    case "Municipal/Construction":
+                    case "Corpsec/Police/Military":
+                        strUniqueToSearchFor = "Groundcraft";
+                        break;
+                }
+            }
+            if (string.IsNullOrEmpty(strUniqueToSearchFor))
+                return false;
+            return _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DealerConnection
+                                                       && x.Enabled && x.UniqueName == strUniqueToSearchFor);
+        }
+
+        /// <summary>
+        /// Check whether or not a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
+        /// </summary>
+        /// <param name="lstUniques">Collection of DealerConnection improvement uniques.</param>
+        /// <param name="strCategory">Vehicle's category.</param>
+        /// <returns></returns>
+        public static bool DoesDealerConnectionApply(ICollection<string> lstUniques, string strCategory)
+        {
+            if (lstUniques.Count == 0 || string.IsNullOrEmpty(strCategory))
+                return false;
+            if (strCategory.StartsWith("Drones", StringComparison.Ordinal))
+                return lstUniques.Contains("Drones");
+            switch (strCategory)
+            {
+                case "Fixed-Wing Aircraft":
+                case "LTAV":
+                case "Rotorcraft":
+                case "VTOL/VSTOL":
+                    return lstUniques.Contains("Aircraft");
+                case "Boats":
+                case "Submarines":
+                    return lstUniques.Contains("Watercraft");
+                case "Bikes":
+                case "Cars":
+                case "Trucks":
+                case "Municipal/Construction":
+                case "Corpsec/Police/Military":
+                    return lstUniques.Contains("Groundcraft");
+            }
+            return false;
         }
 
         #endregion Properties

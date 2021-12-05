@@ -65,10 +65,12 @@ namespace Chummer
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
 
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(imp =>
-                imp.Enabled && imp.ImproveType == Improvement.ImprovementType.DealerConnection))
+            if (_objCharacter.DealerConnectionDiscount)
             {
-                _setDealerConnectionMaps.Add(objImprovement.UniqueName);
+                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled))
+                {
+                    _setDealerConnectionMaps.Add(objImprovement.UniqueName);
+                }
             }
         }
 
@@ -361,7 +363,7 @@ namespace Chummer
 
                         if (chkBlackMarketDiscount.Checked)
                             decCost *= 0.9m;
-                        if (_setDealerConnectionMaps?.Any(x => Vehicle.DoesDealerConnectionApply(x, objXmlVehicle.SelectSingleNode("category")?.Value)) == true)
+                        if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, objXmlVehicle.SelectSingleNode("category")?.Value))
                             decCost *= 0.9m;
                     }
                 }
@@ -419,7 +421,7 @@ namespace Chummer
                     decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked && _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNodeAndCacheExpression("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    if (_setDealerConnectionMaps?.Any(x => Vehicle.DoesDealerConnectionApply(x, objXmlVehicle.SelectSingleNodeAndCacheExpression("category")?.Value)) == true)
+                    if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, objXmlVehicle.SelectSingleNodeAndCacheExpression("category")?.Value))
                         decCostMultiplier *= 0.9m;
                     if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
                     {
