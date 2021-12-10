@@ -5726,7 +5726,7 @@ namespace Chummer
             _intCachedExCon = int.MinValue;
             _intCachedFame = int.MinValue;
             _intCachedFriendsInHighPlaces = int.MinValue;
-            _intCachedInitiationEnabled = int.MinValue;
+            _intCachedInitiationEnabled = -1;
             _intCachedMadeMan = int.MinValue;
             _intCachedMetagenicNegativeQualities = int.MinValue;
             _intCachedMetagenicPositiveQualities = int.MinValue;
