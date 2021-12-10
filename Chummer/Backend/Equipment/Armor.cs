@@ -856,6 +856,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("armor", DisplayArmorValue);
+            objWriter.WriteElementString("totalarmorcapacity", TotalArmorCapacity);
+            objWriter.WriteElementString("calculatedcapacity", CalculatedCapacity);
+            objWriter.WriteElementString("capacityremaining", CapacityRemaining.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
@@ -1078,6 +1081,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Armor's Capacity string.
         /// </summary>
+        /// <remarks>
+        /// Invariant. Utilized internally within Chummer for calculations and other properties. Backing variable is used in Load, Save, and Create.
+        /// </remarks>
         public string ArmorCapacity
         {
             get => _strArmorCapacity;
@@ -1094,7 +1100,7 @@ namespace Chummer.Backend.Equipment
                 string strArmorCapacity = ArmorCapacity;
                 if (strArmorCapacity.Contains("Rating"))
                 {
-                    // If the Capaicty is determined by the Rating, evaluate the expression.
+                    // If the Capacity is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                     bool blnSquareBrackets = strArmorCapacity.StartsWith('[');
                     string strCapacity = strArmorCapacity;
@@ -1857,7 +1863,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// The amount of Capacity remaining in the Gear.
+        /// The amount of Capacity remaining in the Armor.
         /// </summary>
         public decimal CapacityRemaining
         {
@@ -1916,7 +1922,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Capacity display style;
+        /// Capacity display style.
         /// </summary>
         public CapacityStyle CapacityDisplayStyle
         {
@@ -1980,13 +1986,15 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            
             _objCachedMyXmlNode = _objCharacter.LoadData("armor.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/armors/armor[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/armors/armor[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                .SelectSingleNode(SourceID == Guid.Empty
+                    ? "/chummer/armors/armor[name = " + Name.CleanXPath() + ']'
+                    : string.Format(GlobalSettings.InvariantCultureInfo,
+                        "/chummer/armors/armor[id = {0} or id = {1}]",
+                        SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
