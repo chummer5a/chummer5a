@@ -3543,7 +3543,7 @@ namespace Chummer.Backend.Equipment
                         string strImprovedName = objImprovement.ImprovedName;
                         if (string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name
                             || strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
-                            && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true).ToUpperInvariant()))
+                            && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase))
                         {
                             decImproveAccuracy += objImprovement.Value;
                         }
@@ -3828,7 +3828,7 @@ namespace Chummer.Backend.Equipment
                 let strImprovedName = objImprovement.ImprovedName
                 where string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name ||
                       strImprovedName.StartsWith("[contains]", StringComparison.Ordinal) &&
-                      strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true).ToUpperInvariant())
+                      strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase)
                 select objImprovement.Value).Sum();
 
             i += decImproveAccuracy.StandardRound();

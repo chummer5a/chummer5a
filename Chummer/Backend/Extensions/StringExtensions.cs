@@ -20,6 +20,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1027,7 +1028,7 @@ namespace Chummer
                 else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
                 {
                     string strFactoryResult = string.Empty;
-                    Task tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                    Task<string> tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
                         x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
                     string strOldStringBuilderValue = sbdInput.ToString();
                     sbdInput.Clear();
@@ -1259,6 +1260,19 @@ namespace Chummer
                     sbdReturn.AppendLine(); // Empty line
             }
             return sbdReturn.ToString();
+        }
+
+        /// <summary>
+        /// Checks if every letter in a string is uppercase or not.
+        /// </summary>
+        /// <param name="strText"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static bool IsAllLettersUpperCase(this string strText)
+        {
+            if (strText == null)
+                throw new ArgumentNullException(nameof(strText));
+            return string.IsNullOrEmpty(strText) || strText.All(x => !char.IsLetter(x) || char.IsUpper(x));
         }
 
         /// <summary>

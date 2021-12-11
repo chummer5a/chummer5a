@@ -1766,7 +1766,7 @@ namespace Chummer
             else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
             {
                 ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
-                Task objCharacterLoadingTask = null;
+                Task<ParallelLoopResult> objCharacterLoadingTask = null;
 
                 using (_frmProgressBar = CreateAndShowProgressBar())
                 using (new CursorWait(this))

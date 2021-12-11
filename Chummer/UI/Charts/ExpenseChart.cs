@@ -30,10 +30,10 @@ namespace Chummer.UI.Charts
     public partial class ExpenseChart : UserControl
     {
         private Character _objCharacter;
-        private readonly Series _objMainSeries;
+        private readonly LineSeries _objMainSeries;
         private readonly Axis _objYAxis;
-        private static readonly Brush s_ObjKarmaFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0, 0, 0xFF));
-        private static readonly Brush s_ObjNuyenFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0xFF, 0, 0));
+        private static readonly SolidColorBrush s_ObjKarmaFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0, 0, 0xFF));
+        private static readonly SolidColorBrush s_ObjNuyenFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0xFF, 0, 0));
 
         public ExpenseChart()
         {

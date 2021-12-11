@@ -1638,7 +1638,7 @@ namespace Chummer
             }
         }
 
-        private SourcebookInfo ScanPDFForMatchingText(FileSystemInfo fileInfo, XPathNodeIterator xmlMatches)
+        private static SourcebookInfo ScanPDFForMatchingText(FileSystemInfo fileInfo, XPathNodeIterator xmlMatches)
         {
             //Search the first 10 pages for all the text
             for (int intPage = 1; intPage <= 10; intPage++)

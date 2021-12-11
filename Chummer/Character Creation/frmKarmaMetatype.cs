@@ -562,7 +562,7 @@ namespace Chummer
                         {
                             --intPos;
                             lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
-                            nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1), GlobalSettings.InvariantCultureInfo) * 6;
+                            nudForce.Maximum = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
                         }
                         else
                         {

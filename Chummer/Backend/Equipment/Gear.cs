@@ -1315,7 +1315,7 @@ namespace Chummer.Backend.Equipment
                     .InvariantCultureInfo));
             objWriter.WriteElementString("capacity", Capacity);
             objWriter.WriteElementString("armorcapacity", ArmorCapacity);
-            objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
+            objWriter.WriteElementString("maxrating", MaxRating);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("qty", DisplayQuantity(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));

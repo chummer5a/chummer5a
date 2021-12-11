@@ -98,9 +98,9 @@ namespace Chummer
             bool mfix = false;
             foreach (string word in words)
             {
-                string trim = word.Trim();
-                if (string.IsNullOrEmpty(trim))
+                if (string.IsNullOrWhiteSpace(word))
                     continue;
+                string trim = word.Trim();
 
                 if (trim.StartsWith('$'))
                 {

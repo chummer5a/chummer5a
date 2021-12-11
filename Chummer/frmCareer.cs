@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -6152,7 +6153,7 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            ICollection<Location> destCollection;
+            ObservableCollection<Location> destCollection;
             // Make sure a Vehicle is selected.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
@@ -14935,7 +14936,9 @@ namespace Chummer
                     if (strKey.EndsWith("Left", StringComparison.Ordinal))
                     {
                         strKey = strKey.TrimEndOnce("Left", true);
-                        intValue = dicDisallowedMounts.ContainsKey(strKey + "Right") ? 2 * Math.Min(intValue, dicDisallowedMounts[strKey + "Right"]) : 0;
+                        intValue = dicDisallowedMounts.TryGetValue(strKey + "Right", out int intExistingValue)
+                            ? 2 * Math.Min(intValue, intExistingValue)
+                            : 0;
                         if (dicDisallowedMounts.ContainsKey(strKey))
                             intValue += dicDisallowedMounts[strKey];
                     }
@@ -14956,7 +14959,9 @@ namespace Chummer
                     if (strKey.EndsWith("Left", StringComparison.Ordinal))
                     {
                         strKey = strKey.TrimEndOnce("Left", true);
-                        intValue = dicHasMounts.ContainsKey(strKey + "Right") ? 2 * Math.Min(intValue, dicHasMounts[strKey + "Right"]) : 0;
+                        intValue = dicHasMounts.TryGetValue(strKey + "Right", out int intExistingValue)
+                            ? 2 * Math.Min(intValue, intExistingValue)
+                            : 0;
                         if (dicHasMounts.ContainsKey(strKey))
                             intValue += dicHasMounts[strKey];
                     }

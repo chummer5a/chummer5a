@@ -493,7 +493,7 @@ namespace Chummer
                                 continue;
 
                             string strIncrement = objXmlLifestyle.SelectSingleNodeAndCacheExpression("increment")?.Value;
-                            if (objXmlLifestyle.SelectSingleNodeAndCacheExpression("type")?.Value.ToUpperInvariant() == "SAFEHOUSE")
+                            if (objXmlLifestyle.SelectSingleNodeAndCacheExpression("type")?.Value.Equals("SAFEHOUSE", StringComparison.InvariantCultureIgnoreCase) == true)
                                 strIncrement = "week";
                             string strIncrementString;
                             int intPermanentAmount;

@@ -93,8 +93,8 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == strInnerText))
-                    && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
+                if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Contains(strInnerText))
+                    && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
                 {
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                 }

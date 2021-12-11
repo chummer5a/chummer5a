@@ -4421,7 +4421,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
-            GearChildren.Concat(Children.Cast<IHasMatrixAttributes>());
+            GearChildren.Concat<IHasMatrixAttributes>(Children);
 
         #endregion Complex Properties
 

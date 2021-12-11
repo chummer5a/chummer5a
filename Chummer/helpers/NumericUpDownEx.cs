@@ -647,12 +647,14 @@ namespace Chummer
                 using (Graphics g = CreateGraphics())
                 {
                     int int2PxWidth = (int)(2 * g.DpiX / 96.0f);
-                    int int16PxWidth = (int)(16 * g.DpiX / 96.0f);
                     if (_mouseOver)
                     {
                         _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - int2PxWidth;
                         if (fixPos)
+                        {
+                            int int16PxWidth = (int)(16 * g.DpiX / 96.0f);
                             _textbox.Location = new Point(int16PxWidth, _textbox.Location.Y);
+                        }
                     }
                     else
                     {

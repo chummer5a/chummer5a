@@ -971,9 +971,9 @@ namespace Chummer
                     // <qualitykarmalimit />
                     objWriter.WriteElementString("qualitykarmalimit", _intQualityKarmaLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <priorityarray />
-                    objWriter.WriteElementString("priorityarray", _strPriorityArray.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("priorityarray", _strPriorityArray);
                     // <prioritytable />
-                    objWriter.WriteElementString("prioritytable", _strPriorityTable.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("prioritytable", _strPriorityTable);
                     // <sumtoten />
                     objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalSettings.InvariantCultureInfo));
                     // <availability />

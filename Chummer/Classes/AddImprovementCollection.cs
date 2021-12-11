@@ -5972,9 +5972,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string[] options = bonusNode.InnerText.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < options.Length; ++i)
-                options[i] = options[i].Trim();
+            string[] options = bonusNode.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
             string final;
             switch (options.Length)
             {

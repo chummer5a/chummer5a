@@ -15703,8 +15703,8 @@ namespace Chummer
                 }
                 else
                 {
-                    sbdReturn.AppendLine(LanguageManager.GetString("String_Unknown", strLanguage) +
-                                         LanguageManager.GetString("String_Space", strLanguage) + strBook);
+                    sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
+                             .Append(LanguageManager.GetString("String_Space", strLanguage)).AppendLine(strBook);
                 }
             }
 

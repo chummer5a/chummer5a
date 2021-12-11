@@ -99,7 +99,7 @@ namespace Chummer
 
                 string translated = rsTranslated.GetString(item.Key.ToString(), false);
 
-                if (!message.Contains("{"))
+                if (!message.Contains('{'))
                 {
                     result = result.Replace(message, translated);
                 }

@@ -153,12 +153,17 @@ namespace Chummer
             {
                 if (_objImageDpi96 == value)
                     return;
-                Image objOldImage = _objImageDpi96;
-                _objImageDpi96 = value;
                 if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                {
+                    _objImageDpi96 = value;
                     base.Image = value;
+                }
                 else
+                {
+                    Image objOldImage = _objImageDpi96;
+                    _objImageDpi96 = value;
                     UpdateImageIfBetterMatch(value, objOldImage, 1.0f);
+                }
             }
         }
 

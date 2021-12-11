@@ -2610,7 +2610,7 @@ namespace Chummer
                             }
                             else
                             {
-                                if (objCyberware.LimbSlot != string.Empty &&
+                                if (!string.IsNullOrEmpty(objCyberware.LimbSlot) &&
                                     !objCyberware.GetValidLimbSlot(objCyberware.GetNode(GlobalSettings.Language)))
                                 {
                                     objCyberware.DeleteCyberware();
