@@ -5726,7 +5726,7 @@ namespace Chummer
             _intCachedExCon = int.MinValue;
             _intCachedFame = int.MinValue;
             _intCachedFriendsInHighPlaces = int.MinValue;
-            _intCachedInitiationEnabled = -1;
+            _intCachedInitiationEnabled = int.MinValue;
             _intCachedMadeMan = int.MinValue;
             _intCachedMetagenicNegativeQualities = int.MinValue;
             _intCachedMetagenicPositiveQualities = int.MinValue;
@@ -8899,7 +8899,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedAmbidextrous = -1;
+        private int _intCachedAmbidextrous = int.MinValue;
 
         public bool Ambidextrous
         {
@@ -14301,7 +14301,7 @@ namespace Chummer
                                              objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware
                                              && objImprovement.Enabled);
 
-        private int _intCachedInitiationEnabled = -1;
+        private int _intCachedInitiationEnabled = int.MinValue;
 
         /// <summary>
         /// Whether or not the Initiation tab should be shown (override for BP mode).
@@ -14310,12 +14310,12 @@ namespace Chummer
         {
             get
             {
-                if(_intCachedInitiationEnabled == -1)
+                if(_intCachedInitiationEnabled < 0)
                 {
                     _intCachedInitiationEnabled = !InitiationForceDisabled && (MAGEnabled || RESEnabled) ? 1 : 0;
                 }
 
-                return _intCachedInitiationEnabled == 1;
+                return _intCachedInitiationEnabled > 0;
             }
         }
 
@@ -14358,7 +14358,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedDealerConnectionDiscount = -1;
+        private int _intCachedDealerConnectionDiscount = int.MinValue;
 
         /// <summary>
         /// Whether or not Black Market Discount is enabled.
@@ -14402,7 +14402,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedBlackMarketDiscount = -1;
+        private int _intCachedBlackMarketDiscount = int.MinValue;
 
         /// <summary>
         /// Whether or not Black Market Discount is enabled.
@@ -14671,7 +14671,7 @@ namespace Chummer
 
         public bool IsPrototypeTranshuman => PrototypeTranshuman > 0;
 
-        private int _intCachedFriendsInHighPlaces = -1;
+        private int _intCachedFriendsInHighPlaces = int.MinValue;
 
         /// <summary>
         /// Whether or not Friends in High Places is enabled.
@@ -14690,7 +14690,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedExCon = -1;
+        private int _intCachedExCon = int.MinValue;
 
         /// <summary>
         /// Whether or not ExCon is enabled.
@@ -14727,7 +14727,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedRestrictedGear = -1;
+        private int _intCachedRestrictedGear = int.MinValue;
 
         /// <summary>
         /// The maximum availability for Restricted Gear if this character has it. If they do not, this is 0.
@@ -14748,7 +14748,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedOverclocker = -1;
+        private int _intCachedOverclocker = int.MinValue;
 
         /// <summary>
         /// Whether or not Overclocker is enabled.
@@ -14767,7 +14767,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedMadeMan = -1;
+        private int _intCachedMadeMan = int.MinValue;
 
         /// <summary>
         /// Whether or not MadeMan is enabled.
@@ -14786,7 +14786,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedFame = -1;
+        private int _intCachedFame = int.MinValue;
 
         /// <summary>
         /// Whether or not Fame is enabled.
@@ -14803,7 +14803,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedErased = -1;
+        private int _intCachedErased = int.MinValue;
 
         /// <summary>
         /// Whether or not Erased is enabled.
@@ -14820,7 +14820,7 @@ namespace Chummer
             }
         }
 
-        private int _intCachedAllowSpriteFettering = -1;
+        private int _intCachedAllowSpriteFettering = int.MinValue;
 
         /// <summary>
         /// Whether or not the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
@@ -18251,7 +18251,7 @@ namespace Chummer
 
             if(lstNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
             {
-                _intCachedInitiationEnabled = -1;
+                _intCachedInitiationEnabled = int.MinValue;
             }
 
             if(lstNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
