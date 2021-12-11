@@ -225,7 +225,6 @@ namespace Chummer.Backend.Uniques
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

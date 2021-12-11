@@ -380,9 +380,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("parentid", _strParentID);
             objWriter.WriteEndElement();
-
-            if (!IncludedInWeapon)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

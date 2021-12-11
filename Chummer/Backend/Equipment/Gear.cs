@@ -876,9 +876,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
 
             objWriter.WriteEndElement();
-
-            if (!IncludedInParent)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

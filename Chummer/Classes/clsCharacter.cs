@@ -188,7 +188,6 @@ namespace Chummer
         private readonly List<string> _lstPrioritySkills = new List<string>(3);
 
         // Lists.
-        private readonly HashSet<string> _setSources = new HashSet<string>(30);
         private readonly ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
 
         private readonly ObservableCollection<MentorSpirit>
@@ -1748,8 +1747,6 @@ namespace Chummer
                     IndentChar = '\t'
                 })
                 {
-                    _setSources.Clear();
-                    SourceProcess(Source);
                     objWriter.WriteStartDocument();
 
                     // <character>
@@ -5837,18 +5834,7 @@ namespace Chummer
         #endregion
 
         #region Helper Methods
-
-        /// <summary>
-        /// Collate and save the character's used sourcebooks. This list is cleared after loading a character to ensure that only the current items are stored.
-        /// </summary>
-        public void SourceProcess(string strInput)
-        {
-            if(Settings.BookEnabled(strInput))
-            {
-                _setSources.Add(strInput);
-            }
-        }
-
+        
         /// <summary>
         /// Retrieve the name of the Object that created an Improvement.
         /// </summary>

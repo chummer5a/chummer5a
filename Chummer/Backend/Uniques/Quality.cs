@@ -409,15 +409,6 @@ namespace Chummer
             }
 
             objWriter.WriteEndElement();
-
-            if (OriginSource != QualitySource.BuiltIn &&
-                OriginSource != QualitySource.Improvement &&
-                OriginSource != QualitySource.LifeModule &&
-                OriginSource != QualitySource.Metatype &&
-                OriginSource != QualitySource.MetatypeRemovable &&
-                OriginSource != QualitySource.MetatypeRemovedAtChargen &&
-                OriginSource != QualitySource.Heritage)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

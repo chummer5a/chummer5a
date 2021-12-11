@@ -127,7 +127,6 @@ namespace Chummer
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

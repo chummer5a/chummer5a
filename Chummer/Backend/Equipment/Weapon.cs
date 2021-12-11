@@ -740,9 +740,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("weapontype", _strWeaponType);
             objWriter.WriteEndElement();
-
-            if (!IncludedInWeapon)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         private static readonly ReadOnlyCollection<string> s_OldClipValues = Array.AsReadOnly(new[]
