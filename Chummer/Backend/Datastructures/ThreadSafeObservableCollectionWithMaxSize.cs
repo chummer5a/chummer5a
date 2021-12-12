@@ -88,5 +88,17 @@ namespace Chummer
                 }
             }
         }
+
+        /// <inheritdoc />
+        public override bool TryAdd(T item)
+        {
+            using (new EnterUpgradeableReadLock(LockerObject))
+            {
+                if (Count >= _intMaxSize)
+                    return false;
+                Add(item);
+                return true;
+            }
+        }
     }
 }

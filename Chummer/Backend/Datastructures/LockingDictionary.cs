@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -33,7 +34,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         private readonly ReaderWriterLockSlim
@@ -99,7 +100,7 @@ namespace Chummer
                 return _dicData.Contains(item);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICollection" />
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             using (new EnterReadLock(_rwlThis))
@@ -109,6 +110,35 @@ namespace Chummer
                     array[arrayIndex] = kvpItem;
                     ++arrayIndex;
                 }
+            }
+        }
+
+        /// <inheritdoc />
+        public void CopyTo(Array array, int index)
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
+                {
+                    array.SetValue(kvpItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public KeyValuePair<TKey, TValue>[] ToArray()
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[Count];
+                int i = 0;
+                foreach (KeyValuePair<TKey, TValue> kvpLoop in _dicData)
+                {
+                    akvpReturn[i] = kvpLoop;
+                    ++i;
+                }
+                return akvpReturn;
             }
         }
 
@@ -135,6 +165,26 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
+        public bool TryTake(out KeyValuePair<TKey, TValue> item)
+        {
+            using (new EnterUpgradeableReadLock(_rwlThis))
+            {
+                if (Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    TKey objKeyToTake = Keys.First();
+                    if (TryRemove(objKeyToTake, out TValue objValue))
+                    {
+                        item = new KeyValuePair<TKey, TValue>(objKeyToTake, objValue);
+                        return true;
+                    }
+                }
+            }
+            item = default;
+            return false;
+        }
+
         /// <inheritdoc cref="IDictionary" />
         public int Count
         {
@@ -144,6 +194,12 @@ namespace Chummer
                     return _dicData.Count;
             }
         }
+
+        /// <inheritdoc />
+        public object SyncRoot => _rwlThis;
+
+        /// <inheritdoc />
+        public bool IsSynchronized => true;
 
         /// <inheritdoc />
         public bool IsReadOnly => false;
@@ -171,6 +227,12 @@ namespace Chummer
                 _dicData.Add(key, value);
             }
             return true;
+        }
+
+        /// <inheritdoc />
+        public bool TryAdd(KeyValuePair<TKey, TValue> item)
+        {
+            return TryAdd(item.Key, item.Value);
         }
 
         /// <summary>

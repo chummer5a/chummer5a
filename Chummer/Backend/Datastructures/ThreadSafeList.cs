@@ -19,13 +19,14 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IDisposable
+    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IDisposable, IProducerConsumerCollection<T>
     {
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -165,6 +166,31 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
                 base.CopyTo(array, arrayIndex);
+        }
+
+        /// <inheritdoc />
+        public bool TryAdd(T item)
+        {
+            Add(item);
+            return true;
+        }
+
+        /// <inheritdoc />
+        public bool TryTake(out T item)
+        {
+            using (new EnterUpgradeableReadLock(_rwlThis))
+            {
+                if (Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    item = this[0];
+                    RemoveAt(0);
+                    return true;
+                }
+            }
+
+            item = default;
+            return false;
         }
 
         public new bool Exists(Predicate<T> match)

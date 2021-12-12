@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -26,7 +27,7 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : ObservableCollection<T>, IDisposable
+    public class ThreadSafeObservableCollection<T> : ObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>
     {
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -83,6 +84,45 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
                 base.CopyTo(array, arrayIndex);
+        }
+
+        /// <inheritdoc />
+        public virtual bool TryAdd(T item)
+        {
+            Add(item);
+            return true;
+        }
+
+        /// <inheritdoc />
+        public bool TryTake(out T item)
+        {
+            using (new EnterUpgradeableReadLock(_rwlThis))
+            {
+                if (Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    item = this[0];
+                    RemoveAt(0);
+                    return true;
+                }
+            }
+
+            item = default;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public T[] ToArray()
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                T[] aobjReturn = new T[Count];
+                for (int i = 0; i < Count; ++i)
+                {
+                    aobjReturn[i] = this[i];
+                }
+                return aobjReturn;
+            }
         }
 
         public new IEnumerator<T> GetEnumerator()
