@@ -149,10 +149,11 @@ namespace Chummer
         private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Re-generate the output when a new sheet is selected.
-            if (_blnLoading)
-                return;
-            _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
-            await RefreshSheet();
+            if (!_blnLoading)
+            {
+                _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                await RefreshSheet();
+            }
         }
 
         private void cmdPrint_Click(object sender, EventArgs e)
@@ -361,39 +362,54 @@ namespace Chummer
             {
                 // Swallow this
             }
-            if (_blnLoading)
-                return;
-            _blnLoading = true;
-            string strOldSelected = _strSelectedSheet;
-            // Strip away the language prefix
-            if (strOldSelected.Contains(Path.DirectorySeparatorChar))
-                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-            PopulateXsltList();
-            string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
-            if (strNewLanguage == strOldSelected)
+
+            if (!_blnLoading)
             {
-                _strSelectedSheet = strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? strOldSelected : Path.Combine(strNewLanguage, strOldSelected);
-            }
-            cboXSLT.SelectedValue = _strSelectedSheet;
-            // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-            if (cboXSLT.SelectedIndex == -1)
-            {
-                var intNameIndex = cboXSLT.FindStringExact(strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? GlobalSettings.DefaultCharacterSheet : GlobalSettings.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
-                if (intNameIndex != -1)
-                    cboXSLT.SelectedIndex = intNameIndex;
-                else if (cboXSLT.Items.Count > 0)
+                _blnLoading = true;
+                string strOldSelected = _strSelectedSheet;
+                // Strip away the language prefix
+                if (strOldSelected.Contains(Path.DirectorySeparatorChar))
+                    strOldSelected
+                        = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                PopulateXsltList();
+                string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
+                if (strNewLanguage == strOldSelected)
                 {
-                    _strSelectedSheet = strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? GlobalSettings.DefaultCharacterSheetDefaultValue : Path.Combine(strNewLanguage, GlobalSettings.DefaultCharacterSheetDefaultValue);
-                    cboXSLT.SelectedValue = _strSelectedSheet;
-                    if (cboXSLT.SelectedIndex == -1)
+                    _strSelectedSheet
+                        = strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                            ? strOldSelected
+                            : Path.Combine(strNewLanguage, strOldSelected);
+                }
+
+                cboXSLT.SelectedValue = _strSelectedSheet;
+                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+                if (cboXSLT.SelectedIndex == -1)
+                {
+                    var intNameIndex = cboXSLT.FindStringExact(
+                        strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                            ? GlobalSettings.DefaultCharacterSheet
+                            : GlobalSettings.DefaultCharacterSheet.Substring(
+                                strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                    if (intNameIndex != -1)
+                        cboXSLT.SelectedIndex = intNameIndex;
+                    else if (cboXSLT.Items.Count > 0)
                     {
-                        cboXSLT.SelectedIndex = 0;
-                        _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
+                        _strSelectedSheet
+                            = strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                                ? GlobalSettings.DefaultCharacterSheetDefaultValue
+                                : Path.Combine(strNewLanguage, GlobalSettings.DefaultCharacterSheetDefaultValue);
+                        cboXSLT.SelectedValue = _strSelectedSheet;
+                        if (cboXSLT.SelectedIndex == -1)
+                        {
+                            cboXSLT.SelectedIndex = 0;
+                            _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
+                        }
                     }
                 }
+
+                _blnLoading = false;
+                await RefreshCharacters();
             }
-            _blnLoading = false;
-            await RefreshCharacters();
         }
 
         private async void frmViewer_CursorChanged(object sender, EventArgs e)
@@ -427,15 +443,17 @@ namespace Chummer
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
-        private Task SetDocumentText(string strText)
+        private async Task SetDocumentText(string strText)
         {
-            return webViewer.DoThreadSafeFuncAsync(() => webViewer.Height)
-                .ContinueWith(x =>
-                    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
-                    x.Result.ToString(GlobalSettings.InvariantCultureInfo) +
-                    ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
-                    strText.CleanForHtml() + "</body></html>", CancellationToken.None)
-                .ContinueWith(x => webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = x.Result), CancellationToken.None);
+            int intHeight = await webViewer.DoThreadSafeFuncAsync(() => webViewer.Height);
+            string strDocumentText
+                = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:"
+                  +
+                  intHeight.ToString(GlobalSettings.InvariantCultureInfo) +
+                  ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">"
+                  +
+                  strText.CleanForHtml() + "</body></html>";
+            await webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = strDocumentText);
         }
 
         /// <summary>

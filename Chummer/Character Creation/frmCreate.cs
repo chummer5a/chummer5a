@@ -13012,8 +13012,7 @@ namespace Chummer
                 // Remove all Restricted Gear availabilities with non-positive counts
                 foreach (int intLoopAvailability in dicRestrictedGearLimits.Keys.ToList())
                 {
-                    if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intLoopCount)
-                        && intLoopCount <= 0)
+                    if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intLoopCount) && intLoopCount <= 0)
                         dicRestrictedGearLimits.Remove(intLoopAvailability);
                 }
 

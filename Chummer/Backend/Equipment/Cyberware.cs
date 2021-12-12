@@ -1163,30 +1163,31 @@ namespace Chummer.Backend.Equipment
             // Check to see if there are any child elements.
             if (objParentNode["gears"] != null)
             {
-                XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
-
-                XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
-                if (objXmlGearList?.Count > 0)
+                using (XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear"))
                 {
-                    List<Weapon> lstChildWeapons = new List<Weapon>(1);
-                    foreach (XmlNode objXmlVehicleGear in objXmlGearList)
+                    if (objXmlGearList?.Count > 0)
                     {
-                        Gear objGear = new Gear(_objCharacter);
-                        if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
-                            blnCreateImprovements))
-                            continue;
-                        foreach (Weapon objWeapon in lstChildWeapons)
+                        XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
+                        List<Weapon> lstChildWeapons = new List<Weapon>(1);
+                        foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                         {
-                            objWeapon.ParentID = InternalId;
+                            Gear objGear = new Gear(_objCharacter);
+                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
+                                                        blnCreateImprovements))
+                                continue;
+                            foreach (Weapon objWeapon in lstChildWeapons)
+                            {
+                                objWeapon.ParentID = InternalId;
+                            }
+
+                            objGear.Parent = this;
+                            objGear.ParentID = InternalId;
+                            GearChildren.Add(objGear);
+                            lstChildWeapons.AddRange(lstWeapons);
                         }
 
-                        objGear.Parent = this;
-                        objGear.ParentID = InternalId;
-                        GearChildren.Add(objGear);
-                        lstChildWeapons.AddRange(lstWeapons);
+                        lstWeapons.AddRange(lstChildWeapons);
                     }
-
-                    lstWeapons.AddRange(lstChildWeapons);
                 }
             }
         }
@@ -4847,11 +4848,12 @@ namespace Chummer.Backend.Equipment
         {
             if (xmlCyberwareImportNode == null)
                 return false;
-            bool blnCyberware = true;
-            string strGradeName = objSelectedGrade?.Name ?? "Standard";
             string strOriginalName = xmlCyberwareImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
+
+                string strGradeName = objSelectedGrade?.Name ?? "Standard";
+                bool blnCyberware = true;
                 Lazy<List<Grade>> objCyberwareGradeList = new Lazy<List<Grade>>(() =>
                     _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware).ToList());
                 Lazy<List<Grade>> objBiowareGradeList = new Lazy<List<Grade>>(() =>

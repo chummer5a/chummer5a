@@ -148,24 +148,28 @@ namespace Chummer
 
         private async Task PopulateChangelog()
         {
-            if (_blnFormClosing)
-                return;
-            if (!_clientDownloader.IsBusy)
-                await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
-            if (_blnIsConnected)
+            if (!_blnFormClosing)
             {
-                if (SilentMode && !_blnSilentModeUpdateWasDenied)
+                if (!_clientDownloader.IsBusy)
+                    await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
+                if (_blnIsConnected)
                 {
-                    await DownloadUpdates();
+                    if (SilentMode && !_blnSilentModeUpdateWasDenied)
+                    {
+                        await DownloadUpdates();
+                    }
+
+                    if (File.Exists(_strTempUpdatePath))
+                    {
+                        string strUpdateLog = File.ReadAllText(_strTempUpdatePath).CleanForHtml();
+                        await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText
+                                                             = "<font size=\"-1\" face=\"Courier New,Serif\">"
+                                                               + strUpdateLog + "</font>");
+                    }
                 }
-                if (File.Exists(_strTempUpdatePath))
-                {
-                    string strUpdateLog = File.ReadAllText(_strTempUpdatePath).CleanForHtml();
-                    await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">"
-                        + strUpdateLog + "</font>");
-                }
+
+                await this.DoThreadSafeAsync(DoVersionTextUpdate);
             }
-            await this.DoThreadSafeAsync(DoVersionTextUpdate);
         }
 
         private async Task LoadConnection()
@@ -722,29 +726,35 @@ namespace Chummer
 
         private async Task DownloadUpdates()
         {
-            if (!Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
-                return;
-            Log.Debug("DownloadUpdates");
-            await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
-                cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
-                cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
-            Utils.SafeDeleteFile(_strTempPath, !SilentMode);
-            try
+            if (Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
             {
-                await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempPath);
-            }
-            catch (WebException ex)
-            {
-                string strException = ex.ToString();
-                int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
-                if (intNewLineLocation == -1)
-                    intNewLineLocation = strException.IndexOf('\n');
-                if (intNewLineLocation != -1)
-                    strException = strException.Substring(0, intNewLineLocation);
-                // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
-                if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Warning_Update_CouldNotConnectException"), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
+                Log.Debug("DownloadUpdates");
+                await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
+                                   cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
+                                   cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
+                Utils.SafeDeleteFile(_strTempPath, !SilentMode);
+                try
+                {
+                    await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempPath);
+                }
+                catch (WebException ex)
+                {
+                    string strException = ex.ToString();
+                    int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+                    if (intNewLineLocation == -1)
+                        intNewLineLocation = strException.IndexOf('\n');
+                    if (intNewLineLocation != -1)
+                        strException = strException.Substring(0, intNewLineLocation);
+                    // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
+                    if (!SilentMode)
+                        Program.MainForm.ShowMessageBox(
+                            this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                          LanguageManager.GetString("Warning_Update_CouldNotConnectException"),
+                                          strException), Application.ProductName, MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
+                }
             }
         }
 

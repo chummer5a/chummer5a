@@ -415,8 +415,7 @@ namespace Chummer
             // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
             for (int i = strInput.IndexOfAny(s_CurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(s_CurlyBrackets, i + 1))
             {
-                char chrLoop = strInput[i];
-                switch (chrLoop)
+                switch (strInput[i])
                 {
                     case '{':
                         {
@@ -458,26 +457,25 @@ namespace Chummer
             foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
             {
                 string strLoop = objLoop.Item1;
-                if (!string.IsNullOrEmpty(strLoop))
+                if (string.IsNullOrEmpty(strLoop))
+                    continue;
+                // Items inside curly brackets need of processing, so do processing on them and append the result to the return value
+                if (objLoop.Item2)
                 {
-                    // Items inside curly brackets need of processing, so do processing on them and append the result to the return value
-                    if (objLoop.Item2)
+                    // Inner string is a compound string in and of itself, so recurse this method
+                    if (strLoop.IndexOfAny('{', '}') != -1)
                     {
-                        // Inner string is a compound string in and of itself, so recurse this method
-                        if (strLoop.IndexOfAny('{', '}') != -1)
-                        {
-                            strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter, blnUseTranslateExtra);
-                        }
-                        // Use more expensive TranslateExtra if flag is set to use that
-                        sbdReturn.Append(blnUseTranslateExtra
-                            ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
-                            : GetString(strLoop, strLanguage, false));
+                        strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter, blnUseTranslateExtra);
                     }
-                    // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
-                    else
-                    {
-                        sbdReturn.Append(strLoop);
-                    }
+                    // Use more expensive TranslateExtra if flag is set to use that
+                    sbdReturn.Append(blnUseTranslateExtra
+                                         ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
+                                         : GetString(strLoop, strLanguage, false));
+                }
+                // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
+                else
+                {
+                    sbdReturn.Append(strLoop);
                 }
             }
 
@@ -827,7 +825,6 @@ namespace Chummer
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
                         CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
                         CancellationToken objCancellationToken = objCancellationTokenSource.Token;
-                        object strReturnLock = new object();
                         if (!string.IsNullOrEmpty(strPreferFile))
                         {
                             try
@@ -845,8 +842,9 @@ namespace Chummer
                                                                  objXPathPair.Item1,
                                                                  objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
                                                                  strIntoLanguage);
-                                                             foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                                 objXPathPair.Item2))
+                                                             foreach (XPathNavigator objNode in xmlDocument
+                                                                          .SelectAndCacheExpression(
+                                                                              objXPathPair.Item2))
                                                              {
                                                                  if (objCancellationToken.IsCancellationRequested ||
                                                                      objState.ShouldExitCurrentIteration)
@@ -856,11 +854,13 @@ namespace Chummer
                                                                  string strTranslate = objXPathPair.Item4(objNode);
                                                                  if (string.IsNullOrEmpty(strTranslate))
                                                                      continue;
+                                                                 if (objCancellationToken.IsCancellationRequested ||
+                                                                     objState.ShouldExitCurrentIteration)
+                                                                     return;
                                                                  objState.Break();
                                                                  objCancellationTokenSource.Cancel(false);
-                                                                 lock (strReturnLock)
-                                                                     strReturn = strTranslate;
-                                                                 break;
+                                                                 strReturn = strTranslate;
+                                                                 return;
                                                              }
                                                          });
                                         if (objCancellationToken.IsCancellationRequested)
@@ -889,7 +889,8 @@ namespace Chummer
                                                 objXPathPair.Item1,
                                                 objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
                                                 strIntoLanguage);
-                                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(objXPathPair.Item2))
+                                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                                         objXPathPair.Item2))
                                             {
                                                 if (objCancellationToken.IsCancellationRequested ||
                                                     objState.ShouldExitCurrentIteration)
@@ -899,11 +900,13 @@ namespace Chummer
                                                 string strTranslate = objXPathPair.Item4(objNode);
                                                 if (string.IsNullOrEmpty(strTranslate))
                                                     continue;
+                                                if (objCancellationToken.IsCancellationRequested ||
+                                                    objState.ShouldExitCurrentIteration)
+                                                    return;
                                                 objState.Break();
                                                 objCancellationTokenSource.Cancel(false);
-                                                lock (strReturnLock)
-                                                    strReturn = strTranslate;
-                                                break;
+                                                strReturn = strTranslate;
+                                                return;
                                             }
                                         });
                                         if (objCancellationToken.IsCancellationRequested)
@@ -1011,7 +1014,6 @@ namespace Chummer
             string strExtraNoQuotes = strReturn.FastEscape('\"');
             CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objCancellationToken = objCancellationTokenSource.Token;
-            object strReturnLock = new object();
             if (!string.IsNullOrEmpty(strPreferFile))
             {
                 try
@@ -1029,8 +1031,9 @@ namespace Chummer
                                                  XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
                                                      objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
                                                      strFromLanguage);
-                                                 foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                     objXPathPair.Item2))
+                                                 foreach (XPathNavigator objNode in
+                                                          xmlDocument.SelectAndCacheExpression(
+                                                              objXPathPair.Item2))
                                                  {
                                                      if (objCancellationToken.IsCancellationRequested ||
                                                          objState.ShouldExitCurrentIteration)
@@ -1040,11 +1043,13 @@ namespace Chummer
                                                      string strOriginal = objXPathPair.Item3(objNode);
                                                      if (string.IsNullOrEmpty(strOriginal))
                                                          continue;
+                                                     if (objCancellationToken.IsCancellationRequested ||
+                                                         objState.ShouldExitCurrentIteration)
+                                                         return;
                                                      objState.Break();
                                                      objCancellationTokenSource.Cancel(false);
-                                                     lock (strReturnLock)
-                                                         strReturn = strOriginal;
-                                                     break;
+                                                     strReturn = strOriginal;
+                                                     return;
                                                  }
                                              });
                             if (objCancellationToken.IsCancellationRequested)
@@ -1073,7 +1078,8 @@ namespace Chummer
                             {
                                 XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
                                     objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strFromLanguage);
-                                foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(objXPathPair.Item2))
+                                foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                             objXPathPair.Item2))
                                 {
                                     if (objCancellationToken.IsCancellationRequested ||
                                         objState.ShouldExitCurrentIteration)
@@ -1083,11 +1089,13 @@ namespace Chummer
                                     string strOriginal = objXPathPair.Item3(objNode);
                                     if (string.IsNullOrEmpty(strOriginal))
                                         continue;
+                                    if (objCancellationToken.IsCancellationRequested ||
+                                        objState.ShouldExitCurrentIteration)
+                                        return;
                                     objState.Break();
                                     objCancellationTokenSource.Cancel(false);
-                                    lock (strReturnLock)
-                                        strReturn = strOriginal;
-                                    break;
+                                    strReturn = strOriginal;
+                                    return;
                                 }
                             });
                             if (objCancellationToken.IsCancellationRequested)

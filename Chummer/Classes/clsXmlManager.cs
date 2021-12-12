@@ -817,7 +817,7 @@ namespace Chummer
                                     if (objParentNode.Attributes?.Count > 0)
                                     {
                                         StringBuilder sbdParentNodeFilter = new StringBuilder();
-                                        
+
                                         foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
                                         {
                                             sbdParentNodeFilter.Append('@').Append(objLoopAttribute.Name).Append(" = ")

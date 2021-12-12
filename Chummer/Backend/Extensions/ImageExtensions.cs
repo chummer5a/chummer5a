@@ -58,13 +58,16 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = -1)
+        public static Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = -1)
         {
-            if (string.IsNullOrEmpty(strBase64String))
-                return string.Empty;
-            using (Image imgTemp = await strBase64String.ToImageAsync())
+            return string.IsNullOrEmpty(strBase64String) ? new Task<string>(() => string.Empty) : GetImage();
+            // Split into a private method for performance reasons
+            async Task<string> GetImage()
             {
-                return imgTemp == null ? strBase64String : await imgTemp.ToBase64StringAsJpegAsync(intQuality);
+                using (Image imgTemp = await strBase64String.ToImageAsync())
+                {
+                    return imgTemp == null ? strBase64String : await imgTemp.ToBase64StringAsJpegAsync(intQuality);
+                }
             }
         }
 
@@ -122,10 +125,10 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = -1)
+        public static Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return null;
+                return new Task<Image>(() => null);
             int intImageWidth = imgToConvert.Width;
             int intImageHeight = imgToConvert.Height;
             if (blnKeepAspectRatio)
@@ -144,14 +147,20 @@ namespace Chummer
                 }
             }
 
-            if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
-            {
-                return await imgToConvert.GetCompressedImageAsync(intQuality);
-            }
+            return GetImage();
 
-            using (Image objThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
+            // Split into a private method for performance reasons
+            async Task<Image> GetImage()
             {
-                return await objThumbnail.GetCompressedImageAsync(intQuality);
+                if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
+                {
+                    return await imgToConvert.GetCompressedImageAsync(intQuality);
+                }
+
+                using (Image objThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
+                {
+                    return await objThumbnail.GetCompressedImageAsync(intQuality);
+                }
             }
         }
 

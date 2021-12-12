@@ -201,8 +201,6 @@ namespace Chummer
                     // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
                     _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Heritage);
 
-                    int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
-
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                     if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
                         strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? "None";
@@ -236,6 +234,7 @@ namespace Chummer
                                 }
                             }
                         }
+                        int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
                         _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant,
                             objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
                             _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);

@@ -4510,9 +4510,9 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.Skill:
                         {
                             Skill objSkill = Skill;
-                            string strExtra = sbdExtra.ToString();
                             if (objSkill != null)
                             {
+                                string strExtra = sbdExtra.ToString();
                                 // If the character has a Specialization, include it in the Dice Pool string.
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                                 {

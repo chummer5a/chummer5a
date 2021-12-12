@@ -100,8 +100,8 @@ namespace Chummer
                         if (!int.TryParse(xmlStory.SelectSingleNodeAndCacheExpression("weight")?.Value ?? "1", out int intWeight))
                             intWeight = 1;
                         intTotalWeight += intWeight;
-                        if (dicStoriesListWithWeights.ContainsKey(strStoryId))
-                            dicStoriesListWithWeights[strStoryId] += intWeight;
+                        if (dicStoriesListWithWeights.TryGetValue(strStoryId, out int intExistingWeight))
+                            dicStoriesListWithWeights[strStoryId] = intExistingWeight + intWeight;
                         else
                             dicStoriesListWithWeights.Add(strStoryId, intWeight);
                     }

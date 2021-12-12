@@ -492,8 +492,8 @@ namespace Chummer.Backend.Equipment
                 _dicCachedLimits.Clear();
                 foreach (KeyValuePair<string, int> kvpLimit in Components.Where(d => d.ActiveDrugEffect?.Limits.Count > 0).SelectMany(d => d.ActiveDrugEffect.Limits))
                 {
-                    if (_dicCachedLimits.ContainsKey(kvpLimit.Key))
-                        _dicCachedLimits[kvpLimit.Key] += kvpLimit.Value;
+                    if (_dicCachedLimits.TryGetValue(kvpLimit.Key, out int intExistingValue))
+                        _dicCachedLimits[kvpLimit.Key] = intExistingValue + kvpLimit.Value;
                     else
                         _dicCachedLimits.Add(kvpLimit.Key, kvpLimit.Value);
                 }
@@ -710,8 +710,8 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (KeyValuePair<string, decimal> objAttributeEntry in objDrugEffect.Attributes)
                             {
-                                if (_dicCachedAttributes.ContainsKey(objAttributeEntry.Key))
-                                    _dicCachedAttributes[objAttributeEntry.Key] += objAttributeEntry.Value;
+                                if (_dicCachedAttributes.TryGetValue(objAttributeEntry.Key, out decimal decExistingValue))
+                                    _dicCachedAttributes[objAttributeEntry.Key] = decExistingValue + objAttributeEntry.Value;
                                 else
                                     _dicCachedAttributes.Add(objAttributeEntry.Key, objAttributeEntry.Value);
                             }
@@ -891,7 +891,7 @@ namespace Chummer.Backend.Equipment
                                   .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture))
                                   .Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpace)
                                   .Append((Cost * (intLevel + 1)).ToString(
-                                              _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine("¥")
+                                              _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine('¥')
                                   .Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpace)
                                   .AppendLine(TotalAvail(objCulture, strLanguage));
                 }
@@ -904,7 +904,7 @@ namespace Chummer.Backend.Equipment
                               .Append(strSpace).AppendLine(0.ToString(objCulture))
                               .Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpace)
                               .Append((Cost * (intLevel + 1)).ToString(_objCharacter.Settings.NuyenFormat, objCulture))
-                              .AppendLine("¥")
+                              .AppendLine('¥')
                               .Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpace)
                               .AppendLine(TotalAvail(objCulture, strLanguage));
             }
@@ -1635,7 +1635,7 @@ namespace Chummer.Backend.Equipment
                 sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpace)
                               .Append((CostPerLevel * (intLevel + 1)).ToString(
                                           _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
-                              .AppendLine("¥");
+                              .AppendLine('¥');
                 sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpace).AppendLine(DisplayTotalAvail);
             }
             else

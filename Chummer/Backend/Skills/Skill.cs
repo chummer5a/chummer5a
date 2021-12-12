@@ -144,7 +144,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillcategory", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
-            objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("grouped", (SkillGroupObject?.CareerIncrease == true && SkillGroupObject.Rating > 0).ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("default", Default.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("requiresgroundmovement", RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("requiresswimmovement", RequiresSwimMovement.ToString(GlobalSettings.InvariantCultureInfo));
@@ -195,7 +195,6 @@ namespace Chummer.Backend.Skills
             {
                 return null;
             }
-            XmlDocument xmlSkills = objCharacter.LoadData("skills.xml");
             Skill objLoadingSkill = null;
             bool blnIsKnowledgeSkill = false;
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
@@ -211,6 +210,7 @@ namespace Chummer.Backend.Skills
             }
             else if (suid != Guid.Empty)
             {
+                XmlDocument xmlSkills = objCharacter.LoadData("skills.xml");
                 XmlNode xmlSkillDataNode = xmlSkills.SelectSingleNode("/chummer/skills/skill[id = '" + xmlSkillNode["suid"]?.InnerText + "']");
 
                 if (xmlSkillDataNode == null)
@@ -1617,14 +1617,14 @@ namespace Chummer.Backend.Skills
             {
                 int intDefaultModifier = DefaultModifier;
                 if (intDefaultModifier == 0)
-                    s.Append(strSpace + CharacterObject.GetObjectName(
-                                 CharacterObject.Improvements.FirstOrDefault(x =>
-                                                                                 x.ImproveType
-                                                                                 == Improvement.ImprovementType
-                                                                                     .ReflexRecorderOptimization
-                                                                                 && x.Enabled)));
+                    s.Append(strSpace).Append(CharacterObject.GetObjectName(
+                                                  CharacterObject.Improvements.FirstOrDefault(x =>
+                                                      x.ImproveType
+                                                      == Improvement.ImprovementType
+                                                                    .ReflexRecorderOptimization
+                                                      && x.Enabled)));
                 else
-                    s.Append(strSpace).Append((intDefaultModifier > 0 ? '+' : '-')).Append(strSpace)
+                    s.Append(strSpace).Append(intDefaultModifier > 0 ? '+' : '-').Append(strSpace)
                      .Append(LanguageManager.GetString("Tip_Skill_Defaulting")).Append(strSpace).Append('(')
                      .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo)).Append(')');
             }
@@ -1638,7 +1638,7 @@ namespace Chummer.Backend.Skills
                 s.Append(strSpace).Append('+').Append(strSpace).Append(CharacterObject.GetObjectName(source));
                 if (!string.IsNullOrEmpty(source.Condition))
                 {
-                    s.Append(strSpace).Append('(').Append(source.Condition.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    s.Append(strSpace).Append('(').Append(source.Condition).Append(')');
                 }
                 s.Append(strSpace).Append('(').Append(source.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
             }

@@ -425,39 +425,43 @@ namespace Chummer
 
         private async void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (CharacterRoster == null)
-                return;
-            switch (e.Action)
+            if (CharacterRoster != null)
             {
-                case NotifyCollectionChangedAction.Add:
-                    CharacterRoster.RefreshNodeTexts();
-                    break;
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        CharacterRoster.RefreshNodeTexts();
+                        break;
 
-                case NotifyCollectionChangedAction.Move:
-                case NotifyCollectionChangedAction.Remove:
+                    case NotifyCollectionChangedAction.Move:
+                    case NotifyCollectionChangedAction.Remove:
                     {
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
                         await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>().Any(objClosedForm =>
-                            GlobalSettings.FavoriteCharacters.Contains(objClosedForm.CharacterObject.FileName))
-                            ? "stickymru"
-                            : "mru");
+                                                                  GlobalSettings.FavoriteCharacters.Contains(
+                                                                      objClosedForm.CharacterObject.FileName))
+                                                                  ? "stickymru"
+                                                                  : "mru");
                     }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Replace:
                     {
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
                         await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>()
-                            .Concat(e.NewItems.Cast<CharacterShared>()).Any(objClosedForm =>
-                                GlobalSettings.FavoriteCharacters.Contains(objClosedForm.CharacterObject.FileName))
-                            ? "stickymru"
-                            : "mru");
+                                                               .Concat(e.NewItems.Cast<CharacterShared>()).Any(
+                                                                   objClosedForm =>
+                                                                       GlobalSettings.FavoriteCharacters.Contains(
+                                                                           objClosedForm.CharacterObject.FileName))
+                                                                  ? "stickymru"
+                                                                  : "mru");
                     }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Reset:
-                    await CharacterRoster.RefreshMruLists(string.Empty);
-                    break;
+                    case NotifyCollectionChangedAction.Reset:
+                        await CharacterRoster.RefreshMruLists(string.Empty);
+                        break;
+                }
             }
         }
 

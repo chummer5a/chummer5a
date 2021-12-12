@@ -401,11 +401,10 @@ namespace Chummer.Backend.Equipment
             // Add any Armor Mods that come with the Armor.
             if (objXmlArmorNode["mods"] != null && blnCreateChildren)
             {
-                XmlDocument objXmlArmorDocument = _objCharacter.LoadData("armor.xml");
-
                 XmlNodeList xmlArmorList = objXmlArmorNode.SelectNodes("mods/name");
                 if (xmlArmorList != null)
                 {
+                    XmlDocument objXmlArmorDocument = _objCharacter.LoadData("armor.xml");
                     foreach (XmlNode objXmlArmorMod in xmlArmorList)
                     {
                         XmlAttributeCollection objXmlAttributes = objXmlArmorMod.Attributes;
