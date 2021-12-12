@@ -295,7 +295,7 @@ namespace Chummer
             // Update the list of Mods based on the selected Category.
             int intOverLimit = 0;
             XPathNavigator objXmlVehicleNode = _objVehicle.GetNode()?.CreateNavigator();
-            List<ListItem> lstMods = new List<ListItem>();
+            List<ListItem> lstMods = new List<ListItem>(objXmlModList.Count);
             foreach (XPathNavigator objXmlMod in objXmlModList)
             {
                 XPathNavigator xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails");

@@ -536,9 +536,10 @@ namespace Chummer
 
                 foreach (XmlNode xmlLoopNode in xmlChildNodeList)
                 {
-                    string strId = xmlLoopNode["id"]?.InnerText.ToUpperInvariant();
+                    string strId = xmlLoopNode["id"]?.InnerText;
                     if (!string.IsNullOrEmpty(strId))
                     {
+                        strId = strId.ToUpperInvariant();
                         if (xmlLoopNode.Name == "knowledgeskilllevel")
                             continue; //TODO: knowledgeskilllevel node in lifemodules.xml uses ids instead of name references. Find a better way to manage this!
                         string strItemName = xmlLoopNode["name"]?.InnerText

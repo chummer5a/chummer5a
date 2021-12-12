@@ -363,7 +363,7 @@ namespace Codaxy.WkHtmlToPdf
 
                 if (woutput.OutputStream != null)
                 {
-                    using (Stream fs = new FileStream(outputPdfFilePath, FileMode.Open))
+                    using (FileStream fs = new FileStream(outputPdfFilePath, FileMode.Open))
                     {
                         byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
                         int read;

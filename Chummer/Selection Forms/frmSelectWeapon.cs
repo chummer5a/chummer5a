@@ -359,7 +359,7 @@ namespace Chummer
             else
             {
                 int intOverLimit = 0;
-                List<ListItem> lstWeapons = new List<ListItem>();
+                List<ListItem> lstWeapons = new List<ListItem>(objNodeList.Count);
                 XmlNode xmlParentWeaponDataNode = ParentWeapon != null ? _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + ParentWeapon.SourceIDString.CleanXPath() + "]") : null;
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {

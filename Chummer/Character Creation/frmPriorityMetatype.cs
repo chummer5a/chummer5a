@@ -1423,8 +1423,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
                     }
-                    if (dicQualities.ContainsKey(strQuality))
-                        ++dicQualities[strQuality];
+                    if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
+                        dicQualities[strQuality] = intExistingRating + 1;
                     else
                         dicQualities.Add(strQuality, 1);
                 }
@@ -1490,8 +1490,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
                     }
-                    if (dicQualities.ContainsKey(strQuality))
-                        ++dicQualities[strQuality];
+                    if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
+                        dicQualities[strQuality] = intExistingRating + 1;
                     else
                         dicQualities.Add(strQuality, 1);
                 }

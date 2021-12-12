@@ -59,7 +59,8 @@ namespace Chummer
             lstCollection.RaiseListChangedEvents = false;
             for (int i = 0; i < aobjSorted.Length; ++i)
             {
-                int intOldIndex = lstCollection.IndexOf(aobjSorted[i]);
+                T objLoop = aobjSorted[i];
+                int intOldIndex = lstCollection.IndexOf(objLoop);
                 int intNewIndex = index + i;
                 if (intOldIndex == intNewIndex)
                     continue;
@@ -84,7 +85,7 @@ namespace Chummer
                     }
                 }
                 lstCollection.RemoveAt(intOldIndex);
-                lstCollection.Insert(intNewIndex, aobjSorted[i]);
+                lstCollection.Insert(intNewIndex, objLoop);
             }
             lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
             if (!blnOldRaiseListChangedEvents)
@@ -124,7 +125,8 @@ namespace Chummer
             lstCollection.RaiseListChangedEvents = false;
             for (int i = 0; i < aobjSorted.Length; ++i)
             {
-                int intOldIndex = lstCollection.IndexOf(aobjSorted[i]);
+                T objLoop = aobjSorted[i];
+                int intOldIndex = lstCollection.IndexOf(objLoop);
                 int intNewIndex = i;
                 if (intOldIndex == intNewIndex)
                     continue;
@@ -149,7 +151,7 @@ namespace Chummer
                     }
                 }
                 lstCollection.RemoveAt(intOldIndex);
-                lstCollection.Insert(intNewIndex, aobjSorted[i]);
+                lstCollection.Insert(intNewIndex, objLoop);
             }
             lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
             if (!blnOldRaiseListChangedEvents)
@@ -190,7 +192,8 @@ namespace Chummer
             lstCollection.RaiseListChangedEvents = false;
             for (int i = 0; i < aobjSorted.Length; ++i)
             {
-                int intOldIndex = lstCollection.IndexOf(aobjSorted[i]);
+                T objLoop = aobjSorted[i];
+                int intOldIndex = lstCollection.IndexOf(objLoop);
                 int intNewIndex = i;
                 if (intOldIndex == intNewIndex)
                     continue;
@@ -215,7 +218,7 @@ namespace Chummer
                     }
                 }
                 lstCollection.RemoveAt(intOldIndex);
-                lstCollection.Insert(intNewIndex, aobjSorted[i]);
+                lstCollection.Insert(intNewIndex, objLoop);
             }
             lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
             if (!blnOldRaiseListChangedEvents)

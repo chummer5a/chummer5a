@@ -21,7 +21,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NLog;
@@ -190,15 +189,15 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1)
+        public static Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return null;
+                return new Task<Image>(() => null);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
                 using (Bitmap bmpClone = new Bitmap(imgToConvert))
@@ -383,11 +382,11 @@ namespace Chummer
         /// <param name="eOverrideFormat">The image format in which the image should be saved. If null, will use <paramref name="imgToConvert"/>'s RawFormat.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null)
+        public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null)
         {
             if (imgToConvert == null)
-                return string.Empty;
-            return await Task.Run(() =>
+                return new Task<string>(() => string.Empty);
+            return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
                 using (Bitmap bmpClone = new Bitmap(imgToConvert))
@@ -420,11 +419,11 @@ namespace Chummer
         /// <param name="lstEncoderParameters">List of parameters for <paramref name="objCodecInfo"/>.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
+        public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
         {
             if (imgToConvert == null)
-                return string.Empty;
-            return await Task.Run(() =>
+                return new Task<string>(() => string.Empty);
+            return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
                 using (Bitmap bmpClone = new Bitmap(imgToConvert))
@@ -463,15 +462,15 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1)
+        public static Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return string.Empty;
+                return new Task<string>(() => string.Empty);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
-            return await imgToConvert.ToBase64StringAsync(s_LzyJpegEncoder.Value, lstJpegParameters);
+            return imgToConvert.ToBase64StringAsync(s_LzyJpegEncoder.Value, lstJpegParameters);
         }
 
         /// <summary>

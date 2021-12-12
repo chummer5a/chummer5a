@@ -972,7 +972,7 @@ namespace Chummer
             if (_blnLoading && blnDoUIUpdate)
                 return new List<ListItem>();
 
-            List<ListItem> lstCyberwares = new List<ListItem>();
+            List<ListItem> lstCyberwares = new List<ListItem>(objXmlCyberwareList?.Count ?? 1);
 
             bool blnCyberwareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableCyberware && x.Enabled);
             bool blnBiowareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
@@ -1359,7 +1359,7 @@ namespace Chummer
             {
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.SelectAndCacheExpression("categories/category");
             }
-            List<ListItem> lstCategory = new List<ListItem>();
+            List<ListItem> lstCategory = new List<ListItem>(objXmlCategoryList.Count);
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 // Make sure the category contains items that we can actually display

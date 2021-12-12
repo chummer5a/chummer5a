@@ -230,7 +230,7 @@ namespace Chummer
                         txtAlias.DoDataBinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDataBinding("Text", CharacterObject, nameof(Character.PlayerName));
 
-                        chkJoinGroup.Checked = CharacterObject?.GroupMember ?? false;
+                        chkJoinGroup.Checked = CharacterObject.GroupMember;
                         chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
                         // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -1644,8 +1644,10 @@ namespace Chummer
                                         DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                     Cyberware objParent = objCyberware.Parent;
-                                    if (objParent != null) objParent.Children.Remove(objCyberware);
-                                    else CharacterObject.Cyberware.Remove(objCyberware);
+                                    if (objParent != null)
+                                        objParent.Children.Remove(objCyberware);
+                                    else
+                                        CharacterObject.Cyberware.Remove(objCyberware);
                                     CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                                 }
 
@@ -1698,8 +1700,10 @@ namespace Chummer
                                         DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                     Cyberware objParent = objCyberware.Parent;
-                                    if (objParent != null) objParent.Children.Remove(objCyberware);
-                                    else CharacterObject.Cyberware.Remove(objCyberware);
+                                    if (objParent != null)
+                                        objParent.Children.Remove(objCyberware);
+                                    else
+                                        CharacterObject.Cyberware.Remove(objCyberware);
                                     CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                                 }
 
@@ -1745,8 +1749,10 @@ namespace Chummer
                                     ExpenseType.Nuyen, DateTime.Now);
                                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                 Cyberware objParent = objCyberware.Parent;
-                                if (objParent != null) objParent.Children.Remove(objCyberware);
-                                else CharacterObject.Cyberware.Remove(objCyberware);
+                                if (objParent != null)
+                                    objParent.Children.Remove(objCyberware);
+                                else
+                                    CharacterObject.Cyberware.Remove(objCyberware);
                                 CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                                 blnDoRefresh = true;
                             }
@@ -1793,8 +1799,10 @@ namespace Chummer
                                         ExpenseType.Nuyen, DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                     Cyberware objParent = objCyberware.Parent;
-                                    if (objParent != null) objParent.Children.Remove(objCyberware);
-                                    else CharacterObject.Cyberware.Remove(objCyberware);
+                                    if (objParent != null)
+                                        objParent.Children.Remove(objCyberware);
+                                    else
+                                        CharacterObject.Cyberware.Remove(objCyberware);
                                     CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                                     blnDoRefresh = true;
                                 }
@@ -6069,7 +6077,7 @@ namespace Chummer
                     }
                 }
             }
-            else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+            else if (treArmor.SelectedNode?.Tag?.ToString() == "Node_SelectedArmor")
             {
                 foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
                     !objArmor.Equipped && objArmor.Location == null))
@@ -6099,7 +6107,7 @@ namespace Chummer
                     }
                 }
             }
-            else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+            else if (treArmor.SelectedNode?.Tag?.ToString() == "Node_SelectedArmor")
             {
                 foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
                     objArmor.Equipped && objArmor.Location == null))
@@ -6159,7 +6167,7 @@ namespace Chummer
             {
                 destCollection = objVehicle.Locations;
             }
-            else if (treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles" || treVehicles.SelectedNode?.Tag == null)
+            else if (treVehicles.SelectedNode?.Tag == null || treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles")
             {
                 destCollection = CharacterObject.VehicleLocations;
             }
@@ -8059,11 +8067,7 @@ namespace Chummer
                 case KarmaExpenseType.AddQuality:
                     {
                         // Locate the Quality that was added.
-                        foreach (Quality objQuality in CharacterObject.Qualities.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
-                        {
-                            // Remove the Quality from thc character.
-                            CharacterObject.Qualities.Remove(objQuality);
-                        }
+                        CharacterObject.Qualities.RemoveAll(x => x.InternalId == objExpense.Undo.ObjectId);
                     }
                     break;
 
@@ -10382,7 +10386,7 @@ namespace Chummer
             }
         }
 
-        private static void treWeapons_DragEnter(object sender, DragEventArgs e)
+        private void treWeapons_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -10458,7 +10462,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private static void treArmor_DragEnter(object sender, DragEventArgs e)
+        private void treArmor_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -10780,7 +10784,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private static void treGear_DragEnter(object sender, DragEventArgs e)
+        private void treGear_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -11562,7 +11566,7 @@ namespace Chummer
             }
         }
 
-        private static void treVehicles_DragEnter(object sender, DragEventArgs e)
+        private void treVehicles_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -12616,7 +12620,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private static void treImprovements_DragEnter(object sender, DragEventArgs e)
+        private void treImprovements_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -14376,7 +14380,7 @@ namespace Chummer
                             foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                             {
                                 sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
-                                                .Append(objLoopArmor.DisplayArmorValue).AppendLine(")");
+                                                .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                             }
                             if (sbdArmorEquipped.Length > 0)
                             {
@@ -14403,7 +14407,7 @@ namespace Chummer
                                 foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
                                 {
                                     sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
-                                                    .Append('(').Append(objLoopArmor.DisplayArmorValue).AppendLine(")");
+                                                    .Append('(').Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                                 }
                                 if (sbdArmorEquipped.Length > 0)
                                 {
@@ -14939,8 +14943,8 @@ namespace Chummer
                         intValue = dicDisallowedMounts.TryGetValue(strKey + "Right", out int intExistingValue)
                             ? 2 * Math.Min(intValue, intExistingValue)
                             : 0;
-                        if (dicDisallowedMounts.ContainsKey(strKey))
-                            intValue += dicDisallowedMounts[strKey];
+                        if (dicDisallowedMounts.TryGetValue(strKey, out intExistingValue))
+                            intValue += intExistingValue;
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
                         sbdDisallowedMounts.Append(strKey).Append(',');
@@ -14962,8 +14966,8 @@ namespace Chummer
                         intValue = dicHasMounts.TryGetValue(strKey + "Right", out int intExistingValue)
                             ? 2 * Math.Min(intValue, intExistingValue)
                             : 0;
-                        if (dicHasMounts.ContainsKey(strKey))
-                            intValue += dicHasMounts[strKey];
+                        if (dicHasMounts.TryGetValue(strKey, out intExistingValue))
+                            intValue += intExistingValue;
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
                         sbdHasMounts.Append(strKey).Append(',');
@@ -15356,7 +15360,7 @@ namespace Chummer
                     // If this is Ammunition, see if the character already has it on them.
                     if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
                     {
-                        IEnumerable<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.GearChildren : objSelectedGear.Children;
+                        TaggedObservableCollection<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.GearChildren : objSelectedGear.Children;
                         objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                     }
 
@@ -15520,7 +15524,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
                     if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(",");
+                        sbdQualities.AppendLine(',');
 
                     sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
                                 .Append(LanguageManager.GetString("String_Space")).Append('[')
@@ -15531,7 +15535,7 @@ namespace Chummer
                 if (objLifestyle.FreeGrids.Count > 0)
                 {
                     if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(",");
+                        sbdQualities.AppendLine(',');
 
                     sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                 }

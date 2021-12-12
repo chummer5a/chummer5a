@@ -957,8 +957,8 @@ namespace Chummer.Backend.Equipment
                         foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
                             StringSplitOptions.RemoveEmptyEntries))
                         {
-                            if (dicToUse.ContainsKey(strBlockMount))
-                                dicToUse[strBlockMount] += objCheckCyberware.LimbSlotCount;
+                            if (dicToUse.TryGetValue(strBlockMount, out int intExistingLimbCount))
+                                dicToUse[strBlockMount] = intExistingLimbCount + objCheckCyberware.LimbSlotCount;
                             else
                                 dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
                         }
@@ -977,11 +977,11 @@ namespace Chummer.Backend.Equipment
                             if (!blnAllowLeft)
                                 return;
                             if (!string.IsNullOrEmpty(HasModularMount)
-                                && dicNumLeftMountBlockers.ContainsKey(HasModularMount))
+                                && dicNumLeftMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
                             {
                                 string strLimbTypeOfMount = MountToLimbType(HasModularMount);
                                 blnAllowLeft = !string.IsNullOrEmpty(strLimbTypeOfMount)
-                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= dicNumLeftMountBlockers[HasModularMount];
+                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= intNumBlockers;
                                 if (!blnAllowLeft)
                                     return;
                             }
@@ -1006,8 +1006,8 @@ namespace Chummer.Backend.Equipment
                                 }
 
                                 int intLimbSlotCount = LimbSlotCount;
-                                if (dicNumLeftMountBlockers.ContainsKey(x.HasModularMount))
-                                    intLimbSlotCount += dicNumLeftMountBlockers[x.HasModularMount];
+                                if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                    intLimbSlotCount += intNumBlockers;
 
                                 if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
                                 {
@@ -1023,11 +1023,11 @@ namespace Chummer.Backend.Equipment
                             if (!blnAllowRight)
                                 return;
                             if (!string.IsNullOrEmpty(HasModularMount)
-                                && dicNumRightMountBlockers.ContainsKey(HasModularMount))
+                                && dicNumRightMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
                             {
                                 string strLimbTypeOfMount = MountToLimbType(HasModularMount);
                                 blnAllowRight = !string.IsNullOrEmpty(strLimbTypeOfMount)
-                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= dicNumRightMountBlockers[HasModularMount];
+                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= intNumBlockers;
                                 if (!blnAllowRight)
                                     return;
                             }
@@ -1052,8 +1052,8 @@ namespace Chummer.Backend.Equipment
                                 }
 
                                 int intLimbSlotCount = LimbSlotCount;
-                                if (dicNumRightMountBlockers.ContainsKey(x.HasModularMount))
-                                    intLimbSlotCount += dicNumRightMountBlockers[x.HasModularMount];
+                                if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                    intLimbSlotCount += intNumBlockers;
 
                                 if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
                                 {

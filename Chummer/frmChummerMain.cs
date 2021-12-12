@@ -192,7 +192,7 @@ namespace Chummer
                     using (new CursorWait(this))
                     using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
                     {
-                        Task objCharacterLoadingTask = null;
+                        Task<ParallelLoopResult> objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
                         {
                             // Attempt to cache all XML files that are used the most.
@@ -904,7 +904,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 return false;
-            Form objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
+            CharacterShared objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
             if (objCharacterForm != null)
             {
                 foreach (TabPage objTabPage in tabForms.TabPages)
@@ -1579,7 +1579,7 @@ namespace Chummer
             {
                 for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
                 {
-                    ToolStripMenuItem objItem;
+                    DpiFriendlyToolStripMenuItem objItem;
                     switch (i)
                     {
                         case 0:
@@ -1660,7 +1660,7 @@ namespace Chummer
                 string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
                 if (GlobalSettings.FavoriteCharacters.Contains(strFile))
                     continue;
-                ToolStripMenuItem objItem;
+                DpiFriendlyToolStripMenuItem objItem;
                 switch (i2)
                 {
                     case 0:

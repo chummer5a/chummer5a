@@ -340,7 +340,7 @@ namespace Chummer
             if (objOther != null)
                 CopyValues(objOther);
         }
-        
+
         public void CopyValues(CharacterSettings objOther)
         {
             if (objOther == null)
@@ -1965,7 +1965,7 @@ namespace Chummer
         public string BookXPath(bool excludeHidden = true)
         {
             StringBuilder sbdPath = excludeHidden ? new StringBuilder("not(hide)") : new StringBuilder();
-            
+
             if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
             {
                 RecalculateBookXPath();

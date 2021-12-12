@@ -873,36 +873,28 @@ namespace Chummer
         /// </summary>
         public string DisplayActionMethod(string strLanguage)
         {
-            string strReturn = string.Empty;
-
             switch (Action)
             {
                 case "Auto":
-                    strReturn = LanguageManager.GetString("String_ActionAutomatic", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionAutomatic", strLanguage);
 
                 case "Free":
-                    strReturn = LanguageManager.GetString("String_ActionFree", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionFree", strLanguage);
 
                 case "Simple":
-                    strReturn = LanguageManager.GetString("String_ActionSimple", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionSimple", strLanguage);
 
                 case "Complex":
-                    strReturn = LanguageManager.GetString("String_ActionComplex", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionComplex", strLanguage);
 
                 case "Interrupt":
-                    strReturn = LanguageManager.GetString("String_ActionInterrupt", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionInterrupt", strLanguage);
 
                 case "Special":
-                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
             }
 
-            return strReturn;
+            return string.Empty;
         }
 
         public Color PreferredColor =>

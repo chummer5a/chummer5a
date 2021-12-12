@@ -186,9 +186,9 @@ namespace Chummer
             TValue objReturn;
             using (new EnterWriteLock(_rwlThis))
             {
-                if (_dicData.ContainsKey(key))
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
-                    objReturn = updateValueFactory(key, _dicData[key]);
+                    objReturn = updateValueFactory(key, objExistingValue);
                     _dicData[key] = objReturn;
                 }
                 else
@@ -211,9 +211,9 @@ namespace Chummer
         {
             using (new EnterWriteLock(_rwlThis))
             {
-                if (_dicData.ContainsKey(key))
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
-                    TValue objNewValue = updateValueFactory(key, _dicData[key]);
+                    TValue objNewValue = updateValueFactory(key, objExistingValue);
                     _dicData[key] = objNewValue;
                     return objNewValue;
                 }

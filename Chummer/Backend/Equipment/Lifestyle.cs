@@ -828,10 +828,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole").ToList())
-                    {
-                        LifestyleQualities.Remove(objQuality);
-                    }
+                    LifestyleQualities.RemoveAll(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole");
                 }
 
                 XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + value.CleanXPath() + "]");

@@ -3044,9 +3044,9 @@ namespace Chummer
                         dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
                     }
                 }
-                else if (dicValues.ContainsKey(strLoopImprovedName))
+                else if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
                 {
-                    dicValues[strLoopImprovedName] += funcValueGetter(objImprovement);
+                    dicValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
                     dicImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                 }
                 else
@@ -3214,9 +3214,9 @@ namespace Chummer
                         dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
                     }
                 }
-                else if (dicCustomValues.ContainsKey(strLoopImprovedName))
+                else if (dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
                 {
-                    dicCustomValues[strLoopImprovedName] += funcValueGetter(objImprovement);
+                    dicCustomValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
                     dicCustomImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                 }
                 else
@@ -3274,9 +3274,9 @@ namespace Chummer
             foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
-                if (dicValues.ContainsKey(strLoopImprovedName))
+                if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
                 {
-                    dicValues[strLoopImprovedName] += objLoopValuePair.Value;
+                    dicValues[strLoopImprovedName] = decExistingValue + objLoopValuePair.Value;
                     dicImprovementsForValues[strLoopImprovedName].AddRange(dicCustomImprovementsForValues[strLoopImprovedName]);
                 }
                 else
@@ -3993,7 +3993,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.Skillsoft:
                         {
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName))
                             {
                                 if (blnCharacterHasSkillsoftAccess && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
                                     objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
@@ -4182,7 +4182,7 @@ namespace Chummer
                                     continue;
                             }
 
-                            foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory).ToList())
+                            foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory))
                             {
                                 objSkill.ForceDisabled = false;
                             }
@@ -4284,10 +4284,8 @@ namespace Chummer
                     case Improvement.ImprovementType.Skillsoft:
                         if (!blnHasDuplicate)
                         {
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
-                            {
-                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
-                            }
+                            objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(
+                                x => x.InternalId == objImprovement.ImprovedName);
                         }
                         break;
 
@@ -4503,7 +4501,7 @@ namespace Chummer
                             if (strLoopCategory == strCategory)
                                 continue;
 
-                            foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory).ToList())
+                            foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory))
                             {
                                 objSkill.ForceDisabled = true;
                             }
@@ -4654,10 +4652,8 @@ namespace Chummer
                     case Improvement.ImprovementType.Skillsoft:
                         if (!blnHasDuplicate)
                         {
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
-                            {
-                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
-                            }
+                            objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
+                                x => x.InternalId == objImprovement.ImprovedName);
                             for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
                             {
                                 KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];

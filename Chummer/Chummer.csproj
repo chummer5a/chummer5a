@@ -330,6 +330,7 @@
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Backend\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Backend\Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\VersionExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />

@@ -61,7 +61,7 @@ namespace Chummer
                 // Image-only button that auto-sizes means we should scale things up only if we are large enough
                 using (Graphics g = CreateGraphics())
                 {
-                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / 96.0f / 96.0f));
+                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / (96.0f * 96.0f)));
                     if (fltScalingRatio >= 4.0f)
                         objBestImage = ImageDpi384;
                     if (objBestImage == null && fltScalingRatio >= 3.0f)
@@ -261,7 +261,7 @@ namespace Chummer
                 // Image-only button that auto-sizes means we should scale things up only if we are large enough
                 using (Graphics g = CreateGraphics())
                 {
-                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / 96.0f / 96.0f));
+                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / (96.0f * 96.0f)));
                     if (fltNewImageIntendedScaling > fltScalingRatio)
                         return;
                 }

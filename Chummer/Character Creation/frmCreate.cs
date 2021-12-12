@@ -4239,13 +4239,13 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            ICollection<Location> destCollection;
+            ObservableCollection<Location> destCollection;
             // Make sure a Vehicle is selected.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
                 destCollection = objVehicle.Locations;
             }
-            else if (treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles" || treVehicles.SelectedNode?.Tag == null)
+            else if (treVehicles.SelectedNode?.Tag == null || treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles")
             {
                 destCollection = CharacterObject.VehicleLocations;
             }
@@ -6884,7 +6884,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private static void treWeapons_DragEnter(object sender, DragEventArgs e)
+        private void treWeapons_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -6963,7 +6963,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private static void treArmor_DragEnter(object sender, DragEventArgs e)
+        private void treArmor_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -7345,7 +7345,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private static void treGear_DragEnter(object sender, DragEventArgs e)
+        private void treGear_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -7819,7 +7819,7 @@ namespace Chummer
             }
         }
 
-        private static void treVehicles_DragEnter(object sender, DragEventArgs e)
+        private void treVehicles_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -10713,7 +10713,7 @@ namespace Chummer
                         foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                         {
                             sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
-                                            .Append(objLoopArmor.DisplayArmorValue).AppendLine(")");
+                                            .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                         }
                         if (sbdArmorEquipped.Length > 0)
                         {
@@ -10740,7 +10740,7 @@ namespace Chummer
                             foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
                             {
                                 sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
-                                                .Append(objLoopArmor.DisplayArmorValue).AppendLine(")");
+                                                .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                             }
                             if (sbdArmorEquipped.Length > 0)
                             {
@@ -11292,8 +11292,8 @@ namespace Chummer
                     {
                         strKey = strKey.TrimEndOnce("Left", true);
                         intValue = dicDisallowedMounts.ContainsKey(strKey + "Right") ? 2 * Math.Min(intValue, dicDisallowedMounts[strKey + "Right"]) : 0;
-                        if (dicDisallowedMounts.ContainsKey(strKey))
-                            intValue += dicDisallowedMounts[strKey];
+                        if (dicDisallowedMounts.TryGetValue(strKey, out int intExistingValue))
+                            intValue += intExistingValue;
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
                         sbdDisallowedMounts.Append(strKey).Append(',');
@@ -11313,8 +11313,8 @@ namespace Chummer
                     {
                         strKey = strKey.TrimEndOnce("Left", true);
                         intValue = dicHasMounts.ContainsKey(strKey + "Right") ? 2 * Math.Min(intValue, dicHasMounts[strKey + "Right"]) : 0;
-                        if (dicHasMounts.ContainsKey(strKey))
-                            intValue += dicHasMounts[strKey];
+                        if (dicHasMounts.TryGetValue(strKey, out int intExistingValue))
+                            intValue += intExistingValue;
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
                         sbdHasMounts.Append(strKey).Append(',');
@@ -11688,7 +11688,7 @@ namespace Chummer
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
                     if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(",");
+                        sbdQualities.AppendLine(',');
 
                     sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
                                 .Append(LanguageManager.GetString("String_Space")).Append('[')
@@ -11699,7 +11699,7 @@ namespace Chummer
                 if (objLifestyle.FreeGrids.Count > 0)
                 {
                     if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(",");
+                        sbdQualities.AppendLine(',');
 
                     sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                 }
@@ -13002,15 +13002,15 @@ namespace Chummer
                         x => x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled))
                     {
                         int intLoopAvailability = objImprovement.Value.StandardRound();
-                        if (dicRestrictedGearLimits.ContainsKey(intLoopAvailability))
-                            dicRestrictedGearLimits[intLoopAvailability] += objImprovement.Rating;
+                        if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intExistingValue))
+                            dicRestrictedGearLimits[intLoopAvailability] = intExistingValue + objImprovement.Rating;
                         else
                             dicRestrictedGearLimits.Add(intLoopAvailability, objImprovement.Rating);
                     }
                 }
 
                 // Remove all Restricted Gear availabilities with non-positive counts
-                foreach(int intLoopAvailability in dicRestrictedGearLimits.Keys.ToList())
+                foreach (int intLoopAvailability in dicRestrictedGearLimits.Keys.ToList())
                 {
                     if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intLoopCount)
                         && intLoopCount <= 0)
