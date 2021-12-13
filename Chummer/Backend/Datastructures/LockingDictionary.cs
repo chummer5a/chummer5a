@@ -34,12 +34,12 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-
+        
         public LockingDictionary()
         {
             _dicData = new Dictionary<TKey, TValue>();
@@ -80,6 +80,13 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _dicData.GetEnumerator();
+        }
+
+        /// <inheritdoc />
         public void Add(KeyValuePair<TKey, TValue> item)
         {
             using (new EnterWriteLock(_rwlThis))
@@ -87,6 +94,18 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public bool Contains(object key)
+        {
+            return ContainsKey((TKey)key);
+        }
+
+        /// <inheritdoc />
+        public void Add(object key, object value)
+        {
+            Add((TKey)key, (TValue)value);
+        }
+
+        /// <inheritdoc cref="IDictionary" />
         public void Clear()
         {
             using (new EnterWriteLock(_rwlThis))
@@ -154,6 +173,19 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
+        public bool Remove(TKey key)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                return _dicData.Remove(key);
+        }
+
+        /// <inheritdoc />
+        public void Remove(object key)
+        {
+            Remove((TKey)key);
+        }
+
         public bool TryRemove(TKey key, out TValue value)
         {
             using (new EnterUpgradeableReadLock(_rwlThis))
@@ -201,8 +233,11 @@ namespace Chummer
         /// <inheritdoc />
         public bool IsSynchronized => true;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IDictionary" />
         public bool IsReadOnly => false;
+
+        /// <inheritdoc />
+        public bool IsFixedSize => false;
 
         /// <inheritdoc cref="IDictionary" />
         public bool ContainsKey(TKey key)
@@ -285,13 +320,6 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc />
-        public bool Remove(TKey key)
-        {
-            using (new EnterWriteLock(_rwlThis))
-                return _dicData.Remove(key);
-        }
-
         /// <inheritdoc cref="IDictionary" />
         public bool TryGetValue(TKey key, out TValue value)
         {
@@ -320,7 +348,24 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public object this[object key]
+        {
+            get => this[(TKey)key];
+            set => this[(TKey)key] = (TValue)value;
+        }
+
+        /// <inheritdoc />
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return _dicData.Keys;
+            }
+        }
+
+        /// <inheritdoc />
+        ICollection IDictionary.Keys
         {
             get
             {
@@ -351,6 +396,16 @@ namespace Chummer
 
         /// <inheritdoc />
         public ICollection<TValue> Values
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return _dicData.Values;
+            }
+        }
+
+        /// <inheritdoc />
+        ICollection IDictionary.Values
         {
             get
             {

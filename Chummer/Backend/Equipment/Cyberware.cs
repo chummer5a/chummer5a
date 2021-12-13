@@ -3533,27 +3533,19 @@ namespace Chummer.Backend.Equipment
 
             void UpdateMultipliers(Improvement.ImprovementType baseMultiplier, Improvement.ImprovementType totalMultiplier, ref decimal decMultiplier, ref decimal decTotalMultiplier)
             {
-                if (ImprovementManager.ValueOf(_objCharacter, baseMultiplier) != 0)
+                List<Improvement> lstUsedImprovements;
+                if (baseMultiplier != Improvement.ImprovementType.None && ImprovementManager.ValueOf(_objCharacter, baseMultiplier, out lstUsedImprovements) != 0)
                 {
-                    decMultiplier = _objCharacter.Improvements
-                        .Where(objImprovement =>
-                            objImprovement.ImproveType == baseMultiplier &&
-                            objImprovement.Enabled)
-                        .Aggregate(decMultiplier,
-                            (current, objImprovement) =>
-                                current - (1m - objImprovement.Value / 100m));
+                    decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                                                  (current, objImprovement) =>
+                                                                      current - (1m - objImprovement.Value / 100m));
                     decESSMultiplier = Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
                 }
-
-                if (totalMultiplier == Improvement.ImprovementType.None)
-                    return;
-                if (ImprovementManager.ValueOf(_objCharacter, totalMultiplier) != 0)
+                if (totalMultiplier != Improvement.ImprovementType.None && ImprovementManager.ValueOf(_objCharacter, totalMultiplier, out lstUsedImprovements) != 0)
                 {
-                    decTotalMultiplier = _objCharacter.Improvements
-                        .Where(x => x.Enabled && x.ImproveType == totalMultiplier)
-                        .Aggregate(decTotalESSMultiplier,
-                            (current, objImprovement) =>
-                                current * (objImprovement.Value / 100m));
+                    decTotalMultiplier = lstUsedImprovements.Aggregate(decTotalESSMultiplier,
+                                                                       (current, objImprovement) =>
+                                                                           current * (objImprovement.Value / 100m));
                 }
             }
 
