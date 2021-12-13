@@ -886,7 +886,8 @@ namespace Chummer.Backend.Attributes
                             .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
-                            if (dicValueOverrides?.TryGetValue(strCharAttributeName, out int intAttributeValue) != true)
+                            int intAttributeValue = 0;
+                            if (dicValueOverrides?.TryGetValue(strCharAttributeName, out intAttributeValue) != true)
                                 intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalValue;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
@@ -898,7 +899,8 @@ namespace Chummer.Backend.Attributes
                             .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
-                            if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Unaug", out int intAttributeValue) != true)
+                            int intAttributeValue = 0;
+                            if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Unaug", out intAttributeValue) != true)
                                 intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).Value;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
@@ -912,7 +914,8 @@ namespace Chummer.Backend.Attributes
                             .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
-                            if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Base", out int intAttributeValue) != true)
+                            int intAttributeValue = 0;
+                            if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Base", out intAttributeValue) != true)
                                 intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalBase;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
@@ -943,7 +946,8 @@ namespace Chummer.Backend.Attributes
                         .DisplayNameShort(strLanguage);
                     if (blnShowValues)
                     {
-                        if (dicValueOverrides?.TryGetValue(strCharAttributeName, out int intAttributeValue) != true)
+                        int intAttributeValue = 0;
+                        if (dicValueOverrides?.TryGetValue(strCharAttributeName, out intAttributeValue) != true)
                             intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalValue;
                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                     }
@@ -955,7 +959,8 @@ namespace Chummer.Backend.Attributes
                         .DisplayNameShort(strLanguage);
                     if (blnShowValues)
                     {
-                        if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Unaug", out int intAttributeValue) != true)
+                        int intAttributeValue = 0;
+                        if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Unaug", out intAttributeValue) != true)
                             intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).Value;
                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                     }
@@ -969,7 +974,8 @@ namespace Chummer.Backend.Attributes
                         .DisplayNameShort(strLanguage);
                     if (blnShowValues)
                     {
-                        if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Base", out int intAttributeValue) != true)
+                        int intAttributeValue = 0;
+                        if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Base", out intAttributeValue) != true)
                             intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalBase;
                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                     }

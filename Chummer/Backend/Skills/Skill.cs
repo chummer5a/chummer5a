@@ -375,7 +375,8 @@ namespace Chummer.Backend.Skills
                 .SelectSingleNode((blnIsKnowledgeSkill
                     ? "/chummer/knowledgeskills/skill[name = "
                     : "/chummer/skills/skill[name = ") + strName.CleanXPath() + ']');
-            if (xmlSkillDataNode?.TryGetField("id", Guid.TryParse, out Guid suid) != true)
+            Guid suid = Guid.Empty;
+            if (xmlSkillDataNode?.TryGetField("id", Guid.TryParse, out suid) != true)
                 suid = Guid.NewGuid();
 
             bool blnIsNativeLanguage = false;
