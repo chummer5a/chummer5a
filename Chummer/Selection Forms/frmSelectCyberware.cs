@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -971,7 +972,7 @@ namespace Chummer
             if (_blnLoading && blnDoUIUpdate)
                 return new List<ListItem>();
 
-            List<ListItem> lstCyberwares = new List<ListItem>();
+            List<ListItem> lstCyberwares = new List<ListItem>(objXmlCyberwareList?.Count ?? 1);
 
             bool blnCyberwareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableCyberware && x.Enabled);
             bool blnBiowareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
@@ -1019,7 +1020,7 @@ namespace Chummer
                         string strBlocksMounts = xmlCyberware.SelectSingleNodeAndCacheExpression("blocksmounts")?.Value;
                         if (!string.IsNullOrEmpty(strBlocksMounts))
                         {
-                            ICollection<Cyberware> lstWareListToCheck = null;
+                            ObservableCollection<Cyberware> lstWareListToCheck = null;
                             if (CyberwareParent != null)
                                 lstWareListToCheck = CyberwareParent.Children;
                             else if (ParentVehicle == null)
@@ -1037,7 +1038,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_strDisallowedMounts))
                     {
                         string strLoopMount = xmlCyberware.SelectSingleNodeAndCacheExpression("modularmount")?.Value;
-                        if (!string.IsNullOrEmpty(strLoopMount) && _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(strLoop => strLoopMount == strLoop))
+                        if (!string.IsNullOrEmpty(strLoopMount) && _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strLoopMount))
                             continue;
                     }
 
@@ -1358,7 +1359,7 @@ namespace Chummer
             {
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.SelectAndCacheExpression("categories/category");
             }
-            List<ListItem> lstCategory = new List<ListItem>();
+            List<ListItem> lstCategory = new List<ListItem>(objXmlCategoryList.Count);
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 // Make sure the category contains items that we can actually display

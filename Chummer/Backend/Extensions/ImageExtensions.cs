@@ -21,7 +21,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NLog;
@@ -59,13 +58,16 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = -1)
+        public static Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = -1)
         {
-            if (string.IsNullOrEmpty(strBase64String))
-                return string.Empty;
-            using (Image imgTemp = await strBase64String.ToImageAsync())
+            return string.IsNullOrEmpty(strBase64String) ? new Task<string>(() => string.Empty) : GetImage();
+            // Split into a private method for performance reasons
+            async Task<string> GetImage()
             {
-                return imgTemp == null ? strBase64String : await imgTemp.ToBase64StringAsJpegAsync(intQuality);
+                using (Image imgTemp = await strBase64String.ToImageAsync())
+                {
+                    return imgTemp == null ? strBase64String : await imgTemp.ToBase64StringAsJpegAsync(intQuality);
+                }
             }
         }
 
@@ -123,10 +125,10 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = -1)
+        public static Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return null;
+                return new Task<Image>(() => null);
             int intImageWidth = imgToConvert.Width;
             int intImageHeight = imgToConvert.Height;
             if (blnKeepAspectRatio)
@@ -145,14 +147,20 @@ namespace Chummer
                 }
             }
 
-            if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
-            {
-                return await imgToConvert.GetCompressedImageAsync(intQuality);
-            }
+            return GetImage();
 
-            using (Image objThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
+            // Split into a private method for performance reasons
+            async Task<Image> GetImage()
             {
-                return await objThumbnail.GetCompressedImageAsync(intQuality);
+                if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
+                {
+                    return await imgToConvert.GetCompressedImageAsync(intQuality);
+                }
+
+                using (Image objThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
+                {
+                    return await objThumbnail.GetCompressedImageAsync(intQuality);
+                }
             }
         }
 
@@ -190,15 +198,15 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1)
+        public static Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return null;
+                return new Task<Image>(() => null);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
                 using (Bitmap bmpClone = new Bitmap(imgToConvert))
@@ -383,11 +391,11 @@ namespace Chummer
         /// <param name="eOverrideFormat">The image format in which the image should be saved. If null, will use <paramref name="imgToConvert"/>'s RawFormat.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null)
+        public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null)
         {
             if (imgToConvert == null)
-                return string.Empty;
-            return await Task.Run(() =>
+                return new Task<string>(() => string.Empty);
+            return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
                 using (Bitmap bmpClone = new Bitmap(imgToConvert))
@@ -420,11 +428,11 @@ namespace Chummer
         /// <param name="lstEncoderParameters">List of parameters for <paramref name="objCodecInfo"/>.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
+        public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
         {
             if (imgToConvert == null)
-                return string.Empty;
-            return await Task.Run(() =>
+                return new Task<string>(() => string.Empty);
+            return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
                 using (Bitmap bmpClone = new Bitmap(imgToConvert))
@@ -463,15 +471,15 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1)
+        public static Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return string.Empty;
+                return new Task<string>(() => string.Empty);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
             };
-            return await imgToConvert.ToBase64StringAsync(s_LzyJpegEncoder.Value, lstJpegParameters);
+            return imgToConvert.ToBase64StringAsync(s_LzyJpegEncoder.Value, lstJpegParameters);
         }
 
         /// <summary>

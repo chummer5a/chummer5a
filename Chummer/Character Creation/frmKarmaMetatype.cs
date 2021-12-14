@@ -201,8 +201,6 @@ namespace Chummer
                     // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
                     _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Heritage);
 
-                    int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
-
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                     if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
                         strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? "None";
@@ -236,6 +234,7 @@ namespace Chummer
                                 }
                             }
                         }
+                        int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
                         _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant,
                             objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
                             _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);
@@ -562,7 +561,7 @@ namespace Chummer
                         {
                             --intPos;
                             lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
-                            nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1), GlobalSettings.InvariantCultureInfo) * 6;
+                            nudForce.Maximum = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
                         }
                         else
                         {

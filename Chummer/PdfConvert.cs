@@ -170,66 +170,65 @@ namespace Codaxy.WkHtmlToPdf
             if (!File.Exists(environment.WkHtmlToPdfPath))
                 throw new PdfConvertException($"File '{environment.WkHtmlToPdfPath}' not found. Check if wkhtmltopdf application is installed.");
 
-            StringBuilder paramsBuilder = new StringBuilder();
+            StringBuilder paramsBuilder = new StringBuilder(byte.MaxValue);
             paramsBuilder.Append("--page-size A4 ");
             paramsBuilder.Append("--disable-smart-shrinking ");
 
             if (!string.IsNullOrEmpty(document.HeaderUrl))
             {
-                paramsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
-                paramsBuilder.Append("--margin-top 25 ");
-                paramsBuilder.Append("--header-spacing 5 ");
+                paramsBuilder.Append("--header-html ").Append(document.HeaderUrl).Append(" --margin-top 25 ")
+                             .Append("--margin-top 25 ").Append("--header-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.FooterUrl))
             {
-                paramsBuilder.AppendFormat("--footer-html {0} ", document.FooterUrl);
-                paramsBuilder.Append("--margin-bottom 25 ");
-                paramsBuilder.Append("--footer-spacing 5 ");
+                paramsBuilder.Append("--footer-html ").Append(document.FooterUrl).Append(" --margin-bottom 25 ")
+                             .Append("--footer-spacing 5 ");
             }
+
             if (!string.IsNullOrEmpty(document.HeaderLeft))
-                paramsBuilder.AppendFormat("--header-left \"{0}\" ", document.HeaderLeft);
+                paramsBuilder.Append("--header-left \"").Append(document.HeaderLeft).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.HeaderCenter))
-                paramsBuilder.AppendFormat("--header-center \"{0}\" ", document.HeaderCenter);
+                paramsBuilder.Append("--header-center \"").Append(document.HeaderCenter).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.HeaderRight))
-                paramsBuilder.AppendFormat("--header-right \"{0}\" ", document.HeaderRight);
+                paramsBuilder.Append("--header-right \"").Append(document.HeaderRight).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.FooterLeft))
-                paramsBuilder.AppendFormat("--footer-left \"{0}\" ", document.FooterLeft);
+                paramsBuilder.Append("--footer-left \"").Append(document.FooterLeft).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.FooterCenter))
-                paramsBuilder.AppendFormat("--footer-center \"{0}\" ", document.FooterCenter);
+                paramsBuilder.Append("--footer-center \"").Append(document.FooterCenter).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.FooterRight))
-                paramsBuilder.AppendFormat("--footer-right \"{0}\" ", document.FooterRight);
+                paramsBuilder.Append("--footer-right \"").Append(document.FooterRight).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.HeaderFontSize))
-                paramsBuilder.AppendFormat("--header-font-size \"{0}\" ", document.HeaderFontSize);
+                paramsBuilder.Append("--header-font-size \"").Append(document.HeaderFontSize).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.FooterFontSize))
-                paramsBuilder.AppendFormat("--footer-font-size \"{0}\" ", document.FooterFontSize);
+                paramsBuilder.Append("--footer-font-size \"").Append(document.FooterFontSize).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.HeaderFontName))
-                paramsBuilder.AppendFormat("--header-font-name \"{0}\" ", document.HeaderFontName);
+                paramsBuilder.Append("--header-font-name \"").Append(document.HeaderFontName).Append("\" ");
 
             if (!string.IsNullOrEmpty(document.FooterFontName))
-                paramsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
+                paramsBuilder.Append("--footer-font-name \"").Append(document.FooterFontName).Append("\" ");
 
             if (document.ExtraParams != null)
                 foreach (var extraParam in document.ExtraParams)
-                    paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
+                    paramsBuilder.Append("--").Append(extraParam.Key).Append(' ').Append(extraParam.Value).Append(' ');
 
             if (document.Cookies != null)
                 foreach (var cookie in document.Cookies)
-                    paramsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
+                    paramsBuilder.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value).Append(' ');
 
-            paramsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, outputPdfFilePath);
+            paramsBuilder.Append('\"').Append(document.Url).Append("\" \"").Append(outputPdfFilePath).Append('\"');
 
             try
             {
-                StringBuilder output = new StringBuilder();
-                StringBuilder error = new StringBuilder();
+                StringBuilder output = new StringBuilder(byte.MaxValue);
+                StringBuilder error = new StringBuilder(byte.MaxValue);
 
                 using (Process process = new Process { EnableRaisingEvents = true })
                 {
@@ -363,7 +362,7 @@ namespace Codaxy.WkHtmlToPdf
 
                 if (woutput.OutputStream != null)
                 {
-                    using (Stream fs = new FileStream(outputPdfFilePath, FileMode.Open))
+                    using (FileStream fs = new FileStream(outputPdfFilePath, FileMode.Open))
                     {
                         byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
                         int read;

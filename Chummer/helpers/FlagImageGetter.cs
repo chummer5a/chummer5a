@@ -26,9 +26,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">The ISO-3166 code of the country/region's flag.</param>
         /// <returns>16px x 16px image of the country/region's flag if available, null otherwise</returns>
-        public static System.Drawing.Image GetFlagFromCountryCode(string strCode)
+        public static System.Drawing.Bitmap GetFlagFromCountryCode(string strCode)
         {
-            System.Drawing.Image objReturn;
+            System.Drawing.Bitmap objReturn;
             if (string.IsNullOrEmpty(strCode))
                 strCode = string.Empty;
             switch (strCode.ToUpperInvariant())
@@ -977,9 +977,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">The ISO-3166 code of the country/region's flag.</param>
         /// <returns>32px x 32px image of the country/region's flag if available, null otherwise</returns>
-        public static System.Drawing.Image GetFlagFromCountryCode192Dpi(string strCode)
+        public static System.Drawing.Bitmap GetFlagFromCountryCode192Dpi(string strCode)
         {
-            System.Drawing.Image objReturn;
+            System.Drawing.Bitmap objReturn;
             if (string.IsNullOrEmpty(strCode))
                 strCode = string.Empty;
             switch (strCode.ToUpperInvariant())

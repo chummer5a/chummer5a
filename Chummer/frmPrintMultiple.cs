@@ -71,12 +71,13 @@ namespace Chummer
 
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (treCharacters.SelectedNode == null)
-                return;
-            await CancelPrint();
-            treCharacters.SelectedNode.Remove();
-            if (_frmPrintView != null)
-                await StartPrint();
+            if (treCharacters.SelectedNode != null)
+            {
+                await CancelPrint();
+                treCharacters.SelectedNode.Remove();
+                if (_frmPrintView != null)
+                    await StartPrint();
+            }
         }
 
         private async void cmdPrint_Click(object sender, EventArgs e)

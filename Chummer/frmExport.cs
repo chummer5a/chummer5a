@@ -124,83 +124,97 @@ namespace Chummer
 
         private async Task DoLanguageUpdate()
         {
-            if (_blnLoading)
-                return;
-            _strExportLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
-            try
+            if (!_blnLoading)
             {
-                _objExportCulture = CultureInfo.GetCultureInfo(_strExportLanguage);
+                _strExportLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
+                try
+                {
+                    _objExportCulture = CultureInfo.GetCultureInfo(_strExportLanguage);
+                }
+                catch (CultureNotFoundException)
+                {
+                    // Swallow this
+                }
+
+                _objCharacterXml = null;
+                await Task.WhenAll(
+                    imgSheetLanguageFlag.DoThreadSafeAsync(() =>
+                                                               imgSheetLanguageFlag.Image
+                                                                   = Math.Min(imgSheetLanguageFlag.Width,
+                                                                              imgSheetLanguageFlag.Height) >= 32
+                                                                       ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
+                                                                           _strExportLanguage.Substring(3, 2))
+                                                                       : FlagImageGetter.GetFlagFromCountryCode(
+                                                                           _strExportLanguage.Substring(3, 2))),
+                    DoXsltUpdate());
             }
-            catch (CultureNotFoundException)
-            {
-                // Swallow this
-            }
-            _objCharacterXml = null;
-            await Task.WhenAll(
-                imgSheetLanguageFlag.DoThreadSafeAsync(() =>
-                   imgSheetLanguageFlag.Image = Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height) >= 32
-                       ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strExportLanguage.Substring(3, 2))
-                       : FlagImageGetter.GetFlagFromCountryCode(_strExportLanguage.Substring(3, 2))), DoXsltUpdate());
         }
 
         private async Task DoXsltUpdate()
         {
-            if (_blnLoading)
-                return;
-            if (_objCharacterXml == null)
+            if (!_blnLoading)
             {
-                if (_objCharacterXmlGeneratorCancellationTokenSource != null)
+                if (_objCharacterXml != null)
                 {
-                    _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
-                    _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
-                }
+                    _strXslt = cboXSLT.Text;
+                    if (!string.IsNullOrEmpty(_strXslt))
+                    {
+                        using (new CursorWait(this))
+                        {
+                            await txtText.DoThreadSafeAsync(
+                                () => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
+                            if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
+                                                      out Tuple<string, string> strBoxText))
+                            {
+                                await txtText.DoThreadSafeAsync(() => txtText.Text = strBoxText.Item2);
+                            }
+                            else
+                            {
+                                if (_objXmlGeneratorCancellationTokenSource != null)
+                                {
+                                    _objXmlGeneratorCancellationTokenSource.Cancel(false);
+                                    _objXmlGeneratorCancellationTokenSource.Dispose();
+                                }
 
-                _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
-                try
-                {
-                    if (_tskCharacterXmlGenerator?.IsCompleted == false)
-                        await _tskCharacterXmlGenerator;
-                }
-                catch (TaskCanceledException)
-                {
-                    // Swallow this
-                }
-                _tskCharacterXmlGenerator = Task.Run(GenerateCharacterXml, _objCharacterXmlGeneratorCancellationTokenSource.Token);
-                return;
-            }
-            _strXslt = cboXSLT.Text;
-            if (string.IsNullOrEmpty(_strXslt))
-                return;
+                                _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
+                                try
+                                {
+                                    if (_tskXmlGenerator?.IsCompleted == false)
+                                        await _tskXmlGenerator;
+                                }
+                                catch (TaskCanceledException)
+                                {
+                                    // Swallow this
+                                }
 
-            using (new CursorWait(this))
-            {
-                await txtText.DoThreadSafeAsync(() => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
-                if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                    out Tuple<string, string> strBoxText))
-                {
-                    await txtText.DoThreadSafeAsync(() => txtText.Text = strBoxText.Item2);
+                                _tskXmlGenerator = _strXslt == "Export JSON"
+                                    ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
+                                    : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    if (_objXmlGeneratorCancellationTokenSource != null)
+                    if (_objCharacterXmlGeneratorCancellationTokenSource != null)
                     {
-                        _objXmlGeneratorCancellationTokenSource.Cancel(false);
-                        _objXmlGeneratorCancellationTokenSource.Dispose();
+                        _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
+                        _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
                     }
 
-                    _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
+                    _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                     try
                     {
-                        if (_tskXmlGenerator?.IsCompleted == false)
-                            await _tskXmlGenerator;
+                        if (_tskCharacterXmlGenerator?.IsCompleted == false)
+                            await _tskCharacterXmlGenerator;
                     }
                     catch (TaskCanceledException)
                     {
                         // Swallow this
                     }
-                    _tskXmlGenerator = _strXslt == "Export JSON"
-                        ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
-                        : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
+
+                    _tskCharacterXmlGenerator
+                        = Task.Run(GenerateCharacterXml, _objCharacterXmlGeneratorCancellationTokenSource.Token);
                 }
             }
         }

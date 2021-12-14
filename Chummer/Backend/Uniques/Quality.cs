@@ -409,15 +409,6 @@ namespace Chummer
             }
 
             objWriter.WriteEndElement();
-
-            if (OriginSource != QualitySource.BuiltIn &&
-                OriginSource != QualitySource.Improvement &&
-                OriginSource != QualitySource.LifeModule &&
-                OriginSource != QualitySource.Metatype &&
-                OriginSource != QualitySource.MetatypeRemovable &&
-                OriginSource != QualitySource.MetatypeRemovedAtChargen &&
-                OriginSource != QualitySource.Heritage)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -1424,12 +1415,9 @@ namespace Chummer
             // Removing the old quality from the character
             _objCharacter.Qualities.Remove(objOldQuality);
 
-            foreach (Quality objOldQualityLevels in _objCharacter.Qualities.Where(x =>
-                x.SourceIDString == SourceIDString && x.Extra == Extra &&
-                x.SourceName == SourceName && x.Type == Type).ToList())
-            {
-                _objCharacter.Qualities.Remove(objOldQualityLevels);
-            }
+            _objCharacter.Qualities.RemoveAll(x =>
+                                              x.SourceIDString == SourceIDString && x.Extra == Extra &&
+                                              x.SourceName == SourceName && x.Type == Type);
 
             // Add the new Quality to the character.
             _objCharacter.Qualities.Add(this);
@@ -1480,7 +1468,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
@@ -1516,18 +1504,16 @@ namespace Chummer
             // Remove any Weapons created by the Quality if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                List<Weapon> lstWeapons = _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList();
-                foreach (Weapon objWeapon in lstWeapons)
+                foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                 {
-                    if (objWeapon.ParentID == InternalId)
-                    {
-                        decReturn += objWeapon.DeleteWeapon();
-                        // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                        if (objWeapon.Parent != null)
-                            objWeapon.Parent.Children.Remove(objWeapon);
-                        else
-                            _objCharacter.Weapons.Remove(objWeapon);
-                    }
+                    if (objWeapon.ParentID != InternalId)
+                        continue;
+                    decReturn += objWeapon.DeleteWeapon();
+                    // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
+                    if (objWeapon.Parent != null)
+                        objWeapon.Parent.Children.Remove(objWeapon);
+                    else
+                        _objCharacter.Weapons.Remove(objWeapon);
                 }
             }
 

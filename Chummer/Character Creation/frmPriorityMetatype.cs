@@ -358,7 +358,6 @@ namespace Chummer
                     {
                         XPathNavigator xmlSkillTypeNode = xmlTalentNode.SelectSingleNodeAndCacheExpression("skilltype") ?? xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgrouptype");
                         string strSkillType = xmlSkillTypeNode?.Value ?? string.Empty;
-                        string strSkillVal = xmlTalentNode.SelectSingleNodeAndCacheExpression("skillval")?.Value ?? xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgroupval")?.Value;
                         XPathNodeIterator objNodeList = xmlTalentNode.SelectAndCacheExpression("skillgroupchoices/skillgroup");
                         XPathNodeIterator xmlSkillsList;
                         switch (strSkillType)
@@ -478,6 +477,9 @@ namespace Chummer
                                 LanguageManager.GetString("String_MetamagicSkills"));
                             // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                             // So the language file should contain each of those like String_MetamagicSkillType_magic
+                            string strSkillVal = xmlTalentNode.SelectSingleNodeAndCacheExpression("skillval")?.Value
+                                                 ?? xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgroupval")
+                                                                 ?.Value;
                             lblMetatypeSkillSelection.Text = string.Format(GlobalSettings.CultureInfo, strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType), strSkillVal);
                             lblMetatypeSkillSelection.Visible = true;
                         }
@@ -485,10 +487,9 @@ namespace Chummer
                         int intSpecialAttribPoints = 0;
 
                         string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
-                        string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
-
                         if (!string.IsNullOrEmpty(strSelectedMetatype))
                         {
+                            string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
                             XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (cboHeritage.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                             {
@@ -1423,8 +1424,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
                     }
-                    if (dicQualities.ContainsKey(strQuality))
-                        ++dicQualities[strQuality];
+                    if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
+                        dicQualities[strQuality] = intExistingRating + 1;
                     else
                         dicQualities.Add(strQuality, 1);
                 }
@@ -1490,8 +1491,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
                     }
-                    if (dicQualities.ContainsKey(strQuality))
-                        ++dicQualities[strQuality];
+                    if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
+                        dicQualities[strQuality] = intExistingRating + 1;
                     else
                         dicQualities.Add(strQuality, 1);
                 }
@@ -1824,7 +1825,7 @@ namespace Chummer
                             {
                                 --intPos;
                                 lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
-                                nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1), GlobalSettings.InvariantCultureInfo) * 6;
+                                nudForce.Maximum = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
                             }
                             else
                             {

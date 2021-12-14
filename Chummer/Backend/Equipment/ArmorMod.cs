@@ -345,9 +345,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
-
-            if (!IncludedInArmor)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

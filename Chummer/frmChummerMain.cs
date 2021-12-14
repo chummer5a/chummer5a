@@ -192,7 +192,7 @@ namespace Chummer
                     using (new CursorWait(this))
                     using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
                     {
-                        Task objCharacterLoadingTask = null;
+                        Task<ParallelLoopResult> objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
                         {
                             // Attempt to cache all XML files that are used the most.
@@ -425,39 +425,43 @@ namespace Chummer
 
         private async void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (CharacterRoster == null)
-                return;
-            switch (e.Action)
+            if (CharacterRoster != null)
             {
-                case NotifyCollectionChangedAction.Add:
-                    CharacterRoster.RefreshNodeTexts();
-                    break;
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        CharacterRoster.RefreshNodeTexts();
+                        break;
 
-                case NotifyCollectionChangedAction.Move:
-                case NotifyCollectionChangedAction.Remove:
+                    case NotifyCollectionChangedAction.Move:
+                    case NotifyCollectionChangedAction.Remove:
                     {
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
                         await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>().Any(objClosedForm =>
-                            GlobalSettings.FavoriteCharacters.Contains(objClosedForm.CharacterObject.FileName))
-                            ? "stickymru"
-                            : "mru");
+                                                                  GlobalSettings.FavoriteCharacters.Contains(
+                                                                      objClosedForm.CharacterObject.FileName))
+                                                                  ? "stickymru"
+                                                                  : "mru");
                     }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Replace:
                     {
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
                         await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>()
-                            .Concat(e.NewItems.Cast<CharacterShared>()).Any(objClosedForm =>
-                                GlobalSettings.FavoriteCharacters.Contains(objClosedForm.CharacterObject.FileName))
-                            ? "stickymru"
-                            : "mru");
+                                                               .Concat(e.NewItems.Cast<CharacterShared>()).Any(
+                                                                   objClosedForm =>
+                                                                       GlobalSettings.FavoriteCharacters.Contains(
+                                                                           objClosedForm.CharacterObject.FileName))
+                                                                  ? "stickymru"
+                                                                  : "mru");
                     }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Reset:
-                    await CharacterRoster.RefreshMruLists(string.Empty);
-                    break;
+                    case NotifyCollectionChangedAction.Reset:
+                        await CharacterRoster.RefreshMruLists(string.Empty);
+                        break;
+                }
             }
         }
 
@@ -904,7 +908,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 return false;
-            Form objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
+            CharacterShared objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
             if (objCharacterForm != null)
             {
                 foreach (TabPage objTabPage in tabForms.TabPages)
@@ -1579,7 +1583,7 @@ namespace Chummer
             {
                 for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
                 {
-                    ToolStripMenuItem objItem;
+                    DpiFriendlyToolStripMenuItem objItem;
                     switch (i)
                     {
                         case 0:
@@ -1660,7 +1664,7 @@ namespace Chummer
                 string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
                 if (GlobalSettings.FavoriteCharacters.Contains(strFile))
                     continue;
-                ToolStripMenuItem objItem;
+                DpiFriendlyToolStripMenuItem objItem;
                 switch (i2)
                 {
                     case 0:
@@ -1766,7 +1770,7 @@ namespace Chummer
             else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
             {
                 ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
-                Task objCharacterLoadingTask = null;
+                Task<ParallelLoopResult> objCharacterLoadingTask = null;
 
                 using (_frmProgressBar = CreateAndShowProgressBar())
                 using (new CursorWait(this))

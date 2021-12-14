@@ -20,7 +20,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Chummer
@@ -350,7 +349,7 @@ namespace Chummer
             get => new KeyValuePair<TKey, TValue>(_lstIndexes[index], _dicUnorderedData[_lstIndexes[index]]);
             set
             {
-                if (_dicUnorderedData.ContainsKey(value.Key))
+                if (_dicUnorderedData.TryGetValue(value.Key, out TValue objOldValue))
                 {
                     int intOriginalIndex = _lstIndexes.IndexOf(value.Key);
                     if (index == intOriginalIndex)
@@ -365,7 +364,7 @@ namespace Chummer
                     _lstIndexes.RemoveAt(_lstIndexes.Count - 1);
                     if (objKeyToRemove != null)
                         _dicUnorderedData.Remove(objKeyToRemove);
-                    if (!_dicUnorderedData[value.Key].Equals(value.Value))
+                    if (!objOldValue.Equals(value.Value))
                         _dicUnorderedData[value.Key] = value.Value;
                 }
                 else

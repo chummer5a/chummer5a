@@ -129,36 +129,38 @@ namespace Chummer
 
         private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(CharacterSettings.Books) && e.PropertyName != nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
-                return;
-            using (new CursorWait(this))
-                await LoadContent();
+            if (e.PropertyName == nameof(CharacterSettings.Books)
+                || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
+            {
+                using (new CursorWait(this))
+                    await LoadContent();
+            }
         }
 
         private async void cboCharacterSetting_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
-                return;
+            if (!_blnSkipRefresh)
+            {
+                string strSelectedSetting = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey;
+                if ((string.IsNullOrEmpty(strSelectedSetting)
+                     || !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                         strSelectedSetting, out CharacterSettings objSettings))
+                    && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
+                                                                            out objSettings)
+                    && !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                        GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
+                    objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
 
-            string strSelectedSetting = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey;
-            if ((string.IsNullOrEmpty(strSelectedSetting)
-                 || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                     strSelectedSetting, out CharacterSettings objSettings))
-                && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
-                                                                        out objSettings)
-                && !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                    GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
-                objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                if (objSettings != _objSelectedSetting)
+                {
+                    _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+                    _objSelectedSetting = objSettings;
+                    _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
 
-            if (objSettings == _objSelectedSetting)
-                return;
-
-            _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
-            _objSelectedSetting = objSettings;
-            _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
-
-            using (new CursorWait(this))
-                await LoadContent();
+                    using (new CursorWait(this))
+                        await LoadContent();
+                }
+            }
         }
 
         private async Task LoadContent()

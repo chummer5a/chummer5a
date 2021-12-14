@@ -90,10 +90,10 @@ namespace Chummer
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
 
             // Populate the Armor Category list.
-            string strFilterPrefix = "/chummer/armors/armor[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             if (objXmlCategoryList != null)
             {
+                string strFilterPrefix = "/chummer/armors/armor[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
                     string strInnerText = objXmlCategory.InnerText;
@@ -151,7 +151,7 @@ namespace Chummer
             {
                 // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
                 Armor objArmor = new Armor(_objCharacter);
-                List<Weapon> lstWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>(1);
                 objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
 
                 _objSelectedArmor = objArmor;
@@ -420,7 +420,7 @@ namespace Chummer
                                     objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
                         {
                             Armor objArmor = new Armor(_objCharacter);
-                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
                             objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
 
                             string strArmorGuid = objArmor.SourceIDString;
@@ -455,7 +455,7 @@ namespace Chummer
                     break;
 
                 default:
-                    List<ListItem> lstArmors = new List<ListItem>();
+                    List<ListItem> lstArmors = new List<ListItem>(objXmlArmorList.Count);
                     int intOverLimit = 0;
                     string strSpace = LanguageManager.GetString("String_Space");
                     foreach (XmlNode objXmlArmor in objXmlArmorList)

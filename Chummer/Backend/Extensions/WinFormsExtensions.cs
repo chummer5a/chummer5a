@@ -220,39 +220,40 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task DoThreadSafeAsync(this Control objControl, Action funcToRun)
         {
-            if (objControl.IsNullOrDisposed() || funcToRun == null)
-                return;
-            try
+            if (!objControl.IsNullOrDisposed() && funcToRun != null)
             {
-                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                if (myControlCopy.InvokeRequired)
+                try
                 {
-                    IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                    await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                    }
+                    else
+                        funcToRun.Invoke();
                 }
-                else
-                    funcToRun.Invoke();
-            }
-            catch (ObjectDisposedException) // e)
-            {
-                //we really don't need to care about that.
-                //Log.Trace(e);
-            }
-            catch (InvalidAsynchronousStateException e)
-            {
-                //we really don't need to care about that.
-                Log.Trace(e);
-            }
-            catch (System.Threading.ThreadAbortException)
-            {
-                //no need to do anything here - actually we can't anyway...
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
+                catch (ObjectDisposedException) // e)
+                {
+                    //we really don't need to care about that.
+                    //Log.Trace(e);
+                }
+                catch (InvalidAsynchronousStateException e)
+                {
+                    //we really don't need to care about that.
+                    Log.Trace(e);
+                }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    //no need to do anything here - actually we can't anyway...
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
 #if DEBUG
-                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                    Program.MainForm?.ShowMessageBox(objControl, e.ToString());
 #endif
+                }
             }
         }
 
@@ -265,39 +266,40 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task DoThreadSafeAsync(this Control objControl, Func<Task> funcToRun)
         {
-            if (objControl.IsNullOrDisposed() || funcToRun == null)
-                return;
-            try
+            if (!objControl.IsNullOrDisposed() && funcToRun != null)
             {
-                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                if (myControlCopy.InvokeRequired)
+                try
                 {
-                    IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                    await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                    }
+                    else
+                        await funcToRun.Invoke();
                 }
-                else
-                    await funcToRun.Invoke();
-            }
-            catch (ObjectDisposedException) // e)
-            {
-                //we really don't need to care about that.
-                //Log.Trace(e);
-            }
-            catch (InvalidAsynchronousStateException e)
-            {
-                //we really don't need to care about that.
-                Log.Trace(e);
-            }
-            catch (System.Threading.ThreadAbortException)
-            {
-                //no need to do anything here - actually we can't anyway...
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
+                catch (ObjectDisposedException) // e)
+                {
+                    //we really don't need to care about that.
+                    //Log.Trace(e);
+                }
+                catch (InvalidAsynchronousStateException e)
+                {
+                    //we really don't need to care about that.
+                    Log.Trace(e);
+                }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    //no need to do anything here - actually we can't anyway...
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
 #if DEBUG
-                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                    Program.MainForm?.ShowMessageBox(objControl, e.ToString());
 #endif
+                }
             }
         }
 

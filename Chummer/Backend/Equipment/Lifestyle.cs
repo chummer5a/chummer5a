@@ -320,8 +320,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
-
-            _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -830,10 +828,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole").ToList())
-                    {
-                        LifestyleQualities.Remove(objQuality);
-                    }
+                    LifestyleQualities.RemoveAll(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole");
                 }
 
                 XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + value.CleanXPath() + "]");
@@ -1453,7 +1448,7 @@ namespace Chummer.Backend.Equipment
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)

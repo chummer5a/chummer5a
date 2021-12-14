@@ -96,7 +96,7 @@ namespace ChummerDataViewer.Model
 
         private void WorkerOnStatusChanged(INotifyThreadStatus sender, StatusChangedEventArgs args)
         {
-            if (args.AttachedData?.guid != Guid ?? false)
+            if (args.AttachedData.guid != Guid)
                 return;
 
             _worker.StatusChanged -= WorkerOnStatusChanged;

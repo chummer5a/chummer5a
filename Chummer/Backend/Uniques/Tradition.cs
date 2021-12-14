@@ -225,7 +225,6 @@ namespace Chummer.Backend.Uniques
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteEndElement();
-            _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -1019,7 +1018,7 @@ namespace Chummer.Backend.Uniques
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)

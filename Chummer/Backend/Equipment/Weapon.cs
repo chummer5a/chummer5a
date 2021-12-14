@@ -640,7 +640,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("accuracy", _strAccuracy?.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("accuracy", _strAccuracy);
 
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
@@ -740,9 +740,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("weapontype", _strWeaponType);
             objWriter.WriteEndElement();
-
-            if (!IncludedInWeapon)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         private static readonly ReadOnlyCollection<string> s_OldClipValues = Array.AsReadOnly(new[]
@@ -2367,7 +2364,7 @@ namespace Chummer.Backend.Equipment
                     }
                     // Adjust the Weapon's Damage.
                     if (!string.IsNullOrEmpty(objAccessory.Damage))
-                        sbdBonusDamage.Append(" + " + objAccessory.Damage.TrimStartOnce('+'));
+                        sbdBonusDamage.Append(" + ").Append(objAccessory.Damage.TrimStartOnce('+'));
                     if (!string.IsNullOrEmpty(objAccessory.DamageReplacement))
                     {
                         blnDamageReplaced = true;
@@ -2393,7 +2390,7 @@ namespace Chummer.Backend.Equipment
                         // Adjust the Weapon's Damage.
                         string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
-                            sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
+                            sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
                         strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
                         {
@@ -2412,7 +2409,7 @@ namespace Chummer.Backend.Equipment
                         // Adjust the Weapon's Damage.
                         string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
-                            sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
+                            sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
                         strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
                         if (!string.IsNullOrEmpty(strTemp))
                         {
@@ -2434,7 +2431,7 @@ namespace Chummer.Backend.Equipment
                             // Adjust the Weapon's Damage.
                             string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
+                                sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
                             strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
                             {
@@ -2453,7 +2450,7 @@ namespace Chummer.Backend.Equipment
                             // Adjust the Weapon's Damage.
                             string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                sbdBonusDamage.Append(" + " + strTemp.TrimStartOnce('+'));
+                                sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
                             strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
                             {
@@ -2730,7 +2727,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strPrepend))
                         strThisAmmo = strPrepend + strThisAmmo;
                 }
-                sbdReturn.Append(strThisAmmo + strSpace);
+                sbdReturn.Append(strThisAmmo).Append(strSpace);
             }
             string strReturn = sbdReturn.ToString().Trim();
 
@@ -2973,15 +2970,15 @@ namespace Chummer.Backend.Equipment
 
             StringBuilder sbdReturn = new StringBuilder();
             if (lstModes.Contains("SS"))
-                sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage) + '/');
+                sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage)).Append('/');
             if (lstModes.Contains("SA"))
-                sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage) + '/');
+                sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage)).Append('/');
             if (lstModes.Contains("BF"))
-                sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage) + '/');
+                sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage)).Append('/');
             if (lstModes.Contains("FA"))
-                sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage) + '/');
+                sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage)).Append('/');
             if (lstModes.Contains("Special"))
-                sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage) + '/');
+                sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage)).Append('/');
 
             // Remove the trailing "/".
             if (sbdReturn.Length > 0)
@@ -3033,7 +3030,7 @@ namespace Chummer.Backend.Equipment
                     if (WeaponAccessories.All(objAccessory => !objAccessory.Equipped || objAccessory.Mount != strMount && objAccessory.ExtraMount != strMount)
                         && UnderbarrelWeapons.All(weapon => !weapon.Equipped || weapon.Mount != strMount && weapon.ExtraMount != strMount))
                     {
-                        sbdMounts.Append(strMount + '/');
+                        sbdMounts.Append(strMount).Append('/');
                     }
                 }
                 string strReturn = sbdMounts.ToString();
@@ -3135,7 +3132,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
                     if (!string.IsNullOrEmpty(strAPAdd))
-                        sbdBonusAP.Append(" + " + strAPAdd.TrimStartOnce('+'));
+                        sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                 }
                 else if (objGear?.WeaponBonus != null)
                 {
@@ -3146,7 +3143,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
                     if (!string.IsNullOrEmpty(strAPAdd))
-                        sbdBonusAP.Append(" + " + strAPAdd.TrimStartOnce('+'));
+                        sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                 }
 
                 if (_objCharacter != null && (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
@@ -3167,7 +3164,7 @@ namespace Chummer.Backend.Equipment
                         strAP = objAccessory.APReplacement;
                     // Adjust the Weapon's AP value.
                     if (!string.IsNullOrEmpty(objAccessory.AP))
-                        sbdBonusAP.Append(" + " + objAccessory.AP.TrimStartOnce('+'));
+                        sbdBonusAP.Append(" + ").Append(objAccessory.AP.TrimStartOnce('+'));
                 }
             }
 
@@ -3258,7 +3255,8 @@ namespace Chummer.Backend.Equipment
             StringBuilder sbdRCTip = new StringBuilder(1.ToString(GlobalSettings.CultureInfo) + strSpace);
             if (blnRefreshRCToolTip && strRCBase != "0")
             {
-                sbdRCTip.Append('+' + strSpace + LanguageManager.GetString("Label_Base", strLanguage) + '(' + strRCBase + ')');
+                sbdRCTip.Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_Base", strLanguage))
+                        .Append('(').Append(strRCBase).Append(')');
             }
 
             int.TryParse(strRCBase, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intRCBase);
@@ -3281,7 +3279,9 @@ namespace Chummer.Backend.Equipment
                             intRCFull += intLoopRCBonus;
 
                             if (blnRefreshRCToolTip)
-                                sbdRCTip.Append(strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')');
+                                sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                        .Append(objGear.DisplayName(objCulture, strLanguage)).Append(strSpace)
+                                        .Append('(').Append(strRCBonus).Append(')');
                         }
                     }
                     else if (objGear.WeaponBonus != null)
@@ -3293,7 +3293,9 @@ namespace Chummer.Backend.Equipment
                             intRCFull += intLoopRCBonus;
 
                             if (blnRefreshRCToolTip)
-                                sbdRCTip.Append(strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')');
+                                sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                        .Append(objGear.DisplayName(objCulture, strLanguage)).Append(strSpace)
+                                        .Append('(').Append(strRCBonus).Append(')');
                         }
                     }
                 }
@@ -3335,8 +3337,11 @@ namespace Chummer.Backend.Equipment
                     {
                         intRCBase += intLoopRCBonus;
                     }
+
                     if (blnRefreshRCToolTip)
-                        sbdRCTip.Append(strSpace + '+' + strSpace + objAccessory.DisplayName(strLanguage) + strSpace + '(' + objAccessory.RC + ')');
+                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                .Append(objAccessory.DisplayName(strLanguage)).Append(strSpace).Append('(')
+                                .Append(objAccessory.RC).Append(')');
                 }
             }
 
@@ -3348,7 +3353,8 @@ namespace Chummer.Backend.Equipment
                     intRCBase += intRecoil;
                     intRCFull += intRecoil;
                     if (blnRefreshRCToolTip)
-                        sbdRCTip.Append(strSpace + '+' + strSpace + strGroup + strSpace + '(' + intRecoil.ToString(objCulture) + ')');
+                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(strGroup).Append(strSpace)
+                                .Append('(').Append(intRecoil.ToString(objCulture)).Append(')');
                 }
             }
 
@@ -3359,8 +3365,9 @@ namespace Chummer.Backend.Equipment
                     // Add in the Recoil Group bonuses.
                     intRCFull += intRecoil;
                     if (blnRefreshRCToolTip)
-                        sbdRCTip.Append(strSpace + '+' + strSpace + string.Format(objCulture,
-                            LanguageManager.GetString("Tip_RecoilAccessories", strLanguage), strGroup, intRecoil));
+                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace).AppendFormat(
+                            objCulture, LanguageManager.GetString("Tip_RecoilAccessories", strLanguage), strGroup,
+                            intRecoil);
                 }
             }
 
@@ -3433,9 +3440,11 @@ namespace Chummer.Backend.Equipment
             intRCBase += intStrRC + 1;
             intRCFull += intStrRC + 1;
             if (blnRefreshRCToolTip)
-                sbdRCTip.Append(strSpace + '+' + strSpace + _objCharacter.STR.GetDisplayAbbrev(strLanguage) + strSpace
-                                + '[' + intUseSTR.ToString(objCulture) + strSpace + '/' + strSpace + 3.ToString(objCulture)
-                                + strSpace + '=' + strSpace + intStrRC.ToString(objCulture) + ']');
+                sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                        .Append(_objCharacter.STR.GetDisplayAbbrev(strLanguage)).Append(strSpace).Append('[')
+                        .Append(intUseSTR.ToString(objCulture)).Append(strSpace).Append('/').Append(strSpace)
+                        .Append(3.ToString(objCulture)).Append(strSpace).Append('=').Append(strSpace)
+                        .Append(intStrRC.ToString(objCulture)).Append(']');
             // If the full RC is not higher than the base, only the base value is shown.
             strRC = intRCBase.ToString(objCulture);
             if (intRCFull > intRCBase)
@@ -3546,7 +3555,7 @@ namespace Chummer.Backend.Equipment
                         string strImprovedName = objImprovement.ImprovedName;
                         if (string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name
                             || strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
-                            && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true).ToUpperInvariant()))
+                            && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase))
                         {
                             decImproveAccuracy += objImprovement.Value;
                         }
@@ -3775,7 +3784,7 @@ namespace Chummer.Backend.Equipment
             ProcessAttributesInXPath(objRange, strRange, true);
 
             if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                objRange.Append(" + " + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange).ToString(GlobalSettings.InvariantCultureInfo));
+                objRange.Append(" + ").Append(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange).ToString(GlobalSettings.InvariantCultureInfo));
 
             // Replace the division sign with "div" since we're using XPath.
             objRange.Replace("/", " div ");
@@ -3831,7 +3840,7 @@ namespace Chummer.Backend.Equipment
                 let strImprovedName = objImprovement.ImprovedName
                 where string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name ||
                       strImprovedName.StartsWith("[contains]", StringComparison.Ordinal) &&
-                      strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true).ToUpperInvariant())
+                      strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase)
                 select objImprovement.Value).Sum();
 
             i += decImproveAccuracy.StandardRound();
@@ -4045,9 +4054,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
                                     Improvement.ImprovementType.Smartlink);
-                                List<Gear> lstVehicleSmartlinks = ParentVehicle.GearChildren.DeepWhere(x => x.Children,
-                                    x => x.Bonus?.InnerXml.Contains("<smartlink>") == true).ToList();
-                                foreach (Gear objLoopGear in lstVehicleSmartlinks)
+                                foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
+                                             x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
                                 {
                                     string strLoopBonus = string.Empty;
                                     if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
@@ -4397,9 +4405,8 @@ namespace Chummer.Backend.Equipment
                             break;
 
                         case FiringMode.RemoteOperated:
-                            List<Gear> lstVehicleSmartlinks = ParentVehicle.GearChildren.DeepWhere(x => x.Children,
-                                x => x.Bonus?.InnerXml.Contains("<smartlink>") == true).ToList();
-                            foreach (Gear objLoopGear in lstVehicleSmartlinks)
+                            foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
+                                         x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
                             {
                                 string strLoopBonus = string.Empty;
                                 if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
@@ -4503,9 +4510,9 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.Skill:
                         {
                             Skill objSkill = Skill;
-                            string strExtra = sbdExtra.ToString();
                             if (objSkill != null)
                             {
+                                string strExtra = sbdExtra.ToString();
                                 // If the character has a Specialization, include it in the Dice Pool string.
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                                 {
@@ -5287,13 +5294,13 @@ namespace Chummer.Backend.Equipment
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
                             --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                            sbdRestrictedItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.Append(Environment.NewLine + "\t\t" + strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
                     }
                 }

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -33,7 +34,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         private readonly ReaderWriterLockSlim
@@ -75,7 +76,14 @@ namespace Chummer
         IEnumerator IEnumerable.GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return GetEnumerator();
+                return _dicData.GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _dicData.GetEnumerator();
         }
 
         /// <inheritdoc />
@@ -86,6 +94,18 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public bool Contains(object key)
+        {
+            return ContainsKey((TKey)key);
+        }
+
+        /// <inheritdoc />
+        public void Add(object key, object value)
+        {
+            Add((TKey)key, (TValue)value);
+        }
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
         public void Clear()
         {
             using (new EnterWriteLock(_rwlThis))
@@ -99,7 +119,7 @@ namespace Chummer
                 return _dicData.Contains(item);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             using (new EnterReadLock(_rwlThis))
@@ -113,15 +133,57 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public void CopyTo(Array array, int index)
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
+                {
+                    array.SetValue(kvpItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public KeyValuePair<TKey, TValue>[] ToArray()
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[Count];
+                int i = 0;
+                foreach (KeyValuePair<TKey, TValue> kvpLoop in _dicData)
+                {
+                    akvpReturn[i] = kvpLoop;
+                    ++i;
+                }
+                return akvpReturn;
+            }
+        }
+
+        /// <inheritdoc />
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             using (new EnterUpgradeableReadLock(_rwlThis))
             {
-                if (!_dicData.ContainsKey(item.Key) || !_dicData[item.Key].Equals(item.Value))
+                if (!_dicData.TryGetValue(item.Key, out TValue objValue) || !objValue.Equals(item.Value))
                     return false;
                 using (new EnterWriteLock(_rwlThis))
                     return _dicData.Remove(item.Key);
             }
+        }
+
+        /// <inheritdoc />
+        public bool Remove(TKey key)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                return _dicData.Remove(key);
+        }
+
+        /// <inheritdoc />
+        public void Remove(object key)
+        {
+            Remove((TKey)key);
         }
 
         public bool TryRemove(TKey key, out TValue value)
@@ -135,7 +197,36 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc />
+        public bool TryTake(out KeyValuePair<TKey, TValue> item)
+        {
+            bool blnTakeSuccessful = false;
+            TKey objKeyToTake = default;
+            TValue objValue = default;
+            using (new EnterUpgradeableReadLock(_rwlThis))
+            {
+                if (Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    objKeyToTake = Keys.First();
+                    if (_dicData.TryGetValue(objKeyToTake, out objValue))
+                    {
+                        using (new EnterWriteLock(_rwlThis))
+                            blnTakeSuccessful = _dicData.Remove(objKeyToTake);
+                    }
+                }
+            }
+
+            if (blnTakeSuccessful)
+            {
+                item = new KeyValuePair<TKey, TValue>(objKeyToTake, objValue);
+                return true;
+            }
+            item = default;
+            return false;
+        }
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.Count" />
         public int Count
         {
             get
@@ -146,9 +237,18 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public object SyncRoot => _rwlThis;
+
+        /// <inheritdoc />
+        public bool IsSynchronized => true;
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.IsReadOnly" />
         public bool IsReadOnly => false;
 
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc />
+        public bool IsFixedSize => false;
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
         public bool ContainsKey(TKey key)
         {
             using (new EnterReadLock(_rwlThis))
@@ -164,13 +264,20 @@ namespace Chummer
 
         public bool TryAdd(TKey key, TValue value)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterUpgradeableReadLock(_rwlThis))
             {
                 if (_dicData.ContainsKey(key))
                     return false;
-                _dicData.Add(key, value);
+                using (new EnterWriteLock(_rwlThis))
+                    _dicData.Add(key, value);
             }
             return true;
+        }
+
+        /// <inheritdoc />
+        public bool TryAdd(KeyValuePair<TKey, TValue> item)
+        {
+            return TryAdd(item.Key, item.Value);
         }
 
         /// <summary>
@@ -186,9 +293,9 @@ namespace Chummer
             TValue objReturn;
             using (new EnterWriteLock(_rwlThis))
             {
-                if (_dicData.ContainsKey(key))
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
-                    objReturn = updateValueFactory(key, _dicData[key]);
+                    objReturn = updateValueFactory(key, objExistingValue);
                     _dicData[key] = objReturn;
                 }
                 else
@@ -211,9 +318,9 @@ namespace Chummer
         {
             using (new EnterWriteLock(_rwlThis))
             {
-                if (_dicData.ContainsKey(key))
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
-                    TValue objNewValue = updateValueFactory(key, _dicData[key]);
+                    TValue objNewValue = updateValueFactory(key, objExistingValue);
                     _dicData[key] = objNewValue;
                     return objNewValue;
                 }
@@ -223,21 +330,15 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc />
-        public bool Remove(TKey key)
-        {
-            using (new EnterWriteLock(_rwlThis))
-                return _dicData.Remove(key);
-        }
-
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
         public bool TryGetValue(TKey key, out TValue value)
         {
             using (new EnterReadLock(_rwlThis))
                 return _dicData.TryGetValue(key, out value);
         }
 
-        /// <inheritdoc cref="IDictionary" />
+        // ReSharper disable once InheritdocInvalidUsage
+        /// <inheritdoc />
         public TValue this[TKey key]
         {
             get
@@ -258,22 +359,33 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public object this[object key]
+        {
+            get => this[(TKey)key];
+            set => this[(TKey)key] = (TValue)value;
+        }
+
+        /// <inheritdoc />
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys
         {
             get
             {
                 using (new EnterReadLock(_rwlThis))
-                    return _dicData.Keys;
+                {
+                    // This construction makes sure we hold onto the lock until enumeration is done
+                    foreach (TKey objKey in _dicData.Keys)
+                        yield return objKey;
+                }
             }
         }
 
         /// <inheritdoc />
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
+        ICollection IDictionary.Keys
         {
             get
             {
                 using (new EnterReadLock(_rwlThis))
-                    return _dicData.Values;
+                    return _dicData.Keys;
             }
         }
 
@@ -288,7 +400,31 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                {
+                    // This construction makes sure we hold onto the lock until enumeration is done
+                    foreach (TValue objValue in _dicData.Values)
+                        yield return objValue;
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public ICollection<TValue> Values
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return _dicData.Values;
+            }
+        }
+
+        /// <inheritdoc />
+        ICollection IDictionary.Values
         {
             get
             {

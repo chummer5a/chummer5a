@@ -340,7 +340,7 @@ namespace Chummer
             if (objOther != null)
                 CopyValues(objOther);
         }
-        
+
         public void CopyValues(CharacterSettings objOther)
         {
             if (objOther == null)
@@ -971,9 +971,9 @@ namespace Chummer
                     // <qualitykarmalimit />
                     objWriter.WriteElementString("qualitykarmalimit", _intQualityKarmaLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <priorityarray />
-                    objWriter.WriteElementString("priorityarray", _strPriorityArray.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("priorityarray", _strPriorityArray);
                     // <prioritytable />
-                    objWriter.WriteElementString("prioritytable", _strPriorityTable.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("prioritytable", _strPriorityTable);
                     // <sumtoten />
                     objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalSettings.InvariantCultureInfo));
                     // <availability />
@@ -1965,7 +1965,7 @@ namespace Chummer
         public string BookXPath(bool excludeHidden = true)
         {
             StringBuilder sbdPath = excludeHidden ? new StringBuilder("not(hide)") : new StringBuilder();
-            
+
             if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
             {
                 RecalculateBookXPath();

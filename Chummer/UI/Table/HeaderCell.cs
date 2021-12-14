@@ -153,7 +153,7 @@ namespace Chummer.UI.Table
                     // swap top & bottom
                     (intTipY, intBottomY) = (intBottomY, intTipY);
                 }
-                using (Brush objBrush = new SolidBrush(ColorManager.ControlLightest))
+                using (SolidBrush objBrush = new SolidBrush(ColorManager.ControlLightest))
                     e.Graphics.FillPolygon(objBrush,
                         new[]
                         {

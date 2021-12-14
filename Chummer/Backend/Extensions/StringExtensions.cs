@@ -20,6 +20,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -904,52 +905,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
-        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
-        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
-        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
-        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static StringBuilder CheapReplace(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
-        {
-            return sbdInput.CheapReplace(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
-        }
-
-        /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
-        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
-        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
-        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
-        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static StringBuilder CheapReplace(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
-        {
-            if (sbdInput?.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
-            {
-                if (eStringComparison == StringComparison.Ordinal)
-                {
-                    if (strOriginal.Contains(strOldValue))
-                        sbdInput.Replace(strOldValue, funcNewValueFactory.Invoke());
-                }
-                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
-                {
-                    string strOldStringBuilderValue = sbdInput.ToString();
-                    sbdInput.Clear();
-                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison));
-                }
-            }
-
-            return sbdInput;
-        }
-
-        /// <summary>
         /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
@@ -982,182 +937,6 @@ namespace Chummer
             }
 
             return strInput;
-        }
-
-        /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
-        /// This is the async version that can be run in case a value is really expensive to get.
-        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
-        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
-        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
-        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<StringBuilder> CheapReplaceAsync(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
-        {
-            return sbdInput.CheapReplaceAsync(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
-        }
-
-        /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
-        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
-        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
-        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
-        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<StringBuilder> CheapReplaceAsync(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
-        {
-            if (sbdInput?.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
-            {
-                if (eStringComparison == StringComparison.Ordinal)
-                {
-                    if (strOriginal.Contains(strOldValue))
-                    {
-                        string strFactoryResult = string.Empty;
-                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
-                        sbdInput.Replace(strOldValue, strFactoryResult);
-                    }
-                }
-                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
-                {
-                    string strFactoryResult = string.Empty;
-                    Task tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
-                        x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
-                    string strOldStringBuilderValue = sbdInput.ToString();
-                    sbdInput.Clear();
-                    await tskGetValue;
-                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, strFactoryResult, eStringComparison));
-                }
-            }
-
-            return sbdInput;
-        }
-
-        /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
-        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
-        /// <param name="lstValues">A collection that contains the objects to append.</param>
-        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static StringBuilder AppendJoin<T>(this StringBuilder sbdInput, string strSeparator, IEnumerable<T> lstValues)
-        {
-            if (sbdInput == null)
-                throw new ArgumentNullException(nameof(sbdInput));
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (T objValue in lstValues)
-            {
-                sbdInput.Append(blnFirst ? objValue.ToString() : strSeparator + objValue);
-                blnFirst = false;
-            }
-            return sbdInput;
-        }
-
-        /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
-        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
-        /// <param name="lstValues">A collection that contains the strings to append.</param>
-        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, IEnumerable<string> lstValues)
-        {
-            if (sbdInput == null)
-                throw new ArgumentNullException(nameof(sbdInput));
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (string strValue in lstValues)
-            {
-                sbdInput.Append(blnFirst ? strValue : strSeparator + strValue);
-                blnFirst = false;
-            }
-            return sbdInput;
-        }
-
-        /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
-        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
-        /// <param name="astrValues">An array that contains the string to append.</param>
-        /// <param name="intStartIndex">The first element in <paramref name="astrValues" /> to use.</param>
-        /// <param name="intCount">The number of elements of <paramref name="astrValues" /> to use.</param>
-        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, string[] astrValues, int intStartIndex, int intCount)
-        {
-            if (sbdInput == null)
-                throw new ArgumentNullException(nameof(sbdInput));
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
-            if (intStartIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            if (intCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(intCount));
-            if (intStartIndex + intCount >= astrValues.Length)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
-            {
-                string strLoop = astrValues[i + intStartIndex];
-                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
-            }
-            return sbdInput;
-        }
-
-        /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
-        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
-        /// <param name="astrValues">An array that contains the string to append.</param>
-        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, params string[] astrValues)
-        {
-            if (sbdInput == null)
-                throw new ArgumentNullException(nameof(sbdInput));
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
-            {
-                string strLoop = astrValues[i];
-                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
-            }
-            return sbdInput;
-        }
-
-        /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
-        /// </summary>
-        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
-        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
-        /// <param name="aobjValues">An array that contains the objects to append.</param>
-        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, params object[] aobjValues)
-        {
-            if (sbdInput == null)
-                throw new ArgumentNullException(nameof(sbdInput));
-            if (aobjValues == null)
-                throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
-            {
-                string strLoop = aobjValues[i].ToString();
-                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
-            }
-            return sbdInput;
         }
 
         /// <summary>
@@ -1259,6 +1038,19 @@ namespace Chummer
                     sbdReturn.AppendLine(); // Empty line
             }
             return sbdReturn.ToString();
+        }
+
+        /// <summary>
+        /// Checks if every letter in a string is uppercase or not.
+        /// </summary>
+        /// <param name="strText"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static bool IsAllLettersUpperCase(this string strText)
+        {
+            if (strText == null)
+                throw new ArgumentNullException(nameof(strText));
+            return string.IsNullOrEmpty(strText) || strText.All(x => !char.IsLetter(x) || char.IsUpper(x));
         }
 
         /// <summary>

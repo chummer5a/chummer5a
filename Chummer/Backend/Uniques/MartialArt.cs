@@ -200,9 +200,6 @@ namespace Chummer
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
-
-            if (!IsQuality)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>

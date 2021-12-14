@@ -95,6 +95,23 @@ namespace Chummer
                     _watcherCharacterRosterFolder.Renamed -= RefreshWatchList;
                 }
             }
+
+            void treCharacterList_OnDefaultDragEnter(object sender, DragEventArgs e)
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+
+            void treCharacterList_OnDefaultDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+            {
+                if (!(sender is TreeView) || e == null)
+                    return;
+                //Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
+                TreeNode objNode = e.Node;
+                if (objNode?.Tag is Action act)
+                {
+                    act.Invoke();
+                }
+            }
         }
 
         private async void frmCharacterRoster_Load(object sender, EventArgs e)
@@ -571,77 +588,80 @@ namespace Chummer
         private async Task RefreshPluginNodesInner([NotNull] IPlugin objPluginToRefresh)
         {
             int intNodeOffset = Program.PluginLoader.MyActivePlugins.IndexOf(objPluginToRefresh);
-            if (intNodeOffset < 0)
+            if (intNodeOffset >= 0)
+            {
+                await Task.Run(async () =>
+                {
+                    Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + objPluginToRefresh);
+                    List<TreeNode> lstNodes =
+                        (await objPluginToRefresh.GetCharacterRosterTreeNode(this, true))?.OrderBy(a => a.Text)
+                        .ToList() ?? new List<TreeNode>();
+                    for (int i = 0; i < lstNodes.Count; ++i)
+                    {
+                        TreeNode node = lstNodes[i];
+                        TreeNode objExistingNode = await treCharacterList.DoThreadSafeFuncAsync(() =>
+                            treCharacterList.Nodes.Cast<TreeNode>()
+                                            .FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag));
+                        try
+                        {
+                            await treCharacterList.DoThreadSafeAsync(() =>
+                            {
+                                if (objExistingNode != null)
+                                {
+                                    treCharacterList.Nodes.Remove(objExistingNode);
+                                }
+
+                                if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText) || node.Tag != null)
+                                {
+                                    if (treCharacterList.Nodes.ContainsKey(node.Name))
+                                        treCharacterList.Nodes.RemoveByKey(node.Name);
+                                    TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
+                                    TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
+                                    TreeNode objWatchNode = treCharacterList.FindNode("Watch", false);
+                                    if (objFavoriteNode != null && objRecentNode != null && objWatchNode != null)
+                                        treCharacterList.Nodes.Insert(i + intNodeOffset + 3, node);
+                                    else if (objFavoriteNode != null || objRecentNode != null || objWatchNode != null)
+                                    {
+                                        if ((objFavoriteNode != null && objRecentNode != null) ||
+                                            (objFavoriteNode != null && objWatchNode != null) ||
+                                            (objRecentNode != null && objWatchNode != null))
+                                            treCharacterList.Nodes.Insert(i + intNodeOffset + 2, node);
+                                        else
+                                            treCharacterList.Nodes.Insert(i + intNodeOffset + 1, node);
+                                    }
+                                    else
+                                        treCharacterList.Nodes.Insert(i + intNodeOffset, node);
+                                }
+
+                                node.Expand();
+                            });
+                        }
+                        catch (ObjectDisposedException e)
+                        {
+                            Log.Trace(e);
+                        }
+                        catch (InvalidAsynchronousStateException e)
+                        {
+                            Log.Trace(e);
+                        }
+                        catch (ArgumentException e)
+                        {
+                            Log.Trace(e);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Warn(e);
+                        }
+                    }
+
+                    Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + objPluginToRefresh
+                             + " finished.");
+                });
+            }
+            else
             {
                 Utils.BreakIfDebug();
-                return;
             }
-            await Task.Run(async () =>
-            {
-                Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + objPluginToRefresh);
-                List<TreeNode> lstNodes =
-                    (await objPluginToRefresh.GetCharacterRosterTreeNode(this, true))?.OrderBy(a => a.Text)
-                    .ToList() ?? new List<TreeNode>();
-                for (int i = 0; i < lstNodes.Count; ++i)
-                {
-                    TreeNode node = lstNodes[i];
-                    TreeNode objExistingNode = await treCharacterList.DoThreadSafeFuncAsync(() =>
-                        treCharacterList.Nodes.Cast<TreeNode>()
-                            .FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag));
-                    try
-                    {
-                        await treCharacterList.DoThreadSafeAsync(() =>
-                        {
-                            if (objExistingNode != null)
-                            {
-                                treCharacterList.Nodes.Remove(objExistingNode);
-                            }
-
-                            if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText) || node.Tag != null)
-                            {
-                                if (treCharacterList.Nodes.ContainsKey(node.Name))
-                                    treCharacterList.Nodes.RemoveByKey(node.Name);
-                                TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
-                                TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
-                                TreeNode objWatchNode = treCharacterList.FindNode("Watch", false);
-                                if (objFavoriteNode != null && objRecentNode != null && objWatchNode != null)
-                                    treCharacterList.Nodes.Insert(i + intNodeOffset + 3, node);
-                                else if (objFavoriteNode != null || objRecentNode != null || objWatchNode != null)
-                                {
-                                    if ((objFavoriteNode != null && objRecentNode != null) ||
-                                        (objFavoriteNode != null && objWatchNode != null) ||
-                                        (objRecentNode != null && objWatchNode != null))
-                                        treCharacterList.Nodes.Insert(i + intNodeOffset + 2, node);
-                                    else
-                                        treCharacterList.Nodes.Insert(i + intNodeOffset + 1, node);
-                                }
-                                else
-                                    treCharacterList.Nodes.Insert(i + intNodeOffset, node);
-                            }
-
-                            node.Expand();
-                        });
-                    }
-                    catch (ObjectDisposedException e)
-                    {
-                        Log.Trace(e);
-                    }
-                    catch (InvalidAsynchronousStateException e)
-                    {
-                        Log.Trace(e);
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Log.Trace(e);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Warn(e);
-                    }
-                }
-
-                Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + objPluginToRefresh + " finished.");
-            });
         }
 
         /// <summary>
@@ -819,11 +839,6 @@ namespace Chummer
             objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
         }
 
-        private static void treCharacterList_OnDefaultDragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
         private void treCharacterList_OnDefaultDragOver(object sender, DragEventArgs e)
         {
             if (!(sender is TreeView treSenderView) || e == null)
@@ -842,18 +857,6 @@ namespace Chummer
 
             // Clear the background color for all other Nodes.
             treCharacterList.ClearNodeBackground(objNode);
-        }
-
-        private static void treCharacterList_OnDefaultDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            if (!(sender is TreeView) || e == null)
-                return;
-            //Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = e.Node;
-            if (objNode?.Tag is Action act)
-            {
-                act.Invoke();
-            }
         }
 
         private void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)

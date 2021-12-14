@@ -289,8 +289,6 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            string strSource = _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
-
             // If the Gear is Ammunition, ask the user to select a Weapon Category for it to be limited to.
             string strAmmoWeaponType = string.Empty;
             bool blnDoExtra = false;
@@ -369,6 +367,7 @@ namespace Chummer.Backend.Equipment
 
                 if (blnApply)
                 {
+                    string strSource = _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
                     ImprovementManager.ForcedValue = _strForcedValue;
                     if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
                         strSource, Bonus, intRating, DisplayNameShort(GlobalSettings.Language)))
@@ -637,10 +636,6 @@ namespace Chummer.Backend.Equipment
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
             int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
                 GlobalSettings.InvariantCultureInfo, out int intRating);
-            string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
-            decimal decQty = Convert.ToDecimal(lstGearAttributes?["qty"]?.InnerText ?? "1",
-                GlobalSettings.InvariantCultureInfo);
-            string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
             if (xmlGearNode["name"] != null)
             {
                 xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " +
@@ -672,6 +667,10 @@ namespace Chummer.Backend.Equipment
 
             if (xmlGearDataNode != null)
             {
+                string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
+                decimal decQty = Convert.ToDecimal(lstGearAttributes?["qty"]?.InnerText ?? "1",
+                                                   GlobalSettings.InvariantCultureInfo);
+                string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
                 Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements);
 
                 string strOldCapacity = Capacity;
@@ -876,9 +875,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
 
             objWriter.WriteEndElement();
-
-            if (!IncludedInParent)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -1075,10 +1071,10 @@ namespace Chummer.Backend.Equipment
 
                 if (Bonus != null || WirelessBonus != null)
                 {
-                    bool blnAddImprovement = true;
                     // If this is a Focus which is not bonded, don't do anything.
                     if (Category != "Stacked Focus")
                     {
+                        bool blnAddImprovement = true;
                         if (Category.EndsWith("Foci", StringComparison.Ordinal))
                             blnAddImprovement = Bonded;
 
@@ -1139,10 +1135,10 @@ namespace Chummer.Backend.Equipment
             else if (!Equipped && (Bonus != null || WirelessBonus != null) && !_objCharacter.Improvements.Any(x =>
                 x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId))
             {
-                bool blnAddImprovement = true;
                 // If this is a Focus which is not bonded, don't do anything.
                 if (Category != "Stacked Focus")
                 {
+                    bool blnAddImprovement = true;
                     if (Category.EndsWith("Foci", StringComparison.Ordinal))
                         blnAddImprovement = Bonded;
 
@@ -1318,7 +1314,7 @@ namespace Chummer.Backend.Equipment
                     .InvariantCultureInfo));
             objWriter.WriteElementString("capacity", Capacity);
             objWriter.WriteElementString("armorcapacity", ArmorCapacity);
-            objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
+            objWriter.WriteElementString("maxrating", MaxRating);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("qty", DisplayQuantity(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
@@ -3816,9 +3812,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void AddGearImprovements()
         {
-            string strForce = string.Empty;
             if (Bonus != null || (WirelessOn && WirelessBonus != null))
             {
+                string strForce = string.Empty;
                 if (!string.IsNullOrEmpty(Extra))
                     strForce = Extra;
                 ImprovementManager.ForcedValue = strForce;

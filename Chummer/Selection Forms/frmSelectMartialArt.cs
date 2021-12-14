@@ -113,7 +113,7 @@ namespace Chummer
                             if (xmlTechniqueNode != null)
                             {
                                 if (objTechniqueStringBuilder.Length > 0)
-                                    objTechniqueStringBuilder.AppendLine(",");
+                                    objTechniqueStringBuilder.AppendLine(',');
 
                                 objTechniqueStringBuilder.Append(!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? xmlTechniqueNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strLoopTechniqueName : strLoopTechniqueName);
                             }
@@ -217,7 +217,7 @@ namespace Chummer
 
             XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + "]");
 
-            List<ListItem> lstMartialArt = new List<ListItem>();
+            List<ListItem> lstMartialArt = new List<ListItem>(objArtList.Count);
             foreach (XPathNavigator objXmlArt in objArtList)
             {
                 string strId = objXmlArt.SelectSingleNodeAndCacheExpression("id")?.Value;

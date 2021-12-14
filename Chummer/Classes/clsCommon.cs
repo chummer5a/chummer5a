@@ -1457,7 +1457,7 @@ namespace Chummer
                             else // if it is not bigger it is the same length
                             {
                                 // this must be an upper case title
-                                if (strCurrentLine.ToUpperInvariant() == strCurrentLine)
+                                if (strCurrentLine.IsAllLettersUpperCase())
                                 {
                                     intTitleIndex = i;
                                     blnTitleWithColon = false;
@@ -1476,7 +1476,7 @@ namespace Chummer
                     else // we already found our title, just go to the end of the block
                     {
                         // it is something in all caps we need to verify what it is
-                        if (strCurrentLine.ToUpperInvariant() == strCurrentLine)
+                        if (strCurrentLine.IsAllLettersUpperCase())
                         {
                             // if it is header or footer information just remove it
                             // do we also include lines with just numbers as probably page numbers??
