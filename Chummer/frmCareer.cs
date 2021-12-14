@@ -3914,7 +3914,7 @@ namespace Chummer
                 // Check for Improved Sensor bonus.
                 if (objMod.Bonus?["improvesensor"] != null || objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null)
                 {
-                    objMod.Parent.ChangeVehicleSensor(treVehicles, false);
+                    objMod.ParentVehicle.ChangeVehicleSensor(treVehicles, false);
                 }
 
                 // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
@@ -3934,7 +3934,7 @@ namespace Chummer
 
                         decimal decPercentage = frmModPercent.SelectedValue;
 
-                        decimal decVehicleCost = objMod.Parent.OwnCost;
+                        decimal decVehicleCost = objMod.ParentVehicle.OwnCost;
 
                         // Make sure the character has enough Nuyen for the expense.
                         decimal decCost = decVehicleCost * decPercentage / 100;
@@ -3944,14 +3944,14 @@ namespace Chummer
 
                         XmlDocument objVehiclesDoc = CharacterObject.LoadData("vehicles.xml");
                         XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                        objRetrofit.Create(objXmlNode, 0, objMod.Parent);
+                        objRetrofit.Create(objXmlNode, 0, objMod.ParentVehicle);
                         objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
                         objRetrofit.IncludedInVehicle = true;
-                        objMod.Parent.Mods.Add(objRetrofit);
+                        objMod.ParentVehicle.Mods.Add(objRetrofit);
 
                         // Create an Expense Log Entry for removing the Obsolete Mod.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_ExpenseVehicleRetrofit"), objMod.Parent.CurrentDisplayName), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_ExpenseVehicleRetrofit"), objMod.ParentVehicle.CurrentDisplayName), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                         // Adjust the character's Nuyen total.
@@ -3963,7 +3963,7 @@ namespace Chummer
                 if (objMod.WeaponMountParent != null)
                     objMod.WeaponMountParent.Mods.Remove(objMod);
                 else
-                    objMod.Parent.Mods.Remove(objMod);
+                    objMod.ParentVehicle.Mods.Remove(objMod);
             }
             else if (treVehicles.SelectedNode?.Tag is WeaponAccessory objAccessory)
             {
@@ -9105,7 +9105,7 @@ namespace Chummer
                     }
 
                     frmPickCyberware.LockGrade();
-                    frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
+                    frmPickCyberware.ParentVehicle = objVehicle ?? objMod.ParentVehicle;
                     frmPickCyberware.ShowDialog(this);
 
                     if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -15063,6 +15063,7 @@ namespace Chummer
                     }
 
                     frmPickGear.DefaultSearchText = strForceItemValue;
+                    frmPickGear.SelectedGear = objSelectedGear?.SourceIDString ?? string.Empty;
                     frmPickGear.ForceItemAmmoForWeaponType = objAmmoForWeapon?.WeaponType ?? string.Empty;
 
                     frmPickGear.ShowDialog(this);
@@ -15800,11 +15801,11 @@ namespace Chummer
                         {
                             if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                             {
-                                objMod.MaxRating = objMod.Parent.TotalSeats.ToString(GlobalSettings.CultureInfo);
+                                objMod.MaxRating = objMod.ParentVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
                             }
                             else if (objMod.MaxRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                             {
-                                objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalSettings.CultureInfo);
+                                objMod.MaxRating = objMod.ParentVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
                             }
                             if (Convert.ToInt32(objMod.MaxRating, GlobalSettings.InvariantCultureInfo) > 0)
                             {

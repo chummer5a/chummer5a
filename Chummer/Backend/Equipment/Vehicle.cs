@@ -775,7 +775,7 @@ namespace Chummer.Backend.Equipment
                 {
                     VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
-                        Parent = this
+                        ParentVehicle = this
                     };
                     objMod.Load(nodChild, blnCopy);
                     _lstVehicleMods.Add(objMod);

@@ -442,6 +442,7 @@
     <Compile Include="helpers\EnterUpgradeableReadLock.cs" />
     <Compile Include="helpers\EnterWriteLock.cs" />
     <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
+    <Compile Include="Interfaces\IHasAvailability.cs" />
     <Compile Include="Interfaces\ITranslatable.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="Classes\SettingsManager.cs" />

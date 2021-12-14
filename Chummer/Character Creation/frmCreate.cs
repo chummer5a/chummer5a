@@ -3308,7 +3308,7 @@ namespace Chummer
                         // Check for Improved Sensor bonus.
                         if (objMod.Bonus?["improvesensor"] != null || objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null)
                         {
-                            objMod.Parent.ChangeVehicleSensor(treVehicles, false);
+                            objMod.ParentVehicle.ChangeVehicleSensor(treVehicles, false);
                         }
 
                         // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
@@ -3331,7 +3331,7 @@ namespace Chummer
                                 decPercentage = frmModPercent.SelectedValue;
                             }
 
-                            decimal decVehicleCost = objMod.Parent.OwnCost;
+                            decimal decVehicleCost = objMod.ParentVehicle.OwnCost;
 
                             // Make sure the character has enough Nuyen for the expense.
                             decimal decCost = decVehicleCost * decPercentage / 100;
@@ -3341,17 +3341,17 @@ namespace Chummer
 
                             XmlDocument objVehiclesDoc = CharacterObject.LoadData("vehicles.xml");
                             XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                            objRetrofit.Create(objXmlNode, 0, objMod.Parent);
+                            objRetrofit.Create(objXmlNode, 0, objMod.ParentVehicle);
                             objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
                             objRetrofit.IncludedInVehicle = true;
-                            objMod.Parent.Mods.Add(objRetrofit);
+                            objMod.ParentVehicle.Mods.Add(objRetrofit);
                         }
 
                         objMod.DeleteVehicleMod();
                         if (objMod.WeaponMountParent != null)
                             objMod.WeaponMountParent.Mods.Remove(objMod);
                         else
-                            objMod.Parent.Mods.Remove(objMod);
+                            objMod.ParentVehicle.Mods.Remove(objMod);
 
                         IsCharacterUpdateRequested = true;
                         IsDirty = true;
@@ -4689,7 +4689,7 @@ namespace Chummer
 
                 case VehicleMod selectedMod when (selectedMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) || selectedMod.Name.Contains("Drone Arm")):
                     objMod = selectedMod;
-                    objVehicle = selectedMod.Parent;
+                    objVehicle = selectedMod.ParentVehicle;
                     break;
             }
 
@@ -5644,7 +5644,7 @@ namespace Chummer
                         }
 
                         frmPickCyberware.LockGrade();
-                        frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
+                        frmPickCyberware.ParentVehicle = objVehicle ?? objMod.ParentVehicle;
                         frmPickCyberware.ShowDialog(this);
 
                         if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -12005,17 +12005,17 @@ namespace Chummer
                         {
                             if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                             {
-                                objMod.MaxRating = objMod.Parent.TotalSeats.ToString(GlobalSettings.CultureInfo);
+                                objMod.MaxRating = objMod.ParentVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
                             }
                             else if (objMod.MaxRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                             {
-                                objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalSettings.CultureInfo);
+                                objMod.MaxRating = objMod.ParentVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
                             }
                             if (int.TryParse(objMod.MaxRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intMaxRating) && intMaxRating > 0)
                             {
                                 lblVehicleRatingLabel.Visible = true;
                                 // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
-                                nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,", StringComparison.Ordinal) ? Math.Min(intMaxRating, objMod.Parent.MaxArmor) : intMaxRating;
+                                nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,", StringComparison.Ordinal) ? Math.Min(intMaxRating, objMod.ParentVehicle.MaxArmor) : intMaxRating;
                                 nudVehicleRating.Minimum = 1;
                                 nudVehicleRating.Visible = true;
                                 nudVehicleRating.Value = objMod.Rating;
@@ -12061,7 +12061,7 @@ namespace Chummer
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
                                     .SelectSingleNodeAndCacheExpression("/chummer/modcategories")).Contains(objMod.Category);
                             chkWeaponBlackMarketDiscount.Checked = objMod.IncludedInVehicle
-                                ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.Parent.DiscountCost)
+                                ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.ParentVehicle.DiscountCost)
                                 : objMod.DiscountCost;
                         }
                         else

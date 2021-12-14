@@ -341,7 +341,7 @@ namespace Chummer.Backend.Equipment
                     {
                         VehicleMod objMod = new VehicleMod(_objCharacter)
                         {
-                            Parent = Parent,
+                            ParentVehicle = Parent,
                             WeaponMountParent = this
                         };
                         objMod.Load(xmlModNode);
@@ -491,7 +491,7 @@ namespace Chummer.Backend.Equipment
                         {
                             VehicleMod objMod = new VehicleMod(_objCharacter)
                             {
-                                Parent = Parent,
+                                ParentVehicle = Parent,
                                 WeaponMountParent = this,
                                 IncludedInVehicle = true
                             };

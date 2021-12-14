@@ -172,6 +172,7 @@ namespace Chummer
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(59, 20);
             this.nudRating.TabIndex = 11;
+            this.nudRating.Visible = false;
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
             // lblRatingLabel
@@ -186,6 +187,7 @@ namespace Chummer
             this.lblRatingLabel.Tag = "Label_Rating";
             this.lblRatingLabel.Text = "Rating:";
             this.lblRatingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblRatingLabel.Visible = false;
             // 
             // lblCost
             // 
@@ -198,6 +200,7 @@ namespace Chummer
             this.lblCost.TabIndex = 9;
             this.lblCost.Text = "[0]";
             this.lblCost.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCost.Visible = false;
             // 
             // lblCostLabel
             // 
@@ -211,6 +214,7 @@ namespace Chummer
             this.lblCostLabel.Tag = "Label_Cost";
             this.lblCostLabel.Text = "Cost:";
             this.lblCostLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblCostLabel.Visible = false;
             // 
             // lblAvail
             // 
@@ -223,6 +227,7 @@ namespace Chummer
             this.lblAvail.TabIndex = 5;
             this.lblAvail.Text = "[0]";
             this.lblAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblAvail.Visible = false;
             // 
             // lblAvailLabel
             // 
@@ -236,6 +241,7 @@ namespace Chummer
             this.lblAvailLabel.Tag = "Label_Avail";
             this.lblAvailLabel.Text = "Avail:";
             this.lblAvailLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblAvailLabel.Visible = false;
             // 
             // lblMaximumCapacity
             // 
@@ -248,6 +254,7 @@ namespace Chummer
             this.lblMaximumCapacity.Size = new System.Drawing.Size(101, 13);
             this.lblMaximumCapacity.TabIndex = 30;
             this.lblMaximumCapacity.Text = "[Maximum Capacity]";
+            this.lblMaximumCapacity.Visible = false;
             // 
             // lblSearchLabel
             // 
@@ -297,6 +304,7 @@ namespace Chummer
             this.lblGearDeviceRating.Size = new System.Drawing.Size(19, 13);
             this.lblGearDeviceRating.TabIndex = 23;
             this.lblGearDeviceRating.Text = "[0]";
+            this.lblGearDeviceRating.Visible = false;
             // 
             // lblGearDeviceRatingLabel
             // 
@@ -310,6 +318,7 @@ namespace Chummer
             this.lblGearDeviceRatingLabel.Tag = "Label_DeviceRating";
             this.lblGearDeviceRatingLabel.Text = "Device Rating:";
             this.lblGearDeviceRatingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblGearDeviceRatingLabel.Visible = false;
             // 
             // lblSource
             // 
@@ -335,6 +344,7 @@ namespace Chummer
             this.lblSourceLabel.TabIndex = 31;
             this.lblSourceLabel.Tag = "Label_Source";
             this.lblSourceLabel.Text = "Source:";
+            this.lblSourceLabel.Visible = false;
             // 
             // lblCapacity
             // 
@@ -348,6 +358,7 @@ namespace Chummer
             this.lblCapacity.TabIndex = 3;
             this.lblCapacity.Text = "[0]";
             this.lblCapacity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCapacity.Visible = false;
             // 
             // nudGearQty
             // 
@@ -372,6 +383,7 @@ namespace Chummer
             0,
             0,
             0});
+            this.nudGearQty.Visible = false;
             this.nudGearQty.ValueChanged += new System.EventHandler(this.nudGearQty_ValueChanged);
             // 
             // lblGearQtyLabel
@@ -386,6 +398,7 @@ namespace Chummer
             this.lblGearQtyLabel.Tag = "Label_Qty";
             this.lblGearQtyLabel.Text = "Qty:";
             this.lblGearQtyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblGearQtyLabel.Visible = false;
             // 
             // chkFreeItem
             // 
@@ -478,6 +491,7 @@ namespace Chummer
             this.lblTest.TabIndex = 7;
             this.lblTest.Text = "[0]";
             this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTest.Visible = false;
             // 
             // lblTestLabel
             // 
@@ -491,6 +505,7 @@ namespace Chummer
             this.lblTestLabel.Tag = "Label_Test";
             this.lblTestLabel.Text = "Test:";
             this.lblTestLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblTestLabel.Visible = false;
             // 
             // chkBlackMarketDiscount
             // 
@@ -720,6 +735,7 @@ namespace Chummer
             this.lblCapacityLabel.Tag = "Label_Capacity";
             this.lblCapacityLabel.Text = "Capacity:";
             this.lblCapacityLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblCapacityLabel.Visible = false;
             // 
             // flpMarkup
             // 
