@@ -86,14 +86,14 @@ namespace Chummer
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
             foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
-                string strLoop = strCategory.Trim();
-                if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedCategories.Add(strLoop);
+                if (!string.IsNullOrWhiteSpace(strCategory))
+                    _setAllowedCategories.Add(strCategory.Trim());
             }
 
             foreach (string strName in strAllowedNames.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
-                string strLoop = strName.Trim();
-                if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedNames.Add(strLoop);
+                if (!string.IsNullOrWhiteSpace(strName))
+                    _setAllowedNames.Add(strName.Trim());
             }
         }
 
@@ -172,6 +172,8 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_strSelectedGear))
                 lstGear.SelectedValue = _strSelectedGear;
+            // Make sure right-side controls are properly updated depending on how the selections above worked out
+            UpdateGearInfo();
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -531,14 +533,20 @@ namespace Chummer
         /// </summary>
         private void UpdateGearInfo()
         {
-            string strSelectedId = lstGear.SelectedValue?.ToString();
-            if (_blnLoading || string.IsNullOrEmpty(strSelectedId))
+            if (_blnLoading)
             {
                 tlpRight.Visible = false;
                 return;
             }
 
-            // Retireve the information for the selected piece of Gear.
+            string strSelectedId = lstGear.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedId))
+            {
+                tlpRight.Visible = false;
+                return;
+            }
+
+            // Retrieve the information for the selected piece of Gear.
             XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
 
             if (objXmlGear == null)
@@ -925,8 +933,7 @@ namespace Chummer
                 StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
-                    if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                    sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
@@ -937,7 +944,7 @@ namespace Chummer
             if (_setAllowedNames.Count > 0)
             {
                 StringBuilder sbdNameFilter = new StringBuilder();
-                foreach (string strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
+                foreach (string strItem in _setAllowedNames)
                 {
                     sbdNameFilter.Append("name = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
