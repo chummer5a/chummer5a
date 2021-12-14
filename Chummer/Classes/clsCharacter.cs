@@ -6755,7 +6755,7 @@ namespace Chummer
 
             sbdMessage.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Total", strLanguage))
                       .Append(strColonCharacter).Append(strSpace).Append(intReturn.ToString(GlobalSettings.CultureInfo))
-                      .Append(strSpace).Append(strKarmaString).AppendLine().AppendLine()
+                      .Append(strSpace).AppendLine(strKarmaString).AppendLine()
                       .Append(LanguageManager.GetString("String_TotalComparisonWithPointBuy", strLanguage))
                       .Append(strColonCharacter).Append(strSpace)
                       .Append((intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(
