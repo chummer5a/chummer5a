@@ -1794,7 +1794,10 @@ namespace Chummer
                     foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + "]"))
                     {
                         string strName = objXmlMetavariant.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                        lstMetavariants.Add(new ListItem(strName, objXmlMetavariant.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                        if (objXmlMetatypeBP.SelectSingleNode("metavariants/metavariant[name = " + strName.CleanXPath() + "]") != null)
+                        {
+                            lstMetavariants.Add(new ListItem(strName, objXmlMetavariant.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                        }
                     }
 
                     string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter.Metavariant;

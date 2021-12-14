@@ -27,6 +27,7 @@ Application Changes:
 - Fixed crashes caused by discrepancies between character settings and the system that oversees their management. Fixes #4626.
 - Dealer Connection and Black Market Pipeline no longer retroactively adjust prices in Career mode. Fixes #4617.
 - Items bought with a Black Market Pipeline discount in Create mode no longer retain their discount if Black Market Pipeline is removed or changed to a different category.
+- Fixed priority choices that remove metavariants not working correctly due to metavariants being populated from metatypes.xml instead.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
