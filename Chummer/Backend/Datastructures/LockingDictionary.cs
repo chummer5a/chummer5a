@@ -39,7 +39,7 @@ namespace Chummer
         private readonly Dictionary<TKey, TValue> _dicData;
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-        
+
         public LockingDictionary()
         {
             _dicData = new Dictionary<TKey, TValue>();
@@ -105,7 +105,7 @@ namespace Chummer
             Add((TKey)key, (TValue)value);
         }
 
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
         public void Clear()
         {
             using (new EnterWriteLock(_rwlThis))
@@ -119,7 +119,7 @@ namespace Chummer
                 return _dicData.Contains(item);
         }
 
-        /// <inheritdoc cref="ICollection" />
+        /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             using (new EnterReadLock(_rwlThis))
@@ -226,7 +226,7 @@ namespace Chummer
             return false;
         }
 
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.Count" />
         public int Count
         {
             get
@@ -242,13 +242,13 @@ namespace Chummer
         /// <inheritdoc />
         public bool IsSynchronized => true;
 
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.IsReadOnly" />
         public bool IsReadOnly => false;
 
         /// <inheritdoc />
         public bool IsFixedSize => false;
 
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
         public bool ContainsKey(TKey key)
         {
             using (new EnterReadLock(_rwlThis))
@@ -330,14 +330,15 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="IDictionary" />
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
         public bool TryGetValue(TKey key, out TValue value)
         {
             using (new EnterReadLock(_rwlThis))
                 return _dicData.TryGetValue(key, out value);
         }
 
-        /// <inheritdoc cref="IDictionary" />
+        // ReSharper disable once InheritdocInvalidUsage
+        /// <inheritdoc />
         public TValue this[TKey key]
         {
             get

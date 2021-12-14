@@ -169,7 +169,7 @@ namespace Chummer
                 return _setData.Contains(item);
         }
 
-        /// <inheritdoc cref="ICollection" />
+        /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(T[] array, int arrayIndex)
         {
             using (new EnterReadLock(_rwlThis))
@@ -242,7 +242,7 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="ICollection{T}" />
+        /// <inheritdoc cref="ICollection{T}.Count" />
         public int Count
         {
             get

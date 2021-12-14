@@ -53,6 +53,7 @@ namespace Chummer
 
         private bool _blnSkipCollectionChanged;
 
+        /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             using (new EnterUpgradeableReadLock(LockerObject))
@@ -74,6 +75,7 @@ namespace Chummer
             base.OnCollectionChanged(e);
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             using (new EnterUpgradeableReadLock(LockerObject))
