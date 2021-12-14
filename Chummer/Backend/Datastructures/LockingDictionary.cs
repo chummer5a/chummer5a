@@ -76,7 +76,7 @@ namespace Chummer
         IEnumerator IEnumerable.GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return GetEnumerator();
+                return _dicData.GetEnumerator();
         }
 
         /// <inheritdoc />
@@ -166,7 +166,7 @@ namespace Chummer
         {
             using (new EnterUpgradeableReadLock(_rwlThis))
             {
-                if (!_dicData.ContainsKey(item.Key) || !_dicData[item.Key].Equals(item.Value))
+                if (!_dicData.TryGetValue(item.Key, out TValue objValue) || !objValue.Equals(item.Value))
                     return false;
                 using (new EnterWriteLock(_rwlThis))
                     return _dicData.Remove(item.Key);
@@ -200,18 +200,27 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryTake(out KeyValuePair<TKey, TValue> item)
         {
+            bool blnTakeSuccessful = false;
+            TKey objKeyToTake = default;
+            TValue objValue = default;
             using (new EnterUpgradeableReadLock(_rwlThis))
             {
                 if (Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    TKey objKeyToTake = Keys.First();
-                    if (TryRemove(objKeyToTake, out TValue objValue))
+                    objKeyToTake = Keys.First();
+                    if (_dicData.TryGetValue(objKeyToTake, out objValue))
                     {
-                        item = new KeyValuePair<TKey, TValue>(objKeyToTake, objValue);
-                        return true;
+                        using (new EnterWriteLock(_rwlThis))
+                            blnTakeSuccessful = _dicData.Remove(objKeyToTake);
                     }
                 }
+            }
+
+            if (blnTakeSuccessful)
+            {
+                item = new KeyValuePair<TKey, TValue>(objKeyToTake, objValue);
+                return true;
             }
             item = default;
             return false;
@@ -255,11 +264,12 @@ namespace Chummer
 
         public bool TryAdd(TKey key, TValue value)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterUpgradeableReadLock(_rwlThis))
             {
                 if (_dicData.ContainsKey(key))
                     return false;
-                _dicData.Add(key, value);
+                using (new EnterWriteLock(_rwlThis))
+                    _dicData.Add(key, value);
             }
             return true;
         }
@@ -360,7 +370,11 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(_rwlThis))
-                    return _dicData.Keys;
+                {
+                    // This construction makes sure we hold onto the lock until enumeration is done
+                    foreach (TKey objKey in _dicData.Keys)
+                        yield return objKey;
+                }
             }
         }
 
@@ -375,22 +389,26 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
-        {
-            get
-            {
-                using (new EnterReadLock(_rwlThis))
-                    return _dicData.Values;
-            }
-        }
-
-        /// <inheritdoc />
         public ICollection<TKey> Keys
         {
             get
             {
                 using (new EnterReadLock(_rwlThis))
                     return _dicData.Keys;
+            }
+        }
+
+        /// <inheritdoc />
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                {
+                    // This construction makes sure we hold onto the lock until enumeration is done
+                    foreach (TValue objValue in _dicData.Values)
+                        yield return objValue;
+                }
             }
         }
 
