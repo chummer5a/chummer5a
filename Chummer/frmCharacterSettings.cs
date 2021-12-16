@@ -312,8 +312,7 @@ namespace Chummer
 
                 try
                 {
-                    CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                    objNewCharacterSettings.CopyValues(_objCharacterSettings);
+                    CharacterSettings objNewCharacterSettings = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
                     if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryAdd(objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
                         return;
                     if (!_objCharacterSettings.Save(strSelectedFullFileName, true))

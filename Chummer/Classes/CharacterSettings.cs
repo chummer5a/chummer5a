@@ -335,13 +335,13 @@ namespace Chummer
 
         #region Initialization, Save, and Load Methods
 
-        public CharacterSettings(CharacterSettings objOther = null)
+        public CharacterSettings(CharacterSettings objOther = null, bool blnCopySourceId = true, string strOverrideFileName = "")
         {
             if (objOther != null)
-                CopyValues(objOther);
+                CopyValues(objOther, blnCopySourceId, strOverrideFileName);
         }
 
-        public void CopyValues(CharacterSettings objOther)
+        public void CopyValues(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "")
         {
             if (objOther == null)
                 return;
@@ -349,16 +349,24 @@ namespace Chummer
             List<string> lstPropertiesToUpdate = new List<string>();
             try
             {
-                if (!_guiSourceId.Equals(objOther._guiSourceId))
+                if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                 {
                     lstPropertiesToUpdate.Add(nameof(SourceId));
                     _guiSourceId = objOther._guiSourceId;
                 }
 
-                if (!_strFileName.Equals(objOther._strFileName))
+                if (string.IsNullOrEmpty(strOverrideFileName))
+                {
+                    if (!_strFileName.Equals(objOther._strFileName))
+                    {
+                        lstPropertiesToUpdate.Add(nameof(FileName));
+                        _strFileName = objOther._strFileName;
+                    }
+                }
+                else if (!_strFileName.Equals(strOverrideFileName))
                 {
                     lstPropertiesToUpdate.Add(nameof(FileName));
-                    _strFileName = objOther._strFileName;
+                    _strFileName = strOverrideFileName;
                 }
 
                 // Copy over via properties in order to trigger OnPropertyChanged as appropriate
