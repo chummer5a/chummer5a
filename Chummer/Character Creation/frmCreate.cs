@@ -5157,7 +5157,8 @@ namespace Chummer
             using (frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_WeaponName"),
-                DefaultString = objWeapon.CustomName
+                DefaultString = objWeapon.CustomName,
+                AllowEmptyString = true
             })
             {
                 frmPickText.ShowDialog(this);
@@ -5191,7 +5192,8 @@ namespace Chummer
             using (frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_GearName"),
-                DefaultString = objGear.GearName
+                DefaultString = objGear.GearName,
+                AllowEmptyString = true
             })
             {
                 frmPickText.ShowDialog(this);
@@ -5493,7 +5495,8 @@ namespace Chummer
             using (frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_VehicleName"),
-                DefaultString = objVehicle.CustomName
+                DefaultString = objVehicle.CustomName,
+                AllowEmptyString = true
             })
             {
                 frmPickText.ShowDialog(this);
@@ -5688,7 +5691,8 @@ namespace Chummer
             using (frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_ArmorName"),
-                DefaultString = objArmor.CustomName
+                DefaultString = objArmor.CustomName,
+                AllowEmptyString = true
             })
             {
                 frmPickText.ShowDialog(this);
@@ -5729,7 +5733,8 @@ namespace Chummer
             using (frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_LifestyleName"),
-                DefaultString = objCustomName.CustomName
+                DefaultString = objCustomName.CustomName,
+                AllowEmptyString = true
             })
             {
                 frmPickText.ShowDialog(this);

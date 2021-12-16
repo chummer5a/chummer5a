@@ -29,6 +29,7 @@ Application Changes:
 - Items bought with a Black Market Pipeline discount in Create mode no longer retain their discount if Black Market Pipeline is removed or changed to a different category.
 - Fixed priority choices that remove metavariants not working correctly due to metavariants being populated from metatypes.xml instead.
 - When buying more of an existing piece of gear in Career mode, the program no longer shows a set of unused controls on the right side of the screen unless an item is selected in the list of gear to buy. Fixes #4634.
+- Setting an item's custom name to an empty string (and thus removing a previously assigned custom name) is now properly possible.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

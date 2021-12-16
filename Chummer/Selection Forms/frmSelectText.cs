@@ -65,7 +65,12 @@ namespace Chummer
 
         private void txtValue_TextChanged(object sender, EventArgs e)
         {
-            cmdOK.Enabled = !string.IsNullOrEmpty(txtValue.Text);
+            RefreshOKButton();
+        }
+
+        private void RefreshOKButton()
+        {
+            cmdOK.Enabled = AllowEmptyString || !string.IsNullOrEmpty(txtValue.Text);
         }
 
         #endregion Control Events
@@ -90,7 +95,23 @@ namespace Chummer
         }
 
         public bool PreventXPathErrors { get; internal set; }
+
         public bool PreventFileNameCharErrors { get; internal set; }
+
+        private bool _blnAllowEmptyString = false;
+
+        public bool AllowEmptyString
+        {
+            get => _blnAllowEmptyString;
+            internal set
+            {
+                if (_blnAllowEmptyString == value)
+                    return;
+                _blnAllowEmptyString = value;
+                RefreshOKButton();
+            }
+        }
+
         public string DefaultString { get; internal set; }
 
         #endregion Properties
