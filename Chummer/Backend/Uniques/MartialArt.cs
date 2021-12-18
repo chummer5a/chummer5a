@@ -122,7 +122,7 @@ namespace Chummer
                 }
                 foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
                 {
-                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToArray());
+                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
                 }
             }
         }

@@ -1384,7 +1384,7 @@ namespace Chummer.Backend.Equipment
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
                                 x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory &&
-                                x.SourceName == InternalId).ToArray());
+                                x.SourceName == InternalId));
                     }
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory, InternalId + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
@@ -1399,13 +1399,13 @@ namespace Chummer.Backend.Equipment
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
                                 x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory &&
-                                x.SourceName == InternalId).ToArray());
+                                x.SourceName == InternalId));
                     }
 
                     ImprovementManager.RemoveImprovements(_objCharacter,
                         _objCharacter.Improvements.Where(x =>
                             x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory &&
-                            x.SourceName == InternalId + "Wireless").ToArray());
+                            x.SourceName == InternalId + "Wireless").ToList());
                 }
             }
 

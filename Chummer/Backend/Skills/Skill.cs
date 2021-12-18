@@ -2237,10 +2237,10 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
@@ -2291,21 +2291,21 @@ namespace Chummer.Backend.Skills
             switch (e.PropertyName)
             {
                 case nameof(Skills.SkillGroup.Base) when CharacterObject.EffectiveBuildMethodUsesPriorityTables:
-                    OnMultiplePropertyChanged(nameof(Base),
-                        nameof(BaseUnlocked),
-                        nameof(ForcedBuyWithKarma));
+                    this.OnMultiplePropertyChanged(nameof(Base),
+                                                   nameof(BaseUnlocked),
+                                                   nameof(ForcedBuyWithKarma));
                     break;
 
                 case nameof(Skills.SkillGroup.Base):
-                    OnMultiplePropertyChanged(nameof(Base),
-                        nameof(ForcedBuyWithKarma));
+                    this.OnMultiplePropertyChanged(nameof(Base),
+                                                   nameof(ForcedBuyWithKarma));
                     break;
 
                 case nameof(Skills.SkillGroup.Karma):
-                    OnMultiplePropertyChanged(nameof(Karma),
-                        nameof(CurrentKarmaCost),
-                        nameof(ForcedBuyWithKarma),
-                        nameof(ForcedNotBuyWithKarma));
+                    this.OnMultiplePropertyChanged(nameof(Karma),
+                                                   nameof(CurrentKarmaCost),
+                                                   nameof(ForcedBuyWithKarma),
+                                                   nameof(ForcedNotBuyWithKarma));
                     break;
 
                 case nameof(Skills.SkillGroup.Rating):
@@ -2325,7 +2325,7 @@ namespace Chummer.Backend.Skills
             switch (e.PropertyName)
             {
                 case nameof(Character.Karma):
-                    OnMultiplePropertyChanged(nameof(CanUpgradeCareer), nameof(CanAffordSpecialization));
+                    this.OnMultiplePropertyChanged(nameof(CanUpgradeCareer), nameof(CanAffordSpecialization));
                     break;
 
                 case nameof(Character.WoundModifier):
@@ -2371,9 +2371,9 @@ namespace Chummer.Backend.Skills
                     break;
 
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
-                    OnMultiplePropertyChanged(nameof(Base),
-                        nameof(BaseUnlocked),
-                        nameof(ForcedBuyWithKarma));
+                    this.OnMultiplePropertyChanged(nameof(Base),
+                                                   nameof(BaseUnlocked),
+                                                   nameof(ForcedBuyWithKarma));
                     break;
             }
         }
@@ -2391,7 +2391,7 @@ namespace Chummer.Backend.Skills
                                 OnPropertyChanged(nameof(KarmaUnlocked));
                             }
 
-                            OnMultiplePropertyChanged(nameof(BaseUnlocked), nameof(ForcedNotBuyWithKarma));
+                            this.OnMultiplePropertyChanged(nameof(BaseUnlocked), nameof(ForcedNotBuyWithKarma));
                         }
                         break;
                     }
@@ -2416,7 +2416,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (IsKnowledgeSkill)
                         {
-                            OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                            this.OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
                         }
                         break;
                     }
@@ -2433,7 +2433,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (!IsKnowledgeSkill)
                         {
-                            OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                            this.OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
                         }
                         break;
                     }

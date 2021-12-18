@@ -452,8 +452,9 @@ namespace Chummer
                             nameof(Tradition.DrainValueToolTip));
 
                         HashSet<string> limit = new HashSet<string>();
-                        foreach (Improvement improvement in CharacterObject.Improvements.Where(x =>
-                            x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
+                        ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory,
+                                                   out List<Improvement> lstUsedImprovements);
+                        foreach (Improvement improvement in lstUsedImprovements)
                         {
                             limit.Add(improvement.ImprovedName);
                         }
@@ -1678,8 +1679,9 @@ namespace Chummer
                             }
 
                             HashSet<string> limit = new HashSet<string>();
-                            foreach (Improvement improvement in CharacterObject.Improvements.Where(x =>
-                                x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
+                            ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory,
+                                                       out List<Improvement> lstUsedImprovements);
+                            foreach (Improvement improvement in lstUsedImprovements)
                             {
                                 limit.Add(improvement.ImprovedName);
                             }
@@ -9096,6 +9098,8 @@ namespace Chummer
                 int intLimitMod = (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
                                   + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
                 int intLimitModTouchOnly = 0;
+                ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsATT,
+                                           out List<Improvement> lstUsedImprovements);
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
                 {
                     int intAttValue = CharacterObject.GetAttribute(imp.ImprovedName).TotalValue;
@@ -9106,7 +9110,10 @@ namespace Chummer
                     else
                         intLimitMod += intAttValue;
                 }
-                foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
+
+                ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill,
+                                           out lstUsedImprovements);
+                foreach (Improvement imp in lstUsedImprovements)
                 {
                     Skill skill = CharacterObject.SkillsSection.GetActiveSkill(imp.ImprovedName);
                     if (skill == null) continue;
@@ -11800,8 +11807,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
                 StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
-
-                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
+                ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LifestyleCost,
+                                           out List<Improvement> lstUsedImprovements);
+                foreach (Improvement objImprovement in lstUsedImprovements)
                 {
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(',');
@@ -13114,8 +13122,9 @@ namespace Chummer
                     ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedGear) != 0;
                 if (blnHasRestrictedGearAvailable)
                 {
-                    foreach (Improvement objImprovement in CharacterObject.Improvements.Where(
-                        x => x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled))
+                    ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedGear,
+                                               out List<Improvement> lstUsedImprovements);
+                    foreach (Improvement objImprovement in lstUsedImprovements)
                     {
                         int intLoopAvailability = objImprovement.Value.StandardRound();
                         if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intExistingValue))

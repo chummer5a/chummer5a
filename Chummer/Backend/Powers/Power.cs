@@ -646,7 +646,14 @@ namespace Chummer
 
                 decimal decExtraCost = FreePoints;
                 // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
-                int intReturn = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
+                int intReturn = CharacterObject.Improvements
+                                               .Where(objImprovement =>
+                                                          objImprovement.ImproveType == Improvement.ImprovementType
+                                                              .AdeptPowerFreeLevels
+                                                          && objImprovement.ImprovedName == Name
+                                                          && objImprovement.UniqueName == Extra
+                                                          && objImprovement.Enabled)
+                                               .Sum(objImprovement => objImprovement.Rating);
                 // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
                 if (Rating + intReturn == 0 && ExtraPointCost > 0)
                 {
@@ -732,7 +739,14 @@ namespace Chummer
         {
             get
             {
-                int intRating = CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
+                int intRating = CharacterObject.Improvements
+                                               .Where(objImprovement =>
+                                                          objImprovement.ImproveType == Improvement.ImprovementType
+                                                              .AdeptPowerFreePoints
+                                                          && objImprovement.ImprovedName == Name
+                                                          && objImprovement.UniqueName == Extra
+                                                          && objImprovement.Enabled)
+                                               .Sum(objImprovement => objImprovement.Rating);
                 return intRating * 0.25m;
             }
         }
@@ -1020,10 +1034,10 @@ namespace Chummer
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)

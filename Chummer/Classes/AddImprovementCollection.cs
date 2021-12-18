@@ -2073,11 +2073,11 @@ namespace Chummer.Classes
             {
                 string strMode = bonusNode["type"]?.InnerText ?? "all";
 
-                Contact[] lstSelectedContacts;
+                IList<Contact> lstSelectedContacts;
                 switch (strMode)
                 {
                     case "all":
-                        lstSelectedContacts = _objCharacter.Contacts.ToArray();
+                        lstSelectedContacts = _objCharacter.Contacts;
                         break;
                     case "group":
                     case "nongroup":
@@ -2085,14 +2085,14 @@ namespace Chummer.Classes
                         bool blnGroup = strMode == "group";
                         //Select any contact where IsGroup equals blnGroup
                         //and add to a list
-                        lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToArray();
+                        lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
                         break;
                     }
                     default:
                         throw new AbortedException();
                 }
 
-                if (lstSelectedContacts.Length == 0)
+                if (lstSelectedContacts.Count == 0)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
                         LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -4285,11 +4285,12 @@ namespace Chummer.Classes
 
                             SelectedValue = objNewPower.CurrentDisplayName;
 
-                            Power[] lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToArray();
+                            bool blnHasPower = _objCharacter.Powers.Any(
+                                objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 
-                            Log.Info("blnHasPower = " + (lstExistingPowersList.Length > 0).ToString(GlobalSettings.InvariantCultureInfo));
+                            Log.Info("blnHasPower = " + blnHasPower);
 
-                            if (lstExistingPowersList.Length == 0)
+                            if (!blnHasPower)
                             {
                                 _objCharacter.Powers.Add(objNewPower);
                             }
@@ -5972,9 +5973,9 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string[] options = bonusNode.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+            List<string> options = bonusNode.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
             string final;
-            switch (options.Length)
+            switch (options.Count)
             {
                 case 0:
                     Utils.BreakIfDebug();

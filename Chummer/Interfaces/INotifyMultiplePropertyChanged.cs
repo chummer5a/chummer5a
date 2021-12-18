@@ -17,12 +17,33 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
     public interface INotifyMultiplePropertyChanged : INotifyPropertyChanged
     {
-        void OnMultiplePropertyChanged(params string[] lstPropertyNames);
+        void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames);
+    }
+
+    public static class NotifyMultiplePropertyChangedExtensions
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertyChanged objSubject,
+                                                     IEnumerable<string> lstPropertyNames)
+        {
+            objSubject.OnMultiplePropertyChanged(lstPropertyNames.ToList());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertyChanged objSubject,
+                                                     params string[] lstPropertyNames)
+        {
+            objSubject.OnMultiplePropertyChanged(Array.AsReadOnly(lstPropertyNames));
+        }
     }
 }

@@ -236,10 +236,10 @@ namespace Chummer
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             if (_blnDoingCopy)
                 return;
@@ -425,7 +425,7 @@ namespace Chummer
                 _blnDoingCopy = false;
             }
 
-            OnMultiplePropertyChanged(lstPropertiesToUpdate.ToArray());
+            OnMultiplePropertyChanged(lstPropertiesToUpdate);
         }
 
         public bool HasIdenticalSettings(CharacterSettings objOther)

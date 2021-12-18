@@ -93,7 +93,7 @@ namespace Chummer.Backend.Skills
                     KnowledgeSkills[e.NewIndex].PropertyChanged += OnKnowledgeSkillPropertyChanged;
                     goto case ListChangedType.ItemDeleted;
                 case ListChangedType.ItemDeleted:
-                    OnMultiplePropertyChanged(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots));
+                    this.OnMultiplePropertyChanged(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots));
                     break;
             }
         }
@@ -137,10 +137,10 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
@@ -218,7 +218,7 @@ namespace Chummer.Backend.Skills
                     return;
             }
             // Check for duplicates (we'd normally want to make sure it's enabled, but SpecialSkills doesn't process the Enabled property properly)
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills && x.Enabled))
             {
                 FilterOption eLoopFilter = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
                 string strLoopCategory = string.Empty;

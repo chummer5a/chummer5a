@@ -384,9 +384,9 @@ namespace Chummer
                         break;
                     }
                 }
-
-                List<Improvement> lstFadingImprovements = _objCharacter.Improvements.Where(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled).ToList();
-                if (lstFadingImprovements.Count > 0)
+                decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingValue,
+                                                                out List<Improvement> lstFadingImprovements);
+                if (decFVBonus != 0)
                 {
                     sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
                     foreach (Improvement objLoopImprovement in lstFadingImprovements)
@@ -409,7 +409,9 @@ namespace Chummer
             {
                 string strReturn = _strFv;
                 bool force = strReturn.StartsWith('L');
-                if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled))
+                decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingValue,
+                                                                out List<Improvement> lstUsedImprovements);
+                if (decFVBonus != 0)
                 {
                     string strFv = strReturn.TrimStartOnce('L');
                     //Navigator can't do math on a single value, so inject a mathable value.
@@ -435,7 +437,7 @@ namespace Chummer
                     }
 
                     StringBuilder sbdFv = new StringBuilder(strFv);
-                    foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FadingValue && i.Enabled))
+                    foreach (Improvement objImprovement in lstUsedImprovements)
                     {
                         sbdFv.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}", objImprovement.Value);
                     }

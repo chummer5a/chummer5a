@@ -3011,9 +3011,9 @@ namespace Chummer.Backend.Equipment
                     if (!Category.EndsWith("Foci", StringComparison.Ordinal) || Bonded)
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
-                            _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId)
-                                .ToArray());
+                                                              _objCharacter.Improvements.Where(x =>
+                                                                  x.ImproveSource == Improvement.ImprovementSource
+                                                                      .Gear && x.SourceName == InternalId));
                     }
                 }
                 else
@@ -3024,9 +3024,11 @@ namespace Chummer.Backend.Equipment
                         if (objStack.GearId == InternalId && objStack.Bonded)
                         {
                             ImprovementManager.EnableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.StackedFocus &&
-                                    x.SourceName == objStack.InternalId).ToArray());
+                                                                  _objCharacter.Improvements.Where(x =>
+                                                                      x.ImproveSource
+                                                                      == Improvement.ImprovementSource.StackedFocus
+                                                                      &&
+                                                                      x.SourceName == objStack.InternalId));
                         }
                     }
                 }
@@ -3036,9 +3038,9 @@ namespace Chummer.Backend.Equipment
                 // Remove any Improvements from the Gear.
                 if (Category != "Stacked Focus")
                     ImprovementManager.DisableImprovements(_objCharacter,
-                        _objCharacter.Improvements.Where(x =>
-                                x.ImproveSource == Improvement.ImprovementSource.Gear && x.SourceName == InternalId)
-                            .ToArray());
+                                                           _objCharacter.Improvements.Where(x =>
+                                                               x.ImproveSource == Improvement.ImprovementSource.Gear
+                                                               && x.SourceName == InternalId));
                 else
                 {
                     // Stacked Foci need to be handled a little differently.
@@ -3047,9 +3049,11 @@ namespace Chummer.Backend.Equipment
                         if (objStack.GearId == InternalId)
                         {
                             ImprovementManager.DisableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.StackedFocus &&
-                                    x.SourceName == objStack.InternalId).ToArray());
+                                                                   _objCharacter.Improvements.Where(x =>
+                                                                       x.ImproveSource
+                                                                       == Improvement.ImprovementSource.StackedFocus
+                                                                       &&
+                                                                       x.SourceName == objStack.InternalId));
                         }
                     }
                 }
@@ -3071,10 +3075,11 @@ namespace Chummer.Backend.Equipment
                     if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
-                            _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.Gear &&
-                                    x.SourceName == InternalId)
-                                .ToArray());
+                                                               _objCharacter.Improvements.Where(x =>
+                                                                   x.ImproveSource
+                                                                   == Improvement.ImprovementSource
+                                                                       .Gear &&
+                                                                   x.SourceName == InternalId));
                     }
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
@@ -3088,16 +3093,16 @@ namespace Chummer.Backend.Equipment
                     if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
-                            _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.Gear &&
-                                    x.SourceName == InternalId)
-                                .ToArray());
+                                                              _objCharacter.Improvements.Where(x =>
+                                                                  x.ImproveSource == Improvement.ImprovementSource
+                                                                      .Gear &&
+                                                                  x.SourceName == InternalId));
                     }
 
                     ImprovementManager.RemoveImprovements(_objCharacter,
                         _objCharacter.Improvements.Where(x =>
                             x.ImproveSource == Improvement.ImprovementSource.Gear &&
-                            x.SourceName == InternalId + "Wireless").ToArray());
+                            x.SourceName == InternalId + "Wireless").ToList());
                 }
             }
 
@@ -3893,10 +3898,10 @@ namespace Chummer.Backend.Equipment
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)

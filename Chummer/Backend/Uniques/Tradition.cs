@@ -138,7 +138,7 @@ namespace Chummer.Backend.Uniques
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
             RebuildSpiritList();
-            OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
+            this.OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
             return true;
         }
 
@@ -185,7 +185,7 @@ namespace Chummer.Backend.Uniques
             }
             if (blnDoOnPropertyChanged)
             {
-                OnMultiplePropertyChanged(nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection), nameof(SpiritHealth), nameof(SpiritIllusion), nameof(SpiritManipulation));
+                this.OnMultiplePropertyChanged(nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection), nameof(SpiritHealth), nameof(SpiritIllusion), nameof(SpiritManipulation));
             }
         }
 
@@ -1013,10 +1013,10 @@ namespace Chummer.Backend.Uniques
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)

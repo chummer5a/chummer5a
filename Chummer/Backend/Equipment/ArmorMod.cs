@@ -753,7 +753,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (Parent?.Equipped == true)
                         {
-                            ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
+                            ImprovementManager.EnableImprovements(_objCharacter,
+                                                                  _objCharacter.Improvements.Where(
+                                                                      x => x.ImproveSource
+                                                                           == Improvement.ImprovementSource.ArmorMod
+                                                                           && x.SourceName == InternalId));
                             // Add the Improvements from any Gear in the Armor.
                             foreach (Gear objGear in GearChildren)
                             {
@@ -766,7 +770,10 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                                                               _objCharacter.Improvements.Where(
+                                                                   x => x.ImproveSource == Improvement.ImprovementSource
+                                                                       .ArmorMod && x.SourceName == InternalId));
                         // Add the Improvements from any Gear in the Armor.
                         foreach (Gear objGear in GearChildren)
                         {
@@ -1229,9 +1236,10 @@ namespace Chummer.Backend.Equipment
                     if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
-                            _objCharacter.Improvements.Where(x =>
-                                x.ImproveSource == Improvement.ImprovementSource.ArmorMod &&
-                                x.SourceName == InternalId).ToArray());
+                                                               _objCharacter.Improvements.Where(x =>
+                                                                   x.ImproveSource == Improvement.ImprovementSource
+                                                                       .ArmorMod &&
+                                                                   x.SourceName == InternalId));
                     }
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
@@ -1244,15 +1252,17 @@ namespace Chummer.Backend.Equipment
                     if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
-                            _objCharacter.Improvements.Where(x =>
-                                x.ImproveSource == Improvement.ImprovementSource.ArmorMod &&
-                                x.SourceName == InternalId).ToArray());
+                                                              _objCharacter.Improvements.Where(x =>
+                                                                  x.ImproveSource == Improvement.ImprovementSource
+                                                                      .ArmorMod &&
+                                                                  x.SourceName == InternalId));
                     }
 
                     ImprovementManager.RemoveImprovements(_objCharacter,
-                        _objCharacter.Improvements.Where(x =>
-                            x.ImproveSource == Improvement.ImprovementSource.ArmorMod &&
-                            x.SourceName == InternalId + "Wireless").ToArray());
+                                                          _objCharacter.Improvements.Where(x =>
+                                                              x.ImproveSource == Improvement.ImprovementSource
+                                                                  .ArmorMod &&
+                                                              x.SourceName == InternalId + "Wireless").ToList());
                 }
             }
 

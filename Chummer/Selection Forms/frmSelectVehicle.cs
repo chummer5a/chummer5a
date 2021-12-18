@@ -67,7 +67,9 @@ namespace Chummer
 
             if (_objCharacter.DealerConnectionDiscount)
             {
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled))
+                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DealerConnection,
+                                           out List<Improvement> lstUsedImprovements);
+                foreach (Improvement objImprovement in lstUsedImprovements)
                 {
                     _setDealerConnectionMaps.Add(objImprovement.UniqueName);
                 }

@@ -2318,19 +2318,20 @@ namespace Chummer.Backend.Equipment
                 }
 
                 string strUseSkill = Skill?.Name ?? string.Empty;
-
-                string strExoticMelee = "Exotic Melee Weapon (" + UseSkillSpec + ')';
-                string strExoticRanged = "Exotic Ranged Weapon (" + UseSkillSpec + ')';
-                decImprove += _objCharacter.Improvements.Where(objImprovement =>
-                        objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV
-                        && objImprovement.Enabled
-                        && (objImprovement.ImprovedName == strCategory
-                            || objImprovement.ImprovedName == strUseSkill
-                            || (Skill?.IsExoticSkill == true
-                                && (objImprovement.ImprovedName == strExoticMelee
-                                    || objImprovement.ImprovedName == strExoticRanged))
-                            || "Cyberware " + objImprovement.ImprovedName == strCategory))
-                    .Sum(objImprovement => objImprovement.Value);
+                
+                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
+                                                         strImprovedName: strCategory);
+                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
+                                                         strImprovedName: strUseSkill);
+                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
+                                                         strImprovedName: strCategory.TrimStartOnce("Cyberware "));
+                if (Skill?.IsExoticSkill == true)
+                {
+                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
+                                                             strImprovedName: "Exotic Melee Weapon (" + UseSkillSpec + ')');
+                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
+                                                             strImprovedName: "Exotic Ranged Weapon (" + UseSkillSpec + ')');
+                }
 
                 // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                 // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
@@ -5168,7 +5169,7 @@ namespace Chummer.Backend.Equipment
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
                                 x.ImproveSource == Improvement.ImprovementSource.Weapon &&
-                                x.SourceName == InternalId).ToArray());
+                                x.SourceName == InternalId));
                     }
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId + "Wireless", WirelessBonus, 1, DisplayNameShort(GlobalSettings.Language));
@@ -5180,13 +5181,13 @@ namespace Chummer.Backend.Equipment
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
                                 x.ImproveSource == Improvement.ImprovementSource.Weapon &&
-                                x.SourceName == InternalId).ToArray());
+                                x.SourceName == InternalId));
                     }
 
                     ImprovementManager.RemoveImprovements(_objCharacter,
                         _objCharacter.Improvements.Where(x =>
                             x.ImproveSource == Improvement.ImprovementSource.Weapon &&
-                            x.SourceName == InternalId + "Wireless").ToArray());
+                            x.SourceName == InternalId + "Wireless").ToList());
                 }
             }
 

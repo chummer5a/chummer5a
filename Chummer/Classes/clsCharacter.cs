@@ -495,7 +495,7 @@ namespace Chummer
                     OnPropertyChanged(nameof(MysAdeptAllowPPCareer));
                     break;
                 case nameof(CharacterSettings.MysAdeptSecondMAGAttribute):
-                    OnMultiplePropertyChanged(nameof(UseMysticAdeptPPs), nameof(AllowAdeptWayPowerDiscount));
+                    this.OnMultiplePropertyChanged(nameof(UseMysticAdeptPPs), nameof(AllowAdeptWayPowerDiscount));
                     break;
                 case nameof(CharacterSettings.ContactPointsExpression):
                     OnPropertyChanged(nameof(ContactPoints));
@@ -504,13 +504,13 @@ namespace Chummer
                     RefreshEssenceLossImprovements();
                     break;
                 case nameof(CharacterSettings.NuyenFormat):
-                    OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen),
-                        nameof(DisplayStolenNuyen));
+                    this.OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen),
+                                                   nameof(DisplayStolenNuyen));
                     break;
                 case nameof(CharacterSettings.EssenceFormat):
                 case nameof(CharacterSettings.DontRoundEssenceInternally):
-                    OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence),
-                        nameof(CyberwareEssence), nameof(EssenceHole));
+                    this.OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence),
+                                                   nameof(CyberwareEssence), nameof(EssenceHole));
                     break;
                 case nameof(CharacterSettings.NuyenMaximumBP):
                 case nameof(CharacterSettings.UnrestrictedNuyen):
@@ -542,7 +542,7 @@ namespace Chummer
                     break;
                 case nameof(CharacterSettings.KarmaQuality):
                 case nameof(CharacterSettings.QualityKarmaLimit):
-                    OnMultiplePropertyChanged(nameof(PositiveQualityKarma), nameof(NegativeQualityKarma));
+                    this.OnMultiplePropertyChanged(nameof(PositiveQualityKarma), nameof(NegativeQualityKarma));
                     break;
                 case nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled):
                     OnPropertyChanged(nameof(PositiveQualityKarma));
@@ -572,9 +572,9 @@ namespace Chummer
         {
             if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
             {
-                OnMultiplePropertyChanged(nameof(CurrentWalkingRateString),
-                    nameof(CurrentRunningRateString),
-                    nameof(CurrentSprintingRateString));
+                this.OnMultiplePropertyChanged(nameof(CurrentWalkingRateString),
+                                               nameof(CurrentRunningRateString),
+                                               nameof(CurrentSprintingRateString));
             }
         }
 
@@ -582,18 +582,18 @@ namespace Chummer
         {
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
-                OnMultiplePropertyChanged(nameof(NegativeQualityKarma),
-                    nameof(NegativeQualityLimitKarma),
-                    nameof(PositiveQualityKarma),
-                    nameof(PositiveQualityKarmaTotal),
-                    nameof(EnemyKarma));
+                this.OnMultiplePropertyChanged(nameof(NegativeQualityKarma),
+                                               nameof(NegativeQualityLimitKarma),
+                                               nameof(PositiveQualityKarma),
+                                               nameof(PositiveQualityKarmaTotal),
+                                               nameof(EnemyKarma));
             }
         }
 
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if (Powers[e.OldIndex].AdeptWayDiscountEnabled)
-                OnMultiplePropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled), nameof(AllowAdeptWayPowerDiscount));
+                this.OnMultiplePropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled), nameof(AllowAdeptWayPowerDiscount));
         }
 
         private void PowersOnListChanged(object sender, ListChangedEventArgs e)
@@ -691,7 +691,7 @@ namespace Chummer
 
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
             }
         }
 
@@ -728,7 +728,7 @@ namespace Chummer
 
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
             }
         }
 
@@ -819,7 +819,7 @@ namespace Chummer
 
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
             }
         }
 
@@ -853,7 +853,7 @@ namespace Chummer
 
                 foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
                 {
-                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToArray());
+                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
                 }
             }
         }
@@ -909,7 +909,7 @@ namespace Chummer
 
                 foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
                 {
-                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToArray());
+                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
                 }
             }
         }
@@ -972,7 +972,7 @@ namespace Chummer
             }
 
             if (setPropertiesToRefresh.Count > 0)
-                OnMultiplePropertyChanged(setPropertiesToRefresh.ToArray());
+                OnMultiplePropertyChanged(setPropertiesToRefresh);
         }
 
         private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1064,7 +1064,7 @@ namespace Chummer
 
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
             }
 
             if (blnDoEncumbranceRefresh)
@@ -1190,7 +1190,7 @@ namespace Chummer
 
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
             }
         }
 
@@ -5294,9 +5294,9 @@ namespace Chummer
             }
 
             // Populate Limit Modifiers from Improvements
-            foreach(Improvement objImprovement in Improvements.Where(objImprovement =>
-               (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
-                objImprovement.ImprovedName == "Physical" && objImprovement.Enabled)))
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.LimitModifier,
+                                       out List<Improvement> lstUsedImprovements, strImprovedName: "Physical");
+            foreach(Improvement objImprovement in lstUsedImprovements)
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
@@ -5328,9 +5328,9 @@ namespace Chummer
             }
 
             // Populate Limit Modifiers from Improvements
-            foreach(Improvement objImprovement in Improvements.Where(objImprovement =>
-               (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
-                objImprovement.ImprovedName == "Mental" && objImprovement.Enabled)))
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.LimitModifier,
+                                       out lstUsedImprovements, strImprovedName: "Mental");
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
@@ -5362,9 +5362,9 @@ namespace Chummer
             }
 
             // Populate Limit Modifiers from Improvements
-            foreach(Improvement objImprovement in Improvements.Where(objImprovement =>
-               (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier &&
-                objImprovement.ImprovedName == "Social" && objImprovement.Enabled)))
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.LimitModifier,
+                                       out lstUsedImprovements, strImprovedName: "Social");
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
@@ -8785,25 +8785,57 @@ namespace Chummer
         {
             decimal decReturn = Settings.KarmaSpell;
 
-            decimal decMultiplier = 1.0m;
-            foreach(Improvement objLoopImprovement in Improvements.Where(imp =>
-               (imp.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost ||
-                imp.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier) &&
-               imp.ImprovedName == strCategory))
+            // Unconditional modifiers first (which can be cached)
+            decReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.NewSpellKarmaCost, strImprovedName: strCategory);
+
+            foreach (Improvement objLoopImprovement in Improvements)
             {
-                if(objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                                                   (objLoopImprovement.Condition == "career") == Created ||
-                                                   (objLoopImprovement.Condition == "create") != Created))
+                if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCost)
+                    continue;
+                if (!objLoopImprovement.Enabled)
+                    continue;
+                switch (objLoopImprovement.Condition)
                 {
-                    switch (objLoopImprovement.ImproveType)
-                    {
-                        case Improvement.ImprovementType.NewSpellKarmaCost:
+                    case "career":
+                        if (Created)
                             decReturn += objLoopImprovement.Value;
-                            break;
-                        case Improvement.ImprovementType.NewSpellKarmaCostMultiplier:
+                        break;
+                    case "create":
+                        if (!Created)
+                            decReturn += objLoopImprovement.Value;
+                        break;
+                    default:
+                        continue;
+                }
+            }
+
+            // Unconditional modifiers first (which can be cached)
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.NewSpellKarmaCostMultiplier,
+                                       out List<Improvement> lstUsedImprovements, strImprovedName: strCategory);
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in lstUsedImprovements)
+            {
+                decMultiplier *= objLoopImprovement.Value / 100.0m;
+            }
+
+            foreach (Improvement objLoopImprovement in Improvements)
+            {
+                if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
+                    continue;
+                if (!objLoopImprovement.Enabled)
+                    continue;
+                switch (objLoopImprovement.Condition)
+                {
+                    case "career":
+                        if (Created)
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
-                            break;
-                    }
+                        break;
+                    case "create":
+                        if (!Created)
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        break;
+                    default:
+                        continue;
                 }
             }
 
@@ -11603,19 +11635,19 @@ namespace Chummer
         public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromEquippedArmorImprovements, out List<Improvement> lstUsedImprovements)
         {
             intFromEquippedArmorImprovements = 0;
-            List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
-            decimal decBaseArmorImprovement = 0;
-            if (eDamageType != Improvement.ImprovementType.None)
+            if (eDamageType == Improvement.ImprovementType.None)
             {
-                decBaseArmorImprovement += ImprovementManager.ValueOf(this, eDamageType, out lstUsedImprovements);
-                if (eDamageType != Improvement.ImprovementType.Armor)
-                {
-                    decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor, out List<Improvement> lstUsedImprovementsExtra);
-                    lstUsedImprovements.AddRange(lstUsedImprovementsExtra);
-                }
+                lstUsedImprovements = new List<Improvement>();
+                return 0;
             }
-            else
-                lstUsedImprovements = Improvements.Where(x => (x.ImproveType == Improvement.ImprovementType.Armor || x.ImproveType == eDamageType)).ToList();
+            List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
+            decimal decBaseArmorImprovement = ImprovementManager.ValueOf(this, eDamageType, out lstUsedImprovements);
+            if (eDamageType != Improvement.ImprovementType.Armor)
+            {
+                decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor, out List<Improvement> lstUsedImprovementsExtra);
+                lstUsedImprovements.AddRange(lstUsedImprovementsExtra);
+            }
+
             if (lstArmorsToConsider.Count == 0)
                 return decBaseArmorImprovement.StandardRound();
             decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
@@ -13942,8 +13974,9 @@ namespace Chummer
         public decimal WalkingRate(string strType = "Ground")
         {
             decimal decTmp = decimal.MinValue;
-            foreach(Improvement objImprovement in Improvements.Where(i =>
-               i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType && i.Enabled))
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.WalkSpeed,
+                                       out List<Improvement> lstUsedImprovements, strImprovedName: strType);
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
                 decTmp = Math.Max(decTmp, objImprovement.Value);
             }
@@ -13979,8 +14012,9 @@ namespace Chummer
         public decimal RunningRate(string strType = "Ground")
         {
             decimal decTmp = decimal.MinValue;
-            foreach(Improvement objImprovement in Improvements.Where(i =>
-               i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType && i.Enabled))
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.RunSpeed,
+                                       out List<Improvement> lstUsedImprovements, strImprovedName: strType);
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
                 decTmp = Math.Max(decTmp, objImprovement.Value);
             }
@@ -14016,8 +14050,9 @@ namespace Chummer
         public decimal SprintingRate(string strType = "Ground")
         {
             decimal decTmp = decimal.MinValue;
-            foreach(Improvement objImprovement in Improvements.Where(i =>
-               i.ImproveType == Improvement.ImprovementType.SprintSpeed && i.ImprovedName == strType && i.Enabled))
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintSpeed,
+                                       out List<Improvement> lstUsedImprovements, strImprovedName: strType);
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
                 decTmp = Math.Max(decTmp, objImprovement.Value / 100.0m);
             }
@@ -14437,8 +14472,11 @@ namespace Chummer
             if (DealerConnectionDiscount)
                 return;
 
+            ImprovementManager.ValueOf(this, Improvement.ImprovementType.DealerConnection,
+                                       out List<Improvement> lstUsedImprovements);
+
             HashSet<string> setDealerConnectionMaps = new HashSet<string>();
-            foreach (Improvement objImprovement in Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled))
+            foreach (Improvement objImprovement in lstUsedImprovements)
             {
                 setDealerConnectionMaps.Add(objImprovement.UniqueName);
             }
@@ -14787,9 +14825,11 @@ namespace Chummer
             {
                 if(_intCachedRestrictedGear < 0)
                 {
-                    foreach(Improvement objImprovment in Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled))
+                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.RestrictedGear,
+                                               out List<Improvement> lstUsedImprovements);
+                    foreach(Improvement objImprovement in lstUsedImprovements)
                     {
-                        _intCachedRestrictedGear = Math.Max(_intCachedRestrictedGear, objImprovment.Value.StandardRound());
+                        _intCachedRestrictedGear = Math.Max(_intCachedRestrictedGear, objImprovement.Value.StandardRound());
                     }
                 }
 
@@ -16456,7 +16496,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{BOD}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{BOD}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     if (Settings.BoundSpiritExpression.Contains("{BOD}"))
@@ -16472,7 +16512,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{BODUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{BODUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16513,7 +16553,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{AGI}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{AGI}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     if (Settings.BoundSpiritExpression.Contains("{AGI}"))
@@ -16529,7 +16569,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{AGIUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{AGIUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16568,7 +16608,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{REA}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{REA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     if (Settings.BoundSpiritExpression.Contains("{REA}"))
@@ -16584,7 +16624,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{REAUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{REAUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16624,7 +16664,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{STR}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{STR}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     if (Settings.BoundSpiritExpression.Contains("{STR}"))
@@ -16640,7 +16680,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{STRUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{STRUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16679,7 +16719,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{CHA}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{CHA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     if (Settings.BoundSpiritExpression.Contains("{CHA}"))
@@ -16695,7 +16735,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{CHAUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{CHAUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16740,7 +16780,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{INT}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{INT}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     if (Settings.BoundSpiritExpression.Contains("{INT}"))
@@ -16756,7 +16796,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{INTUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{INTUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16799,7 +16839,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{LOG}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{LOG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
 
@@ -16816,7 +16856,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{LOGUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{LOGUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16876,7 +16916,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{WIL}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{WIL}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
 
@@ -16893,7 +16933,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{WILUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{WILUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16929,7 +16969,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{EDG}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{EDG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
 
@@ -16946,7 +16986,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{EDGUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{EDGUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -16993,7 +17033,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAG}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
 
@@ -17015,7 +17055,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAGUnaug}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
 
@@ -17047,7 +17087,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAGAdept}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
 
@@ -17064,7 +17104,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAGAdeptUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -17101,7 +17141,7 @@ namespace Chummer
                         if (Settings.ChargenKarmaToNuyenExpression.Contains("{RES}"))
                             lstProperties.Add(nameof(TotalStartingNuyen));
                     }
-                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{RES}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     if (Settings.BoundSpiritExpression.Contains("{RES}"))
@@ -17117,7 +17157,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{RESUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{RESUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -17149,7 +17189,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{DEP}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{DEP}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -17172,7 +17212,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{DEPUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{DEPUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -17197,7 +17237,7 @@ namespace Chummer
             {
                 // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
                 case nameof(CharacterAttrib.MetatypeMaximum):
-                    OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
+                    this.OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
                     break;
                 case nameof(CharacterAttrib.TotalValue):
                 {
@@ -17206,7 +17246,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{ESS}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{ESS}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -17229,7 +17269,7 @@ namespace Chummer
                         if (Settings.ContactPointsExpression.Contains("{ESSUnaug}"))
                         {
                             if (Settings.ChargenKarmaToNuyenExpression.Contains("{ESSUnaug}"))
-                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
                             else
                                 OnPropertyChanged(nameof(ContactPoints));
                         }
@@ -17312,12 +17352,11 @@ namespace Chummer
             //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
             List<SustainedObject> lstSustainedSpells = SustainedCollection.Where(x => x.HasSustainingPenalty).ToList();
             // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
-            if (Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.PenaltyFreeSustain && x.Enabled))
+            if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.PenaltyFreeSustain, out List<Improvement> lstUsedImprovements) != 0)
             {
                 // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
                 SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();
-                foreach (Improvement objImprovement in Improvements.Where(x =>
-                    x.ImproveType == Improvement.ImprovementType.PenaltyFreeSustain && x.Enabled))
+                foreach (Improvement objImprovement in lstUsedImprovements)
                 {
                     decimal decForce = objImprovement.Value;
                     if (dicPenaltyFreeSustains.TryGetValue(decForce, out int intExistingRating))
@@ -18133,10 +18172,10 @@ namespace Chummer
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach(string strPropertyName in lstPropertyNames)

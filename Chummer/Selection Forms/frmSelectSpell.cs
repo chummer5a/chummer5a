@@ -73,11 +73,18 @@ namespace Chummer
             txtSearch.Text = string.Empty;
             // Populate the Category list.
             HashSet<string> limit = new HashSet<string>();
-            foreach (Improvement improvement in _objCharacter.Improvements.Where(x =>
-                (x.ImproveType == Improvement.ImprovementType.LimitSpellCategory ||
-                 x.ImproveType == Improvement.ImprovementType.AllowSpellCategory) && x.Enabled))
+            List<Improvement> lstUsedImprovements = new List<Improvement>();
+            if (!_blnIgnoreRequirements)
             {
-                limit.Add(improvement.ImprovedName);
+                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellCategory,
+                                           out lstUsedImprovements);
+                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellCategory,
+                                           out List<Improvement> lstOtherUsedImprovements);
+                lstUsedImprovements.AddRange(lstOtherUsedImprovements);
+                foreach (Improvement improvement in lstUsedImprovements)
+                {
+                    limit.Add(improvement.ImprovedName);
+                }
             }
 
             string strFilterPrefix = "spells/spell[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
@@ -86,9 +93,7 @@ namespace Chummer
                 string strCategory = objXmlCategory.Value;
                 if (!_blnIgnoreRequirements)
                 {
-                    foreach (Improvement improvement in _objCharacter.Improvements.Where(x =>
-                        (x.ImproveType == Improvement.ImprovementType.AllowSpellRange ||
-                         x.ImproveType == Improvement.ImprovementType.LimitSpellRange) && x.Enabled))
+                    foreach (Improvement improvement in lstUsedImprovements)
                     {
                         if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory.CleanXPath() + " and range = " + improvement.ImprovedName.CleanXPath() + "]")
                                 != null)
@@ -301,6 +306,25 @@ namespace Chummer
 
             // Populate the Spell list.
             List<ListItem> lstSpellItems = new List<ListItem>();
+            HashSet<string> limitDescriptors = new HashSet<string>();
+            HashSet<string> blockDescriptors = new HashSet<string>();
+            List<Improvement> lstUsedImprovements;
+            if (!_blnIgnoreRequirements)
+            {
+                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellDescriptor,
+                                           out lstUsedImprovements);
+                foreach (Improvement improvement in lstUsedImprovements)
+                {
+                    limitDescriptors.Add(improvement.ImprovedName);
+                }
+                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BlockSpellDescriptor,
+                                           out lstUsedImprovements);
+                foreach (Improvement improvement in lstUsedImprovements)
+                {
+                    blockDescriptors.Add(improvement.ImprovedName);
+                }
+            }
+
             foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell[" + sbdFilter + "]"))
             {
                 string strSpellCategory = objXmlSpell.SelectSingleNode("category")?.Value ?? string.Empty;
@@ -308,59 +332,41 @@ namespace Chummer
                 string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
                 if (!_blnIgnoreRequirements)
                 {
-                    if (!objXmlSpell.RequirementsMet(_objCharacter)) continue;
-                    HashSet<string> limitDescriptors = new HashSet<string>();
-                    foreach (Improvement improvement in _objCharacter.Improvements.Where(x =>
-                        x.ImproveType == Improvement.ImprovementType.LimitSpellDescriptor && x.Enabled))
-                    {
-                        limitDescriptors.Add(improvement.ImprovedName);
-                    }
+                    if (!objXmlSpell.RequirementsMet(_objCharacter))
+                        continue;
 
-                    if (limitDescriptors.Count != 0 && !limitDescriptors.Any(l => strDescriptor.Contains(l))) continue;
-                    HashSet<string> blockDescriptors = new HashSet<string>();
-                    foreach (Improvement improvement in _objCharacter.Improvements.Where(x =>
-                        x.ImproveType == Improvement.ImprovementType.BlockSpellDescriptor && x.Enabled))
-                    {
-                        blockDescriptors.Add(improvement.ImprovedName);
-                    }
+                    if (limitDescriptors.Count != 0 && !limitDescriptors.Any(l => strDescriptor.Contains(l)))
+                        continue;
 
-                    if (blockDescriptors.Count != 0 && blockDescriptors.Any(l => strDescriptor.Contains(l))) continue;
-                    if (_objCharacter.Improvements.Any(objImprovement =>
-                        objImprovement.ImproveType == Improvement.ImprovementType.AllowSpellCategory &&
-                        objImprovement.ImprovedName == strSpellCategory))
+                    if (blockDescriptors.Count != 0 && blockDescriptors.Any(l => strDescriptor.Contains(l)))
+                        continue;
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellCategory, strImprovedName: strSpellCategory) != 0)
                     {
                         AddSpell(objXmlSpell, strSpellCategory);
                         continue;
                     }
 
-                    if (_objCharacter.Improvements.Any(objImprovement =>
-                        objImprovement.ImproveType == Improvement.ImprovementType.LimitSpellCategory &&
-                        objImprovement.ImprovedName == strSpellCategory))
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellCategory, strImprovedName: strSpellCategory) != 0)
                     {
                         AddSpell(objXmlSpell, strSpellCategory);
                         continue;
                     }
 
-                    if (_objCharacter.Improvements.Any(objImprovement =>
-                        objImprovement.ImproveType == Improvement.ImprovementType.AllowSpellRange &&
-                        objImprovement.ImprovedName == strRange))
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange, strImprovedName: strRange) != 0)
                     {
                         AddSpell(objXmlSpell, strSpellCategory);
                         continue;
                     }
 
-                    if (_objCharacter.Improvements.Any(objImprovement =>
-                        objImprovement.ImproveType == Improvement.ImprovementType.LimitSpellCategory &&
-                        objImprovement.ImprovedName != strSpellCategory))
+                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellCategory, out lstUsedImprovements);
+                    if (lstUsedImprovements.Any(x => x.ImprovedName != strSpellCategory))
                     {
                         continue;
                     }
 
-                    if (_objCharacter.Improvements.Any(objImprovement =>
-                            objImprovement.ImproveType == Improvement.ImprovementType.LimitSpellRange) &&
-                        !_objCharacter.Improvements.Any(objImprovement =>
-                            objImprovement.ImproveType == Improvement.ImprovementType.LimitSpellRange &&
-                            objImprovement.ImprovedName == strRange))
+                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange,
+                                                   out lstUsedImprovements) != 0
+                        && lstUsedImprovements.All(x => x.ImprovedName != strRange))
                     {
                         continue;
                     }

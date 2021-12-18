@@ -439,7 +439,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
             }
         }
 
@@ -2321,9 +2321,9 @@ namespace Chummer.Backend.Equipment
                         if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
                         {
                             ImprovementManager.DisableImprovements(_objCharacter,
-                                _objCharacter.Improvements
-                                    .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                                    .ToArray());
+                                                                   _objCharacter.Improvements
+                                                                       .Where(x => x.ImproveSource == SourceType
+                                                                                  && x.SourceName == InternalId));
                         }
 
                         ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource, InternalId + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
@@ -2401,14 +2401,13 @@ namespace Chummer.Backend.Equipment
                         {
                             ImprovementManager.EnableImprovements(_objCharacter,
                                 _objCharacter.Improvements
-                                    .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                                    .ToArray());
+                                    .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId));
                         }
 
                         ImprovementManager.RemoveImprovements(_objCharacter,
                             _objCharacter.Improvements
                                 .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless")
-                                .ToArray());
+                                .ToList());
                     }
 
                     if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
@@ -2440,8 +2439,7 @@ namespace Chummer.Backend.Equipment
                         {
                             ImprovementManager.EnableImprovements(_objCharacter,
                                 _objCharacter.Improvements
-                                    .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                                    .ToArray());
+                                    .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId));
                         }
 
                         foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
@@ -2486,8 +2484,9 @@ namespace Chummer.Backend.Equipment
             if (blnEquip)
             {
                 ImprovementManager.EnableImprovements(_objCharacter,
-                    _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                        .ToArray());
+                                                      _objCharacter.Improvements.Where(
+                                                          x => x.ImproveSource == SourceType
+                                                               && x.SourceName == InternalId));
 
                 /*
                 // If the piece grants a bonus, pass the information to the Improvement Manager.
@@ -2543,8 +2542,9 @@ namespace Chummer.Backend.Equipment
             else
             {
                 ImprovementManager.DisableImprovements(_objCharacter,
-                    _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
-                        .ToArray());
+                                                       _objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource == SourceType
+                                                                && x.SourceName == InternalId));
 
                 if (PairBonus != null)
                 {

@@ -808,9 +808,11 @@ namespace Chummer.Backend.Attributes
                 HashSet<string> lstUniqueName = new HashSet<string>();
                 List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>();
                 decimal decBaseValue = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement =>
-                    objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute
-                    && objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
+
+                ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute,
+                                                    out List<Improvement> lstUsedImprovements, strImprovedName: Abbrev);
+
+                foreach (Improvement objImprovement in lstUsedImprovements.Where(objImprovement => !objImprovement.Custom))
                 {
                     string strUniqueName = objImprovement.UniqueName;
                     if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute" && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev)
@@ -897,9 +899,7 @@ namespace Chummer.Backend.Attributes
                 // Factor in Custom Improvements.
                 lstUniqueName.Clear();
                 lstUniquePair.Clear();
-                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement =>
-                    objImprovement.Enabled && objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute
-                    && objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
+                foreach (Improvement objImprovement in lstUsedImprovements.Where(objImprovement => objImprovement.Custom))
                 {
                     string strUniqueName = objImprovement.UniqueName;
                     if (!string.IsNullOrEmpty(strUniqueName))
@@ -1167,7 +1167,7 @@ namespace Chummer.Backend.Attributes
                                                                           && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
                                                                           && !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                         {
-                            OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                            this.OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
                         }
                         break;
                     }
@@ -1179,7 +1179,7 @@ namespace Chummer.Backend.Attributes
                                                                           && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
                                                                           && !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                         {
-                            OnMultiplePropertyChanged(nameof(TotalValue));
+                            this.OnMultiplePropertyChanged(nameof(TotalValue));
                         }
                         break;
                     }
@@ -1191,7 +1191,7 @@ namespace Chummer.Backend.Attributes
                 case nameof(CharacterSettings.KarmaAttribute):
                 case nameof(CharacterSettings.AlternateMetatypeAttributeKarma):
                     {
-                        OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
+                        this.OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
                         break;
                     }
                 case nameof(CharacterSettings.ReverseAttributePriorityOrder):
@@ -1205,10 +1205,10 @@ namespace Chummer.Backend.Attributes
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)

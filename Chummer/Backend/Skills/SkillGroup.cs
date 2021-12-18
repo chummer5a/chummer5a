@@ -495,7 +495,7 @@ namespace Chummer.Backend.Skills
             {
                 case nameof(Skill.BasePoints):
                 case nameof(Skill.FreeBase):
-                    OnMultiplePropertyChanged(nameof(BaseUnbroken), nameof(KarmaUnbroken));
+                    this.OnMultiplePropertyChanged(nameof(BaseUnbroken), nameof(KarmaUnbroken));
                     break;
 
                 case nameof(Skill.KarmaPoints):
@@ -509,11 +509,11 @@ namespace Chummer.Backend.Skills
 
                 case nameof(Skill.TotalBaseRating):
                 case nameof(Skill.Enabled):
-                    OnMultiplePropertyChanged(nameof(CareerIncrease),
-                        nameof(DisplayRating),
-                        nameof(UpgradeToolTip),
-                        nameof(CurrentKarmaCost),
-                        nameof(UpgradeKarmaCost));
+                    this.OnMultiplePropertyChanged(nameof(CareerIncrease),
+                                                   nameof(DisplayRating),
+                                                   nameof(UpgradeToolTip),
+                                                   nameof(CurrentKarmaCost),
+                                                   nameof(UpgradeKarmaCost));
                     break;
             }
         }
@@ -679,10 +679,10 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)

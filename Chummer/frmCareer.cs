@@ -439,8 +439,9 @@ namespace Chummer
                             nameof(Tradition.DrainValueToolTip));
 
                         HashSet<string> limit = new HashSet<string>();
-                        foreach (Improvement improvement in CharacterObject.Improvements.Where(x =>
-                            x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
+                        ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory,
+                                                   out List<Improvement> lstUsedImprovements);
+                        foreach (Improvement improvement in lstUsedImprovements)
                         {
                             limit.Add(improvement.ImprovedName);
                         }
@@ -2010,8 +2011,9 @@ namespace Chummer
                             }
 
                             HashSet<string> limit = new HashSet<string>();
-                            foreach (Improvement improvement in CharacterObject.Improvements.Where(x =>
-                                x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
+                            ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory,
+                                                       out List<Improvement> lstUsedImprovements);
+                            foreach (Improvement improvement in lstUsedImprovements)
                             {
                                 limit.Add(improvement.ImprovedName);
                             }
@@ -6129,14 +6131,14 @@ namespace Chummer
             // Enable all of the Improvements in the Improvement Group.
             if (!(treImprovements.SelectedNode?.Tag is string strSelectedId))
                 return;
-            Improvement[] aobjImprovementsEnabled = CharacterObject.Improvements
-                .Where(objImprovement => objImprovement.Custom && !objImprovement.Enabled
-                                                               && (objImprovement.CustomGroup == strSelectedId
-                                                                   || strSelectedId == "Node_SelectedImprovements"
-                                                                   && string.IsNullOrEmpty(objImprovement.CustomGroup))).ToArray();
-            if (aobjImprovementsEnabled.Length == 0)
+            List<Improvement> lstImprovementsEnabled = CharacterObject.Improvements
+                                                                      .Where(objImprovement => objImprovement.Custom && !objImprovement.Enabled
+                                                                                 && (objImprovement.CustomGroup == strSelectedId
+                                                                                     || strSelectedId == "Node_SelectedImprovements"
+                                                                                     && string.IsNullOrEmpty(objImprovement.CustomGroup))).ToList();
+            if (lstImprovementsEnabled.Count == 0)
                 return;
-            ImprovementManager.EnableImprovements(CharacterObject, aobjImprovementsEnabled);
+            ImprovementManager.EnableImprovements(CharacterObject, lstImprovementsEnabled);
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -6146,15 +6148,20 @@ namespace Chummer
             if (!(treImprovements.SelectedNode?.Tag is string strSelectedId))
                 return;
             // Disable all of the Improvements in the Improvement Group.
-            Improvement[] aobjImprovementsDisabled = CharacterObject.Improvements
-                .Where(objImprovement => objImprovement.Custom && objImprovement.Enabled
-                                                               && (objImprovement.CustomGroup == strSelectedId
-                                                                   || strSelectedId == "Node_SelectedImprovements"
-                                                                   && string.IsNullOrEmpty(objImprovement.CustomGroup))).ToArray();
+            List<Improvement> lstImprovementsDisabled = CharacterObject.Improvements
+                                                                       .Where(objImprovement => objImprovement.Custom
+                                                                                  && objImprovement.Enabled
+                                                                                  && (objImprovement.CustomGroup
+                                                                                      == strSelectedId
+                                                                                      || strSelectedId
+                                                                                      == "Node_SelectedImprovements"
+                                                                                      && string.IsNullOrEmpty(
+                                                                                          objImprovement.CustomGroup)))
+                                                                       .ToList();
 
-            if (aobjImprovementsDisabled.Length == 0)
+            if (lstImprovementsDisabled.Count == 0)
                 return;
-            ImprovementManager.DisableImprovements(CharacterObject, aobjImprovementsDisabled);
+            ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -15526,7 +15533,9 @@ namespace Chummer
             {
                 StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
 
-                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
+                ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LifestyleCost,
+                                           out List<Improvement> lstUsedImprovements);
+                foreach (Improvement objImprovement in lstUsedImprovements)
                 {
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(',');
