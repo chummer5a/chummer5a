@@ -130,7 +130,7 @@ namespace Chummer
         public new IEnumerator<T> GetEnumerator()
         {
             using (new EnterReadLock(LockerObject))
-                return base.GetEnumerator();
+                return base.GetEnumerator().GetLockingType(LockerObject);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T)" />

@@ -286,10 +286,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.GetEnumerator" />
-        public new Enumerator GetEnumerator()
+        public new IEnumerator<T> GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return base.GetEnumerator();
+                return base.GetEnumerator().GetLockingType(_rwlThis);
         }
 
         /// <inheritdoc cref="List{T}.GetRange" />

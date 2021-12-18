@@ -69,21 +69,21 @@ namespace Chummer
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return _dicData.GetEnumerator();
+                return _dicData.GetEnumerator().GetLockingType(_rwlThis);
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return _dicData.GetEnumerator();
+                return _dicData.GetLockingDictionaryEnumerator(_rwlThis);
         }
 
         /// <inheritdoc />
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return _dicData.GetEnumerator();
+                return _dicData.GetLockingDictionaryEnumerator(_rwlThis);
         }
 
         /// <inheritdoc />

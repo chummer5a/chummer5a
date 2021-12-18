@@ -61,14 +61,14 @@ namespace Chummer
         public IEnumerator<T> GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return _setData.GetEnumerator();
+                return _setData.GetEnumerator().GetLockingType(_rwlThis);
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return GetEnumerator();
+                return _setData.GetEnumerator().GetLockingType(_rwlThis);
         }
 
         /// <inheritdoc />

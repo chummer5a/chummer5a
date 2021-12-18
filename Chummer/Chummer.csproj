@@ -299,6 +299,8 @@
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
     <Compile Include="Backend\Datastructures\KeyArray.cs" />
     <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
+    <Compile Include="Backend\Datastructures\LockingDictionaryEnumerator.cs" />
+    <Compile Include="Backend\Datastructures\LockingEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingHashSet.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
@@ -319,6 +321,7 @@
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Extensions\EnumeratorExtensions.cs" />
     <Compile Include="Backend\Extensions\FloatExtensions.cs" />
     <Compile Include="Backend\Extensions\IntegerExtensions.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
