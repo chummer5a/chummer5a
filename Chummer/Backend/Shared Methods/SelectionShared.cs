@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -678,7 +679,7 @@ namespace Chummer
                                 objCharacter.Cyberware.Where(
                                         objCyberware =>
                                             setEssNodeGradeAttributeText.Any(func => objCyberware.Grade.Name.Contains(func)))
-                                    .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS);
+                                    .Sum(objCyberware => objCyberware.CalculatedESS);
                             if (strNodeInnerText.StartsWith('-'))
                             {
                                 // Essence must be less than the value.
@@ -1240,14 +1241,11 @@ namespace Chummer
                 case "specialmodificationlimit":
                     {
                         // Add in the cost of all child components.
-                        int intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
-                        intMods += objCharacter.Vehicles.AsParallel().Sum(objVehicle =>
-                        {
-                            IEnumerable<Weapon> lstWeapons = objVehicle.Weapons
-                                .Concat(objVehicle.WeaponMounts.SelectMany(objMount => objMount.Weapons))
-                                .GetAllDescendants(x => x.UnderbarrelWeapons);
-                            return lstWeapons.AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
-                        });
+                        int intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).Concat(
+                                                   objCharacter.Vehicles.SelectMany(
+                                                       y => y.Weapons.Concat(y.WeaponMounts.SelectMany(x => x.Weapons))
+                                                             .GetAllDescendants(x => x.UnderbarrelWeapons)))
+                                               .Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
                         if (blnShowMessage)
                         {
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}≥{1}{3}",

@@ -1716,7 +1716,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped).AsParallel().Sum(objMod => objMod.CalculatedSlots) + WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Equipped).AsParallel().Sum(wm => wm.CalculatedSlots);
+                return Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped)
+                           .Sum(objMod => objMod.CalculatedSlots)
+                       + WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Equipped)
+                                     .Sum(wm => wm.CalculatedSlots);
             }
         }
 
@@ -1835,7 +1838,7 @@ namespace Chummer.Backend.Equipment
                         intModSlotsUsed += intActualSlots;
                     }
                 }
-                intModSlotsUsed += WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Equipped).AsParallel().Sum(wm => wm.CalculatedSlots);
+                intModSlotsUsed += WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Equipped).Sum(wm => wm.CalculatedSlots);
                 return intModSlotsUsed;
             }
         }
@@ -1859,12 +1862,12 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                        decCost += objMod.Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost);
-                        decCost += objMod.Cyberware.AsParallel().Sum(objCyberware => objCyberware.CurrentTotalCost);
+                        decCost += objMod.Weapons.Sum(objWeapon => objWeapon.TotalCost);
+                        decCost += objMod.Cyberware.Sum(objCyberware => objCyberware.CurrentTotalCost);
                     }
                 }
-                decCost += WeaponMounts.AsParallel().Sum(wm => wm.TotalCost);
-                decCost += GearChildren.AsParallel().Sum(objGear => objGear.TotalCost);
+                decCost += WeaponMounts.Sum(wm => wm.TotalCost);
+                decCost += GearChildren.Sum(objGear => objGear.TotalCost);
 
                 return decCost;
             }
@@ -1890,12 +1893,12 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                        decCost += objMod.Weapons.AsParallel().Where(objGear => objGear.Stolen).Sum(objWeapon => objWeapon.StolenTotalCost);
-                        decCost += objMod.Cyberware.AsParallel().Where(objGear => objGear.Stolen).Sum(objCyberware => objCyberware.StolenTotalCost);
+                        decCost += objMod.Weapons.Where(objGear => objGear.Stolen).Sum(objWeapon => objWeapon.StolenTotalCost);
+                        decCost += objMod.Cyberware.Where(objGear => objGear.Stolen).Sum(objCyberware => objCyberware.StolenTotalCost);
                     }
                 }
-                decCost += WeaponMounts.AsParallel().Where(objGear => objGear.Stolen).Sum(wm => wm.StolenTotalCost);
-                decCost += GearChildren.AsParallel().Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
+                decCost += WeaponMounts.Where(objGear => objGear.Stolen).Sum(wm => wm.StolenTotalCost);
+                decCost += GearChildren.Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
 
                 return decCost;
             }

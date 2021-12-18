@@ -1181,7 +1181,7 @@ namespace Chummer.Backend.Equipment
                 decReturn *= 1 + (_decMarkup / 100.0m);
             }
 
-            return decReturn + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.CurrentTotalCost);
+            return decReturn + Weapons.Sum(objWeapon => objWeapon.TotalCost) + Cyberware.Sum(objCyberware => objCyberware.CurrentTotalCost);
         }
 
         /// <summary>
@@ -1191,7 +1191,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return OwnCost + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.CurrentTotalCost);
+                return OwnCost + Weapons.Sum(objWeapon => objWeapon.TotalCost) + Cyberware.Sum(objCyberware => objCyberware.CurrentTotalCost);
             }
         }
 
@@ -1573,8 +1573,8 @@ namespace Chummer.Backend.Equipment
                 decimal d = 0;
                 if (Stolen)
                     d += OwnCost;
-                d += Weapons.AsParallel().Sum(objWeapon => objWeapon.StolenTotalCost);
-                d += Cyberware.AsParallel().Sum(objCyberware => objCyberware.StolenTotalCost);
+                d += Weapons.Sum(objWeapon => objWeapon.StolenTotalCost);
+                d += Cyberware.Sum(objCyberware => objCyberware.StolenTotalCost);
                 return d;
             }
         }

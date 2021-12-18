@@ -739,7 +739,7 @@ namespace Chummer
                     else
                     {
                         strCost = strCost.CheapReplace("Parent Cost", () => CyberwareParent?.Cost ?? "0")
-                            .CheapReplace("Parent Gear Cost", () => CyberwareParent?.GearChildren.AsParallel().Sum(x => x.TotalCost).ToString(GlobalSettings.InvariantCultureInfo) ?? "0")
+                            .CheapReplace("Parent Gear Cost", () => CyberwareParent?.GearChildren.Sum(x => x.TotalCost).ToString(GlobalSettings.InvariantCultureInfo) ?? "0")
                             .CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo))
                             .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
 

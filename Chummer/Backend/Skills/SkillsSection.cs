@@ -1017,10 +1017,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Sum of knowledge skill ranks the character has allocated.
         /// </summary>
-        public int KnowledgeSkillRanksSum
-        {
-            get { return KnowledgeSkills.AsParallel().Sum(x => x.CurrentSpCost); }
-        }
+        public int KnowledgeSkillRanksSum => KnowledgeSkills.Sum(x => x.CurrentSpCost);
 
         /// <summary>
         /// Number of Skill Points that have been spent on knowledge skills.

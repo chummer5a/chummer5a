@@ -3576,7 +3576,7 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
-            decReturn += Children.Where(objChild => objChild.AddToParentESS && (!objChild.PrototypeTranshuman || _objCharacter?.IsPrototypeTranshuman != true)).AsParallel().Sum(objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
+            decReturn += Children.Where(objChild => objChild.AddToParentESS && (!objChild.PrototypeTranshuman || _objCharacter?.IsPrototypeTranshuman != true)).Sum(objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
             return decReturn;
         }
 
@@ -3850,9 +3850,9 @@ namespace Chummer.Backend.Equipment
                 decReturn *= 0.9m;
 
             // Add in the cost of all child components.
-            foreach (Cyberware objChild in Children.Where(child => child.Stolen).AsParallel())
+            foreach (Cyberware objChild in Children)
             {
-                if (objChild.Capacity == "[*]")
+                if (!objChild.Stolen || objChild.Capacity == "[*]")
                     continue;
                 // If the child cost starts with "*", multiply the item's base cost.
                 if (objChild.Cost.StartsWith('*'))
@@ -3871,7 +3871,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add in the cost of all Gear plugins.
-            decReturn += GearChildren.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
+            decReturn += GearChildren.Where(g => g.Stolen).Sum(objGear => objGear.StolenTotalCost);
 
             if (_blnSuite)
                 decReturn *= 0.9m;

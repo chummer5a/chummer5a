@@ -3050,12 +3050,12 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCost;
 
                 // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                decReturn += WeaponAccessories.AsParallel().Sum(objAccessory => objAccessory.TotalCost);
+                decReturn += WeaponAccessories.Sum(objAccessory => objAccessory.TotalCost);
 
                 // Include the cost of any Underbarrel Weapon.
                 if (Children.Count > 0)
                 {
-                    decReturn += Children.AsParallel().Sum(objUnderbarrel => objUnderbarrel.TotalCost);
+                    decReturn += Children.Sum(objUnderbarrel => objUnderbarrel.TotalCost);
                 }
 
                 return decReturn;
@@ -5957,10 +5957,10 @@ namespace Chummer.Backend.Equipment
                     decReturn += OwnCost;
 
                 // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                decReturn += WeaponAccessories.AsParallel().Sum(objAccessory => objAccessory.StolenTotalCost);
+                decReturn += WeaponAccessories.Sum(objAccessory => objAccessory.StolenTotalCost);
 
                 // Include the cost of any Underbarrel Weapon.
-                decReturn += Children.AsParallel().Sum(objUnderbarrel => objUnderbarrel.StolenTotalCost);
+                decReturn += Children.Sum(objUnderbarrel => objUnderbarrel.StolenTotalCost);
 
                 return decReturn;
             }

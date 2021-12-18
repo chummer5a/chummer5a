@@ -1085,10 +1085,11 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decReturn = 0;
-                if (Stolen) decReturn += OwnCost;
+                if (Stolen)
+                    decReturn += OwnCost;
 
                 // Go through all of the Gear for this piece of Armor and add the Cost value.
-                decReturn += GearChildren.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
+                decReturn += GearChildren.Where(g => g.Stolen).Sum(objGear => objGear.StolenTotalCost);
 
                 return decReturn;
             }
