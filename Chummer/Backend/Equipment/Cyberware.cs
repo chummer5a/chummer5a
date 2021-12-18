@@ -847,25 +847,19 @@ namespace Chummer.Backend.Equipment
                     case Improvement.ImprovementSource.Cyberware:
                         {
                             if (ImprovementManager.ValueOf(_objCharacter,
-                                Improvement.ImprovementType.CyberwareEssCostNonRetroactive) != 0)
+                                Improvement.ImprovementType.CyberwareEssCostNonRetroactive, out List<Improvement> lstUsedImprovements) != 0)
                             {
                                 decimal decMultiplier = 1;
-                                decMultiplier = _objCharacter.Improvements
-                                    .Where(objImprovement =>
-                                        objImprovement.ImproveType ==
-                                        Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
-                                    .Aggregate(decMultiplier,
-                                        (current, objImprovement) =>
-                                            current - (1m - objImprovement.Value / 100m));
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                                                              (current, objImprovement) =>
+                                                                                  current - (1m - objImprovement.Value / 100m));
                                 _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                             }
 
                             if (ImprovementManager.ValueOf(_objCharacter,
-                                Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive) != 0)
+                                Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive, out lstUsedImprovements) != 0)
                             {
-                                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
-                                    x.Enabled && x.ImproveType ==
-                                    Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive))
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
                                     _decExtraESSMultiplicativeMultiplier *=
                                         objImprovement.Value / 100m;
@@ -878,25 +872,19 @@ namespace Chummer.Backend.Equipment
                     case Improvement.ImprovementSource.Bioware:
                         {
                             if (ImprovementManager.ValueOf(_objCharacter,
-                                Improvement.ImprovementType.BiowareEssCostNonRetroactive) != 0)
+                                Improvement.ImprovementType.BiowareEssCostNonRetroactive, out List<Improvement> lstUsedImprovements) != 0)
                             {
                                 decimal decMultiplier = 1;
-                                decMultiplier = _objCharacter.Improvements
-                                    .Where(objImprovement =>
-                                        objImprovement.ImproveType ==
-                                        Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
-                                    .Aggregate(decMultiplier,
-                                        (current, objImprovement) =>
-                                            current - (1m - objImprovement.Value / 100m));
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                                                              (current, objImprovement) =>
+                                                                                  current - (1m - objImprovement.Value / 100m));
                                 _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                             }
 
                             if (ImprovementManager.ValueOf(_objCharacter,
-                                Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive) != 0)
+                                Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive, out lstUsedImprovements) != 0)
                             {
-                                foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
-                                    x.Enabled && x.ImproveType ==
-                                    Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive))
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
                                     _decExtraESSMultiplicativeMultiplier *=
                                         objImprovement.Value / 100m;
@@ -3533,8 +3521,7 @@ namespace Chummer.Backend.Equipment
 
             void UpdateMultipliers(Improvement.ImprovementType baseMultiplier, Improvement.ImprovementType totalMultiplier, ref decimal decMultiplier, ref decimal decTotalMultiplier)
             {
-                List<Improvement> lstUsedImprovements;
-                if (baseMultiplier != Improvement.ImprovementType.None && ImprovementManager.ValueOf(_objCharacter, baseMultiplier, out lstUsedImprovements) != 0)
+                if (baseMultiplier != Improvement.ImprovementType.None && ImprovementManager.ValueOf(_objCharacter, baseMultiplier, out List<Improvement> lstUsedImprovements) != 0)
                 {
                     decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
                                                                   (current, objImprovement) =>
@@ -3576,13 +3563,9 @@ namespace Chummer.Backend.Equipment
 
                 // Apply the character's Basic Bioware Essence cost multiplier if applicable.
                 if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware &&
-                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicBiowareEssCost) != 0)
+                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicBiowareEssCost, out List<Improvement> lstUsedImprovements) != 0)
                 {
-                    decimal decBasicMultiplier = _objCharacter.Improvements
-                        .Where(objImprovement =>
-                            objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost &&
-                            objImprovement.Enabled)
-                        .Aggregate<Improvement, decimal>(1,
+                    decimal decBasicMultiplier = lstUsedImprovements.Aggregate<Improvement, decimal>(1,
                             (current, objImprovement) =>
                                 current - (1m - objImprovement.Value / 100m));
                     decESSMultiplier -= 1.0m - decBasicMultiplier;
@@ -3593,8 +3576,7 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
-            decReturn += Children.Where(objChild => objChild.AddToParentESS).AsParallel()
-                .Sum(objChild => _objCharacter.IsPrototypeTranshuman && objChild.PrototypeTranshuman ? 0 : objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
+            decReturn += Children.Where(objChild => objChild.AddToParentESS && (!objChild.PrototypeTranshuman || _objCharacter?.IsPrototypeTranshuman != true)).AsParallel().Sum(objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
             return decReturn;
         }
 
@@ -3814,16 +3796,9 @@ namespace Chummer.Backend.Equipment
                 decReturn *= 0.9m;
 
             // Genetech Cost multiplier.
-            if (IsGeneware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier) != 0)
+            if (IsGeneware && ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.GenetechCostMultiplier, out List<Improvement> lstUsedImprovements) != 0)
             {
-                decimal decMultiplier = 1.0m;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
-                {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier &&
-                        objImprovement.Enabled)
-                        decMultiplier -=
-                            1.0m - (objImprovement.Value / 100.0m);
-                }
+                decimal decMultiplier = lstUsedImprovements.Aggregate(1.0m, (current, objImprovement) => current - (1.0m - (objImprovement.Value / 100.0m)));
 
                 decReturn *= decMultiplier;
             }
