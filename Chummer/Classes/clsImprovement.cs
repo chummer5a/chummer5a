@@ -2959,10 +2959,10 @@ namespace Chummer
                 {
                     // First check to make sure an existing caching for this particular value is not already running. If one is, wait for it to finish before continuing
                     int intLoopCount = 0;
-                    while (!s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck) && intLoopCount < 100)
+                    while (!s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck) && intLoopCount < 1000)
                     {
                         ++intLoopCount;
-                        Utils.SafeSleep(Utils.DefaultSleepDuration * 10);
+                        Utils.SafeSleep();
                     }
 
                     // Emergency exit, so break if we are debugging and return the default value (just in case)
@@ -2977,10 +2977,10 @@ namespace Chummer
                     if (!string.IsNullOrWhiteSpace(strImprovedName))
                     {
                         intLoopCount = 0;
-                        while (!s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck) && intLoopCount < 100)
+                        while (!s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck) && intLoopCount < 1000)
                         {
                             ++intLoopCount;
-                            Utils.SafeSleep(Utils.DefaultSleepDuration * 10);
+                            Utils.SafeSleep();
                         }
 
                         // Emergency exit, so break if we are debugging and return the default value (just in case)
