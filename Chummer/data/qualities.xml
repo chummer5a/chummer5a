@@ -18004,7 +18004,7 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus>
-        <selectskill limittoskill="Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
+        <selectskill limittoskill="Compiling, Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
       </bonus>
       <source>KC</source>
       <page>78</page>

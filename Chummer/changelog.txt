@@ -36,6 +36,7 @@ Data Changes:
 - Fixed missing availability for the BMW Luxus.
 - Muscle Augmentation and Muscle Toner now just disable Celerity instead of being forbidden from being bought if the character has Celerity. Fixes #4621.
 - Changed Cyberspace Designs Dragonfly (R5) melee autosoft rating to 1.
+- Compiling can now properly be chosen for Frostbite.
 
 Changed/New Strings:
 - String_GameplayOption
