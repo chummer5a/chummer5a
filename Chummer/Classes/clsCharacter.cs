@@ -8941,8 +8941,9 @@ namespace Chummer
             {
                 if(_intCachedAmbidextrous < 0)
                 {
-                    _intCachedAmbidextrous = Improvements.Any(x =>
-                        x.Enabled && x.ImproveType == Improvement.ImprovementType.Ambidextrous)
+                    _intCachedAmbidextrous = ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 this, Improvement.ImprovementType.Ambidextrous).Count > 0
                         ? 1
                         : 0;
                 }

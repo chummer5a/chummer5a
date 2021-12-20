@@ -196,10 +196,17 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedIsDisabled < 0)
                 {
-                    _intCachedIsDisabled = _objCharacter.Improvements.Any(x =>
-                        ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                        (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName)))
-                        && x.Enabled) ? 1 : 0;
+                    _intCachedIsDisabled = ImprovementManager
+                                           .GetCachedImprovementListForValueOf(
+                                               _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name)
+                                           .Count > 0
+                                           || _objCharacter.Improvements.Any(
+                                               x => x.ImproveType == Improvement.ImprovementType
+                                                        .SkillGroupCategoryDisable
+                                                    && GetRelevantSkillCategories.Contains(x.ImprovedName)
+                                                    && x.Enabled)
+                        ? 1
+                        : 0;
                 }
                 return _intCachedIsDisabled > 0;
             }

@@ -9876,8 +9876,11 @@ namespace Chummer
                 lblCyberwareSource.Visible = false;
             }
 
-            if (treCyberware.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
-                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
+            if (treCyberware.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
+                                                                             .GetCachedImprovementListForValueOf(
+                                                                                 CharacterObject,
+                                                                                 Improvement.ImprovementType.Nuyen,
+                                                                                 "Stolen").Count > 0)
             {
                 chkCyberwareStolen.Visible = true;
                 chkCyberwareStolen.Checked = loot.Stolen;
@@ -10134,8 +10137,11 @@ namespace Chummer
                     LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
-            if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
-                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
+            if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
+                                                                           .GetCachedImprovementListForValueOf(
+                                                                               CharacterObject,
+                                                                               Improvement.ImprovementType.Nuyen,
+                                                                               "Stolen").Count > 0)
             {
                 chkWeaponStolen.Visible = true;
                 chkWeaponStolen.Checked = loot.Stolen;
@@ -10590,8 +10596,11 @@ namespace Chummer
                 lblArmorSource.Visible = false;
             }
 
-            if (treArmor.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
-                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
+            if (treArmor.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
+                                                                         .GetCachedImprovementListForValueOf(
+                                                                             CharacterObject,
+                                                                             Improvement.ImprovementType.Nuyen,
+                                                                             "Stolen").Count > 0)
             {
                 chkArmorStolen.Visible = true;
                 chkArmorStolen.Checked = loot.Stolen;
@@ -10904,8 +10913,11 @@ namespace Chummer
                 return;
             }
 
-            if (treGear.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
-                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
+            if (treGear.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
+                                                                        .GetCachedImprovementListForValueOf(
+                                                                            CharacterObject,
+                                                                            Improvement.ImprovementType.Nuyen,
+                                                                            "Stolen").Count > 0)
             {
                 chkGearStolen.Visible = true;
                 chkGearStolen.Checked = loot.Stolen;
@@ -11895,8 +11907,11 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            if (treVehicles.SelectedNode?.Tag is IHasStolenProperty selectedLoot && CharacterObject.Improvements.Any(i =>
-                    i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
+            if (treVehicles.SelectedNode?.Tag is IHasStolenProperty selectedLoot && ImprovementManager
+                    .GetCachedImprovementListForValueOf(
+                        CharacterObject,
+                        Improvement.ImprovementType.Nuyen,
+                        "Stolen").Count > 0)
             {
                 chkVehicleStolen.Visible = true;
                 chkVehicleStolen.Checked = selectedLoot.Stolen;

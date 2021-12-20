@@ -1714,10 +1714,13 @@ namespace Chummer.Backend.Skills
                 if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                 {
                     objSpecialization = Specializations.FirstOrDefault(y =>
-                        y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement =>
-                            objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
-                            objImprovement.ImprovedName == y.Name && string.IsNullOrEmpty(objImprovement.Condition) &&
-                            objImprovement.Enabled));
+                                                                           y.Name == objSwapSkillAttribute.Exclude
+                                                                           && ImprovementManager
+                                                                              .GetCachedImprovementListForValueOf(
+                                                                                  CharacterObject,
+                                                                                  Improvement.ImprovementType
+                                                                                      .DisableSpecializationEffects,
+                                                                                  y.Name).Count == 0);
                     if (objSpecialization != null)
                     {
                         intBasePool += objSpecialization.SpecializationBonus;
