@@ -923,7 +923,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void GenerateImprovement()
         {
-            if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId)) return;
+            if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId))
+                return;
             _objCharacter.ImprovementGroups.Add(Name);
             string strSpace = LanguageManager.GetString("String_Space");
             string strNamePrefix = CurrentDisplayNameShort + strSpace + '-' + strSpace;

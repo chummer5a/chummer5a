@@ -15532,10 +15532,8 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
                 StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
-
-                ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LifestyleCost,
-                                           out List<Improvement> lstUsedImprovements);
-                foreach (Improvement objImprovement in lstUsedImprovements)
+                
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.LifestyleCost))
                 {
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(',');

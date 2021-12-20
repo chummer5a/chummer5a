@@ -942,7 +942,12 @@ namespace Chummer
 
                 if (_intCachedFreeFromImprovement < 0)
                 {
-                    _intCachedFreeFromImprovement = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactMakeFree && UniqueId == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedFreeFromImprovement = ImprovementManager
+                                                    .GetCachedImprovementListForValueOf(
+                                                        CharacterObject, Improvement.ImprovementType.ContactMakeFree,
+                                                        UniqueId).Count > 0
+                        ? 1
+                        : 0;
                 }
 
                 return _intCachedFreeFromImprovement > 0;
@@ -970,7 +975,13 @@ namespace Chummer
             {
                 if (_intCachedGroupEnabled < 0)
                 {
-                    _intCachedGroupEnabled = !ReadOnly && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ContactForceGroup && UniqueId == x.ImprovedName && x.Enabled) ? 1 : 0;
+                    _intCachedGroupEnabled = !ReadOnly && ImprovementManager
+                                                          .GetCachedImprovementListForValueOf(
+                                                              CharacterObject,
+                                                              Improvement.ImprovementType.ContactForceGroup, UniqueId)
+                                                          .Count == 0
+                        ? 1
+                        : 0;
                 }
 
                 return _intCachedGroupEnabled > 0;

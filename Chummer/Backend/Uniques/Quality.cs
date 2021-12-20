@@ -903,9 +903,9 @@ namespace Chummer
                 if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
 
-                return !_objCharacter.Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
-                        imp.ImprovedName == Name) && imp.Enabled) && _blnContributeToLimit;
+                return _blnContributeToLimit
+                       && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.FreeQuality, SourceIDString).Count == 0
+                       && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.FreeQuality, Name).Count == 0;
             }
             set
             {
@@ -962,9 +962,10 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 if (Name == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
-                return !_objCharacter.Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
-                        imp.ImprovedName == Name) && imp.Enabled) && _blnContributeToBP;
+
+                return _blnContributeToBP
+                       && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.FreeQuality, SourceIDString).Count == 0
+                       && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.FreeQuality, Name).Count == 0;
             }
         }
 

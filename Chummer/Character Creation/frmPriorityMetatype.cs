@@ -1139,7 +1139,8 @@ namespace Chummer
 
         private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3)
         {
-            ImprovementManager.ValueOf(_objCharacter, type, out List<Improvement> lstOldFreeSkillImprovements);
+            List<Improvement> lstOldFreeSkillImprovements
+                = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, type);
             lstOldFreeSkillImprovements.RemoveAll(x => x.ImproveSource != Improvement.ImprovementSource.Heritage);
             if (intFreeLevels != 0)
             {

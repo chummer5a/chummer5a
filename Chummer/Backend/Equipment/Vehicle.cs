@@ -1667,10 +1667,12 @@ namespace Chummer.Backend.Equipment
                         break;
                 }
             }
-            if (string.IsNullOrEmpty(strUniqueToSearchFor))
-                return false;
-            return _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DealerConnection
-                                                       && x.Enabled && x.UniqueName == strUniqueToSearchFor);
+
+            return !string.IsNullOrEmpty(strUniqueToSearchFor) && ImprovementManager
+                                                                  .GetCachedImprovementListForValueOf(
+                                                                      _objCharacter,
+                                                                      Improvement.ImprovementType.DealerConnection)
+                                                                  .Any(x => x.UniqueName == strUniqueToSearchFor);
         }
 
         /// <summary>

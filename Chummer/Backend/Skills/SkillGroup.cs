@@ -226,8 +226,8 @@ namespace Chummer.Backend.Skills
                             int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;
                             if (_lstAffectedSkills.Any(x => x.Specializations.Count != 0 || x.TotalBaseRating != intFirstSkillTotalBaseRating && x.Enabled))
                                 _intCachedCareerIncrease = 0;
-                            else if (_objCharacter.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                                                                          (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                            else if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name).Count > 0
+                                     || _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName) && x.Enabled))
                                 _intCachedCareerIncrease = 0;
                             else if (_lstAffectedSkills.Count == 0)
                                 _intCachedCareerIncrease = RatingMaximum > 0 ? 1 : 0;

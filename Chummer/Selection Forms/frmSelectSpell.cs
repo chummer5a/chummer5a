@@ -76,11 +76,11 @@ namespace Chummer
             List<Improvement> lstUsedImprovements = new List<Improvement>();
             if (!_blnIgnoreRequirements)
             {
-                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellCategory,
-                                           out lstUsedImprovements);
-                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellCategory,
-                                           out List<Improvement> lstOtherUsedImprovements);
-                lstUsedImprovements.AddRange(lstOtherUsedImprovements);
+                lstUsedImprovements
+                    = ImprovementManager.GetCachedImprovementListForValueOf(
+                        _objCharacter, Improvement.ImprovementType.LimitSpellCategory);
+                lstUsedImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                 _objCharacter, Improvement.ImprovementType.AllowSpellCategory));
                 foreach (Improvement improvement in lstUsedImprovements)
                 {
                     limit.Add(improvement.ImprovedName);
@@ -308,18 +308,13 @@ namespace Chummer
             List<ListItem> lstSpellItems = new List<ListItem>();
             HashSet<string> limitDescriptors = new HashSet<string>();
             HashSet<string> blockDescriptors = new HashSet<string>();
-            List<Improvement> lstUsedImprovements;
             if (!_blnIgnoreRequirements)
             {
-                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellDescriptor,
-                                           out lstUsedImprovements);
-                foreach (Improvement improvement in lstUsedImprovements)
+                foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellDescriptor))
                 {
                     limitDescriptors.Add(improvement.ImprovedName);
                 }
-                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BlockSpellDescriptor,
-                                           out lstUsedImprovements);
-                foreach (Improvement improvement in lstUsedImprovements)
+                foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.BlockSpellDescriptor))
                 {
                     blockDescriptors.Add(improvement.ImprovedName);
                 }
@@ -357,15 +352,17 @@ namespace Chummer
                         AddSpell(objXmlSpell, strSpellCategory);
                         continue;
                     }
-
-                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellCategory, out lstUsedImprovements);
-                    if (lstUsedImprovements.Any(x => x.ImprovedName != strSpellCategory))
+                    
+                    if (ImprovementManager
+                        .GetCachedImprovementListForValueOf(_objCharacter,
+                                                            Improvement.ImprovementType.LimitSpellCategory)
+                        .Any(x => x.ImprovedName != strSpellCategory))
                     {
                         continue;
                     }
 
                     if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange,
-                                                   out lstUsedImprovements) != 0
+                                                   out List<Improvement> lstUsedImprovements) != 0
                         && lstUsedImprovements.All(x => x.ImprovedName != strRange))
                     {
                         continue;

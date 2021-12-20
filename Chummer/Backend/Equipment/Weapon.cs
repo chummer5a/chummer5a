@@ -2337,7 +2337,7 @@ namespace Chummer.Backend.Equipment
                 // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
                 if (Name == "Unarmed Attack")
                 {
-                    if (strDamageType == "S" && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.UnarmedDVPhysical && x.Enabled))
+                    if (strDamageType == "S" && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDVPhysical).Count > 0)
                         strDamageType = "P";
                     decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
                 }

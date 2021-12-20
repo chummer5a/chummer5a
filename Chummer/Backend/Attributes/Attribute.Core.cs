@@ -530,8 +530,7 @@ namespace Chummer.Backend.Attributes
             int intMeat = Value;
             //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
             //TODO: Should probably be in AttributeModifiers property directly?
-            if (_objCharacter.Improvements.Any(imp =>
-                imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev))
+            if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp, Abbrev).Count > 0)
             {
                 intMeat += Math.Min(AttributeModifiers, Math.Min(MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers, TotalMaximum - intMeat));
             }
@@ -718,8 +717,7 @@ namespace Chummer.Backend.Attributes
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
-                return _objCharacter.Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev)
+                return ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp, Abbrev).Count > 0
                     ? TotalMaximum
                     : Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
@@ -809,8 +807,9 @@ namespace Chummer.Backend.Attributes
                 List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>();
                 decimal decBaseValue = 0;
 
-                ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute,
-                                                    out List<Improvement> lstUsedImprovements, strImprovedName: Abbrev);
+                List<Improvement> lstUsedImprovements
+                    = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
+                        _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
 
                 foreach (Improvement objImprovement in lstUsedImprovements.Where(objImprovement => !objImprovement.Custom))
                 {

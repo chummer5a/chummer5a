@@ -72,7 +72,7 @@ namespace Chummer
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
             if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
-                && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
+                && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.CyberadeptDaemon).Count > 0)
             {
                 decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
                 int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(

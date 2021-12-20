@@ -5931,7 +5931,7 @@ namespace Chummer.Classes
                 {
                     foreach (XmlNode objNode in objXmlList)
                     {
-                        if (!_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection && objImprovement.UniqueName == objNode.InnerText))
+                        if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DealerConnection).All(x => x.UniqueName != objNode.InnerText))
                         {
                             lstItems.Add(new ListItem(objNode.InnerText, LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText)));
                         }

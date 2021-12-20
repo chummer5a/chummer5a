@@ -2873,6 +2873,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Gets the cached list of active improvements that contribute to values of a given improvement type.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="eImprovementType">ImprovementType for which active improvements should be fetched.</param>
+        /// <param name="strImprovedName">Improvements are only fetched with the given improvedname. If empty, only those with an empty ImprovedName are fetched.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <returns>A cached list of all unconditional improvements that do not add to ratings and that match the conditions set by the arguments.</returns>
+        public static List<Improvement> GetCachedImprovementListForValueOf(
+            Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovedName = "",
+            bool blnIncludeNonImproved = false)
+        {
+            ValueOf(objCharacter, eImprovementType, out List<Improvement> lstReturn, strImprovedName: strImprovedName, blnIncludeNonImproved: blnIncludeNonImproved);
+            return lstReturn;
+        }
+
+        /// <summary>
         /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
@@ -2905,6 +2921,22 @@ namespace Chummer
         {
             return MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements, x => x.Augmented * x.Rating,
                 s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+        }
+
+        /// <summary>
+        /// Gets the cached list of active improvements that contribute to augmented values of a given improvement type.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="eImprovementType">ImprovementType for which active improvements should be fetched.</param>
+        /// <param name="strImprovedName">Improvements are only fetched with the given improvedname. If empty, only those with an empty ImprovedName are fetched.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <returns>A cached list of all unconditional improvements that do not add to ratings and that match the conditions set by the arguments.</returns>
+        public static List<Improvement> GetCachedImprovementListForAugmentedValueOf(
+            Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovedName = "",
+            bool blnIncludeNonImproved = false)
+        {
+            AugmentedValueOf(objCharacter, eImprovementType, out List<Improvement> lstReturn, strImprovedName: strImprovedName, blnIncludeNonImproved: blnIncludeNonImproved);
+            return lstReturn;
         }
 
         /// <summary>
@@ -3072,9 +3104,12 @@ namespace Chummer
                         (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))) continue;
                     string strLoopImprovedName = objImprovement.ImprovedName;
                     bool blnAllowed = objImprovement.ImproveType == eImprovementType &&
-                                      !(objCharacter.RESEnabled
-                                        && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
-                                        eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                                      !((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
+                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiative
+                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiativeDiceAdd)
+                                        && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                                        && objCharacter.ActiveCommlink is Gear objCommlink
+                                        && objCommlink.Name == "Living Persona") &&
                                       // Ignore items that apply to a Skill's Rating.
                                       objImprovement.AddToRating == blnAddToRating &&
                                       // If an Improved Name has been passed, only retrieve values that have this Improved Name.
@@ -3253,9 +3288,12 @@ namespace Chummer
                         (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))) continue;
                     string strLoopImprovedName = objImprovement.ImprovedName;
                     bool blnAllowed = objImprovement.ImproveType == eImprovementType &&
-                                      !(objCharacter.RESEnabled && objImprovement.ImproveSource
-                                        == Improvement.ImprovementSource.Gear &&
-                                        eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice) &&
+                                      !((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
+                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiative
+                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiativeDiceAdd)
+                                        && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                                        && objCharacter.ActiveCommlink is Gear objCommlink
+                                        && objCommlink.Name == "Living Persona") &&
                                       // Ignore items that apply to a Skill's Rating.
                                       objImprovement.AddToRating == blnAddToRating &&
                                       // If an Improved Name has been passed, only retrieve values that have this Improved Name.

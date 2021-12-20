@@ -5294,9 +5294,7 @@ namespace Chummer
             }
 
             // Populate Limit Modifiers from Improvements
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.LimitModifier,
-                                       out List<Improvement> lstUsedImprovements, strImprovedName: "Physical");
-            foreach(Improvement objImprovement in lstUsedImprovements)
+            foreach(Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.LimitModifier, "Physical"))
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
@@ -5328,9 +5326,7 @@ namespace Chummer
             }
 
             // Populate Limit Modifiers from Improvements
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.LimitModifier,
-                                       out lstUsedImprovements, strImprovedName: "Mental");
-            foreach (Improvement objImprovement in lstUsedImprovements)
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.LimitModifier, "Mental"))
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
@@ -5362,9 +5358,7 @@ namespace Chummer
             }
 
             // Populate Limit Modifiers from Improvements
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.LimitModifier,
-                                       out lstUsedImprovements, strImprovedName: "Social");
-            foreach (Improvement objImprovement in lstUsedImprovements)
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.LimitModifier, "Social"))
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
@@ -8810,10 +8804,8 @@ namespace Chummer
             }
 
             // Unconditional modifiers first (which can be cached)
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.NewSpellKarmaCostMultiplier,
-                                       out List<Improvement> lstUsedImprovements, strImprovedName: strCategory);
             decimal decMultiplier = 1.0m;
-            foreach (Improvement objLoopImprovement in lstUsedImprovements)
+            foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, strCategory))
             {
                 decMultiplier *= objLoopImprovement.Value / 100.0m;
             }
@@ -10075,8 +10067,7 @@ namespace Chummer
             if(!blnForMAGPenalty && _decCachedEssence != decimal.MinValue)
                 return _decCachedEssence;
             // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-            if(_lstImprovements.Any(objImprovement =>
-               objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled))
+            if(ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence).Count > 0)
             {
                 if(blnForMAGPenalty)
                     return 0.1m;
@@ -11004,8 +10995,9 @@ namespace Chummer
         /// </summary>
         public string ToxinContactResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinContactImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.ToxinContactImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinContactResist).StandardRound())
@@ -11017,8 +11009,9 @@ namespace Chummer
         /// </summary>
         public string ToxinIngestionResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinIngestionImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.ToxinIngestionImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinIngestionResist).StandardRound())
@@ -11030,8 +11023,9 @@ namespace Chummer
         /// </summary>
         public string ToxinInhalationResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInhalationImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.ToxinInhalationImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInhalationResist).StandardRound())
@@ -11043,8 +11037,9 @@ namespace Chummer
         /// </summary>
         public string ToxinInjectionResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInjectionImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.ToxinInjectionImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInjectionResist).StandardRound())
@@ -11056,8 +11051,9 @@ namespace Chummer
         /// </summary>
         public string PathogenContactResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenContactImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.PathogenContactImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenContactResist).StandardRound())
@@ -11069,8 +11065,9 @@ namespace Chummer
         /// </summary>
         public string PathogenIngestionResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenIngestionImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.PathogenIngestionImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenIngestionResist).StandardRound())
@@ -11082,8 +11079,9 @@ namespace Chummer
         /// </summary>
         public string PathogenInhalationResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInhalationImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.PathogenInhalationImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInhalationResist).StandardRound())
@@ -11095,8 +11093,9 @@ namespace Chummer
         /// </summary>
         public string PathogenInjectionResist(string strLanguage, CultureInfo objCulture)
         {
-            if(IsAI || Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInjectionImmune))
+            if (IsAI || ImprovementManager
+                        .GetCachedImprovementListForValueOf(
+                            this, Improvement.ImprovementType.PathogenInjectionImmune).Count > 0)
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInjectionResist).StandardRound())
@@ -11143,8 +11142,9 @@ namespace Chummer
                     return 0;
                 int intReturn = BOD.TotalValue + WIL.TotalValue +
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery).StandardRound();
-                if(Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AddESStoStunCMRecovery).Count
+                    > 0)
                     intReturn += Essence().ToInt32();
                 return intReturn;
             }
@@ -11167,16 +11167,18 @@ namespace Chummer
                         (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute("DEP") ??
                          DEP.TotalValue - 1) +
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery).StandardRound();
-                    if(Improvements.Any(x =>
-                       x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
+                    if (ImprovementManager
+                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AddESStoPhysicalCMRecovery).Count
+                        > 0)
                         intAIReturn += Essence().ToInt32();
                     return intAIReturn;
                 }
 
                 int intReturn = 2 * BOD.TotalValue +
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery).StandardRound();
-                if(Improvements.Any(x =>
-                   x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AddESStoPhysicalCMRecovery).Count
+                    > 0)
                     intReturn += Essence().ToInt32();
                 return intReturn;
             }
@@ -13152,15 +13154,16 @@ namespace Chummer
         {
             get
             {
-                if(Improvements.Any(objImprovement =>
-                   objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical &&
-                   objImprovement.Enabled))
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical).Count
+                    > 0)
                     return int.MaxValue;
-                if(IsAI || Improvements.Any(objImprovement =>
-                       objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun &&
-                       objImprovement.Enabled))
+                if (IsAI || ImprovementManager
+                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.IgnoreCMPenaltyStun)
+                            .Count > 0)
                     return (ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
-                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset)).StandardRound();
+                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset))
+                        .StandardRound();
 
                 decimal decCMThresholdOffset =
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
@@ -13183,15 +13186,16 @@ namespace Chummer
                 // A.I.s don't get wound penalties from Matrix damage
                 if(IsAI)
                     return int.MaxValue;
-                if(Improvements.Any(objImprovement =>
-                   objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun &&
-                   objImprovement.Enabled))
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.IgnoreCMPenaltyStun)
+                    .Count > 0)
                     return int.MaxValue;
-                if(Improvements.Any(objImprovement =>
-                   objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical &&
-                   objImprovement.Enabled))
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical).Count
+                    > 0)
                     return (ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
-                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset)).StandardRound();
+                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset))
+                        .StandardRound();
 
                 decimal decCMThresholdOffset =
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
@@ -13300,7 +13304,7 @@ namespace Chummer
                     _decCachedTotalStartingNuyen = decFromKarma +
                                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen) -
                                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen
-                                                       , false, "Stolen");
+                                                       , strImprovedName: "Stolen");
                 }
 
                 return _decCachedTotalStartingNuyen;
@@ -13974,9 +13978,7 @@ namespace Chummer
         public decimal WalkingRate(string strType = "Ground")
         {
             decimal decTmp = decimal.MinValue;
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.WalkSpeed,
-                                       out List<Improvement> lstUsedImprovements, strImprovedName: strType);
-            foreach (Improvement objImprovement in lstUsedImprovements)
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.WalkSpeed, strType))
             {
                 decTmp = Math.Max(decTmp, objImprovement.Value);
             }
@@ -14012,9 +14014,7 @@ namespace Chummer
         public decimal RunningRate(string strType = "Ground")
         {
             decimal decTmp = decimal.MinValue;
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.RunSpeed,
-                                       out List<Improvement> lstUsedImprovements, strImprovedName: strType);
-            foreach (Improvement objImprovement in lstUsedImprovements)
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.RunSpeed, strType))
             {
                 decTmp = Math.Max(decTmp, objImprovement.Value);
             }
@@ -14050,9 +14050,7 @@ namespace Chummer
         public decimal SprintingRate(string strType = "Ground")
         {
             decimal decTmp = decimal.MinValue;
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintSpeed,
-                                       out List<Improvement> lstUsedImprovements, strImprovedName: strType);
-            foreach (Improvement objImprovement in lstUsedImprovements)
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SprintSpeed, strType))
             {
                 decTmp = Math.Max(decTmp, objImprovement.Value / 100.0m);
             }
@@ -14376,14 +14374,10 @@ namespace Chummer
         }
 
         public bool AddCyberwareEnabled => !CyberwareDisabled
-                                           && !Improvements.Any(objImprovement =>
-                                               objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware
-                                               && objImprovement.Enabled);
+                                           && ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.DisableCyberware).Count == 0;
 
         public bool AddBiowareEnabled => !CyberwareDisabled
-                                         && !Improvements.Any(objImprovement =>
-                                             objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware
-                                             && objImprovement.Enabled);
+                                         && ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.DisableBioware).Count == 0;
 
         private int _intCachedInitiationEnabled = int.MinValue;
 
@@ -14452,7 +14446,10 @@ namespace Chummer
             get
             {
                 if (_intCachedDealerConnectionDiscount < 0)
-                    _intCachedDealerConnectionDiscount = Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled)
+                    _intCachedDealerConnectionDiscount = ImprovementManager
+                                                         .GetCachedImprovementListForValueOf(
+                                                             this, Improvement.ImprovementType.DealerConnection).Count
+                                                         > 0
                         ? 1
                         : 0;
 
@@ -14472,11 +14469,8 @@ namespace Chummer
             if (DealerConnectionDiscount)
                 return;
 
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.DealerConnection,
-                                       out List<Improvement> lstUsedImprovements);
-
             HashSet<string> setDealerConnectionMaps = new HashSet<string>();
-            foreach (Improvement objImprovement in lstUsedImprovements)
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.DealerConnection))
             {
                 setDealerConnectionMaps.Add(objImprovement.UniqueName);
             }
@@ -14498,9 +14492,11 @@ namespace Chummer
         {
             get
             {
-                if(_intCachedBlackMarketDiscount < 0)
-                    _intCachedBlackMarketDiscount = Improvements.Any(x =>
-                        x.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && x.Enabled)
+                if (_intCachedBlackMarketDiscount < 0)
+                    _intCachedBlackMarketDiscount = ImprovementManager
+                                                    .GetCachedImprovementListForValueOf(
+                                                        this, Improvement.ImprovementType.BlackMarketDiscount).Count
+                                                    > 0
                         ? 1
                         : 0;
 
@@ -14738,8 +14734,9 @@ namespace Chummer
         /// <summary>
         /// Whether or not this character can quicken spells.
         /// </summary>
-        public bool QuickeningEnabled => Improvements.Any(objImprovement =>
-            objImprovement.ImproveType == Improvement.ImprovementType.QuickeningMetamagic && objImprovement.Enabled);
+        public bool QuickeningEnabled => ImprovementManager
+                                         .GetCachedImprovementListForValueOf(
+                                             this, Improvement.ImprovementType.QuickeningMetamagic).Count > 0;
 
         /// <summary>
         /// Whether or not user is getting free bioware from Prototype Transhuman.
@@ -14767,9 +14764,11 @@ namespace Chummer
         {
             get
             {
-                if(_intCachedFriendsInHighPlaces < 0)
-                    _intCachedFriendsInHighPlaces = Improvements.Any(x =>
-                        x.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces && x.Enabled)
+                if (_intCachedFriendsInHighPlaces < 0)
+                    _intCachedFriendsInHighPlaces = ImprovementManager
+                                                    .GetCachedImprovementListForValueOf(
+                                                        this, Improvement.ImprovementType.FriendsInHighPlaces).Count
+                                                    > 0
                         ? 1
                         : 0;
 
@@ -14786,9 +14785,12 @@ namespace Chummer
         {
             get
             {
-                if(_intCachedExCon < 0)
-                    _intCachedExCon =
-                        Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ExCon && x.Enabled) ? 1 : 0;
+                if (_intCachedExCon < 0)
+                    _intCachedExCon = ImprovementManager
+                                      .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.ExCon).Count
+                                      > 0
+                        ? 1
+                        : 0;
 
                 return _intCachedExCon > 0;
             }
@@ -14806,8 +14808,8 @@ namespace Chummer
                 if(_intCachedTrustFund != int.MinValue)
                     return _intCachedTrustFund;
 
-                List<Improvement> lstTrustFundImprovements = Improvements
-                    .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).ToList();
+                List<Improvement> lstTrustFundImprovements = ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.TrustFund);
                 return _intCachedTrustFund = lstTrustFundImprovements.Count > 0
                     ? lstTrustFundImprovements.Max(x => x.Value).StandardRound()
                     : 0;
@@ -14825,11 +14827,10 @@ namespace Chummer
             {
                 if(_intCachedRestrictedGear < 0)
                 {
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.RestrictedGear,
-                                               out List<Improvement> lstUsedImprovements);
-                    foreach(Improvement objImprovement in lstUsedImprovements)
+                    foreach(Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.RestrictedGear))
                     {
-                        _intCachedRestrictedGear = Math.Max(_intCachedRestrictedGear, objImprovement.Value.StandardRound());
+                        _intCachedRestrictedGear
+                            = Math.Max(_intCachedRestrictedGear, objImprovement.Value.StandardRound());
                     }
                 }
 
@@ -14846,11 +14847,12 @@ namespace Chummer
         {
             get
             {
-                if(_intCachedOverclocker < 0)
-                    _intCachedOverclocker =
-                        Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Overclocker && x.Enabled)
-                            ? 1
-                            : 0;
+                if (_intCachedOverclocker < 0)
+                    _intCachedOverclocker = ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                this, Improvement.ImprovementType.Overclocker).Count > 0
+                        ? 1
+                        : 0;
 
                 return _intCachedOverclocker > 0;
             }
@@ -14865,9 +14867,10 @@ namespace Chummer
         {
             get
             {
-                if(_intCachedMadeMan < 0)
-                    _intCachedMadeMan =
-                        Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MadeMan && x.Enabled)
+                if (_intCachedMadeMan < 0)
+                    _intCachedMadeMan
+                        = ImprovementManager
+                          .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MadeMan).Count > 0
                             ? 1
                             : 0;
 
@@ -14884,9 +14887,12 @@ namespace Chummer
         {
             get
             {
-                if(_intCachedFame < 0)
-                    _intCachedFame =
-                        Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Fame && x.Enabled) ? 1 : 0;
+                if (_intCachedFame < 0)
+                    _intCachedFame = ImprovementManager
+                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Fame).Count
+                                     > 0
+                        ? 1
+                        : 0;
 
                 return _intCachedFame > 0;
             }
@@ -14902,8 +14908,11 @@ namespace Chummer
             get
             {
                 if(_intCachedErased < 0)
-                    _intCachedErased =
-                        Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Erased && x.Enabled) ? 1 : 0;
+                    _intCachedErased = ImprovementManager
+                                       .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Erased).Count
+                                       > 0
+                        ? 1
+                        : 0;
 
                 return _intCachedErased > 0;
             }
@@ -14919,10 +14928,11 @@ namespace Chummer
             get
             {
                 if (_intCachedAllowSpriteFettering < 0)
-                    _intCachedAllowSpriteFettering =
-                        Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.AllowSpriteFettering && x.Enabled)
-                            ? 1
-                            : 0;
+                    _intCachedAllowSpriteFettering = ImprovementManager
+                                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AllowSpriteFettering).Count
+                                                     > 0
+                        ? 1
+                        : 0;
                 return _intCachedAllowSpriteFettering > 0;
             }
         }
@@ -15001,22 +15011,15 @@ namespace Chummer
         /// <summary>
         /// Whether or not Adapsin is enabled.
         /// </summary>
-        public bool AdapsinEnabled
-        {
-            get
-            {
-                return Improvements.Any(objImprovement =>
-                    objImprovement.ImproveType == Improvement.ImprovementType.Adapsin && objImprovement.Enabled);
-            }
-        }
+        public bool AdapsinEnabled =>
+            ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Adapsin).Count > 0;
 
         /// <summary>
         /// Whether or not Burnout's Way is enabled.
         /// </summary>
-        public bool BurnoutEnabled
-        {
-            get { return Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.BurnoutsWay && x.Enabled); }
-        }
+        public bool BurnoutEnabled => ImprovementManager
+                                      .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.BurnoutsWay)
+                                      .Count > 0;
 
         #endregion
 
@@ -15984,7 +15987,7 @@ namespace Chummer
                     if (intMaxReduction != 0)
                     {
                         int intCyberadeptDaemonBonus = 0;
-                        if (TechnomancerEnabled && SubmersionGrade > 0 && Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
+                        if (TechnomancerEnabled && SubmersionGrade > 0 && ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyberadeptDaemon).Count > 0)
                             intCyberadeptDaemonBonus = Math.Min(SubmersionGrade.DivAwayFromZero(2), (int) Math.Ceiling(CyberwareEssence));
                         ImprovementManager.CreateImprovement(this, "RES", eEssenceLossSource, string.Empty,
                             Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, Math.Min(0, intCyberadeptDaemonBonus - intMaxReduction));
@@ -17320,13 +17323,16 @@ namespace Chummer
             int intPhysicalCMFilled = Math.Min(PhysicalCMFilled, PhysicalCM);
             int intStunCMFilled = Math.Min(StunCMFilled, StunCM);
             int intCMThreshold = CMThreshold;
-            int intStunCMPenalty = Improvements.Any(objImprovement =>
-                objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun && objImprovement.Enabled)
+            int intStunCMPenalty = ImprovementManager
+                                   .GetCachedImprovementListForValueOf(
+                                       this, Improvement.ImprovementType.IgnoreCMPenaltyStun)
+                                   .Count > 0
                 ? 0
                 : Math.Min(0, StunCMThresholdOffset - intStunCMFilled) / intCMThreshold;
-            int intPhysicalCMPenalty = Improvements.Any(objImprovement =>
-                objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical &&
-                objImprovement.Enabled)
+            int intPhysicalCMPenalty = ImprovementManager
+                                       .GetCachedImprovementListForValueOf(
+                                           this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical)
+                                       .Count > 0
                 ? 0
                 : Math.Min(0, PhysicalCMThresholdOffset - intPhysicalCMFilled) / intCMThreshold;
 
@@ -21001,9 +21007,7 @@ namespace Chummer
                 blnEssence = false;
             }
 
-            bool blnEnabled =
-                Improvements.Any(
-                    imp => imp.ImproveType == Improvement.ImprovementType.EnableCyberzombie);
+            bool blnEnabled = ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.EnableCyberzombie).Count > 0;
 
             if (!blnEnabled)
                 strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsImprovement");

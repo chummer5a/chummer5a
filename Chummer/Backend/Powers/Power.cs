@@ -964,7 +964,7 @@ namespace Chummer
                 //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount.
                 if (_nodAdeptWayRequirements?.SelectSingleNodeAndCacheExpression("magicianswayforbids") == null)
                 {
-                    blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
+                    blnReturn = ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.MagiciansWayDiscount).Count > 0;
                 }
                 if (!blnReturn && _nodAdeptWayRequirements?.HasChildren == true)
                 {

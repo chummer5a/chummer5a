@@ -974,8 +974,8 @@ namespace Chummer
 
             List<ListItem> lstCyberwares = new List<ListItem>(objXmlCyberwareList?.Count ?? 1);
 
-            bool blnCyberwareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableCyberware && x.Enabled);
-            bool blnBiowareDisabled = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
+            bool blnCyberwareDisabled = _objCharacter.AddCyberwareEnabled;
+            bool blnBiowareDisabled = _objCharacter.AddBiowareEnabled;
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
             if (objXmlCyberwareList == null && !blnDoUIUpdate)
@@ -987,8 +987,11 @@ namespace Chummer
                 {
                     bool blnIsForceGrade = xmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade") != null;
                     if (objCurrentGrade != null && blnIsForceGrade && _objCharacter.Improvements.Any(x =>
-                        ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) &&
-                        objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                            ((_objMode == Mode.Bioware
+                              && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade)
+                             || (_objMode != Mode.Bioware
+                                 && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) &&
+                            objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                         continue;
 
                     if (blnCyberwareDisabled && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/cyberware") != null)
@@ -1275,11 +1278,14 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strForceGrade))
                     {
                         if (_objCharacter.Improvements.Any(x =>
-                            (WindowMode == Mode.Bioware &&
-                             x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade ||
-                             WindowMode != Mode.Bioware &&
-                             x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)
-                            && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                                                               (WindowMode == Mode.Bioware &&
+                                                                x.ImproveType == Improvement.ImprovementType
+                                                                    .DisableBiowareGrade ||
+                                                                WindowMode != Mode.Bioware &&
+                                                                x.ImproveType == Improvement.ImprovementType
+                                                                    .DisableCyberwareGrade)
+                                                               && objWareGrade.Name.Contains(x.ImprovedName)
+                                                               && x.Enabled))
                             continue;
                         if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                             continue;

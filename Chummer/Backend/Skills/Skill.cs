@@ -856,7 +856,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (SkillGroupObject != null && CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
+                if (SkillGroupObject != null && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization).Count > 0)
                 {
                     HashSet<string> setSkillNames = SkillGroupObject.SkillList.Select(x => x.DictionaryKey).ToHashSet();
                     if (CharacterObject.Cyberware.Any(x => x.SourceID == s_GuiReflexRecorderId && setSkillNames.Contains(x.Extra)))
@@ -1123,12 +1123,15 @@ namespace Chummer.Backend.Skills
                 }
 
                 _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
-                                         !CharacterObject.Improvements.Any(x =>
-                                             ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations &&
-                                               (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == DictionaryKey)) ||
-                                              (x.ImproveType == Improvement.ImprovementType
-                                                   .BlockSkillCategorySpecializations &&
-                                               x.ImprovedName == SkillCategory)) && x.Enabled)
+                                         (ImprovementManager
+                                          .GetCachedImprovementListForValueOf(
+                                              CharacterObject, Improvement.ImprovementType.BlockSkillSpecializations,
+                                              DictionaryKey, true).Count > 0
+                                          || ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 CharacterObject,
+                                                 Improvement.ImprovementType.BlockSkillCategorySpecializations,
+                                                 SkillCategory).Count > 0)
                     ? 1
                     : 0;
                 if (_intCachedCanHaveSpecs <= 0 && Specializations.Count > 0)
@@ -1188,15 +1191,19 @@ namespace Chummer.Backend.Skills
                     return false;
                 }
                 // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
-                if (CharacterObject.IsCritter && Rating == 0 && !CharacterObject.Improvements.Any(x =>
-                        x.ImproveType == Improvement.ImprovementType.AllowSkillDefault &&
-                        (x.ImprovedName == DictionaryKey || string.IsNullOrEmpty(x.ImprovedName)) && x.Enabled))
+                if (CharacterObject.IsCritter && Rating == 0 && ImprovementManager
+                                                                .GetCachedImprovementListForValueOf(
+                                                                    CharacterObject,
+                                                                    Improvement.ImprovementType.AllowSkillDefault,
+                                                                    DictionaryKey, true).Count == 0)
                 {
                     _intCachedEnabled = 0;
                     return false;
                 }
 
-                if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillDisable && x.ImprovedName == DictionaryKey && x.Enabled))
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.SkillDisable,
+                                                        DictionaryKey).Count > 0)
                 {
                     _intCachedEnabled = 0;
                     return false;
@@ -1518,9 +1525,7 @@ namespace Chummer.Backend.Skills
             }
 
             return Specializations.Any(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
-                   && !CharacterObject.Improvements.Any(x =>
-                       x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
-                       x.ImprovedName == DictionaryKey && string.IsNullOrEmpty(x.Condition) && x.Enabled);
+                   && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.DisableSpecializationEffects, DictionaryKey).Count == 0;
         }
 
         public SkillSpecialization GetSpecialization(string strSpecialization)
@@ -1909,11 +1914,14 @@ namespace Chummer.Backend.Skills
         public string DisplayOtherAttribute(string strAttribute)
         {
             int intPool = PoolOtherAttribute(strAttribute);
-            if ((IsExoticSkill || Specializations.Count == 0 || CharacterObject.Improvements.Any(x =>
-                     x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
-                     x.ImprovedName == DictionaryKey && string.IsNullOrEmpty(x.Condition) && x.Enabled)) &&
-                 !CharacterObject.Improvements.Any(i =>
-                     i.ImproveType == Improvement.ImprovementType.Skill && !string.IsNullOrEmpty(i.Condition)))
+            if ((IsExoticSkill || Specializations.Count == 0 || ImprovementManager
+                                                                .GetCachedImprovementListForValueOf(
+                                                                    CharacterObject,
+                                                                    Improvement.ImprovementType
+                                                                               .DisableSpecializationEffects,
+                                                                    DictionaryKey).Count > 0)
+                && !CharacterObject.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.Skill
+                                                          && !string.IsNullOrEmpty(i.Condition)))
             {
                 return intPool.ToString(GlobalSettings.CultureInfo);
             }
