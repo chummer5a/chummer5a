@@ -2841,14 +2841,19 @@ namespace Chummer
                                     }
 
                                     foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
-                                        if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
-                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
+                                    {
+                                        if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
+                                                x => x.Name != strLoopCustomDataName))
+                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
+                                                                          .RaiseToPower(2) *
                                                          intBaseline;
+                                    }
+
                                     int intBookBaselineScore =
                                         (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
                                     HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
                                     setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                    intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(2)
+                                    intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(4)
                                                   + (objOptionsToCheck.Books.Count - setDummyBooks.Count).RaiseToPower(2))
                                                  * intBookBaselineScore;
                                     return intReturn;

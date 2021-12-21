@@ -98,7 +98,7 @@ namespace Chummer
 
         public bool PreventFileNameCharErrors { get; internal set; }
 
-        private bool _blnAllowEmptyString = false;
+        private bool _blnAllowEmptyString;
 
         public bool AllowEmptyString
         {
