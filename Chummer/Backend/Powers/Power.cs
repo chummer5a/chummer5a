@@ -1166,7 +1166,11 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 StringBuilder sbdModifier = new StringBuilder(LanguageManager.GetString("String_Rating") + strSpace
                     + '(' + Rating.ToString(GlobalSettings.CultureInfo) + strSpace + '×' + strSpace + PointsPerLevel.ToString(GlobalSettings.CultureInfo) + ')');
-                foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
+                foreach (Improvement objImprovement in ImprovementManager
+                                                       .GetCachedImprovementListForValueOf(
+                                                           CharacterObject, Improvement.ImprovementType.AdeptPower,
+                                                           Name).Where(objImprovement =>
+                                                                           objImprovement.UniqueName == Extra))
                 {
                     sbdModifier.Append(strSpace).Append('+').Append(strSpace)
                                .Append(CharacterObject.GetObjectName(objImprovement)).Append(strSpace).Append('(')

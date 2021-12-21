@@ -12815,9 +12815,11 @@ namespace Chummer
                 {
                     if (objWareGrade.Adapsin)
                         continue;
-                    if (CharacterObject.Improvements.Any(
-                            x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
-                                 && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+
+                    if (ImprovementManager
+                        .GetCachedImprovementListForValueOf(CharacterObject,
+                                                            Improvement.ImprovementType.DisableBiowareGrade).Any(
+                            x => objWareGrade.Name.Contains(x.ImprovedName)))
                         continue;
                 }
                 else
@@ -12831,9 +12833,11 @@ namespace Chummer
                     }
                     else if (objWareGrade.Adapsin)
                         continue;
-                    if (CharacterObject.Improvements.Any(
-                            x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
-                                 && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+
+                    if (ImprovementManager
+                        .GetCachedImprovementListForValueOf(CharacterObject,
+                                                            Improvement.ImprovementType.DisableCyberwareGrade).Any(
+                            x => objWareGrade.Name.Contains(x.ImprovedName)))
                         continue;
                 }
                 if (CharacterObject.BurnoutEnabled)

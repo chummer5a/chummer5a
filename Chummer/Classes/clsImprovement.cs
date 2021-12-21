@@ -4393,7 +4393,11 @@ namespace Chummer
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
-                bool blnHasDuplicate = objCharacter.Improvements.Any(x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName && x.ImproveType == objImprovement.ImproveType && x.SourceName != objImprovement.SourceName && x.Enabled);
+                bool blnHasDuplicate = objCharacter.Improvements.Any(
+                    x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName
+                                                                   && x.ImproveType == objImprovement.ImproveType
+                                                                   && x.SourceName != objImprovement.SourceName
+                                                                   && x.Enabled);
 
                 switch (objImprovement.ImproveType)
                 {
@@ -4630,7 +4634,7 @@ namespace Chummer
                             }
 
                             string strLoopCategory = string.Empty;
-                            foreach (Improvement objLoopImprovement in objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills && x.Enabled))
+                            foreach (Improvement objLoopImprovement in GetCachedImprovementListForValueOf(objCharacter, Improvement.ImprovementType.SpecialSkills))
                             {
                                 FilterOption eLoopFilter = (FilterOption)Enum.Parse(typeof(FilterOption), objLoopImprovement.ImprovedName);
                                 switch (eLoopFilter)
@@ -4761,7 +4765,11 @@ namespace Chummer
             foreach (Improvement objImprovement in objImprovementList)
             {
                 // See if the character has anything else that is granting them the same bonus as this improvement
-                bool blnHasDuplicate = objCharacter.Improvements.Any(x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName && x.ImproveType == objImprovement.ImproveType && (blnAllowDuplicatesFromSameSource || x.SourceName != objImprovement.SourceName));
+                bool blnHasDuplicate = objCharacter.Improvements.Any(
+                    x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName
+                                                                   && x.ImproveType == objImprovement.ImproveType
+                                                                   && (blnAllowDuplicatesFromSameSource
+                                                                       || x.SourceName != objImprovement.SourceName));
 
                 switch (objImprovement.ImproveType)
                 {

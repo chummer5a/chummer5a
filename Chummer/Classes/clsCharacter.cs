@@ -9101,20 +9101,25 @@ namespace Chummer
                         {
                             // If this character has any MAG-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
                             // it has to be assumed those are taken first.
-                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x =>
-                                x.ImproveType == Improvement.ImprovementType.Attribute
-                                && x.ImprovedName == "MAG"
-                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                && x.Enabled);
+                            List<Improvement> lstAttributeImprovements = ImprovementManager
+                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Attribute, "MAG");
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                x => x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metatype
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metavariant
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Heritage);
                             if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
                             {
-                                List<string> lstMAGEnablingQualityIds = Improvements.Where(x =>
-                                    x.ImproveType == Improvement.ImprovementType.Attribute
-                                    && x.ImprovedName == "MAG"
-                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
-                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                List<string> lstMAGEnablingQualityIds = lstAttributeImprovements
+                                                                        .Where(x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource
+                                                                                       .Quality).Select(
+                                                                            x => x.SourceName).ToList();
                                 // Can't use foreach because new items can get added to this list while it is looping
                                 for (int i = 0; i < lstMAGEnablingQualityIds.Count; ++i)
                                 {
@@ -9132,23 +9137,22 @@ namespace Chummer
                                         }
                                         else if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
-                                            if (Improvements.Any(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                && x.Enabled))
+                                            List<Improvement> lstSpecificQualityImprovements = ImprovementManager
+                                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecificQuality, objQuality.InternalId);
+                                            if (lstSpecificQualityImprovements.Any(x =>
+                                                x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                || x.ImproveSource == Improvement.ImprovementSource.Heritage))
                                             {
                                                 blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
                                                 break;
                                             }
                                             // Qualities that add other qualities get added to the list to be checked, too
-                                            lstMAGEnablingQualityIds.AddRange(Improvements.Where(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                && x.Enabled).Select(x => x.SourceName));
+                                            lstMAGEnablingQualityIds.AddRange(
+                                                lstSpecificQualityImprovements
+                                                    .Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                    .Select(x => x.SourceName));
                                         }
                                     }
                                 }
@@ -9536,20 +9540,25 @@ namespace Chummer
                         {
                             // If this character has any RES-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
                             // it has to be assumed those are taken first.
-                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x =>
-                                x.ImproveType == Improvement.ImprovementType.Attribute
-                                && x.ImprovedName == "RES"
-                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                && x.Enabled);
+                            List<Improvement> lstAttributeImprovements = ImprovementManager
+                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Attribute, "RES");
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                x => x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metatype
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metavariant
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Heritage);
                             if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
                             {
-                                List<string> lstRESEnablingQualityIds = Improvements.Where(x =>
-                                    x.ImproveType == Improvement.ImprovementType.Attribute
-                                    && x.ImprovedName == "RES"
-                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
-                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                List<string> lstRESEnablingQualityIds = lstAttributeImprovements
+                                                                        .Where(x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource
+                                                                                       .Quality).Select(
+                                                                            x => x.SourceName).ToList();
                                 // Can't use foreach because new items can get added to this list while it is looping
                                 for (int i = 0; i < lstRESEnablingQualityIds.Count; ++i)
                                 {
@@ -9567,23 +9576,22 @@ namespace Chummer
                                         }
                                         else if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
-                                            if (Improvements.Any(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                            List<Improvement> lstSpecificQualityImprovements = ImprovementManager
+                                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecificQuality, objQuality.InternalId);
+                                            if (lstSpecificQualityImprovements.Any(x =>
+                                                    x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                && x.Enabled))
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage))
                                             {
                                                 blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
                                                 break;
                                             }
                                             // Qualities that add other qualities get added to the list to be checked, too
-                                            lstRESEnablingQualityIds.AddRange(Improvements.Where(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                && x.Enabled).Select(x => x.SourceName));
+                                            lstRESEnablingQualityIds.AddRange(
+                                                lstSpecificQualityImprovements
+                                                    .Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                    .Select(x => x.SourceName));
                                         }
                                     }
                                 }
@@ -9754,20 +9762,25 @@ namespace Chummer
                         {
                             // If this character has any DEP-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
                             // it has to be assumed those are taken first.
-                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x =>
-                                x.ImproveType == Improvement.ImprovementType.Attribute
-                                && x.ImprovedName == "DEP"
-                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                && x.Enabled);
+                            List<Improvement> lstAttributeImprovements = ImprovementManager
+                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Attribute, "DEP");
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                x => x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metatype
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metavariant
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Heritage);
                             if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
                             {
-                                List<string> lstDEPEnablingQualityIds = Improvements.Where(x =>
-                                    x.ImproveType == Improvement.ImprovementType.Attribute
-                                    && x.ImprovedName == "DEP"
-                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
-                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                List<string> lstDEPEnablingQualityIds = lstAttributeImprovements
+                                                                        .Where(x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource
+                                                                                       .Quality).Select(
+                                                                            x => x.SourceName).ToList();
                                 // Can't use foreach because new items can get added to this list while it is looping
                                 for (int i = 0; i < lstDEPEnablingQualityIds.Count; ++i)
                                 {
@@ -9785,23 +9798,22 @@ namespace Chummer
                                         }
                                         else if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
-                                            if (Improvements.Any(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                            List<Improvement> lstSpecificQualityImprovements = ImprovementManager
+                                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecificQuality, objQuality.InternalId);
+                                            if (lstSpecificQualityImprovements.Any(x =>
+                                                    x.ImproveSource == Improvement.ImprovementSource.Metatype
                                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                && x.Enabled))
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage))
                                             {
                                                 blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
                                                 break;
                                             }
                                             // Qualities that add other qualities get added to the list to be checked, too
-                                            lstDEPEnablingQualityIds.AddRange(Improvements.Where(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                && x.Enabled).Select(x => x.SourceName));
+                                            lstDEPEnablingQualityIds.AddRange(
+                                                lstSpecificQualityImprovements
+                                                    .Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                    .Select(x => x.SourceName));
                                         }
                                     }
                                 }
@@ -17486,36 +17498,28 @@ namespace Chummer
                 //in Career Mode. Create mode manages itself.
                 int intFreeGenericSpells = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpells).StandardRound();
                 int intFreeTouchOnlySpells = 0;
-                foreach (Improvement imp in Improvements.Where(i =>
-                    (i.ImproveType == Improvement.ImprovementType.FreeSpellsATT
-                     || i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                    && i.Enabled))
+                foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsATT))
                 {
-                    switch (imp.ImproveType)
-                    {
-                        case Improvement.ImprovementType.FreeSpellsATT:
-                            int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
-                            if (imp.UniqueName.Contains("half"))
-                                intAttValue = (intAttValue + 1) / 2;
-                            if (imp.UniqueName.Contains("touchonly"))
-                                intFreeTouchOnlySpells += intAttValue;
-                            else
-                                intFreeGenericSpells += intAttValue;
-                            break;
-                        case Improvement.ImprovementType.FreeSpellsSkill:
-                            Skill skill = SkillsSection.GetActiveSkill(imp.ImprovedName);
-                            int intSkillValue = SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
-                            if (imp.UniqueName.Contains("half"))
-                                intSkillValue = (intSkillValue + 1) / 2;
-                            if (imp.UniqueName.Contains("touchonly"))
-                                intFreeTouchOnlySpells += intSkillValue;
-                            else
-                                intFreeGenericSpells += intSkillValue;
-                            //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
-                            intFreeGenericSpells += skill.Specializations.Count(spec =>
-                                Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus));
-                            break;
-                    }
+                    int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
+                    if (imp.UniqueName.Contains("half"))
+                        intAttValue = (intAttValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intAttValue;
+                    else
+                        intFreeGenericSpells += intAttValue;
+                }
+                foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsSkill))
+                {
+                    Skill skill = SkillsSection.GetActiveSkill(imp.ImprovedName);
+                    int intSkillValue = SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
+                    if (imp.UniqueName.Contains("half"))
+                        intSkillValue = (intSkillValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intSkillValue;
+                    else
+                        intFreeGenericSpells += intSkillValue;
+                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
+                    intFreeGenericSpells += skill.Specializations.Count(spec => Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus));
                 }
 
                 int intTotalFreeNonTouchSpellsCount = Spells.Count(spell =>

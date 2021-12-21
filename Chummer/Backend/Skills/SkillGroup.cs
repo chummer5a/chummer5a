@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
@@ -200,11 +201,11 @@ namespace Chummer.Backend.Skills
                                            .GetCachedImprovementListForValueOf(
                                                _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name)
                                            .Count > 0
-                                           || _objCharacter.Improvements.Any(
-                                               x => x.ImproveType == Improvement.ImprovementType
-                                                        .SkillGroupCategoryDisable
-                                                    && GetRelevantSkillCategories.Contains(x.ImprovedName)
-                                                    && x.Enabled)
+                                           || ImprovementManager
+                                              .GetCachedImprovementListForValueOf(
+                                                  _objCharacter, Improvement.ImprovementType.SkillGroupCategoryDisable)
+                                              .Any(
+                                                  x => GetRelevantSkillCategories.Contains(x.ImprovedName))
                         ? 1
                         : 0;
                 }
@@ -236,9 +237,10 @@ namespace Chummer.Backend.Skills
                             else if (ImprovementManager
                                      .GetCachedImprovementListForValueOf(
                                          _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name).Count > 0
-                                     || _objCharacter.Improvements.Any(
-                                         x => x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable
-                                              && GetRelevantSkillCategories.Contains(x.ImprovedName) && x.Enabled))
+                                     || ImprovementManager
+                                        .GetCachedImprovementListForValueOf(
+                                            _objCharacter, Improvement.ImprovementType.SkillGroupCategoryDisable).Any(
+                                            x => GetRelevantSkillCategories.Contains(x.ImprovedName)))
                                 _intCachedCareerIncrease = 0;
                             else if (_lstAffectedSkills.Count == 0)
                                 _intCachedCareerIncrease = RatingMaximum > 0 ? 1 : 0;
@@ -602,7 +604,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                System.Text.StringBuilder s = new System.Text.StringBuilder();
+                StringBuilder s = new StringBuilder();
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
@@ -613,10 +615,16 @@ namespace Chummer.Backend.Skills
                 if (IsDisabled)
                 {
                     s.AppendLine(LanguageManager.GetString("Label_SkillGroup_DisabledBy"));
-                    foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
-                            ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                            (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName)))
-                            && x.Enabled))
+                    List<Improvement> lstImprovements
+                        = ImprovementManager.GetCachedImprovementListForValueOf(
+                            _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name);
+                    lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                                   _objCharacter,
+                                                                   Improvement.ImprovementType
+                                                                              .SkillGroupCategoryDisable)
+                                                               .Where(x => GetRelevantSkillCategories.Contains(
+                                                                          x.ImprovedName)));
+                    foreach (Improvement objImprovement in lstImprovements)
                     {
                         s.AppendLine(CharacterObject.GetObjectName(objImprovement));
                     }

@@ -990,14 +990,16 @@ namespace Chummer
                     {
                         if (WindowMode == Mode.Bioware)
                         {
-                            if (_objCharacter.Improvements.Any(
-                                    x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
-                                         && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                            if (ImprovementManager
+                                .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                    Improvement.ImprovementType.DisableBiowareGrade)
+                                .Any(x => objCurrentGrade.Name.Contains(x.ImprovedName)))
                                 continue;
                         }
-                        else if (_objCharacter.Improvements.Any(
-                                     x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
-                                          && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                        else if (ImprovementManager
+                                 .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                     Improvement.ImprovementType.DisableCyberwareGrade)
+                                 .Any(x => objCurrentGrade.Name.Contains(x.ImprovedName)))
                             continue;
                     }
 
@@ -1288,18 +1290,20 @@ namespace Chummer
                             continue;
                         if (WindowMode == Mode.Bioware)
                         {
-                            if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
-                                                                   && objWareGrade.Name.Contains(x.ImprovedName)
-                                                                   && x.Enabled))
+                            if (ImprovementManager
+                                .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                    Improvement.ImprovementType.DisableBiowareGrade)
+                                .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
                                 continue;
                             if (objWareGrade.Adapsin)
                                 continue;
                         }
                         else
                         {
-                            if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
-                                                                    && objWareGrade.Name.Contains(x.ImprovedName)
-                                                                    && x.Enabled))
+                            if (ImprovementManager
+                                .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                    Improvement.ImprovementType.DisableCyberwareGrade)
+                                .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
                                 continue;
                             if (_objCharacter.AdapsinEnabled && !objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
                             {

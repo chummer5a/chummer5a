@@ -218,7 +218,7 @@ namespace Chummer.Backend.Skills
                     return;
             }
             // Check for duplicates (we'd normally want to make sure it's enabled, but SpecialSkills doesn't process the Enabled property properly)
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills && x.Enabled))
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.SpecialSkills))
             {
                 FilterOption eLoopFilter = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
                 string strLoopCategory = string.Empty;

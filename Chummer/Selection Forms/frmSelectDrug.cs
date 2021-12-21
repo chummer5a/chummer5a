@@ -684,7 +684,12 @@ namespace Chummer
             foreach (XPathNavigator xmlDrug in objXmlDrugList)
             {
                 bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
-                if (objCurrentGrade != null && blnIsForceGrade && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                if (objCurrentGrade != null && blnIsForceGrade && ImprovementManager
+                                                                  .GetCachedImprovementListForValueOf(
+                                                                      _objCharacter,
+                                                                      Improvement.ImprovementType.DisableDrugGrade)
+                                                                  .Any(x => objCurrentGrade.Name.Contains(
+                                                                           x.ImprovedName)))
                     continue;
 
                 string strMaxRating = xmlDrug.SelectSingleNode("rating")?.Value;
@@ -831,7 +836,7 @@ namespace Chummer
                 {
                     if (objWareGrade.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
                         continue;
-                    //if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                    //if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableDrugGrade).Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
                     //    continue;
                     if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                         continue;

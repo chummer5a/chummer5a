@@ -94,12 +94,12 @@ namespace Chummer
                                 // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                                 switch (_eSource)
                                 {
-                                    case Improvement.ImprovementSource.Bioware when _objCharacter.Improvements.Any(
-                                        x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
-                                             && strGrade.Contains(x.ImprovedName) && x.Enabled):
-                                    case Improvement.ImprovementSource.Cyberware when _objCharacter.Improvements.Any(
-                                        x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
-                                             && strGrade.Contains(x.ImprovedName) && x.Enabled):
+                                    case Improvement.ImprovementSource.Bioware when ImprovementManager
+                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableBiowareGrade)
+                                        .Any(x => strGrade.Contains(x.ImprovedName)):
+                                    case Improvement.ImprovementSource.Cyberware when ImprovementManager
+                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableCyberwareGrade)
+                                        .Any(x => strGrade.Contains(x.ImprovedName)):
                                         continue;
                                 }
                             }

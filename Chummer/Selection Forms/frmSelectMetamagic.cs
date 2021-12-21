@@ -53,7 +53,10 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            foreach (Improvement imp in _objCharacter.Improvements.Where(imp => imp.ImproveType == Improvement.ImprovementType.MetamagicLimit && imp.Rating == objGrade.Grade && imp.Enabled))
+            foreach (Improvement imp in ImprovementManager
+                                        .GetCachedImprovementListForValueOf(
+                                            _objCharacter, Improvement.ImprovementType.MetamagicLimit)
+                                        .Where(imp => imp.Rating == objGrade.Grade))
             {
                 _lstMetamagicLimits.Add(imp.ImprovedName);
             }
