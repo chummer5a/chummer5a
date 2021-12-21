@@ -986,13 +986,20 @@ namespace Chummer
                 foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
                 {
                     bool blnIsForceGrade = xmlCyberware.SelectSingleNodeAndCacheExpression("forcegrade") != null;
-                    if (objCurrentGrade != null && blnIsForceGrade && _objCharacter.Improvements.Any(x =>
-                            ((_objMode == Mode.Bioware
-                              && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade)
-                             || (_objMode != Mode.Bioware
-                                 && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) &&
-                            objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                        continue;
+                    if (objCurrentGrade != null && blnIsForceGrade)
+                    {
+                        if (WindowMode == Mode.Bioware)
+                        {
+                            if (_objCharacter.Improvements.Any(
+                                    x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
+                                         && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                                continue;
+                        }
+                        else if (_objCharacter.Improvements.Any(
+                                     x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
+                                          && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                            continue;
+                    }
 
                     if (blnCyberwareDisabled && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/cyberware") != null)
                     {
@@ -1277,27 +1284,28 @@ namespace Chummer
                         continue;
                     if (string.IsNullOrEmpty(strForceGrade))
                     {
-                        if (_objCharacter.Improvements.Any(x =>
-                                                               (WindowMode == Mode.Bioware &&
-                                                                x.ImproveType == Improvement.ImprovementType
-                                                                    .DisableBiowareGrade ||
-                                                                WindowMode != Mode.Bioware &&
-                                                                x.ImproveType == Improvement.ImprovementType
-                                                                    .DisableCyberwareGrade)
-                                                               && objWareGrade.Name.Contains(x.ImprovedName)
-                                                               && x.Enabled))
-                            continue;
                         if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                             continue;
-                        if (_objCharacter.AdapsinEnabled && _objMode == Mode.Cyberware)
+                        if (WindowMode == Mode.Bioware)
                         {
-                            if (!objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
+                            if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
+                                                                   && objWareGrade.Name.Contains(x.ImprovedName)
+                                                                   && x.Enabled))
+                                continue;
+                            if (objWareGrade.Adapsin)
+                                continue;
+                        }
+                        else
+                        {
+                            if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
+                                                                    && objWareGrade.Name.Contains(x.ImprovedName)
+                                                                    && x.Enabled))
+                                continue;
+                            if (_objCharacter.AdapsinEnabled && !objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
                             {
                                 continue;
                             }
                         }
-                        else if (objWareGrade.Adapsin)
-                            continue;
 
                         if (_objCharacter.BurnoutEnabled)
                         {

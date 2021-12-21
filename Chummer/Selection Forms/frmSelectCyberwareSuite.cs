@@ -87,19 +87,22 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strName))
                         {
                             string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                            if (string.IsNullOrEmpty(strGrade) && (lstGrades.All(x => x.Name != strGrade) ||
-                                                                   _objCharacter.Improvements.Any(x =>
-                                                                       ((_eSource == Improvement.ImprovementSource
-                                                                                .Cyberware && x.ImproveType
-                                                                            == Improvement.ImprovementType
-                                                                                .DisableBiowareGrade) ||
-                                                                        (_eSource == Improvement.ImprovementSource
-                                                                                .Bioware && x.ImproveType
-                                                                            == Improvement.ImprovementType
-                                                                                .DisableCyberwareGrade))
-                                                                       && strGrade.Contains(x.ImprovedName)
-                                                                       && x.Enabled)))
-                                continue;
+                            if (string.IsNullOrEmpty(strGrade))
+                            {
+                                if (lstGrades.All(x => x.Name != strGrade))
+                                    continue;
+                                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                                switch (_eSource)
+                                {
+                                    case Improvement.ImprovementSource.Bioware when _objCharacter.Improvements.Any(
+                                        x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
+                                             && strGrade.Contains(x.ImprovedName) && x.Enabled):
+                                    case Improvement.ImprovementSource.Cyberware when _objCharacter.Improvements.Any(
+                                        x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
+                                             && strGrade.Contains(x.ImprovedName) && x.Enabled):
+                                        continue;
+                                }
+                            }
                             lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }

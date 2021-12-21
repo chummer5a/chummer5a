@@ -9058,10 +9058,9 @@ namespace Chummer
             int intPrepPointsUsed = 0;
             if (CharacterObject.MagicianEnabled
                 || CharacterObject.AdeptEnabled
-                || CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
-                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
-                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
-                                                                      && objImprovement.Enabled))
+                || ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells).Count > 0
+                || ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsATT).Count > 0
+                || ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill).Count > 0)
             {
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
                 int spells = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus);
@@ -12810,20 +12809,33 @@ namespace Chummer
             {
                 if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
                     continue;
-                if (CharacterObject.Improvements.Any(x => (blnBioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade || !blnBioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)
-                        && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                    continue;
                 if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                     continue;
-                if (CharacterObject.AdapsinEnabled && !blnBioware)
+                if (blnBioware)
                 {
-                    if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
-                    {
+                    if (objWareGrade.Adapsin)
                         continue;
-                    }
+                    if (CharacterObject.Improvements.Any(
+                            x => x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade
+                                 && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                        continue;
                 }
-                else if (objWareGrade.Adapsin)
-                    continue;
+                else
+                {
+                    if (CharacterObject.AdapsinEnabled)
+                    {
+                        if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (objWareGrade.Adapsin)
+                        continue;
+                    if (CharacterObject.Improvements.Any(
+                            x => x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade
+                                 && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                        continue;
+                }
                 if (CharacterObject.BurnoutEnabled)
                 {
                     if (!objWareGrade.Burnout && objGradeList.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
