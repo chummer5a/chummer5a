@@ -1064,7 +1064,9 @@ namespace Chummer.Backend.Skills
                 if (intCost < 0)
                     Utils.BreakIfDebug();
 
-                int intSpecCount = Specializations.Count(objSpec => !objSpec.Free && (BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables));
+                int intSpecCount = BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables
+                    ? Specializations.Count(objSpec => !objSpec.Free)
+                    : 0;
                 int intSpecCost = intSpecCount * CharacterObject.Settings.KarmaSpecialization;
                 decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
@@ -1435,12 +1437,10 @@ namespace Chummer.Backend.Skills
                 {
                     _blnRecalculateCachedSuggestedSpecializations = false;
                     _lstCachedSuggestedSpecializations.Clear();
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 CharacterObject, Improvement.ImprovementType.SkillSpecializationOption, DictionaryKey))
                     {
-                        if (objImprovement.ImprovedName != DictionaryKey
-                            || objImprovement.ImproveType != Improvement.ImprovementType.SkillSpecializationOption
-                            || _lstCachedSuggestedSpecializations.Any(y => y.Value?.ToString() == objImprovement.UniqueName)
-                            || !objImprovement.Enabled)
+                        if (_lstCachedSuggestedSpecializations.Any(y => y.Value?.ToString() == objImprovement.UniqueName))
                             continue;
                         string strSpecializationName = objImprovement.UniqueName;
                         _lstCachedSuggestedSpecializations.Add(

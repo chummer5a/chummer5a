@@ -6908,9 +6908,9 @@ namespace Chummer
 
             // Gear cannot be moved to one if its children.
             bool blnAllowMove = true;
-            TreeNode objFindNode = objDestination;
             if(objDestination.Level > 0)
             {
+                TreeNode objFindNode = objDestination;
                 do
                 {
                     objFindNode = objFindNode.Parent;
@@ -11881,12 +11881,14 @@ namespace Chummer
         {
             get
             {
-                string strSpace = LanguageManager.GetString("String_Space");
                 string strToolTip = DodgeToolTip;
 
                 if (CurrentCounterspellingDice != 0)
+                {
+                    string strSpace = LanguageManager.GetString("String_Space");
                     strToolTip += strSpace + '+' + strSpace + LanguageManager.GetString("Label_CounterspellingDice") +
                                   strSpace + '(' + CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo) + ')';
+                }
 
                 return strToolTip;
             }
@@ -13508,31 +13510,28 @@ namespace Chummer
                                                              '[' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
                                                              "])" + strSpace + '/' + strSpace +
                                                              3.ToString(GlobalSettings.CultureInfo));
-                if(IsAI)
+                if(IsAI && HomeNode != null)
                 {
                     int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
-                    if(HomeNode != null)
+                    if (HomeNode is Vehicle objHomeNodeVehicle)
                     {
-                        if(HomeNode is Vehicle objHomeNodeVehicle)
+                        int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                        if(intHomeNodeSensor > intLimit)
                         {
-                            int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
-                            if(intHomeNodeSensor > intLimit)
-                            {
-                                intLimit = intHomeNodeSensor;
-                                sbdToolTip = new StringBuilder(LanguageManager.GetString("String_Sensor") + strSpace +
-                                                               '[' + intLimit.ToString(GlobalSettings.CultureInfo) +
-                                                               ']');
-                            }
+                            intLimit = intHomeNodeSensor;
+                            sbdToolTip = new StringBuilder(LanguageManager.GetString("String_Sensor") + strSpace +
+                                                           '[' + intLimit.ToString(GlobalSettings.CultureInfo) +
+                                                           ']');
                         }
+                    }
 
-                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                        if(intHomeNodeDP > intLimit)
-                        {
-                            intLimit = intHomeNodeDP;
-                            sbdToolTip = new StringBuilder(LanguageManager.GetString("String_DataProcessing") +
-                                                           strSpace + '[' +
-                                                           intLimit.ToString(GlobalSettings.CultureInfo) + ']');
-                        }
+                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                    if(intHomeNodeDP > intLimit)
+                    {
+                        intLimit = intHomeNodeDP;
+                        sbdToolTip = new StringBuilder(LanguageManager.GetString("String_DataProcessing") +
+                                                       strSpace + '[' +
+                                                       intLimit.ToString(GlobalSettings.CultureInfo) + ']');
                     }
                 }
 
@@ -15068,16 +15067,15 @@ namespace Chummer
                 {
                     if(objXmlQuality["name"] == null)
                     {
-                        string strForceValue = string.Empty;
-
                         XmlNode objXmlQualityNode =
                             xmlRootQualitiesNode.SelectSingleNode(
                                 "quality[name = " + GetQualityName(objXmlQuality.InnerText).CleanXPath() + "]");
 
                         if(objXmlQualityNode != null)
                         {
+                            string strForceValue = string.Empty;
                             // Re-create the bonuses for the Quality.
-                            if(objXmlQualityNode.InnerXml.Contains("<bonus>"))
+                            if (objXmlQualityNode.InnerXml.Contains("<bonus>"))
                             {
                                 // Look for the existing Improvement.
                                 foreach(Improvement objImprovement in _lstImprovements)

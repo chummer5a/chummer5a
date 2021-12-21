@@ -625,10 +625,10 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration))
                     return _strCachedDisplayDuration;
-                string strSpace = LanguageManager.GetString("String_Space");
                 string strDisplayDuration = string.Empty;
                 if (Duration > 0)
                 {
+                    string strSpace = LanguageManager.GetString("String_Space");
                     strDisplayDuration += Duration.ToString(GlobalSettings.CultureInfo) + strSpace;
                     if (DurationDice > 0)
                     {
@@ -687,9 +687,8 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1)
-                strReturn = Quantity.ToString("#,0.##", objCulture) + strSpace + strReturn;
+                strReturn = Quantity.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_Space", strLanguage) + strReturn;
             return strReturn;
         }
 
@@ -784,9 +783,7 @@ namespace Chummer.Backend.Equipment
             if (objCulture == null)
                 objCulture = GlobalSettings.CultureInfo;
             StringBuilder sbdDescription = new StringBuilder();
-            bool blnNewLineFlag = false;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            string strColon = LanguageManager.GetString("String_Colon", strLanguage);
             if (!blnEffectsOnly)
             {
                 string strName = DisplayNameShort(strLanguage);
@@ -796,6 +793,8 @@ namespace Chummer.Backend.Equipment
 
             if (intLevel != -1)
             {
+                bool blnNewLineFlag = false;
+                string strColon = LanguageManager.GetString("String_Colon", strLanguage);
                 foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
                 {
                     if (objAttribute.Value != 0)
@@ -1534,7 +1533,6 @@ namespace Chummer.Backend.Equipment
                 return null;
 
             StringBuilder sbdDescription = new StringBuilder();
-            bool blnNewLineFlag = false;
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
             sbdDescription.Append(DisplayCategory(GlobalSettings.Language)).Append(strColon).Append(strSpace).AppendLine(CurrentDisplayName);
@@ -1542,7 +1540,7 @@ namespace Chummer.Backend.Equipment
             if (intLevel != -1)
             {
                 DrugEffect objDrugEffect = DrugEffects[intLevel];
-
+                bool blnNewLineFlag = false;
                 foreach (KeyValuePair<string, decimal> objAttribute in objDrugEffect.Attributes)
                 {
                     if (objAttribute.Value != 0)

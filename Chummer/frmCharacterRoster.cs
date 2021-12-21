@@ -703,7 +703,6 @@ namespace Chummer
             if (objCache != null)
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");
-                string strNone = LanguageManager.GetString("String_None");
                 txtCharacterBio.Text = objCache.Description.RtfToPlainText();
                 txtCharacterBackground.Text = objCache.Background.RtfToPlainText();
                 txtCharacterNotes.Text = objCache.CharacterNotes.RtfToPlainText();
@@ -711,7 +710,7 @@ namespace Chummer
                 txtCharacterConcept.Text = objCache.Concept.RtfToPlainText();
                 lblCareerKarma.Text = objCache.Karma;
                 if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
-                    lblCareerKarma.Text = strNone;
+                    lblCareerKarma.Text = LanguageManager.GetString("String_None");
                 lblPlayerName.Text = objCache.PlayerName;
                 if (string.IsNullOrEmpty(lblPlayerName.Text))
                     lblPlayerName.Text = strUnknown;
@@ -735,9 +734,9 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
                 if (objCache.Metatype != null)
                 {
+                    XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
                     XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     if (objMetatypeNode == null)
                     {

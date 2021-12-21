@@ -558,9 +558,22 @@ namespace Chummer
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Bioware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
                         }
                         string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name == strNodeInnerText &&
-                                objCyberware.SourceType == Improvement.ImprovementSource.Bioware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
-                               (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Name == strNodeInnerText &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Bioware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount))
+                                   >= count;
+                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                    objCyberware.Name == strNodeInnerText &&
+                                                                    objCyberware.SourceType
+                                                                    == Improvement.ImprovementSource.Bioware
+                                                                    && string.IsNullOrEmpty(
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
                     }
                 case "cyberware":
                     {
@@ -579,9 +592,22 @@ namespace Chummer
                             return false;
                         }
                         string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name == strNodeInnerText &&
-                                objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
-                               (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Name == strNodeInnerText &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Cyberware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount))
+                                   >= count;
+                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                    objCyberware.Name == strNodeInnerText &&
+                                                                    objCyberware.SourceType
+                                                                    == Improvement.ImprovementSource.Cyberware
+                                                                    && string.IsNullOrEmpty(
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
                     }
                 case "biowarecategory":
                 {
@@ -600,9 +626,21 @@ namespace Chummer
                         return false;
                     }
                     string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Category == strNodeInnerText &&
-                        objCyberware.SourceType == Improvement.ImprovementSource.Bioware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
-                        (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
+                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                    objCyberware.Category == strNodeInnerText &&
+                                                                    objCyberware.SourceType
+                                                                    == Improvement.ImprovementSource.Bioware
+                                                                    && string.IsNullOrEmpty(
+                                                                        objCyberware.PlugsIntoModularMount)) >= count;
+                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                objCyberware.Category == strNodeInnerText &&
+                                                                objCyberware.SourceType
+                                                                == Improvement.ImprovementSource.Bioware
+                                                                && string.IsNullOrEmpty(
+                                                                    objCyberware.PlugsIntoModularMount) &&
+                                                                strWareNodeSelectAttribute == objCyberware.Extra)
+                           >= count;
                 }
                 case "cyberwarecategory":
                 {
@@ -621,10 +659,22 @@ namespace Chummer
                         return false;
                     }
                     string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Category == strNodeInnerText &&
-                        objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
-                        (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
-                }
+                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                    objCyberware.Category == strNodeInnerText &&
+                                                                    objCyberware.SourceType
+                                                                    == Improvement.ImprovementSource.Cyberware
+                                                                    && string.IsNullOrEmpty(
+                                                                        objCyberware.PlugsIntoModularMount)) >= count;
+                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                objCyberware.Category == strNodeInnerText &&
+                                                                objCyberware.SourceType
+                                                                == Improvement.ImprovementSource.Cyberware
+                                                                && string.IsNullOrEmpty(
+                                                                    objCyberware.PlugsIntoModularMount) &&
+                                                                strWareNodeSelectAttribute == objCyberware.Extra)
+                           >= count;
+                    }
                 case "biowarecontains":
                     {
                         int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
@@ -636,9 +686,22 @@ namespace Chummer
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Bioware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
                         }
                         string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name.Contains(strNodeInnerText) &&
-                                objCyberware.SourceType == Improvement.ImprovementSource.Bioware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
-                               (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Name.Contains(strNodeInnerText) &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Bioware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount))
+                                   >= count;
+                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                    objCyberware.Name.Contains(strNodeInnerText) &&
+                                                                    objCyberware.SourceType
+                                                                    == Improvement.ImprovementSource.Bioware
+                                                                    && string.IsNullOrEmpty(
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
                     }
                 case "cyberwarecontains":
                     {
@@ -651,9 +714,22 @@ namespace Chummer
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Cyberware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
                         }
                         string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name.Contains(strNodeInnerText) &&
-                                objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
-                               (string.IsNullOrEmpty(strWareNodeSelectAttribute) || strWareNodeSelectAttribute == objCyberware.Extra)) >= count;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Name.Contains(strNodeInnerText) &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Cyberware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount))
+                                   >= count;
+                        return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                    objCyberware.Name.Contains(strNodeInnerText) &&
+                                                                    objCyberware.SourceType
+                                                                    == Improvement.ImprovementSource.Cyberware
+                                                                    && string.IsNullOrEmpty(
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
                     }
                 case "damageresistance":
                     {
@@ -1093,18 +1169,25 @@ namespace Chummer
                         // Check if the character has the required Skill.
                         if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
                         {
-                            KnowledgeSkill objKnowledgeSkill = objCharacter.SkillsSection.KnowledgeSkills
-                                .FirstOrDefault(objSkill => objSkill.Name == strNodeName &&
-                                                   (string.IsNullOrEmpty(strSpec) ||
-                                                    objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec) &&
-                                                    objSkill.TotalBaseRating >= intValue));
+                            KnowledgeSkill objKnowledgeSkill = string.IsNullOrEmpty(strSpec)
+                                ? objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
+                                    objSkill => objSkill.Name == strNodeName && objSkill.TotalBaseRating >= intValue)
+                                : objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
+                                    objSkill => objSkill.Name == strNodeName
+                                                && objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)
+                                                && objSkill.TotalBaseRating >= intValue);
 
                             if (objKnowledgeSkill != null)
                             {
                                 if (blnShowMessage)
                                 {
                                     strName = objKnowledgeSkill.CurrentDisplayName;
-                                    if (!string.IsNullOrEmpty(strSpec) && ImprovementManager.GetCachedImprovementListForValueOf(objCharacter, Improvement.ImprovementType.DisableSpecializationEffects, objKnowledgeSkill.Name).Count == 0)
+                                    if (!string.IsNullOrEmpty(strSpec) && ImprovementManager
+                                                                          .GetCachedImprovementListForValueOf(
+                                                                              objCharacter,
+                                                                              Improvement.ImprovementType
+                                                                                  .DisableSpecializationEffects,
+                                                                              objKnowledgeSkill.Name).Count == 0)
                                     {
                                         strName += strSpace + '(' + strSpec + ')';
                                     }
@@ -1284,11 +1367,11 @@ namespace Chummer
                     }
                 case "spelldescriptor":
                     {
-                        string strCount = xmlNode.SelectSingleNodeAndCacheExpression("count")?.Value ?? string.Empty;
+                        int intCount = xmlNode.SelectSingleNodeAndCacheExpression("count")?.ValueAsInt ?? 0;
                         // Check for a specified amount of a particular Spell Descriptor.
                         if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Descriptors") + strSpace + '≥' + strSpace + strCount;
-                        return objCharacter.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= (xmlNode.SelectSingleNodeAndCacheExpression("count")?.ValueAsInt ?? 0);
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Descriptors") + strSpace + '≥' + strSpace + intCount.ToString(GlobalSettings.CultureInfo);
+                        return objCharacter.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= intCount;
                     }
                 case "streetcredvsnotoriety":
                     {
