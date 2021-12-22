@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -54,7 +53,8 @@ namespace Chummer
                 aobjSorted[i] = lstCollection[index + i];
             Array.Sort(aobjSorted, objComparer);
             bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
-            BitArray ablnItemChanged = blnOldRaiseListChangedEvents ? new BitArray(aobjSorted.Length) : null;
+            // Not BitArray because read/write performance is much more important here than memory footprint
+            bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
             // We're going to disable events while we work with the list, then call them all at once at the end
             lstCollection.RaiseListChangedEvents = false;
             for (int i = 0; i < aobjSorted.Length; ++i)
@@ -91,15 +91,24 @@ namespace Chummer
             if (!blnOldRaiseListChangedEvents)
                 return;
             // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-            if (ablnItemChanged.CountTrues() >= ablnItemChanged.Length / 2)
-                lstCollection.ResetBindings();
-            else
+            int intResetThreshold = ablnItemChanged.Length / 2;
+            int intCountTrues = 0;
+            for (int i = 0; i < ablnItemChanged.Length; ++i)
             {
-                for (int i = 0; i < ablnItemChanged.Length; ++i)
+                if (ablnItemChanged[i])
                 {
-                    if (ablnItemChanged[i])
-                        lstCollection.ResetItem(i);
+                    ++intCountTrues;
+                    if (intCountTrues >= intResetThreshold)
+                    {
+                        lstCollection.ResetBindings();
+                        return;
+                    }
                 }
+            }
+            for (int i = 0; i < ablnItemChanged.Length; ++i)
+            {
+                if (ablnItemChanged[i])
+                    lstCollection.ResetItem(i);
             }
         }
 
@@ -120,7 +129,8 @@ namespace Chummer
                 aobjSorted[i] = lstCollection[i];
             Array.Sort(aobjSorted, funcComparison);
             bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
-            BitArray ablnItemChanged = blnOldRaiseListChangedEvents ? new BitArray(aobjSorted.Length) : null;
+            // Not BitArray because read/write performance is much more important here than memory footprint
+            bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
             // We're going to disable events while we work with the list, then call them all at once at the end
             lstCollection.RaiseListChangedEvents = false;
             for (int i = 0; i < aobjSorted.Length; ++i)
@@ -157,15 +167,24 @@ namespace Chummer
             if (!blnOldRaiseListChangedEvents)
                 return;
             // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-            if (ablnItemChanged.CountTrues() >= ablnItemChanged.Length / 2)
-                lstCollection.ResetBindings();
-            else
+            int intResetThreshold = ablnItemChanged.Length / 2;
+            int intCountTrues = 0;
+            for (int i = 0; i < ablnItemChanged.Length; ++i)
             {
-                for (int i = 0; i < ablnItemChanged.Length; ++i)
+                if (ablnItemChanged[i])
                 {
-                    if (ablnItemChanged[i])
-                        lstCollection.ResetItem(i);
+                    ++intCountTrues;
+                    if (intCountTrues >= intResetThreshold)
+                    {
+                        lstCollection.ResetBindings();
+                        return;
+                    }
                 }
+            }
+            for (int i = 0; i < ablnItemChanged.Length; ++i)
+            {
+                if (ablnItemChanged[i])
+                    lstCollection.ResetItem(i);
             }
         }
 
@@ -187,7 +206,8 @@ namespace Chummer
                 aobjSorted[i] = lstCollection[i];
             Array.Sort(aobjSorted, objComparer);
             bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
-            BitArray ablnItemChanged = blnOldRaiseListChangedEvents ? new BitArray(aobjSorted.Length) : null;
+            // Not BitArray because read/write performance is much more important here than memory footprint
+            bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
             // We're going to disable events while we work with the list, then call them all at once at the end
             lstCollection.RaiseListChangedEvents = false;
             for (int i = 0; i < aobjSorted.Length; ++i)
@@ -224,15 +244,24 @@ namespace Chummer
             if (!blnOldRaiseListChangedEvents)
                 return;
             // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-            if (ablnItemChanged.CountTrues() >= ablnItemChanged.Length / 2)
-                lstCollection.ResetBindings();
-            else
+            int intResetThreshold = ablnItemChanged.Length / 2;
+            int intCountTrues = 0;
+            for (int i = 0; i < ablnItemChanged.Length; ++i)
             {
-                for (int i = 0; i < ablnItemChanged.Length; ++i)
+                if (ablnItemChanged[i])
                 {
-                    if (ablnItemChanged[i])
-                        lstCollection.ResetItem(i);
+                    ++intCountTrues;
+                    if (intCountTrues >= intResetThreshold)
+                    {
+                        lstCollection.ResetBindings();
+                        return;
+                    }
                 }
+            }
+            for (int i = 0; i < ablnItemChanged.Length; ++i)
+            {
+                if (ablnItemChanged[i])
+                    lstCollection.ResetItem(i);
             }
         }
     }

@@ -19,7 +19,6 @@
 
 using System;
 using System.Buffers;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -41,7 +40,7 @@ namespace Chummer.UI.Shared
         private readonly List<ControlWithMetaData> _lstContentList = new List<ControlWithMetaData>(10);
         private readonly List<int> _lstDisplayIndex = new List<int>(10);
         private readonly IndexComparer _indexComparer;
-        private BitArray _ablnRendered;
+        private bool[] _ablnRendered; // Not BitArray because read/write performance is much more important here than memory footprint
         private int _intOffScreenChunkSize = 1;
         private int _intListItemControlHeight;
         private bool _blnAllRendered;
@@ -172,10 +171,10 @@ namespace Chummer.UI.Shared
             _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
 
             if (_ablnRendered == null || _ablnRendered.Length != _lstDisplayIndex.Count)
-                _ablnRendered = new BitArray(_lstDisplayIndex.Count);
+                _ablnRendered = new bool[_lstDisplayIndex.Count];
             else
             {
-                for (int i = 0; i < _ablnRendered.Count; ++i)
+                for (int i = 0; i < _ablnRendered.Length; ++i)
                 {
                     _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                 }
