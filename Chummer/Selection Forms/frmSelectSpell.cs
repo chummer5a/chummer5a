@@ -563,12 +563,12 @@ namespace Chummer
             // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
             if (chkExtended.Checked && !blnExtendedFound)
             {
-                objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea") + ',' + strSpace);
+                objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea")).Append(',').Append(strSpace);
             }
 
             if (chkAlchemical.Checked && !blnAlchemicalFound)
             {
-                objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation") + ',' + strSpace);
+                objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation")).Append(',').Append(strSpace);
             }
 
             // Remove the trailing comma.

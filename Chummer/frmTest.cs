@@ -942,7 +942,7 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e);
+                                _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                             else
                                 _objOutputBuilder.Append(strName).AppendLine(" general failure");
                         }
