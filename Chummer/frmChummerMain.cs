@@ -875,7 +875,6 @@ namespace Chummer
             if (sender is Form objForm)
             {
                 objForm.FormClosed -= ActiveMdiChild_FormClosed;
-                objForm.Dispose();
                 if (objForm.Tag is TabPage objTabPage)
                 {
                     if (tabForms.TabCount > 1)
@@ -892,6 +891,8 @@ namespace Chummer
                     }
                     objTabPage.Dispose();
                 }
+                if (!objForm.IsDisposed)
+                    objForm.Dispose();
             }
 
             // Don't show the tab control if there is only one window open.
