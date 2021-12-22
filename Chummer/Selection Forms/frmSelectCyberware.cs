@@ -974,8 +974,8 @@ namespace Chummer
 
             List<ListItem> lstCyberwares = new List<ListItem>(objXmlCyberwareList?.Count ?? 1);
 
-            bool blnCyberwareDisabled = _objCharacter.AddCyberwareEnabled;
-            bool blnBiowareDisabled = _objCharacter.AddBiowareEnabled;
+            bool blnCyberwareDisabled = !_objCharacter.AddCyberwareEnabled;
+            bool blnBiowareDisabled = !_objCharacter.AddBiowareEnabled;
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
             if (objXmlCyberwareList == null && !blnDoUIUpdate)
