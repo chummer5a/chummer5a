@@ -192,13 +192,14 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryTake(out T item)
         {
-            using (new EnterUpgradeableReadLock(_rwlThis))
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (new EnterWriteLock(_rwlThis))
             {
                 if (Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     item = this.First();
-                    if (Remove(item))
+                    if (_setData.Remove(item))
                         return true;
                 }
             }

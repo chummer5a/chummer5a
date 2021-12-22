@@ -164,12 +164,11 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            using (new EnterUpgradeableReadLock(_rwlThis))
+            // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
+            using (new EnterWriteLock(_rwlThis))
             {
-                if (!_dicData.TryGetValue(item.Key, out TValue objValue) || !objValue.Equals(item.Value))
-                    return false;
-                using (new EnterWriteLock(_rwlThis))
-                    return _dicData.Remove(item.Key);
+                return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
+                                                                           && _dicData.Remove(item.Key);
             }
         }
 
@@ -188,12 +187,10 @@ namespace Chummer
 
         public bool TryRemove(TKey key, out TValue value)
         {
-            using (new EnterUpgradeableReadLock(_rwlThis))
+            // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
+            using (new EnterWriteLock(_rwlThis))
             {
-                if (!_dicData.TryGetValue(key, out value))
-                    return false;
-                using (new EnterWriteLock(_rwlThis))
-                    return _dicData.Remove(key);
+                return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
             }
         }
 
@@ -203,7 +200,8 @@ namespace Chummer
             bool blnTakeSuccessful = false;
             TKey objKeyToTake = default;
             TValue objValue = default;
-            using (new EnterUpgradeableReadLock(_rwlThis))
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (new EnterWriteLock(_rwlThis))
             {
                 if (Count > 0)
                 {
@@ -211,8 +209,7 @@ namespace Chummer
                     objKeyToTake = Keys.First();
                     if (_dicData.TryGetValue(objKeyToTake, out objValue))
                     {
-                        using (new EnterWriteLock(_rwlThis))
-                            blnTakeSuccessful = _dicData.Remove(objKeyToTake);
+                        blnTakeSuccessful = _dicData.Remove(objKeyToTake);
                     }
                 }
             }
@@ -264,12 +261,12 @@ namespace Chummer
 
         public bool TryAdd(TKey key, TValue value)
         {
-            using (new EnterUpgradeableReadLock(_rwlThis))
+            // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
+            using (new EnterWriteLock(_rwlThis))
             {
                 if (_dicData.ContainsKey(key))
                     return false;
-                using (new EnterWriteLock(_rwlThis))
-                    _dicData.Add(key, value);
+                _dicData.Add(key, value);
             }
             return true;
         }
