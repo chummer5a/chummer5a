@@ -71,6 +71,7 @@ namespace Chummer.Tests
             float fltLightGrayLightness = Color.LightGray.GetBrightness();
             float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
             Assert.IsTrue(fltLightGrayDarkModeLightness < fltLightGrayLightness);
+
             Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
             Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
             float fltRedHue = Color.Red.GetHue();
@@ -79,6 +80,15 @@ namespace Chummer.Tests
             Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
             Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
             Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
+
+            Color objColorChocolateInvert = ColorManager.GenerateInverseDarkModeColor(Color.Chocolate);
+            Color objColorChocolateInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvert);
+            float fltChocolateHue = Color.Chocolate.GetHue();
+            float fltChocolateInvertDarkHue = objColorChocolateInvertDark.GetHue();
+            Assert.IsTrue(Math.Abs(fltChocolateInvertDarkHue - fltChocolateHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorChocolateInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorChocolateInvertDark);
+            Color objColorChocolateInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvertDarkInvert);
+            Assert.IsTrue(objColorChocolateInvertDark == objColorChocolateInvertDarkInvertDark);
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest

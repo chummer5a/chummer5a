@@ -220,64 +220,82 @@ namespace Chummer
         }
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
-        private static Color WindowTextLight => SystemColors.WindowText;
-        private static Color WindowTextDark => GenerateDarkModeColor(WindowTextLight);
+        private static Color WindowTextLight { get; } = SystemColors.WindowText;
+        private static Color WindowTextDark { get; } = GenerateDarkModeColor(WindowTextLight);
+
         public static Color Window => IsLightMode ? WindowLight : WindowDark;
-        private static Color WindowLight => SystemColors.Window;
-        private static Color WindowDark => GenerateDarkModeColor(WindowLight);
+        private static Color WindowLight { get; } = SystemColors.Window;
+        private static Color WindowDark { get; } = GenerateDarkModeColor(WindowLight);
+
         public static Color InfoText => IsLightMode ? InfoTextLight : InfoTextDark;
-        private static Color InfoTextLight => SystemColors.InfoText;
-        private static Color InfoTextDark => GenerateDarkModeColor(InfoTextLight);
+        private static Color InfoTextLight { get; } = SystemColors.InfoText;
+        private static Color InfoTextDark { get; } = GenerateDarkModeColor(InfoTextLight);
+
         public static Color Info => IsLightMode ? InfoLight : InfoDark;
-        private static Color InfoLight => SystemColors.Info;
-        private static Color InfoDark => GenerateDarkModeColor(InfoLight);
+        private static Color InfoLight { get; } = SystemColors.Info;
+        private static Color InfoDark { get; } = GenerateDarkModeColor(InfoLight);
+
         public static Color GrayText => IsLightMode ? GrayTextLight : GrayTextDark;
-        private static Color GrayTextLight => SystemColors.GrayText;
-        private static Color GrayTextDark => GenerateDarkModeColor(GrayTextLight);
+        private static Color GrayTextLight { get; } = SystemColors.GrayText;
+        private static Color GrayTextDark { get; } = GenerateDarkModeColor(GrayTextLight);
+
         public static Color HighlightText => IsLightMode ? HighlightTextLight : HighlightTextDark;
-        private static Color HighlightTextLight => SystemColors.HighlightText;
-        private static Color HighlightTextDark => GenerateDarkModeColor(HighlightTextLight);
+        private static Color HighlightTextLight { get; } = SystemColors.HighlightText;
+        private static Color HighlightTextDark { get; } = GenerateDarkModeColor(HighlightTextLight);
+
         public static Color Highlight => IsLightMode ? HighlightLight : HighlightDark;
-        private static Color HighlightLight => SystemColors.Highlight;
-        private static Color HighlightDark => GenerateDarkModeColor(HighlightLight);
+        private static Color HighlightLight { get; } = SystemColors.Highlight;
+        private static Color HighlightDark { get; } = GenerateDarkModeColor(HighlightLight);
+
         public static Color ControlText => IsLightMode ? ControlTextLight : ControlTextDark;
-        private static Color ControlTextLight => SystemColors.ControlText;
-        private static Color ControlTextDark => GenerateDarkModeColor(ControlTextLight);
+        private static Color ControlTextLight { get; } = SystemColors.ControlText;
+        private static Color ControlTextDark { get; } = GenerateDarkModeColor(ControlTextLight);
+
         public static Color ControlDarkest => IsLightMode ? ControlDarkestLight : ControlDarkestDark;
-        private static Color ControlDarkestLight => SystemColors.ControlDarkDark;
-        private static Color ControlDarkestDark => GenerateDarkModeColor(ControlDarkestLight);
+        private static Color ControlDarkestLight { get; } = SystemColors.ControlDarkDark;
+        private static Color ControlDarkestDark { get; } = GenerateDarkModeColor(ControlDarkestLight);
+
         public static Color ControlDarker => IsLightMode ? ControlDarkerLight : ControlDarkerDark;
-        private static Color ControlDarkerLight => SystemColors.ControlDark;
-        private static Color ControlDarkerDark => GenerateDarkModeColor(ControlDarkerLight);
+        private static Color ControlDarkerLight { get; } = SystemColors.ControlDark;
+        private static Color ControlDarkerDark { get; } = GenerateDarkModeColor(ControlDarkerLight);
+
         public static Color Control => IsLightMode ? ControlLight : ControlDark;
-        private static Color ControlLight => SystemColors.Control;
-        private static Color ControlDark => GenerateDarkModeColor(ControlLight);
+        private static Color ControlLight { get; } = SystemColors.Control;
+        private static Color ControlDark { get; } = GenerateDarkModeColor(ControlLight);
+
         public static Color ControlLighter => IsLightMode ? ControlLighterLight : ControlLighterDark;
-        private static Color ControlLighterLight => SystemColors.ControlLight;
-        private static Color ControlLighterDark => GenerateDarkModeColor(ControlLight);
+        private static Color ControlLighterLight { get; } = SystemColors.ControlLight;
+        private static Color ControlLighterDark { get; } = GenerateDarkModeColor(ControlLight);
+
         public static Color ControlLightest => IsLightMode ? ControlLightestLight : ControlLightestDark;
-        private static Color ControlLightestLight => SystemColors.ControlLightLight;
-        private static Color ControlLightestDark => GenerateDarkModeColor(ControlLightestLight);
+        private static Color ControlLightestLight { get; } = SystemColors.ControlLightLight;
+        private static Color ControlLightestDark { get; } = GenerateDarkModeColor(ControlLightestLight);
+
         public static Color ButtonFace => IsLightMode ? ButtonFaceLight : ButtonFaceDark;
-        private static Color ButtonFaceLight => SystemColors.ButtonFace;
-        private static Color ButtonFaceDark => GenerateDarkModeColor(ButtonFaceLight);
+        private static Color ButtonFaceLight { get; } = SystemColors.ButtonFace;
+        private static Color ButtonFaceDark { get; } = GenerateDarkModeColor(ButtonFaceLight);
+
         public static Color ButtonShadow => IsLightMode ? ButtonShadowLight : ButtonShadowDark;
-        private static Color ButtonShadowLight => SystemColors.ButtonShadow;
-        private static Color ButtonShadowDark => GenerateDarkModeColor(ButtonShadowLight);
+        private static Color ButtonShadowLight { get; } = SystemColors.ButtonShadow;
+        private static Color ButtonShadowDark { get; } = GenerateDarkModeColor(ButtonShadowLight);
+
         public static Color AppWorkspace => IsLightMode ? AppWorkspaceLight : AppWorkspaceDark;
-        private static Color AppWorkspaceLight => SystemColors.AppWorkspace;
-        private static Color AppWorkspaceDark => GenerateDarkModeColor(AppWorkspaceLight);
+        private static Color AppWorkspaceLight { get; } = SystemColors.AppWorkspace;
+        private static Color AppWorkspaceDark { get; } = GenerateDarkModeColor(AppWorkspaceLight);
 
         public static Color SplitterColor => IsLightMode ? SplitterColorLight : SplitterColorDark;
-        private static Color SplitterColorLight => SystemColors.InactiveCaption;
-        private static Color SplitterColorDark => GenerateDarkModeColor(SplitterColorLight);
+        private static Color SplitterColorLight { get; } = SystemColors.InactiveCaption;
+        private static Color SplitterColorDark { get; } = GenerateDarkModeColor(SplitterColorLight);
+
         public static Color HasNotesColor => IsLightMode ? HasNotesColorLight : HasNotesColorDark;
-        private static Color HasNotesColorLight => Color.Chocolate;
-        private static Color HasNotesColorDark => Color.Chocolate;
+        private static Color HasNotesColorLight { get; } = Color.Chocolate;
+        private static Color HasNotesColorDark { get; } = GenerateDarkModeColor(HasNotesColorLight);
+
         public static Color GrayHasNotesColor => IsLightMode ? GrayHasNotesColorLight : GrayHasNotesColorDark;
-        private static Color GrayHasNotesColorLight => Color.Tan;
-        private static Color GrayHasNotesColorDark => GenerateDarkModeColor(GrayHasNotesColorLight);
-        public static Color ErrorColor => Color.Red;
+        private static Color GrayHasNotesColorLight { get; } = Color.Tan;
+        private static Color GrayHasNotesColorDark { get; } = GenerateDarkModeColor(GrayHasNotesColorLight);
+
+        public static Color ErrorColor { get; } = Color.Red;
 
         public static Color DieGlitchFore => IsLightMode ? DieGlitchForeLight : DieGlitchForeDark;
         private static Color DieGlitchForeLight => WindowTextDark;
@@ -289,13 +307,15 @@ namespace Chummer
         private static Color DieHitForeLight => ControlTextLight;
         private static Color DieHitForeDark => GenerateDarkModeColor(DieHitForeLight);
         public static Color DieHitBackground => IsLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
-        private static Color DieHitBackgroundLight => Color.LightGreen;
+        private static Color DieHitBackgroundLight { get; } = Color.LightGreen;
+
         private static Color DieHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
         public static Color DieGlitchHitFore => IsLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
         private static Color DieGlitchHitForeLight => ControlTextLight;
         private static Color DieGlitchHitForeDark => GenerateDarkModeColor(DieHitForeLight);
         public static Color DieGlitchHitBackground => IsLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
-        private static Color DieGlitchHitBackgroundLight => Color.DarkGreen;
+        private static Color DieGlitchHitBackgroundLight { get; } = Color.DarkGreen;
+
         private static Color DieGlitchHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
 
         public static void UpdateLightDarkMode(this Control objControl)
@@ -335,7 +355,7 @@ namespace Chummer
             float fltNewValue = fltNewLightness + objColor.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
             float fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Lighten dark colors a little by increasing value so that we don't warp colors that are highly saturated to begin with.
-            fltNewValue += 0.25f * fltNewValue * fltNewValue;
+            fltNewValue += 0.2f * (1.0f - Convert.ToSingle(Math.Sqrt(fltNewValue)));
             fltNewValue = Math.Min(fltNewValue, 1.0f);
             Color objColorIntermediate = FromHsv(fltHue, fltSaturationHsv, fltNewValue);
             fltNewLightness = objColorIntermediate.GetBrightness();
@@ -372,12 +392,16 @@ namespace Chummer
                 fltLightness = objColorIntermediate.GetBrightness(); // It's called Brightness, but it's actually Lightness
                 fltValue = fltLightness + objColorIntermediate.GetSaturation() * Math.Min(fltLightness, 1 - fltLightness);
             }
-            // y + 0.25y^2 = m is the regular transform where y is the Dark Mode Value pre-adjustment and m is the Dark Mode Value post-adjustment
+            // y + 0.2(1 - sqrt(y)) = m is the regular transform where y is the Dark Mode Value pre-adjustment and m is the Dark Mode Value post-adjustment
             // To get it back, we need to solve for y knowing only m:
-            // y^2 + 4y - 4m = 0
-            // y = (-4 +/- sqrt(16 + 16m))/2 = -2 +/- sqrt(4 + 4m) = -2 +/- 2*sqrt(1 + m)
-            // Because value cannot be greater than 1, negative result is unreal, therefore: y = -2 + 2*sqrt(1 + m)
-            float fltNewValue = Math.Min((float)(2 * Math.Sqrt(1 + fltValue) - 2), 1.0f);
+            // 1 - sqrt(y) + 5y - 5m = 0
+            // 1 + 5y - 5m = sqrt(y)
+            // 1 + 25y^2 + 25m^2 + 10y - 10m - 50my = y
+            // 25y^2 + (9 - 50m)y + 25m^2 - 10m + 1 = 0
+            // y = (50m - 9 +/- sqrt((9 - 50m)^2 - 100(25m^2 - 10m + 1)))/50 = (50m - 9 +/- sqrt(2500m^2 - 900m + 81 - 2500m^2 + 1000m - 100))/50
+            // y = (50m - 9 +/- sqrt(100m - 19))/50 = m - 18/100 +/- sqrt(m - 19/100)/5
+            // Because expression for y must be the same across all m, only positive result is valid, therefore: y = m - 18/100 + sqrt(m - 19/100)/5
+            float fltNewValue = Math.Min((float)((50 * fltValue + Math.Sqrt(100 * fltValue - 19) - 9) / 50.0f), 1.0f);
             // Now convert to Lightness so we can flip it
             float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
             float fltNewSaturationHsl = fltNewLightness == 0
