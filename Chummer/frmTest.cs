@@ -944,7 +944,7 @@ namespace Chummer
                             if (_blnAddExceptionInfoToErrors)
                                 _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e);
                             else
-                                _objOutputBuilder.AppendLine(strName + " general failure");
+                                _objOutputBuilder.Append(strName).AppendLine(" general failure");
                         }
                     }
                 }

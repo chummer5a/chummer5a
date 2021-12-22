@@ -6446,14 +6446,15 @@ namespace Chummer
                     // Prompt the user to select an image to associate with this character.
 
                     ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
+                    string strFormat = "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}";
                     dlgOpenFileDialog.Filter = string.Format(
                         GlobalSettings.InvariantCultureInfo,
                         LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" +
                         LanguageManager.GetString("DialogFilter_All"),
                         string.Join("|",
-                            lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
-                                "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName,
-                                codec.FilenameExtension))),
+                                    lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
+                                                                            strFormat, codec.CodecName,
+                                                                            codec.FilenameExtension))),
                         string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
 
                     bool blnMakeLoop = true;

@@ -3798,10 +3798,11 @@ namespace Chummer.Classes
             Log.Info("weaponspecificdice");
             Log.Info("weaponspecificdice = " + bonusNode.OuterXml);
             List<ListItem> lstGeneralItems = new List<ListItem>(_objCharacter.Weapons.Count);
-            if (bonusNode.Attributes?["type"] != null)
+            string strType = bonusNode.Attributes?["type"]?.InnerText;
+            if (!string.IsNullOrEmpty(strType))
             {
                 foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
-                    weapon.RangeType == bonusNode.Attributes?["type"].InnerText))
+                    weapon.RangeType == strType))
                 {
                     lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
                 }

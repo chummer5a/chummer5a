@@ -2404,9 +2404,10 @@ namespace Chummer.Backend.Equipment
                                     .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId));
                         }
 
+                        string strSourceNameToRemove = InternalId + "Wireless";
                         ImprovementManager.RemoveImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless")
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == strSourceNameToRemove)
                                 .ToList());
                     }
 
@@ -3576,7 +3577,14 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
-            decReturn += Children.Where(objChild => objChild.AddToParentESS && (!objChild.PrototypeTranshuman || _objCharacter?.IsPrototypeTranshuman != true)).Sum(objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
+            if (_objCharacter?.IsPrototypeTranshuman == true)
+                decReturn += Children
+                             .Where(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman).Sum(
+                                 objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
+            else
+                decReturn += Children
+                             .Where(objChild => objChild.AddToParentESS).Sum(
+                                 objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
             return decReturn;
         }
 

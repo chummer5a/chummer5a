@@ -231,7 +231,8 @@ namespace Chummer
                     cboStage.PopulateWithListItems(lstStages);
                 }
 
-                ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalSettings.InvariantCultureInfo));
+                string strToFind = _intStage.ToString(GlobalSettings.InvariantCultureInfo);
+                ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == strToFind);
                 if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
             }

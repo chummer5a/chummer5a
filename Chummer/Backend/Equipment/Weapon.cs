@@ -1393,25 +1393,7 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 }
                 IList<Gear> lstGear = ParentVehicle == null ? _objCharacter.Gear : ParentVehicle.GearChildren;
-                if (AmmoCategory == "Gear")
-                    return lstGear.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && Name == x.Name
-                        && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)).Sum(x => x.Quantity);
-                if (Damage.Contains("(f)"))
-                    return lstGear.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && x.IsFlechetteAmmo
-                        && x.AmmoForWeaponType == WeaponType
-                        && (string.IsNullOrEmpty(x.Extra)
-                            || x.Extra == AmmoCategory
-                            || (UseSkill == "Throwing Weapons" && Name == x.Name))).Sum(x => x.Quantity);
-                return lstGear.DeepWhere(x => x.Children, x =>
-                    x.Quantity > 0
-                    && x.AmmoForWeaponType == WeaponType
-                    && (string.IsNullOrEmpty(x.Extra)
-                        || x.Extra == AmmoCategory
-                        || (UseSkill == "Throwing Weapons" && Name == x.Name))).Sum(x => x.Quantity);
+                return GetAmmoReloadable(lstGear).Sum(x => x.Quantity);
             }
         }
 
@@ -5184,10 +5166,11 @@ namespace Chummer.Backend.Equipment
                                 x.SourceName == InternalId));
                     }
 
+                    string strSourceNameToRemove = InternalId + "Wireless";
                     ImprovementManager.RemoveImprovements(_objCharacter,
                         _objCharacter.Improvements.Where(x =>
                             x.ImproveSource == Improvement.ImprovementSource.Weapon &&
-                            x.SourceName == InternalId + "Wireless").ToList());
+                            x.SourceName == strSourceNameToRemove).ToList());
                 }
             }
 
@@ -5560,6 +5543,34 @@ namespace Chummer.Backend.Equipment
                     yield return objGear;
                 }
             }
+            else if (UseSkill == "Throwing Weapons")
+            {
+                if (Damage.Contains("(f)"))
+                {
+                    foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                                                                    x.Quantity > 0
+                                                                    && x.IsFlechetteAmmo
+                                                                    && x.AmmoForWeaponType == WeaponType
+                                                                    && (string.IsNullOrEmpty(x.Extra)
+                                                                        || x.Extra == AmmoCategory
+                                                                        || x.Name == Name)))
+                    {
+                        yield return objGear;
+                    }
+                }
+                else
+                {
+                    foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                                                                    x.Quantity > 0
+                                                                    && x.AmmoForWeaponType == WeaponType
+                                                                    && (string.IsNullOrEmpty(x.Extra)
+                                                                        || x.Extra == AmmoCategory
+                                                                        || x.Name == Name)))
+                    {
+                        yield return objGear;
+                    }
+                }
+            }
             else if (Damage.Contains("(f)"))
             {
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
@@ -5567,8 +5578,7 @@ namespace Chummer.Backend.Equipment
                     && x.IsFlechetteAmmo
                     && x.AmmoForWeaponType == WeaponType
                     && (string.IsNullOrEmpty(x.Extra)
-                        || x.Extra == AmmoCategory
-                        || (UseSkill == "Throwing Weapons" && Name == x.Name))))
+                        || x.Extra == AmmoCategory)))
                 {
                     yield return objGear;
                 }
@@ -5579,8 +5589,7 @@ namespace Chummer.Backend.Equipment
                     x.Quantity > 0
                     && x.AmmoForWeaponType == WeaponType
                     && (string.IsNullOrEmpty(x.Extra)
-                        || x.Extra == AmmoCategory
-                        || (UseSkill == "Throwing Weapons" && Name == x.Name))))
+                        || x.Extra == AmmoCategory)))
                 {
                     yield return objGear;
                 }

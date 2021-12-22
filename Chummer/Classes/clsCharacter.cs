@@ -20907,7 +20907,7 @@ namespace Chummer
                 if (Settings.EnableEnemyTracking && Settings.KarmaEnemy > 0)
                     return _intCachedEnemyKarma = Contacts
                                            .Where(x => x.IsEnemy && !x.Free)
-                                           .Sum(x => (x.Connection + x.Loyalty) * Settings.KarmaEnemy);
+                                           .Sum(x => x.Connection + x.Loyalty) * Settings.KarmaEnemy;
                 return _intCachedEnemyKarma = 0;
             }
         }
