@@ -3170,7 +3170,6 @@ namespace Chummer
                 foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
                 {
                     string strLoopImprovedName = objLoopValuePair.Key;
-                    HashSet<string> lstUniqueNames = objLoopValuePair.Value;
                     bool blnValuesDictionaryContains
                         = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
                     if (blnValuesDictionaryContains)
@@ -3180,6 +3179,7 @@ namespace Chummer
                     if (dicUniquePairs.TryGetValue(strLoopImprovedName,
                                                    out List<Tuple<string, Improvement>> lstUniquePairs))
                     {
+                        HashSet<string> lstUniqueNames = objLoopValuePair.Value;
                         lstInnerLoopImprovements.Clear();
                         if (lstUniqueNames.Contains("precedence0"))
                         {
@@ -3349,7 +3349,6 @@ namespace Chummer
                 foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
                 {
                     string strLoopImprovedName = objLoopValuePair.Key;
-                    HashSet<string> lstUniqueNames = objLoopValuePair.Value;
                     bool blnValuesDictionaryContains
                         = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
                     if (blnValuesDictionaryContains)
@@ -3360,7 +3359,7 @@ namespace Chummer
                                                    out List<Tuple<string, Improvement>> lstUniquePairs))
                     {
                         // Run through the list of UniqueNames and pick out the highest value for each one.
-                        foreach (string strUniqueName in lstUniqueNames)
+                        foreach (string strUniqueName in objLoopValuePair.Value)
                         {
                             Improvement objHighestImprovement = null;
                             decimal decHighest = decimal.MinValue;
@@ -3827,13 +3826,13 @@ namespace Chummer
             Log.Info("_strForcedValue = " + _strForcedValue);
             Log.Info("_strLimitSelection = " + _strLimitSelection);
 
-            string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
             // If no friendly name was provided, use the one from SourceName.
             if (string.IsNullOrEmpty(strFriendlyName))
                 strFriendlyName = strSourceName;
 
             if (nodBonus.HasChildNodes)
             {
+                string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
                 Log.Info("Has Child Nodes");
                 if (nodBonus["selecttext"] != null)
                 {

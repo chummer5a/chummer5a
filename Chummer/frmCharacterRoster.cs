@@ -599,9 +599,11 @@ namespace Chummer
                     for (int i = 0; i < lstNodes.Count; ++i)
                     {
                         TreeNode node = lstNodes[i];
+                        string strNodeText = node.Text;
+                        object objNodeTag = node.Tag;
                         TreeNode objExistingNode = await treCharacterList.DoThreadSafeFuncAsync(() =>
                             treCharacterList.Nodes.Cast<TreeNode>()
-                                            .FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag));
+                                            .FirstOrDefault(x => x.Text == strNodeText && x.Tag == objNodeTag));
                         try
                         {
                             await treCharacterList.DoThreadSafeAsync(() =>
@@ -611,7 +613,7 @@ namespace Chummer
                                     treCharacterList.Nodes.Remove(objExistingNode);
                                 }
 
-                                if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText) || node.Tag != null)
+                                if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText) || objNodeTag != null)
                                 {
                                     if (treCharacterList.Nodes.ContainsKey(node.Name))
                                         treCharacterList.Nodes.RemoveByKey(node.Name);

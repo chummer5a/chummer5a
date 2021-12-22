@@ -794,7 +794,6 @@ namespace Chummer.Backend.Equipment
             if (intLevel != -1)
             {
                 bool blnNewLineFlag = false;
-                string strColon = LanguageManager.GetString("String_Colon", strLanguage);
                 foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
                 {
                     if (objAttribute.Value != 0)
@@ -867,7 +866,7 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Custom Drug" || Speed != 0)
                 {
-                    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColon).Append(strSpace);
+                    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(LanguageManager.GetString("String_Colon", strLanguage)).Append(strSpace);
                     if (Speed <= 0)
                         sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
                     else if (Speed <= 60)

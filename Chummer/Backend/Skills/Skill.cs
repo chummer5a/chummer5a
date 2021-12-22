@@ -1437,12 +1437,11 @@ namespace Chummer.Backend.Skills
                 {
                     _blnRecalculateCachedSuggestedSpecializations = false;
                     _lstCachedSuggestedSpecializations.Clear();
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 CharacterObject, Improvement.ImprovementType.SkillSpecializationOption, DictionaryKey))
+                    foreach (string strSpecializationName in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 CharacterObject, Improvement.ImprovementType.SkillSpecializationOption, DictionaryKey).Select(x => x.UniqueName))
                     {
-                        if (_lstCachedSuggestedSpecializations.Any(y => y.Value?.ToString() == objImprovement.UniqueName))
+                        if (_lstCachedSuggestedSpecializations.Any(y => y.Value?.ToString() == strSpecializationName))
                             continue;
-                        string strSpecializationName = objImprovement.UniqueName;
                         _lstCachedSuggestedSpecializations.Add(
                             new ListItem(strSpecializationName,
                                          CharacterObject.TranslateExtra(strSpecializationName)));
@@ -1706,7 +1705,8 @@ namespace Chummer.Backend.Skills
             {
                 if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
                     continue;
-                s.AppendLine().AppendLine().Append(strExtraStart).Append(objSwapSkillAttribute.Exclude).Append(
+                string strExclude = objSwapSkillAttribute.Exclude;
+                s.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude).Append(
                          LanguageManager.GetString("String_Colon")).Append(strSpace).Append(
                          CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace);
                 int intBasePool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false, CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
@@ -1714,7 +1714,7 @@ namespace Chummer.Backend.Skills
                 if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                 {
                     objSpecialization = Specializations.FirstOrDefault(y =>
-                                                                           y.Name == objSwapSkillAttribute.Exclude
+                                                                           y.Name == strExclude
                                                                            && ImprovementManager
                                                                               .GetCachedImprovementListForValueOf(
                                                                                   CharacterObject,
@@ -1737,7 +1737,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
                         continue;
-                    s.AppendLine().AppendLine().Append(strExtraStart).Append(objSwapSkillAttribute.Exclude)
+                    s.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
                      .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
                      .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
                      .Append(cyberware.CurrentDisplayName);

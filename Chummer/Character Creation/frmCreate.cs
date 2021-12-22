@@ -3709,17 +3709,17 @@ namespace Chummer
                             if (frmPickQuality.FreeCost)
                                 objQuality.BP = 0;
 
-                            // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                            string strAmount =
-                                CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) +
-                                LanguageManager.GetString("String_Space") +
-                                LanguageManager.GetString("String_Karma");
-                            int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
-
                             // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                             bool blnAddItem = true;
                             if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
                             {
+                                // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+                                int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
+                                string strAmount =
+                                    CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) +
+                                    LanguageManager.GetString("String_Space") +
+                                    LanguageManager.GetString("String_Karma");
+
                                 // Add the cost of the Quality that is being added.
                                 int intBP = objQuality.BP;
 
@@ -6624,14 +6624,14 @@ namespace Chummer
                 objQuality.BP = objSelectedQuality.BP;
                 objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
 
-                // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                string strAmount = CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
-                int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
-
                 // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                 bool blnAddItem = true;
                 if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
                 {
+                    // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+                    string strAmount = CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
+                    int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
+
                     // Add the cost of the Quality that is being added.
                     int intBP = objQuality.BP;
 
@@ -8823,10 +8823,10 @@ namespace Chummer
         {
             int bp = CalculateAttributeBP(attribs, extraAttribs);
             string s = bp.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
-            int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
-            int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
+                int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
+                int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
                 if (bp > 0)
                 {
                     s = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_OverPriorityPoints"),
@@ -9656,7 +9656,6 @@ namespace Chummer
         {
             object objDeductionsLock = new object();
             decimal decDeductions = 0;
-            object objStolenDeductionsLock = new object();
             decimal decStolenDeductions = 0;
             decimal decStolenNuyenAllowance
                 = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen,
@@ -9664,6 +9663,7 @@ namespace Chummer
             //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
             if (decStolenNuyenAllowance != 0)
             {
+                object objStolenDeductionsLock = new object();
                 Parallel.Invoke(
                     () =>
                     {
@@ -13259,10 +13259,9 @@ namespace Chummer
                 }
 
                 // Check item Capacities if the option is enabled.
-                List<string> lstOverCapacity = new List<string>(1);
-
                 if (CharacterObjectSettings.EnforceCapacity)
                 {
+                    List<string> lstOverCapacity = new List<string>(1);
                     bool blnOverCapacity = false;
                     int intCapacityOver = 0;
                     // Armor Capacity.
@@ -15032,14 +15031,14 @@ namespace Chummer
 
         private void panContacts_DragDrop(object sender, DragEventArgs e)
         {
-            TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
-            Control source = wrapper.Control;
-
             Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
             Control destination = panContacts.GetChildAtPoint(mousePosition);
 
             if (destination != null)
             {
+                TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
+                Control source = wrapper.Control;
+
                 int indexDestination = panContacts.Controls.IndexOf(destination);
                 if (panContacts.Controls.IndexOf(source) < indexDestination)
                     indexDestination--;

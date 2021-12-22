@@ -3023,12 +3023,13 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objStack.GearId == InternalId && objStack.Bonded)
                         {
+                            string strStackInternalId = objStack.InternalId;
                             ImprovementManager.EnableImprovements(_objCharacter,
                                                                   _objCharacter.Improvements.Where(x =>
                                                                       x.ImproveSource
                                                                       == Improvement.ImprovementSource.StackedFocus
                                                                       &&
-                                                                      x.SourceName == objStack.InternalId));
+                                                                      x.SourceName == strStackInternalId));
                         }
                     }
                 }
@@ -3048,12 +3049,13 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objStack.GearId == InternalId)
                         {
+                            string strStackInternalId = objStack.InternalId;
                             ImprovementManager.DisableImprovements(_objCharacter,
                                                                    _objCharacter.Improvements.Where(x =>
                                                                        x.ImproveSource
                                                                        == Improvement.ImprovementSource.StackedFocus
                                                                        &&
-                                                                       x.SourceName == objStack.InternalId));
+                                                                       x.SourceName == strStackInternalId));
                         }
                     }
                 }
@@ -3099,10 +3101,11 @@ namespace Chummer.Backend.Equipment
                                                                   x.SourceName == InternalId));
                     }
 
+                    string strSourceNameToRemove = InternalId + "Wireless";
                     ImprovementManager.RemoveImprovements(_objCharacter,
                         _objCharacter.Improvements.Where(x =>
                             x.ImproveSource == Improvement.ImprovementSource.Gear &&
-                            x.SourceName == InternalId + "Wireless").ToList());
+                            x.SourceName == strSourceNameToRemove).ToList());
                 }
             }
 
@@ -3933,10 +3936,18 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         {
-                            var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
-                            if (xmlAddonCategoryList?.Count > 0)
-                                return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                    xmlCategory.InnerText == GlobalSettings.Clipboard.SelectSingleNode("category")?.Value);
+                            using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                            {
+                                if (xmlAddonCategoryList?.Count > 0)
+                                {
+                                    string strCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
+                                    foreach (XmlNode xmlCategory in xmlAddonCategoryList)
+                                    {
+                                        if (xmlCategory.InnerText == strCategory)
+                                            return true;
+                                    }
+                                }
+                            }
 
                             return false;
                         }
