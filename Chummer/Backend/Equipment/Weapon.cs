@@ -2318,7 +2318,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 string strUseSkill = Skill?.Name ?? string.Empty;
-                
+
                 decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
                                                          strImprovedName: strCategory);
                 decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,

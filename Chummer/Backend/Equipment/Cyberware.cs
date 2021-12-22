@@ -4818,7 +4818,6 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlCyberwareImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-
                 string strGradeName = objSelectedGrade?.Name ?? "Standard";
                 bool blnCyberware = true;
                 Lazy<List<Grade>> objCyberwareGradeList = new Lazy<List<Grade>>(() =>

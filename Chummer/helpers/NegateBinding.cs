@@ -25,7 +25,7 @@ namespace Chummer
     /// <summary>
     /// Helper class that allows inverting the state of a property for databinding.
     /// </summary>
-    internal class NegatableBinding : Binding
+    internal sealed class NegatableBinding : Binding
     {
         /// <inheritdoc />
         public NegatableBinding(string propertyName, object dataSource, string dataMember) : base(propertyName, dataSource, dataMember)

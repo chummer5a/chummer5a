@@ -77,7 +77,7 @@ namespace Chummer
                 {
                     sbdFilter.Append(" and (");
                     foreach (string strSkillCategory in _strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("category = " + strSkillCategory.Trim().CleanXPath() + " or ");
+                        sbdFilter.Append("category = ").Append(strSkillCategory.Trim().CleanXPath()).Append(" or ");
                     // Remove the trailing " or ".
                     sbdFilter.Length -= 4;
                     sbdFilter.Append(')');
@@ -86,7 +86,7 @@ namespace Chummer
                 {
                     sbdFilter.Append(" and (");
                     foreach (string strSkillCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("category != " + strSkillCategory.Trim().CleanXPath() + " and ");
+                        sbdFilter.Append("category != ").Append(strSkillCategory.Trim().CleanXPath()).Append(" and ");
                     // Remove the trailing " and ".
                     sbdFilter.Length -= 5;
                     sbdFilter.Append(')');
@@ -95,7 +95,7 @@ namespace Chummer
                 {
                     sbdFilter.Append(" and (");
                     foreach (string strSkillGroup in _strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("skillgroup = " + strSkillGroup.Trim().CleanXPath() + " or ");
+                        sbdFilter.Append("skillgroup = ").Append(strSkillGroup.Trim().CleanXPath()).Append(" or ");
                     // Remove the trailing " or ".
                     sbdFilter.Length -= 4;
                     sbdFilter.Append(')');
@@ -104,7 +104,7 @@ namespace Chummer
                 {
                     sbdFilter.Append(" and (");
                     foreach (string strSkillGroup in _strExcludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("skillgroup != " + strSkillGroup.Trim().CleanXPath() + " and ");
+                        sbdFilter.Append("skillgroup != ").Append(strSkillGroup.Trim().CleanXPath()).Append(" and ");
                     // Remove the trailing " and ".
                     sbdFilter.Length -= 5;
                     sbdFilter.Append(')');
@@ -113,7 +113,7 @@ namespace Chummer
                 {
                     sbdFilter.Append(" and (");
                     foreach (string strAttribute in LinkedAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("attribute = " + strAttribute.Trim().CleanXPath() + " or ");
+                        sbdFilter.Append("attribute = ").Append(strAttribute.Trim().CleanXPath()).Append(" or ");
                     // Remove the trailing " or ".
                     sbdFilter.Length -= 4;
                     sbdFilter.Append(')');
@@ -122,7 +122,7 @@ namespace Chummer
                 {
                     sbdFilter.Append(" and (");
                     foreach (string strSkill in _strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("name = " + strSkill.Trim().CleanXPath() + " or ");
+                        sbdFilter.Append("name = ").Append(strSkill.Trim().CleanXPath()).Append(" or ");
                     // Remove the trailing " or ".
                     sbdFilter.Length -= 4;
                     sbdFilter.Append(')');
@@ -131,9 +131,9 @@ namespace Chummer
                 {
                     sbdFilter.Append(" and (");
                     foreach (string strSkill in _strExcludeSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("name != " + strSkill.Trim().CleanXPath() + " and ");
-                    // Remove the trailing " or ".
-                    sbdFilter.Length -= 4;
+                        sbdFilter.Append("name != ").Append(strSkill.Trim().CleanXPath()).Append(" and ");
+                    // Remove the trailing " and ".
+                    sbdFilter.Length -= 5;
                     sbdFilter.Append(')');
                 }
                 objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[" + sbdFilter + " and (" + _objCharacter.Settings.BookXPath() + ")]");
@@ -252,9 +252,7 @@ namespace Chummer
                     StringBuilder objLimitToCategories = new StringBuilder();
                     foreach (XmlNode objNode in xmlCategoryList)
                     {
-                        objLimitToCategories.Append("category = ");
-                        objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
-                        objLimitToCategories.Append(" or ");
+                        objLimitToCategories.Append("category = ").Append(objNode.InnerText.CleanXPath()).Append(" or ");
                     }
 
                     // Remove the last " or "

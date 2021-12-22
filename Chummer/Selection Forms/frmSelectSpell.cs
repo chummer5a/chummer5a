@@ -352,7 +352,7 @@ namespace Chummer
                         AddSpell(objXmlSpell, strSpellCategory);
                         continue;
                     }
-                    
+
                     if (ImprovementManager
                         .GetCachedImprovementListForValueOf(_objCharacter,
                                                             Improvement.ImprovementType.LimitSpellCategory)

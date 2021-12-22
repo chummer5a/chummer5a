@@ -353,7 +353,7 @@ namespace Chummer
                 {
                     // draw two lines at the edge of the dropdown button
                     g.DrawLine(SystemPens.ButtonShadow, bounds.Left + SplitSectionWidth, BorderSize, bounds.Left + SplitSectionWidth, bounds.Bottom - BorderSize);
-                    g.DrawLine(SystemPens.ButtonFace, bounds.Left + SplitSectionWidth + 1, BorderSize, bounds.Left + SplitSectionWidth + 1, bounds.Bottom - BorderSize);
+                    g.DrawLine(SystemPens.ButtonFace, bounds.Left + (SplitSectionWidth + 1), BorderSize, bounds.Left + (SplitSectionWidth + 1), bounds.Bottom - BorderSize);
                 }
             }
             else
@@ -362,7 +362,7 @@ namespace Chummer
                 {
                     // draw two lines at the edge of the dropdown button
                     g.DrawLine(SystemPens.ButtonShadow, bounds.Right - SplitSectionWidth, BorderSize, bounds.Right - SplitSectionWidth, bounds.Bottom - BorderSize);
-                    g.DrawLine(SystemPens.ButtonFace, bounds.Right - SplitSectionWidth - 1, BorderSize, bounds.Right - SplitSectionWidth - 1, bounds.Bottom - BorderSize);
+                    g.DrawLine(SystemPens.ButtonFace, bounds.Right - (SplitSectionWidth - 1), BorderSize, bounds.Right - (SplitSectionWidth - 1), bounds.Bottom - BorderSize);
                 }
             }
 

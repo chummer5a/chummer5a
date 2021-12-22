@@ -125,7 +125,7 @@ namespace Chummer
                 {
                     _blnIsSelectLifestyleRefreshing = false;
                     cboSelectLifestyle_SelectionChanged(this, EventArgs.Empty);
-                    cmdRoll.Enabled = SelectedLifestyle != null && SelectedLifestyle.Dice > 0;
+                    cmdRoll.Enabled = SelectedLifestyle?.Dice > 0;
                 }
             }
         }
