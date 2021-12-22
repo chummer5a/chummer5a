@@ -1125,7 +1125,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
-                                         (ImprovementManager
+                                         !(ImprovementManager
                                           .GetCachedImprovementListForValueOf(
                                               CharacterObject, Improvement.ImprovementType.BlockSkillSpecializations,
                                               DictionaryKey, true).Count > 0
