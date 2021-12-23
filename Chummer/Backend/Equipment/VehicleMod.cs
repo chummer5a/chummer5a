@@ -1136,52 +1136,79 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal TotalCostInMountCreation(int intSlots)
         {
-            // If the cost is determined by the Rating, evaluate the expression.
-            string strCostExpr = Cost;
-            if (strCostExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+            decimal decReturn = 0;
+            if (!IncludedInVehicle)
             {
-                string[] strValues = strCostExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                // If the cost is determined by the Rating, evaluate the expression.
+                string strCostExpr = Cost;
+                if (strCostExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strCostExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
+                StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
+                objCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                {
+                    objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
+                                         () => objLoopAttribute.TotalValue.ToString(
+                                             GlobalSettings.InvariantCultureInfo));
+                    objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base",
+                                         () => objLoopAttribute.TotalBase.ToString(
+                                             GlobalSettings.InvariantCultureInfo));
+                }
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                {
+                    objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
+                                         () => objLoopAttribute.TotalValue.ToString(
+                                             GlobalSettings.InvariantCultureInfo));
+                    objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base",
+                                         () => objLoopAttribute.TotalBase.ToString(
+                                             GlobalSettings.InvariantCultureInfo));
+                }
+
+                objCost.CheapReplace(strCostExpr, "Vehicle Cost",
+                                     () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                objCost.CheapReplace(strCostExpr, "Body",
+                                     () => Parent?.Body > 0
+                                         ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                         : "0.5");
+                objCost.CheapReplace(strCostExpr, "Armor",
+                                     () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Speed",
+                                     () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Acceleration",
+                                     () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Handling",
+                                     () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Sensor",
+                                     () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Pilot",
+                                     () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                objCost.Replace("Slots", intSlots.ToString(GlobalSettings.InvariantCultureInfo));
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+
+                if (DiscountCost)
+                    decReturn *= 0.9m;
+
+                // Apply a markup if applicable.
+                if (_decMarkup != 0)
+                {
+                    decReturn *= 1 + (_decMarkup / 100.0m);
+                }
             }
 
-            StringBuilder objCost = new StringBuilder(strCostExpr.TrimStart('+'));
-            objCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-            foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
-            {
-                objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
-                objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
-            }
-            foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
-            {
-                objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
-                objCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
-            }
-
-            objCost.CheapReplace(strCostExpr, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-            // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-            objCost.CheapReplace(strCostExpr, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo) : "0.5");
-            objCost.CheapReplace(strCostExpr, "Armor", () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-            objCost.CheapReplace(strCostExpr, "Speed", () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-            objCost.CheapReplace(strCostExpr, "Acceleration", () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-            objCost.CheapReplace(strCostExpr, "Handling", () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-            objCost.CheapReplace(strCostExpr, "Sensor", () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-            objCost.CheapReplace(strCostExpr, "Pilot", () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-            objCost.Replace("Slots", intSlots.ToString(GlobalSettings.InvariantCultureInfo));
-
-            object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
-            decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
-
-            if (DiscountCost)
-                decReturn *= 0.9m;
-
-            // Apply a markup if applicable.
-            if (_decMarkup != 0)
-            {
-                decReturn *= 1 + (_decMarkup / 100.0m);
-            }
-
-            return decReturn + Weapons.Sum(objWeapon => objWeapon.TotalCost) + Cyberware.Sum(objCyberware => objCyberware.CurrentTotalCost);
+            return decReturn + Weapons.Where(x => x.ParentID != InternalId).Sum(objWeapon => objWeapon.TotalCost)
+                             + Cyberware.Where(x => x.ParentID != InternalId)
+                                        .Sum(objCyberware => objCyberware.CurrentTotalCost);
         }
 
         /// <summary>

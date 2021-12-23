@@ -303,33 +303,38 @@ namespace Chummer
                 _objMount = new WeaponMount(_objCharacter, _objVehicle);
                 _objMount.Create(xmlSelectedMount);
             }
-            else if (_objMount.SourceIDString != strSelectedMount)
+            else if (!_objMount.IncludedInVehicle)
             {
-                _objMount.Create(xmlSelectedMount);
+                if (_objMount.SourceIDString != strSelectedMount)
+                {
+                    _objMount.Create(xmlSelectedMount);
+                }
+
+                _objMount.DiscountCost = chkBlackMarketDiscount.Checked;
+
+                WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
+                if (objControlOption.Create(xmlSelectedControl))
+                {
+                    _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Control");
+                    _objMount.WeaponMountOptions.Add(objControlOption);
+                }
+
+                WeaponMountOption objFlexibilityOption = new WeaponMountOption(_objCharacter);
+                if (objFlexibilityOption.Create(xmlSelectedFlexibility))
+                {
+                    _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Flexibility");
+                    _objMount.WeaponMountOptions.Add(objFlexibilityOption);
+                }
+
+                WeaponMountOption objVisibilityOption = new WeaponMountOption(_objCharacter);
+                if (objVisibilityOption.Create(xmlSelectedVisibility))
+                {
+                    _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Visibility");
+                    _objMount.WeaponMountOptions.Add(objVisibilityOption);
+                }
             }
 
-            _objMount.DiscountCost = chkBlackMarketDiscount.Checked;
-
-            WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
-            if (objControlOption.Create(xmlSelectedControl))
-            {
-                _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Control");
-                _objMount.WeaponMountOptions.Add(objControlOption);
-            }
-            WeaponMountOption objFlexibilityOption = new WeaponMountOption(_objCharacter);
-            if (objFlexibilityOption.Create(xmlSelectedFlexibility))
-            {
-                _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Flexibility");
-                _objMount.WeaponMountOptions.Add(objFlexibilityOption);
-            }
-            WeaponMountOption objVisibilityOption = new WeaponMountOption(_objCharacter);
-            if (objVisibilityOption.Create(xmlSelectedVisibility))
-            {
-                _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Visibilty");
-                _objMount.WeaponMountOptions.Add(objVisibilityOption);
-            }
-
-            _objMount.Mods.RemoveAll(x => !_lstMods.Contains(x));
+            _objMount.Mods.RemoveAll(x => !x.IncludedInVehicle && !_lstMods.Contains(x));
             foreach (VehicleMod objMod in _lstMods)
             {
                 if (_objMount.Mods.Contains(objMod))
@@ -459,6 +464,8 @@ namespace Chummer
                         }
                         foreach (VehicleMod objLoopMod in _lstMods)
                         {
+                            if (objMod.IncludedInVehicle)
+                                continue;
                             intTotalSlots += objLoopMod.CalculatedSlots;
                         }
                         lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
@@ -484,20 +491,26 @@ namespace Chummer
                 return;
             }
             // Cost.
-            bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(xmlSelectedMount.SelectSingleNode("category")?.Value);
-            chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
-            if (!chkBlackMarketDiscount.Checked)
+            if (!_objMount.IncludedInVehicle)
             {
-                chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                bool blnCanBlackMarketDiscount
+                    = _setBlackMarketMaps.Contains(xmlSelectedMount.SelectSingleNode("category")?.Value);
+                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                }
+                else if (!blnCanBlackMarketDiscount)
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
             }
-            else if (!blnCanBlackMarketDiscount)
-            {
-                //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                chkBlackMarketDiscount.Checked = false;
-            }
+            else
+                chkBlackMarketDiscount.Enabled = false;
 
             decimal decCost = 0;
-            if (!chkFreeItem.Checked)
+            if (!chkFreeItem.Checked && !_objMount.IncludedInVehicle)
                 xmlSelectedMount.TryGetDecFieldQuickly("cost", ref decCost);
             int intSlots = 0;
             xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
@@ -517,7 +530,7 @@ namespace Chummer
                 XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
                 if (xmlLoopNode == null)
                     continue;
-                if (!chkFreeItem.Checked)
+                if (!chkFreeItem.Checked && !_objMount.IncludedInVehicle)
                 {
                     decimal decLoopCost = 0;
                     if (xmlLoopNode.TryGetDecFieldQuickly("cost", ref decLoopCost))
@@ -550,6 +563,8 @@ namespace Chummer
             }
             foreach (VehicleMod objMod in _lstMods)
             {
+                if (objMod.IncludedInVehicle)
+                    continue;
                 intSlots += objMod.CalculatedSlots;
                 AvailabilityValue objLoopAvail = objMod.TotalAvailTuple();
                 char chrLoopAvailSuffix = objLoopAvail.Suffix;
@@ -563,6 +578,8 @@ namespace Chummer
             {
                 foreach (VehicleMod objMod in _lstMods)
                 {
+                    if (objMod.IncludedInVehicle)
+                        continue;
                     decCost += objMod.TotalCostInMountCreation(intSlots);
                 }
             }
@@ -623,6 +640,8 @@ namespace Chummer
             }
             foreach (VehicleMod objMod in _lstMods)
             {
+                if (objMod.IncludedInVehicle)
+                    continue;
                 intSlots += objMod.CalculatedSlots;
             }
 

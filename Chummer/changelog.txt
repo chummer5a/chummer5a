@@ -32,6 +32,8 @@ Application Changes:
 - Setting an item's custom name to an empty string (and thus removing a previously assigned custom name) is now properly possible.
 - Tweaked Dark Mode colors to be darker for brighter colors and lighter for darker colors.
 - Weapon mounts that come with a vehicle can no longer have their parameters (size, flexibility, visibility, and control) adjusted in the weapon mounts screen. Partial fix for #4648.
+- Built-in modifications to built-in weapon mounts no longer take up slots inside the weapon mount or contribute to its overall costs.
+- When modifying a weapon mount, changing its Visibility no longer causes its old Visibility value to be kept and have its availability and slot modifiers applied. Fixes #4648.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
