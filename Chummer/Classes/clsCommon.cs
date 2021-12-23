@@ -1117,6 +1117,8 @@ namespace Chummer
 
         public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
         {
+            if (objToken.IsCancellationRequested)
+                return null;
             XmlDocument objReturn = new XmlDocument {XmlResolver = null};
             // Write the Character information to a MemoryStream so we don't need to create any files.
             using (MemoryStream objStream = new MemoryStream())
