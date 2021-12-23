@@ -47,6 +47,8 @@ namespace Chummer
             _xmlDoc = _objCharacter.LoadData("vehicles.xml");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer/weaponmountcategories"));
             InitializeComponent();
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
         }
 
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
@@ -89,7 +91,7 @@ namespace Chummer
 
             cboSize.BeginUpdate();
             cboSize.PopulateWithListItems(lstSize);
-            cboSize.Enabled = lstSize.Count > 1;
+            cboSize.Enabled = !_objMount.IncludedInVehicle && lstSize.Count > 1;
             cboSize.EndUpdate();
 
             if (_objMount != null)
@@ -143,8 +145,6 @@ namespace Chummer
 
             _blnLoading = false;
             UpdateInfo();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -964,7 +964,7 @@ namespace Chummer
             string strOldControl = cboControl.SelectedValue?.ToString();
             cboVisibility.BeginUpdate();
             cboVisibility.PopulateWithListItems(lstVisibility);
-            cboVisibility.Enabled = lstVisibility.Count > 1;
+            cboVisibility.Enabled = !_objMount.IncludedInVehicle && lstVisibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldVisibility))
                 cboVisibility.SelectedValue = strOldVisibility;
             if (cboVisibility.SelectedIndex == -1 && lstVisibility.Count > 0)
@@ -973,7 +973,7 @@ namespace Chummer
 
             cboFlexibility.BeginUpdate();
             cboFlexibility.PopulateWithListItems(lstFlexibility);
-            cboFlexibility.Enabled = lstFlexibility.Count > 1;
+            cboFlexibility.Enabled = !_objMount.IncludedInVehicle && lstFlexibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldFlexibility))
                 cboFlexibility.SelectedValue = strOldFlexibility;
             if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
@@ -982,7 +982,7 @@ namespace Chummer
 
             cboControl.BeginUpdate();
             cboControl.PopulateWithListItems(lstControl);
-            cboControl.Enabled = lstControl.Count > 1;
+            cboControl.Enabled = !_objMount.IncludedInVehicle && lstControl.Count > 1;
             if (!string.IsNullOrEmpty(strOldControl))
                 cboControl.SelectedValue = strOldControl;
             if (cboControl.SelectedIndex == -1 && lstControl.Count > 0)
