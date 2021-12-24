@@ -341,6 +341,9 @@ namespace Chummer
                 }
             }
 
+            // Check if the quality is already suppressed by something
+            RefreshSuppressed();
+
             if (string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlQuality, Name, CurrentDisplayName, Source, Page,
@@ -983,11 +986,19 @@ namespace Chummer
                 _strCachedNotes = string.Empty;
                 if (Suppressed)
                 {
-                    _strCachedNotes += string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SuppressedBy"),
-                        _objCharacter.GetObjectName(_objCharacter.Improvements.FirstOrDefault(imp =>
-                            imp.ImproveType == Improvement.ImprovementType.DisableQuality
-                            && (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled))
-                        ?? LanguageManager.GetString("String_Unknown")) + Environment.NewLine;
+                    Improvement objDisablingImprovement
+                        = ImprovementManager
+                          .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableQuality,
+                                                              SourceIDString).FirstOrDefault()
+                          ?? ImprovementManager
+                             .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                 Improvement.ImprovementType.DisableQuality, Name)
+                             .FirstOrDefault();
+                    _strCachedNotes += string.Format(GlobalSettings.CultureInfo,
+                                                     LanguageManager.GetString("String_SuppressedBy"),
+                                                     _objCharacter.GetObjectName(objDisablingImprovement)
+                                                     ?? LanguageManager.GetString("String_Unknown"))
+                                       + Environment.NewLine;
                 }
                 _strCachedNotes += _strNotes;
                 return _strCachedNotes;
@@ -1019,22 +1030,30 @@ namespace Chummer
             {
                 if (_intCachedSuppressed < 0)
                 {
-                    _intCachedSuppressed = _objCharacter.Improvements.Count(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled);
-                    if (_intCachedSuppressed > 0)
-                    {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
-                            imp.SourceName == SourceIDString));
-                    }
-                    else
-                    {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
-                            imp.SourceName == SourceIDString));
-                    }
+                    _intCachedSuppressed = ImprovementManager
+                                           .GetCachedImprovementListForValueOf(
+                                               _objCharacter, Improvement.ImprovementType.DisableQuality, Name).Count
+                                           + ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 _objCharacter, Improvement.ImprovementType.DisableQuality,
+                                                 SourceIDString).Count;
                 }
 
                 return _intCachedSuppressed > 0;
+            }
+        }
+
+        private void RefreshSuppressed()
+        {
+            if (Suppressed)
+            {
+                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                                                           imp.SourceName == SourceIDString && imp.Enabled));
+            }
+            else
+            {
+                ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                                                          imp.SourceName == SourceIDString && !imp.Enabled));
             }
         }
 
@@ -1485,7 +1504,11 @@ namespace Chummer
                 return;
 
             if (lstPropertyNames.Contains(nameof(Suppressed)))
+            {
                 _intCachedSuppressed = -1;
+                RefreshSuppressed();
+            }
+
             foreach (string strPropertyToChange in lstPropertyNames)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));

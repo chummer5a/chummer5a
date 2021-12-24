@@ -34,6 +34,7 @@ Application Changes:
 - Weapon mounts that come with a vehicle can no longer have their parameters (size, flexibility, visibility, and control) adjusted in the weapon mounts screen. Partial fix for #4648.
 - Built-in modifications to built-in weapon mounts no longer take up slots inside the weapon mount or contribute to its overall costs.
 - When modifying a weapon mount, changing its Visibility no longer causes its old Visibility value to be kept and have its availability and slot modifiers applied. Fixes #4648.
+- Adding a quality that is suppressed by something that is already on the character now properly disables the quality's effects.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
