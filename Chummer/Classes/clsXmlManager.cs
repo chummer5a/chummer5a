@@ -801,13 +801,16 @@ namespace Chummer
                                 XmlNode xmlIdNode = objChild["id"];
                                 if (xmlIdNode != null)
                                     strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
-                                XmlNode xmlNameNode = objChild["name"];
-                                if (xmlNameNode != null)
+                                else
                                 {
-                                    strFilter += (string.IsNullOrEmpty(strFilter)
-                                                     ? "name = "
-                                                     : " and name = ") +
-                                                 xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                    XmlNode xmlNameNode = objChild["name"];
+                                    if (xmlNameNode != null)
+                                    {
+                                        strFilter += (string.IsNullOrEmpty(strFilter)
+                                                         ? "name = "
+                                                         : " and name = ") +
+                                                     xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                    }
                                 }
 
                                 // Only do this if the child has the name or id field since this is what we must match on.
@@ -825,7 +828,8 @@ namespace Chummer
                                                                            .CleanXPath()).Append(" and ");
                                         }
 
-                                        sbdParentNodeFilter.Length -= 5;
+                                        if (sbdParentNodeFilter.Length > 0)
+                                            sbdParentNodeFilter.Length -= 5;
 
                                         strParentNodeFilter = sbdParentNodeFilter.ToString();
                                     }
@@ -857,7 +861,7 @@ namespace Chummer
                                     }
                                 }
 
-                                if (!blnAllMatching)
+                                if (blnAllMatching)
                                 {
                                     /* We need to do this to avoid creating multiple copies of the root node, ie
                                        <chummer>
