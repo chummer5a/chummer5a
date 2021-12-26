@@ -2852,16 +2852,11 @@ namespace Chummer.Backend.Skills
                 if (intPrice > CharacterObject.Karma)
                     return;
 
-                //If data file contains {4} this crashes but...
-                string upgradetext = //TODO WRONG
-                    string.Format(GlobalSettings.CultureInfo, "{0}{3}{1}{3}({2})",
-                        LanguageManager.GetString("String_ExpenseLearnSpecialization"),
-                        CurrentDisplayName,
-                        strName,
-                        LanguageManager.GetString("String_Space"));
-
+                string strSpace = LanguageManager.GetString("String_Space");
+                string strUpgradeText = LanguageManager.GetString("String_ExpenseLearnSpecialization") + strSpace
+                    + CurrentDisplayName + strSpace + '(' + strName + ')';
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intPrice * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
                 objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);

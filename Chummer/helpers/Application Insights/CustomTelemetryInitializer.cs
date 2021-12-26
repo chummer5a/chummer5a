@@ -34,6 +34,7 @@ namespace Chummer
 
         private static bool IsMilestone { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
 
+        [CLSCompliant(false)]
         public void Initialize(ITelemetry telemetry)
         {
             if (telemetry == null)

@@ -26,6 +26,7 @@ namespace Chummer
     {
         private readonly TelemetryConfiguration _configuration;
 
+        [System.CLSCompliant(false)]
         public LiveStreamProvider(TelemetryConfiguration configuration)
         {
             _configuration = configuration;

@@ -51,6 +51,7 @@ namespace Chummer
         private const string ChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
         internal static readonly Process MyProcess = Process.GetCurrentProcess();
 
+        [CLSCompliant(false)]
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _objPluginLoader;
         public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();

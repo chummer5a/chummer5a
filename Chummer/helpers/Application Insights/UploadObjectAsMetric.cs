@@ -28,6 +28,7 @@ namespace Chummer
 {
     public static class UploadObjectAsMetric
     {
+        [CLSCompliant(false)]
         public static bool UploadObject(TelemetryClient tc, object obj)
         {
             if (tc == null)

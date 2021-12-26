@@ -147,8 +147,7 @@ namespace Chummer
                     cv2?.Close();
                 }
 
-                report.AppendFormat("CommandLine={0}", Environment.CommandLine);
-                report.AppendLine();
+                report.Append("CommandLine=").AppendLine(Environment.CommandLine);
 
                 report.AppendFormat("Version={0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
             }

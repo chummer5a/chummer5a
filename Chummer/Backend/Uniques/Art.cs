@@ -355,11 +355,14 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("metamagic.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/arts/art[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/arts/art[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                                   .SelectSingleNode(SourceID == Guid.Empty
+                                                                         ? "/chummer/arts/art[name = "
+                                                                           + Name.CleanXPath() + ']'
+                                                                         : "/chummer/arts/art[id = "
+                                                                           + SourceIDString.CleanXPath()
+                                                                           + " or id = " + SourceIDString
+                                                                               .ToUpperInvariant().CleanXPath()
+                                                                           + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

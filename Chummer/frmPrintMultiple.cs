@@ -53,20 +53,22 @@ namespace Chummer
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)
         {
             // Add the selected Files to the list of characters to print.
-            if (dlgOpenFile.ShowDialog(this) != DialogResult.OK)
-                return;
-            await CancelPrint();
-            foreach (string strFileName in dlgOpenFile.FileNames)
+            if (dlgOpenFile.ShowDialog(this) == DialogResult.OK)
             {
-                TreeNode objNode = new TreeNode
+                await CancelPrint();
+                foreach (string strFileName in dlgOpenFile.FileNames)
                 {
-                    Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown"),
-                    Tag = strFileName
-                };
-                treCharacters.Nodes.Add(objNode);
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown"),
+                        Tag = strFileName
+                    };
+                    treCharacters.Nodes.Add(objNode);
+                }
+
+                if (_frmPrintView != null)
+                    await StartPrint();
             }
-            if (_frmPrintView != null)
-                await StartPrint();
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)

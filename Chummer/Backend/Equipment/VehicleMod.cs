@@ -1443,14 +1443,17 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 XmlDocument objDoc = _objCharacter.LoadData("vehicles.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                          "/chummer/mods/mod[id = {0} or id = {1}]",
-                                          SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()))
-                                      ?? objDoc.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                          "/chummer/weaponmountmods/mod[id = {0} or id = {1}]",
-                                          SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()))
+                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
+                                                              + SourceIDString.CleanXPath() + " or id = "
+                                                              + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                              + ']')
+                                      ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
+                                                                 + SourceIDString.CleanXPath() + " or id = "
+                                                                 + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                                 + ']')
                                       ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
-                                      ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+                                      ?? objDoc.SelectSingleNode(
+                                          "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1501,11 +1504,9 @@ namespace Chummer.Backend.Equipment
                                 intLowestValidRestrictedGearAvail = intValidAvail;
                         }
 
-                        string strNameToUse = Parent == null
-                            ? CurrentDisplayName
-                            : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                            CurrentDisplayName, LanguageManager.GetString("String_Space"),
-                                            Parent.CurrentDisplayName);
+                        string strNameToUse = CurrentDisplayName;
+                        if (Parent != null)
+                            strNameToUse += LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)

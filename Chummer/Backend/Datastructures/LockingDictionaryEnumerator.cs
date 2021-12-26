@@ -17,12 +17,13 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections;
 using System.Threading;
 
 namespace Chummer
 {
-    public readonly struct LockingDictionaryEnumerator : IDictionaryEnumerator
+    public readonly struct LockingDictionaryEnumerator : IDictionaryEnumerator, IEquatable<LockingDictionaryEnumerator>
     {
         private readonly ReaderWriterLockSlim _rwlThis;
 
@@ -52,22 +53,6 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
                 _objInternalEnumerator.Reset();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj != null && _objInternalEnumerator.Equals(((LockingDictionaryEnumerator)obj)._objInternalEnumerator)
-                               && _rwlThis.Equals(((LockingDictionaryEnumerator)obj)._rwlThis);
-        }
-
-        public override int GetHashCode()
-        {
-            return (_objInternalEnumerator, _rwlThis).GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return _objInternalEnumerator.ToString() + ' ' + _rwlThis;
         }
 
         /// <inheritdoc />
@@ -108,6 +93,40 @@ namespace Chummer
                 using (new EnterReadLock(_rwlThis))
                     return _objInternalEnumerator.Entry;
             }
+        }
+
+        /// <inheritdoc />
+        public bool Equals(LockingDictionaryEnumerator other)
+        {
+            return Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null && Equals((LockingDictionaryEnumerator)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((_rwlThis != null ? _rwlThis.GetHashCode() : 0) * 397) ^ (_objInternalEnumerator != null ? _objInternalEnumerator.GetHashCode() : 0);
+            }
+        }
+
+        public override string ToString()
+        {
+            return _objInternalEnumerator.ToString() + ' ' + _rwlThis;
+        }
+
+        public static bool operator ==(LockingDictionaryEnumerator left, LockingDictionaryEnumerator right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(LockingDictionaryEnumerator left, LockingDictionaryEnumerator right)
+        {
+            return !(left == right);
         }
     }
 }

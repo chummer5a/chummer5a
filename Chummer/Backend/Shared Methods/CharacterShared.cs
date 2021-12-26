@@ -106,6 +106,16 @@ namespace Chummer
                 return Control.Equals(obj);
             }
 
+            public static bool operator ==(TransportWrapper objX, TransportWrapper objY)
+            {
+                return objX.Equals(objY);
+            }
+
+            public static bool operator !=(TransportWrapper objX, TransportWrapper objY)
+            {
+                return !objX.Equals(objY);
+            }
+
             public static bool operator ==(TransportWrapper objX, object objY)
             {
                 return objX.Equals(objY);

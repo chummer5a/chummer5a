@@ -908,10 +908,10 @@ namespace Chummer.Backend.Uniques
             {
                 _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/traditions/tradition[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                          ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                                          : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
+                                          + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
+                                          + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _xmlCachedMyXmlNode;

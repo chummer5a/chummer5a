@@ -313,10 +313,9 @@ namespace Chummer
             string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, false);
             if (string.IsNullOrEmpty(strBuildMethod))
                 strBuildMethod = LanguageManager.GetString("String_Unknown");
-            strName += string.Format("{0}({1}{0}-{0}{2})",
-                LanguageManager.GetString("String_Space"),
-                strBuildMethod,
-                LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode"));
+            string strSpace = LanguageManager.GetString("String_Space");
+            strName += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
+                       + LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
             return strName;
         }
 

@@ -24,6 +24,7 @@ namespace Chummer
 {
     public static class ToolTipFactory
     {
+        [System.CLSCompliant(false)]
         public static HtmlToolTip ToolTip { get; } = new HtmlToolTip
         {
             AllowLinksHandling = true,

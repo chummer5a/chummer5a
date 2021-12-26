@@ -2700,6 +2700,16 @@ namespace Chummer
             return _objTupleKey.ToString();
         }
 
+        public static bool operator ==(ImprovementDictionaryKey x, ImprovementDictionaryKey y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(ImprovementDictionaryKey x, ImprovementDictionaryKey y)
+        {
+            return !x.Equals(y);
+        }
+
         public static bool operator ==(ImprovementDictionaryKey x, object y)
         {
             return x.Equals(y);

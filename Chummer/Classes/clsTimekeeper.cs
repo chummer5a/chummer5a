@@ -37,16 +37,18 @@ namespace Chummer
             s_Time.Start();
         }
 
+        [CLSCompliant(false)]
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
         {
-            var dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
             return dependencyActivity;
         }
 
+        [CLSCompliant(false)]
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity)
         {
-            var dependencyActivity = new CustomActivity(taskname, parentActivity);
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity);
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
             return dependencyActivity;
         }

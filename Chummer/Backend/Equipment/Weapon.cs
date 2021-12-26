@@ -520,6 +520,7 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
                             {
                                 XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                                XmlNode objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
                                 XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
                                 int intGearRating = 0;
                                 decimal decGearQty = 1;
@@ -532,11 +533,21 @@ namespace Chummer.Backend.Equipment
                                     intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText, GlobalSettings.InvariantCultureInfo);
                                 if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                                     decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalSettings.InvariantCultureInfo);
-
-                                XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                    "/chummer/gears/gear[name = {0} and category = {1}]",
-                                    objXmlAccessoryGearName.InnerText.CleanXPath(),
-                                    objXmlAccessoryGear["category"].InnerText.CleanXPath()));
+                                string strFilter = "/chummer/gears/gear";
+                                if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
+                                {
+                                    strFilter += '[';
+                                    if (objXmlAccessoryGearName != null)
+                                    {
+                                        strFilter += "name = " + objXmlAccessoryGearName.InnerText.CleanXPath();
+                                        if (objXmlAccessoryGearCategory != null)
+                                            strFilter += " and category = " + objXmlAccessoryGearCategory.InnerText.CleanXPath();
+                                    }
+                                    else
+                                        strFilter += "category = " + objXmlAccessoryGearCategory.InnerText.CleanXPath();
+                                    strFilter += ']';
+                                }
+                                XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(strFilter);
                                 Gear objGear = new Gear(_objCharacter);
 
                                 objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
@@ -2128,11 +2139,14 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("weapons.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/weapons/weapon[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/weapons/weapon[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                                   .SelectSingleNode(SourceID == Guid.Empty
+                                                                         ? "/chummer/weapons/weapon[name = "
+                                                                           + Name.CleanXPath() + ']'
+                                                                         : "/chummer/weapons/weapon[id = "
+                                                                           + SourceIDString.CleanXPath() + " or id = "
+                                                                           + SourceIDString.ToUpperInvariant()
+                                                                               .CleanXPath()
+                                                                           + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -4348,8 +4362,9 @@ namespace Chummer.Backend.Equipment
 
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
                         {
-                            sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, objLoadedAmmo.CurrentDisplayNameShort, strWeaponBonusPool);
+                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                    .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                    .Append(strWeaponBonusPool).Append(')');
                         }
                     }
                 }
@@ -5268,11 +5283,9 @@ namespace Chummer.Backend.Equipment
                                 intLowestValidRestrictedGearAvail = intValidAvail;
                         }
 
-                        string strNameToUse = Parent == null
-                            ? CurrentDisplayName
-                            : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                            CurrentDisplayName, LanguageManager.GetString("String_Space"),
-                                            Parent.CurrentDisplayName);
+                        string strNameToUse = CurrentDisplayName;
+                        if (Parent != null)
+                            strNameToUse += LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)

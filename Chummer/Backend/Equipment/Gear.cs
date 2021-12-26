@@ -474,11 +474,23 @@ namespace Chummer.Backend.Equipment
                             List<ListItem> lstGears = new List<ListItem>(objXmlNodeList.Count);
                             foreach (XmlNode objChoiceNode in objXmlNodeList)
                             {
-                                XmlNode objXmlLoopGear =
-                                    xmlDocument.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                        "/chummer/gears/gear[name = {0} and category = {1}]",
-                                        objChoiceNode["name"]?.InnerText.CleanXPath(),
-                                        objChoiceNode["category"]?.InnerText.CleanXPath()));
+                                XmlNode xmlChoiceName = objChoiceNode["name"];
+                                XmlNode xmlChoiceCategory = objChoiceNode["category"];
+                                string strFilter = "/chummer/gears/gear";
+                                if (xmlChoiceName != null || xmlChoiceCategory != null)
+                                {
+                                    strFilter += '[';
+                                    if (xmlChoiceName != null)
+                                    {
+                                        strFilter += "name = " + xmlChoiceName.InnerText.CleanXPath();
+                                        if (xmlChoiceCategory != null)
+                                            strFilter += " and category = " + xmlChoiceCategory.InnerText.CleanXPath();
+                                    }
+                                    else
+                                        strFilter += "category = " + xmlChoiceCategory.InnerText.CleanXPath();
+                                    strFilter += ']';
+                                }
+                                XmlNode objXmlLoopGear = xmlDocument.SelectSingleNode(strFilter);
                                 if (objXmlLoopGear == null)
                                     continue;
                                 XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
@@ -575,10 +587,23 @@ namespace Chummer.Backend.Equipment
             if (xmlChildNode == null)
                 return;
             XmlNode xmlChildName = xmlChildNode["name"];
+            XmlNode xmlChildCategory = xmlChildNode["category"];
+            string strFilter = "/chummer/gears/gear";
+            if (xmlChildName != null || xmlChildCategory != null)
+            {
+                strFilter += '[';
+                if (xmlChildName != null)
+                {
+                    strFilter += "name = " + xmlChildName.InnerText.CleanXPath();
+                    if (xmlChildCategory != null)
+                        strFilter += " and category = " + xmlChildCategory.InnerText.CleanXPath();
+                }
+                else
+                    strFilter += "category = " + xmlChildCategory.InnerText.CleanXPath();
+                strFilter += ']';
+            }
             XmlDocument xmlDocument = xmlChildNode.OwnerDocument ?? _objCharacter.LoadData("gear.xml");
-            XmlNode xmlChildDataNode = xmlDocument.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                "/chummer/gears/gear[name = {0} and category = {1}]",
-                xmlChildName?.InnerText.CleanXPath(), xmlChildNode["category"]?.InnerText.CleanXPath()));
+            XmlNode xmlChildDataNode = xmlDocument.SelectSingleNode(strFilter);
             if (xmlChildDataNode == null)
                 return;
             int intChildRating = 0;
@@ -1295,9 +1320,11 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
             if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                objWriter.WriteElementString("name", string.Format(GlobalSettings.InvariantCultureInfo, "{0}{1}({2})",
-                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint),
-                    LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint)));
+                objWriter.WriteElementString(
+                    "name",
+                    DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint)
+                                                         + LanguageManager.GetString(
+                                                             "Label_BondedFoci", strLanguageToPrint));
             else
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
 
@@ -2209,12 +2236,12 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objDoc = _objCharacter.LoadData("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
-                    ? string.Format(GlobalSettings.InvariantCultureInfo,
-                        "/chummer/gears/gear[name = {0} and category = {1}]",
-                        strName.CleanXPath(), strCategory.CleanXPath())
-                    : string.Format(GlobalSettings.InvariantCultureInfo,
-                        "/chummer/gears/gear[(id = \"{0}\" or id = \"{1}\") or (name = {2} and category = {3})]",
-                        SourceIDString, SourceIDString.ToUpperInvariant(), strNameWithQuotes, Category.CleanXPath()));
+                                                                  ? "/chummer/gears/gear[name = " + strName.CleanXPath()
+                                                                  + " and category = " + strCategory.CleanXPath() + ']'
+                                                                  : "/chummer/gears/gear[(id = \"" + SourceIDString.CleanXPath()
+                                                                  + "\" or id = \"" + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                                  + "\") or (name = " + strNameWithQuotes
+                                                                  + " and category = " + Category.CleanXPath() + ")]");
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode =

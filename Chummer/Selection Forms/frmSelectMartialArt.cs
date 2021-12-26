@@ -108,8 +108,10 @@ namespace Chummer
                         string strLoopTechniqueName = xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strLoopTechniqueName))
                         {
-                            XPathNavigator xmlTechniqueNode = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo, "technique[name = {0} and ({1})]",
-                                strLoopTechniqueName.CleanXPath(), _objCharacter.Settings.BookXPath()));
+                            XPathNavigator xmlTechniqueNode
+                                = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(
+                                    "technique[name = " + strLoopTechniqueName.CleanXPath() + " and ("
+                                    + _objCharacter.Settings.BookXPath() + ")]");
                             if (xmlTechniqueNode != null)
                             {
                                 if (objTechniqueStringBuilder.Length > 0)

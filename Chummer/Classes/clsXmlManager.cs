@@ -1618,9 +1618,11 @@ namespace Chummer
                                                 {
                                                     string strMetavariantName = objMetavariant.SelectSingleNodeAndCacheExpression("name").Value;
                                                     XPathNavigator objTranslate =
-                                                        objLanguageRoot.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                                            "metatypes/metatype[name = {0}]/metavariants/metavariant[name = {1}]",
-                                                            strChildNameElement.CleanXPath(), strMetavariantName.CleanXPath()));
+                                                        objLanguageRoot.SelectSingleNode(
+                                                            "metatypes/metatype[name = "
+                                                            + strChildNameElement.CleanXPath()
+                                                            + "]/metavariants/metavariant[name = "
+                                                            + strMetavariantName.CleanXPath() + ']');
                                                     if (objTranslate != null)
                                                     {
                                                         bool blnTranslate = objTranslate.SelectSingleNodeAndCacheExpression("translate") != null;
@@ -1783,9 +1785,9 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strChildNameElement))
                                 {
                                     string strChildName = objChild.Name;
-                                    XPathNavigator objNode = objEnglishRoot.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                        "/chummer/{0}/{1}[name = {2}]",
-                                        objType.Name, strChildName, strChildNameElement.CleanXPath()));
+                                    XPathNavigator objNode = objEnglishRoot.SelectSingleNode(
+                                        "/chummer/" + objType.Name + '/' + strChildName + "[name = "
+                                        + strChildNameElement.CleanXPath() + ']');
                                     if (objNode == null)
                                     {
                                         // <noentry>

@@ -1756,9 +1756,22 @@ namespace Chummer.Classes
             {
                 string strName = xmlGearNode["name"]?.InnerText ?? string.Empty;
                 string strCategory = xmlGearNode["category"]?.InnerText ?? string.Empty;
-                XmlNode xmlGearDataNode = _objCharacter.LoadData("gear.xml").SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                    "/chummer/gears/gear[name = {0} and category = {1}]",
-                    strName.CleanXPath(), strCategory.CleanXPath()));
+                string strFilter = "/chummer/gears/gear";
+                if (!string.IsNullOrEmpty(strName) || !string.IsNullOrEmpty(strCategory))
+                {
+                    strFilter += '[';
+                    if (!string.IsNullOrEmpty(strName))
+                    {
+                        strFilter += "name = " + strName.CleanXPath();
+                        if (!string.IsNullOrEmpty(strCategory))
+                            strFilter += " and category = " + strCategory.CleanXPath();
+                    }
+                    else
+                        strFilter += "category = " + strCategory.CleanXPath();
+                    strFilter += ']';
+                }
+
+                XmlNode xmlGearDataNode = _objCharacter.LoadData("gear.xml").SelectSingleNode(strFilter);
 
                 if (xmlGearDataNode == null)
                     throw new AbortedException();
@@ -5561,9 +5574,10 @@ namespace Chummer.Classes
             XPathNodeIterator objXmlNodeList;
             if (!string.IsNullOrEmpty(bonusNode.InnerText))
             {
-                objXmlNodeList = objXmlDocument.Select(string.Format(GlobalSettings.InvariantCultureInfo,
-                    "/chummer/armors/armor[name starts-with {0}({1}) and mods[name = 'Custom Fit']]",
-                    bonusNode.InnerText, _objCharacter.Settings.BookXPath()));
+                objXmlNodeList
+                    = objXmlDocument.Select(
+                        "/chummer/armors/armor[starts-with(name, " + bonusNode.InnerText.CleanXPath() + ") and ("
+                        + _objCharacter.Settings.BookXPath() + ") and mods[name = 'Custom Fit']]");
             }
             else
             {
@@ -5631,8 +5645,7 @@ namespace Chummer.Classes
             // Display the Select Item window and record the value that was entered.
             string strCategory = bonusNode["category"]?.InnerText;
             XPathNodeIterator objXmlNodeList = _objCharacter.LoadDataXPath("cyberware.xml").Select(!string.IsNullOrEmpty(strCategory)
-                ? string.Format(GlobalSettings.InvariantCultureInfo, "/chummer/cyberwares/cyberware[(category = '{0}') and ({1})]",
-                    strCategory, _objCharacter.Settings.BookXPath())
+                ? "/chummer/cyberwares/cyberware[(category = " + strCategory.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath() + ")]"
                 : "/chummer/cyberwares/cyberware[(" + _objCharacter.Settings.BookXPath() + ")]");
 
             List<ListItem> list = new List<ListItem>(objXmlNodeList.Count);
@@ -7485,5 +7498,16 @@ namespace Chummer.Classes
     [Serializable]
     public sealed class AbortedException : Exception
     {
+        public AbortedException() : base()
+        {
+        }
+
+        public AbortedException(string message) : base(message)
+        {
+        }
+
+        public AbortedException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

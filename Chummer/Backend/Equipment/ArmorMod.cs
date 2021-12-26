@@ -1150,11 +1150,13 @@ namespace Chummer.Backend.Equipment
                 return _objCachedMyXmlNode;
             _strCachedXmlNodeLanguage = strLanguage;
             _objCachedMyXmlNode = _objCharacter.LoadData("armor.xml", strLanguage)
-                .SelectSingleNode(SourceID == Guid.Empty
-                    ? "/chummer/mods/mod[name = " + Name.CleanXPath() + ']'
-                    : string.Format(GlobalSettings.InvariantCultureInfo,
-                        "/chummer/mods/mod[id = {0} or id = {1}]",
-                        SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/mods/mod[name = " + Name.CleanXPath()
+                                                                     + ']'
+                                                                     : "/chummer/mods/mod[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                                       + ']');
             return _objCachedMyXmlNode;
         }
 
@@ -1295,11 +1297,9 @@ namespace Chummer.Backend.Equipment
                                 intLowestValidRestrictedGearAvail = intValidAvail;
                         }
 
-                        string strNameToUse = Parent == null
-                            ? CurrentDisplayName
-                            : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                            CurrentDisplayName, LanguageManager.GetString("String_Space"),
-                                            Parent.CurrentDisplayName);
+                        string strNameToUse = CurrentDisplayName;
+                        if (Parent != null)
+                            strNameToUse += LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)

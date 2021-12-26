@@ -80,6 +80,16 @@ namespace Chummer
             return Value.ToString();
         }
 
+        public static bool operator ==(ListItem x, ListItem y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(ListItem x, ListItem y)
+        {
+            return !x.Equals(y);
+        }
+
         public static bool operator ==(ListItem x, object y)
         {
             return x.Equals(y);

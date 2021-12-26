@@ -1131,11 +1131,14 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/lifestyles/lifestyle[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                                   .SelectSingleNode(SourceID == Guid.Empty
+                                                                         ? "/chummer/lifestyles/lifestyle[name = "
+                                                                           + Name.CleanXPath() + ']'
+                                                                         : "/chummer/lifestyles/lifestyle[id = "
+                                                                           + SourceIDString.CleanXPath() + " or id = "
+                                                                           + SourceIDString.ToUpperInvariant()
+                                                                               .CleanXPath()
+                                                                           + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

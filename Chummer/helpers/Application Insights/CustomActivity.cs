@@ -24,13 +24,16 @@ using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Chummer
 {
+    [CLSCompliant(false)]
     public sealed class CustomActivity : Activity
     {
+        [CLSCompliant(false)]
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
         //public IOperationHolder<RequestTelemetry> myOperationRequestHolder { get; set; }
         public TelemetryClient MyTelemetryClient { get; set; }
-
+        [CLSCompliant(false)]
         public DependencyTelemetry MyDependencyTelemetry { get; private set; }
+        [CLSCompliant(false)]
         public RequestTelemetry MyRequestTelemetry { get; private set; }
         public string MyTelemetryTarget { get; private set; }
 

@@ -337,59 +337,63 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static async Task<T> DoThreadSafeFuncCoreAsync<T>(this Control objControl, bool blnSync, Func<T> funcToRun)
         {
-            if (objControl.IsNullOrDisposed() || funcToRun == null)
-                return default;
-            T objReturn = default;
-            try
+            if (!objControl.IsNullOrDisposed() && funcToRun != null)
             {
-                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                if (myControlCopy.InvokeRequired)
+                T objReturn = default;
+                try
                 {
-                    IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                    if (blnSync)
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
                     {
-                        // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                        objResult.AsyncWaitHandle.WaitOne();
-                        object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                        if (objReturnRaw is T objReturnRawCast)
-                            objReturn = objReturnRawCast;
-                        objResult.AsyncWaitHandle.Close();
-                    }
-                    else
-                    {
-                        await Task.Factory.FromAsync(objResult, x =>
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                        if (blnSync)
                         {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
                             if (objReturnRaw is T objReturnRawCast)
                                 objReturn = objReturnRawCast;
-                        });
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is T objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                            });
+                        }
                     }
+                    else
+                        objReturn = funcToRun.Invoke();
                 }
-                else
-                    objReturn = funcToRun.Invoke();
-            }
-            catch (ObjectDisposedException) // e)
-            {
-                //we really don't need to care about that.
-                //Log.Trace(e);
-            }
-            catch (InvalidAsynchronousStateException e)
-            {
-                //we really don't need to care about that.
-                Log.Trace(e);
-            }
-            catch (System.Threading.ThreadAbortException)
-            {
-                //no need to do anything here - actually we can't anyway...
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
+                catch (ObjectDisposedException) // e)
+                {
+                    //we really don't need to care about that.
+                    //Log.Trace(e);
+                }
+                catch (InvalidAsynchronousStateException e)
+                {
+                    //we really don't need to care about that.
+                    Log.Trace(e);
+                }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    //no need to do anything here - actually we can't anyway...
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
 #if DEBUG
-                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                    Program.MainForm?.ShowMessageBox(objControl, e.ToString());
 #endif
+                }
+
+                return objReturn;
             }
-            return objReturn;
+
+            return default;
         }
 
         /// <summary>

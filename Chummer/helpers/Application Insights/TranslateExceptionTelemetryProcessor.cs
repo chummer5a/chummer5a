@@ -37,12 +37,15 @@ namespace Chummer
         // You can pass values from .config
         public string MyParamFromConfigFile { get; set; }
 
+        [CLSCompliant(false)]
+
         // Link processors to each other in a chain.
         public TranslateExceptionTelemetryProcessor(ITelemetryProcessor next)
         {
             Next = next;
         }
 
+        [CLSCompliant(false)]
         public void Process(ITelemetry item)
         {
             // To filter out an item, just return

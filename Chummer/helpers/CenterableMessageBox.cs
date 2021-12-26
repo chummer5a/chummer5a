@@ -129,13 +129,49 @@ namespace Chummer
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct CwpRetStruct
+        public struct CwpRetStruct : IEquatable<CwpRetStruct>
         {
             public IntPtr lResult;
             public IntPtr lParam;
             public IntPtr wParam;
+            [CLSCompliant(false)]
             public uint message;
             public IntPtr hwnd;
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hashCode = lResult.GetHashCode();
+                    hashCode = (hashCode * 397) ^ lParam.GetHashCode();
+                    hashCode = (hashCode * 397) ^ wParam.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (int) message;
+                    hashCode = (hashCode * 397) ^ hwnd.GetHashCode();
+                    return hashCode;
+                }
+            }
+
+            public static bool operator ==(CwpRetStruct left, CwpRetStruct right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(CwpRetStruct left, CwpRetStruct right)
+            {
+                return !(left == right);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj != null && Equals((CwpRetStruct)obj);
+            }
+
+            /// <inheritdoc />
+            public bool Equals(CwpRetStruct other)
+            {
+                return lResult.Equals(other.lResult) && lParam.Equals(other.lParam) && wParam.Equals(other.wParam)
+                       && message == other.message && hwnd.Equals(other.hwnd);
+            }
         }
 
         private static void Initialize()

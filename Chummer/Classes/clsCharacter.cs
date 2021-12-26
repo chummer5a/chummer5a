@@ -21391,10 +21391,11 @@ namespace Chummer
         /// <returns></returns>
         public string CalculatedName(bool blnAddMarkerIfOpen = true)
         {
+            string strSpace = LanguageManager.GetString("String_Space");
             string strReturn;
             if (!string.IsNullOrEmpty(ErrorText))
             {
-                strReturn = Path.GetFileNameWithoutExtension(FileName) + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Error") + ')';
+                strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' + LanguageManager.GetString("String_Error") + ')';
             }
             else
             {
@@ -21409,13 +21410,11 @@ namespace Chummer
                 string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
                 if (string.IsNullOrEmpty(strBuildMethod))
                     strBuildMethod = LanguageManager.GetString("String_Unknown");
-                strReturn += string.Format("{0}({1}{0}-{0}{2})",
-                    LanguageManager.GetString("String_Space"),
-                    strBuildMethod,
-                    LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode"));
+                strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
+                             + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
             }
             if (blnAddMarkerIfOpen && Program.MainForm?.OpenCharacterForms.Any(x => x.CharacterObject.FileName == FilePath) == true)
-                strReturn = "* " + strReturn;
+                strReturn = '*' + strSpace + strReturn;
             return strReturn;
         }
 

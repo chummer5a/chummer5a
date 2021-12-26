@@ -114,6 +114,7 @@ namespace Chummer.UI.Charts
 
         #region Properties
 
+        [CLSCompliant(false)]
         public ChartValues<DateTimePoint> ExpenseValues { get; } = new ChartValues<DateTimePoint>();
 
         private bool _blnNuyenMode;

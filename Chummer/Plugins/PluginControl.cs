@@ -46,7 +46,10 @@ namespace Chummer.Plugins
 
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
+        [CLSCompliant(false)]
+#pragma warning disable CS3010 // CLS-compliant interfaces must have only CLS-compliant members
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
+#pragma warning restore CS3010 // CLS-compliant interfaces must have only CLS-compliant members
 
         bool ProcessCommandLine(string parameter);
 

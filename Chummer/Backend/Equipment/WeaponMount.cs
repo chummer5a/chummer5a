@@ -1005,20 +1005,25 @@ namespace Chummer.Backend.Equipment
                     // Id for Standard [SR5] mount
                     : "079a5c61-aee6-4383-81b7-32540f7a0a0b";
                 XmlNode xmlOverrideDataNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
-                    .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                        "/chummer/weaponmounts/weaponmount[id = {0} or id = {1}]",
-                        strOverrideId.CleanXPath(), strOverrideId.ToUpperInvariant().CleanXPath()));
+                                                           .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
+                                                                             + strOverrideId.CleanXPath() + " or id = "
+                                                                             + strOverrideId.ToUpperInvariant()
+                                                                                 .CleanXPath()
+                                                                             + ']');
                 if (xmlOverrideDataNode != null)
                     return xmlOverrideDataNode; // Do not cache this node
             }
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/weaponmounts/weaponmount[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/weaponmounts/weaponmount[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                                   .SelectSingleNode(SourceID == Guid.Empty
+                                                                         ? "/chummer/weaponmounts/weaponmount[name = "
+                                                                           + Name.CleanXPath() + ']'
+                                                                         : "/chummer/weaponmounts/weaponmount[id = "
+                                                                           + SourceIDString.CleanXPath() + " or id = "
+                                                                           + SourceIDString.ToUpperInvariant()
+                                                                               .CleanXPath()
+                                                                           + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1069,11 +1074,9 @@ namespace Chummer.Backend.Equipment
                                 intLowestValidRestrictedGearAvail = intValidAvail;
                         }
 
-                        string strNameToUse = Parent == null
-                            ? CurrentDisplayName
-                            : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                            CurrentDisplayName, LanguageManager.GetString("String_Space"),
-                                            Parent.CurrentDisplayName);
+                        string strNameToUse = CurrentDisplayName;
+                        if (Parent != null)
+                            strNameToUse += LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -1534,11 +1537,14 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/weaponmounts/weaponmount[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/weaponmounts/weaponmount[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                                   .SelectSingleNode(SourceID == Guid.Empty
+                                                                         ? "/chummer/weaponmounts/weaponmount[name = "
+                                                                           + Name.CleanXPath() + ']'
+                                                                         : "/chummer/weaponmounts/weaponmount[id = "
+                                                                           + SourceIDString.CleanXPath() + " or id = "
+                                                                           + SourceIDString.ToUpperInvariant()
+                                                                               .CleanXPath()
+                                                                           + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

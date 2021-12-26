@@ -2909,11 +2909,13 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
-                .SelectSingleNode(SourceID == Guid.Empty
-                    ? "/chummer/vehicles/vehicle[name = " + Name.CleanXPath() + ']'
-                    : string.Format(GlobalSettings.InvariantCultureInfo,
-                        "/chummer/vehicles/vehicle[id = {0} or id = {1}]",
-                        SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/vehicles/vehicle[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/vehicles/vehicle[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                                       + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }

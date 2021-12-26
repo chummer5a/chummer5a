@@ -33,6 +33,8 @@ namespace Chummer
         // You can pass values from .config
         public string MyParamFromConfigFile { get; set; }
 
+        [CLSCompliant(false)]
+
         // Link processors to each other in a chain.
         public DropUserdataTelemetryProcessor(ITelemetryProcessor next, string strUserProfilePath)
         {
@@ -40,6 +42,7 @@ namespace Chummer
             _strUserProfilePath = strUserProfilePath;
         }
 
+        [CLSCompliant(false)]
         public void Process(ITelemetry item)
         {
             ModifyItem(item);

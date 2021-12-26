@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -27,7 +28,7 @@ namespace Chummer
     /// Special class that should be used instead of GetEnumerator for collections with an internal locking object
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct LockingEnumerator<T> : IEnumerator<T>
+    public readonly struct LockingEnumerator<T> : IEnumerator<T>, IEquatable<LockingEnumerator<T>>
     {
         private readonly ReaderWriterLockSlim _rwlThis;
 
@@ -66,22 +67,6 @@ namespace Chummer
                 _objInternalEnumerator.Reset();
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj != null && _objInternalEnumerator.Equals(((LockingEnumerator<T>) obj)._objInternalEnumerator)
-                               && _rwlThis.Equals(((LockingEnumerator<T>) obj)._rwlThis);
-        }
-
-        public override int GetHashCode()
-        {
-            return (_objInternalEnumerator, _rwlThis).GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return _objInternalEnumerator.ToString() + ' ' + _rwlThis;
-        }
-
         /// <inheritdoc />
         public T Current
         {
@@ -94,5 +79,40 @@ namespace Chummer
 
         /// <inheritdoc />
         object IEnumerator.Current => Current;
+
+        /// <inheritdoc />
+        public bool Equals(LockingEnumerator<T> other)
+        {
+            return Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null && Equals((LockingEnumerator<T>)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((_rwlThis != null ? _rwlThis.GetHashCode() : 0) * 397)
+                       ^ (_objInternalEnumerator != null ? _objInternalEnumerator.GetHashCode() : 0);
+            }
+        }
+
+        public override string ToString()
+        {
+            return _objInternalEnumerator.ToString() + ' ' + _rwlThis;
+        }
+
+        public static bool operator ==(LockingEnumerator<T> left, LockingEnumerator<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(LockingEnumerator<T> left, LockingEnumerator<T> right)
+        {
+            return !(left == right);
+        }
     }
 }

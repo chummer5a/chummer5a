@@ -489,12 +489,19 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
-                _objCachedMyXmlNode = _objCharacter.LoadData(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/mentors/mentor[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/mentors/mentor[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                _objCachedMyXmlNode = _objCharacter
+                                      .LoadData(
+                                          _eMentorType == Improvement.ImprovementType.MentorSpirit
+                                              ? "mentors.xml"
+                                              : "paragons.xml", strLanguage)
+                                      .SelectSingleNode(SourceID == Guid.Empty
+                                                            ? "/chummer/mentors/mentor[name = " + Name.CleanXPath()
+                                                            + ']'
+                                                            : "/chummer/mentors/mentor[id = "
+                                                              + SourceIDString.CleanXPath()
+                                                              + " or id = " + SourceIDString.ToUpperInvariant()
+                                                                  .CleanXPath()
+                                                              + ']');
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

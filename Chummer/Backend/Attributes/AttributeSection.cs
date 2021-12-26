@@ -492,6 +492,7 @@ namespace Chummer.Backend.Attributes
             //Timekeeper.Finish("load_char_attrib");
         }
 
+        [CLSCompliant(false)]
         public void LoadFromHeroLab(XPathNavigator xmlStatBlockBaseNode, CustomActivity parentActivity)
         {
             if (xmlStatBlockBaseNode == null)

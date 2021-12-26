@@ -484,9 +484,7 @@ namespace Chummer.Backend.Skills
 
                 XPathNavigator skillsDocXPath = _objCharacter.LoadDataXPath("skills.xml");
                 HashSet<string> hashSkillGuids = new HashSet<string>();
-                foreach (XPathNavigator node in skillsDocXPath.Select(
-                    string.Format(GlobalSettings.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
-                        _objCharacter.Settings.BookXPath(), SkillFilter(FilterOption.NonSpecial))))
+                foreach (XPathNavigator node in skillsDocXPath.Select("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(FilterOption.NonSpecial) + ']'))
                 {
                     string strName = node.SelectSingleNodeAndCacheExpression("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))
@@ -1120,8 +1118,7 @@ namespace Chummer.Backend.Skills
             // Populate the Skills list.
             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                .SelectNodes(string.Format(GlobalSettings.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
-                    _objCharacter.Settings.BookXPath(), SkillFilter(filter, strName))))
+                .SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(filter, strName) + ']'))
             {
                 // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
                 List<ListItem> lstSkillOrder = new List<ListItem>(xmlSkillList?.Count ?? 0);

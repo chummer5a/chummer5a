@@ -395,12 +395,14 @@ namespace Chummer
                     doc = "echoes.xml";
                     path = "/chummer/echoes/echo";
                 }
+
                 _objCachedMyXmlNode = _objCharacter.LoadData(doc, strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? path + "[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "{0}[id = {1} or id = {2}]",
-                            path, SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
+                                                   .SelectSingleNode(path + (SourceID == Guid.Empty
+                                                                         ? "[name = " + Name.CleanXPath() + ']'
+                                                                         : "[id = " + SourceIDString.CleanXPath()
+                                                                         + " or id = " + SourceIDString
+                                                                             .ToUpperInvariant().CleanXPath()
+                                                                         + ']'));
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }

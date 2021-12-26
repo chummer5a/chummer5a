@@ -421,6 +421,7 @@ namespace Chummer
             IsFinishedLoading = true;
         }
 
+        [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
         private async void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
