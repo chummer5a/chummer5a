@@ -20662,18 +20662,7 @@ namespace Chummer
                     _intCachedPositiveQualities += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
                         .Sum(x => x.ContactPoints) * Settings.KarmaContact;
-                    // Each spell costs KarmaSpell.
-                    int spellCost = SpellKarmaCost("Spells");
-                    // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                    if (spellCost <= Settings.KarmaSpell && FreeSpells > 0)
-                    {
-                        // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-                        int intQualityKarmaToSpellPoints = Settings.KarmaSpell;
-                        if (Settings.KarmaSpell != 0)
-                            intQualityKarmaToSpellPoints = Math.Min(FreeSpells, (Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * Settings.KarmaQuality) / Settings.KarmaSpell);
-                        // Add the karma paid for by spell points back into the available karma pool.
-                        _intCachedPositiveQualities -= intQualityKarmaToSpellPoints * Settings.KarmaSpell;
-                    }
+                    
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualities -=
                         (ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Settings.KarmaQuality).StandardRound();
@@ -20713,6 +20702,28 @@ namespace Chummer
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualitiesTotal -=
                         (ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Settings.KarmaQuality).StandardRound();
+
+                    // Factor in any qualities that can be bought with spell points at the end, but before doubled karma costs are calculated.
+                    int intMasteryQualityKarmaUsed = Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints)
+                                                              .Sum(objQuality => objQuality.BP);
+                    if (intMasteryQualityKarmaUsed != 0)
+                    {
+                        // Each spell costs KarmaSpell.
+                        int spellCost = SpellKarmaCost("Spells");
+                        // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+                        if (spellCost <= Settings.KarmaSpell && FreeSpells > 0)
+                        {
+                            // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                            int intQualityKarmaToSpellPoints = Settings.KarmaSpell;
+                            if (Settings.KarmaSpell != 0)
+                                intQualityKarmaToSpellPoints
+                                    = Math.Min(FreeSpells,
+                                               (intMasteryQualityKarmaUsed * Settings.KarmaQuality)
+                                               / Settings.KarmaSpell);
+                            // Add the karma paid for by spell points back into the available karma pool.
+                            _intCachedPositiveQualities -= intQualityKarmaToSpellPoints * Settings.KarmaSpell;
+                        }
+                    }
 
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Settings.ExceedPositiveQualitiesCostDoubled)

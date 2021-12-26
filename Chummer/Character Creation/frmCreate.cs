@@ -9075,23 +9075,32 @@ namespace Chummer
                 int prepCost = CharacterObject.SpellKarmaCost("Preparations");
                 int limit = CharacterObject.FreeSpells;
 
+                // Factor in any qualities that can be bought with spell points.
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
                 if (spellCost <= CharacterObjectSettings.KarmaSpell && CharacterObject.FreeSpells > 0)
                 {
-                    // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
                     int intQualityKarmaToSpellPoints = CharacterObjectSettings.KarmaSpell;
-                    if (CharacterObjectSettings.KarmaSpell != 0)
-                        intQualityKarmaToSpellPoints = Math.Min(limit,
-                            CharacterObject.Qualities
-                                .Where(objQuality => objQuality.CanBuyWithSpellPoints && objQuality.ContributeToBP)
-                                .Sum(objQuality => objQuality.BP) * CharacterObjectSettings.KarmaQuality / CharacterObjectSettings.KarmaSpell);
-                    spells += intQualityKarmaToSpellPoints;
-                    // Add the karma paid for by spell points back into the available karma pool.
-                    intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectSettings.KarmaSpell;
+                    if (intQualityKarmaToSpellPoints != 0)
+                    {
+                        // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                        int intMasteryQualityKarmaUsed = CharacterObject.Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints)
+                                                                        .Sum(objQuality => objQuality.BP);
+                        if (intMasteryQualityKarmaUsed != 0)
+                        {
+                            intQualityKarmaToSpellPoints
+                                = Math.Min(
+                                    limit,
+                                    intMasteryQualityKarmaUsed * CharacterObjectSettings.KarmaQuality
+                                    / CharacterObjectSettings.KarmaSpell);
+                            spells += intQualityKarmaToSpellPoints;
+                            // Add the karma paid for by spell points back into the available karma pool.
+                            intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectSettings.KarmaSpell;
+                        }
+                    }
                 }
 
                 int intLimitMod = (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
-                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
+                                   + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
                 int intLimitModTouchOnly = 0;
                 foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsATT))
                 {
