@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -57,7 +56,7 @@ namespace Chummer.Backend.Equipment
         private int _intSecurityMaximum;
         private int _intComfortMaximum;
         private int _intComfort;
-        private string[] _lstAllowedFreeLifestyles;
+        private readonly HashSet<string> _setAllowedFreeLifestyles = new HashSet<string>();
         private readonly Character _objCharacter;
         private bool _blnFree;
 
@@ -174,9 +173,13 @@ namespace Chummer.Backend.Equipment
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
 
-            var strAllowedFreeLifestyles = string.Empty;
+            _setAllowedFreeLifestyles.Clear();
+            string strAllowedFreeLifestyles = string.Empty;
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
-                _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            {
+                foreach (string strLoopLifestyle in strAllowedFreeLifestyles.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                    _setAllowedFreeLifestyles.Add(strLoopLifestyle);
+            }
             _strExtra = strExtra;
             if (!string.IsNullOrEmpty(_strExtra))
             {
@@ -286,8 +289,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("allowed", _lstAllowedFreeLifestyles?.Length > 0
-                ? string.Join(",", _lstAllowedFreeLifestyles)
+            objWriter.WriteElementString("allowed", _setAllowedFreeLifestyles.Count > 0
+                ? string.Join(",", _setAllowedFreeLifestyles)
                 : string.Empty);
             if (Bonus != null)
                 objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
@@ -345,10 +348,12 @@ namespace Chummer.Backend.Equipment
                 _strCategory = GetNode()?["category"]?.InnerText ?? string.Empty;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            var strAllowedFreeLifestyles = string.Empty;
+            string strAllowedFreeLifestyles = string.Empty;
             if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
                 strAllowedFreeLifestyles = GetNode()?["allowed"]?.InnerText ?? string.Empty;
-            _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            _setAllowedFreeLifestyles.Clear();
+            foreach (string strLoopLifestyle in strAllowedFreeLifestyles.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                _setAllowedFreeLifestyles.Add(strLoopLifestyle);
             Bonus = objNode["bonus"];
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
@@ -689,10 +694,15 @@ namespace Chummer.Backend.Equipment
             {
                 if (Type != QualityType.Entertainment && Type != QualityType.Contracts)
                     return false;
-                return _lstAllowedFreeLifestyles != null && !string.IsNullOrEmpty(ParentLifestyle?.BaseLifestyle) &&
-                       _lstAllowedFreeLifestyles.Any(strLifestyle =>
-                           strLifestyle == Lifestyle.GetEquivalentLifestyle(ParentLifestyle.BaseLifestyle) ||
-                           strLifestyle == ParentLifestyle.BaseLifestyle);
+                if (_setAllowedFreeLifestyles.Count == 0)
+                    return false;
+                string strBaseLifestyle = ParentLifestyle?.BaseLifestyle;
+                if (string.IsNullOrEmpty(strBaseLifestyle))
+                    return false;
+                if (_setAllowedFreeLifestyles.Contains(strBaseLifestyle))
+                    return true;
+                string strEquivalentLifestyle = Lifestyle.GetEquivalentLifestyle(strBaseLifestyle);
+                return _setAllowedFreeLifestyles.Contains(strEquivalentLifestyle);
             }
         }
 

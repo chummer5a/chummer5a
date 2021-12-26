@@ -26,11 +26,15 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using NLog;
+using TreeNode = System.Windows.Forms.TreeNode;
+using TreeNodeCollection = System.Windows.Forms.TreeNodeCollection;
+using TreeView = System.Windows.Forms.TreeView;
 
 namespace Chummer.Backend.Equipment
 {
@@ -3718,11 +3722,21 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         {
-                            var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
-                            if (xmlAddonCategoryList?.Count > 0)
-                                return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                    xmlCategory.InnerText == GlobalSettings.Clipboard.SelectSingleNode("category")?.Value);
-
+                            string strClipboardCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
+                            if (!string.IsNullOrEmpty(strClipboardCategory))
+                            {
+                                using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                                {
+                                    if (xmlAddonCategoryList?.Count > 0)
+                                    {
+                                        foreach (XmlNode xmlLoop in xmlAddonCategoryList)
+                                        {
+                                            if (xmlLoop.InnerText == strClipboardCategory)
+                                                return true;
+                                        }
+                                    }
+                                }
+                            }
                             return false;
                         }
                     default:

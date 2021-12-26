@@ -671,21 +671,23 @@ namespace Chummer.Backend.Equipment
                     XmlNode node = GetNode(GlobalSettings.Language);
                     node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
-                if (objNode["location"] != null)
+                string strLocation = objNode["location"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLocation))
                 {
-                    if (Guid.TryParse(objNode["location"].InnerText, out Guid temp))
+                    if (Guid.TryParse(strLocation, out Guid temp))
                     {
+                        string strLocationId = temp.ToString();
                         // Location is an object. Look for it based on the InternalId. Requires that locations have been loaded already!
                         Location =
                             _objCharacter.ArmorLocations.FirstOrDefault(location =>
-                                location.InternalId == temp.ToString());
+                                location.InternalId == strLocationId);
                     }
                     else
                     {
                         //Legacy. Location is a string.
                         Location =
                             _objCharacter.ArmorLocations.FirstOrDefault(location =>
-                                location.Name == objNode["location"].InnerText);
+                                location.Name == strLocation);
                     }
                     _objLocation?.Children.Add(this);
                 }
@@ -2195,11 +2197,12 @@ namespace Chummer.Backend.Equipment
                                                                   x.SourceName == InternalId));
                     }
 
+                    string strSourceNameToRemove = InternalId + "Wireless";
                     ImprovementManager.RemoveImprovements(_objCharacter,
                                                           _objCharacter.Improvements.Where(x =>
                                                               x.ImproveSource == Improvement.ImprovementSource.Armor
                                                               &&
-                                                              x.SourceName == InternalId + "Wireless").ToList());
+                                                              x.SourceName == strSourceNameToRemove).ToList());
                 }
             }
 

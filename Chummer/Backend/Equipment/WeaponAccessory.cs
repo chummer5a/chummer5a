@@ -1416,10 +1416,11 @@ namespace Chummer.Backend.Equipment
                                 x.SourceName == InternalId));
                     }
 
+                    string strSourceNameToRemove = InternalId + "Wireless";
                     ImprovementManager.RemoveImprovements(_objCharacter,
                         _objCharacter.Improvements.Where(x =>
                             x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory &&
-                            x.SourceName == InternalId + "Wireless").ToList());
+                            x.SourceName == strSourceNameToRemove).ToList());
                 }
             }
 

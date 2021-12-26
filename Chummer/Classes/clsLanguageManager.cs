@@ -1113,7 +1113,7 @@ namespace Chummer
 
             if (objCancellationTokenSource.IsCancellationRequested)
                 return strReturn;
-            
+
             try
             {
                 strTemp = await Task.Run(() =>

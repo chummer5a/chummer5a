@@ -20662,7 +20662,7 @@ namespace Chummer
                     _intCachedPositiveQualities += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
                         .Sum(x => x.ContactPoints) * Settings.KarmaContact;
-                    
+
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualities -=
                         (ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Settings.KarmaQuality).StandardRound();
