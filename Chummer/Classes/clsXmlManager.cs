@@ -1476,7 +1476,6 @@ namespace Chummer
                         continue;
                     // Load the current English file.
                     XPathNavigator objEnglishDoc = LoadXPath(strFileName);
-                    XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNodeAndCacheExpression("/chummer");
 
                     // First pass: make sure the document exists.
                     bool blnExists = false;
@@ -1490,6 +1489,8 @@ namespace Chummer
 
                     if (blnExists)
                     {
+                        XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNodeAndCacheExpression("/chummer");
+
                         foreach (XPathNavigator objType in objEnglishRoot.SelectChildren(XPathNodeType.Element))
                         {
                             string strTypeName = objType.Name;

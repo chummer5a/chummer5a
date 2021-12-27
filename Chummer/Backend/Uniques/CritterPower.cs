@@ -436,24 +436,16 @@ namespace Chummer
         /// </summary>
         public string DisplayType(string strLanguage)
         {
-            string strReturn = Type;
-
-            switch (strReturn)
+            switch (Type)
             {
                 case "M":
-                    strReturn = LanguageManager.GetString("String_SpellTypeMana", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellTypeMana", strLanguage);
 
                 case "P":
-                    strReturn = LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
-                    break;
-
-                default:
-                    strReturn = LanguageManager.GetString("String_None", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
             }
 
-            return strReturn;
+            return LanguageManager.GetString("String_None", strLanguage);
         }
 
         /// <summary>
@@ -470,36 +462,25 @@ namespace Chummer
         /// </summary>
         public string DisplayAction(string strLanguage)
         {
-            string strReturn = Action;
-
-            switch (strReturn)
+            switch (Action)
             {
                 case "Auto":
-                    strReturn = LanguageManager.GetString("String_ActionAutomatic", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionAutomatic", strLanguage);
 
                 case "Free":
-                    strReturn = LanguageManager.GetString("String_ActionFree", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionFree", strLanguage);
 
                 case "Simple":
-                    strReturn = LanguageManager.GetString("String_ActionSimple", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionSimple", strLanguage);
 
                 case "Complex":
-                    strReturn = LanguageManager.GetString("String_ActionComplex", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_ActionComplex", strLanguage);
 
                 case "Special":
-                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
-                    break;
-
-                default:
-                    strReturn = LanguageManager.GetString("String_None", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
             }
 
-            return strReturn;
+            return LanguageManager.GetString("String_None", strLanguage);
         }
 
         /// <summary>
@@ -545,20 +526,16 @@ namespace Chummer
             switch (strReturn)
             {
                 case "Instant":
-                    strReturn = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationInstantLong", strLanguage);
 
                 case "Sustained":
-                    strReturn = LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
 
                 case "Always":
-                    strReturn = LanguageManager.GetString("String_SpellDurationAlways", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationAlways", strLanguage);
 
                 case "Special":
-                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
-                    break;
+                    return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
             }
 
             return strReturn;

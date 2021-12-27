@@ -427,14 +427,13 @@ namespace Chummer.Backend.Equipment
             if (xmlNode == null)
                 throw new ArgumentNullException(nameof(xmlNode));
             XmlDocument xmlDoc = _objCharacter.LoadData("vehicles.xml");
-            WeaponMount objMount = this;
             string strSize = xmlNode["size"]?.InnerText;
             if (string.IsNullOrEmpty(strSize))
                 return;
             XmlNode xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = " + strSize.CleanXPath() + " and category = \"Size\"]");
             if (xmlDataNode != null)
             {
-                objMount.Create(xmlDataNode);
+                Create(xmlDataNode);
 
                 string strFlexibility = xmlNode["flexibility"]?.InnerText;
                 if (!string.IsNullOrEmpty(strFlexibility))
@@ -445,7 +444,7 @@ namespace Chummer.Backend.Equipment
                         WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                         objWeaponMountOption.Create(xmlDataNode);
                         objWeaponMountOption.IncludedInParent = true;
-                        objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                        WeaponMountOptions.Add(objWeaponMountOption);
                     }
                 }
 
@@ -458,7 +457,7 @@ namespace Chummer.Backend.Equipment
                         WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                         objWeaponMountOption.Create(xmlDataNode);
                         objWeaponMountOption.IncludedInParent = true;
-                        objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                        WeaponMountOptions.Add(objWeaponMountOption);
                     }
                 }
 
@@ -471,7 +470,7 @@ namespace Chummer.Backend.Equipment
                         WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                         objWeaponMountOption.Create(xmlDataNode);
                         objWeaponMountOption.IncludedInParent = true;
-                        objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                        WeaponMountOptions.Add(objWeaponMountOption);
                     }
                 }
 

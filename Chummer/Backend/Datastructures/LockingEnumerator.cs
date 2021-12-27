@@ -93,11 +93,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((_rwlThis != null ? _rwlThis.GetHashCode() : 0) * 397)
-                       ^ (_objInternalEnumerator != null ? _objInternalEnumerator.GetHashCode() : 0);
-            }
+            return (_rwlThis, _objInternalEnumerator).GetHashCode();
         }
 
         public override string ToString()

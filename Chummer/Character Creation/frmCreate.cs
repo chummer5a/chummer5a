@@ -12925,7 +12925,15 @@ namespace Chummer
                     blnValid = false;
                 }
 
-                if (CharacterObject.Contacts.Any(x => (!CharacterObject.FriendsInHighPlaces || x.Connection < 8) && !CharacterObject.FriendsInHighPlaces && Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
+                if (CharacterObject.FriendsInHighPlaces)
+                {
+                    if (CharacterObject.Contacts.Any(x => x.Connection < 8 && Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_HighContact"));
+                    }
+                }
+                else if (CharacterObject.Contacts.Any(x => Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
                 {
                     blnValid = false;
                     sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_HighContact"));

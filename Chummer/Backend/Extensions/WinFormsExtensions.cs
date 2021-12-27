@@ -100,13 +100,15 @@ namespace Chummer
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                 if (myControlCopy.InvokeRequired)
                 {
-                    IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
                     if (blnSync)
                     {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
                         // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
                         objResult.AsyncWaitHandle.WaitOne();
                         objResult.AsyncWaitHandle.Close();
                     }
+                    else
+                        myControlCopy.BeginInvoke(funcToRun);
                 }
                 else
                     funcToRun.Invoke();

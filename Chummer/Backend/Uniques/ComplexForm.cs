@@ -408,12 +408,14 @@ namespace Chummer
             get
             {
                 string strReturn = _strFv;
-                bool force = strReturn.StartsWith('L');
                 decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingValue,
                                                                 out List<Improvement> lstUsedImprovements);
                 if (decFVBonus != 0)
                 {
-                    string strFv = strReturn.TrimStartOnce('L');
+                    bool force = strReturn.StartsWith('L');
+                    string strFv = strReturn;
+                    if (force)
+                        strFv = strFv.TrimStartOnce("L", true);
                     //Navigator can't do math on a single value, so inject a mathable value.
                     if (string.IsNullOrEmpty(strFv))
                     {

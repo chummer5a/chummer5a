@@ -215,10 +215,10 @@ namespace Chummer
                             _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
 
                             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
-                            string[] strArgs = Environment.GetCommandLineArgs();
                             bool blnShowTest = false;
                             if (!Utils.IsUnitTest)
                             {
+                                string[] strArgs = Environment.GetCommandLineArgs();
                                 ProcessCommandLineArguments(strArgs, out blnShowTest, out HashSet<string> setFilesToLoad, opFrmChummerMain);
 
                                 if (Directory.Exists(Utils.GetAutosavesFolderPath))

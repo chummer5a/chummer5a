@@ -4007,10 +4007,14 @@ namespace Chummer
                                     {
                                         if (objCyberware.PairBonus?.HasChildNodes == true &&
                                             !Cyberware.DeepAny(x => x.Children, x =>
-                                                objCyberware.IncludePair.Contains(x.Name) &&
-                                                x.Extra == objCyberware.Extra &&
-                                                x.IsModularCurrentlyEquipped &&
-                                                Improvements.Any(y => y.SourceName == x.InternalId + "Pair")))
+                                            {
+                                                if (!objCyberware.IncludePair.Contains(x.Name) ||
+                                                    x.Extra != objCyberware.Extra ||
+                                                    !x.IsModularCurrentlyEquipped)
+                                                    return false;
+                                                string strToMatch = x.InternalId + "Pair";
+                                                return Improvements.Any(y => y.SourceName == strToMatch);
+                                            }))
                                         {
                                             XmlNode objNode = objCyberware.GetNode();
                                             if (objNode != null)

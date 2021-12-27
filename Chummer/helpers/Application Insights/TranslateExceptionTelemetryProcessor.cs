@@ -65,22 +65,20 @@ namespace Chummer
         // Example: replace with your own modifiers.
         private static void ModifyItem(ITelemetry item)
         {
-            if (!(item is ExceptionTelemetry exceptionTelemetry)) return;
-            var translateCultureInfo = new CultureInfo("en");
+            if (!(item is ExceptionTelemetry exceptionTelemetry))
+                return;
+            CultureInfo translateCultureInfo = GlobalSettings.InvariantCultureInfo;
             try
             {
-                string msg =
-                    TranslateExceptionMessage(exceptionTelemetry.Exception, translateCultureInfo);
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
-                    exceptionTelemetry.Properties.Add("Translated", msg);
+                    exceptionTelemetry.Properties.Add("Translated", TranslateExceptionMessage(exceptionTelemetry.Exception, translateCultureInfo));
             }
             catch (Exception ex)
             {
-                string msg = ex.ToString();
                 if (!exceptionTelemetry.Properties.ContainsKey("Message"))
                     exceptionTelemetry.Properties.Add("Message", ex.Message);
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
-                    exceptionTelemetry.Properties.Add("Translated", msg);
+                    exceptionTelemetry.Properties.Add("Translated", ex.ToString());
             }
         }
 

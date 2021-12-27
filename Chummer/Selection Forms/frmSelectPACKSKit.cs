@@ -993,7 +993,6 @@ namespace Chummer
 
         private void WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
             XPathNavigator xmlNameNode = objXmlGear.SelectSingleNode("name");
             string strName = xmlNameNode?.Value ?? string.Empty;
             string strCategory = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
@@ -1007,6 +1006,8 @@ namespace Chummer
                 {
                     Text = objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName
                 };
+
+                string strSpace = LanguageManager.GetString("String_Space");
 
                 string strExtra = xmlNameNode?.SelectSingleNodeAndCacheExpression("@select")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))

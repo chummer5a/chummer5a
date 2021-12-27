@@ -330,7 +330,6 @@ namespace Chummer
                 txtCharacterBio.Text = objCache.Description;
 
                 string strUnknown = LanguageManager.GetString("String_Unknown");
-                string strNone = LanguageManager.GetString("String_None");
 
                 lblCharacterName.Text = objCache.CharacterName;
                 if (string.IsNullOrEmpty(lblCharacterName.Text))
@@ -352,7 +351,7 @@ namespace Chummer
 
                 lblCareerKarma.Text = objCache.Karma;
                 if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
-                    lblCareerKarma.Text = strNone;
+                    lblCareerKarma.Text = LanguageManager.GetString("String_None");
                 lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
                 lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
 
