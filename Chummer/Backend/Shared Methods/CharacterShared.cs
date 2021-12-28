@@ -2277,7 +2277,8 @@ namespace Chummer
                             foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode nodLocation = treSelected.FindNodeByTag(objLocation, false);
-                                if (nodLocation == null) continue;
+                                if (nodLocation == null)
+                                    continue;
                                 if (nodLocation.Nodes.Count > 0)
                                 {
                                     if (nodRoot == null)
@@ -2331,7 +2332,7 @@ namespace Chummer
                             foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treSelected.FindNodeByTag(objLocation, false);
-                                if (objLocation != null)
+                                if (objNode != null)
                                 {
                                     lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
                                     objLocation.Remove(false);

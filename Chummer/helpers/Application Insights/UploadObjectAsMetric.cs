@@ -51,19 +51,18 @@ namespace Chummer
 
             //var propnames = boolProperties.Select(a => a.Name).ToList();
             MetricIdentifier micount = new MetricIdentifier(name, "MetricsReportCount");
-            var mcount = tc.GetMetric(micount);
+            Metric mcount = tc.GetMetric(micount);
             mcount.TrackValue(1);
 
-            foreach (var prop in allProperties.Where(x => x.PropertyType == typeof(bool)))
+            foreach (PropertyInfo prop in allProperties.Where(x => x.PropertyType == typeof(bool)))
             {
-                MetricIdentifier mi = new MetricIdentifier(name, prop.Name);
-                var metric = tc.GetMetric(mi);
-                var val = prop.GetValue(obj, null);
+                object val = prop.GetValue(obj, null);
                 Console.WriteLine("{0}={1}", prop.Name, val);
-                if (bool.TryParse(val.ToString(), out bool boolval))
-                {
-                    metric.TrackValue(boolval ? 1 : 0);
-                }
+                if (!bool.TryParse(val.ToString(), out bool boolval))
+                    continue;
+                MetricIdentifier mi = new MetricIdentifier(name, prop.Name);
+                Metric metric = tc.GetMetric(mi);
+                metric.TrackValue(boolval ? 1 : 0);
             }
 
             return true;

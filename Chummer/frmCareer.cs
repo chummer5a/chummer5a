@@ -3311,14 +3311,13 @@ namespace Chummer
 
         private void panContacts_DragDrop(object sender, DragEventArgs e)
         {
-            TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
-            Control source = wrapper.Control;
-
             Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
             Control destination = panContacts.GetChildAtPoint(mousePosition);
 
             if (destination != null)
             {
+                TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
+                Control source = wrapper.Control;
                 int indexDestination = panContacts.Controls.IndexOf(destination);
                 if (panContacts.Controls.IndexOf(source) < indexDestination)
                     indexDestination--;
@@ -12908,9 +12907,9 @@ namespace Chummer
                     break;
             }
 
-            if (op == CmdOperation.Up || op == CmdOperation.Down)
+            bool up = op == CmdOperation.Up;
+            if (up || op == CmdOperation.Down)
             {
-                bool up = op == CmdOperation.Up;
                 bool requireParentSortable = false;
                 TreeView treActiveView = null;
 
@@ -12969,10 +12968,10 @@ namespace Chummer
                 {
                     TreeNode objSelectedNode = treActiveView.SelectedNode;
                     TreeNode objParentNode = objSelectedNode?.Parent;
-                    TreeNodeCollection lstNodes = objParentNode?.Nodes ?? treActiveView.Nodes;
 
                     if (!requireParentSortable || objParentNode?.Tag is ICanSort)
                     {
+                        TreeNodeCollection lstNodes = objParentNode?.Nodes ?? treActiveView.Nodes;
                         int intNewIndex = lstNodes.IndexOf(objSelectedNode);
                         intNewIndex = up ? Math.Max(0, intNewIndex - 1) : Math.Min(lstNodes.Count - 1, intNewIndex + 1);
 
@@ -14258,8 +14257,6 @@ namespace Chummer
                     LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
-
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
                 gpbArmorCommon.Visible = true;
@@ -14287,59 +14284,68 @@ namespace Chummer
                 chkArmorEquipped.Enabled = true;
                 chkIncludedInArmor.Visible = false;
             }
-            else if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
-            {
-                gpbArmorCommon.Visible = true;
-                gpbArmorLocation.Visible = false;
-
-                // Buttons
-                cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
-
-                // gpbArmorCommon
-                if (objArmorMod.Armor != 0)
-                {
-                    lblArmorValueLabel.Visible = true;
-                    flpArmorValue.Visible = true;
-                    lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
-                }
-                else
-                {
-                    lblArmorValueLabel.Visible = false;
-                    flpArmorValue.Visible = false;
-                }
-                cmdArmorIncrease.Visible = false;
-                cmdArmorDecrease.Visible = false;
-                lblArmorAvail.Text = objArmorMod.DisplayTotalAvail;
-                lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
-                    ? "[0]"
-                    : objArmorMod.CalculatedCapacity;
-                if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
-                    lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '(' +
-                                            objArmorMod.GearCapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining") + ')';
-                if (objArmorMod.MaximumRating > 1)
-                {
-                    lblArmorRatingLabel.Visible = true;
-                    lblArmorRating.Visible = true;
-                    lblArmorRating.Text = objArmorMod.Rating.ToString(GlobalSettings.CultureInfo);
-                }
-                else
-                {
-                    lblArmorRatingLabel.Visible = false;
-                    lblArmorRating.Visible = false;
-                }
-                lblArmorCost.Text = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                chkArmorEquipped.Visible = true;
-                chkArmorEquipped.Checked = objArmorMod.Equipped;
-                chkArmorEquipped.Enabled = true;
-                chkIncludedInArmor.Visible = true;
-                chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
-            }
             else
             {
-                switch (treArmor.SelectedNode?.Tag)
+                string strSpace = LanguageManager.GetString("String_Space");
+                if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
                 {
-                    case Gear objSelectedGear:
+                    gpbArmorCommon.Visible = true;
+                    gpbArmorLocation.Visible = false;
+
+                    // Buttons
+                    cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
+
+                    // gpbArmorCommon
+                    if (objArmorMod.Armor != 0)
+                    {
+                        lblArmorValueLabel.Visible = true;
+                        flpArmorValue.Visible = true;
+                        lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+                    }
+                    else
+                    {
+                        lblArmorValueLabel.Visible = false;
+                        flpArmorValue.Visible = false;
+                    }
+
+                    cmdArmorIncrease.Visible = false;
+                    cmdArmorDecrease.Visible = false;
+                    lblArmorAvail.Text = objArmorMod.DisplayTotalAvail;
+                    lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
+                        ? "[0]"
+                        : objArmorMod.CalculatedCapacity;
+                    if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
+                        lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '('
+                                                +
+                                                objArmorMod.GearCapacityRemaining.ToString(
+                                                    "#,0.##", GlobalSettings.CultureInfo) +
+                                                strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                    if (objArmorMod.MaximumRating > 1)
+                    {
+                        lblArmorRatingLabel.Visible = true;
+                        lblArmorRating.Visible = true;
+                        lblArmorRating.Text = objArmorMod.Rating.ToString(GlobalSettings.CultureInfo);
+                    }
+                    else
+                    {
+                        lblArmorRatingLabel.Visible = false;
+                        lblArmorRating.Visible = false;
+                    }
+
+                    lblArmorCost.Text
+                        = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                         GlobalSettings.CultureInfo) + '¥';
+                    chkArmorEquipped.Visible = true;
+                    chkArmorEquipped.Checked = objArmorMod.Equipped;
+                    chkArmorEquipped.Enabled = true;
+                    chkIncludedInArmor.Visible = true;
+                    chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
+                }
+                else
+                {
+                    switch (treArmor.SelectedNode?.Tag)
+                    {
+                        case Gear objSelectedGear:
                         {
                             gpbArmorCommon.Visible = true;
                             gpbArmorLocation.Visible = false;
@@ -14351,7 +14357,8 @@ namespace Chummer
                             lblArmorValueLabel.Visible = false;
                             flpArmorValue.Visible = false;
                             lblArmorAvail.Text = objSelectedGear.DisplayTotalAvail;
-                            CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor, out objArmorMod);
+                            CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
+                                                                out objArmorMod);
                             if (objArmorMod != null)
                                 lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
                             else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
@@ -14370,7 +14377,10 @@ namespace Chummer
                                 lblArmorRatingLabel.Visible = false;
                                 lblArmorRating.Visible = false;
                             }
-                            lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+
+                            lblArmorCost.Text
+                                = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                     GlobalSettings.CultureInfo) + '¥';
                             chkArmorEquipped.Visible = true;
                             chkArmorEquipped.Checked = objSelectedGear.Equipped;
                             chkArmorEquipped.Enabled = true;
@@ -14379,7 +14389,7 @@ namespace Chummer
 
                             break;
                         }
-                    case Location objLocation:
+                        case Location objLocation:
                         {
                             gpbArmorCommon.Visible = false;
                             gpbArmorLocation.Visible = true;
@@ -14389,11 +14399,13 @@ namespace Chummer
 
                             // gpbArmorLocation
                             StringBuilder sbdArmorEquipped = new StringBuilder();
-                            foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
+                            foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
+                                         objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                             {
                                 sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
                                                 .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                             }
+
                             if (sbdArmorEquipped.Length > 0)
                             {
                                 --sbdArmorEquipped.Length;
@@ -14404,7 +14416,7 @@ namespace Chummer
 
                             break;
                         }
-                    default:
+                        default:
                         {
                             if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
                             {
@@ -14416,11 +14428,13 @@ namespace Chummer
                                 cmdDeleteArmor.Enabled = false;
 
                                 StringBuilder sbdArmorEquipped = new StringBuilder();
-                                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
+                                             objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
                                 {
                                     sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
                                                     .Append('(').Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                                 }
+
                                 if (sbdArmorEquipped.Length > 0)
                                 {
                                     --sbdArmorEquipped.Length;
@@ -14441,6 +14455,7 @@ namespace Chummer
 
                             break;
                         }
+                    }
                 }
             }
 

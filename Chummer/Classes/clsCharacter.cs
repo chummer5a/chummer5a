@@ -862,7 +862,7 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            List<Metamagic> lstImprovementSourcesToProcess = new List<Metamagic>();
+            List<Metamagic> lstImprovementSourcesToProcess = new List<Metamagic>(e.NewItems.Count + e.OldItems.Count);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -2788,10 +2788,11 @@ namespace Chummer
                                 if (setSavedBooks.Count == 0)
                                     setSavedBooks = objDefaultSettings.Books.ToHashSet();
 
-                                List<string> lstSavedCustomDataDirectoryNames = new List<string>();
-                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator
+                                XPathNodeIterator xmlCustomDirectoryNames = xmlCharacterNavigator
                                     .SelectAndCacheExpression(
-                                        "customdatadirectorynames/directoryname"))
+                                        "customdatadirectorynames/directoryname");
+                                List<string> lstSavedCustomDataDirectoryNames = new List<string>(xmlCustomDirectoryNames.Count);
+                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCustomDirectoryNames)
                                 {
                                     if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
                                         lstSavedCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
@@ -3244,7 +3245,7 @@ namespace Chummer
                                 //using finish("load_char_mentorspirit");
                             }
 
-                            List<Improvement> lstCyberadeptSweepGrades = new List<Improvement>();
+                            List<Improvement> lstCyberadeptSweepGrades = new List<Improvement>(InitiationGrades.Count);
                             _lstInternalIdsNeedingReapplyImprovements.Clear();
 
                             frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));

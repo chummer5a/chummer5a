@@ -481,7 +481,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrDisposed([CanBeNull] this Control objControl)
         {
-            return objControl == null || objControl.Disposing || objControl.IsDisposed;
+            return objControl?.Disposing != false || objControl.IsDisposed;
         }
 
         #endregion Controls Extensions

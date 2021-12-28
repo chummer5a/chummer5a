@@ -1474,8 +1474,6 @@ namespace Chummer
                         || strFile.EndsWith("lifemodules.xml", StringComparison.OrdinalIgnoreCase)
                         || strFile.EndsWith("sheets.xml", StringComparison.OrdinalIgnoreCase))
                         continue;
-                    // Load the current English file.
-                    XPathNavigator objEnglishDoc = LoadXPath(strFileName);
 
                     // First pass: make sure the document exists.
                     bool blnExists = false;
@@ -1489,6 +1487,8 @@ namespace Chummer
 
                     if (blnExists)
                     {
+                        // Load the current English file.
+                        XPathNavigator objEnglishDoc = LoadXPath(strFileName);
                         XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNodeAndCacheExpression("/chummer");
 
                         foreach (XPathNavigator objType in objEnglishRoot.SelectChildren(XPathNodeType.Element))

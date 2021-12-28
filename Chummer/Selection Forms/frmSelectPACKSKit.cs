@@ -105,7 +105,6 @@ namespace Chummer
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Update the list of Kits based on the selected Category.
-            List<ListItem> lstKit = new List<ListItem>();
 
             string strFilter = "not(hide)";
             string strCategory = cboCategory.SelectedValue?.ToString();
@@ -126,7 +125,9 @@ namespace Chummer
             }
 
             // Retrieve the list of Kits for the selected Category.
-            foreach (XPathNavigator objXmlPack in _xmlBaseChummerNode.Select("packs/pack[" + strFilter + "]"))
+            XPathNodeIterator xmlPacksKits = _xmlBaseChummerNode.Select("packs/pack[" + strFilter + "]");
+            List<ListItem> lstKit = new List<ListItem>(xmlPacksKits.Count);
+            foreach (XPathNavigator objXmlPack in xmlPacksKits)
             {
                 string strName = objXmlPack.SelectSingleNodeAndCacheExpression("name")?.Value;
                 // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.

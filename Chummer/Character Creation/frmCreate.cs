@@ -2254,7 +2254,7 @@ namespace Chummer
                 }
 
                 // Refresh Cyberware and Bioware.
-                Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
+                Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>(CharacterObject.Cyberware.Count);
                 foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
                 {
                     // We're only re-apply improvements a list of items, not all of them
@@ -5980,7 +5980,7 @@ namespace Chummer
                         XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + "]");
 
                         // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objNewGear = new Gear(CharacterObject);
                         objNewGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
@@ -10625,8 +10625,6 @@ namespace Chummer
                     LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
-
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
                 gpbArmorCommon.Visible = true;
@@ -10683,197 +10681,196 @@ namespace Chummer
                 else
                     chkArmorHomeNode.Visible = false;
             }
-            else if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
-            {
-                gpbArmorCommon.Visible = true;
-                gpbArmorMatrix.Visible = false;
-                gpbArmorLocation.Visible = false;
-
-                // Buttons
-                cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
-
-                // gpbArmorCommon
-                if (objArmorMod.Armor != 0)
-                {
-                    lblArmorValueLabel.Visible = true;
-                    lblArmorValue.Visible = true;
-                    lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
-                }
-                else
-                {
-                    lblArmorValueLabel.Visible = false;
-                    lblArmorValue.Visible = false;
-                }
-
-                lblArmorAvail.Text = objArmorMod.DisplayTotalAvail;
-                lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
-                    ? "[0]"
-                    : objArmorMod.CalculatedCapacity;
-                if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
-                    lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '(' +
-                                            objArmorMod.GearCapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining") + ')';
-                if (objArmorMod.MaximumRating > 1)
-                {
-                    lblArmorRatingLabel.Visible = true;
-                    nudArmorRating.Visible = true;
-                    nudArmorRating.Maximum = objArmorMod.MaximumRating;
-                    nudArmorRating.Value = objArmorMod.Rating;
-                    nudArmorRating.Enabled = !objArmorMod.IncludedInArmor;
-                }
-                else
-                {
-                    lblArmorRatingLabel.Visible = false;
-                    nudArmorRating.Visible = false;
-                }
-                lblArmorCost.Text = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                chkArmorEquipped.Visible = true;
-                chkArmorEquipped.Checked = objArmorMod.Equipped;
-                chkArmorEquipped.Enabled = true;
-                chkIncludedInArmor.Visible = true;
-                chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
-
-                if (CharacterObject.BlackMarketDiscount)
-                {
-                    chkArmorBlackMarketDiscount.Enabled = !objArmorMod.IncludedInArmor && CharacterObject
-                        .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("armor.xml")
-                            .SelectSingleNodeAndCacheExpression("/chummer/modcategories")).Contains(objArmorMod.Category);
-                    chkArmorBlackMarketDiscount.Checked = objArmorMod.IncludedInArmor
-                        ? (objArmorMod.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                        : objArmorMod.DiscountCost;
-                }
-                else
-                {
-                    chkArmorBlackMarketDiscount.Enabled = false;
-                    chkArmorBlackMarketDiscount.Checked = false;
-                }
-            }
             else
             {
-                switch (treArmor.SelectedNode?.Tag)
+                string strSpace = LanguageManager.GetString("String_Space");
+                if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
                 {
-                    case Gear objSelectedGear:
+                    gpbArmorCommon.Visible = true;
+                    gpbArmorMatrix.Visible = false;
+                    gpbArmorLocation.Visible = false;
+
+                    // Buttons
+                    cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
+
+                    // gpbArmorCommon
+                    if (objArmorMod.Armor != 0)
                     {
-                        gpbArmorCommon.Visible = true;
-                        gpbArmorMatrix.Visible = true;
-                        gpbArmorLocation.Visible = false;
-
-                        // Buttons
-                        cmdDeleteArmor.Enabled = !objSelectedGear.IncludedInParent;
-
-                        // gpbArmorCommon
+                        lblArmorValueLabel.Visible = true;
+                        lblArmorValue.Visible = true;
+                        lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+                    }
+                    else
+                    {
                         lblArmorValueLabel.Visible = false;
                         lblArmorValue.Visible = false;
-                        lblArmorAvail.Text = objSelectedGear.DisplayTotalAvail;
-                        CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor, out objArmorMod);
-                        if (objArmorMod != null)
-                            lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
-                        else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
-                            lblArmorCapacity.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']';
-                        else
-                            lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                        int intMaxRatingValue = objSelectedGear.MaxRatingValue;
-                        if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
-                        {
-                            lblArmorRatingLabel.Visible = true;
-                            nudArmorRating.Visible = true;
-                            nudArmorRating.Maximum = intMaxRatingValue;
-                            int intMinRatingValue = objSelectedGear.MinRatingValue;
-                            nudArmorRating.Minimum = intMinRatingValue;
-                            nudArmorRating.Value = objSelectedGear.Rating;
-                            nudArmorRating.Enabled = intMinRatingValue != intMaxRatingValue && string.IsNullOrEmpty(objSelectedGear.ParentID);
-                        }
-                        else
-                        {
-                            lblArmorRatingLabel.Visible = false;
-                            nudArmorRating.Visible = false;
-                        }
-                        lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        chkArmorEquipped.Visible = true;
-                        chkArmorEquipped.Checked = objSelectedGear.Equipped;
-                        chkArmorEquipped.Enabled = true;
-                        chkIncludedInArmor.Visible = true;
-                        chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
-
-                        if (CharacterObject.BlackMarketDiscount)
-                        {
-                            chkArmorBlackMarketDiscount.Enabled = !objSelectedGear.IncludedInParent && CharacterObject
-                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
-                                    .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objSelectedGear.Category);
-                            chkArmorBlackMarketDiscount.Checked = objSelectedGear.IncludedInParent
-                                ? (objSelectedGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                                : objSelectedGear.DiscountCost;
-                        }
-                        else
-                        {
-                            chkArmorBlackMarketDiscount.Enabled = false;
-                            chkArmorBlackMarketDiscount.Checked = false;
-                        }
-
-                        // gpbArmorMatrix
-                        int intDeviceRating = objSelectedGear.GetTotalMatrixAttribute("Device Rating");
-                        lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack").ToString(GlobalSettings.CultureInfo);
-                        lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalSettings.CultureInfo);
-                        lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalSettings.CultureInfo);
-                        lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalSettings.CultureInfo);
-                        chkArmorActiveCommlink.Visible = objSelectedGear.IsCommlink;
-                        chkArmorActiveCommlink.Checked = objSelectedGear.IsActiveCommlink(CharacterObject);
-                        if (CharacterObject.IsAI)
-                        {
-                            chkArmorHomeNode.Visible = true;
-                            chkArmorHomeNode.Checked = objSelectedGear.IsHomeNode(CharacterObject);
-                            chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
-                                                       objSelectedGear.GetTotalMatrixAttribute("Program Limit") >=
-                                                       (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                        }
-                        else
-                            chkArmorHomeNode.Visible = false;
-                        break;
                     }
-                    case Location objLocation:
+
+                    lblArmorAvail.Text = objArmorMod.DisplayTotalAvail;
+                    lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
+                        ? "[0]"
+                        : objArmorMod.CalculatedCapacity;
+                    if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
+                        lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '('
+                                                +
+                                                objArmorMod.GearCapacityRemaining.ToString(
+                                                    "#,0.##", GlobalSettings.CultureInfo) +
+                                                strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                    if (objArmorMod.MaximumRating > 1)
                     {
-                        gpbArmorCommon.Visible = false;
-                        gpbArmorMatrix.Visible = false;
-                        gpbArmorLocation.Visible = true;
-
-                        // Buttons
-                        cmdDeleteArmor.Enabled = true;
-
-                        // gpbArmorLocation
-                        StringBuilder sbdArmorEquipped = new StringBuilder();
-                        foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
-                        {
-                            sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
-                                            .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
-                        }
-                        if (sbdArmorEquipped.Length > 0)
-                        {
-                            --sbdArmorEquipped.Length;
-                            lblArmorEquipped.Text = sbdArmorEquipped.ToString();
-                        }
-                        else
-                            lblArmorEquipped.Text = LanguageManager.GetString("String_None");
-
-                        break;
+                        lblArmorRatingLabel.Visible = true;
+                        nudArmorRating.Visible = true;
+                        nudArmorRating.Maximum = objArmorMod.MaximumRating;
+                        nudArmorRating.Value = objArmorMod.Rating;
+                        nudArmorRating.Enabled = !objArmorMod.IncludedInArmor;
                     }
-                    default:
+                    else
                     {
-                        if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+                        lblArmorRatingLabel.Visible = false;
+                        nudArmorRating.Visible = false;
+                    }
+
+                    lblArmorCost.Text
+                        = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                         GlobalSettings.CultureInfo) + '¥';
+                    chkArmorEquipped.Visible = true;
+                    chkArmorEquipped.Checked = objArmorMod.Equipped;
+                    chkArmorEquipped.Enabled = true;
+                    chkIncludedInArmor.Visible = true;
+                    chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
+
+                    if (CharacterObject.BlackMarketDiscount)
+                    {
+                        chkArmorBlackMarketDiscount.Enabled = !objArmorMod.IncludedInArmor && CharacterObject
+                            .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("armor.xml")
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "/chummer/modcategories"))
+                            .Contains(objArmorMod.Category);
+                        chkArmorBlackMarketDiscount.Checked = objArmorMod.IncludedInArmor
+                            ? (objArmorMod.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                            : objArmorMod.DiscountCost;
+                    }
+                    else
+                    {
+                        chkArmorBlackMarketDiscount.Enabled = false;
+                        chkArmorBlackMarketDiscount.Checked = false;
+                    }
+                }
+                else
+                {
+                    switch (treArmor.SelectedNode?.Tag)
+                    {
+                        case Gear objSelectedGear:
+                        {
+                            gpbArmorCommon.Visible = true;
+                            gpbArmorMatrix.Visible = true;
+                            gpbArmorLocation.Visible = false;
+
+                            // Buttons
+                            cmdDeleteArmor.Enabled = !objSelectedGear.IncludedInParent;
+
+                            // gpbArmorCommon
+                            lblArmorValueLabel.Visible = false;
+                            lblArmorValue.Visible = false;
+                            lblArmorAvail.Text = objSelectedGear.DisplayTotalAvail;
+                            CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
+                                                                out objArmorMod);
+                            if (objArmorMod != null)
+                                lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
+                            else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                                lblArmorCapacity.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']';
+                            else
+                                lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
+                            int intMaxRatingValue = objSelectedGear.MaxRatingValue;
+                            if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
+                            {
+                                lblArmorRatingLabel.Visible = true;
+                                nudArmorRating.Visible = true;
+                                nudArmorRating.Maximum = intMaxRatingValue;
+                                int intMinRatingValue = objSelectedGear.MinRatingValue;
+                                nudArmorRating.Minimum = intMinRatingValue;
+                                nudArmorRating.Value = objSelectedGear.Rating;
+                                nudArmorRating.Enabled = intMinRatingValue != intMaxRatingValue
+                                                         && string.IsNullOrEmpty(objSelectedGear.ParentID);
+                            }
+                            else
+                            {
+                                lblArmorRatingLabel.Visible = false;
+                                nudArmorRating.Visible = false;
+                            }
+
+                            lblArmorCost.Text
+                                = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                     GlobalSettings.CultureInfo) + '¥';
+                            chkArmorEquipped.Visible = true;
+                            chkArmorEquipped.Checked = objSelectedGear.Equipped;
+                            chkArmorEquipped.Enabled = true;
+                            chkIncludedInArmor.Visible = true;
+                            chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
+
+                            if (CharacterObject.BlackMarketDiscount)
+                            {
+                                chkArmorBlackMarketDiscount.Enabled = !objSelectedGear.IncludedInParent
+                                                                      && CharacterObject
+                                                                         .GenerateBlackMarketMappings(
+                                                                             CharacterObject.LoadDataXPath("gear.xml")
+                                                                                 .SelectSingleNodeAndCacheExpression(
+                                                                                     "/chummer"))
+                                                                         .Contains(objSelectedGear.Category);
+                                chkArmorBlackMarketDiscount.Checked = objSelectedGear.IncludedInParent
+                                    ? (objSelectedGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                    : objSelectedGear.DiscountCost;
+                            }
+                            else
+                            {
+                                chkArmorBlackMarketDiscount.Enabled = false;
+                                chkArmorBlackMarketDiscount.Checked = false;
+                            }
+
+                            // gpbArmorMatrix
+                            int intDeviceRating = objSelectedGear.GetTotalMatrixAttribute("Device Rating");
+                            lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
+                            lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack")
+                                                                 .ToString(GlobalSettings.CultureInfo);
+                            lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze")
+                                                                 .ToString(GlobalSettings.CultureInfo);
+                            lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing")
+                                                                         .ToString(GlobalSettings.CultureInfo);
+                            lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall")
+                                                                   .ToString(GlobalSettings.CultureInfo);
+                            chkArmorActiveCommlink.Visible = objSelectedGear.IsCommlink;
+                            chkArmorActiveCommlink.Checked = objSelectedGear.IsActiveCommlink(CharacterObject);
+                            if (CharacterObject.IsAI)
+                            {
+                                chkArmorHomeNode.Visible = true;
+                                chkArmorHomeNode.Checked = objSelectedGear.IsHomeNode(CharacterObject);
+                                chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
+                                                           objSelectedGear.GetTotalMatrixAttribute("Program Limit") >=
+                                                           (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            }
+                            else
+                                chkArmorHomeNode.Visible = false;
+
+                            break;
+                        }
+                        case Location objLocation:
                         {
                             gpbArmorCommon.Visible = false;
                             gpbArmorMatrix.Visible = false;
                             gpbArmorLocation.Visible = true;
 
                             // Buttons
-                            cmdDeleteArmor.Enabled = false;
+                            cmdDeleteArmor.Enabled = true;
 
+                            // gpbArmorLocation
                             StringBuilder sbdArmorEquipped = new StringBuilder();
-                            foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
+                            foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
+                                         objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                             {
                                 sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
                                                 .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                             }
+
                             if (sbdArmorEquipped.Length > 0)
                             {
                                 --sbdArmorEquipped.Length;
@@ -10881,18 +10878,49 @@ namespace Chummer
                             }
                             else
                                 lblArmorEquipped.Text = LanguageManager.GetString("String_None");
+
+                            break;
                         }
-                        else
+                        default:
                         {
-                            gpbArmorCommon.Visible = false;
-                            gpbArmorMatrix.Visible = false;
-                            gpbArmorLocation.Visible = false;
+                            if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+                            {
+                                gpbArmorCommon.Visible = false;
+                                gpbArmorMatrix.Visible = false;
+                                gpbArmorLocation.Visible = true;
 
-                            // Buttons
-                            cmdDeleteArmor.Enabled = false;
+                                // Buttons
+                                cmdDeleteArmor.Enabled = false;
+
+                                StringBuilder sbdArmorEquipped = new StringBuilder();
+                                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
+                                             objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                {
+                                    sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
+                                                    .Append('(')
+                                                    .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
+                                }
+
+                                if (sbdArmorEquipped.Length > 0)
+                                {
+                                    --sbdArmorEquipped.Length;
+                                    lblArmorEquipped.Text = sbdArmorEquipped.ToString();
+                                }
+                                else
+                                    lblArmorEquipped.Text = LanguageManager.GetString("String_None");
+                            }
+                            else
+                            {
+                                gpbArmorCommon.Visible = false;
+                                gpbArmorMatrix.Visible = false;
+                                gpbArmorLocation.Visible = false;
+
+                                // Buttons
+                                cmdDeleteArmor.Enabled = false;
+                            }
+
+                            break;
                         }
-
-                        break;
                     }
                 }
             }
@@ -11195,54 +11223,63 @@ namespace Chummer
         {
             using (frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware))
             {
+                List<Improvement> lstImprovements;
                 decimal decMultiplier = 1.0m;
                 switch (objSource)
                 {
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Cyberware:
                         {
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareEssCost) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareEssCost);
+                            if (lstImprovements.Count != 0)
                             {
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplier);
+                            if (lstImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
+                            if (lstImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
+                            if (lstImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
@@ -11253,104 +11290,118 @@ namespace Chummer
                     // Apply the character's Bioware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Bioware:
                         {
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareEssCost) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareEssCost);
+                            if (lstImprovements.Count != 0)
                             {
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplier) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplier);
+                            if (lstImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareEssCostNonRetroactive) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareEssCostNonRetroactive);
+                            if (lstImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive) != 0)
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
+                            if (lstImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
+                            }
+
+                            // Apply the character's Basic Bioware Essence cost multiplier if applicable.
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BasicBiowareEssCost);
+                            if (lstImprovements.Count != 0)
+                            {
+                                decMultiplier = 1.0m;
+                                foreach (Improvement objImprovement in lstImprovements)
+                                {
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                }
+
+                                frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
+                            }
+
+                            // Apply the character's Genetech Essence cost multiplier if applicable.
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.GenetechEssMultiplier);
+                            if (lstImprovements.Count != 0)
+                            {
+                                decMultiplier = 1.0m;
+                                foreach (Improvement objImprovement in lstImprovements)
+                                {
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                }
+
+                                frmPickCyberware.GenetechEssMultiplier = decMultiplier;
+                            }
+
+                            // Genetech Cost multiplier.
+                            lstImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.GenetechCostMultiplier);
+                            if (lstImprovements.Count != 0)
+                            {
+                                decMultiplier = 1.0m;
+                                foreach (Improvement objImprovement in lstImprovements)
+                                {
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                }
+
+                                frmPickCyberware.GenetechCostMultiplier = decMultiplier;
                             }
 
                             break;
                         }
                 }
 
-                // Apply the character's Basic Bioware Essence cost multiplier if applicable.
-                if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BasicBiowareEssCost) != 0 && objSource == Improvement.ImprovementSource.Bioware)
-                {
-                    decMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                    }
-
-                    frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
-                }
-
-                // Apply the character's Genetech Essence cost multiplier if applicable.
-                if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.GenetechEssMultiplier) != 0 && objSource == Improvement.ImprovementSource.Bioware)
-                {
-                    decMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in CharacterObject.Improvements
-                        .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.GenetechEssMultiplier && objImprovement.Enabled))
-                    {
-                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                    }
-
-                    frmPickCyberware.GenetechEssMultiplier = decMultiplier;
-                }
-
-                // Genetech Cost multiplier.
-                if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && objSource == Improvement.ImprovementSource.Bioware)
-                {
-                    decMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                    }
-
-                    frmPickCyberware.GenetechCostMultiplier = decMultiplier;
-                }
-
-                Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>();
-                Dictionary<string, int> dicHasMounts = new Dictionary<string, int>();
+                Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>(6);
+                Dictionary<string, int> dicHasMounts = new Dictionary<string, int>(6);
                 if (objSelectedCyberware != null)
                 {
                     frmPickCyberware.ForcedGrade = objSelectedCyberware.Grade;
                     frmPickCyberware.LockGrade();
                     frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
-                    // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
+                    // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                     if (!objSelectedCyberware.Capacity.Contains('['))
                     {
                         frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
@@ -13155,9 +13206,11 @@ namespace Chummer
 
                 // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
                 // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
-                Dictionary<int, int> dicRestrictedGearLimits = new Dictionary<int, int>();
-                bool blnHasRestrictedGearAvailable =
-                    ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedGear, out List <Improvement> lstUsedImprovements) != 0;
+                Dictionary<int, int> dicRestrictedGearLimits = new Dictionary<int, int>(1);
+                List<Improvement> lstUsedImprovements
+                    = ImprovementManager.GetCachedImprovementListForValueOf(
+                        CharacterObject, Improvement.ImprovementType.RestrictedGear);
+                bool blnHasRestrictedGearAvailable = lstUsedImprovements.Count != 0;
                 if (blnHasRestrictedGearAvailable)
                 {
                     foreach (Improvement objImprovement in lstUsedImprovements)
