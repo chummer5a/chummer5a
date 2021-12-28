@@ -2238,9 +2238,9 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
                                                                   ? "/chummer/gears/gear[name = " + strName.CleanXPath()
                                                                   + " and category = " + strCategory.CleanXPath() + ']'
-                                                                  : "/chummer/gears/gear[(id = \"" + SourceIDString.CleanXPath()
-                                                                  + "\" or id = \"" + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                                  + "\") or (name = " + strNameWithQuotes
+                                                                  : "/chummer/gears/gear[(id = " + SourceIDString.CleanXPath()
+                                                                  + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                                  + ") or (name = " + strNameWithQuotes
                                                                   + " and category = " + Category.CleanXPath() + ")]");
                 if (_objCachedMyXmlNode == null)
                 {
