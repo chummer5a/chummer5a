@@ -604,32 +604,34 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                StringBuilder s = new StringBuilder();
-                if (string.IsNullOrEmpty(_strToolTip))
+                if (!string.IsNullOrEmpty(_strToolTip))
+                    return _strToolTip;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTooltip))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    s.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
-                     .AppendJoin(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)).AppendLine();
-                }
+                    sbdTooltip.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
+                              .AppendJoin(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)).AppendLine();
 
-                if (IsDisabled)
-                {
-                    s.AppendLine(LanguageManager.GetString("Label_SkillGroup_DisabledBy"));
-                    List<Improvement> lstImprovements
-                        = ImprovementManager.GetCachedImprovementListForValueOf(
-                            _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name);
-                    lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
-                                                                   _objCharacter,
-                                                                   Improvement.ImprovementType
-                                                                              .SkillGroupCategoryDisable)
-                                                               .Where(x => GetRelevantSkillCategories.Contains(
-                                                                          x.ImprovedName)));
-                    foreach (Improvement objImprovement in lstImprovements)
+                    if (IsDisabled)
                     {
-                        s.AppendLine(CharacterObject.GetObjectName(objImprovement));
+                        sbdTooltip.AppendLine(LanguageManager.GetString("Label_SkillGroup_DisabledBy"));
+                        List<Improvement> lstImprovements
+                            = ImprovementManager.GetCachedImprovementListForValueOf(
+                                _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name);
+                        lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                                       _objCharacter,
+                                                                       Improvement.ImprovementType
+                                                                           .SkillGroupCategoryDisable)
+                                                                   .Where(x => GetRelevantSkillCategories.Contains(
+                                                                              x.ImprovedName)));
+                        foreach (Improvement objImprovement in lstImprovements)
+                        {
+                            sbdTooltip.AppendLine(CharacterObject.GetObjectName(objImprovement));
+                        }
                     }
+
+                    return _strToolTip = sbdTooltip.ToString();
                 }
-                return _strToolTip;
             }
         }
 

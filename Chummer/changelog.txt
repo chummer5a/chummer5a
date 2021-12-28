@@ -36,6 +36,7 @@ Application Changes:
 - When modifying a weapon mount, changing its Visibility no longer causes its old Visibility value to be kept and have its availability and slot modifiers applied. Fixes #4648.
 - Adding a quality that is suppressed by something that is already on the character now properly disables the quality's effects.
 - Mastery Qualities bought with spell points now properly contribute to the positive quality karma limit. Fixes #4654.
+- Skill group labels' tooltips that show the skills in the given skill group now work properly again.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
