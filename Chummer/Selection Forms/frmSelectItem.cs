@@ -60,24 +60,28 @@ namespace Chummer
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
                         {
-                            StringBuilder sbdAmmoName = new StringBuilder(objGear.DisplayNameShort(GlobalSettings.Language));
-                            // Retrieve the plugin information if it has any.
-                            if (objGear.Children.Count > 0)
+                            using (new FetchSafelyFromPool<StringBuilder>(
+                                       Utils.StringBuilderPool, out StringBuilder sbdAmmoName))
                             {
-                                // Append the plugin information to the name.
-                                sbdAmmoName.Append(strSpace).Append('[')
-                                           .AppendJoin(',' + strSpace,
-                                                       objGear.Children.Select(x => x.CurrentDisplayNameShort))
-                                           .Append(']');
-                            }
+                                sbdAmmoName.Append(objGear.CurrentDisplayNameShort);
+                                // Retrieve the plugin information if it has any.
+                                if (objGear.Children.Count > 0)
+                                {
+                                    // Append the plugin information to the name.
+                                    sbdAmmoName.Append(strSpace).Append('[')
+                                               .AppendJoin(',' + strSpace,
+                                                           objGear.Children.Select(x => x.CurrentDisplayNameShort))
+                                               .Append(']');
+                                }
 
-                            if (objGear.Rating > 0)
-                                sbdAmmoName.Append(strSpace).Append('(')
-                                           .Append(LanguageManager.GetString(objGear.RatingLabel)).Append(strSpace)
-                                           .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
-                            sbdAmmoName.Append(strSpace).Append('x')
-                                       .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
-                            lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
+                                if (objGear.Rating > 0)
+                                    sbdAmmoName.Append(strSpace).Append('(')
+                                               .Append(LanguageManager.GetString(objGear.RatingLabel)).Append(strSpace)
+                                               .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                sbdAmmoName.Append(strSpace).Append('x')
+                                           .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                                lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
+                            }
                         }
 
                         break;

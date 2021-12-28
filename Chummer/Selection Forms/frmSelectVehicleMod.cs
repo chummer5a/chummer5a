@@ -271,16 +271,19 @@ namespace Chummer
             /*
             else if (!string.IsNullOrEmpty(AllowedCategories))
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
-                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdCategoryFilter))
                 {
-                    if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
-                }
-                if (objCategoryFilter.Length > 0)
-                {
-                    objCategoryFilter.Length -= 4;
-                    strFilter += " and (" + objCategoryFilter.ToString() + ')';
+                    foreach (string strItem in _lstCategory.Select(x => x.Value))
+                    {
+                        if (!string.IsNullOrEmpty(strItem))
+                            sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                    }
+                    if (sbdCategoryFilter.Length > 0)
+                    {
+                        sbdCategoryFilter.Length -= 4;
+                        strFilter += " and (" + sbdCategoryFilter.ToString() + ')';
+                    }
                 }
             }
             */
@@ -741,23 +744,30 @@ namespace Chummer
 
         private string ReplaceStrings(string strInput, int intExtraSlots = 0)
         {
-            StringBuilder sbdInput = new StringBuilder(strInput);
-            sbdInput.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Vehicle Cost", _objVehicle.Cost);
-            sbdInput.Replace("Weapon Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Total Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Body", _objVehicle.Body.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Handling", _objVehicle.Handling.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Offroad Handling", _objVehicle.OffroadHandling.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Speed", _objVehicle.Speed.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Offroad Speed", _objVehicle.OffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Acceleration", _objVehicle.Accel.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Sensor", _objVehicle.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Armor", _objVehicle.Armor.ToString(GlobalSettings.InvariantCultureInfo));
-            sbdInput.Replace("Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
+            {
+                sbdInput.Append(strInput);
+                sbdInput.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Vehicle Cost", _objVehicle.Cost);
+                sbdInput.Replace("Weapon Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Total Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Body", _objVehicle.Body.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Handling", _objVehicle.Handling.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Offroad Handling",
+                                 _objVehicle.OffroadHandling.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Speed", _objVehicle.Speed.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Offroad Speed",
+                                 _objVehicle.OffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Acceleration", _objVehicle.Accel.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Offroad Acceleration",
+                                 _objVehicle.OffroadAccel.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Sensor", _objVehicle.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace("Armor", _objVehicle.Armor.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdInput.Replace(
+                    "Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo));
 
-            return sbdInput.ToString();
+                return sbdInput.ToString();
+            }
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

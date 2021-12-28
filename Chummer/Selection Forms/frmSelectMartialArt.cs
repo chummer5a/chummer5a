@@ -102,26 +102,37 @@ namespace Chummer
                     lblKarmaCost.Text = objXmlArt.SelectSingleNodeAndCacheExpression("cost")?.Value ?? 7.ToString(GlobalSettings.CultureInfo);
                     lblKarmaCostLabel.Visible = !string.IsNullOrEmpty(lblKarmaCost.Text);
 
-                    StringBuilder objTechniqueStringBuilder = new StringBuilder();
-                    foreach (XPathNavigator xmlMartialArtsTechnique in objXmlArt.SelectAndCacheExpression("techniques/technique"))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTechniques))
                     {
-                        string strLoopTechniqueName = xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                        if (!string.IsNullOrEmpty(strLoopTechniqueName))
+                        foreach (XPathNavigator xmlMartialArtsTechnique in objXmlArt.SelectAndCacheExpression(
+                                     "techniques/technique"))
                         {
-                            XPathNavigator xmlTechniqueNode
-                                = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(
-                                    "technique[name = " + strLoopTechniqueName.CleanXPath() + " and ("
-                                    + _objCharacter.Settings.BookXPath() + ")]");
-                            if (xmlTechniqueNode != null)
+                            string strLoopTechniqueName
+                                = xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
+                                  ?? string.Empty;
+                            if (!string.IsNullOrEmpty(strLoopTechniqueName))
                             {
-                                if (objTechniqueStringBuilder.Length > 0)
-                                    objTechniqueStringBuilder.AppendLine(',');
-
-                                objTechniqueStringBuilder.Append(!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? xmlTechniqueNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strLoopTechniqueName : strLoopTechniqueName);
+                                XPathNavigator xmlTechniqueNode
+                                    = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(
+                                        "technique[name = " + strLoopTechniqueName.CleanXPath() + " and ("
+                                        + _objCharacter.Settings.BookXPath() + ")]");
+                                if (xmlTechniqueNode != null)
+                                {
+                                    if (sbdTechniques.Length > 0)
+                                        sbdTechniques.AppendLine(',');
+                                    sbdTechniques.Append(
+                                        !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                        StringComparison.OrdinalIgnoreCase)
+                                            ? xmlTechniqueNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                              ?? strLoopTechniqueName
+                                            : strLoopTechniqueName);
+                                }
                             }
                         }
+
+                        lblIncludedTechniques.Text = sbdTechniques.ToString();
                     }
-                    lblIncludedTechniques.Text = objTechniqueStringBuilder.ToString();
+
                     gpbIncludedTechniques.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
 
                     string strSource = objXmlArt.SelectSingleNodeAndCacheExpression("source")?.Value ?? LanguageManager.GetString("String_Unknown");

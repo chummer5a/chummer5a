@@ -405,19 +405,27 @@ namespace Chummer
                             lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
                             setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                         }
-                        StringBuilder objFilter = new StringBuilder();
-                        if (setProcessedSkillNames.Count > 0)
+
+                        string strFilter = string.Empty;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdFilters))
                         {
-                            objFilter.Append("not(");
-                            foreach (string strName in setProcessedSkillNames)
+                            if (setProcessedSkillNames.Count > 0)
                             {
-                                objFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                                sbdFilters.Append("not(");
+                                foreach (string strName in setProcessedSkillNames)
+                                {
+                                    sbdFilters.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                                }
+
+                                sbdFilters.Length -= 4;
+                                sbdFilters.Append(')');
                             }
-                            objFilter.Length -= 4;
-                            objFilter.Append(')');
+
+                            if (sbdFilters.Length > 0)
+                                strFilter = '[' + sbdFilters.ToString() + ']';
                         }
 
-                        string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
                         foreach (XPathNavigator xmlSkill in _objCharacter.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill" + strFilter))
                         {
                             string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;

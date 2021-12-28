@@ -177,11 +177,13 @@ namespace Chummer
             if (_lstMetamagicLimits.Count > 0)
             {
                 strFilter += " and (";
-                StringBuilder sbdFilter = new StringBuilder();
-                foreach (string strMetamagic in _lstMetamagicLimits)
-                    sbdFilter.Append("name = ").Append(strMetamagic.CleanXPath()).Append(" or ");
-                sbdFilter.Length -= 4;
-                strFilter += sbdFilter.ToString() + ')';
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                {
+                    foreach (string strMetamagic in _lstMetamagicLimits)
+                        sbdFilter.Append("name = ").Append(strMetamagic.CleanXPath()).Append(" or ");
+                    sbdFilter.Length -= 4;
+                    strFilter += sbdFilter.ToString() + ')';
+                }
             }
 
             if (!string.IsNullOrEmpty(txtSearch.Text))

@@ -916,49 +916,67 @@ namespace Chummer
                 return new List<ListItem>();
             }
 
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-            StringBuilder sbdCategoryFilter;
-            if (strCategory != "Show All" && !Upgrading && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdCategoryFilter = new StringBuilder("category = " + strCategory.CleanXPath() + " or category = \"None\"");
-            else
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdCategoryFilter = new StringBuilder();
-                foreach (ListItem objItem in cboCategory.Items)
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCategoryFilter))
                 {
-                    string strItem = objItem.Value.ToString();
-                    if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                }
-                if (sbdCategoryFilter.Length > 0)
-                {
-                    sbdCategoryFilter.Append("category = \"None\"");
-                }
-            }
-            if (sbdCategoryFilter.Length > 0)
-                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                    if (strCategory != "Show All" && !Upgrading
+                                                  && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                        sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath())
+                                         .Append(" or category = \"None\"");
+                    else
+                    {
+                        foreach (ListItem objItem in cboCategory.Items)
+                        {
+                            string strItem = objItem.Value.ToString();
+                            if (!string.IsNullOrEmpty(strItem))
+                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                        }
 
-            if (ParentVehicle == null && _objCharacter.IsAI)
-                sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
-                         .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
-                         .Append(" or mountsto)");
-            else if (_objParentNode != null)
-                sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
-            else
-                sbdFilter.Append(" and not(requireparent)");
-            string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
-            if (objCurrentGrade != null)
-            {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ").Append(objCurrentGrade.Name.CleanXPath()).Append(')');
-                if (objCurrentGrade.SecondHand)
-                    sbdFilter.Append(" and not(nosecondhand)");
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Append("category = \"None\"");
+                        }
+                    }
+
+                    if (sbdCategoryFilter.Length > 0)
+                        sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                }
+
+                if (ParentVehicle == null && _objCharacter.IsAI)
+                    sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
+                             .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
+                             .Append(" or mountsto)");
+                else if (_objParentNode != null)
+                    sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
+                else
+                    sbdFilter.Append(" and not(requireparent)");
+                string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
+                Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
+                    ? null
+                    : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
+                if (objCurrentGrade != null)
+                {
+                    sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
+                             .Append(objCurrentGrade.Name.CleanXPath()).Append(')');
+                    if (objCurrentGrade.SecondHand)
+                        sbdFilter.Append(" and not(nosecondhand)");
+                }
+
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
             }
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
             XPathNodeIterator node = null;
             try
             {
-                node = _xmlBaseCyberwareDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']');
+                node = _xmlBaseCyberwareDataNode.Select(_strNodeXPath + strFilter);
             }
             catch (XPathException e)
             {
@@ -1244,7 +1262,7 @@ namespace Chummer
             {
                 strForceGrade = cboGrade.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strForceGrade))
-                    SelectedGrade = _lstGrades.Find(x => x.SourceIDString == cboGrade.SelectedValue?.ToString());
+                    SelectedGrade = _lstGrades.Find(x => x.SourceIDString == strForceGrade);
                 else
                     return;
             }

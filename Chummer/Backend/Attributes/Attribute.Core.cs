@@ -848,7 +848,7 @@ namespace Chummer.Backend.Attributes
                         // Retrieve only the highest precedence0 value.
                         // Run through the list of UniqueNames and pick out the highest value for each one.
                         decimal decHighest = decimal.MinValue;
-                        
+
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdNewModifier))
                         {

@@ -329,38 +329,53 @@ namespace Chummer
                 }
             }
 
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append(" and (contains(category,").Append(strCategory.CleanXPath()).Append("))");
-            }
-            else
-            {
-                bool blnHasToxic = false;
-                StringBuilder sbdCategoryFilter = new StringBuilder();
-                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
                 {
-                    if (!string.IsNullOrEmpty(strItem))
+                    sbdFilter.Append(" and (contains(category,").Append(strCategory.CleanXPath()).Append("))");
+                }
+                else
+                {
+                    bool blnHasToxic = false;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategoryFilter))
                     {
-                        sbdCategoryFilter.Append("(contains(category,").Append(strItem.CleanXPath()).Append(")) or ");
-                        if (strItem == "Toxic Critter Powers")
+                        foreach (string strItem in _lstCategory.Select(x => x.Value))
                         {
-                            sbdCategoryFilter.Append("toxic = \"True\" or ");
-                            blnHasToxic = true;
+                            if (!string.IsNullOrEmpty(strItem))
+                            {
+                                sbdCategoryFilter.Append("(contains(category,").Append(strItem.CleanXPath())
+                                                 .Append(")) or ");
+                                if (strItem == "Toxic Critter Powers")
+                                {
+                                    sbdCategoryFilter.Append("toxic = \"True\" or ");
+                                    blnHasToxic = true;
+                                }
+                            }
+                        }
+
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                         }
                     }
+
+                    if (!blnHasToxic)
+                        sbdFilter.Append(" and (not(toxic) or toxic != \"True\")");
                 }
-                if (sbdCategoryFilter.Length > 0)
-                {
-                    sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
-                }
-                if (!blnHasToxic)
-                    sbdFilter.Append(" and (not(toxic) or toxic != \"True\")");
+
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
             }
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-            foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter + "]"))
+
+            foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))
             {
                 string strPowerName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;

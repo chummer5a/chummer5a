@@ -657,19 +657,28 @@ namespace Chummer
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return new List<ListItem>();
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-            string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
-            if (objCurrentGrade != null)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ").Append(objCurrentGrade.Name.CleanXPath()).Append(')');
-                if (objCurrentGrade.SecondHand)
-                    sbdFilter.Append(" and not(nosecondhand)");
-            }
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
+                Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
+                    ? null
+                    : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                           == strCurrentGradeId);
+                if (objCurrentGrade != null)
+                {
+                    sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
+                             .Append(objCurrentGrade.Name.CleanXPath()).Append(')');
+                    if (objCurrentGrade.SecondHand)
+                        sbdFilter.Append(" and not(nosecondhand)");
+                }
 
-            return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate,
+                                     blnTerminateAfterFirst);
+            }
         }
 
         private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)

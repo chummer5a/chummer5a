@@ -592,10 +592,15 @@ namespace Chummer.Backend.Uniques
                 if (Type == TraditionType.None)
                     return 0;
                 string strDrainAttributes = DrainExpression;
-                StringBuilder sbdDrain = new StringBuilder(strDrainAttributes);
-                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDrain, strDrainAttributes);
+                string strDrain;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdDrain))
+                {
+                    sbdDrain.Append(strDrainAttributes);
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDrain, strDrainAttributes);
+                    strDrain = sbdDrain.ToString();
+                }
 
-                string strDrain = sbdDrain.ToString();
                 if (!decimal.TryParse(strDrain, out decimal decDrain))
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
@@ -620,23 +625,30 @@ namespace Chummer.Backend.Uniques
                 if (Type == TraditionType.None)
                     return string.Empty;
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(DrainExpression);
-                // Update the Fading CharacterAttribute Value.
-                _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
-
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    if ((Type == TraditionType.RES && objLoopImprovement.ImproveType == Improvement.ImprovementType.FadingResistance ||
-                        Type == TraditionType.MAG && objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance) &&
-                        objLoopImprovement.Enabled)
+                    sbdToolTip.Append(DrainExpression);
+                    // Update the Fading CharacterAttribute Value.
+                    _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
+
+                    List<Improvement> lstUsedImprovements
+                        = ImprovementManager.GetCachedImprovementListForValueOf(
+                            _objCharacter,
+                            Type == TraditionType.RES
+                                ? Improvement.ImprovementType.FadingResistance
+                                : Improvement.ImprovementType.DrainResistance);
+                    foreach (Improvement objLoopImprovement in lstUsedImprovements)
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
+                                  .Append('(')
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
             }
         }
 

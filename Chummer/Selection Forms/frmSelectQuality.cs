@@ -430,102 +430,128 @@ namespace Chummer
                 return;
 
             string strCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
-            }
-            else
-            {
-                StringBuilder objCategoryFilter = new StringBuilder();
-                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
+                                                       && (GlobalSettings.SearchInCategoryOnly
+                                                           || txtSearch.TextLength == 0))
                 {
-                    if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                }
-                if (objCategoryFilter.Length > 0)
-                {
-                    objCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(objCategoryFilter).Append(')');
-                }
-            }
-            if (chkMetagenic.Checked)
-            {
-                sbdFilter.Append(" and (metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
-            }
-            else if (chkNotMetagenic.Checked)
-            {
-                sbdFilter.Append(" and not(metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
-            }
-            if (nudValueBP.Value != 0)
-            {
-                string strValueBP = nudValueBP.Value.ToString(GlobalSettings.InvariantCultureInfo);
-                if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases && nudValueBP.Value > 0)
-                {
-                    string strValueBPHalved = (nudValueBP.Value / 2).ToString(GlobalSettings.InvariantCultureInfo);
-                    sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ").Append(strValueBP)
-                             .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                             .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
-                             .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
-                             .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBPHalved)
-                             .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
-                             .Append("))))");
+                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 }
                 else
                 {
-                    sbdFilter.Append(" and (karma = ").Append(strValueBP)
-                             .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                             .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
-                }
-            }
-            else if (nudMinimumBP.Value != 0 || nudMaximumBP.Value != 0)
-            {
-                if (nudMinimumBP.Value < 0 == nudMaximumBP.Value < 0)
-                {
-                    sbdFilter.Append(" and (")
-                             .Append(GetKarmaRangeString(nudMaximumBP.ValueAsInt, nudMinimumBP.ValueAsInt)).Append(')');
-                }
-                else
-                {
-                    sbdFilter.Append("and ((").Append(GetKarmaRangeString(nudMaximumBP.ValueAsInt, 0)).Append(") or (")
-                             .Append(GetKarmaRangeString(-1, nudMinimumBP.ValueAsInt)).Append("))");
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategoryFilter))
+                    {
+                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        {
+                            if (!string.IsNullOrEmpty(strItem))
+                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                        }
+
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        }
+                    }
                 }
 
-                string GetKarmaRangeString(int intMax, int intMin)
+                if (chkMetagenic.Checked)
                 {
-                    string strMax = intMax.ToString(GlobalSettings.InvariantCultureInfo);
-                    string strMin = intMin.ToString(GlobalSettings.InvariantCultureInfo);
-                    string strMostExtremeValue = (intMax > 0 ? intMax : intMin).ToString(GlobalSettings.InvariantCultureInfo);
-                    string strValueDiff = (intMax > 0 ? intMax - intMin : intMin - intMax).ToString(GlobalSettings.InvariantCultureInfo);
-                    if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                    sbdFilter.Append(" and (metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
+                }
+                else if (chkNotMetagenic.Checked)
+                {
+                    sbdFilter.Append(" and not(metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
+                }
+
+                if (nudValueBP.Value != 0)
+                {
+                    string strValueBP = nudValueBP.Value.ToString(GlobalSettings.InvariantCultureInfo);
+                    if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases
+                                              && nudValueBP.Value > 0)
                     {
-                        return "((doublecareer = 'False' or karma < 0) and ((karma >= " + strMin + " and karma <= " +
-                               strMax + ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " +
-                               strMostExtremeValue + " and (karma * (" + strMostExtremeValue +
-                               " mod karma) <= karma * " + strValueDiff + ") and ((karma >= 0 and karma * limit >= " +
-                               strMin + ") or (karma < 0 and karma * limit <= " + strMax +
-                               "))))) or (not(doublecareer = 'False' or karma < 0) and ((2 * karma >= " + strMin +
-                               " and 2 * karma <= " + strMax +
-                               ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= 2 * karma * " +
-                               strMostExtremeValue + " and (2 * karma * (" + strMostExtremeValue +
-                               " mod (2 * karma)) <= 2 * karma * " + strValueDiff +
-                               ") and ((karma >= 0 and 2 * karma * limit >= " + strMin +
-                               ") or (karma < 0 and 2 * karma * limit <= " + strMax + ")))))";
+                        string strValueBPHalved = (nudValueBP.Value / 2).ToString(GlobalSettings.InvariantCultureInfo);
+                        sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ").Append(strValueBP)
+                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
+                                 .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
+                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ")
+                                 .Append(strValueBPHalved)
+                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
+                                 .Append("))))");
+                    }
+                    else
+                    {
+                        sbdFilter.Append(" and (karma = ").Append(strValueBP)
+                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
+                    }
+                }
+                else if (nudMinimumBP.Value != 0 || nudMaximumBP.Value != 0)
+                {
+                    if (nudMinimumBP.Value < 0 == nudMaximumBP.Value < 0)
+                    {
+                        sbdFilter.Append(" and (")
+                                 .Append(GetKarmaRangeString(nudMaximumBP.ValueAsInt, nudMinimumBP.ValueAsInt))
+                                 .Append(')');
+                    }
+                    else
+                    {
+                        sbdFilter.Append("and ((").Append(GetKarmaRangeString(nudMaximumBP.ValueAsInt, 0))
+                                 .Append(") or (")
+                                 .Append(GetKarmaRangeString(-1, nudMinimumBP.ValueAsInt)).Append("))");
                     }
 
-                    return "(karma >= " + strMin + " and karma <= " + strMax +
-                           ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " +
-                           strMostExtremeValue + " and (karma * (" + strMostExtremeValue + " mod karma) <= karma * " +
-                           strValueDiff + ") and ((karma >= 0 and karma * limit >= " + strMin +
-                           ") or (karma < 0 and karma * limit <= " + strMax + ")))";
+                    string GetKarmaRangeString(int intMax, int intMin)
+                    {
+                        string strMax = intMax.ToString(GlobalSettings.InvariantCultureInfo);
+                        string strMin = intMin.ToString(GlobalSettings.InvariantCultureInfo);
+                        string strMostExtremeValue
+                            = (intMax > 0 ? intMax : intMin).ToString(GlobalSettings.InvariantCultureInfo);
+                        string strValueDiff
+                            = (intMax > 0 ? intMax - intMin : intMin - intMax).ToString(
+                                GlobalSettings.InvariantCultureInfo);
+                        if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                        {
+                            return "((doublecareer = 'False' or karma < 0) and ((karma >= " + strMin + " and karma <= "
+                                   +
+                                   strMax + ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " +
+                                   strMostExtremeValue + " and (karma * (" + strMostExtremeValue +
+                                   " mod karma) <= karma * " + strValueDiff + ") and ((karma >= 0 and karma * limit >= "
+                                   +
+                                   strMin + ") or (karma < 0 and karma * limit <= " + strMax +
+                                   "))))) or (not(doublecareer = 'False' or karma < 0) and ((2 * karma >= " + strMin +
+                                   " and 2 * karma <= " + strMax +
+                                   ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= 2 * karma * " +
+                                   strMostExtremeValue + " and (2 * karma * (" + strMostExtremeValue +
+                                   " mod (2 * karma)) <= 2 * karma * " + strValueDiff +
+                                   ") and ((karma >= 0 and 2 * karma * limit >= " + strMin +
+                                   ") or (karma < 0 and 2 * karma * limit <= " + strMax + ")))))";
+                        }
+
+                        return "(karma >= " + strMin + " and karma <= " + strMax +
+                               ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " +
+                               strMostExtremeValue + " and (karma * (" + strMostExtremeValue + " mod karma) <= karma * "
+                               +
+                               strValueDiff + ") and ((karma >= 0 and karma * limit >= " + strMin +
+                               ") or (karma < 0 and karma * limit <= " + strMax + ")))";
+                    }
                 }
+
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
             }
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
             List<ListItem> lstQuality = new List<ListItem>();
-            foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + sbdFilter + "]"))
+            foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality" + strFilter))
             {
                 string strLoopName = objXmlQuality.SelectSingleNodeAndCacheExpression("name")?.Value;
                 if (string.IsNullOrEmpty(strLoopName))

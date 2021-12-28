@@ -115,14 +115,17 @@ namespace Chummer
             // Populate the Gear Category list.
             if (_setAllowedCategories.Count > 0)
             {
-                StringBuilder sbdMount = new StringBuilder();
-                foreach (string strAllowedMount in _setAllowedCategories)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMount))
                 {
-                    if (!string.IsNullOrEmpty(strAllowedMount))
-                        sbdMount.Append(". = ").Append(strAllowedMount.CleanXPath()).Append(" or ");
+                    foreach (string strAllowedMount in _setAllowedCategories)
+                    {
+                        if (!string.IsNullOrEmpty(strAllowedMount))
+                            sbdMount.Append(". = ").Append(strAllowedMount.CleanXPath()).Append(" or ");
+                    }
+
+                    sbdMount.Append(". = \"General\"");
+                    objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + "]");
                 }
-                sbdMount.Append(". = \"General\"");
-                objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + "]");
             }
             else
             {
@@ -826,14 +829,22 @@ namespace Chummer
 
                 if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                 {
-                    StringBuilder objValue = new StringBuilder(strExpression);
-                    objValue.Replace("{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo) ?? int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                    using (new FetchSafelyFromPool<StringBuilder>(
+                               Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        sbdValue.Replace(
+                            "{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Parent Rating}",
+                                              () => (_objGearParent as IHasRating)?.Rating.ToString(
+                                                        GlobalSettings.InvariantCultureInfo)
+                                                    ?? int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out blnIsSuccess);
-                    intRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        objProcess = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out blnIsSuccess);
+                        intRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    }
                 }
                 else if (!int.TryParse(strExpression, out intRating))
                     intRating = 0;
@@ -858,14 +869,22 @@ namespace Chummer
 
                         if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                         {
-                            StringBuilder objValue = new StringBuilder(strExpression);
-                            objValue.Replace("{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
-                            objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                            using (new FetchSafelyFromPool<StringBuilder>(
+                                       Utils.StringBuilderPool, out StringBuilder sbdValue))
+                            {
+                                sbdValue.Append(strExpression);
+                                sbdValue.Replace(
+                                    "{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdValue.CheapReplace(strExpression, "{Parent Rating}",
+                                                      () => (_objGearParent as IHasRating)?.Rating.ToString(
+                                                          GlobalSettings.InvariantCultureInfo) ?? "0");
+                                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out blnIsSuccess);
-                            intMinimumRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                                objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                    sbdValue.ToString(), out blnIsSuccess);
+                                intMinimumRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                            }
                         }
                         else if (!int.TryParse(strExpression, out intMinimumRating))
                             intMinimumRating = 0;
@@ -924,52 +943,72 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = cboCategory.SelectedValue?.ToString();
-            StringBuilder sbdFilter = new StringBuilder(_objCharacter.Settings.BookXPath());
-            // Only add in category filter if we either are not searching or we have the option set to only search in categories
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
-            else if (_setAllowedCategories.Count > 0)
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                StringBuilder sbdCategoryFilter = new StringBuilder();
-                foreach (string strItem in _lstCategory.Select(x => x.Value))
-                {
-                    sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                }
-                if (sbdCategoryFilter.Length > 0)
-                {
-                    sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
-                }
-            }
-            if (_setAllowedNames.Count > 0)
-            {
-                StringBuilder sbdNameFilter = new StringBuilder();
-                foreach (string strItem in _setAllowedNames)
-                {
-                    sbdNameFilter.Append("name = ").Append(strItem.CleanXPath()).Append(" or ");
-                }
-                if (sbdNameFilter.Length > 0)
-                {
-                    sbdNameFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdNameFilter).Append(')');
-                }
-            }
-            if (ShowArmorCapacityOnly)
-                sbdFilter.Append(" and (contains(armorcapacity, \"[\") or category = \"Custom\")");
-            else if (ShowPositiveCapacityOnly)
-                sbdFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
-            else if (ShowNegativeCapacityOnly)
-                sbdFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
-            if (ShowFlechetteAmmoOnly)
-                sbdFilter.Append(" and isflechetteammo = 'True'");
-            if (_objGearParent == null)
-                sbdFilter.Append(" and not(requireparent)");
-            if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
-                sbdFilter.Append(" and ammoforweapontype = ").Append(ForceItemAmmoForWeaponType.CleanXPath());
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
 
-            return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
+                // Only add in category filter if we either are not searching or we have the option set to only search in categories
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
+                                                       && (GlobalSettings.SearchInCategoryOnly
+                                                           || txtSearch.TextLength == 0))
+                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                else if (_setAllowedCategories.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategoryFilter))
+                    {
+                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        {
+                            sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                        }
+
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        }
+                    }
+                }
+
+                if (_setAllowedNames.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdNameFilter))
+                    {
+                        foreach (string strItem in _setAllowedNames)
+                        {
+                            sbdNameFilter.Append("name = ").Append(strItem.CleanXPath()).Append(" or ");
+                        }
+
+                        if (sbdNameFilter.Length > 0)
+                        {
+                            sbdNameFilter.Length -= 4;
+                            sbdFilter.Append(" and (").Append(sbdNameFilter).Append(')');
+                        }
+                    }
+                }
+
+                if (ShowArmorCapacityOnly)
+                    sbdFilter.Append(" and (contains(armorcapacity, \"[\") or category = \"Custom\")");
+                else if (ShowPositiveCapacityOnly)
+                    sbdFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
+                else if (ShowNegativeCapacityOnly)
+                    sbdFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
+                if (ShowFlechetteAmmoOnly)
+                    sbdFilter.Append(" and isflechetteammo = 'True'");
+                if (_objGearParent == null)
+                    sbdFilter.Append(" and not(requireparent)");
+                if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
+                    sbdFilter.Append(" and ammoforweapontype = ").Append(ForceItemAmmoForWeaponType.CleanXPath());
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
+            }
+
+            return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear" + strFilter), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
         private List<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)

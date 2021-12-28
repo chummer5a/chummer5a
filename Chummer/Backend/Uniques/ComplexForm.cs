@@ -356,47 +356,56 @@ namespace Chummer
         {
             get
             {
-                StringBuilder sbdTip = new StringBuilder(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
                 int intRES = _objCharacter.RES.TotalValue;
                 string strFv = Fv;
                 string strSpace = LanguageManager.GetString("String_Space");
-                for (int i = 1; i <= intRES * 2; i++)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdTip))
                 {
-                    // Calculate the Complex Form's Fading for the current Level.
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(strFv.Replace("L", i.ToString(GlobalSettings.InvariantCultureInfo)).Replace("/", " div "), out bool blnIsSuccess);
-
-                    if (blnIsSuccess && strFv != "Special")
+                    sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
+                    for (int i = 1; i <= intRES * 2; i++)
                     {
-                        int intFv = ((double)xprResult).StandardRound();
+                        // Calculate the Complex Form's Fading for the current Level.
+                        object xprResult = CommonFunctions.EvaluateInvariantXPath(
+                            strFv.Replace("L", i.ToString(GlobalSettings.InvariantCultureInfo)).Replace("/", " div "),
+                            out bool blnIsSuccess);
 
-                        // Fading cannot be lower than 2.
-                        if (intFv < 2)
-                            intFv = 2;
-                        sbdTip.AppendLine().Append(LanguageManager.GetString("String_Level")).Append(strSpace).Append(
-                                  i.ToString(GlobalSettings.CultureInfo))
-                              .Append(LanguageManager.GetString("String_Colon"))
-                              .Append(strSpace).Append(intFv.ToString(GlobalSettings.CultureInfo));
+                        if (blnIsSuccess && strFv != "Special")
+                        {
+                            int intFv = ((double) xprResult).StandardRound();
+
+                            // Fading cannot be lower than 2.
+                            if (intFv < 2)
+                                intFv = 2;
+                            sbdTip.AppendLine().Append(LanguageManager.GetString("String_Level")).Append(strSpace)
+                                  .Append(
+                                      i.ToString(GlobalSettings.CultureInfo))
+                                  .Append(LanguageManager.GetString("String_Colon"))
+                                  .Append(strSpace).Append(intFv.ToString(GlobalSettings.CultureInfo));
+                        }
+                        else
+                        {
+                            sbdTip.Clear();
+                            sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingSeeDescription"));
+                            break;
+                        }
                     }
-                    else
+
+                    decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter,
+                                                                    Improvement.ImprovementType.FadingValue,
+                                                                    out List<Improvement> lstFadingImprovements);
+                    if (decFVBonus != 0)
                     {
-                        sbdTip.Clear();
-                        sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingSeeDescription"));
-                        break;
+                        sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
+                        foreach (Improvement objLoopImprovement in lstFadingImprovements)
+                        {
+                            sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
+                                  .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
+                        }
                     }
+
+                    return sbdTip.ToString();
                 }
-                decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingValue,
-                                                                out List<Improvement> lstFadingImprovements);
-                if (decFVBonus != 0)
-                {
-                    sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
-                    foreach (Improvement objLoopImprovement in lstFadingImprovements)
-                    {
-                        sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
-                              .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
-                    }
-                }
-
-                return sbdTip.ToString();
             }
         }
 
@@ -438,21 +447,29 @@ namespace Chummer
                         }
                     }
 
-                    StringBuilder sbdFv = new StringBuilder(strFv);
-                    foreach (Improvement objImprovement in lstUsedImprovements)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdFv))
                     {
-                        sbdFv.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}", objImprovement.Value);
-                    }
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(sbdFv.ToString(), out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                    {
-                        if (force)
+                        sbdFv.Append(strFv);
+                        foreach (Improvement objImprovement in lstUsedImprovements)
                         {
-                            strReturn = string.Format(GlobalSettings.CultureInfo, "L{0:+0;-0;}", xprResult);
+                            sbdFv.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
+                                               objImprovement.Value);
                         }
-                        else if (xprResult.ToString() != "0")
+
+                        object xprResult
+                            = CommonFunctions.EvaluateInvariantXPath(sbdFv.ToString(), out bool blnIsSuccess);
+
+                        if (blnIsSuccess)
                         {
-                            strReturn += xprResult;
+                            if (force)
+                            {
+                                strReturn = string.Format(GlobalSettings.CultureInfo, "L{0:+0;-0;}", xprResult);
+                            }
+                            else if (xprResult.ToString() != "0")
+                            {
+                                strReturn += xprResult;
+                            }
                         }
                     }
                 }

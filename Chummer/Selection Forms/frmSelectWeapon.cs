@@ -215,15 +215,22 @@ namespace Chummer
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 // Build a list of included Accessories and Modifications that come with the weapon.
-                StringBuilder strAccessories = new StringBuilder();
-                foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdAccessories))
                 {
-                    strAccessories.AppendLine(objAccessory.CurrentDisplayName);
-                }
-                if (strAccessories.Length > 0)
-                    strAccessories.Length -= Environment.NewLine.Length;
+                    foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
+                    {
+                        sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
+                    }
 
-                lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None") : strAccessories.ToString();
+                    if (sbdAccessories.Length > 0)
+                        sbdAccessories.Length -= Environment.NewLine.Length;
+
+                    lblIncludedAccessories.Text = sbdAccessories.Length == 0
+                        ? LanguageManager.GetString("String_None")
+                        : sbdAccessories.ToString();
+                }
+
                 tlpRight.Visible = true;
                 gpbIncludedAccessories.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
             }
@@ -321,18 +328,27 @@ namespace Chummer
                     string strMode = objWeapon.DisplayMode;
                     string strReach = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
                     string strConceal = objWeapon.DisplayConcealability;
-                    StringBuilder sbdAccessories = new StringBuilder();
-                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdAccessories))
                     {
-                        sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
-                    }
-                    if (sbdAccessories.Length > 0)
-                        sbdAccessories.Length -= Environment.NewLine.Length;
-                    AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                    NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
+                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        {
+                            sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
+                        }
 
-                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(), objAvail, strSource, strCost);
+                        if (sbdAccessories.Length > 0)
+                            sbdAccessories.Length -= Environment.NewLine.Length;
+                        AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
+                        SourceString strSource = new SourceString(objWeapon.Source,
+                                                                  objWeapon.DisplayPage(GlobalSettings.Language),
+                                                                  GlobalSettings.Language, GlobalSettings.CultureInfo,
+                                                                  _objCharacter);
+                        NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
+
+                        tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC,
+                                            strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(), objAvail,
+                                            strSource, strCost);
+                    }
                 }
 
                 DataSet set = new DataSet("weapons");
@@ -604,34 +620,49 @@ namespace Chummer
         private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
-            else
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                StringBuilder sbdCategoryFilter = new StringBuilder();
-                if (_setLimitToCategories?.Count > 0)
-                {
-                    foreach (string strLoopCategory in _setLimitToCategories)
-                    {
-                        sbdCategoryFilter.Append("category = ").Append(strLoopCategory.CleanXPath()).Append(" or ");
-                    }
-                    sbdCategoryFilter.Length -= 4;
-                }
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
+                                                       && (GlobalSettings.SearchInCategoryOnly
+                                                           || txtSearch.TextLength == 0))
+                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 else
                 {
-                    sbdCategoryFilter.Append("category != \"Cyberware\" and category != \"Gear\"");
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategoryFilter))
+                    {
+                        if (_setLimitToCategories?.Count > 0)
+                        {
+                            foreach (string strLoopCategory in _setLimitToCategories)
+                            {
+                                sbdCategoryFilter.Append("category = ").Append(strLoopCategory.CleanXPath())
+                                                 .Append(" or ");
+                            }
+
+                            sbdCategoryFilter.Length -= 4;
+                        }
+                        else
+                        {
+                            sbdCategoryFilter.Append("category != \"Cyberware\" and category != \"Gear\"");
+                        }
+
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        }
+                    }
                 }
 
-                if (sbdCategoryFilter.Length > 0)
-                {
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
-                }
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
             }
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + sbdFilter + ']');
+            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon" + strFilter);
             BuildWeaponList(objXmlWeaponList);
         }
 

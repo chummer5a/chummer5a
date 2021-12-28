@@ -1433,18 +1433,23 @@ namespace Chummer
 
                 if (dicQualities.Count > 0)
                 {
-                    StringBuilder strQualities = new StringBuilder();
-                    foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdQualities))
                     {
-                        strQualities.Append(objLoopQuality.Key);
-                        if (objLoopQuality.Value > 1)
+                        foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
                         {
-                            strQualities.Append(strSpace).Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
+                            sbdQualities.Append(objLoopQuality.Key);
+                            if (objLoopQuality.Value > 1)
+                            {
+                                sbdQualities.Append(strSpace)
+                                            .Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
+                            }
+
+                            sbdQualities.Append(',').Append(strSpace);
                         }
-                        strQualities.Append(',').Append(strSpace);
+
+                        sbdQualities.Length -= 2;
+                        lblMetavariantQualities.Text = sbdQualities.ToString();
                     }
-                    strQualities.Length -= 2;
-                    lblMetavariantQualities.Text = strQualities.ToString();
                 }
                 else
                 {
@@ -1500,18 +1505,24 @@ namespace Chummer
 
                 if (dicQualities.Count > 0)
                 {
-                    StringBuilder strQualities = new StringBuilder();
-                    foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdQualities))
                     {
-                        strQualities.Append(objLoopQuality.Key);
-                        if (objLoopQuality.Value > 1)
+                        foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
                         {
-                            strQualities.Append(strSpace).Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
+                            sbdQualities.Append(objLoopQuality.Key);
+                            if (objLoopQuality.Value > 1)
+                            {
+                                sbdQualities.Append(strSpace)
+                                            .Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
+                            }
+
+                            sbdQualities.Append(',').Append(strSpace);
                         }
-                        strQualities.Append(',').Append(strSpace);
+
+                        sbdQualities.Length -= 2;
+                        lblMetavariantQualities.Text = sbdQualities.ToString();
                     }
-                    strQualities.Length -= 2;
-                    lblMetavariantQualities.Text = strQualities.ToString();
                 }
                 else
                 {
@@ -2037,35 +2048,44 @@ namespace Chummer
 
         private XPathNodeIterator BuildSkillCategoryList(XPathNodeIterator objSkillList)
         {
-            StringBuilder sbdGroups = new StringBuilder("skillgroups/name");
-            if (objSkillList.Count > 0)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdGroups))
             {
-                sbdGroups.Append('[');
-                foreach (XPathNavigator xmlSkillGroup in objSkillList)
+                sbdGroups.Append("skillgroups/name");
+                if (objSkillList.Count > 0)
                 {
-                    sbdGroups.Append(". = ").Append(xmlSkillGroup.Value.CleanXPath()).Append(" or ");
-                }
-                sbdGroups.Length -= 4;
-                sbdGroups.Append(']');
-            }
+                    sbdGroups.Append('[');
+                    foreach (XPathNavigator xmlSkillGroup in objSkillList)
+                    {
+                        sbdGroups.Append(". = ").Append(xmlSkillGroup.Value.CleanXPath()).Append(" or ");
+                    }
 
-            return _xmlBaseSkillDataNode.Select(sbdGroups.ToString());
+                    sbdGroups.Length -= 4;
+                    sbdGroups.Append(']');
+                }
+
+                return _xmlBaseSkillDataNode.Select(sbdGroups.ToString());
+            }
         }
 
         private XPathNodeIterator BuildSkillList(XPathNodeIterator objSkillList)
         {
-            StringBuilder sbdGroups = new StringBuilder("skills/skill");
-            if (objSkillList.Count > 0)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdGroups))
             {
-                sbdGroups.Append('[');
-                foreach (XPathNavigator xmlSkillGroup in objSkillList)
+                sbdGroups.Append("skills/skill");
+                if (objSkillList.Count > 0)
                 {
-                    sbdGroups.Append("name = ").Append(xmlSkillGroup.Value.CleanXPath()).Append(" or ");
+                    sbdGroups.Append('[');
+                    foreach (XPathNavigator xmlSkillGroup in objSkillList)
+                    {
+                        sbdGroups.Append("name = ").Append(xmlSkillGroup.Value.CleanXPath()).Append(" or ");
+                    }
+
+                    sbdGroups.Length -= 4;
+                    sbdGroups.Append(']');
                 }
-                sbdGroups.Length -= 4;
-                sbdGroups.Append(']');
+
+                return _xmlBaseSkillDataNode.Select(sbdGroups.ToString());
             }
-            return _xmlBaseSkillDataNode.Select(sbdGroups.ToString());
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

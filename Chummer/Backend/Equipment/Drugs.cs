@@ -782,135 +782,154 @@ namespace Chummer.Backend.Equipment
                 strLanguage = GlobalSettings.Language;
             if (objCulture == null)
                 objCulture = GlobalSettings.CultureInfo;
-            StringBuilder sbdDescription = new StringBuilder();
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            if (!blnEffectsOnly)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdDescription))
             {
-                string strName = DisplayNameShort(strLanguage);
-                if (!string.IsNullOrWhiteSpace(strName))
-                    sbdDescription.AppendLine(strName);
-            }
-
-            if (intLevel != -1)
-            {
-                bool blnNewLineFlag = false;
-                foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
-                {
-                    if (objAttribute.Value != 0)
-                    {
-                        if (blnNewLineFlag)
-                        {
-                            sbdDescription.Append(',').Append(strSpace);
-                        }
-
-                        sbdDescription
-                            .Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short",
-                                                              strLanguage)).Append(strSpace)
-                            .Append(objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
-                        blnNewLineFlag = true;
-                    }
-                }
-                if (blnNewLineFlag)
-                {
-                    blnNewLineFlag = false;
-                    sbdDescription.AppendLine();
-                }
-
-                foreach (KeyValuePair<string, int> objLimit in Limits)
-                {
-                    if (objLimit.Value != 0)
-                    {
-                        if (blnNewLineFlag)
-                        {
-                            sbdDescription.Append(',').Append(strSpace);
-                        }
-
-                        sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key, strLanguage))
-                                      .Append(strSpace).Append(LanguageManager.GetString("String_Limit", strLanguage))
-                                      .Append(strSpace)
-                                      .Append(objLimit.Value.ToString(" +#;-#", GlobalSettings.CultureInfo));
-                        blnNewLineFlag = true;
-                    }
-                }
-                if (blnNewLineFlag)
-                {
-                    sbdDescription.AppendLine();
-                }
-
-                if (Initiative != 0 || InitiativeDice != 0)
-                {
-                    sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong", strLanguage)).Append(strSpace);
-                    if (Initiative != 0)
-                    {
-                        sbdDescription.Append(Initiative.ToString("+#;-#", GlobalSettings.CultureInfo));
-                        if (InitiativeDice != 0)
-                            sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_D6", strLanguage));
-                    }
-                    else if (InitiativeDice != 0)
-                        sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_D6", strLanguage));
-                    sbdDescription.AppendLine();
-                }
-
-                foreach (XmlNode nodQuality in Qualities)
-                {
-                    sbdDescription.Append(_objCharacter.TranslateExtra(nodQuality.InnerText, strLanguage))
-                                  .Append(strSpace)
-                                  .AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
-                }
-
-                foreach (string strInfo in Infos)
-                    sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo, strLanguage));
-
-                if (Category == "Custom Drug" || Duration != 0)
-                    sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).AppendLine(DisplayDuration);
-
-                if (Category == "Custom Drug" || Speed != 0)
-                {
-                    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(LanguageManager.GetString("String_Colon", strLanguage)).Append(strSpace);
-                    if (Speed <= 0)
-                        sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
-                    else if (Speed <= 60)
-                        sbdDescription.Append((Speed / 3).ToString(GlobalSettings.CultureInfo)).Append(strSpace).AppendLine(LanguageManager.GetString("String_CombatTurns"));
-                    else
-                        sbdDescription.Append(Speed.ToString(GlobalSettings.CultureInfo)).AppendLine(LanguageManager.GetString("String_Seconds"));
-                }
-
-                if (CrashDamage != 0)
-                    sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect", strLanguage)).Append(strSpace)
-                                  .Append(CrashDamage.ToString(objCulture))
-                                  .Append(LanguageManager.GetString("String_DamageStun", strLanguage)).Append(strSpace)
-                                  .AppendLine(LanguageManager.GetString("String_DamageUnresisted", strLanguage));
+                string strSpace = LanguageManager.GetString("String_Space", strLanguage);
                 if (!blnEffectsOnly)
                 {
+                    string strName = DisplayNameShort(strLanguage);
+                    if (!string.IsNullOrWhiteSpace(strName))
+                        sbdDescription.AppendLine(strName);
+                }
+
+                if (intLevel != -1)
+                {
+                    bool blnNewLineFlag = false;
+                    foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
+                    {
+                        if (objAttribute.Value != 0)
+                        {
+                            if (blnNewLineFlag)
+                            {
+                                sbdDescription.Append(',').Append(strSpace);
+                            }
+
+                            sbdDescription
+                                .Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short",
+                                                                  strLanguage)).Append(strSpace)
+                                .Append(objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
+                            blnNewLineFlag = true;
+                        }
+                    }
+
+                    if (blnNewLineFlag)
+                    {
+                        blnNewLineFlag = false;
+                        sbdDescription.AppendLine();
+                    }
+
+                    foreach (KeyValuePair<string, int> objLimit in Limits)
+                    {
+                        if (objLimit.Value != 0)
+                        {
+                            if (blnNewLineFlag)
+                            {
+                                sbdDescription.Append(',').Append(strSpace);
+                            }
+
+                            sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key, strLanguage))
+                                          .Append(strSpace)
+                                          .Append(LanguageManager.GetString("String_Limit", strLanguage))
+                                          .Append(strSpace)
+                                          .Append(objLimit.Value.ToString(" +#;-#", GlobalSettings.CultureInfo));
+                            blnNewLineFlag = true;
+                        }
+                    }
+
+                    if (blnNewLineFlag)
+                    {
+                        sbdDescription.AppendLine();
+                    }
+
+                    if (Initiative != 0 || InitiativeDice != 0)
+                    {
+                        sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong", strLanguage))
+                                      .Append(strSpace);
+                        if (Initiative != 0)
+                        {
+                            sbdDescription.Append(Initiative.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            if (InitiativeDice != 0)
+                                sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo))
+                                              .Append(LanguageManager.GetString("String_D6", strLanguage));
+                        }
+                        else if (InitiativeDice != 0)
+                            sbdDescription.Append(InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo))
+                                          .Append(LanguageManager.GetString("String_D6", strLanguage));
+
+                        sbdDescription.AppendLine();
+                    }
+
+                    foreach (XmlNode nodQuality in Qualities)
+                    {
+                        sbdDescription.Append(_objCharacter.TranslateExtra(nodQuality.InnerText, strLanguage))
+                                      .Append(strSpace)
+                                      .AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
+                    }
+
+                    foreach (string strInfo in Infos)
+                        sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo, strLanguage));
+
+                    if (Category == "Custom Drug" || Duration != 0)
+                        sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage))
+                                      .AppendLine(DisplayDuration);
+
+                    if (Category == "Custom Drug" || Speed != 0)
+                    {
+                        sbdDescription.Append(LanguageManager.GetString("Label_Speed"))
+                                      .Append(LanguageManager.GetString("String_Colon", strLanguage)).Append(strSpace);
+                        if (Speed <= 0)
+                            sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
+                        else if (Speed <= 60)
+                            sbdDescription.Append((Speed / 3).ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                          .AppendLine(LanguageManager.GetString("String_CombatTurns"));
+                        else
+                            sbdDescription.Append(Speed.ToString(GlobalSettings.CultureInfo))
+                                          .AppendLine(LanguageManager.GetString("String_Seconds"));
+                    }
+
+                    if (CrashDamage != 0)
+                        sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect", strLanguage))
+                                      .Append(strSpace)
+                                      .Append(CrashDamage.ToString(objCulture))
+                                      .Append(LanguageManager.GetString("String_DamageStun", strLanguage))
+                                      .Append(strSpace)
+                                      .AppendLine(LanguageManager.GetString("String_DamageUnresisted", strLanguage));
+                    if (!blnEffectsOnly)
+                    {
+                        sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating", strLanguage))
+                                      .Append(strSpace)
+                                      .AppendLine((AddictionRating * (intLevel + 1)).ToString(objCulture))
+                                      .Append(LanguageManager.GetString("Label_AddictionThreshold", strLanguage))
+                                      .Append(strSpace)
+                                      .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture))
+                                      .Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpace)
+                                      .Append((Cost * (intLevel + 1)).ToString(
+                                                  _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine('¥')
+                                      .Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpace)
+                                      .AppendLine(TotalAvail(objCulture, strLanguage));
+                    }
+                }
+                else if (!blnEffectsOnly)
+                {
                     sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating", strLanguage))
-                                  .Append(strSpace).AppendLine((AddictionRating * (intLevel + 1)).ToString(objCulture))
-                                  .Append(LanguageManager.GetString("Label_AddictionThreshold", strLanguage))
                                   .Append(strSpace)
-                                  .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture))
+                                  .AppendLine(0.ToString(objCulture))
+                                  .Append(LanguageManager.GetString("Label_AddictionThreshold", strLanguage))
+                                  .Append(strSpace).AppendLine(0.ToString(objCulture))
                                   .Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpace)
                                   .Append((Cost * (intLevel + 1)).ToString(
-                                              _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine('¥')
+                                              _objCharacter.Settings.NuyenFormat, objCulture))
+                                  .AppendLine('¥')
                                   .Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpace)
                                   .AppendLine(TotalAvail(objCulture, strLanguage));
                 }
-            }
-            else if (!blnEffectsOnly)
-            {
-                sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating", strLanguage)).Append(strSpace)
-                              .AppendLine(0.ToString(objCulture))
-                              .Append(LanguageManager.GetString("Label_AddictionThreshold", strLanguage))
-                              .Append(strSpace).AppendLine(0.ToString(objCulture))
-                              .Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpace)
-                              .Append((Cost * (intLevel + 1)).ToString(_objCharacter.Settings.NuyenFormat, objCulture))
-                              .AppendLine('¥')
-                              .Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpace)
-                              .AppendLine(TotalAvail(objCulture, strLanguage));
-            }
 
-            string strReturn = sbdDescription.ToString();
-            if (blnDoCache)
-                _strDescription = strReturn;
-            return strReturn;
+                string strReturn = sbdDescription.ToString();
+                if (blnDoCache)
+                    _strDescription = strReturn;
+                return strReturn;
+            }
         }
 
         /// <summary>
@@ -1534,127 +1553,148 @@ namespace Chummer.Backend.Equipment
             if (intLevel >= DrugEffects.Count)
                 return null;
 
-            StringBuilder sbdDescription = new StringBuilder();
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strColon = LanguageManager.GetString("String_Colon");
-            sbdDescription.Append(DisplayCategory(GlobalSettings.Language)).Append(strColon).Append(strSpace).AppendLine(CurrentDisplayName);
-
-            if (intLevel != -1)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdDescription))
             {
-                DrugEffect objDrugEffect = DrugEffects[intLevel];
-                bool blnNewLineFlag = false;
-                foreach (KeyValuePair<string, decimal> objAttribute in objDrugEffect.Attributes)
+                string strSpace = LanguageManager.GetString("String_Space");
+                string strColon = LanguageManager.GetString("String_Colon");
+                sbdDescription.Append(DisplayCategory(GlobalSettings.Language)).Append(strColon).Append(strSpace)
+                              .AppendLine(CurrentDisplayName);
+
+                if (intLevel != -1)
                 {
-                    if (objAttribute.Value != 0)
+                    DrugEffect objDrugEffect = DrugEffects[intLevel];
+                    bool blnNewLineFlag = false;
+                    foreach (KeyValuePair<string, decimal> objAttribute in objDrugEffect.Attributes)
                     {
-                        if (blnNewLineFlag)
+                        if (objAttribute.Value != 0)
                         {
-                            sbdDescription.Append(',').Append(strSpace);
+                            if (blnNewLineFlag)
+                            {
+                                sbdDescription.Append(',').Append(strSpace);
+                            }
+
+                            sbdDescription
+                                .Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short"))
+                                .Append(strSpace)
+                                .Append(objAttribute.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            blnNewLineFlag = true;
                         }
-
-                        sbdDescription
-                            .Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short"))
-                            .Append(strSpace).Append(objAttribute.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
-                        blnNewLineFlag = true;
                     }
-                }
-                if (blnNewLineFlag)
-                {
-                    blnNewLineFlag = false;
-                    sbdDescription.AppendLine();
-                }
 
-                foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
-                {
-                    if (objLimit.Value != 0)
+                    if (blnNewLineFlag)
                     {
-                        if (blnNewLineFlag)
+                        blnNewLineFlag = false;
+                        sbdDescription.AppendLine();
+                    }
+
+                    foreach (KeyValuePair<string, int> objLimit in objDrugEffect.Limits)
+                    {
+                        if (objLimit.Value != 0)
                         {
-                            sbdDescription.Append(',').Append(strSpace);
+                            if (blnNewLineFlag)
+                            {
+                                sbdDescription.Append(',').Append(strSpace);
+                            }
+
+                            sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key)).Append(strSpace)
+                                          .Append(LanguageManager.GetString("String_Limit")).Append(strSpace)
+                                          .Append(objLimit.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            blnNewLineFlag = true;
                         }
-
-                        sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key)).Append(strSpace)
-                                      .Append(LanguageManager.GetString("String_Limit")).Append(strSpace)
-                                      .Append(objLimit.Value.ToString("+#;-#", GlobalSettings.CultureInfo));
-                        blnNewLineFlag = true;
                     }
-                }
-                if (blnNewLineFlag)
-                {
-                    sbdDescription.AppendLine();
-                }
 
-                if (objDrugEffect.Initiative != 0 || objDrugEffect.InitiativeDice != 0)
-                {
-                    sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong")).Append(strSpace);
-                    if (objDrugEffect.Initiative != 0)
+                    if (blnNewLineFlag)
                     {
-                        sbdDescription.Append(objDrugEffect.Initiative.ToString("+#;-#", GlobalSettings.CultureInfo));
-                        if (objDrugEffect.InitiativeDice != 0)
-                            sbdDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_D6"));
+                        sbdDescription.AppendLine();
                     }
-                    else if (objDrugEffect.InitiativeDice != 0)
-                        sbdDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_D6"));
-                    sbdDescription.AppendLine();
+
+                    if (objDrugEffect.Initiative != 0 || objDrugEffect.InitiativeDice != 0)
+                    {
+                        sbdDescription.Append(LanguageManager.GetString("String_AttributeINILong")).Append(strSpace);
+                        if (objDrugEffect.Initiative != 0)
+                        {
+                            sbdDescription.Append(
+                                objDrugEffect.Initiative.ToString("+#;-#", GlobalSettings.CultureInfo));
+                            if (objDrugEffect.InitiativeDice != 0)
+                                sbdDescription
+                                    .Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo))
+                                    .Append(LanguageManager.GetString("String_D6"));
+                        }
+                        else if (objDrugEffect.InitiativeDice != 0)
+                            sbdDescription
+                                .Append(objDrugEffect.InitiativeDice.ToString("+#;-#", GlobalSettings.CultureInfo))
+                                .Append(LanguageManager.GetString("String_D6"));
+
+                        sbdDescription.AppendLine();
+                    }
+
+                    foreach (XmlNode strQuality in objDrugEffect.Qualities)
+                        sbdDescription.Append(_objCharacter.TranslateExtra(strQuality.InnerText)).Append(strSpace)
+                                      .AppendLine(LanguageManager.GetString("String_Quality"));
+                    foreach (string strInfo in objDrugEffect.Infos)
+                        sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo));
+
+                    if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
+                        sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColon)
+                                      .Append(strSpace)
+                                      .Append("10 ⨯ ")
+                                      .Append((objDrugEffect.Duration + 1).ToString(GlobalSettings.CultureInfo))
+                                      .Append(LanguageManager.GetString("String_D6")).Append(strSpace)
+                                      .AppendLine(LanguageManager.GetString("String_Minutes"));
+
+                    if (Category == "Custom Drug" || objDrugEffect.Speed != 0)
+                    {
+                        sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColon)
+                                      .Append(strSpace);
+                        if (objDrugEffect.Speed <= 0)
+                            sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
+                        else if (objDrugEffect.Speed <= 60)
+                            sbdDescription.Append((objDrugEffect.Speed / 3).ToString(GlobalSettings.CultureInfo))
+                                          .Append(strSpace).AppendLine(LanguageManager.GetString("String_CombatTurns"));
+                        else
+                            sbdDescription.Append((objDrugEffect.Speed).ToString(GlobalSettings.CultureInfo))
+                                          .AppendLine(LanguageManager.GetString("String_Seconds"));
+                    }
+
+                    if (objDrugEffect.CrashDamage != 0)
+                        sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect")).Append(strSpace)
+                                      .Append(objDrugEffect.CrashDamage.ToString(GlobalSettings.CultureInfo))
+                                      .Append(LanguageManager.GetString("String_DamageStun")).Append(strSpace)
+                                      .AppendLine(LanguageManager.GetString("String_DamageUnresisted"));
+
+                    sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpace)
+                                  .AppendLine((AddictionRating * (intLevel + 1)).ToString(GlobalSettings.CultureInfo));
+                    sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpace)
+                                  .AppendLine(
+                                      (AddictionThreshold * (intLevel + 1)).ToString(GlobalSettings.CultureInfo));
+                    sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpace)
+                                  .Append((CostPerLevel * (intLevel + 1)).ToString(
+                                              _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
+                                  .AppendLine('¥');
+                    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpace)
+                                  .AppendLine(DisplayTotalAvail);
                 }
-
-                foreach (XmlNode strQuality in objDrugEffect.Qualities)
-                    sbdDescription.Append(_objCharacter.TranslateExtra(strQuality.InnerText)).Append(strSpace).AppendLine(LanguageManager.GetString("String_Quality"));
-                foreach (string strInfo in objDrugEffect.Infos)
-                    sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo));
-
-                if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
-                    sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColon).Append(strSpace)
-                                  .Append("10 ⨯ ")
-                                  .Append((objDrugEffect.Duration + 1).ToString(GlobalSettings.CultureInfo))
-                                  .Append(LanguageManager.GetString("String_D6")).Append(strSpace)
-                                  .AppendLine(LanguageManager.GetString("String_Minutes"));
-
-                if (Category == "Custom Drug" || objDrugEffect.Speed != 0)
+                else
                 {
-                    sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColon).Append(strSpace);
-                    if (objDrugEffect.Speed <= 0)
-                        sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
-                    else if (objDrugEffect.Speed <= 60)
-                        sbdDescription.Append((objDrugEffect.Speed / 3).ToString(GlobalSettings.CultureInfo))
-                                      .Append(strSpace).AppendLine(LanguageManager.GetString("String_CombatTurns"));
-                    else
-                        sbdDescription.Append((objDrugEffect.Speed).ToString(GlobalSettings.CultureInfo))
-                                      .AppendLine(LanguageManager.GetString("String_Seconds"));
+                    string strPerLevel = LanguageManager.GetString("String_PerLevel");
+                    sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpace)
+                                  .Append(0.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .AppendLine(strPerLevel);
+                    sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpace)
+                                  .Append(0.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .AppendLine(strPerLevel);
+                    sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpace)
+                                  .Append((CostPerLevel * (intLevel + 1)).ToString(
+                                              _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
+                                  .Append('¥')
+                                  .Append(strSpace).AppendLine(strPerLevel);
+                    sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpace)
+                                  .AppendLine(DisplayTotalAvail);
                 }
 
-                if (objDrugEffect.CrashDamage != 0)
-                    sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect")).Append(strSpace)
-                                  .Append(objDrugEffect.CrashDamage.ToString(GlobalSettings.CultureInfo))
-                                  .Append(LanguageManager.GetString("String_DamageStun")).Append(strSpace)
-                                  .AppendLine(LanguageManager.GetString("String_DamageUnresisted"));
-
-                sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpace)
-                              .AppendLine((AddictionRating * (intLevel + 1)).ToString(GlobalSettings.CultureInfo));
-                sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpace)
-                              .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(GlobalSettings.CultureInfo));
-                sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpace)
-                              .Append((CostPerLevel * (intLevel + 1)).ToString(
-                                          _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
-                              .AppendLine('¥');
-                sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpace).AppendLine(DisplayTotalAvail);
+                return sbdDescription.ToString();
             }
-            else
-            {
-                string strPerLevel = LanguageManager.GetString("String_PerLevel");
-                sbdDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpace)
-                              .Append(0.ToString(GlobalSettings.CultureInfo)).Append(strSpace).AppendLine(strPerLevel);
-                sbdDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpace)
-                              .Append(0.ToString(GlobalSettings.CultureInfo)).Append(strSpace).AppendLine(strPerLevel);
-                sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpace)
-                              .Append((CostPerLevel * (intLevel + 1)).ToString(
-                                          _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)).Append('¥')
-                              .Append(strSpace).AppendLine(strPerLevel);
-                sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpace)
-                              .AppendLine(DisplayTotalAvail);
-            }
-
-            return sbdDescription.ToString();
         }
 
         public XmlNode GetNode()

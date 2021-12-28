@@ -358,29 +358,39 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-
-            string strCategory = cboCategory.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
-            else
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                StringBuilder sbdCategoryFilter = new StringBuilder();
-                foreach (string strItem in _lstCategory.Select(x => x.Value))
-                {
-                    if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                }
-                if (sbdCategoryFilter.Length > 0)
-                {
-                    sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
-                }
-            }
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
 
-            BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
+                string strCategory = cboCategory.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
+                                                       && (GlobalSettings.SearchInCategoryOnly
+                                                           || txtSearch.TextLength == 0))
+                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                else
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategoryFilter))
+                    {
+                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        {
+                            if (!string.IsNullOrEmpty(strItem))
+                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                        }
+
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
+            }
         }
 
         /// <summary>
@@ -428,21 +438,29 @@ namespace Chummer
                             int intArmor = objArmor.TotalArmor;
                             decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo);
                             AvailabilityValue objAvail = objArmor.TotalAvailTuple();
-                            StringBuilder strAccessories = new StringBuilder();
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdAccessories))
                             {
-                                strAccessories.AppendLine(objMod.CurrentDisplayName);
-                            }
-                            foreach (Gear objGear in objArmor.GearChildren)
-                            {
-                                strAccessories.AppendLine(objGear.CurrentDisplayName);
-                            }
-                            if (strAccessories.Length > 0)
-                                strAccessories.Length -= Environment.NewLine.Length;
-                            SourceString strSource = new SourceString(objArmor.Source, objArmor.DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                            NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
+                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                {
+                                    sbdAccessories.AppendLine(objMod.CurrentDisplayName);
+                                }
 
-                            tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail, strAccessories.ToString(), strSource, strCost);
+                                foreach (Gear objGear in objArmor.GearChildren)
+                                {
+                                    sbdAccessories.AppendLine(objGear.CurrentDisplayName);
+                                }
+
+                                if (sbdAccessories.Length > 0)
+                                    sbdAccessories.Length -= Environment.NewLine.Length;
+                                SourceString strSource = new SourceString(
+                                    objArmor.Source, objArmor.DisplayPage(GlobalSettings.Language),
+                                    GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                                NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
+
+                                tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
+                                                  sbdAccessories.ToString(), strSource, strCost);
+                            }
                         }
                     }
 

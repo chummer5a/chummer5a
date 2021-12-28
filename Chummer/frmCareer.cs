@@ -6130,11 +6130,16 @@ namespace Chummer
             // Enable all of the Improvements in the Improvement Group.
             if (!(treImprovements.SelectedNode?.Tag is string strSelectedId))
                 return;
-            List<Improvement> lstImprovementsEnabled = CharacterObject.Improvements
-                                                                      .Where(objImprovement => objImprovement.Custom && !objImprovement.Enabled
-                                                                                 && (objImprovement.CustomGroup == strSelectedId
-                                                                                     || strSelectedId == "Node_SelectedImprovements"
-                                                                                     && string.IsNullOrEmpty(objImprovement.CustomGroup))).ToList();
+            List<Improvement> lstImprovementsEnabled = CharacterObject.Improvements.Where(
+                                                                          objImprovement => objImprovement.Custom
+                                                                              && !objImprovement.Enabled
+                                                                              && (objImprovement.CustomGroup
+                                                                                  == strSelectedId
+                                                                                  || strSelectedId
+                                                                                  == "Node_SelectedImprovements"
+                                                                                  && string.IsNullOrEmpty(objImprovement
+                                                                                      .CustomGroup)))
+                                                                      .ToList();
             if (lstImprovementsEnabled.Count == 0)
                 return;
             ImprovementManager.EnableImprovements(CharacterObject, lstImprovementsEnabled);
@@ -6147,15 +6152,15 @@ namespace Chummer
             if (!(treImprovements.SelectedNode?.Tag is string strSelectedId))
                 return;
             // Disable all of the Improvements in the Improvement Group.
-            List<Improvement> lstImprovementsDisabled = CharacterObject.Improvements
-                                                                       .Where(objImprovement => objImprovement.Custom
-                                                                                  && objImprovement.Enabled
-                                                                                  && (objImprovement.CustomGroup
-                                                                                      == strSelectedId
-                                                                                      || strSelectedId
-                                                                                      == "Node_SelectedImprovements"
-                                                                                      && string.IsNullOrEmpty(
-                                                                                          objImprovement.CustomGroup)))
+            List<Improvement> lstImprovementsDisabled = CharacterObject.Improvements.Where(
+                                                                           objImprovement => objImprovement.Custom
+                                                                               && objImprovement.Enabled
+                                                                               && (objImprovement.CustomGroup
+                                                                                   == strSelectedId
+                                                                                   || strSelectedId
+                                                                                   == "Node_SelectedImprovements"
+                                                                                   && string.IsNullOrEmpty(
+                                                                                       objImprovement.CustomGroup)))
                                                                        .ToList();
 
             if (lstImprovementsDisabled.Count == 0)

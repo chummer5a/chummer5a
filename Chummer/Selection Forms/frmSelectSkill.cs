@@ -72,71 +72,94 @@ namespace Chummer
                 objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Settings.BookXPath() + ")]");
             else
             {
-                StringBuilder sbdFilter = new StringBuilder("not(exotic)");
-                if (!string.IsNullOrEmpty(_strIncludeCategory))
+                string strFilter = string.Empty;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    sbdFilter.Append(" and (");
-                    foreach (string strSkillCategory in _strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("category = ").Append(strSkillCategory.Trim().CleanXPath()).Append(" or ");
-                    // Remove the trailing " or ".
-                    sbdFilter.Length -= 4;
-                    sbdFilter.Append(')');
+                    sbdFilter.Append("not(exotic) and (").Append(_objCharacter.Settings.BookXPath()).Append(')');
+                    if (!string.IsNullOrEmpty(_strIncludeCategory))
+                    {
+                        sbdFilter.Append(" and (");
+                        foreach (string strSkillCategory in _strIncludeCategory.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdFilter.Append("category = ").Append(strSkillCategory.Trim().CleanXPath()).Append(" or ");
+                        // Remove the trailing " or ".
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
+                    }
+
+                    if (!string.IsNullOrEmpty(_strExcludeCategory))
+                    {
+                        sbdFilter.Append(" and (");
+                        foreach (string strSkillCategory in _strExcludeCategory.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdFilter.Append("category != ").Append(strSkillCategory.Trim().CleanXPath())
+                                     .Append(" and ");
+                        // Remove the trailing " and ".
+                        sbdFilter.Length -= 5;
+                        sbdFilter.Append(')');
+                    }
+
+                    if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
+                    {
+                        sbdFilter.Append(" and (");
+                        foreach (string strSkillGroup in _strIncludeSkillGroup.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdFilter.Append("skillgroup = ").Append(strSkillGroup.Trim().CleanXPath()).Append(" or ");
+                        // Remove the trailing " or ".
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
+                    }
+
+                    if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
+                    {
+                        sbdFilter.Append(" and (");
+                        foreach (string strSkillGroup in _strExcludeSkillGroup.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdFilter.Append("skillgroup != ").Append(strSkillGroup.Trim().CleanXPath())
+                                     .Append(" and ");
+                        // Remove the trailing " and ".
+                        sbdFilter.Length -= 5;
+                        sbdFilter.Append(')');
+                    }
+
+                    if (!string.IsNullOrEmpty(LinkedAttribute))
+                    {
+                        sbdFilter.Append(" and (");
+                        foreach (string strAttribute in LinkedAttribute.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdFilter.Append("attribute = ").Append(strAttribute.Trim().CleanXPath()).Append(" or ");
+                        // Remove the trailing " or ".
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
+                    }
+
+                    if (!string.IsNullOrEmpty(_strLimitToSkill))
+                    {
+                        sbdFilter.Append(" and (");
+                        foreach (string strSkill in _strLimitToSkill.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdFilter.Append("name = ").Append(strSkill.Trim().CleanXPath()).Append(" or ");
+                        // Remove the trailing " or ".
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
+                    }
+
+                    if (!string.IsNullOrEmpty(_strExcludeSkill))
+                    {
+                        sbdFilter.Append(" and (");
+                        foreach (string strSkill in _strExcludeSkill.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdFilter.Append("name != ").Append(strSkill.Trim().CleanXPath()).Append(" and ");
+                        // Remove the trailing " and ".
+                        sbdFilter.Length -= 5;
+                        sbdFilter.Append(')');
+                    }
+
+                    if (sbdFilter.Length > 0)
+                        strFilter = '[' + sbdFilter.ToString() + ']';
                 }
-                if (!string.IsNullOrEmpty(_strExcludeCategory))
-                {
-                    sbdFilter.Append(" and (");
-                    foreach (string strSkillCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("category != ").Append(strSkillCategory.Trim().CleanXPath()).Append(" and ");
-                    // Remove the trailing " and ".
-                    sbdFilter.Length -= 5;
-                    sbdFilter.Append(')');
-                }
-                if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
-                {
-                    sbdFilter.Append(" and (");
-                    foreach (string strSkillGroup in _strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("skillgroup = ").Append(strSkillGroup.Trim().CleanXPath()).Append(" or ");
-                    // Remove the trailing " or ".
-                    sbdFilter.Length -= 4;
-                    sbdFilter.Append(')');
-                }
-                if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
-                {
-                    sbdFilter.Append(" and (");
-                    foreach (string strSkillGroup in _strExcludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("skillgroup != ").Append(strSkillGroup.Trim().CleanXPath()).Append(" and ");
-                    // Remove the trailing " and ".
-                    sbdFilter.Length -= 5;
-                    sbdFilter.Append(')');
-                }
-                if (!string.IsNullOrEmpty(LinkedAttribute))
-                {
-                    sbdFilter.Append(" and (");
-                    foreach (string strAttribute in LinkedAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("attribute = ").Append(strAttribute.Trim().CleanXPath()).Append(" or ");
-                    // Remove the trailing " or ".
-                    sbdFilter.Length -= 4;
-                    sbdFilter.Append(')');
-                }
-                if (!string.IsNullOrEmpty(_strLimitToSkill))
-                {
-                    sbdFilter.Append(" and (");
-                    foreach (string strSkill in _strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("name = ").Append(strSkill.Trim().CleanXPath()).Append(" or ");
-                    // Remove the trailing " or ".
-                    sbdFilter.Length -= 4;
-                    sbdFilter.Append(')');
-                }
-                if (!string.IsNullOrEmpty(_strExcludeSkill))
-                {
-                    sbdFilter.Append(" and (");
-                    foreach (string strSkill in _strExcludeSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        sbdFilter.Append("name != ").Append(strSkill.Trim().CleanXPath()).Append(" and ");
-                    // Remove the trailing " and ".
-                    sbdFilter.Length -= 5;
-                    sbdFilter.Append(')');
-                }
-                objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[" + sbdFilter + " and (" + _objCharacter.Settings.BookXPath() + ")]");
+
+                objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill" + strFilter);
             }
 
             // Add the Skills to the list.
@@ -249,16 +272,19 @@ namespace Chummer
                 {
                     if (xmlCategoryList == null)
                         return;
-                    StringBuilder objLimitToCategories = new StringBuilder();
-                    foreach (XmlNode objNode in xmlCategoryList)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdLimitToCategories))
                     {
-                        objLimitToCategories.Append("category = ").Append(objNode.InnerText.CleanXPath()).Append(" or ");
-                    }
+                        foreach (XmlNode objNode in xmlCategoryList)
+                        {
+                            sbdLimitToCategories.Append("category = ").Append(objNode.InnerText.CleanXPath())
+                                                .Append(" or ");
+                        }
 
-                    // Remove the last " or "
-                    if (objLimitToCategories.Length > 0)
-                        objLimitToCategories.Length -= 4;
-                    _strLimitToCategories = objLimitToCategories.ToString();
+                        // Remove the last " or "
+                        if (sbdLimitToCategories.Length > 0)
+                            sbdLimitToCategories.Length -= 4;
+                        _strLimitToCategories = sbdLimitToCategories.ToString();
+                    }
                 }
             }
         }

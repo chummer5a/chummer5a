@@ -152,15 +152,24 @@ namespace Chummer
                 }
                 if (strLimitString != bool.FalseString)
                 {
-                    StringBuilder objLimitString = new StringBuilder(strLimitString);
-                    objCharacter.AttributeSection.ProcessAttributesInXPath(objLimitString, strLimitString);
-                    foreach (string strLimb in Character.LimbStrings)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdLimitString))
                     {
-                        objLimitString.CheapReplace(strLimitString, "{" + strLimb + "}", () => (string.IsNullOrEmpty(strLocation) ? objCharacter.LimbCount(strLimb) : objCharacter.LimbCount(strLimb) / 2).ToString(GlobalSettings.InvariantCultureInfo));
-                    }
+                        sbdLimitString.Append(strLimitString);
+                        objCharacter.AttributeSection.ProcessAttributesInXPath(sbdLimitString, strLimitString);
+                        foreach (string strLimb in Character.LimbStrings)
+                        {
+                            sbdLimitString.CheapReplace(strLimitString, "{" + strLimb + "}",
+                                                        () => (string.IsNullOrEmpty(strLocation)
+                                                                ? objCharacter.LimbCount(strLimb)
+                                                                : objCharacter.LimbCount(strLimb) / 2)
+                                                            .ToString(GlobalSettings.InvariantCultureInfo));
+                        }
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(objLimitString.ToString(), out bool blnIsSuccess);
-                    strLimitString = blnIsSuccess ? objProcess.ToString() : "1";
+                        object objProcess
+                            = CommonFunctions.EvaluateInvariantXPath(sbdLimitString.ToString(), out bool blnIsSuccess);
+                        strLimitString = blnIsSuccess ? objProcess.ToString() : "1";
+                    }
 
                     // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
                     IEnumerable<IHasName> objListToCheck = null;
@@ -361,86 +370,108 @@ namespace Chummer
             XPathNavigator xmlRequiredNode = xmlNode.SelectSingleNodeAndCacheExpression("required");
             if (xmlRequiredNode != null)
             {
-                StringBuilder objRequirement = new StringBuilder();
-                bool blnRequirementMet = true;
-
-                // Loop through the oneof requirements.
-                foreach (XPathNavigator objXmlOneOf in xmlRequiredNode.SelectAndCacheExpression("oneof"))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdRequirement))
                 {
-                    bool blnOneOfMet = false;
-                    StringBuilder objThisRequirement = new StringBuilder(Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf"));
-                    foreach (XPathNavigator xmlRequiredItemNode in objXmlOneOf.SelectChildren(XPathNodeType.Element))
-                    {
-                        if (xmlRequiredItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
-                        {
-                            blnOneOfMet = true;
-                            if (!blnShowMessage)
-                                break;
-                        }
-                        if (blnShowMessage)
-                            objThisRequirement.Append(strName);
-                    }
+                    bool blnRequirementMet = true;
 
-                    // Update the flag for requirements met.
-                    if (!blnOneOfMet)
+                    // Loop through the oneof requirements.
+                    foreach (XPathNavigator objXmlOneOf in xmlRequiredNode.SelectAndCacheExpression("oneof"))
                     {
-                        blnRequirementMet = false;
-                        if (blnShowMessage)
-                            objRequirement.Append(objThisRequirement);
-                    }
-                    if (!blnRequirementMet && !blnShowMessage)
-                        break;
-                }
-
-                if (blnRequirementMet || blnShowMessage)
-                {
-                    // Loop through the allof requirements.
-                    foreach (XPathNavigator objXmlAllOf in xmlRequiredNode.SelectAndCacheExpression("allof"))
-                    {
-                        bool blnAllOfMet = true;
-                        StringBuilder objThisRequirement = new StringBuilder(Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_AllOf"));
-                        foreach (XPathNavigator xmlRequiredItemNode in objXmlAllOf.SelectChildren(XPathNodeType.Element))
+                        bool blnOneOfMet = false;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdThisRequirement))
                         {
-                            // If this item was not found, fail the AllOfMet condition.
-                            if (!xmlRequiredItemNode.TestNodeRequirements(objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
+                            sbdThisRequirement.AppendLine()
+                                              .Append(LanguageManager.GetString("Message_SelectQuality_OneOf"));
+                            foreach (XPathNavigator xmlRequiredItemNode in
+                                     objXmlOneOf.SelectChildren(XPathNodeType.Element))
                             {
-                                blnAllOfMet = false;
+                                if (xmlRequiredItemNode.TestNodeRequirements(
+                                        objCharacter, objParent, out string strName, strIgnoreQuality, blnShowMessage))
+                                {
+                                    blnOneOfMet = true;
+                                    if (!blnShowMessage)
+                                        break;
+                                }
+
                                 if (blnShowMessage)
-                                    objThisRequirement.Append(strName);
-                                else
-                                    break;
+                                    sbdThisRequirement.Append(strName);
+                            }
+
+                            // Update the flag for requirements met.
+                            if (!blnOneOfMet)
+                            {
+                                blnRequirementMet = false;
+                                if (blnShowMessage)
+                                    sbdRequirement.Append(sbdThisRequirement);
                             }
                         }
 
-                        // Update the flag for requirements met.
-                        if (!blnAllOfMet)
-                        {
-                            blnRequirementMet = false;
-                            if (blnShowMessage)
-                                objRequirement.Append(objThisRequirement);
-                        }
                         if (!blnRequirementMet && !blnShowMessage)
                             break;
                     }
-                }
 
-                // The character has not met the requirements, so display a message and uncheck the item.
-                if (!blnRequirementMet)
-                {
-                    if (blnShowMessage)
+                    if (blnRequirementMet || blnShowMessage)
                     {
-                        Program.MainForm.ShowMessageBox(
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("Message_SelectGeneric_Requirement"),
-                                strLocalName) + objRequirement,
-                            string.Format(
-                                GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement"),
-                                strLocalName),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Loop through the allof requirements.
+                        foreach (XPathNavigator objXmlAllOf in xmlRequiredNode.SelectAndCacheExpression("allof"))
+                        {
+                            bool blnAllOfMet = true;
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdThisRequirement))
+                            {
+                                sbdThisRequirement.AppendLine()
+                                                  .Append(LanguageManager.GetString("Message_SelectQuality_AllOf"));
+                                foreach (XPathNavigator xmlRequiredItemNode in objXmlAllOf.SelectChildren(
+                                             XPathNodeType.Element))
+                                {
+                                    // If this item was not found, fail the AllOfMet condition.
+                                    if (!xmlRequiredItemNode.TestNodeRequirements(
+                                            objCharacter, objParent, out string strName, strIgnoreQuality,
+                                            blnShowMessage))
+                                    {
+                                        blnAllOfMet = false;
+                                        if (blnShowMessage)
+                                            sbdThisRequirement.Append(strName);
+                                        else
+                                            break;
+                                    }
+                                }
+
+                                // Update the flag for requirements met.
+                                if (!blnAllOfMet)
+                                {
+                                    blnRequirementMet = false;
+                                    if (blnShowMessage)
+                                        sbdRequirement.Append(sbdThisRequirement);
+                                }
+                            }
+
+                            if (!blnRequirementMet && !blnShowMessage)
+                                break;
+                        }
                     }
-                    return false;
+
+                    // The character has not met the requirements, so display a message and uncheck the item.
+                    if (!blnRequirementMet)
+                    {
+                        if (blnShowMessage)
+                        {
+                            Program.MainForm.ShowMessageBox(
+                                string.Format(
+                                    GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("Message_SelectGeneric_Requirement"),
+                                    strLocalName) + sbdRequirement,
+                                string.Format(
+                                    GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement"),
+                                    strLocalName),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+
+                        return false;
+                    }
                 }
             }
             return true;
@@ -886,34 +917,56 @@ namespace Chummer
                     {
                         // Check that clustered options are present (Magical Tradition + Skill 6, for example)
                         bool blnResult = true;
-                        StringBuilder sbdResultName = new StringBuilder(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_AllOf"));
-                        foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdResultName))
                         {
-                            bool blnLoopResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage);
-                            blnResult = blnResult && blnLoopResult;
-                            if (!blnResult && !blnShowMessage)
-                                break;
-                            if (!blnLoopResult)
-                                sbdResultName.Append(strLoopResult.Replace(Environment.NewLine + '\t', Environment.NewLine + '\t' + '\t'));
+                            sbdResultName.AppendLine().Append('\t')
+                                         .Append(LanguageManager.GetString("Message_SelectQuality_AllOf"));
+                            foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
+                            {
+                                bool blnLoopResult = xmlChildNode.TestNodeRequirements(
+                                    objCharacter, objParent, out string strLoopResult, strIgnoreQuality,
+                                    blnShowMessage);
+                                blnResult = blnResult && blnLoopResult;
+                                if (!blnResult && !blnShowMessage)
+                                    break;
+                                if (!blnLoopResult)
+                                    sbdResultName.Append(
+                                        strLoopResult.Replace(Environment.NewLine + '\t',
+                                                              Environment.NewLine + '\t' + '\t'));
+                            }
+
+                            if (blnShowMessage)
+                                strName = sbdResultName.ToString();
                         }
-                        if (blnShowMessage)
-                            strName = sbdResultName.ToString();
+
                         return blnResult;
                     }
                 case "grouponeof":
                     {
                         // Check that one of the clustered options are present
                         bool blnResult = false;
-                        StringBuilder sbdResultName = new StringBuilder(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_OneOf"));
-                        foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdResultName))
                         {
-                            blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage) || blnResult;
-                            if (blnResult && !blnShowMessage)
-                                break;
-                            sbdResultName.Append(strLoopResult.Replace(Environment.NewLine + '\t', Environment.NewLine + '\t' + '\t'));
+                            sbdResultName.AppendLine().Append('\t')
+                                         .Append(LanguageManager.GetString("Message_SelectQuality_OneOf"));
+                            foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
+                            {
+                                blnResult = xmlChildNode.TestNodeRequirements(
+                                    objCharacter, objParent, out string strLoopResult, strIgnoreQuality,
+                                    blnShowMessage) || blnResult;
+                                if (blnResult && !blnShowMessage)
+                                    break;
+                                sbdResultName.Append(
+                                    strLoopResult.Replace(Environment.NewLine + '\t',
+                                                          Environment.NewLine + '\t' + '\t'));
+                            }
+
+                            if (blnShowMessage)
+                                strName = sbdResultName.ToString();
                         }
-                        if (blnShowMessage)
-                            strName = sbdResultName.ToString();
+
                         return blnResult;
                     }
                 case "initiategrade":
@@ -1304,62 +1357,38 @@ namespace Chummer
                     // Check if the total combined Ratings of Skills adds up to a particular total.
                     int intTotal = 0;
                     string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
-                    StringBuilder objOutputString = new StringBuilder(Environment.NewLine + '\t');
-                    if (strGroups != null)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdOutput))
                     {
-                        // If the xmlnode contains Type element, assume that it is a Knowledge skill. 
-                        if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
-                        {
-                            for (int i = 0; i <= strGroups.Length - 1; ++i)
-                            {
-                                foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
-                                {
-                                    if (objGroup.Name != strGroups[i]) continue;
-                                    if (blnShowMessage)
-                                        objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
-                                    intTotal += objGroup.Rating;
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i <= strGroups.Length - 1; ++i)
-                            {
-                                foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
-                                {
-                                    if (objGroup.Name != strGroups[i]) continue;
-                                    if (blnShowMessage)
-                                        objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
-                                    intTotal += objGroup.Rating;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!blnShowMessage) return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
-                    if (objOutputString.Length > 0)
-                        objOutputString.Length -= 2;
-                    strName = objOutputString + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
-                    return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
-                    }
-                case "skillgrouptotal":
-                    {
-                        // Check if the total combined Ratings of Skill Groups adds up to a particular total.
-                        int intTotal = 0;
-                        string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skillgroups")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
-                        StringBuilder objOutputString = new StringBuilder(Environment.NewLine + '\t');
+                        sbdOutput.AppendLine().Append('\t');
                         if (strGroups != null)
                         {
-                            for (int i = 0; i <= strGroups.Length - 1; ++i)
+                            // If the xmlnode contains Type element, assume that it is a Knowledge skill. 
+                            if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
                             {
-                                foreach (SkillGroup objGroup in objCharacter.SkillsSection.SkillGroups)
+                                for (int i = 0; i <= strGroups.Length - 1; ++i)
                                 {
-                                    if (objGroup.Name == strGroups[i])
+                                    foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
                                     {
+                                        if (objGroup.Name != strGroups[i]) continue;
                                         if (blnShowMessage)
-                                            objOutputString.Append(objGroup.CurrentDisplayName).Append(',').Append(strSpace);
+                                            sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
+                                                     .Append(strSpace);
+                                        intTotal += objGroup.Rating;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; i <= strGroups.Length - 1; ++i)
+                                {
+                                    foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
+                                    {
+                                        if (objGroup.Name != strGroups[i]) continue;
+                                        if (blnShowMessage)
+                                            sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
+                                                     .Append(strSpace);
                                         intTotal += objGroup.Rating;
                                         break;
                                     }
@@ -1367,12 +1396,51 @@ namespace Chummer
                             }
                         }
 
-                        if (blnShowMessage)
+                        if (!blnShowMessage)
+                            return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
+                        if (sbdOutput.Length > 0)
+                            sbdOutput.Length -= 2;
+                        strName = sbdOutput + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
+                    }
+
+                    return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
+                    }
+                case "skillgrouptotal":
+                    {
+                        // Check if the total combined Ratings of Skill Groups adds up to a particular total.
+                        int intTotal = 0;
+                        string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skillgroups")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdOutput))
                         {
-                            if (objOutputString.Length > 0)
-                                objOutputString.Length -= 2;
-                            strName = objOutputString + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkillGroup") + ')';
+                            sbdOutput.AppendLine().Append('\t');
+                            if (strGroups != null)
+                            {
+                                for (int i = 0; i <= strGroups.Length - 1; ++i)
+                                {
+                                    foreach (SkillGroup objGroup in objCharacter.SkillsSection.SkillGroups)
+                                    {
+                                        if (objGroup.Name == strGroups[i])
+                                        {
+                                            if (blnShowMessage)
+                                                sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
+                                                         .Append(strSpace);
+                                            intTotal += objGroup.Rating;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (blnShowMessage)
+                            {
+                                if (sbdOutput.Length > 0)
+                                    sbdOutput.Length -= 2;
+                                strName = sbdOutput + strSpace + '('
+                                          + LanguageManager.GetString("String_ExpenseSkillGroup") + ')';
+                            }
                         }
+
                         return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
                     }
                 case "specialmodificationlimit":

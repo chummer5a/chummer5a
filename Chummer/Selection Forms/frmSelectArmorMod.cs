@@ -401,26 +401,39 @@ namespace Chummer
         private void RefreshList()
         {
             List<ListItem> lstMods = new List<ListItem>();
-
+            string strFilter = string.Empty;
             // Populate the Mods list.
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-            StringBuilder sbdCategoryFilter = new StringBuilder(ExcludeGeneralCategory ? string.Empty : "category = \"General\" or ");
-            foreach (string strCategory in AllowedCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                if (!string.IsNullOrEmpty(strCategory))
-                    sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                using (new FetchSafelyFromPool<StringBuilder>(
+                           Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
+                {
+                    if (!ExcludeGeneralCategory)
+                        sbdCategoryFilter.Append("category = \"General\" or ");
+                    foreach (string strCategory in AllowedCategories.SplitNoAlloc(
+                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (!string.IsNullOrEmpty(strCategory))
+                            sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                    }
+
+                    if (sbdCategoryFilter.Length > 0)
+                    {
+                        sbdCategoryFilter.Length -= 4;
+                        sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
             }
-            if (sbdCategoryFilter.Length > 0)
-            {
-                sbdCategoryFilter.Length -= 4;
-                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
-            }
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             int intOverLimit = 0;
-            XPathNodeIterator objXmlModList =
-                _xmlBaseDataNode.Select("/chummer/mods/mod[" + sbdFilter + ']');
+            XPathNodeIterator objXmlModList = _xmlBaseDataNode.Select("/chummer/mods/mod" + strFilter);
             if (objXmlModList.Count > 0)
             {
                 foreach (XPathNavigator objXmlMod in objXmlModList)

@@ -337,7 +337,7 @@ namespace Chummer
 
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
-            
+
             string strTimeStamp;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdTimeStamper))

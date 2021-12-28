@@ -210,13 +210,16 @@ namespace Chummer
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
-                StringBuilder sbdFilter = new StringBuilder();
-                foreach (string strPower in _strLimitToPowers.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                    sbdFilter.Append("name = ").Append(strPower.CleanXPath()).Append(" or ");
-                if (sbdFilter.Length > 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    sbdFilter.Length -= 4;
-                    strFilter += " and (" + sbdFilter + ')';
+                    foreach (string strPower in _strLimitToPowers.SplitNoAlloc(
+                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                        sbdFilter.Append("name = ").Append(strPower.CleanXPath()).Append(" or ");
+                    if (sbdFilter.Length > 0)
+                    {
+                        sbdFilter.Length -= 4;
+                        strFilter += " and (" + sbdFilter + ')';
+                    }
                 }
             }
 

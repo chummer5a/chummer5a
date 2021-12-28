@@ -1732,7 +1732,7 @@ namespace Chummer
                         Log.Error(e);
                         return null;
                     }
-                    
+
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdAllLines))
                     {

@@ -54,14 +54,20 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(_strExcludeCategory))
                     {
-                        StringBuilder sbdExclude = new StringBuilder();
-                        foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                            sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
-                        // Remove the trailing " and ";
-                        if (sbdExclude.Length > 0)
-                            sbdExclude.Length -= 5;
-                        if (_objXmlDocument.SelectSingleNode("/chummer/skills/skill[" + sbdExclude + " and skillgroup = " + objXmlSkill.Value.CleanXPath() + "]") == null)
-                            continue;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdExclude))
+                        {
+                            foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(
+                                         ',', StringSplitOptions.RemoveEmptyEntries))
+                                sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
+                            // Remove the trailing " and ";
+                            if (sbdExclude.Length > 0)
+                                sbdExclude.Length -= 5;
+                            if (_objXmlDocument.SelectSingleNode(
+                                    "/chummer/skills/skill[" + sbdExclude + " and skillgroup = "
+                                    + objXmlSkill.Value.CleanXPath() + "]") == null)
+                                continue;
+                        }
                     }
 
                     string strInnerText = objXmlSkill.Value;

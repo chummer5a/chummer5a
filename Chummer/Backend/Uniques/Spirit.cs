@@ -303,130 +303,182 @@ namespace Chummer
 
         private void PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
         {
-            StringBuilder sbdExtra = new StringBuilder();
-            string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
-            if (!string.IsNullOrEmpty(strSelect))
-                sbdExtra.Append(CharacterObject.TranslateExtra(strSelect, strLanguageToPrint));
-            string strSource = string.Empty;
-            string strPage = string.Empty;
-            string strPowerName = xmlPowerEntryNode.InnerText;
-            string strEnglishName = strPowerName;
-            string strEnglishCategory = string.Empty;
-            string strCategory = string.Empty;
-            string strDisplayType = string.Empty;
-            string strDisplayAction = string.Empty;
-            string strDisplayRange = string.Empty;
-            string strDisplayDuration = string.Empty;
-            XPathNavigator objXmlPowerNode = xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[name = " + strPowerName.CleanXPath() + "]") ??
-                                             xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]") ??
-                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[name = " + strPowerName.CleanXPath() + "]") ??
-                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]");
-            if (objXmlPowerNode != null)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdExtra))
             {
-                objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
-                if (!objXmlPowerNode.TryGetStringFieldQuickly("altpage", ref strPage))
-                    objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
-
-                objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
-                string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
-                bool blnExtrasAdded = false;
-                foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
+                if (!string.IsNullOrEmpty(strSelect))
+                    sbdExtra.Append(CharacterObject.TranslateExtra(strSelect, strLanguageToPrint));
+                string strSource = string.Empty;
+                string strPage = string.Empty;
+                string strPowerName = xmlPowerEntryNode.InnerText;
+                string strEnglishName = strPowerName;
+                string strEnglishCategory = string.Empty;
+                string strCategory = string.Empty;
+                string strDisplayType = string.Empty;
+                string strDisplayAction = string.Empty;
+                string strDisplayRange = string.Empty;
+                string strDisplayDuration = string.Empty;
+                XPathNavigator objXmlPowerNode
+                    = xmlSpiritPowersBaseChummerNode.SelectSingleNode(
+                          "powers/power[name = " + strPowerName.CleanXPath() + "]") ??
+                      xmlSpiritPowersBaseChummerNode.SelectSingleNode(
+                          "powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]") ??
+                      xmlCritterPowersBaseChummerNode.SelectSingleNode(
+                          "powers/power[name = " + strPowerName.CleanXPath() + "]") ??
+                      xmlCritterPowersBaseChummerNode.SelectSingleNode(
+                          "powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]");
+                if (objXmlPowerNode != null)
                 {
-                    blnExtrasAdded = true;
-                    sbdExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(',').Append(strSpace);
+                    objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
+                    if (!objXmlPowerNode.TryGetStringFieldQuickly("altpage", ref strPage))
+                        objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
+
+                    objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
+                    string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
+                    bool blnExtrasAdded = false;
+                    foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(')
+                                                                .TrimEndOnce(')')
+                                                                .SplitNoAlloc(
+                                                                    ',', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        blnExtrasAdded = true;
+                        sbdExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(',')
+                                .Append(strSpace);
+                    }
+
+                    if (blnExtrasAdded)
+                        sbdExtra.Length -= 2;
+
+                    if (!objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName))
+                        strPowerName = strEnglishName;
+
+                    objXmlPowerNode.TryGetStringFieldQuickly("category", ref strEnglishCategory);
+
+                    strCategory = xmlSpiritPowersBaseChummerNode
+                                  .SelectSingleNode("categories/category[. = " + strEnglishCategory.CleanXPath()
+                                                                               + "]/@translate")?.Value
+                                  ?? strEnglishCategory;
+
+                    switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type")?.Value)
+                    {
+                        case "M":
+                            strDisplayType = LanguageManager.GetString("String_SpellTypeMana", strLanguageToPrint);
+                            break;
+
+                        case "P":
+                            strDisplayType = LanguageManager.GetString("String_SpellTypePhysical", strLanguageToPrint);
+                            break;
+                    }
+
+                    switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action")?.Value)
+                    {
+                        case "Auto":
+                            strDisplayAction = LanguageManager.GetString("String_ActionAutomatic", strLanguageToPrint);
+                            break;
+
+                        case "Free":
+                            strDisplayAction = LanguageManager.GetString("String_ActionFree", strLanguageToPrint);
+                            break;
+
+                        case "Simple":
+                            strDisplayAction = LanguageManager.GetString("String_ActionSimple", strLanguageToPrint);
+                            break;
+
+                        case "Complex":
+                            strDisplayAction = LanguageManager.GetString("String_ActionComplex", strLanguageToPrint);
+                            break;
+
+                        case "Special":
+                            strDisplayAction
+                                = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
+                            break;
+                    }
+
+                    switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration")?.Value)
+                    {
+                        case "Instant":
+                            strDisplayDuration
+                                = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguageToPrint);
+                            break;
+
+                        case "Sustained":
+                            strDisplayDuration
+                                = LanguageManager.GetString("String_SpellDurationSustained", strLanguageToPrint);
+                            break;
+
+                        case "Always":
+                            strDisplayDuration
+                                = LanguageManager.GetString("String_SpellDurationAlways", strLanguageToPrint);
+                            break;
+
+                        case "Special":
+                            strDisplayDuration
+                                = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
+                            break;
+                    }
+
+                    if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange)
+                        && !strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage,
+                                                      StringComparison.OrdinalIgnoreCase))
+                    {
+                        strDisplayRange = strDisplayRange
+                                          .CheapReplace(
+                                              "Self",
+                                              () => LanguageManager.GetString(
+                                                  "String_SpellRangeSelf", strLanguageToPrint))
+                                          .CheapReplace(
+                                              "Special",
+                                              () => LanguageManager.GetString(
+                                                  "String_SpellDurationSpecial", strLanguageToPrint))
+                                          .CheapReplace(
+                                              "LOS",
+                                              () => LanguageManager.GetString(
+                                                  "String_SpellRangeLineOfSight", strLanguageToPrint))
+                                          .CheapReplace(
+                                              "LOI",
+                                              () => LanguageManager.GetString(
+                                                  "String_SpellRangeLineOfInfluence", strLanguageToPrint))
+                                          .CheapReplace(
+                                              "Touch",
+                                              () => LanguageManager.GetString(
+                                                  "String_SpellRangeTouch",
+                                                  strLanguageToPrint)) // Short form to remain export-friendly
+                                          .CheapReplace(
+                                              "T",
+                                              () => LanguageManager.GetString(
+                                                  "String_SpellRangeTouch", strLanguageToPrint))
+                                          .CheapReplace(
+                                              "(A)",
+                                              () => '(' + LanguageManager.GetString(
+                                                  "String_SpellRangeArea", strLanguageToPrint) + ')')
+                                          .CheapReplace(
+                                              "MAG",
+                                              () => LanguageManager.GetString(
+                                                  "String_AttributeMAGShort", strLanguageToPrint));
+                    }
                 }
-                if (blnExtrasAdded)
-                    sbdExtra.Length -= 2;
 
-                if (!objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName))
-                    strPowerName = strEnglishName;
+                if (string.IsNullOrEmpty(strDisplayType))
+                    strDisplayType = LanguageManager.GetString("String_None", strLanguageToPrint);
+                if (string.IsNullOrEmpty(strDisplayAction))
+                    strDisplayAction = LanguageManager.GetString("String_None", strLanguageToPrint);
 
-                objXmlPowerNode.TryGetStringFieldQuickly("category", ref strEnglishCategory);
-
-                strCategory = xmlSpiritPowersBaseChummerNode.SelectSingleNode("categories/category[. = " + strEnglishCategory.CleanXPath() + "]/@translate")?.Value ?? strEnglishCategory;
-
-                switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type")?.Value)
-                {
-                    case "M":
-                        strDisplayType = LanguageManager.GetString("String_SpellTypeMana", strLanguageToPrint);
-                        break;
-
-                    case "P":
-                        strDisplayType = LanguageManager.GetString("String_SpellTypePhysical", strLanguageToPrint);
-                        break;
-                }
-                switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action")?.Value)
-                {
-                    case "Auto":
-                        strDisplayAction = LanguageManager.GetString("String_ActionAutomatic", strLanguageToPrint);
-                        break;
-
-                    case "Free":
-                        strDisplayAction = LanguageManager.GetString("String_ActionFree", strLanguageToPrint);
-                        break;
-
-                    case "Simple":
-                        strDisplayAction = LanguageManager.GetString("String_ActionSimple", strLanguageToPrint);
-                        break;
-
-                    case "Complex":
-                        strDisplayAction = LanguageManager.GetString("String_ActionComplex", strLanguageToPrint);
-                        break;
-
-                    case "Special":
-                        strDisplayAction = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
-                        break;
-                }
-                switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration")?.Value)
-                {
-                    case "Instant":
-                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguageToPrint);
-                        break;
-
-                    case "Sustained":
-                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationSustained", strLanguageToPrint);
-                        break;
-
-                    case "Always":
-                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationAlways", strLanguageToPrint);
-                        break;
-
-                    case "Special":
-                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
-                        break;
-                }
-
-                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && !strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                {
-                    strDisplayRange = strDisplayRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguageToPrint))
-                        .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint))
-                        .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguageToPrint))
-                        .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguageToPrint))
-                        .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguageToPrint)) // Short form to remain export-friendly
-                        .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguageToPrint))
-                        .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguageToPrint) + ')')
-                        .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguageToPrint));
-                }
+                objWriter.WriteStartElement("critterpower");
+                objWriter.WriteElementString("name", strPowerName);
+                objWriter.WriteElementString("name_english", strEnglishName);
+                objWriter.WriteElementString("extra", sbdExtra.ToString());
+                objWriter.WriteElementString("category", strCategory);
+                objWriter.WriteElementString("category_english", strEnglishCategory);
+                objWriter.WriteElementString("type", strDisplayType);
+                objWriter.WriteElementString("action", strDisplayAction);
+                objWriter.WriteElementString("range", strDisplayRange);
+                objWriter.WriteElementString("duration", strDisplayDuration);
+                objWriter.WriteElementString(
+                    "source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
+                objWriter.WriteElementString("page", strPage);
+                objWriter.WriteEndElement();
             }
-
-            if (string.IsNullOrEmpty(strDisplayType))
-                strDisplayType = LanguageManager.GetString("String_None", strLanguageToPrint);
-            if (string.IsNullOrEmpty(strDisplayAction))
-                strDisplayAction = LanguageManager.GetString("String_None", strLanguageToPrint);
-
-            objWriter.WriteStartElement("critterpower");
-            objWriter.WriteElementString("name", strPowerName);
-            objWriter.WriteElementString("name_english", strEnglishName);
-            objWriter.WriteElementString("extra", sbdExtra.ToString());
-            objWriter.WriteElementString("category", strCategory);
-            objWriter.WriteElementString("category_english", strEnglishCategory);
-            objWriter.WriteElementString("type", strDisplayType);
-            objWriter.WriteElementString("action", strDisplayAction);
-            objWriter.WriteElementString("range", strDisplayRange);
-            objWriter.WriteElementString("duration", strDisplayDuration);
-            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
-            objWriter.WriteElementString("page", strPage);
-            objWriter.WriteEndElement();
         }
 
         #endregion Constructor, Save, Load, and Print Methods

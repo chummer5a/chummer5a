@@ -179,22 +179,25 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlSubsystemsNode = objXmlMod?["subsystems"];
             if (xmlSubsystemsNode != null)
             {
-                StringBuilder objSubsystem = new StringBuilder();
-                using (XmlNodeList xmlSubsystemList = xmlSubsystemsNode.SelectNodes("subsystem"))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdSubsystems))
                 {
-                    if (xmlSubsystemList?.Count > 0)
+                    using (XmlNodeList xmlSubsystemList = xmlSubsystemsNode.SelectNodes("subsystem"))
                     {
-                        foreach (XmlNode objXmlSubsystem in xmlSubsystemList)
+                        if (xmlSubsystemList?.Count > 0)
                         {
-                            objSubsystem.Append(objXmlSubsystem.InnerText).Append(',');
+                            foreach (XmlNode objXmlSubsystem in xmlSubsystemList)
+                            {
+                                sbdSubsystems.Append(objXmlSubsystem.InnerText).Append(',');
+                            }
                         }
                     }
-                }
 
-                // Remove last ","
-                if (objSubsystem.Length > 0)
-                    --objSubsystem.Length;
-                _strSubsystems = objSubsystem.ToString();
+                    // Remove last ","
+                    if (sbdSubsystems.Length > 0)
+                        --sbdSubsystems.Length;
+                    _strSubsystems = sbdSubsystems.ToString();
+                }
             }
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
 

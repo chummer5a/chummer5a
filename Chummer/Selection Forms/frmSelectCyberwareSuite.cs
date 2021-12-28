@@ -144,15 +144,18 @@ namespace Chummer
 
             List<Cyberware> lstSuiteCyberwares = new List<Cyberware>();
             ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
-            StringBuilder sbdCyberwareLabelString = new StringBuilder();
-            foreach (Cyberware objCyberware in lstSuiteCyberwares)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdCyberwareLabelString))
             {
-                WriteList(sbdCyberwareLabelString, objCyberware, 0);
-                decTotalCost += objCyberware.CurrentTotalCost;
-                decTotalESS += objCyberware.CalculatedESS;
+                foreach (Cyberware objCyberware in lstSuiteCyberwares)
+                {
+                    WriteList(sbdCyberwareLabelString, objCyberware, 0);
+                    decTotalCost += objCyberware.CurrentTotalCost;
+                    decTotalESS += objCyberware.CalculatedESS;
+                }
+                lblCyberware.Text = sbdCyberwareLabelString.ToString();
             }
 
-            lblCyberware.Text = sbdCyberwareLabelString.ToString();
             lblEssence.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
             lblCost.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             lblGrade.Text = objGrade.CurrentDisplayName;

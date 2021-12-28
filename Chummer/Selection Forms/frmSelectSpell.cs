@@ -282,45 +282,62 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strCategory = cboCategory.SelectedValue?.ToString();
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
-            else
-            {
-                StringBuilder sbdCategoryFilter = new StringBuilder();
-                foreach (string strItem in _lstCategory.Select(x => x.Value))
-                {
-                    if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                }
-                if (sbdCategoryFilter.Length > 0)
-                {
-                    sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
-                }
-            }
-            if (_objCharacter.Settings.ExtendAnyDetectionSpell)
-                sbdFilter.Append(" and ((not(contains(name, \", Extended\"))))");
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
-            // Populate the Spell list.
             List<ListItem> lstSpellItems = new List<ListItem>();
             HashSet<string> limitDescriptors = new HashSet<string>();
             HashSet<string> blockDescriptors = new HashSet<string>();
-            if (!_blnIgnoreRequirements)
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellDescriptor))
+                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
+                                                       && (GlobalSettings.SearchInCategoryOnly
+                                                           || txtSearch.TextLength == 0))
+                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                else
                 {
-                    limitDescriptors.Add(improvement.ImprovedName);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategoryFilter))
+                    {
+                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        {
+                            if (!string.IsNullOrEmpty(strItem))
+                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                        }
+
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        }
+                    }
                 }
-                foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.BlockSpellDescriptor))
+
+                if (_objCharacter.Settings.ExtendAnyDetectionSpell)
+                    sbdFilter.Append(" and ((not(contains(name, \", Extended\"))))");
+                if (!string.IsNullOrEmpty(txtSearch.Text))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                // Populate the Spell list.
+                if (!_blnIgnoreRequirements)
                 {
-                    blockDescriptors.Add(improvement.ImprovedName);
+                    foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 _objCharacter, Improvement.ImprovementType.LimitSpellDescriptor))
+                    {
+                        limitDescriptors.Add(improvement.ImprovedName);
+                    }
+
+                    foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 _objCharacter, Improvement.ImprovementType.BlockSpellDescriptor))
+                    {
+                        blockDescriptors.Add(improvement.ImprovedName);
+                    }
                 }
+
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
             }
 
-            foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell[" + sbdFilter + "]"))
+            foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell" + strFilter))
             {
                 string strSpellCategory = objXmlSpell.SelectSingleNode("category")?.Value ?? string.Empty;
                 string strDescriptor = objXmlSpell.SelectSingleNode("descriptor")?.Value ?? string.Empty;
@@ -499,82 +516,89 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
 
-            StringBuilder objDescriptors = new StringBuilder();
             bool blnExtendedFound = false;
             bool blnAlchemicalFound = false;
             string strDescriptors = xmlSpell.SelectSingleNode("descriptor")?.Value;
-            if (!string.IsNullOrEmpty(strDescriptors))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDescriptors))
             {
-                foreach (string strDescriptor in strDescriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                if (!string.IsNullOrEmpty(strDescriptors))
                 {
-                    switch (strDescriptor.Trim())
+                    foreach (string strDescriptor in strDescriptors.SplitNoAlloc(
+                                 ',', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        case "Alchemical Preparation":
-                            blnAlchemicalFound = true;
-                            objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
-                            break;
+                        switch (strDescriptor.Trim())
+                        {
+                            case "Alchemical Preparation":
+                                blnAlchemicalFound = true;
+                                sbdDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
+                                break;
 
-                        case "Extended Area":
-                            blnExtendedFound = true;
-                            objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea"));
-                            break;
+                            case "Extended Area":
+                                blnExtendedFound = true;
+                                sbdDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea"));
+                                break;
 
-                        case "Material Link":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink"));
-                            break;
+                            case "Material Link":
+                                sbdDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink"));
+                                break;
 
-                        case "Multi-Sense":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense"));
-                            break;
+                            case "Multi-Sense":
+                                sbdDescriptors.Append(LanguageManager.GetString("String_DescMultiSense"));
+                                break;
 
-                        case "Organic Link":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink"));
-                            break;
+                            case "Organic Link":
+                                sbdDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink"));
+                                break;
 
-                        case "Single-Sense":
-                            objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense"));
-                            break;
+                            case "Single-Sense":
+                                sbdDescriptors.Append(LanguageManager.GetString("String_DescSingleSense"));
+                                break;
 
-                        default:
-                            objDescriptors.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim()));
-                            break;
+                            default:
+                                sbdDescriptors.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim()));
+                                break;
+                        }
+
+                        sbdDescriptors.Append(',').Append(strSpace);
                     }
-                    objDescriptors.Append(',').Append(strSpace);
                 }
+
+                if (blnAlchemicalFound)
+                {
+                    chkAlchemical.Visible = true;
+                    chkAlchemical.Enabled = false;
+                    chkAlchemical.Checked = true;
+                }
+                else if (xmlSpell.SelectSingleNode("category")?.Value == "Rituals")
+                {
+                    chkAlchemical.Visible = false;
+                    chkAlchemical.Checked = false;
+                }
+                else
+                {
+                    chkAlchemical.Visible = true;
+                    chkAlchemical.Enabled = true;
+                }
+
+                // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
+                if (chkExtended.Checked && !blnExtendedFound)
+                {
+                    sbdDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea")).Append(',')
+                                  .Append(strSpace);
+                }
+
+                if (chkAlchemical.Checked && !blnAlchemicalFound)
+                {
+                    sbdDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation")).Append(',')
+                                  .Append(strSpace);
+                }
+
+                // Remove the trailing comma.
+                if (sbdDescriptors.Length > 2)
+                    sbdDescriptors.Length -= 2;
+                lblDescriptors.Text = sbdDescriptors.ToString();
             }
 
-            if (blnAlchemicalFound)
-            {
-                chkAlchemical.Visible = true;
-                chkAlchemical.Enabled = false;
-                chkAlchemical.Checked = true;
-            }
-            else if (xmlSpell.SelectSingleNode("category")?.Value == "Rituals")
-            {
-                chkAlchemical.Visible = false;
-                chkAlchemical.Checked = false;
-            }
-            else
-            {
-                chkAlchemical.Visible = true;
-                chkAlchemical.Enabled = true;
-            }
-
-            // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
-            if (chkExtended.Checked && !blnExtendedFound)
-            {
-                objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea")).Append(',').Append(strSpace);
-            }
-
-            if (chkAlchemical.Checked && !blnAlchemicalFound)
-            {
-                objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation")).Append(',').Append(strSpace);
-            }
-
-            // Remove the trailing comma.
-            if (objDescriptors.Length > 2)
-                objDescriptors.Length -= 2;
-            lblDescriptors.Text = objDescriptors.ToString();
             if (string.IsNullOrEmpty(lblDescriptors.Text))
                 lblDescriptors.Text = LanguageManager.GetString("String_None");
             lblDescriptorsLabel.Visible = !string.IsNullOrEmpty(lblDescriptors.Text);

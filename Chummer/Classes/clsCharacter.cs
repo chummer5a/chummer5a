@@ -15955,16 +15955,17 @@ namespace Chummer
                 ? intCount
                 : 0;
 
-            for(int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
+            for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
             {
                 string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
-                Improvement objImprove = lstSeekerImprovements.Find(x =>
-                                                                        x.SourceName == strSeekerAttribute
-                                                                        && x.Value == (strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount));
-                if(objImprove != null)
+                int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
+                Improvement objImprovement
+                    = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
+                                                      && x.Value == intCountToTarget);
+                if (objImprovement != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
-                    lstSeekerImprovements.Remove(objImprove);
+                    lstSeekerImprovements.Remove(objImprovement);
                 }
             }
 
@@ -16001,7 +16002,7 @@ namespace Chummer
         public void RefreshEssenceLossImprovements()
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-            if(IsLoading)
+            if (IsLoading)
                 return;
             // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
             // (which means EssenceAtSpecialStart is not set to decimal.MinValue)

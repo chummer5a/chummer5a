@@ -178,7 +178,7 @@ namespace Chummer
                 lblBooks.Text = _objCharacter.TranslatedBookList(string.Join(";", objSelectedGameplayOption.Books));
                 if (string.IsNullOrEmpty(lblBooks.Text))
                     lblBooks.Text = LanguageManager.GetString("String_None");
-                
+
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdCustomDataDirectories))
                 {
