@@ -75,8 +75,15 @@ namespace Chummer
             XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNodeAndCacheExpression("/chummer/storybuilder/macros");
             //Actually "write" the story
             await Task.Run(() => Parallel.For(0, modules.Count,
-                i => story[i] = Write(new StringBuilder(), modules[i]["story"]?.InnerText ?? string.Empty, 5,
-                    xmlBaseMacrosNode).ToString()));
+                i =>
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdTemp))
+                    {
+                        story[i] = Write(sbdTemp, modules[i]["story"]?.InnerText ?? string.Empty, 5,
+                                         xmlBaseMacrosNode).ToString();
+                    }
+                }));
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
 

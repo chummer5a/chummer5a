@@ -377,34 +377,45 @@ namespace Chummer
                 }
 
                 // ReSharper disable once IdentifierTypo
-                StringBuilder sbdQualities = new StringBuilder();
-                // Build a list of the Metavariant's Qualities.
-                foreach (XPathNavigator objXmlQuality in objXmlMetavariant.SelectAndCacheExpression("qualities/*/quality"))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdQualities))
                 {
-                    if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    // Build a list of the Metavariant's Qualities.
+                    foreach (XPathNavigator objXmlQuality in objXmlMetavariant.SelectAndCacheExpression(
+                                 "qualities/*/quality"))
                     {
-                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value);
+                        if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            sbdQualities.Append(
+                                _xmlBaseQualityDataNode
+                                    .SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath()
+                                                      + "]/translate")?.Value ?? objXmlQuality.Value);
 
-                        string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
-                        if (!string.IsNullOrEmpty(strSelect))
-                        {
-                            sbdQualities.Append(strSpace).Append('(')
-                                        .Append(_objCharacter.TranslateExtra(strSelect)).Append(')');
+                            string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
+                            if (!string.IsNullOrEmpty(strSelect))
+                            {
+                                sbdQualities.Append(strSpace).Append('(')
+                                            .Append(_objCharacter.TranslateExtra(strSelect)).Append(')');
+                            }
                         }
-                    }
-                    else
-                    {
-                        sbdQualities.Append(objXmlQuality.Value);
-                        string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
-                        if (!string.IsNullOrEmpty(strSelect))
+                        else
                         {
-                            sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
+                            sbdQualities.Append(objXmlQuality.Value);
+                            string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
+                            if (!string.IsNullOrEmpty(strSelect))
+                            {
+                                sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
+                            }
                         }
+
+                        sbdQualities.Append(Environment.NewLine);
                     }
-                    sbdQualities.Append(Environment.NewLine);
+
+                    lblQualities.Text = sbdQualities.Length == 0
+                        ? LanguageManager.GetString("String_None")
+                        : sbdQualities.ToString();
                 }
-
-                lblQualities.Text = sbdQualities.Length == 0 ? LanguageManager.GetString("String_None") : sbdQualities.ToString();
 
                 lblKarma.Text = objXmlMetavariant.SelectSingleNodeAndCacheExpression("karma")?.Value ?? 0.ToString(GlobalSettings.CultureInfo);
 
@@ -499,34 +510,46 @@ namespace Chummer
                 }
 
                 // ReSharper disable once IdentifierTypo
-                StringBuilder sbdQualities = new StringBuilder();
-                // Build a list of the Metatype's Positive Qualities.
-                foreach (XPathNavigator objXmlQuality in objXmlMetatype.SelectAndCacheExpression("qualities/*/quality"))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdQualities))
                 {
-                    if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    // Build a list of the Metatype's Positive Qualities.
+                    foreach (XPathNavigator objXmlQuality in objXmlMetatype.SelectAndCacheExpression(
+                                 "qualities/*/quality"))
                     {
-                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value);
+                        if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            sbdQualities.Append(
+                                _xmlBaseQualityDataNode
+                                    .SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath()
+                                                      + "]/translate")?.Value ?? objXmlQuality.Value);
 
-                        string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
-                        if (!string.IsNullOrEmpty(strSelect))
-                        {
-                            sbdQualities.Append(strSpace).Append('(').Append(_objCharacter.TranslateExtra(strSelect))
-                                        .Append(')');
+                            string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
+                            if (!string.IsNullOrEmpty(strSelect))
+                            {
+                                sbdQualities.Append(strSpace).Append('(')
+                                            .Append(_objCharacter.TranslateExtra(strSelect))
+                                            .Append(')');
+                            }
                         }
-                    }
-                    else
-                    {
-                        sbdQualities.Append(objXmlQuality.Value);
-                        string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
-                        if (!string.IsNullOrEmpty(strSelect))
+                        else
                         {
-                            sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
+                            sbdQualities.Append(objXmlQuality.Value);
+                            string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
+                            if (!string.IsNullOrEmpty(strSelect))
+                            {
+                                sbdQualities.Append(strSpace).Append('(').Append(strSelect).Append(')');
+                            }
                         }
+
+                        sbdQualities.Append(Environment.NewLine);
                     }
-                    sbdQualities.Append(Environment.NewLine);
+
+                    lblQualities.Text = sbdQualities.Length == 0
+                        ? LanguageManager.GetString("String_None")
+                        : sbdQualities.ToString();
                 }
-
-                lblQualities.Text = sbdQualities.Length == 0 ? LanguageManager.GetString("String_None") : sbdQualities.ToString();
 
                 lblKarma.Text = objXmlMetatype.SelectSingleNodeAndCacheExpression("karma")?.Value ?? 0.ToString(GlobalSettings.CultureInfo);
 

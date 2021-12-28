@@ -178,12 +178,17 @@ namespace Chummer
                 lblBooks.Text = _objCharacter.TranslatedBookList(string.Join(";", objSelectedGameplayOption.Books));
                 if (string.IsNullOrEmpty(lblBooks.Text))
                     lblBooks.Text = LanguageManager.GetString("String_None");
+                
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCustomDataDirectories))
+                {
+                    foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption
+                                 .EnabledCustomDataDirectoryInfos)
+                        sbdCustomDataDirectories.AppendLine(objLoopInfo.Name);
 
-                StringBuilder sbdCustomDataDirectories = new StringBuilder();
-                foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption.EnabledCustomDataDirectoryInfos)
-                    sbdCustomDataDirectories.AppendLine(objLoopInfo.Name);
+                    lblCustomData.Text = sbdCustomDataDirectories.ToString();
+                }
 
-                lblCustomData.Text = sbdCustomDataDirectories.ToString();
                 if (string.IsNullOrEmpty(lblBooks.Text))
                     lblCustomData.Text = LanguageManager.GetString("String_None");
             }

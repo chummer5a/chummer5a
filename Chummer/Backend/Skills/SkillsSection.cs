@@ -985,12 +985,17 @@ namespace Chummer.Backend.Skills
                     string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                     {
-                        StringBuilder objValue = new StringBuilder(strExpression);
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        _intCachedKnowledgePoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            object objProcess
+                                = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                            _intCachedKnowledgePoints = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                        }
                     }
                     else
                         int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intCachedKnowledgePoints);

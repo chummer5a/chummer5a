@@ -968,22 +968,24 @@ namespace Chummer.Classes
             else
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sBld = new StringBuilder();
-                foreach (string s in AttributeSection.AttributeStrings)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sdbValue))
                 {
-                    int i = selectedValues.Count(c => c == s);
-                    if (i > 0)
+                    foreach (string s in AttributeSection.AttributeStrings)
                     {
-                        if (sBld.Length > 0)
+                        int i = selectedValues.Count(c => c == s);
+                        if (i <= 0)
+                            continue;
+                        if (sdbValue.Length > 0)
                         {
-                            sBld.Append(',').Append(strSpace);
+                            sdbValue.Append(',').Append(strSpace);
                         }
 
-                        sBld.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
+                        sdbValue.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
                     }
-                }
 
-                SelectedValue = sBld.ToString();
+                    SelectedValue = sdbValue.ToString();
+                }
             }
         }
 

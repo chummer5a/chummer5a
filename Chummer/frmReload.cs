@@ -69,15 +69,19 @@ namespace Chummer
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {
-                    StringBuilder sbdPlugins = new StringBuilder();
-                    foreach (Gear objChild in objGear.Children)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdPlugins))
                     {
-                        sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',').Append(strSpace);
+                        foreach (Gear objChild in objGear.Children)
+                        {
+                            sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',').Append(strSpace);
+                        }
+
+                        // Remove the trailing comma.
+                        sbdPlugins.Length -= 1 + strSpace.Length;
+                        // Append the plugin information to the name.
+                        strName += strSpace + '[' + sbdPlugins + ']';
                     }
-                    // Remove the trailing comma.
-                    sbdPlugins.Length -= 1 + strSpace.Length;
-                    // Append the plugin information to the name.
-                    strName += strSpace + '[' + sbdPlugins + ']';
                 }
                 lstAmmo.Add(new ListItem(objGear.InternalId, strName));
             }

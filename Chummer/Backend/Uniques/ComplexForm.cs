@@ -588,33 +588,45 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder();
-                string strFormat = strSpace + "{0}" + strSpace + "({1})";
-                CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
-                if (objResonanceAttrib != null)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
                 {
-                    sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                        objResonanceAttrib.DisplayNameFormatted, objResonanceAttrib.DisplayValue);
-                }
-                if (Skill != null)
-                {
-                    if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
-                    sbdReturn.Append(Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
-                                                            (objResonanceAttrib?.TotalValue ?? 0), CurrentDisplayName));
-                }
+                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
+                    CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
+                    if (objResonanceAttrib != null)
+                    {
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               objResonanceAttrib.DisplayNameFormatted,
+                                               objResonanceAttrib.DisplayValue);
+                    }
 
-                // Include any Improvements to the Spell Category.
-                foreach (Improvement objImprovement in _objCharacter.Improvements
-                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
-                    && objImprovement.ImprovedName == "Threading"))
-                {
-                    if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
-                    sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
-                }
+                    if (Skill != null)
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.Append(Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
+                                                                 (objResonanceAttrib?.TotalValue ?? 0),
+                                                                 CurrentDisplayName));
+                    }
 
-                return sbdReturn.ToString();
+                    // Include any Improvements to the Spell Category.
+                    foreach (Improvement objImprovement in _objCharacter.Improvements
+                                                                        .Where(objImprovement =>
+                                                                                   objImprovement.ImproveType
+                                                                                   == Improvement.ImprovementType
+                                                                                       .ActionDicePool
+                                                                                   && objImprovement.Enabled
+                                                                                   && objImprovement.ImprovedName
+                                                                                   == "Threading"))
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                    }
+
+                    return sbdReturn.ToString();
+                }
             }
         }
 

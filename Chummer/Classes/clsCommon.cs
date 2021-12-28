@@ -1426,15 +1426,20 @@ namespace Chummer
                             if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                             {
                                 // now just add more lines to it until it is enough
-                                StringBuilder sbdCurrentLine = new StringBuilder(strCurrentLine);
-                                while (sbdCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdCurrentLine))
                                 {
-                                    intTitleExtraLines++;
-                                    // add the content plus a space
-                                    sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
-                                }
+                                    sbdCurrentLine.Append(strCurrentLine);
+                                    while (sbdCurrentLine.Length < intTextToSearchLength
+                                           && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                    {
+                                        intTitleExtraLines++;
+                                        // add the content plus a space
+                                        sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
+                                    }
 
-                                strCurrentLine = sbdCurrentLine.ToString();
+                                    strCurrentLine = sbdCurrentLine.ToString();
+                                }
                             }
                             else
                             {
@@ -1531,47 +1536,53 @@ namespace Chummer
                 if (blnTitleWithColon)
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
                 // add the title
-                StringBuilder sbdResultContent = new StringBuilder(strArray[intTitleIndex]).AppendLine();
-                // if we have extra info add it keeping the line breaks
-                if (intExtraAllCapsInfo > 0)
-                    sbdResultContent.AppendJoin(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo).AppendLine();
-                int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
-                // this is the best we can do for now, it will still mangle spell blocks a bit
-                for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdResultContent))
                 {
-                    string strContentString = strArray[i];
-                    if (strContentString.Length > 0)
+                    sbdResultContent.AppendLine(strArray[intTitleIndex]);
+                    // if we have extra info add it keeping the line breaks
+                    if (intExtraAllCapsInfo > 0)
+                        sbdResultContent
+                            .AppendJoin(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo)
+                            .AppendLine();
+                    int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
+                    // this is the best we can do for now, it will still mangle spell blocks a bit
+                    for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
                     {
-                        char chrLastChar = strContentString[strContentString.Length - 1];
-                        switch (chrLastChar)
+                        string strContentString = strArray[i];
+                        if (strContentString.Length > 0)
                         {
-                            case '-':
-                                sbdResultContent.Append(strContentString, 0, strContentString.Length - 1);
-                                break;
-                            // Line ending with a sentence-ending punctuation = line is end of paragraph.
-                            // Not fantastic, has plenty of false positives, but simple text extraction strategy cannot
-                            // record when a new line starts with a slight indent compared to the previous line (it's a
-                            // graphical indent in PDFs, not an actual tab character).
-                            case '.':
-                            case '?':
-                            case '!':
-                            case ':':
-                            case '。':
-                            case '？':
-                            case '！':
-                            case '：':
-                            case '…':
-                                sbdResultContent.AppendLine(strContentString);
-                                break;
+                            char chrLastChar = strContentString[strContentString.Length - 1];
+                            switch (chrLastChar)
+                            {
+                                case '-':
+                                    sbdResultContent.Append(strContentString, 0, strContentString.Length - 1);
+                                    break;
+                                // Line ending with a sentence-ending punctuation = line is end of paragraph.
+                                // Not fantastic, has plenty of false positives, but simple text extraction strategy cannot
+                                // record when a new line starts with a slight indent compared to the previous line (it's a
+                                // graphical indent in PDFs, not an actual tab character).
+                                case '.':
+                                case '?':
+                                case '!':
+                                case ':':
+                                case '。':
+                                case '？':
+                                case '！':
+                                case '：':
+                                case '…':
+                                    sbdResultContent.AppendLine(strContentString);
+                                    break;
 
-                            default:
-                                sbdResultContent.Append(strContentString).Append(' ');
-                                break;
+                                default:
+                                    sbdResultContent.Append(strContentString).Append(' ');
+                                    break;
+                            }
                         }
                     }
-                }
 
-                return sbdResultContent.ToString().Trim();
+                    return sbdResultContent.ToString().Trim();
+                }
             }
 
             return string.Empty;

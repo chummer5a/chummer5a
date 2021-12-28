@@ -98,15 +98,21 @@ namespace Chummer
 
         public static void MakeLog()
         {
-            StringBuilder sbdLog = new StringBuilder("Time statistics" + Environment.NewLine);
-
-            foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
+            string strLog;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdLog))
             {
-                sbdLog.AppendFormat(GlobalSettings.InvariantCultureInfo, "\t{0}({1}) = {2}{3}",
-                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1, Environment.NewLine);
+                sbdLog.AppendLine("Time statistics");
+                foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
+                {
+                    sbdLog.AppendFormat(GlobalSettings.InvariantCultureInfo, "\t{0}({1}) = {2}{3}",
+                                        keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1,
+                                        Environment.NewLine);
+                }
+
+                strLog = sbdLog.ToString();
             }
 
-            string strLog = sbdLog.ToString();
             Debug.WriteLine(strLog);
             Log.Info(strLog);
         }

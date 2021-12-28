@@ -105,59 +105,62 @@ namespace Chummer
 
         private string DefaultInfo()
         {
-            StringBuilder report = new StringBuilder();
-
-            try
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder report))
             {
-                //Keep this multiple places for good measure
-                report.AppendFormat("Crash ID = {0:B}", Id);
-                report.AppendLine();
-                //We want to know what crash happened on
-#if DEBUG
-                report.Append("Debug Build");
-#else
-                report.Append("Release Build");
-#endif
-                report.AppendLine();
-                //Secondary id for linux systems?
-                if (Registry.LocalMachine != null)
+                try
                 {
-                    RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-                    RegistryKey cv2 = null;
-
-                    if (cv != null)
+                    //Keep this multiple places for good measure
+                    report.AppendFormat("Crash ID = {0:B}", Id);
+                    report.AppendLine();
+                    //We want to know what crash happened on
+#if DEBUG
+                    report.AppendLine("Debug Build");
+#else
+                    report.AppendLine("Release Build");
+#endif
+                    //Secondary id for linux systems?
+                    if (Registry.LocalMachine != null)
                     {
-                        if (!cv.GetValueNames().Contains("ProductId"))
-                        {
-                            //on 32 bit builds?
-                            //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
-                            cv.Close();
-                            cv2 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-                            cv = cv2.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-                        }
+                        RegistryKey cv
+                            = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                        RegistryKey cv2 = null;
 
                         if (cv != null)
                         {
-                            report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
-                            report.AppendLine();
+                            if (!cv.GetValueNames().Contains("ProductId"))
+                            {
+                                //on 32 bit builds?
+                                //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
+                                cv.Close();
+                                cv2 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                                cv = cv2.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+                            }
+
+                            if (cv != null)
+                            {
+                                report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
+                                report.AppendLine();
+                            }
                         }
+
+                        cv?.Close();
+                        cv2?.Close();
                     }
 
-                    cv?.Close();
-                    cv2?.Close();
+                    report.Append("CommandLine=").AppendLine(Environment.CommandLine);
+
+                    report.AppendFormat("Version={0}",
+                                        System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+                }
+                catch (Exception ex)
+                {
+                    report.AppendLine();
+                    report.AppendFormat("CrashHandlerException={0}", ex);
                 }
 
-                report.Append("CommandLine=").AppendLine(Environment.CommandLine);
-
-                report.AppendFormat("Version={0}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+                return report.ToString();
             }
-            catch (Exception ex)
-            {
-                report.AppendLine();
-                report.AppendFormat("CrashHandlerException={0}", ex);
-            }
-
-            return report.ToString();
         }
 
         public CrashReportData AddData(string title, string contents)

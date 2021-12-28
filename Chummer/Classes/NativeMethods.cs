@@ -420,11 +420,17 @@ namespace Chummer
             int intLastWin32Error = Marshal.GetLastWin32Error();
             if (intLastWin32Error == 122) // ERROR_INSUFFICIENT_BUFFER
             {
-                StringBuilder sbdBuffer = new StringBuilder(ptrBuffer);
-                if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdBuffer))
                 {
-                    return sbdBuffer.ToString();
+                    if (sbdBuffer.Capacity > ptrBuffer)
+                        sbdBuffer.Capacity = ptrBuffer;
+                    if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
+                    {
+                        return sbdBuffer.ToString();
+                    }
                 }
+
                 intLastWin32Error = Marshal.GetLastWin32Error();
             }
             if (intLastWin32Error == 2) // ERROR_FILE_NOT_FOUND

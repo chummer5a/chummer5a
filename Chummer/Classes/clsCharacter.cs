@@ -6276,27 +6276,30 @@ namespace Chummer
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         public IEnumerable<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
-            StringBuilder sbdFilter = new StringBuilder();
-            if(Settings != null)
+            string strXPath;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(Settings.BookXPath()).Append(") and ");
-                if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
+                if (Settings != null)
                 {
-                    foreach (string strBannedGrade in Settings.BannedWareGrades)
+                    sbdFilter.Append('(').Append(Settings.BookXPath()).Append(") and ");
+                    if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
                     {
-                        sbdFilter.Append("not(contains(name, ").Append(strBannedGrade.CleanXPath()).Append(")) and ");
+                        foreach (string strBannedGrade in Settings.BannedWareGrades)
+                        {
+                            sbdFilter.Append("not(contains(name, ").Append(strBannedGrade.CleanXPath())
+                                     .Append(")) and ");
+                        }
                     }
                 }
-            }
 
-            string strXPath;
-            if(sbdFilter.Length != 0)
-            {
-                sbdFilter.Length -= 5;
-                strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
+                if (sbdFilter.Length != 0)
+                {
+                    sbdFilter.Length -= 5;
+                    strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
+                }
+                else
+                    strXPath = "/chummer/grades/grade";
             }
-            else
-                strXPath = "/chummer/grades/grade";
 
             using (XmlNodeList xmlGradeList = LoadData(Grade.GetDataFileNameFromImprovementSource(objSource)).SelectNodes(strXPath))
             {
@@ -11791,35 +11794,41 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder();
-                if(IsAI)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdToolTip))
                 {
-                    if (HomeNode is Vehicle objVehicle)
-                        sbdToolTip.Append(LanguageManager.GetString("String_VehicleBody")).Append(strSpace).Append('(')
-                                  .Append(objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo)).Append(')')
-                                  .Append(strSpace).Append('+').Append(strSpace);
-                }
-                else
-                {
-                    sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
-                              .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
-                              .Append('+').Append(strSpace);
-                }
-
-                sbdToolTip.Append(LanguageManager.GetString("Tip_Armor")).Append(strSpace).Append('(').Append(TotalArmorRating.ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                foreach(Improvement objLoopImprovement in Improvements)
-                {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance &&
-                        objLoopImprovement.Enabled)
+                    if (IsAI)
                     {
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                        if (HomeNode is Vehicle objVehicle)
+                            sbdToolTip.Append(LanguageManager.GetString("String_VehicleBody")).Append(strSpace)
+                                      .Append('(')
+                                      .Append(objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo)).Append(')')
+                                      .Append(strSpace).Append('+').Append(strSpace);
                     }
-                }
+                    else
+                    {
+                        sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
+                                  .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
+                                  .Append(strSpace)
+                                  .Append('+').Append(strSpace);
+                    }
 
-                return sbdToolTip.ToString();
+                    sbdToolTip.Append(LanguageManager.GetString("Tip_Armor")).Append(strSpace).Append('(')
+                              .Append(TotalArmorRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    foreach (Improvement objLoopImprovement in Improvements)
+                    {
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance &&
+                            objLoopImprovement.Enabled)
+                        {
+                            sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                      .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
+                                      .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                      .Append(')');
+                        }
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -14199,24 +14208,26 @@ namespace Chummer
         private string FullMovement(CultureInfo objCulture, string strLanguage)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            StringBuilder sbdReturn = new StringBuilder();
-            string strGroundMovement = GetMovement(objCulture, strLanguage);
-            string strSwimMovement = GetSwim(objCulture, strLanguage);
-            string strFlyMovement = GetFly(objCulture, strLanguage);
-            if(!string.IsNullOrEmpty(strGroundMovement) && strGroundMovement != "0")
-                sbdReturn.Append(strGroundMovement).Append(',').Append(strSpace);
-            if (!string.IsNullOrEmpty(strSwimMovement) && strSwimMovement != "0")
-                sbdReturn.Append(LanguageManager.GetString("Label_OtherSwim", strLanguage)).Append(strSpace)
-                         .Append(strSwimMovement).Append(',').Append(strSpace);
-            if (!string.IsNullOrEmpty(strFlyMovement) && strFlyMovement != "0")
-                sbdReturn.Append(LanguageManager.GetString("Label_OtherFly", strLanguage)).Append(strSpace)
-                         .Append(strFlyMovement).Append(',').Append(strSpace);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                string strGroundMovement = GetMovement(objCulture, strLanguage);
+                string strSwimMovement = GetSwim(objCulture, strLanguage);
+                string strFlyMovement = GetFly(objCulture, strLanguage);
+                if (!string.IsNullOrEmpty(strGroundMovement) && strGroundMovement != "0")
+                    sbdReturn.Append(strGroundMovement).Append(',').Append(strSpace);
+                if (!string.IsNullOrEmpty(strSwimMovement) && strSwimMovement != "0")
+                    sbdReturn.Append(LanguageManager.GetString("Label_OtherSwim", strLanguage)).Append(strSpace)
+                             .Append(strSwimMovement).Append(',').Append(strSpace);
+                if (!string.IsNullOrEmpty(strFlyMovement) && strFlyMovement != "0")
+                    sbdReturn.Append(LanguageManager.GetString("Label_OtherFly", strLanguage)).Append(strSpace)
+                             .Append(strFlyMovement).Append(',').Append(strSpace);
 
-            // Remove the trailing ", ".
-            if(sbdReturn.Length > 0)
-                sbdReturn.Length -= 2;
+                // Remove the trailing ", ".
+                if (sbdReturn.Length > 0)
+                    sbdReturn.Length -= 2;
 
-            return sbdReturn.ToString();
+                return sbdReturn.ToString();
+            }
         }
 
         /// <summary>
@@ -15813,29 +15824,44 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            StringBuilder sbdReturn = new StringBuilder();
-            // Load the Sourcebook information.
-            XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
-
-            foreach(string strBook in strInput.TrimEndOnce(';').SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                XPathNavigator objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + "]");
-                if(objXmlBook != null)
-                {
-                    sbdReturn.AppendLine(objXmlBook.SelectSingleNode("translate")?.Value ??
-                                         objXmlBook.SelectSingleNode("name")?.Value ??
-                                         LanguageManager.GetString("String_Unknown", strLanguage) +
-                                         LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                                         (objXmlBook.SelectSingleNode("altcode")?.Value ?? strBook) + ')');
-                }
-                else
-                {
-                    sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
-                             .Append(LanguageManager.GetString("String_Space", strLanguage)).AppendLine(strBook);
-                }
-            }
+                // Load the Sourcebook information.
+                XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
 
-            return sbdReturn.ToString();
+                foreach (string strBook in strInput.TrimEndOnce(';')
+                                                   .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    XPathNavigator objXmlBook
+                        = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + "]");
+                    if (objXmlBook != null)
+                    {
+                        string strToAppend = objXmlBook.SelectSingleNode("translate")?.Value;
+                        if (!string.IsNullOrEmpty(strToAppend))
+                            sbdReturn.AppendLine(strToAppend);
+                        else
+                        {
+                            strToAppend = objXmlBook.SelectSingleNode("name")?.Value;
+                            if (!string.IsNullOrEmpty(strToAppend))
+                                sbdReturn.AppendLine(strToAppend);
+                            else
+                            {
+                                strToAppend = objXmlBook.SelectSingleNode("altcode")?.Value ?? strBook;
+                                sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
+                                         .Append(LanguageManager.GetString("String_Space", strLanguage)).Append('(')
+                                         .Append(strToAppend).AppendLine(')');
+                            }
+                        }
+                    }
+                    else
+                    {
+                        sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
+                                 .Append(LanguageManager.GetString("String_Space", strLanguage)).AppendLine(strBook);
+                    }
+                }
+
+                return sbdReturn.ToString();
+            }
         }
 
         #endregion
@@ -19487,44 +19513,48 @@ namespace Chummer
                                         Loyalty = xmlContactToImport.SelectSingleNode("@loyalty")?.ValueAsInt ?? 1
                                     };
                                     string strDescription = xmlContactToImport.SelectSingleNode("description")?.Value;
-                                    StringBuilder sbdNotes = new StringBuilder();
-                                    foreach (string strLine in strDescription.SplitNoAlloc('\n',
-                                        StringSplitOptions.RemoveEmptyEntries))
+                                    using (new FetchSafelyFromPool<StringBuilder>(
+                                               Utils.StringBuilderPool, out StringBuilder sbdNotes))
                                     {
-                                        string[] astrLineColonSplit =
-                                            strLine.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                                        switch (astrLineColonSplit[0])
+                                        foreach (string strLine in strDescription.SplitNoAlloc('\n',
+                                                     StringSplitOptions.RemoveEmptyEntries))
                                         {
-                                            case "Metatype":
-                                                objContact.Metatype = astrLineColonSplit[1].Trim();
-                                                break;
-                                            case "Gender":
-                                                objContact.Gender = astrLineColonSplit[1].Trim();
-                                                break;
-                                            case "Age":
-                                                objContact.Age = astrLineColonSplit[1].Trim();
-                                                break;
-                                            case "Preferred Payment Method":
-                                                objContact.PreferredPayment = astrLineColonSplit[1].Trim();
-                                                break;
-                                            case "Hobbies/Vice":
-                                                objContact.HobbiesVice = astrLineColonSplit[1].Trim();
-                                                break;
-                                            case "Personal Life":
-                                                objContact.PersonalLife = astrLineColonSplit[1].Trim();
-                                                break;
-                                            case "Type":
-                                                objContact.Type = astrLineColonSplit[1].Trim();
-                                                break;
-                                            default:
-                                                sbdNotes.AppendLine(strLine);
-                                                break;
+                                            string[] astrLineColonSplit =
+                                                strLine.Split(':', StringSplitOptions.RemoveEmptyEntries);
+                                            switch (astrLineColonSplit[0])
+                                            {
+                                                case "Metatype":
+                                                    objContact.Metatype = astrLineColonSplit[1].Trim();
+                                                    break;
+                                                case "Gender":
+                                                    objContact.Gender = astrLineColonSplit[1].Trim();
+                                                    break;
+                                                case "Age":
+                                                    objContact.Age = astrLineColonSplit[1].Trim();
+                                                    break;
+                                                case "Preferred Payment Method":
+                                                    objContact.PreferredPayment = astrLineColonSplit[1].Trim();
+                                                    break;
+                                                case "Hobbies/Vice":
+                                                    objContact.HobbiesVice = astrLineColonSplit[1].Trim();
+                                                    break;
+                                                case "Personal Life":
+                                                    objContact.PersonalLife = astrLineColonSplit[1].Trim();
+                                                    break;
+                                                case "Type":
+                                                    objContact.Type = astrLineColonSplit[1].Trim();
+                                                    break;
+                                                default:
+                                                    sbdNotes.AppendLine(strLine);
+                                                    break;
+                                            }
                                         }
+
+                                        if (sbdNotes.Length > 0)
+                                            sbdNotes.Length -= Environment.NewLine.Length;
+                                        objContact.Notes = sbdNotes.ToString();
                                     }
 
-                                    if (sbdNotes.Length > 0)
-                                        sbdNotes.Length -= Environment.NewLine.Length;
-                                    objContact.Notes = sbdNotes.ToString();
                                     _lstContacts.Add(objContact);
                                 }
 

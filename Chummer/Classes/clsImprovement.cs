@@ -3648,64 +3648,80 @@ namespace Chummer
                 }
                 if (intMinimumRating <= 0)
                 {
-                    StringBuilder sbdFilter = new StringBuilder();
-                    if (setAllowedCategories?.Count > 0)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(');
-                        foreach (string strCategory in setAllowedCategories)
+                        if (setAllowedCategories?.Count > 0)
                         {
-                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
-                        }
-                        sbdFilter.Length -= 4;
-                        sbdFilter.Append(')');
-                    }
-                    if (setForbiddenCategories?.Count > 0)
-                    {
-                        sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                        foreach (string strCategory in setForbiddenCategories)
-                        {
-                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
-                        }
-                        sbdFilter.Length -= 4;
-                        sbdFilter.Append(')');
-                    }
-                    if (setAllowedNames?.Count > 0)
-                    {
-                        sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                        foreach (string strName in setAllowedNames)
-                        {
-                            sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
-                        }
-                        sbdFilter.Length -= 4;
-                        sbdFilter.Append(')');
-                    }
-                    if (setProcessedSkillNames.Count > 0)
-                    {
-                        sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                        foreach (string strName in setProcessedSkillNames)
-                        {
-                            sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
-                        }
-                        sbdFilter.Length -= 4;
-                        sbdFilter.Append(')');
-                    }
-                    if (setAllowedLinkedAttributes?.Count > 0)
-                    {
-                        sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                        foreach (string strAttribute in setAllowedLinkedAttributes)
-                        {
-                            sbdFilter.Append("attribute = ").Append(strAttribute.CleanXPath()).Append(" or ");
-                        }
-                        sbdFilter.Length -= 4;
-                        sbdFilter.Append(')');
-                    }
+                            sbdFilter.Append('(');
+                            foreach (string strCategory in setAllowedCategories)
+                            {
+                                sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                            }
 
-                    string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
-                    foreach (XPathNavigator xmlSkill in objCharacter.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
-                    {
-                        string strName = xmlSkill.SelectSingleNode("name")?.Value;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstDropdownItems.Add(new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                            sbdFilter.Length -= 4;
+                            sbdFilter.Append(')');
+                        }
+
+                        if (setForbiddenCategories?.Count > 0)
+                        {
+                            sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                            foreach (string strCategory in setForbiddenCategories)
+                            {
+                                sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                            }
+
+                            sbdFilter.Length -= 4;
+                            sbdFilter.Append(')');
+                        }
+
+                        if (setAllowedNames?.Count > 0)
+                        {
+                            sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                            foreach (string strName in setAllowedNames)
+                            {
+                                sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                            }
+
+                            sbdFilter.Length -= 4;
+                            sbdFilter.Append(')');
+                        }
+
+                        if (setProcessedSkillNames.Count > 0)
+                        {
+                            sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                            foreach (string strName in setProcessedSkillNames)
+                            {
+                                sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                            }
+
+                            sbdFilter.Length -= 4;
+                            sbdFilter.Append(')');
+                        }
+
+                        if (setAllowedLinkedAttributes?.Count > 0)
+                        {
+                            sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                            foreach (string strAttribute in setAllowedLinkedAttributes)
+                            {
+                                sbdFilter.Append("attribute = ").Append(strAttribute.CleanXPath()).Append(" or ");
+                            }
+
+                            sbdFilter.Length -= 4;
+                            sbdFilter.Append(')');
+                        }
+
+                        string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
+                        foreach (XPathNavigator xmlSkill in objCharacter.LoadDataXPath("skills.xml")
+                                                                        .Select(
+                                                                            "/chummer/knowledgeskills/skill[(not(hide)"
+                                                                            + strFilter + ")]"))
+                        {
+                            string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstDropdownItems.Add(
+                                    new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                        }
                     }
                 }
 

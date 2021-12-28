@@ -30,6 +30,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Extensions.ObjectPool;
 using NLog;
 
 namespace Chummer
@@ -285,22 +286,28 @@ namespace Chummer
             Log.Info("Restart Chummer");
             Application.UseWaitCursor = true;
             // Get the parameters/arguments passed to program if any
-            StringBuilder sbdArguments = new StringBuilder();
-            foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
+            string strArguments;
+            using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
             {
-                sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
-            }
-            if (sbdArguments.Length > 0)
-                --sbdArguments.Length;
-            // Restart current application, with same arguments/parameters
-            foreach (Form objForm in Program.MainForm.MdiChildren)
-            {
-                objForm.Close();
+                foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
+                {
+                    sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
+                }
+
+                if (sbdArguments.Length > 0)
+                    --sbdArguments.Length;
+                // Restart current application, with same arguments/parameters
+                foreach (Form objForm in Program.MainForm.MdiChildren)
+                {
+                    objForm.Close();
+                }
+
+                strArguments = sbdArguments.ToString();
             }
             ProcessStartInfo objStartInfo = new ProcessStartInfo
             {
                 FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
-                Arguments = sbdArguments.ToString()
+                Arguments = strArguments
             };
             Application.Exit();
             objStartInfo.Start();
@@ -809,5 +816,13 @@ namespace Chummer
             }
             return string.IsNullOrEmpty(strReturn) ? "Unknown" : strReturn;
         }
+
+        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider();
+
+        /// <summary>
+        /// Memory Pool for empty StringBuilder objects. A bit slower up-front than a simple allocation, but reduces memory allocations, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static ObjectPool<StringBuilder> StringBuilderPool { get; } = s_ObjObjectPoolProvider.CreateStringBuilderPool();
     }
 }

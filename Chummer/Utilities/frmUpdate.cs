@@ -688,14 +688,18 @@ namespace Chummer
                     Utils.BreakIfDebug();
                     if (!SilentMode)
                     {
-                        StringBuilder sbdOutput =
-                            new StringBuilder(LanguageManager.GetString("Message_Files_Cannot_Be_Removed"));
-                        foreach (string strFile in lstBlocked)
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdOutput))
                         {
-                            sbdOutput.AppendLine().Append(strFile);
+                            sbdOutput.Append(LanguageManager.GetString("Message_Files_Cannot_Be_Removed"));
+                            foreach (string strFile in lstBlocked)
+                            {
+                                sbdOutput.AppendLine().Append(strFile);
+                            }
+
+                            Program.MainForm.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
+                                                            MessageBoxIcon.Information);
                         }
-                        Program.MainForm.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
                     }
                 }
                 Utils.RestartApplication();

@@ -112,15 +112,18 @@ namespace Chummer
                 strFilter += " and category = " + cboCategory.SelectedValue.ToString().CleanXPath();
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
-                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                 {
-                    if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                }
-                if (objCategoryFilter.Length > 0)
-                {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    foreach (string strItem in _lstCategory.Select(x => x.Value))
+                    {
+                        if (!string.IsNullOrEmpty(strItem))
+                            sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                    }
+
+                    if (sbdCategoryFilter.Length > 0)
+                    {
+                        strFilter += " and (" + sbdCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    }
                 }
             }
 

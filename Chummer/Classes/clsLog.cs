@@ -337,28 +337,38 @@ namespace Chummer
 
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
-
-            StringBuilder sbdTimeStamper = new StringBuilder(loglevel + "\t" + (file.SplitNoAlloc(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).LastOrDefault() ?? string.Empty)
-                                                             + '.' + method + ':' + line);
-
-            if (info != null)
+            
+            string strTimeStamp;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdTimeStamper))
             {
-                bool blnItemAdded = false;
-                sbdTimeStamper.Append(' ');
-                foreach (string time in info)
+                sbdTimeStamper.Append(loglevel).Append('\t');
+                string strLast = file.SplitNoAlloc(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                                     .LastOrDefault();
+                if (!string.IsNullOrEmpty(strLast))
+                    sbdTimeStamper.Append(strLast);
+                sbdTimeStamper.Append('.').Append(method).Append(':')
+                              .Append(line);
+                if (info != null)
                 {
-                    if (string.IsNullOrWhiteSpace(time))
-                        continue;
-                    blnItemAdded = true;
-                    sbdTimeStamper.Append(time).Append(", ");
+                    bool blnItemAdded = false;
+                    sbdTimeStamper.Append(' ');
+                    foreach (string time in info)
+                    {
+                        if (string.IsNullOrWhiteSpace(time))
+                            continue;
+                        blnItemAdded = true;
+                        sbdTimeStamper.Append(time).Append(", ");
+                    }
+
+                    sbdTimeStamper.Length -= blnItemAdded ? 2 : 1;
                 }
 
-                sbdTimeStamper.Length -= blnItemAdded ? 2 : 1;
+                sw.TaskEnd("makeentry");
+
+                strTimeStamp = sbdTimeStamper.ToString();
             }
 
-            sw.TaskEnd("makeentry");
-
-            string strTimeStamp = sbdTimeStamper.ToString();
             lock (s_LogWriterLock)
                 _logWriter?.WriteLine(strTimeStamp);
             sw.TaskEnd("filewrite");

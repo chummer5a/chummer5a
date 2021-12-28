@@ -1231,10 +1231,13 @@ namespace Chummer
                         _strEssenceFormat += ".00";
                     else
                     {
-                        StringBuilder sbdZeros = new StringBuilder();
-                        for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
-                            sbdZeros.Append('0');
-                        _strEssenceFormat += sbdZeros.ToString();
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdZeros))
+                        {
+                            for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
+                                sbdZeros.Append('0');
+                            _strEssenceFormat += sbdZeros.ToString();
+                        }
                     }
                 }
             }
@@ -1972,32 +1975,38 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true)
         {
-            StringBuilder sbdPath = excludeHidden ? new StringBuilder("not(hide)") : new StringBuilder();
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdPath))
+            {
+                if (excludeHidden)
+                    sbdPath.Append("not(hide)");
+                if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
+                {
+                    RecalculateBookXPath();
+                }
 
-            if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
-            {
-                RecalculateBookXPath();
-            }
-            if (!string.IsNullOrEmpty(_strBookXPath))
-            {
-                if (sbdPath.Length != 0)
-                    sbdPath.Append(" and ");
-                sbdPath.Append(_strBookXPath);
-            }
-            else
-            {
-                // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
-                Utils.BreakIfDebug();
-            }
-            if (!DroneMods)
-            {
-                if (sbdPath.Length != 0)
-                    sbdPath.Append(" and ");
-                sbdPath.Append("not(optionaldrone)");
-            }
+                if (!string.IsNullOrEmpty(_strBookXPath))
+                {
+                    if (sbdPath.Length != 0)
+                        sbdPath.Append(" and ");
+                    sbdPath.Append(_strBookXPath);
+                }
+                else
+                {
+                    // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
+                    Utils.BreakIfDebug();
+                }
 
-            if (sbdPath.Length > 1)
-                return '(' + sbdPath.ToString() + ')';
+                if (!DroneMods)
+                {
+                    if (sbdPath.Length != 0)
+                        sbdPath.Append(" and ");
+                    sbdPath.Append("not(optionaldrone)");
+                }
+
+                if (sbdPath.Length > 1)
+                    return '(' + sbdPath.ToString() + ')';
+            }
 
             // We have only the opening parentheses; return an empty string
             // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
@@ -2010,24 +2019,28 @@ namespace Chummer
         /// </summary>
         public void RecalculateBookXPath()
         {
-            StringBuilder sbdBookXPath = new StringBuilder("(");
             _strBookXPath = string.Empty;
-
-            foreach (string strBook in _lstBooks)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdBookXPath))
             {
-                if (!string.IsNullOrWhiteSpace(strBook))
+                sbdBookXPath.Append('(');
+                foreach (string strBook in _lstBooks)
                 {
-                    sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
+                    if (!string.IsNullOrWhiteSpace(strBook))
+                    {
+                        sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
+                    }
                 }
+
+                if (sbdBookXPath.Length >= 4)
+                {
+                    sbdBookXPath.Length -= 4;
+                    sbdBookXPath.Append(')');
+                    _strBookXPath = sbdBookXPath.ToString();
+                }
+                else
+                    _strBookXPath = string.Empty;
             }
-            if (sbdBookXPath.Length >= 4)
-            {
-                sbdBookXPath.Length -= 4;
-                sbdBookXPath.Append(')');
-                _strBookXPath = sbdBookXPath.ToString();
-            }
-            else
-                _strBookXPath = string.Empty;
         }
 
         public TypedOrderedDictionary<string, bool> CustomDataDirectoryKeys => _dicCustomDataDirectoryKeys;
@@ -2866,16 +2879,22 @@ namespace Chummer
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
-                    StringBuilder objNuyenFormat = string.IsNullOrEmpty(NuyenFormat) ? new StringBuilder("#,0") : new StringBuilder(NuyenFormat);
-                    if (intCurrentNuyenDecimals == 0)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdNuyenFormat))
                     {
-                        objNuyenFormat.Append('.');
+                        sbdNuyenFormat.Append(string.IsNullOrEmpty(NuyenFormat) ? "#,0" : NuyenFormat);
+                        if (intCurrentNuyenDecimals == 0)
+                        {
+                            sbdNuyenFormat.Append('.');
+                        }
+
+                        for (int i = intCurrentNuyenDecimals; i < intNewNuyenDecimals; ++i)
+                        {
+                            sbdNuyenFormat.Append('#');
+                        }
+
+                        NuyenFormat = sbdNuyenFormat.ToString();
                     }
-                    for (int i = intCurrentNuyenDecimals; i < intNewNuyenDecimals; ++i)
-                    {
-                        objNuyenFormat.Append('#');
-                    }
-                    NuyenFormat = objNuyenFormat.ToString();
                 }
             }
         }
@@ -2978,16 +2997,22 @@ namespace Chummer
                 }
                 else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                 {
-                    StringBuilder sbdEssenceFormat = string.IsNullOrEmpty(EssenceFormat) ? new StringBuilder("#,0") : new StringBuilder(EssenceFormat);
-                    if (intCurrentEssenceDecimals == 0)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdEssenceFormat))
                     {
-                        sbdEssenceFormat.Append('.');
+                        sbdEssenceFormat.Append(string.IsNullOrEmpty(EssenceFormat) ? "#,0" : EssenceFormat);
+                        if (intCurrentEssenceDecimals == 0)
+                        {
+                            sbdEssenceFormat.Append('.');
+                        }
+
+                        for (int i = intCurrentEssenceDecimals; i < intNewEssenceDecimals; ++i)
+                        {
+                            sbdEssenceFormat.Append('0');
+                        }
+
+                        EssenceFormat = sbdEssenceFormat.ToString();
                     }
-                    for (int i = intCurrentEssenceDecimals; i < intNewEssenceDecimals; ++i)
-                    {
-                        sbdEssenceFormat.Append('0');
-                    }
-                    EssenceFormat = sbdEssenceFormat.ToString();
                 }
             }
         }
@@ -3008,10 +3033,14 @@ namespace Chummer
                         strNewValue += ".00";
                     else
                     {
-                        StringBuilder sbdZeros = new StringBuilder(strNewValue);
-                        for (int i = strNewValue.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
-                            sbdZeros.Append('0');
-                        strNewValue = sbdZeros.ToString();
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdZeros))
+                        {
+                            sbdZeros.Append(strNewValue);
+                            for (int i = strNewValue.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
+                                sbdZeros.Append('0');
+                            strNewValue = sbdZeros.ToString();
+                        }
                     }
                 }
                 if (_strEssenceFormat != strNewValue)

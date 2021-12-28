@@ -1167,19 +1167,25 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdModifier = new StringBuilder(LanguageManager.GetString("String_Rating") + strSpace
-                    + '(' + Rating.ToString(GlobalSettings.CultureInfo) + strSpace + '×' + strSpace + PointsPerLevel.ToString(GlobalSettings.CultureInfo) + ')');
-                foreach (Improvement objImprovement in ImprovementManager
-                                                       .GetCachedImprovementListForValueOf(
-                                                           CharacterObject, Improvement.ImprovementType.AdeptPower,
-                                                           Name).Where(objImprovement =>
-                                                                           objImprovement.UniqueName == Extra))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                 {
-                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                               .Append(CharacterObject.GetObjectName(objImprovement)).Append(strSpace).Append('(')
-                               .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    sbdModifier.Append(LanguageManager.GetString("String_Rating")).Append(strSpace).Append('(')
+                               .Append(Rating.ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append('×')
+                               .Append(strSpace).Append(PointsPerLevel.ToString(GlobalSettings.CultureInfo))
+                               .Append(')');
+                    foreach (Improvement objImprovement in ImprovementManager
+                                                           .GetCachedImprovementListForValueOf(
+                                                               CharacterObject, Improvement.ImprovementType.AdeptPower,
+                                                               Name).Where(objImprovement =>
+                                                                               objImprovement.UniqueName == Extra))
+                    {
+                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                   .Append(CharacterObject.GetObjectName(objImprovement)).Append(strSpace).Append('(')
+                                   .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    return sbdModifier.ToString();
                 }
-                return sbdModifier.ToString();
             }
         }
 

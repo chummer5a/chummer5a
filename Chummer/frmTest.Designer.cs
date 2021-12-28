@@ -17,6 +17,7 @@ namespace Chummer
             {
                 components?.Dispose();
                 _objCharacter?.Dispose();
+                Utils.StringBuilderPool.Return(_sbdOutputBuilder);
             }
             base.Dispose(disposing);
         }

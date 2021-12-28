@@ -235,13 +235,13 @@ namespace Chummer.Plugins
                 string neon = Path.Combine(path, "NeonJungleLC");
                 if (Directory.Exists(neon))
                     Directory.Delete(neon, true);
-                var plugindirectories = Directory.GetDirectories(path);
+                string[] plugindirectories = Directory.GetDirectories(path);
                 if (plugindirectories.Length == 0)
                 {
                     throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
                 }
 
-                foreach (var plugindir in plugindirectories)
+                foreach (string plugindir in plugindirectories)
                 {
                     Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");
                     //search for a text file that tells me what dll to parse
@@ -294,7 +294,7 @@ namespace Chummer.Plugins
                     throw new ArgumentException("No plugins found in " + path + ".");
                 }
                 Log.Info("Plugins active: " + MyActivePlugins.Count);
-                foreach (var plugin in MyActivePlugins)
+                foreach (IPlugin plugin in MyActivePlugins)
                 {
                     try
                     {
@@ -390,26 +390,33 @@ namespace Chummer.Plugins
             }
             catch (ReflectionTypeLoadException e)
             {
-                StringBuilder msg = new StringBuilder("Exception loading plugins: " + Environment.NewLine);
-                foreach (var exp in e.LoaderExceptions)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdMessage))
                 {
-                    msg.AppendLine(exp.Message);
+                    sbdMessage.AppendLine("Exception loading plugins: ");
+                    foreach (Exception exp in e.LoaderExceptions)
+                    {
+                        sbdMessage.AppendLine(exp.Message);
+                    }
+                    sbdMessage.AppendLine();
+                    sbdMessage.Append(e);
+                    Log.Warn(e, sbdMessage.ToString());
                 }
-                msg.AppendLine();
-                msg.Append(e);
-                Log.Warn(e, msg.ToString());
             }
             catch (CompositionException e)
             {
-                StringBuilder msg = new StringBuilder("Exception loading plugins: " + Environment.NewLine);
-                foreach (var exp in e.Errors)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdMessage))
                 {
-                    msg.AppendLine(exp.Exception.ToString());
+                    sbdMessage.AppendLine("Exception loading plugins: ");
+                    foreach (CompositionError exp in e.Errors)
+                    {
+                        sbdMessage.AppendLine(exp.Exception.ToString());
+                    }
+                    sbdMessage.AppendLine();
+                    sbdMessage.Append(e);
+                    Log.Error(e, sbdMessage.ToString());
                 }
-                msg.AppendLine();
-                msg.Append(e);
-
-                Log.Error(e, msg.ToString());
             }
             catch (ApplicationException)
             {
@@ -431,7 +438,7 @@ namespace Chummer.Plugins
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    var pages = plugin.GetTabPages(frmCareer);
+                    IEnumerable<TabPage> pages = plugin.GetTabPages(frmCareer);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -447,11 +454,11 @@ namespace Chummer.Plugins
 
         internal void CallPlugins(frmCreate frmCreate, CustomActivity parentActivity)
         {
-            foreach (var plugin in MyActivePlugins)
+            foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    var pages = plugin.GetTabPages(frmCreate);
+                    IEnumerable<TabPage> pages = plugin.GetTabPages(frmCreate);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -467,12 +474,12 @@ namespace Chummer.Plugins
 
         internal void CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity)
         {
-            foreach (var plugin in MyActivePlugins)
+            foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    var menuitems = plugin.GetMenuItems(menu);
+                    IEnumerable<ToolStripMenuItem> menuitems = plugin.GetMenuItems(menu);
                     if (menuitems == null)
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)

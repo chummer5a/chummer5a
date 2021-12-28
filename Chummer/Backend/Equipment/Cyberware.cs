@@ -590,15 +590,18 @@ namespace Chummer.Backend.Equipment
             // Add Subsytem information if applicable.
             if (objXmlCyberware.InnerXml.Contains("allowsubsystems"))
             {
-                StringBuilder sbdSubsystem = new StringBuilder();
-                XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
-                for (int i = 0; i < lstSubSystems?.Count; i++)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdSubsystem))
                 {
-                    sbdSubsystem.Append(lstSubSystems[i].InnerText).Append(',');
+                    XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
+                    for (int i = 0; i < lstSubSystems?.Count; i++)
+                    {
+                        sbdSubsystem.Append(lstSubSystems[i].InnerText).Append(',');
+                    }
+
+                    if (sbdSubsystem.Length > 0)
+                        --sbdSubsystem.Length;
+                    _strAllowSubsystems = sbdSubsystem.ToString();
                 }
-                if (sbdSubsystem.Length > 0)
-                    --sbdSubsystem.Length;
-                _strAllowSubsystems = sbdSubsystem.ToString();
             }
 
             if (objXmlCyberware.SelectSingleNode("pairinclude/@includeself")?.Value !=
@@ -3353,26 +3356,31 @@ namespace Chummer.Backend.Equipment
                     if (Children.Any(x => x.AddToParentCapacity))
                     {
                         // Run through its Children and deduct the Capacity costs.
-                        StringBuilder sbdSecondHalf = new StringBuilder();
-                        foreach (Cyberware objChildCyberware in Children.Where(objChild => objChild.AddToParentCapacity))
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdSecondHalf))
                         {
-                            if (objChildCyberware.ParentID == InternalId)
+                            foreach (Cyberware objChildCyberware in Children.Where(
+                                         objChild => objChild.AddToParentCapacity))
                             {
-                                continue;
+                                if (objChildCyberware.ParentID == InternalId)
+                                {
+                                    continue;
+                                }
+
+                                string strLoopCapacity = objChildCyberware.CalculatedCapacity;
+                                int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                if (intLoopPos != -1)
+                                    strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
+                                        strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
+                                else if (strLoopCapacity.StartsWith('['))
+                                    strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
+                                if (strLoopCapacity == "*")
+                                    strLoopCapacity = "0";
+                                sbdSecondHalf.Append("+(").Append(strLoopCapacity).Append(')');
                             }
 
-                            string strLoopCapacity = objChildCyberware.CalculatedCapacity;
-                            int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
-                            if (intLoopPos != -1)
-                                strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
-                                    strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
-                            else if (strLoopCapacity.StartsWith('['))
-                                strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
-                            if (strLoopCapacity == "*")
-                                strLoopCapacity = "0";
-                            sbdSecondHalf.Append("+(").Append(strLoopCapacity).Append(')');
+                            strSecondHalf += sbdSecondHalf.ToString();
                         }
-                        strSecondHalf += sbdSecondHalf.ToString();
                     }
 
                     try
@@ -3408,28 +3416,31 @@ namespace Chummer.Backend.Equipment
                         if (Children.Any(x => x.AddToParentCapacity))
                         {
                             // Run through its Children and deduct the Capacity costs.
-                            StringBuilder sbdCapacity = new StringBuilder();
-                            foreach (Cyberware objChildCyberware in Children.Where(objChild =>
-                                objChild.AddToParentCapacity))
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdCapacity))
                             {
-                                if (objChildCyberware.ParentID == InternalId)
+                                foreach (Cyberware objChildCyberware in Children.Where(objChild =>
+                                             objChild.AddToParentCapacity))
                                 {
-                                    continue;
+                                    if (objChildCyberware.ParentID == InternalId)
+                                    {
+                                        continue;
+                                    }
+
+                                    string strLoopCapacity = objChildCyberware.CalculatedCapacity;
+                                    int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                    if (intLoopPos != -1)
+                                        strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
+                                            strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
+                                    else if (strLoopCapacity.StartsWith('['))
+                                        strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
+                                    if (strLoopCapacity == "*")
+                                        strLoopCapacity = "0";
+                                    sbdCapacity.Append("+(").Append(strLoopCapacity).Append(')');
                                 }
 
-                                string strLoopCapacity = objChildCyberware.CalculatedCapacity;
-                                int intLoopPos = strLoopCapacity.IndexOf("/[", StringComparison.Ordinal);
-                                if (intLoopPos != -1)
-                                    strLoopCapacity = strLoopCapacity.Substring(intLoopPos + 2,
-                                        strLoopCapacity.LastIndexOf(']') - intLoopPos - 2);
-                                else if (strLoopCapacity.StartsWith('['))
-                                    strLoopCapacity = strLoopCapacity.Substring(1, strLoopCapacity.Length - 2);
-                                if (strLoopCapacity == "*")
-                                    strLoopCapacity = "0";
-                                sbdCapacity.Append("+(").Append(strLoopCapacity).Append(')');
+                                strCapacity += sbdCapacity.ToString();
                             }
-
-                            strCapacity += sbdCapacity.ToString();
                         }
                     }
 

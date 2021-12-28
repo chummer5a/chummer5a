@@ -34,10 +34,11 @@ namespace Chummer
         public frmTest()
         {
             InitializeComponent();
+            _sbdOutputBuilder = Utils.StringBuilderPool.Get();
         }
 
         private bool _blnAddExceptionInfoToErrors;
-        private readonly StringBuilder _objOutputBuilder = new StringBuilder();
+        private readonly StringBuilder _sbdOutputBuilder;
         private readonly Character _objCharacter = new Character();
 
         private void cmdTest_Click(object sender, EventArgs e)
@@ -47,7 +48,7 @@ namespace Chummer
             txtOutput.Text = _blnAddExceptionInfoToErrors
                 ? "Testing " + cboTest.Text + " with exception info printed." + Environment.NewLine + Environment.NewLine + "Please wait..."
                 : "Testing " + cboTest.Text + "." + Environment.NewLine + Environment.NewLine + "Please wait...";
-            _objOutputBuilder.Clear();
+            _sbdOutputBuilder.Clear();
             switch (cboTest.Text)
             {
                 case "armor.xml":
@@ -81,9 +82,9 @@ namespace Chummer
                     break;
             }
 
-            if (_objOutputBuilder.Length == 0)
-                _objOutputBuilder.Append("Validation finished with no errors.");
-            txtOutput.Text = _objOutputBuilder.ToString();
+            if (_sbdOutputBuilder.Length == 0)
+                _sbdOutputBuilder.Append("Validation finished with no errors.");
+            txtOutput.Text = _sbdOutputBuilder.ToString();
             cmdTest.Enabled = true;
         }
 
@@ -124,18 +125,18 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                 else
-                                    _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                             }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
-                            _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                            _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                         else
-                            _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                            _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                     }
                 }
             }
@@ -166,9 +167,9 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                 else
-                                    _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                             }
                         }
 
@@ -179,17 +180,17 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.Append(strName).Append(" failed TotalAvail. Exception: ").AppendLine(e.ToString());
+                                _sbdOutputBuilder.Append(strName).Append(" failed TotalAvail. Exception: ").AppendLine(e.ToString());
                             else
-                                _objOutputBuilder.Append(strName).AppendLine(" failed TotalAvail");
+                                _sbdOutputBuilder.Append(strName).AppendLine(" failed TotalAvail");
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
-                            _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                            _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                         else
-                            _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                            _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                     }
                 }
             }
@@ -232,18 +233,18 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                 else
-                                    _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                             }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
-                            _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                            _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                         else
-                            _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                            _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                     }
                 }
             }
@@ -274,18 +275,18 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                 else
-                                    _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                             }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
-                            _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                            _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                         else
-                            _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                            _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                     }
                 }
             }
@@ -329,18 +330,18 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                 else
-                                    _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                             }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
-                            _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                            _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                         else
-                            _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                            _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                     }
                 }
             }
@@ -372,18 +373,18 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
-                                    _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                 else
-                                    _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                             }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
-                            _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                            _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                         else
-                            _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                            _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                     }
                 }
             }
@@ -426,18 +427,18 @@ namespace Chummer
                                 catch (Exception e)
                                 {
                                     if (_blnAddExceptionInfoToErrors)
-                                        _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                     else
-                                        _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                                 }
                             }
                         }
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                                _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                             else
-                                _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                                _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                         }
                     }
                 }
@@ -492,18 +493,18 @@ namespace Chummer
                                 catch (Exception e)
                                 {
                                     if (_blnAddExceptionInfoToErrors)
-                                        _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                     else
-                                        _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                                 }
                             }
                         }
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                                _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                             else
-                                _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                                _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                         }
                     }
                 }
@@ -548,18 +549,18 @@ namespace Chummer
                                 catch (Exception e)
                                 {
                                     if (_blnAddExceptionInfoToErrors)
-                                        _objOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
                                     else
-                                        _objOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
                                 }
                             }
                         }
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                                _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                             else
-                                _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                                _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                         }
                     }
                 }
@@ -942,9 +943,9 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
-                                _objOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
+                                _sbdOutputBuilder.Append(strName).Append(" general failure. Exception: ").AppendLine(e.ToString());
                             else
-                                _objOutputBuilder.Append(strName).AppendLine(" general failure");
+                                _sbdOutputBuilder.Append(strName).AppendLine(" general failure");
                         }
                     }
                 }

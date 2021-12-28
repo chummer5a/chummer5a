@@ -453,33 +453,41 @@ namespace Chummer
             lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intEndPosition + 1), false));
 
             // Start building the return value.
-            StringBuilder sbdReturn = new StringBuilder(strInput.Length);
-            foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
             {
-                string strLoop = objLoop.Item1;
-                if (string.IsNullOrEmpty(strLoop))
-                    continue;
-                // Items inside curly brackets need of processing, so do processing on them and append the result to the return value
-                if (objLoop.Item2)
+                int intNewCapacity = strInput.Length;
+                if (sbdReturn.Capacity > intNewCapacity)
+                    sbdReturn.Capacity = intNewCapacity;
+                foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
                 {
-                    // Inner string is a compound string in and of itself, so recurse this method
-                    if (strLoop.IndexOfAny('{', '}') != -1)
+                    string strLoop = objLoop.Item1;
+                    if (string.IsNullOrEmpty(strLoop))
+                        continue;
+                    // Items inside curly brackets need of processing, so do processing on them and append the result to the return value
+                    if (objLoop.Item2)
                     {
-                        strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter, blnUseTranslateExtra);
-                    }
-                    // Use more expensive TranslateExtra if flag is set to use that
-                    sbdReturn.Append(blnUseTranslateExtra
-                                         ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
-                                         : GetString(strLoop, strLanguage, false));
-                }
-                // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
-                else
-                {
-                    sbdReturn.Append(strLoop);
-                }
-            }
+                        // Inner string is a compound string in and of itself, so recurse this method
+                        if (strLoop.IndexOfAny('{', '}') != -1)
+                        {
+                            strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter,
+                                                                  blnUseTranslateExtra);
+                        }
 
-            return sbdReturn.ToString();
+                        // Use more expensive TranslateExtra if flag is set to use that
+                        sbdReturn.Append(blnUseTranslateExtra
+                                             ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
+                                             : GetString(strLoop, strLanguage, false));
+                    }
+                    // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
+                    else
+                    {
+                        sbdReturn.Append(strLoop);
+                    }
+                }
+
+                return sbdReturn.ToString();
+            }
         }
 
         /// <summary>
@@ -562,31 +570,37 @@ namespace Chummer
                     }
                 }));
 
-            StringBuilder sbdMissingMessage = new StringBuilder();
-            StringBuilder sbdUnusedMessage = new StringBuilder();
-            // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-            // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-            await Task.WhenAll(
-                Task.Run(() =>
-                {
-                    // Check for strings that are in the English file but not in the selected language file.
-                    foreach (string strKey in lstEnglish)
+            string strMessage;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdMissingMessage))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdUnusedMessage))
+            {
+                // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+                // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                await Task.WhenAll(
+                    Task.Run(() =>
                     {
-                        if (!lstLanguage.Contains(strKey))
-                            sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
-                    }
-                }),
-                Task.Run(() =>
-                {
-                    // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
-                    foreach (string strKey in lstLanguage)
+                        // Check for strings that are in the English file but not in the selected language file.
+                        foreach (string strKey in lstEnglish)
+                        {
+                            if (!lstLanguage.Contains(strKey))
+                                sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
+                        }
+                    }),
+                    Task.Run(() =>
                     {
-                        if (!lstEnglish.Contains(strKey))
-                            sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
-                    }
-                }));
+                        // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
+                        foreach (string strKey in lstLanguage)
+                        {
+                            if (!lstEnglish.Contains(strKey))
+                                sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
+                        }
+                    }));
 
-            string strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+                strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+            }
+
             // Display the message.
             Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
                 "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Plugins;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using NLog;
@@ -671,12 +672,12 @@ namespace Chummer
                 return;
             using (new CursorWait(this))
             {
-                foreach (var plugin in Program.PluginLoader.MyPlugins)
+                foreach (IPlugin plugin in Program.PluginLoader.MyPlugins)
                 {
                     try
                     {
                         plugin.CustomInitialize(Program.MainForm);
-                        if (GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
+                        if (GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool check))
                         {
                             clbPlugins.Items.Add(plugin, check);
                         }
@@ -712,7 +713,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                var plugin = clbPlugins.Items[e.Index];
+                object plugin = clbPlugins.Items[e.Index];
                 if (GlobalSettings.PluginsEnabledDic.ContainsKey(plugin.ToString()))
                     GlobalSettings.PluginsEnabledDic.Remove(plugin.ToString());
                 GlobalSettings.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
@@ -748,10 +749,13 @@ namespace Chummer
 
             if (objSelected.DependenciesList.Count > 0)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (var dependency in objSelected.DependenciesList)
-                    sb.AppendLine(dependency.DisplayName);
-                lblDependencies.Text = sb.ToString();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdDependencies))
+                {
+                    foreach (DirectoryDependency dependency in objSelected.DependenciesList)
+                        sbdDependencies.AppendLine(dependency.DisplayName);
+                    lblDependencies.Text = sbdDependencies.ToString();
+                }
             }
             else
             {
@@ -761,14 +765,17 @@ namespace Chummer
 
             if (objSelected.IncompatibilitiesList.Count > 0)
             {
-                //We only need a Stringbuilder if we got anything
-                StringBuilder sb = new StringBuilder();
-                foreach (var exclusivity in objSelected.IncompatibilitiesList)
-                    sb.AppendLine(exclusivity.DisplayName);
-                lblIncompatibilities.Text = sb.ToString();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdIncompatibilities))
+                {
+                    foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
+                        sbdIncompatibilities.AppendLine(exclusivity.DisplayName);
+                    lblIncompatibilities.Text = sbdIncompatibilities.ToString();
+                }
             }
             else
             {
+                //Make sure all old information is discarded
                 lblIncompatibilities.Text = string.Empty;
             }
             gpbDirectoryInfo.Visible = true;
@@ -1585,24 +1592,26 @@ namespace Chummer
                         List<SourcebookInfo> list = null;
                         await Task.Run(() => list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList());
                         sw.Stop();
-                        StringBuilder sbdFeedback = new StringBuilder(Environment.NewLine + Environment.NewLine)
-                                                    .AppendLine(
-                                                        "-------------------------------------------------------------")
-                                                    .AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                                                  "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
-                                                                  fbd.SelectedPath, sw.ElapsedMilliseconds,
-                                                                  Environment.NewLine, list.Count).AppendLine()
-                                                    .AppendLine();
-                        foreach(SourcebookInfo sourcebook in list)
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdFeedback))
                         {
-                            sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                                     "{0} with Offset {1} path: {2}", sourcebook.Code,
-                                                     sourcebook.Offset, sourcebook.Path).AppendLine();
-                        }
+                            sbdFeedback.AppendLine().AppendLine()
+                                       .AppendLine("-------------------------------------------------------------")
+                                       .AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                     "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
+                                                     fbd.SelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
+                                                     list.Count).AppendLine().AppendLine();
+                            foreach (SourcebookInfo sourcebook in list)
+                            {
+                                sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                         "{0} with Offset {1} path: {2}", sourcebook.Code,
+                                                         sourcebook.Offset, sourcebook.Path).AppendLine();
+                            }
 
-                        sbdFeedback.AppendLine()
-                                   .AppendLine("-------------------------------------------------------------");
-                        Log.Info(sbdFeedback.ToString());
+                            sbdFeedback.AppendLine()
+                                       .AppendLine("-------------------------------------------------------------");
+                            Log.Info(sbdFeedback.ToString());
+                        }
 
                         string message = string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FoundPDFsInFolder", _strSelectedLanguage), list.Count, fbd.SelectedPath);
                         string title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder", _strSelectedLanguage);
@@ -1723,15 +1732,18 @@ namespace Chummer
                         Log.Error(e);
                         return null;
                     }
-
-                    StringBuilder sbdAllLines = new StringBuilder();
-                    for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                    
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdAllLines))
                     {
-                        string strCurrentLine = lstStringFromPdf[i];
-                        sbdAllLines.AppendLine(strCurrentLine);
-                    }
+                        for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                        {
+                            string strCurrentLine = lstStringFromPdf[i];
+                            sbdAllLines.AppendLine(strCurrentLine);
+                        }
 
-                    return sbdAllLines.ToString();
+                        return sbdAllLines.ToString();
+                    }
                 }
                 finally
                 {

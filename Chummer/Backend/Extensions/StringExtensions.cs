@@ -60,17 +60,30 @@ namespace Chummer
             int intHead = strInput.IndexOf(strOldValue, eStringComparison);
             if (intHead == -1)
                 return strInput;
-            // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
-            StringBuilder sbdReturn = new StringBuilder(strInput.Length + 1 + Math.Max(0, strInput.Length * (strNewValue.Length - strOldValue.Length) / strOldValue.Length));
-            int intEndPositionOfLastReplace = 0;
-            // intHead already set to the index of the first instance, for loop's initializer can be left empty
-            for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                sbdReturn.Append(strInput, intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace).Append(strNewValue);
-                intEndPositionOfLastReplace = intHead + strOldValue.Length;
+                // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
+                int intNewCapacity = strInput.Length + 1
+                                                     + Math.Max(
+                                                         0,
+                                                         strInput.Length * (strNewValue.Length - strOldValue.Length)
+                                                         / strOldValue.Length);
+                if (intNewCapacity > sbdReturn.Capacity)
+                    sbdReturn.Capacity = intNewCapacity;
+                int intEndPositionOfLastReplace = 0;
+                // intHead already set to the index of the first instance, for loop's initializer can be left empty
+                for (;
+                     intHead != -1;
+                     intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
+                {
+                    sbdReturn.Append(strInput, intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace)
+                             .Append(strNewValue);
+                    intEndPositionOfLastReplace = intHead + strOldValue.Length;
+                }
+
+                sbdReturn.Append(strInput, intEndPositionOfLastReplace, strInput.Length - intEndPositionOfLastReplace);
+                return sbdReturn.ToString();
             }
-            sbdReturn.Append(strInput, intEndPositionOfLastReplace, strInput.Length - intEndPositionOfLastReplace);
-            return sbdReturn.ToString();
         }
 
         /// <summary>
@@ -1004,40 +1017,50 @@ namespace Chummer
             if (intWidth >= strText.Length)
                 return strText;
 
-            int intNextPosition;
-            StringBuilder sbdReturn = new StringBuilder(strText.Length);
-            string strNewLine = Environment.NewLine;
-            // Parse each line of text
-            for (int intCurrentPosition = 0; intCurrentPosition < strText.Length; intCurrentPosition = intNextPosition)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                // Find end of line
-                int intEndOfLinePosition = strText.IndexOf(strNewLine, intCurrentPosition, StringComparison.Ordinal);
-                if (intEndOfLinePosition == -1)
-                    intNextPosition = intEndOfLinePosition = strText.Length;
-                else
-                    intNextPosition = intEndOfLinePosition + strNewLine.Length;
-
-                // Copy this line of text, breaking into smaller lines as needed
-                if (intEndOfLinePosition > intCurrentPosition)
+                int intNewCapacity = strText.Length;
+                if (intNewCapacity > sbdReturn.Capacity)
+                    sbdReturn.Capacity = intNewCapacity;
+                string strNewLine = Environment.NewLine;
+                // Parse each line of text
+                int intNextPosition;
+                for (int intCurrentPosition = 0;
+                     intCurrentPosition < strText.Length;
+                     intCurrentPosition = intNextPosition)
                 {
-                    do
-                    {
-                        int intLengthToRead = intEndOfLinePosition - intCurrentPosition;
-                        if (intLengthToRead > intWidth)
-                            intLengthToRead = strText.BreakLine(intCurrentPosition, intWidth);
-                        sbdReturn.Append(strText, intCurrentPosition, intLengthToRead).AppendLine();
+                    // Find end of line
+                    int intEndOfLinePosition
+                        = strText.IndexOf(strNewLine, intCurrentPosition, StringComparison.Ordinal);
+                    if (intEndOfLinePosition == -1)
+                        intNextPosition = intEndOfLinePosition = strText.Length;
+                    else
+                        intNextPosition = intEndOfLinePosition + strNewLine.Length;
 
-                        // Trim whitespace following break
-                        intCurrentPosition += intLengthToRead;
-                        while (intCurrentPosition < intEndOfLinePosition && char.IsWhiteSpace(strText[intCurrentPosition]) && !char.IsControl(strText[intCurrentPosition]))
-                            ++intCurrentPosition;
+                    // Copy this line of text, breaking into smaller lines as needed
+                    if (intEndOfLinePosition > intCurrentPosition)
+                    {
+                        do
+                        {
+                            int intLengthToRead = intEndOfLinePosition - intCurrentPosition;
+                            if (intLengthToRead > intWidth)
+                                intLengthToRead = strText.BreakLine(intCurrentPosition, intWidth);
+                            sbdReturn.Append(strText, intCurrentPosition, intLengthToRead).AppendLine();
+
+                            // Trim whitespace following break
+                            intCurrentPosition += intLengthToRead;
+                            while (intCurrentPosition < intEndOfLinePosition
+                                   && char.IsWhiteSpace(strText[intCurrentPosition])
+                                   && !char.IsControl(strText[intCurrentPosition]))
+                                ++intCurrentPosition;
+                        } while (intEndOfLinePosition > intCurrentPosition);
                     }
-                    while (intEndOfLinePosition > intCurrentPosition);
+                    else
+                        sbdReturn.AppendLine(); // Empty line
                 }
-                else
-                    sbdReturn.AppendLine(); // Empty line
+
+                return sbdReturn.ToString();
             }
-            return sbdReturn.ToString();
         }
 
         /// <summary>
@@ -1116,14 +1139,23 @@ namespace Chummer
                 return '\"' + strSearch + '\"';
             }
 
-            StringBuilder sbdReturn = new StringBuilder("concat(\"", strSearch.Length + 10);
-            int intSubStringStart = 0;
-            for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"', intSubStringStart))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                sbdReturn.Append(strSearch, intSubStringStart, intQuotePos - intSubStringStart).Append("\", '\"', \"");
-                intSubStringStart = intQuotePos + 1;
+                int intNewCapacity = strSearch.Length + 10;
+                if (intNewCapacity > sbdReturn.Capacity)
+                    sbdReturn.Capacity = intNewCapacity;
+                sbdReturn.Append("concat(\"");
+                int intSubStringStart = 0;
+                for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"', intSubStringStart))
+                {
+                    sbdReturn.Append(strSearch, intSubStringStart, intQuotePos - intSubStringStart)
+                             .Append("\", '\"', \"");
+                    intSubStringStart = intQuotePos + 1;
+                }
+
+                return sbdReturn.Append(strSearch, intSubStringStart, strSearch.Length - intSubStringStart)
+                                .Append("\")").ToString();
             }
-            return sbdReturn.Append(strSearch, intSubStringStart, strSearch.Length - intSubStringStart).Append("\")").ToString();
         }
 
         /// <summary>

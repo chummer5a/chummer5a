@@ -345,20 +345,28 @@ namespace Chummer
             {
                 if (_objReferenceCharacterSettings.BuildMethod != _objCharacterSettings.BuildMethod)
                 {
-                    StringBuilder sbdConflictingCharacters = new StringBuilder();
-                    foreach (Character objCharacter in Program.MainForm.OpenCharacters)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdConflictingCharacters))
                     {
-                        if (!objCharacter.Created && ReferenceEquals(objCharacter.Settings, _objReferenceCharacterSettings))
-                            sbdConflictingCharacters.AppendLine(objCharacter.CharacterName);
-                    }
-                    if (sbdConflictingCharacters.Length > 0)
-                    {
-                        Program.MainForm.ShowMessageBox(this,
-                            LanguageManager.GetString("Message_CharacterOptions_OpenCharacterOnBuildMethodChange") +
-                            sbdConflictingCharacters,
-                            LanguageManager.GetString("MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange"),
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        foreach (Character objCharacter in Program.MainForm.OpenCharacters)
+                        {
+                            if (!objCharacter.Created
+                                && ReferenceEquals(objCharacter.Settings, _objReferenceCharacterSettings))
+                                sbdConflictingCharacters.AppendLine(objCharacter.CharacterName);
+                        }
+
+                        if (sbdConflictingCharacters.Length > 0)
+                        {
+                            Program.MainForm.ShowMessageBox(this,
+                                                            LanguageManager.GetString(
+                                                                "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
+                                                            +
+                                                            sbdConflictingCharacters,
+                                                            LanguageManager.GetString(
+                                                                "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange"),
+                                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                     }
                 }
                 if (!_objCharacterSettings.Save())
@@ -803,10 +811,13 @@ namespace Chummer
 
             if (objSelected.DependenciesList.Count > 0)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (var dependency in objSelected.DependenciesList)
-                    sb.AppendLine(dependency.DisplayName);
-                lblDependencies.Text = sb.ToString();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdDependencies))
+                {
+                    foreach (DirectoryDependency dependency in objSelected.DependenciesList)
+                        sbdDependencies.AppendLine(dependency.DisplayName);
+                    lblDependencies.Text = sbdDependencies.ToString();
+                }
             }
             else
             {
@@ -816,14 +827,17 @@ namespace Chummer
 
             if (objSelected.IncompatibilitiesList.Count > 0)
             {
-                //We only need a Stringbuilder if we got anything
-                StringBuilder sb = new StringBuilder();
-                foreach (var exclusivity in objSelected.IncompatibilitiesList)
-                    sb.AppendLine(exclusivity.DisplayName);
-                lblIncompatibilities.Text = sb.ToString();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdIncompatibilities))
+                {
+                    foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
+                        sbdIncompatibilities.AppendLine(exclusivity.DisplayName);
+                    lblIncompatibilities.Text = sbdIncompatibilities.ToString();
+                }
             }
             else
             {
+                //Make sure all old information is discarded
                 lblIncompatibilities.Text = string.Empty;
             }
             gpbDirectoryInfo.Visible = true;

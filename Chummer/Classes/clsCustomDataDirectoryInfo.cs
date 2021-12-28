@@ -227,47 +227,59 @@ namespace Chummer
         public string CheckDependency(CharacterSettings objCharacterSettings)
         {
             int intMyLoadOrderPosition = objCharacterSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
-            StringBuilder sbdReturn = new StringBuilder();
-            List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
-            foreach (DirectoryDependency dependency in DependenciesList)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
             {
-                lstEnabledCustomData.Clear();
-                if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
-                    lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(dependency.UniqueIdentifier)));
-                if (lstEnabledCustomData.Count > 0)
+                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
+                foreach (DirectoryDependency dependency in DependenciesList)
                 {
-                    // First check if we have any data whose version matches
-                    if (dependency.MinimumVersion != default || dependency.MaximumVersion != default)
+                    lstEnabledCustomData.Clear();
+                    if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
+                        lstEnabledCustomData.AddRange(
+                            objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(
+                                x => x.Guid.Equals(dependency.UniqueIdentifier)));
+                    if (lstEnabledCustomData.Count > 0)
                     {
-                        if (lstEnabledCustomData.All(x =>
-                            (dependency.MinimumVersion != default && x.MyVersion < dependency.MinimumVersion)
-                            || (dependency.MaximumVersion != default && x.MyVersion > dependency.MaximumVersion)))
+                        // First check if we have any data whose version matches
+                        if (dependency.MinimumVersion != default || dependency.MaximumVersion != default)
                         {
-                            sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
-                                                   lstEnabledCustomData[0].DisplayName, dependency.DisplayName)
-                                     .AppendLine();
-                            continue;
+                            if (lstEnabledCustomData.All(x =>
+                                                             (dependency.MinimumVersion != default
+                                                              && x.MyVersion < dependency.MinimumVersion)
+                                                             || (dependency.MaximumVersion != default
+                                                                 && x.MyVersion > dependency.MaximumVersion)))
+                            {
+                                sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
+                                                       lstEnabledCustomData[0].DisplayName, dependency.DisplayName)
+                                         .AppendLine();
+                                continue;
+                            }
+
+                            // Remove all from the list where version does not match before moving on to load orders
+                            lstEnabledCustomData.RemoveAll(x =>
+                                                               (dependency.MinimumVersion != default
+                                                                && x.MyVersion < dependency.MinimumVersion)
+                                                               || (dependency.MaximumVersion != default
+                                                                   && x.MyVersion > dependency.MaximumVersion));
                         }
 
-                        // Remove all from the list where version does not match before moving on to load orders
-                        lstEnabledCustomData.RemoveAll(x =>
-                            (dependency.MinimumVersion != default && x.MyVersion < dependency.MinimumVersion)
-                            || (dependency.MaximumVersion != default && x.MyVersion > dependency.MaximumVersion));
+                        if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition
+                            < objCharacterSettings.EnabledCustomDataDirectoryInfos.FindLastIndex(
+                                x => lstEnabledCustomData.Contains(x)))
+                        {
+                            sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
+                                                   lstEnabledCustomData[0].Name, Name).AppendLine();
+                        }
                     }
-                    if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterSettings.EnabledCustomDataDirectoryInfos.FindLastIndex(x => lstEnabledCustomData.Contains(x)))
+                    else
                     {
-                        sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
-                                               lstEnabledCustomData[0].Name, Name).AppendLine();
+                        //We don't even need to attempt to check any versions if all guids are mismatched
+                        sbdReturn.AppendLine(dependency.DisplayName);
                     }
                 }
-                else
-                {
-                    //We don't even need to attempt to check any versions if all guids are mismatched
-                    sbdReturn.AppendLine(dependency.DisplayName);
-                }
-            }
 
-            return sbdReturn.ToString();
+                return sbdReturn.ToString();
+            }
         }
 
         /// <summary>
@@ -277,40 +289,49 @@ namespace Chummer
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
         public string CheckIncompatibility(CharacterSettings objCharacterSettings)
         {
-            StringBuilder sbdReturn = new StringBuilder();
-            List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
-            foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
             {
-                //Use the fast HasSet.Contains to determine if any dependency is present
-                if (!objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
-                    continue;
-                //We still need to filter out all the matching incompatibilities from objCharacterSettings.EnabledCustomDataDirectoryInfos to check their versions
-                lstEnabledCustomData.Clear();
-                if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
-                    lstEnabledCustomData.AddRange(objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
-                if (lstEnabledCustomData.Count == 0)
-                    continue;
-                CustomDataDirectoryInfo objInfoToDisplay;
-                if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
+                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
+                foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
                 {
-                    objInfoToDisplay = lstEnabledCustomData.Find(x =>
-                                                                     (incompatibility.MinimumVersion != default &&
-                                                                      x.MyVersion >= incompatibility.MinimumVersion)
-                                                                     || (incompatibility.MaximumVersion != default &&
-                                                                         x.MyVersion <= incompatibility.MaximumVersion));
-                }
-                else
-                    objInfoToDisplay = lstEnabledCustomData[0];
+                    //Use the fast HasSet.Contains to determine if any dependency is present
+                    if (!objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(
+                            incompatibility.UniqueIdentifier))
+                        continue;
+                    //We still need to filter out all the matching incompatibilities from objCharacterSettings.EnabledCustomDataDirectoryInfos to check their versions
+                    lstEnabledCustomData.Clear();
+                    if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(
+                            incompatibility.UniqueIdentifier))
+                        lstEnabledCustomData.AddRange(
+                            objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(
+                                x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
+                    if (lstEnabledCustomData.Count == 0)
+                        continue;
+                    CustomDataDirectoryInfo objInfoToDisplay;
+                    if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
+                    {
+                        objInfoToDisplay = lstEnabledCustomData.Find(x =>
+                                                                         (incompatibility.MinimumVersion != default &&
+                                                                          x.MyVersion >= incompatibility.MinimumVersion)
+                                                                         || (incompatibility.MaximumVersion != default
+                                                                             &&
+                                                                             x.MyVersion <= incompatibility
+                                                                                 .MaximumVersion));
+                    }
+                    else
+                        objInfoToDisplay = lstEnabledCustomData[0];
 
-                //if the version is within the version range add it to the list.
-                if (objInfoToDisplay != default)
-                {
-                    sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
-                                           objInfoToDisplay.DisplayName, incompatibility.DisplayName).AppendLine();
+                    //if the version is within the version range add it to the list.
+                    if (objInfoToDisplay != default)
+                    {
+                        sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                                               objInfoToDisplay.DisplayName, incompatibility.DisplayName).AppendLine();
+                    }
                 }
+
+                return sbdReturn.ToString();
             }
-
-            return sbdReturn.ToString();
         }
 
         /// <summary>
@@ -450,17 +471,20 @@ namespace Chummer
 
         public string GetDisplayAuthors(string strLanguage, CultureInfo objCultureInfo)
         {
-            StringBuilder sbdDisplayAuthors = new StringBuilder();
-            foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdDisplayAuthors))
             {
-                sbdDisplayAuthors.AppendLine(kvp.Value
-                                                 ? string.Format(objCultureInfo, kvp.Key,
-                                                                 LanguageManager.GetString(
-                                                                     "String_IsMainAuthor", strLanguage))
-                                                 : kvp.Key);
-            }
+                foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
+                {
+                    sbdDisplayAuthors.AppendLine(kvp.Value
+                                                     ? string.Format(objCultureInfo, kvp.Key,
+                                                                     LanguageManager.GetString(
+                                                                         "String_IsMainAuthor", strLanguage))
+                                                     : kvp.Key);
+                }
 
-            return sbdDisplayAuthors.ToString().Trim();
+                return sbdDisplayAuthors.ToString().Trim();
+            }
         }
 
         public Guid Guid => _guid;
