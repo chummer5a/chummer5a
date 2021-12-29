@@ -44,6 +44,8 @@ Data Changes:
 - Muscle Augmentation and Muscle Toner now just disable Celerity instead of being forbidden from being bought if the character has Celerity. Fixes #4621.
 - Changed Cyberspace Designs Dragonfly (R5) melee autosoft rating to 1.
 - Compiling can now properly be chosen for Frostbite.
+- Initiative-boosting powers and 'ware now properly disable the defense test bonus given by Lightning Reflexes.
+- Synaptic Acceleration now properly adds +1 to defense tests. Known issue: this defense test increase is not disabled if the character buys any initiative-boosting 'ware the way its initiative boost is.
 
 Changed/New Strings:
 - String_GameplayOption

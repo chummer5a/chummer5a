@@ -1038,6 +1038,7 @@
       <source>SR5</source>
       <page>455</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name precedence="0">REA</name>
@@ -1045,6 +1046,7 @@
         </specificattribute>
       </bonus>
       <wirelesspairbonus mode="replace">
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="1">Rating</initiativepass>
         <specificattribute>
           <name precedence="1">REA</name>
@@ -2950,6 +2952,7 @@
       <page>84</page>
       <!-- TODO: Allow user to deactivate the bonus/penalties -->
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire precedence="0">Rating * 2</skillwire>
@@ -7114,6 +7117,7 @@
       <source>HS</source>
       <page>182</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire>Rating * 2</skillwire>
@@ -7823,6 +7827,7 @@
       <source>2050</source>
       <page>203</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name precedence="0">REA</name>

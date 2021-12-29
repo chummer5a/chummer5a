@@ -347,6 +347,7 @@
         <magicianswayforbids />
       </adeptwayrequires>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name>REA</name>
