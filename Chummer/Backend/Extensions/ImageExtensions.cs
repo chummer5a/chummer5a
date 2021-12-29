@@ -519,7 +519,7 @@ namespace Chummer
             // Jpeg encoding works in 8x8 blocks, so we should ideally scale based on a logarithm based on a power of 2 (2^10 in this case)
             return dblPixelCount <= 1024
                 ? 100
-                : (50.0 * (1.0 + 0.8.RaiseToPower(Math.Log(dblPixelCount, 1024.0)))).StandardRound(); // Sub-50 quality gets iffy for a lot of stuff, so just scale between 50 and 100 to be on the safe side
+                : (50.0 * (1.0 + 2 * 0.5.RaiseToPower(Math.Log(dblPixelCount, 1024.0)))).StandardRound(); // Sub-50 quality gets iffy for a lot of stuff, so just scale between 50 and 100 to be on the safe side
         }
     }
 }
