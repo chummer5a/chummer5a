@@ -9394,26 +9394,36 @@ namespace Chummer
 
             if (!blnDoUIUpdate)
                 return intKarmaPointsRemain;
-            StringBuilder sbdContactPoints = new StringBuilder(CharacterObject.ContactPointsUsed.ToString(GlobalSettings.CultureInfo));
-            if (CharacterObject.FriendsInHighPlaces)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdContactPoints))
             {
-                sbdContactPoints.Append('/').Append(Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalSettings.CultureInfo));
-            }
-            sbdContactPoints.Append(strOf).Append(intContactPoints.ToString(GlobalSettings.CultureInfo));
-            if (CharacterObject.FriendsInHighPlaces)
-            {
-                sbdContactPoints.Append('/').Append((CharacterObject.CHA.Value * 4).ToString(GlobalSettings.CultureInfo));
-            }
-            if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
-            {
-                sbdContactPoints.Append(strSpace).Append('(')
-                                .Append(intPointsInContacts.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                                .Append(strPoints).Append(')');
-            }
+                sbdContactPoints.Append(CharacterObject.ContactPointsUsed.ToString(GlobalSettings.CultureInfo));
+                if (CharacterObject.FriendsInHighPlaces)
+                {
+                    sbdContactPoints.Append('/')
+                                    .Append(Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends)
+                                                .ToString(GlobalSettings.CultureInfo));
+                }
 
-            string strContactPoints = sbdContactPoints.ToString();
-            lblContactsBP.Text = strContactPoints;
-            lblContactPoints.Text = strContactPoints;
+                sbdContactPoints.Append(strOf).Append(intContactPoints.ToString(GlobalSettings.CultureInfo));
+                if (CharacterObject.FriendsInHighPlaces)
+                {
+                    sbdContactPoints.Append('/')
+                                    .Append((CharacterObject.CHA.Value * 4).ToString(GlobalSettings.CultureInfo));
+                }
+
+                if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
+                {
+                    sbdContactPoints.Append(strSpace).Append('(')
+                                    .Append(intPointsInContacts.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                    .Append(strPoints).Append(')');
+                }
+
+                string strContactPoints = sbdContactPoints.ToString();
+
+                lblContactsBP.Text = strContactPoints;
+                lblContactPoints.Text = strContactPoints;
+            }
 
             lblPositiveQualitiesBP.SetToolTip(sbdPositiveQualityTooltip.ToString());
             lblNegativeQualitiesBP.SetToolTip(sbdNegativeQualityTooltip.ToString());
@@ -10348,32 +10358,48 @@ namespace Chummer
                         lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                         lblWeaponSlotsLabel.Visible = true;
                         lblWeaponSlots.Visible = true;
-                        StringBuilder sbdSlotsText = new StringBuilder(objSelectedAccessory.Mount);
-                        if (sbdSlotsText.Length > 0 && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdSlotsText))
                         {
-                            sbdSlotsText.Clear();
-                            foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
-                            --sbdSlotsText.Length;
+                            sbdSlotsText.Append(objSelectedAccessory.Mount);
+                            if (sbdSlotsText.Length > 0
+                                && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                   StringComparison.OrdinalIgnoreCase))
+                            {
+                                sbdSlotsText.Clear();
+                                foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc(
+                                             '/', StringSplitOptions.RemoveEmptyEntries))
+                                    sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount))
+                                                .Append('/');
+                                --sbdSlotsText.Length;
+                            }
+
+                            if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount)
+                                && objSelectedAccessory.ExtraMount != "None")
+                            {
+                                bool boolHaveAddedItem = false;
+                                foreach (string strCurrentExtraMount in objSelectedAccessory.ExtraMount.SplitNoAlloc(
+                                             '/', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    if (!boolHaveAddedItem)
+                                    {
+                                        sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
+                                        boolHaveAddedItem = true;
+                                    }
+
+                                    sbdSlotsText
+                                        .Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount))
+                                        .Append('/');
+                                }
+
+                                // Remove the trailing /
+                                if (boolHaveAddedItem)
+                                    --sbdSlotsText.Length;
+                            }
+
+                            lblWeaponSlots.Text = sbdSlotsText.ToString();
                         }
 
-                        if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount) && objSelectedAccessory.ExtraMount != "None")
-                        {
-                            bool boolHaveAddedItem = false;
-                            foreach (string strCurrentExtraMount in objSelectedAccessory.ExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                if (!boolHaveAddedItem)
-                                {
-                                    sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
-                                    boolHaveAddedItem = true;
-                                }
-                                sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
-                            }
-                            // Remove the trailing /
-                            if (boolHaveAddedItem)
-                                --sbdSlotsText.Length;
-                        }
-                        lblWeaponSlots.Text = sbdSlotsText.ToString();
                         lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
@@ -11869,28 +11895,35 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.LifestyleCost))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdQualities))
                 {
-                    if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(',');
+                    sbdQualities.AppendJoin(',' + Environment.NewLine,
+                                            objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 CharacterObject, Improvement.ImprovementType.LifestyleCost))
+                    {
+                        if (sbdQualities.Length > 0)
+                            sbdQualities.AppendLine(',');
 
-                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
-                                .Append(LanguageManager.GetString("String_Space")).Append('[')
-                                .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
-                                .Append("%]");
-                }
+                        sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                                    .Append(LanguageManager.GetString("String_Space")).Append('[')
+                                    .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
+                                    .Append("%]");
+                    }
 
-                if (objLifestyle.FreeGrids.Count > 0)
-                {
-                    if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(',');
+                    if (objLifestyle.FreeGrids.Count > 0)
+                    {
+                        if (sbdQualities.Length > 0)
+                            sbdQualities.AppendLine(',');
 
-                    sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
+                        sbdQualities.AppendJoin(',' + Environment.NewLine,
+                                                objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
+                    }
+
+                    lblLifestyleQualities.Text = sbdQualities.ToString();
                 }
 
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
-                lblLifestyleQualities.Text = sbdQualities.ToString();
                 lblLifestyleQualitiesLabel.Visible = true;
                 lblLifestyleQualities.Visible = true;
             }
@@ -12930,489 +12963,467 @@ namespace Chummer
                 return true;
 
             bool blnValid = true;
-            StringBuilder sbdMessage = new StringBuilder(LanguageManager.GetString("Message_InvalidBeginning"));
-            using (new CursorWait(this))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdMessage))
             {
-                // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
-                int intMartialArts = CharacterObject.MartialArts.Count(objArt => !objArt.IsQuality);
-                if (intMartialArts > 1)
+                sbdMessage.Append(LanguageManager.GetString("Message_InvalidBeginning"));
+                using (new CursorWait(this))
                 {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t')
-                              .AppendFormat(GlobalSettings.CultureInfo,
-                                            LanguageManager.GetString("Message_InvalidPointExcess"), intMartialArts - 1)
-                              .Append(LanguageManager.GetString("String_Space"))
-                              .Append(LanguageManager.GetString("String_MartialArtsCount"));
-                }
-
-                // Check if the character has more than 5 Techniques in a Martial Art
-                if (CharacterObject.MartialArts.Count > 0)
-                {
-                    int intTechniques = 0;
-                    foreach (MartialArt objLoopArt in CharacterObject.MartialArts)
-                        intTechniques += objLoopArt.Techniques.Count;
-                    if (intTechniques > 5)
+                    // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
+                    int intMartialArts = CharacterObject.MartialArts.Count(objArt => !objArt.IsQuality);
+                    if (intMartialArts > 1)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
                                   .AppendFormat(GlobalSettings.CultureInfo,
                                                 LanguageManager.GetString("Message_InvalidPointExcess"),
-                                                intTechniques - 5).Append(LanguageManager.GetString("String_Space"))
-                                  .Append(LanguageManager.GetString("String_TechniquesCount"));
+                                                intMartialArts - 1)
+                                  .Append(LanguageManager.GetString("String_Space"))
+                                  .Append(LanguageManager.GetString("String_MartialArtsCount"));
                     }
-                }
 
-                // if positive points > 25
-                if (CharacterObject.PositiveQualityKarma > CharacterObjectSettings.QualityKarmaLimit && !CharacterObjectSettings.ExceedPositiveQualities)
-                {
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit"), CharacterObjectSettings.QualityKarmaLimit);
-                    blnValid = false;
-                }
+                    // Check if the character has more than 5 Techniques in a Martial Art
+                    if (CharacterObject.MartialArts.Count > 0)
+                    {
+                        int intTechniques = 0;
+                        foreach (MartialArt objLoopArt in CharacterObject.MartialArts)
+                            intTechniques += objLoopArt.Techniques.Count;
+                        if (intTechniques > 5)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t')
+                                      .AppendFormat(GlobalSettings.CultureInfo,
+                                                    LanguageManager.GetString("Message_InvalidPointExcess"),
+                                                    intTechniques - 5).Append(LanguageManager.GetString("String_Space"))
+                                      .Append(LanguageManager.GetString("String_TechniquesCount"));
+                        }
+                    }
 
-                // if negative points > 25
-                if (CharacterObject.NegativeQualityLimitKarma > CharacterObjectSettings.QualityKarmaLimit && !CharacterObjectSettings.ExceedNegativeQualities)
-                {
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), CharacterObjectSettings.QualityKarmaLimit);
-                    blnValid = false;
-                }
+                    // if positive points > 25
+                    if (CharacterObject.PositiveQualityKarma > CharacterObjectSettings.QualityKarmaLimit
+                        && !CharacterObjectSettings.ExceedPositiveQualities)
+                    {
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(
+                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit"),
+                            CharacterObjectSettings.QualityKarmaLimit);
+                        blnValid = false;
+                    }
 
-                if (CharacterObject.FriendsInHighPlaces)
-                {
-                    if (CharacterObject.Contacts.Any(x => x.Connection < 8 && Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
+                    // if negative points > 25
+                    if (CharacterObject.NegativeQualityLimitKarma > CharacterObjectSettings.QualityKarmaLimit
+                        && !CharacterObjectSettings.ExceedNegativeQualities)
+                    {
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(
+                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"),
+                            CharacterObjectSettings.QualityKarmaLimit);
+                        blnValid = false;
+                    }
+
+                    if (CharacterObject.FriendsInHighPlaces)
+                    {
+                        if (CharacterObject.Contacts.Any(x => x.Connection < 8
+                                                              && Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7
+                                                              && !x.Free))
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t')
+                                      .Append(LanguageManager.GetString("Message_HighContact"));
+                        }
+                    }
+                    else if (CharacterObject.Contacts.Any(
+                                 x => Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_HighContact"));
                     }
-                }
-                else if (CharacterObject.Contacts.Any(x => Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_HighContact"));
-                }
 
-                // Check if the character has gone over the Build Point total.
-                if (!blnUseArgBuildPoints)
-                    intBuildPoints = CalculateBP(false);
-                int intStagedPurchaseQualityPoints = CharacterObject.Qualities.Where(objQuality => objQuality.StagedPurchase && objQuality.Type == QualityType.Positive && objQuality.ContributeToBP).Sum(x => x.BP);
-                if (intBuildPoints + intStagedPurchaseQualityPoints < 0 && !_blnFreestyle)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t')
-                              .AppendFormat(GlobalSettings.CultureInfo,
-                                            LanguageManager.GetString("Message_InvalidPointExcess"),
-                                            -(intBuildPoints + intStagedPurchaseQualityPoints))
-                              .Append(LanguageManager.GetString("String_Space"))
-                              .Append(LanguageManager.GetString("String_Karma"));
-                }
-
-                // if character has more than permitted Metagenic qualities
-                if (CharacterObject.MetagenicLimit > 0)
-                {
-                    if (-CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
-                    {
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Message_OverNegativeMetagenicQualities"),
-                            -CharacterObject.MetagenicNegativeQualityKarma, CharacterObject.MetagenicLimit);
-                        blnValid = false;
-                    }
-
-                    if (CharacterObject.MetagenicPositiveQualityKarma > CharacterObject.MetagenicLimit)
-                    {
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Message_OverPositiveMetagenicQualities"),
-                            CharacterObject.MetagenicPositiveQualityKarma, CharacterObject.MetagenicLimit);
-                        blnValid = false;
-                    }
-
-                    if (-CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma &&
-                        -CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma - 1)
-                    {
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced"),
-                            -CharacterObject.MetagenicNegativeQualityKarma,
-                            CharacterObject.MetagenicPositiveQualityKarma - 1,
-                            CharacterObject.MetagenicPositiveQualityKarma);
-                        blnValid = false;
-                    }
-                }
-
-                int i = CharacterObject.TotalAttributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
-                // Check if the character has gone over on Primary Attributes
-                if (i < 0)
-                {
-                    //TODO: ATTACH TO ATTRIBUTE SECTION
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidAttributeExcess"), -i);
-                }
-
-                i = CharacterObject.TotalSpecial - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
-                // Check if the character has gone over on Special Attributes
-                if (i < 0)
-                {
-                    //TODO: ATTACH TO ATTRIBUTE SECTION
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidSpecialExcess"), -i);
-                }
-
-                // Check if the character has gone over on Skill Groups
-                if (CharacterObject.SkillsSection.SkillGroupPoints < 0)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidSkillGroupExcess"),
-                                                                      -CharacterObject.SkillsSection.SkillGroupPoints);
-                }
-
-                // Check if the character has gone over on Active Skills
-                if (CharacterObject.SkillsSection.SkillPoints < 0)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidActiveSkillExcess"),
-                                                                      -CharacterObject.SkillsSection.SkillPoints);
-                }
-
-                // Check if the character has gone over on Knowledge Skills
-                if (CharacterObject.SkillsSection.KnowledgeSkillPointsRemain < 0)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidKnowledgeSkillExcess"),
-                                                                      -CharacterObject.SkillsSection
-                                                                          .KnowledgeSkillPointsRemain);
-                }
-
-                if (CharacterObject.SkillsSection.Skills.Any(s => s.Specializations.Count > 1))
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidActiveSkillExcessSpecializations"),
-                                                                      -CharacterObject.SkillsSection
-                                                                          .KnowledgeSkillPointsRemain);
-                    foreach (Skill objSkill in CharacterObject.SkillsSection.Skills.Where(s => s.Specializations.Count > 1))
-                    {
-                        sbdMessage.AppendLine().Append(objSkill.CurrentDisplayName)
-                                  .Append(LanguageManager.GetString("String_Space")).Append('(')
-                                  .AppendJoin(',' + LanguageManager.GetString("String_Space"),
-                                              objSkill.Specializations.Select(x => x.CurrentDisplayName)).Append(')');
-                    }
-                }
-
-                // Check if the character has gone over the Nuyen limit.
-                decimal decNuyen = CalculateNuyen();
-                if (decNuyen < 0)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t')
-                              .AppendFormat(GlobalSettings.CultureInfo,
-                                            LanguageManager.GetString("Message_InvalidNuyenExcess"),
-                                            (-decNuyen).ToString(CharacterObjectSettings.NuyenFormat,
-                                                                 GlobalSettings.CultureInfo)).Append('¥');
-                }
-
-                if (CharacterObject.StolenNuyen < 0)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidStolenNuyenExcess"),
-                                                                      (-CharacterObject.StolenNuyen).ToString(
-                                                                          CharacterObjectSettings.NuyenFormat,
-                                                                          GlobalSettings.CultureInfo)).Append('¥');
-                }
-
-                // Check if the character's Essence is above 0.
-                if (CharacterObject.ESS.MetatypeMaximum > 0)
-                {
-                    decimal decEss = CharacterObject.Essence();
-                    decimal decExcessEss = 0.0m;
-                    // Need to split things up this way because without internal rounding, Essence can be as small as the player wants as long as it is positive
-                    // And getting the smallest positive number supported by the decimal type is way trickier than just checking if it's zero or negative
-                    if (CharacterObjectSettings.DontRoundEssenceInternally)
-                    {
-                        if (decEss < 0)
-                            decExcessEss = -decEss;
-                        else if (decEss == 0)
-                            decExcessEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals); // Hacky, but necessary so that the player knows they need to increase their ESS
-                    }
-                    else
-                    {
-                        decimal decMinEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals);
-                        if (decEss < decMinEss)
-                            decExcessEss = decMinEss - decEss;
-                    }
-                    if (decExcessEss > 0)
+                    // Check if the character has gone over the Build Point total.
+                    if (!blnUseArgBuildPoints)
+                        intBuildPoints = CalculateBP(false);
+                    int intStagedPurchaseQualityPoints = CharacterObject.Qualities
+                                                                        .Where(objQuality =>
+                                                                                   objQuality.StagedPurchase
+                                                                                   && objQuality.Type
+                                                                                   == QualityType.Positive
+                                                                                   && objQuality.ContributeToBP)
+                                                                        .Sum(x => x.BP);
+                    if (intBuildPoints + intStagedPurchaseQualityPoints < 0 && !_blnFreestyle)
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"),
-                            decExcessEss);
+                        sbdMessage.AppendLine().Append('\t')
+                                  .AppendFormat(GlobalSettings.CultureInfo,
+                                                LanguageManager.GetString("Message_InvalidPointExcess"),
+                                                -(intBuildPoints + intStagedPurchaseQualityPoints))
+                                  .Append(LanguageManager.GetString("String_Space"))
+                                  .Append(LanguageManager.GetString("String_Karma"));
                     }
-                }
 
-                // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
-                if ((CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled) && CharacterObject.MagicTradition.Type != TraditionType.MAG)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t')
-                              .Append(LanguageManager.GetString("Message_InvalidNoTradition"));
-                }
-
-                // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
-                if (CharacterObject.AdeptEnabled && CharacterObject.PowerPointsUsed > CharacterObject.PowerPointsTotal)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_InvalidPowerPoints"),
-                                                                      CharacterObject.PowerPointsUsed
-                                                                      - CharacterObject.PowerPointsTotal,
-                                                                      CharacterObject.PowerPointsTotal);
-                }
-
-                // If the character has the Technomancer Tab enabled, make sure a Stream has been selected.
-                if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_InvalidNoStream"));
-                }
-
-                // Check if the character has more than the permitted amount of native languages.
-                int intLanguages = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
-
-                int intLanguageLimit = 1 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit).StandardRound();
-
-                if (intLanguages != intLanguageLimit)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          intLanguages > intLanguageLimit
-                                                                              ? "Message_OverLanguageLimit"
-                                                                              : "Message_UnderLanguageLimit"),
-                                                                      intLanguages, intLanguageLimit);
-                }
-
-                // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
-                // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
-                Dictionary<int, int> dicRestrictedGearLimits = new Dictionary<int, int>(1);
-                List<Improvement> lstUsedImprovements
-                    = ImprovementManager.GetCachedImprovementListForValueOf(
-                        CharacterObject, Improvement.ImprovementType.RestrictedGear);
-                bool blnHasRestrictedGearAvailable = lstUsedImprovements.Count != 0;
-                if (blnHasRestrictedGearAvailable)
-                {
-                    foreach (Improvement objImprovement in lstUsedImprovements)
+                    // if character has more than permitted Metagenic qualities
+                    if (CharacterObject.MetagenicLimit > 0)
                     {
-                        int intLoopAvailability = objImprovement.Value.StandardRound();
-                        if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intExistingValue))
-                            dicRestrictedGearLimits[intLoopAvailability] = intExistingValue + objImprovement.Rating;
+                        if (-CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
+                        {
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(
+                                GlobalSettings.CultureInfo,
+                                LanguageManager.GetString("Message_OverNegativeMetagenicQualities"),
+                                -CharacterObject.MetagenicNegativeQualityKarma, CharacterObject.MetagenicLimit);
+                            blnValid = false;
+                        }
+
+                        if (CharacterObject.MetagenicPositiveQualityKarma > CharacterObject.MetagenicLimit)
+                        {
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(
+                                GlobalSettings.CultureInfo,
+                                LanguageManager.GetString("Message_OverPositiveMetagenicQualities"),
+                                CharacterObject.MetagenicPositiveQualityKarma, CharacterObject.MetagenicLimit);
+                            blnValid = false;
+                        }
+
+                        if (-CharacterObject.MetagenicNegativeQualityKarma
+                            != CharacterObject.MetagenicPositiveQualityKarma &&
+                            -CharacterObject.MetagenicNegativeQualityKarma
+                            != CharacterObject.MetagenicPositiveQualityKarma - 1)
+                        {
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(
+                                GlobalSettings.CultureInfo,
+                                LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced"),
+                                -CharacterObject.MetagenicNegativeQualityKarma,
+                                CharacterObject.MetagenicPositiveQualityKarma - 1,
+                                CharacterObject.MetagenicPositiveQualityKarma);
+                            blnValid = false;
+                        }
+                    }
+
+                    int i = CharacterObject.TotalAttributes
+                            - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
+                    // Check if the character has gone over on Primary Attributes
+                    if (i < 0)
+                    {
+                        //TODO: ATTACH TO ATTRIBUTE SECTION
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidAttributeExcess"), -i);
+                    }
+
+                    i = CharacterObject.TotalSpecial
+                        - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
+                    // Check if the character has gone over on Special Attributes
+                    if (i < 0)
+                    {
+                        //TODO: ATTACH TO ATTRIBUTE SECTION
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidSpecialExcess"), -i);
+                    }
+
+                    // Check if the character has gone over on Skill Groups
+                    if (CharacterObject.SkillsSection.SkillGroupPoints < 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidSkillGroupExcess"),
+                                                                          -CharacterObject.SkillsSection
+                                                                              .SkillGroupPoints);
+                    }
+
+                    // Check if the character has gone over on Active Skills
+                    if (CharacterObject.SkillsSection.SkillPoints < 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidActiveSkillExcess"),
+                                                                          -CharacterObject.SkillsSection.SkillPoints);
+                    }
+
+                    // Check if the character has gone over on Knowledge Skills
+                    if (CharacterObject.SkillsSection.KnowledgeSkillPointsRemain < 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidKnowledgeSkillExcess"),
+                                                                          -CharacterObject.SkillsSection
+                                                                              .KnowledgeSkillPointsRemain);
+                    }
+
+                    if (CharacterObject.SkillsSection.Skills.Any(s => s.Specializations.Count > 1))
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidActiveSkillExcessSpecializations"),
+                                                                          -CharacterObject.SkillsSection
+                                                                              .KnowledgeSkillPointsRemain);
+                        foreach (Skill objSkill in CharacterObject.SkillsSection.Skills.Where(
+                                     s => s.Specializations.Count > 1))
+                        {
+                            sbdMessage.AppendLine().Append(objSkill.CurrentDisplayName)
+                                      .Append(LanguageManager.GetString("String_Space")).Append('(')
+                                      .AppendJoin(',' + LanguageManager.GetString("String_Space"),
+                                                  objSkill.Specializations.Select(x => x.CurrentDisplayName))
+                                      .Append(')');
+                        }
+                    }
+
+                    // Check if the character has gone over the Nuyen limit.
+                    decimal decNuyen = CalculateNuyen();
+                    if (decNuyen < 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t')
+                                  .AppendFormat(GlobalSettings.CultureInfo,
+                                                LanguageManager.GetString("Message_InvalidNuyenExcess"),
+                                                (-decNuyen).ToString(CharacterObjectSettings.NuyenFormat,
+                                                                     GlobalSettings.CultureInfo)).Append('¥');
+                    }
+
+                    if (CharacterObject.StolenNuyen < 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidStolenNuyenExcess"),
+                                                                          (-CharacterObject.StolenNuyen).ToString(
+                                                                              CharacterObjectSettings.NuyenFormat,
+                                                                              GlobalSettings.CultureInfo)).Append('¥');
+                    }
+
+                    // Check if the character's Essence is above 0.
+                    if (CharacterObject.ESS.MetatypeMaximum > 0)
+                    {
+                        decimal decEss = CharacterObject.Essence();
+                        decimal decExcessEss = 0.0m;
+                        // Need to split things up this way because without internal rounding, Essence can be as small as the player wants as long as it is positive
+                        // And getting the smallest positive number supported by the decimal type is way trickier than just checking if it's zero or negative
+                        if (CharacterObjectSettings.DontRoundEssenceInternally)
+                        {
+                            if (decEss < 0)
+                                decExcessEss = -decEss;
+                            else if (decEss == 0)
+                                decExcessEss
+                                    = 10.0m.RaiseToPower(-CharacterObjectSettings
+                                                             .EssenceDecimals); // Hacky, but necessary so that the player knows they need to increase their ESS
+                        }
                         else
-                            dicRestrictedGearLimits.Add(intLoopAvailability, objImprovement.Rating);
+                        {
+                            decimal decMinEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals);
+                            if (decEss < decMinEss)
+                                decExcessEss = decMinEss - decEss;
+                        }
+
+                        if (decExcessEss > 0)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(
+                                GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"),
+                                decExcessEss);
+                        }
                     }
-                }
 
-                // Remove all Restricted Gear availabilities with non-positive counts
-                foreach (int intLoopAvailability in dicRestrictedGearLimits.Keys.ToList())
-                {
-                    if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intLoopCount) && intLoopCount <= 0)
-                        dicRestrictedGearLimits.Remove(intLoopAvailability);
-                }
+                    // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
+                    if ((CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled)
+                        && CharacterObject.MagicTradition.Type != TraditionType.MAG)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t')
+                                  .Append(LanguageManager.GetString("Message_InvalidNoTradition"));
+                    }
 
-                StringBuilder sbdAvailItems = new StringBuilder();
-                StringBuilder sbdRestrictedItems = new StringBuilder();
-                int intRestrictedCount = 0;
+                    // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
+                    if (CharacterObject.AdeptEnabled
+                        && CharacterObject.PowerPointsUsed > CharacterObject.PowerPointsTotal)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidPowerPoints"),
+                                                                          CharacterObject.PowerPointsUsed
+                                                                          - CharacterObject.PowerPointsTotal,
+                                                                          CharacterObject.PowerPointsTotal);
+                    }
 
-                // Gear Availability.
-                foreach (Gear objGear in CharacterObject.Gear)
-                {
-                    objGear.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-                }
+                    // If the character has the Technomancer Tab enabled, make sure a Stream has been selected.
+                    if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t')
+                                  .Append(LanguageManager.GetString("Message_InvalidNoStream"));
+                    }
 
-                // Cyberware Availability.
-                foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-                {
-                    objCyberware.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-                }
+                    // Check if the character has more than the permitted amount of native languages.
+                    int intLanguages
+                        = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
 
-                // Armor Availability.
-                foreach (Armor objArmor in CharacterObject.Armor)
-                {
-                    objArmor.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-                }
+                    int intLanguageLimit = 1 + ImprovementManager
+                                               .ValueOf(CharacterObject,
+                                                        Improvement.ImprovementType.NativeLanguageLimit)
+                                               .StandardRound();
 
-                // Weapon Availability.
-                foreach (Weapon objWeapon in CharacterObject.Weapons)
-                {
-                    objWeapon.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-                }
+                    if (intLanguages != intLanguageLimit)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              intLanguages > intLanguageLimit
+                                                                                  ? "Message_OverLanguageLimit"
+                                                                                  : "Message_UnderLanguageLimit"),
+                                                                          intLanguages, intLanguageLimit);
+                    }
 
-                // Vehicle Availability.
-                foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                {
-                    objVehicle.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-                }
-
-                // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
-                if (intRestrictedCount > 0)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString("Message_InvalidAvail"),
-                                                                      intRestrictedCount,
-                                                                      CharacterObjectSettings.MaximumAvailability);
-                    sbdMessage.Append(sbdAvailItems);
+                    // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
+                    // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
+                    Dictionary<int, int> dicRestrictedGearLimits = new Dictionary<int, int>(1);
+                    List<Improvement> lstUsedImprovements
+                        = ImprovementManager.GetCachedImprovementListForValueOf(
+                            CharacterObject, Improvement.ImprovementType.RestrictedGear);
+                    bool blnHasRestrictedGearAvailable = lstUsedImprovements.Count != 0;
                     if (blnHasRestrictedGearAvailable)
                     {
-                        sbdMessage.AppendLine().AppendFormat(GlobalSettings.CultureInfo,
-                                                             LanguageManager.GetString("Message_RestrictedGearUsed"),
-                                                             sbdRestrictedItems.ToString());
+                        foreach (Improvement objImprovement in lstUsedImprovements)
+                        {
+                            int intLoopAvailability = objImprovement.Value.StandardRound();
+                            if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intExistingValue))
+                                dicRestrictedGearLimits[intLoopAvailability] = intExistingValue + objImprovement.Rating;
+                            else
+                                dicRestrictedGearLimits.Add(intLoopAvailability, objImprovement.Rating);
+                        }
                     }
-                }
 
-                // Check for any illegal cyberware grades
-
-                StringBuilder sbdIllegalCyberwareFromGrade = new StringBuilder();
-
-                foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-                {
-                    objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
-                }
-
-                foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                {
-                    foreach (Cyberware objCyberware in objVehicle.Mods.SelectMany(objMod => objMod.Cyberware))
+                    // Remove all Restricted Gear availabilities with non-positive counts
+                    foreach (int intLoopAvailability in dicRestrictedGearLimits.Keys.ToList())
                     {
-                        objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
+                        if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intLoopCount)
+                            && intLoopCount <= 0)
+                            dicRestrictedGearLimits.Remove(intLoopAvailability);
                     }
 
-                    foreach (Cyberware objCyberware in objVehicle.WeaponMounts.SelectMany(objMount => objMount.Mods.SelectMany(objMod => objMod.Cyberware)))
-                    {
-                        objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
-                    }
-                }
+                    StringBuilder sbdAvailItems = new StringBuilder();
+                    StringBuilder sbdRestrictedItems = new StringBuilder();
+                    int intRestrictedCount = 0;
 
-                if (sbdIllegalCyberwareFromGrade.Length > 0)
-                {
-                    blnValid = false;
-                    sbdMessage.AppendLine().Append('\t')
-                              .Append(LanguageManager.GetString("Message_InvalidCyberwareGrades"))
-                              .Append(sbdIllegalCyberwareFromGrade);
-                }
-
-                // Cyberware: Prototype Transhuman
-                decimal decPrototypeTranshumanEssenceMax = CharacterObject.PrototypeTranshuman;
-                if (decPrototypeTranshumanEssenceMax > 0)
-                {
-                    decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
-                    if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
-                    {
-                        blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
-                            decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat,
-                                                                       GlobalSettings.CultureInfo),
-                            decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat,
-                                                                      GlobalSettings.CultureInfo));
-                    }
-                }
-
-                // Check item Capacities if the option is enabled.
-                if (CharacterObjectSettings.EnforceCapacity)
-                {
-                    List<string> lstOverCapacity = new List<string>(1);
-                    bool blnOverCapacity = false;
-                    int intCapacityOver = 0;
-                    // Armor Capacity.
-                    foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor => objArmor.CapacityRemaining < 0))
-                    {
-                        blnOverCapacity = true;
-                        lstOverCapacity.Add(objArmor.Name);
-                        intCapacityOver++;
-                    }
-
-                    // Gear Capacity.
+                    // Gear Availability.
                     foreach (Gear objGear in CharacterObject.Gear)
                     {
-                        if (objGear.CapacityRemaining < 0)
-                        {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objGear.Name);
-                            intCapacityOver++;
-                        }
-
-                        // Child Gear.
-                        foreach (Gear objChild in objGear.Children.Where(objChild => objChild.CapacityRemaining < 0))
-                        {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objChild.Name);
-                            intCapacityOver++;
-                        }
+                        objGear.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                    ref intRestrictedCount);
                     }
 
-                    // Cyberware Capacity.
+                    // Cyberware Availability.
                     foreach (Cyberware objCyberware in CharacterObject.Cyberware)
                     {
-                        if (objCyberware.CapacityRemaining < 0)
-                        {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objCyberware.Name);
-                            intCapacityOver++;
-                        }
+                        objCyberware.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                         ref intRestrictedCount);
+                    }
 
-                        // Check plugins.
-                        foreach (Cyberware objChild in objCyberware.Children.Where(objChild => objChild.CapacityRemaining < 0))
+                    // Armor Availability.
+                    foreach (Armor objArmor in CharacterObject.Armor)
+                    {
+                        objArmor.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                     ref intRestrictedCount);
+                    }
+
+                    // Weapon Availability.
+                    foreach (Weapon objWeapon in CharacterObject.Weapons)
+                    {
+                        objWeapon.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                      ref intRestrictedCount);
+                    }
+
+                    // Vehicle Availability.
+                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                    {
+                        objVehicle.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                       ref intRestrictedCount);
+                    }
+
+                    // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
+                    if (intRestrictedCount > 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                          LanguageManager.GetString(
+                                                                              "Message_InvalidAvail"),
+                                                                          intRestrictedCount,
+                                                                          CharacterObjectSettings.MaximumAvailability);
+                        sbdMessage.Append(sbdAvailItems);
+                        if (blnHasRestrictedGearAvailable)
                         {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objChild.Name);
-                            intCapacityOver++;
+                            sbdMessage.AppendLine().AppendFormat(GlobalSettings.CultureInfo,
+                                                                 LanguageManager.GetString(
+                                                                     "Message_RestrictedGearUsed"),
+                                                                 sbdRestrictedItems.ToString());
                         }
                     }
 
-                    // Vehicle Capacity.
+                    // Check for any illegal cyberware grades
+
+                    StringBuilder sbdIllegalCyberwareFromGrade = new StringBuilder();
+
+                    foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+                    {
+                        objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
+                    }
+
                     foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                     {
-                        if (CharacterObjectSettings.BookEnabled("R5"))
+                        foreach (Cyberware objCyberware in objVehicle.Mods.SelectMany(objMod => objMod.Cyberware))
                         {
-                            if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
-                            {
-                                if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
-                                {
-                                    blnOverCapacity = true;
-                                    lstOverCapacity.Add(objVehicle.Name);
-                                    intCapacityOver++;
-                                }
-                            }
-                            else
-                            {
-                                if (objVehicle.OverR5Capacity())
-                                {
-                                    blnOverCapacity = true;
-                                    lstOverCapacity.Add(objVehicle.Name);
-                                    intCapacityOver++;
-                                }
-                            }
+                            objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
                         }
-                        else if (objVehicle.Slots < objVehicle.SlotsUsed)
+
+                        foreach (Cyberware objCyberware in objVehicle.WeaponMounts.SelectMany(
+                                     objMount => objMount.Mods.SelectMany(objMod => objMod.Cyberware)))
+                        {
+                            objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
+                        }
+                    }
+
+                    if (sbdIllegalCyberwareFromGrade.Length > 0)
+                    {
+                        blnValid = false;
+                        sbdMessage.AppendLine().Append('\t')
+                                  .Append(LanguageManager.GetString("Message_InvalidCyberwareGrades"))
+                                  .Append(sbdIllegalCyberwareFromGrade);
+                    }
+
+                    // Cyberware: Prototype Transhuman
+                    decimal decPrototypeTranshumanEssenceMax = CharacterObject.PrototypeTranshuman;
+                    if (decPrototypeTranshumanEssenceMax > 0)
+                    {
+                        decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
+                        if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(
+                                GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
+                                decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat,
+                                                                           GlobalSettings.CultureInfo),
+                                decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat,
+                                                                          GlobalSettings.CultureInfo));
+                        }
+                    }
+
+                    // Check item Capacities if the option is enabled.
+                    if (CharacterObjectSettings.EnforceCapacity)
+                    {
+                        List<string> lstOverCapacity = new List<string>(1);
+                        bool blnOverCapacity = false;
+                        int intCapacityOver = 0;
+                        // Armor Capacity.
+                        foreach (Armor objArmor in CharacterObject.Armor.Where(
+                                     objArmor => objArmor.CapacityRemaining < 0))
                         {
                             blnOverCapacity = true;
-                            lstOverCapacity.Add(objVehicle.Name);
+                            lstOverCapacity.Add(objArmor.Name);
                             intCapacityOver++;
                         }
 
-                        // Check Vehicle Gear.
-                        foreach (Gear objGear in objVehicle.GearChildren)
+                        // Gear Capacity.
+                        foreach (Gear objGear in CharacterObject.Gear)
                         {
                             if (objGear.CapacityRemaining < 0)
                             {
@@ -13421,130 +13432,246 @@ namespace Chummer
                                 intCapacityOver++;
                             }
 
-                            // Check Child Gear.
-                            foreach (Gear objChild in objGear.Children.Where(objChild => objChild.CapacityRemaining < 0))
+                            // Child Gear.
+                            foreach (Gear objChild in
+                                     objGear.Children.Where(objChild => objChild.CapacityRemaining < 0))
                             {
                                 blnOverCapacity = true;
                                 lstOverCapacity.Add(objChild.Name);
                                 intCapacityOver++;
                             }
                         }
-                    }
 
-                    if (blnOverCapacity)
-                    {
-                        blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CapacityReachedValidate"),
-                            intCapacityOver);
-                        foreach (string strItem in lstOverCapacity)
+                        // Cyberware Capacity.
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware)
                         {
-                            sbdMessage.AppendLine().Append("\t- ").Append(strItem);
-                        }
-                    }
-                }
-
-                //Check Drone mods for illegalities
-                if (CharacterObjectSettings.BookEnabled("R5"))
-                {
-                    List<string> lstDronesIllegalDowngrades = new List<string>(1);
-                    bool blnIllegalDowngrades = false;
-                    int intIllegalDowngrades = 0;
-                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                    {
-                        if (!objVehicle.IsDrone || !CharacterObjectSettings.DroneMods)
-                            continue;
-                        foreach (string strModCategory in objVehicle.Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Downgrade).Select(x => x.Category))
-                        {
-                            //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
-                            if (strModCategory == "Handling" && Convert.ToInt32(objVehicle.TotalHandling, GlobalSettings.InvariantCultureInfo) < 1 ||
-                                strModCategory == "Speed" && Convert.ToInt32(objVehicle.TotalSpeed, GlobalSettings.InvariantCultureInfo) < 0 ||
-                                strModCategory == "Acceleration" && Convert.ToInt32(objVehicle.TotalAccel, GlobalSettings.InvariantCultureInfo) < 1 ||
-                                strModCategory == "Body" && objVehicle.TotalBody < 1 ||
-                                strModCategory == "Armor" && objVehicle.TotalArmor < 1 ||
-                                strModCategory == "Sensor" && objVehicle.CalculatedSensor < 1)
+                            if (objCyberware.CapacityRemaining < 0)
                             {
-                                blnIllegalDowngrades = true;
-                                intIllegalDowngrades++;
-                                lstDronesIllegalDowngrades.Add(objVehicle.Name);
-                                break;
+                                blnOverCapacity = true;
+                                lstOverCapacity.Add(objCyberware.Name);
+                                intCapacityOver++;
+                            }
+
+                            // Check plugins.
+                            foreach (Cyberware objChild in objCyberware.Children.Where(
+                                         objChild => objChild.CapacityRemaining < 0))
+                            {
+                                blnOverCapacity = true;
+                                lstOverCapacity.Add(objChild.Name);
+                                intCapacityOver++;
+                            }
+                        }
+
+                        // Vehicle Capacity.
+                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                        {
+                            if (CharacterObjectSettings.BookEnabled("R5"))
+                            {
+                                if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
+                                {
+                                    if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
+                                    {
+                                        blnOverCapacity = true;
+                                        lstOverCapacity.Add(objVehicle.Name);
+                                        intCapacityOver++;
+                                    }
+                                }
+                                else
+                                {
+                                    if (objVehicle.OverR5Capacity())
+                                    {
+                                        blnOverCapacity = true;
+                                        lstOverCapacity.Add(objVehicle.Name);
+                                        intCapacityOver++;
+                                    }
+                                }
+                            }
+                            else if (objVehicle.Slots < objVehicle.SlotsUsed)
+                            {
+                                blnOverCapacity = true;
+                                lstOverCapacity.Add(objVehicle.Name);
+                                intCapacityOver++;
+                            }
+
+                            // Check Vehicle Gear.
+                            foreach (Gear objGear in objVehicle.GearChildren)
+                            {
+                                if (objGear.CapacityRemaining < 0)
+                                {
+                                    blnOverCapacity = true;
+                                    lstOverCapacity.Add(objGear.Name);
+                                    intCapacityOver++;
+                                }
+
+                                // Check Child Gear.
+                                foreach (Gear objChild in objGear.Children.Where(
+                                             objChild => objChild.CapacityRemaining < 0))
+                                {
+                                    blnOverCapacity = true;
+                                    lstOverCapacity.Add(objChild.Name);
+                                    intCapacityOver++;
+                                }
+                            }
+                        }
+
+                        if (blnOverCapacity)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(
+                                GlobalSettings.CultureInfo,
+                                LanguageManager.GetString("Message_CapacityReachedValidate"),
+                                intCapacityOver);
+                            foreach (string strItem in lstOverCapacity)
+                            {
+                                sbdMessage.AppendLine().Append("\t- ").Append(strItem);
                             }
                         }
                     }
 
-                    if (blnIllegalDowngrades)
+                    //Check Drone mods for illegalities
+                    if (CharacterObjectSettings.BookEnabled("R5"))
+                    {
+                        List<string> lstDronesIllegalDowngrades = new List<string>(1);
+                        bool blnIllegalDowngrades = false;
+                        int intIllegalDowngrades = 0;
+                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                        {
+                            if (!objVehicle.IsDrone || !CharacterObjectSettings.DroneMods)
+                                continue;
+                            foreach (string strModCategory in objVehicle.Mods
+                                                                        .Where(objMod => !objMod.IncludedInVehicle
+                                                                                   && objMod.Equipped
+                                                                                   && objMod.Downgrade)
+                                                                        .Select(x => x.Category))
+                            {
+                                //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
+                                if (strModCategory == "Handling"
+                                    && Convert.ToInt32(objVehicle.TotalHandling, GlobalSettings.InvariantCultureInfo)
+                                    < 1 ||
+                                    strModCategory == "Speed"
+                                    && Convert.ToInt32(objVehicle.TotalSpeed, GlobalSettings.InvariantCultureInfo) < 0
+                                    ||
+                                    strModCategory == "Acceleration"
+                                    && Convert.ToInt32(objVehicle.TotalAccel, GlobalSettings.InvariantCultureInfo) < 1
+                                    ||
+                                    strModCategory == "Body" && objVehicle.TotalBody < 1 ||
+                                    strModCategory == "Armor" && objVehicle.TotalArmor < 1 ||
+                                    strModCategory == "Sensor" && objVehicle.CalculatedSensor < 1)
+                                {
+                                    blnIllegalDowngrades = true;
+                                    intIllegalDowngrades++;
+                                    lstDronesIllegalDowngrades.Add(objVehicle.Name);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (blnIllegalDowngrades)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(
+                                GlobalSettings.CultureInfo, LanguageManager.GetString("Message_DroneIllegalDowngrade"),
+                                intIllegalDowngrades);
+                            foreach (string strItem in lstDronesIllegalDowngrades)
+                            {
+                                sbdMessage.AppendLine().Append("\t- ").Append(strItem);
+                            }
+                        }
+                    }
+
+                    i = CharacterObject.Attributes
+                        - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
+                    // Check if the character has gone over on Primary Attributes
+                    if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
+                                                                             string.Format(
+                                                                                 GlobalSettings.CultureInfo,
+                                                                                 LanguageManager.GetString(
+                                                                                     "Message_ExtraPoints")
+                                                                                 , i.ToString(
+                                                                                     GlobalSettings.CultureInfo)
+                                                                                 , LanguageManager.GetString("Label_SummaryPrimaryAttributes")),
+                                                                             LanguageManager.GetString(
+                                                                                 "MessageTitle_ExtraPoints"),
+                                                                             MessageBoxButtons.YesNo,
+                                                                             MessageBoxIcon.Warning) == DialogResult.No)
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_DroneIllegalDowngrade"),
-                            intIllegalDowngrades);
-                        foreach (string strItem in lstDronesIllegalDowngrades)
-                        {
-                            sbdMessage.AppendLine().Append("\t- ").Append(strItem);
-                        }
+                    }
+
+                    i = CharacterObject.Special
+                        - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
+                    // Check if the character has gone over on Special Attributes
+                    if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
+                                                                             string.Format(
+                                                                                 GlobalSettings.CultureInfo,
+                                                                                 LanguageManager.GetString(
+                                                                                     "Message_ExtraPoints")
+                                                                                 , i.ToString(
+                                                                                     GlobalSettings.CultureInfo)
+                                                                                 , LanguageManager.GetString("Label_SummarySpecialAttributes")),
+                                                                             LanguageManager.GetString(
+                                                                                 "MessageTitle_ExtraPoints"),
+                                                                             MessageBoxButtons.YesNo,
+                                                                             MessageBoxIcon.Warning) == DialogResult.No)
+                    {
+                        blnValid = false;
+                    }
+
+                    // Check if the character has gone over on Skill Groups
+                    if (blnValid && CharacterObject.SkillsSection.SkillGroupPoints > 0
+                                 && Program.MainForm.ShowMessageBox(this,
+                                                                    string.Format(
+                                                                        GlobalSettings.CultureInfo,
+                                                                        LanguageManager.GetString("Message_ExtraPoints")
+                                                                        , CharacterObject.SkillsSection.SkillGroupPoints
+                                                                            .ToString(GlobalSettings.CultureInfo)
+                                                                        , LanguageManager.GetString("Label_SummarySkillGroups")),
+                                                                    LanguageManager.GetString(
+                                                                        "MessageTitle_ExtraPoints"),
+                                                                    MessageBoxButtons.YesNo,
+                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                    {
+                        blnValid = false;
+                    }
+
+                    // Check if the character has gone over on Active Skills
+                    if (blnValid && CharacterObject.SkillsSection.SkillPoints > 0 && Program.MainForm.ShowMessageBox(
+                            this,
+                            string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
+                                          , CharacterObject.SkillsSection.SkillPoints.ToString(
+                                              GlobalSettings.CultureInfo)
+                                          , LanguageManager.GetString("Label_SummaryActiveSkills")),
+                            LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning) == DialogResult.No)
+                    {
+                        blnValid = false;
+                    }
+
+                    // Check if the character has gone over on Knowledge Skills
+                    if (blnValid && CharacterObject.SkillsSection.KnowledgeSkillPointsRemain > 0
+                                 && Program.MainForm.ShowMessageBox(this,
+                                                                    string.Format(
+                                                                        GlobalSettings.CultureInfo,
+                                                                        LanguageManager.GetString("Message_ExtraPoints")
+                                                                        , CharacterObject.SkillsSection
+                                                                            .KnowledgeSkillPointsRemain
+                                                                            .ToString(GlobalSettings.CultureInfo)
+                                                                        , LanguageManager.GetString("Label_SummaryKnowledgeSkills")),
+                                                                    LanguageManager.GetString(
+                                                                        "MessageTitle_ExtraPoints"),
+                                                                    MessageBoxButtons.YesNo,
+                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                    {
+                        blnValid = false;
                     }
                 }
 
-                i = CharacterObject.Attributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
-                // Check if the character has gone over on Primary Attributes
-                if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
-                        , i.ToString(GlobalSettings.CultureInfo)
-                        , LanguageManager.GetString("Label_SummaryPrimaryAttributes")),
-                    LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning) == DialogResult.No)
-                {
-                    blnValid = false;
-                }
-
-                i = CharacterObject.Special - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
-                // Check if the character has gone over on Special Attributes
-                if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
-                        , i.ToString(GlobalSettings.CultureInfo)
-                        , LanguageManager.GetString("Label_SummarySpecialAttributes")),
-                    LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning) == DialogResult.No)
-                {
-                    blnValid = false;
-                }
-
-                // Check if the character has gone over on Skill Groups
-                if (blnValid && CharacterObject.SkillsSection.SkillGroupPoints > 0 && Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
-                        , CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalSettings.CultureInfo)
-                        , LanguageManager.GetString("Label_SummarySkillGroups")),
-                    LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning) == DialogResult.No)
-                {
-                    blnValid = false;
-                }
-
-                // Check if the character has gone over on Active Skills
-                if (blnValid && CharacterObject.SkillsSection.SkillPoints > 0 && Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
-                        , CharacterObject.SkillsSection.SkillPoints.ToString(GlobalSettings.CultureInfo)
-                        , LanguageManager.GetString("Label_SummaryActiveSkills")),
-                    LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning) == DialogResult.No)
-                {
-                    blnValid = false;
-                }
-
-                // Check if the character has gone over on Knowledge Skills
-                if (blnValid && CharacterObject.SkillsSection.KnowledgeSkillPointsRemain > 0 && Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
-                        , CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo)
-                        , LanguageManager.GetString("Label_SummaryKnowledgeSkills")),
-                    LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning) == DialogResult.No)
-                {
-                    blnValid = false;
-                }
+                if (!blnValid && sbdMessage.Length > LanguageManager.GetString("Message_InvalidBeginning").Length)
+                    Program.MainForm.ShowMessageBox(this, sbdMessage.ToString(),
+                                                    LanguageManager.GetString("MessageTitle_Invalid"),
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            if (!blnValid && sbdMessage.Length > LanguageManager.GetString("Message_InvalidBeginning").Length)
-                Program.MainForm.ShowMessageBox(this, sbdMessage.ToString(), LanguageManager.GetString("MessageTitle_Invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             return blnValid;
         }
 

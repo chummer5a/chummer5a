@@ -13985,32 +13985,48 @@ namespace Chummer
                         lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                         lblWeaponSlotsLabel.Visible = true;
                         lblWeaponSlots.Visible = true;
-                        StringBuilder sbdSlotsText = new StringBuilder(objSelectedAccessory.Mount);
-                        if (sbdSlotsText.Length > 0 && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdSlotsText))
                         {
-                            sbdSlotsText.Clear();
-                            foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
-                            --sbdSlotsText.Length;
+                            sbdSlotsText.Append(objSelectedAccessory.Mount);
+                            if (sbdSlotsText.Length > 0
+                                && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                   StringComparison.OrdinalIgnoreCase))
+                            {
+                                sbdSlotsText.Clear();
+                                foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc(
+                                             '/', StringSplitOptions.RemoveEmptyEntries))
+                                    sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount))
+                                                .Append('/');
+                                --sbdSlotsText.Length;
+                            }
+
+                            if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount)
+                                && objSelectedAccessory.ExtraMount != "None")
+                            {
+                                bool boolHaveAddedItem = false;
+                                foreach (string strCurrentExtraMount in objSelectedAccessory.ExtraMount.SplitNoAlloc(
+                                             '/', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    if (!boolHaveAddedItem)
+                                    {
+                                        sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
+                                        boolHaveAddedItem = true;
+                                    }
+
+                                    sbdSlotsText
+                                        .Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount))
+                                        .Append('/');
+                                }
+
+                                // Remove the trailing /
+                                if (boolHaveAddedItem)
+                                    --sbdSlotsText.Length;
+                            }
+
+                            lblWeaponSlots.Text = sbdSlotsText.ToString();
                         }
 
-                        if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount) && objSelectedAccessory.ExtraMount != "None")
-                        {
-                            bool boolHaveAddedItem = false;
-                            foreach (string strCurrentExtraMount in objSelectedAccessory.ExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                if (!boolHaveAddedItem)
-                                {
-                                    sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
-                                    boolHaveAddedItem = true;
-                                }
-                                sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
-                            }
-                            // Remove the trailing /
-                            if (boolHaveAddedItem)
-                                --sbdSlotsText.Length;
-                        }
-                        lblWeaponSlots.Text = sbdSlotsText.ToString();
                         lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
@@ -15551,29 +15567,34 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
-
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.LifestyleCost))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdQualities))
                 {
-                    if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(',');
+                    sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 CharacterObject, Improvement.ImprovementType.LifestyleCost))
+                    {
+                        if (sbdQualities.Length > 0)
+                            sbdQualities.AppendLine(',');
 
-                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
-                                .Append(LanguageManager.GetString("String_Space")).Append('[')
-                                .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
-                                .Append("%]");
-                }
+                        sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                                    .Append(LanguageManager.GetString("String_Space")).Append('[')
+                                    .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
+                                    .Append("%]");
+                    }
 
-                if (objLifestyle.FreeGrids.Count > 0)
-                {
-                    if (sbdQualities.Length > 0)
-                        sbdQualities.AppendLine(',');
+                    if (objLifestyle.FreeGrids.Count > 0)
+                    {
+                        if (sbdQualities.Length > 0)
+                            sbdQualities.AppendLine(',');
 
-                    sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
+                        sbdQualities.AppendJoin(',' + Environment.NewLine,
+                                                objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
+                    }
+
+                    lblLifestyleQualities.Text = sbdQualities.ToString();
                 }
 
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
-                lblLifestyleQualities.Text = sbdQualities.ToString();
                 lblLifestyleQualitiesLabel.Visible = true;
                 lblLifestyleQualities.Visible = true;
             }

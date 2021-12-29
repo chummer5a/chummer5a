@@ -1621,33 +1621,42 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
-                StringBuilder objValue = new StringBuilder(strExpression);
-                objValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                objValue.CheapReplace(strExpression, "{Parent Rating}",
-                    () => (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo) ??
-                          int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
-
-                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
-                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
-                        () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0)
-                            .ToString(
-                                GlobalSettings.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
-                        () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(strMatrixAttribute) ?? "0");
-                    if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
-                        continue;
-                    int intTotalChildrenValue = Children.Where(g => g.Equipped)
-                        .Sum(loopGear => loopGear.GetBaseMatrixAttribute(strMatrixAttribute));
+                    sbdValue.Append(strExpression);
+                    sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.CheapReplace(strExpression, "{Parent Rating}",
+                                          () => (Parent as IHasRating)?.Rating.ToString(
+                                                    GlobalSettings.InvariantCultureInfo) ??
+                                                int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                    objValue.Replace("{Children " + strMatrixAttribute + '}',
-                        intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                    {
+                        sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
+                                              () => ((Parent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
+                                                      strMatrixAttribute) ?? 0)
+                                                  .ToString(
+                                                      GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
+                                              () => (Parent as IHasMatrixAttributes).GetMatrixAttributeString(
+                                                  strMatrixAttribute) ?? "0");
+                        if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
+                            continue;
+                        int intTotalChildrenValue = Children.Where(g => g.Equipped)
+                                                            .Sum(loopGear =>
+                                                                     loopGear.GetBaseMatrixAttribute(
+                                                                         strMatrixAttribute));
+
+                        sbdValue.Replace("{Children " + strMatrixAttribute + '}',
+                                         intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    }
+
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    object objProcess
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                 }
-
-                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
             int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
@@ -2298,32 +2307,41 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInParent;
-                StringBuilder objAvail = new StringBuilder(strAvail.TrimStart('+'));
-                objAvail.CheapReplace(strAvail, "MinRating",
-                    () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
-                objAvail.CheapReplace(strAvail, "Parent Rating",
-                    () => (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                objAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                // Keeping enumerations separate reduces heap allocations
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                 {
-                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
-                        () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
-                        () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
-                }
+                    sbdAvail.Append(strAvail.TrimStart('+'));
+                    sbdAvail.CheapReplace(strAvail, "MinRating",
+                                          () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdAvail.CheapReplace(strAvail, "Parent Rating",
+                                          () => (Parent as IHasRating)?.Rating.ToString(
+                                              GlobalSettings.InvariantCultureInfo));
+                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    // Keeping enumerations separate reduces heap allocations
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
+                                              () => objLoopAttribute.TotalValue.ToString(
+                                                  GlobalSettings.InvariantCultureInfo));
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
+                                              () => objLoopAttribute.TotalBase.ToString(
+                                                  GlobalSettings.InvariantCultureInfo));
+                    }
 
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
-                {
-                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
-                        () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
-                        () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
-                }
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    {
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
+                                              () => objLoopAttribute.TotalValue.ToString(
+                                                  GlobalSettings.InvariantCultureInfo));
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
+                                              () => objLoopAttribute.TotalBase.ToString(
+                                                  GlobalSettings.InvariantCultureInfo));
+                    }
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
-                if (blnIsSuccess)
-                    intAvail += ((double)objProcess).StandardRound();
+                    object objProcess
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        intAvail += ((double) objProcess).StandardRound();
+                }
             }
 
             if (blnCheckChildren)
@@ -2541,34 +2559,45 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
 
-                StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
-                objCost.Replace("Gear Cost", decGearCost.ToString(GlobalSettings.InvariantCultureInfo));
-                objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                objCost.Replace("Parent Rating",
-                    (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
-                objCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                objCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
-                // Keeping enumerations separate reduces heap allocations
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                decimal decReturn = 0;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                 {
-                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev,
-                        () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                        () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
-                }
+                    sbdCost.Append(strCostExpression.TrimStart('+'));
+                    sbdCost.Replace("Gear Cost", decGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdCost.Replace("Children Cost",
+                                    decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdCost.Replace("Parent Rating",
+                                    (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
+                                    ?? "0");
+                    sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    // Keeping enumerations separate reduces heap allocations
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev,
+                                             () => objLoopAttribute.TotalValue.ToString(
+                                                 GlobalSettings.InvariantCultureInfo));
+                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                             () => objLoopAttribute.TotalBase.ToString(
+                                                 GlobalSettings.InvariantCultureInfo));
+                    }
 
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
-                {
-                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev,
-                        () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                        () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
-                }
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    {
+                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev,
+                                             () => objLoopAttribute.TotalValue.ToString(
+                                                 GlobalSettings.InvariantCultureInfo));
+                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                             () => objLoopAttribute.TotalBase.ToString(
+                                                 GlobalSettings.InvariantCultureInfo));
+                    }
 
-                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
-                decimal decReturn =
-                    blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    object objProcess
+                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                }
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
