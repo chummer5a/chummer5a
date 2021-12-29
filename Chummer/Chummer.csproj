@@ -411,6 +411,7 @@
     <Compile Include="Classes\AddImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\CharacterCache.cs" />
     <Compile Include="Classes\CharacterSettings.cs" />
     <Compile Include="Classes\clsCustomDataDirectoryInfo.cs" />
     <Compile Include="Classes\clsCommon.cs" />
