@@ -6510,265 +6510,281 @@ namespace Chummer
         {
             string strColonCharacter = LanguageManager.GetString("String_Colon");
             string strSpace = LanguageManager.GetString("String_Space");
-            StringBuilder sbdMessage = new StringBuilder(LanguageManager.GetString("Message_KarmaValue", strLanguage) + Environment.NewLine);
             string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
             int intExtraKarmaToRemoveForPointBuyComparison = 0;
             intReturn = Settings.BuildKarma;
 
-            sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_Base", strLanguage))
-                      .Append(strColonCharacter).Append(strSpace).Append(intReturn.ToString(GlobalSettings.CultureInfo))
-                      .Append(strSpace).Append(strKarmaString);
-
-            if (EffectiveBuildMethodUsesPriorityTables)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMessage))
             {
-                // Zeroed to -10 because that's Human's value at default settings
-                int intMetatypeQualitiesValue = -2 * Settings.KarmaAttribute;
-                // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
-                foreach(Quality objQuality in Qualities.Where(x =>
-                   x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
-                {
-                    XmlNode xmlQualityNode = objQuality.GetNode();
-                    if (xmlQualityNode == null)
-                        continue;
-                    int intLoopKarma = 0;
-                    if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
-                        intMetatypeQualitiesValue += intLoopKarma;
-                }
+                sbdMessage.AppendLine(LanguageManager.GetString("Message_KarmaValue", strLanguage)).AppendLine()
+                          .Append(LanguageManager.GetString("Label_Base", strLanguage))
+                          .Append(strColonCharacter).Append(strSpace)
+                          .Append(intReturn.ToString(GlobalSettings.CultureInfo))
+                          .Append(strSpace).Append(strKarmaString);
 
-                intReturn += intMetatypeQualitiesValue;
-
-                // Subtract extra karma cost of a metatype in priority
-                int intTemp = -MetatypeBP;
-                int intAttributesValue = 0;
-                // Value from attribute points and raised attribute minimums
-                foreach(CharacterAttrib objLoopAttrib in AttributeSection.AttributeList.Concat(AttributeSection
-                    .SpecialAttributeList))
+                if (EffectiveBuildMethodUsesPriorityTables)
                 {
-                    string strAttributeName = objLoopAttrib.Abbrev;
-                    if(strAttributeName != "ESS" &&
-                        (strAttributeName != "MAGAdept" || (IsMysticAdept && Settings.MysAdeptSecondMAGAttribute)) &&
-                        objLoopAttrib.MetatypeMaximum > 0)
+                    // Zeroed to -10 because that's Human's value at default settings
+                    int intMetatypeQualitiesValue = -2 * Settings.KarmaAttribute;
+                    // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
+                    foreach (Quality objQuality in Qualities.Where(x =>
+                                                                       x.OriginSource == QualitySource.Metatype
+                                                                       || x.OriginSource
+                                                                       == QualitySource.MetatypeRemovable))
                     {
-                        int intLoopAttribValue =
-                            Math.Max(objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum,
-                                objLoopAttrib.TotalMinimum) + objLoopAttrib.AttributeValueModifiers;
-                        if(intLoopAttribValue > 1)
+                        XmlNode xmlQualityNode = objQuality.GetNode();
+                        if (xmlQualityNode == null)
+                            continue;
+                        int intLoopKarma = 0;
+                        if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
+                            intMetatypeQualitiesValue += intLoopKarma;
+                    }
+
+                    intReturn += intMetatypeQualitiesValue;
+
+                    // Subtract extra karma cost of a metatype in priority
+                    int intTemp = -MetatypeBP;
+                    int intAttributesValue = 0;
+                    // Value from attribute points and raised attribute minimums
+                    foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList.Concat(AttributeSection
+                                 .SpecialAttributeList))
+                    {
+                        string strAttributeName = objLoopAttrib.Abbrev;
+                        if (strAttributeName != "ESS" &&
+                            (strAttributeName != "MAGAdept" || (IsMysticAdept && Settings.MysAdeptSecondMAGAttribute))
+                            &&
+                            objLoopAttrib.MetatypeMaximum > 0)
                         {
-                            intTemp += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) * Settings.KarmaAttribute;
-                            if(strAttributeName != "MAG" && strAttributeName != "MAGAdept" &&
-                                strAttributeName != "RES" && strAttributeName != "DEP")
+                            int intLoopAttribValue =
+                                Math.Max(objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum,
+                                         objLoopAttrib.TotalMinimum) + objLoopAttrib.AttributeValueModifiers;
+                            if (intLoopAttribValue > 1)
                             {
-                                int intVanillaAttribValue =
-                                    Math.Max(
-                                        objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum -
-                                        objLoopAttrib.MetatypeMinimum + 1,
-                                        objLoopAttrib.TotalMinimum - objLoopAttrib.MetatypeMinimum + 1) +
-                                    objLoopAttrib.AttributeValueModifiers;
-                                intAttributesValue += ((intVanillaAttribValue + 1) * intVanillaAttribValue / 2 - 1) *
-                                                      Settings.KarmaAttribute;
+                                intTemp += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1)
+                                           * Settings.KarmaAttribute;
+                                if (strAttributeName != "MAG" && strAttributeName != "MAGAdept" &&
+                                    strAttributeName != "RES" && strAttributeName != "DEP")
+                                {
+                                    int intVanillaAttribValue =
+                                        Math.Max(
+                                            objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum -
+                                            objLoopAttrib.MetatypeMinimum + 1,
+                                            objLoopAttrib.TotalMinimum - objLoopAttrib.MetatypeMinimum + 1) +
+                                        objLoopAttrib.AttributeValueModifiers;
+                                    intAttributesValue
+                                        += ((intVanillaAttribValue + 1) * intVanillaAttribValue / 2 - 1) *
+                                           Settings.KarmaAttribute;
+                                }
+                                else
+                                    intAttributesValue += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) *
+                                                          Settings.KarmaAttribute;
                             }
-                            else
-                                intAttributesValue += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) *
-                                                      Settings.KarmaAttribute;
                         }
                     }
-                }
 
-                // For point buy comparisons, we need to use the metatype's Point Buy cost for the comparison, not attributes + metatype qualities.
-                intExtraKarmaToRemoveForPointBuyComparison += intTemp - intAttributesValue + intMetatypeQualitiesValue;
+                    // For point buy comparisons, we need to use the metatype's Point Buy cost for the comparison, not attributes + metatype qualities.
+                    intExtraKarmaToRemoveForPointBuyComparison
+                        += intTemp - intAttributesValue + intMetatypeQualitiesValue;
 
-                if (intTemp - intAttributesValue + intMetatypeQualitiesValue != 0)
-                {
-                    sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_SumtoTenHeritage", strLanguage))
-                              .Append(strSpace)
-                              .Append((intTemp - intAttributesValue + intMetatypeQualitiesValue).ToString(
-                                          GlobalSettings.CultureInfo)).Append(strSpace).Append(strKarmaString);
-                }
-
-                if(intAttributesValue != 0)
-                {
-                    sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_SumtoTenAttributes", strLanguage))
-                              .Append(strSpace).Append(intAttributesValue.ToString(GlobalSettings.CultureInfo))
-                              .Append(strSpace).Append(strKarmaString);
-                }
-
-                intReturn += intTemp;
-
-                // Karma needs to be added based on the character's metatype/metavariant Point Buy karma cost because that is what is used in Point Buy,
-                // not the metatype/metavariant attribute/quality costs.
-                intTemp = 0;
-                if (GetNode()?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
-                    intExtraKarmaToRemoveForPointBuyComparison -= intTemp;
-
-                intTemp = 0;
-                // This is where "Talent" qualities like Adept and Technomancer get added in
-                foreach(Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Heritage))
-                {
-                    XmlNode xmlQualityNode = objQuality.GetNode();
-                    if (xmlQualityNode == null)
-                        continue;
-                    int intLoopKarma = 0;
-                    if (xmlQualityNode?.TryGetInt32FieldQuickly("karma", ref intLoopKarma) == true)
-                        intTemp += intLoopKarma;
-                }
-
-                if(intTemp != 0)
-                {
-                    sbdMessage.AppendLine().Append(LanguageManager.GetString("String_Qualities", strLanguage))
-                              .Append(strColonCharacter).Append(strSpace)
-                              .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                              .Append(strKarmaString);
-                    intReturn += intTemp;
-                }
-
-                // Value from free spells
-                intTemp = FreeSpells * SpellKarmaCost("Spells");
-                if(intTemp != 0)
-                {
-                    sbdMessage.AppendLine().Append(LanguageManager.GetString("String_FreeSpells", strLanguage))
-                              .Append(strColonCharacter).Append(strSpace)
-                              .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                              .Append(strKarmaString);
-                    intReturn += intTemp;
-                }
-
-                // Value from free complex forms
-                intTemp = CFPLimit * ComplexFormKarmaCost;
-                if(intTemp != 0)
-                {
-                    sbdMessage.AppendLine().Append(LanguageManager.GetString("String_FreeCFs", strLanguage))
-                              .Append(strColonCharacter).Append(strSpace)
-                              .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                              .Append(strKarmaString);
-                    intReturn += intTemp;
-                }
-
-                intTemp = 0;
-                // Value from skill points
-                foreach(Skill objLoopActiveSkill in SkillsSection.Skills)
-                {
-                    if(!(objLoopActiveSkill.SkillGroupObject?.Base > 0))
+                    if (intTemp - intAttributesValue + intMetatypeQualitiesValue != 0)
                     {
-                        int intLoopRating = objLoopActiveSkill.Base;
-                        if(intLoopRating > 0)
-                        {
-                            intTemp += Settings.KarmaNewActiveSkill;
-                            intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Settings.KarmaImproveActiveSkill;
-                            if (EffectiveBuildMethodIsLifeModule)
-                                intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) *
-                                           Settings.KarmaSpecialization;
-                            else if(!objLoopActiveSkill.BuyWithKarma)
-                                intTemp += objLoopActiveSkill.Specializations.Count * Settings.KarmaSpecialization;
-                        }
+                        sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_SumtoTenHeritage", strLanguage))
+                                  .Append(strSpace)
+                                  .Append((intTemp - intAttributesValue + intMetatypeQualitiesValue).ToString(
+                                              GlobalSettings.CultureInfo)).Append(strSpace).Append(strKarmaString);
                     }
-                }
 
-                if(intTemp != 0)
-                {
-                    sbdMessage.AppendLine().Append(LanguageManager.GetString("String_SkillPoints", strLanguage))
-                              .Append(strColonCharacter).Append(strSpace)
-                              .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                              .Append(strKarmaString);
-                    intReturn += intTemp;
-                }
-
-                intTemp = 0;
-                // Value from skill group points
-                foreach(int intLoopRating in SkillsSection.SkillGroups.Select(x => x.Base))
-                {
-                    if (intLoopRating <= 0)
-                        continue;
-                    intTemp += Settings.KarmaNewSkillGroup;
-                    intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Settings.KarmaImproveSkillGroup;
-                }
-
-                if(intTemp != 0)
-                {
-                    sbdMessage.AppendLine().Append(LanguageManager.GetString("String_SkillGroupPoints", strLanguage))
-                              .Append(strColonCharacter).Append(strSpace)
-                              .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                              .Append(strKarmaString);
-                    intReturn += intTemp;
-                }
-
-                // Starting Nuyen karma value
-                decimal decBaseStartingNuyen = CalculateStartingNuyenFromKarma(Math.Min(NuyenBP, TotalNuyenMaximumBP), StartingNuyen);
-                if (decBaseStartingNuyen != 0)
-                {
-                    // Start off with the negative value of the karma we put into nuyen to make this calculation work properly for weird, nonlinear scaling
-                    intTemp = -Math.Min(NuyenBP, TotalNuyenMaximumBP).ToInt32();
-                    // This looks horrible, but we cannot use binary search or calculate karma value directly because XPath expressions are so free-form
-                    // The only option is to loop through every possible Karma value until we find the lowest one that gives more nuyen than Priority gives
-                    for (int i = 0; i < int.MaxValue; ++i)
+                    if (intAttributesValue != 0)
                     {
-                        decimal decLoopNuyen = CalculateStartingNuyenFromKarma(i, 0);
-                        // This looks quite wonky when what we're actually looking for is the exact value, but effectively rounds karma requirements up in cases where Nuyen doesn't divide cleanly
-                        if (decLoopNuyen >= decBaseStartingNuyen)
+                        sbdMessage.AppendLine()
+                                  .Append(LanguageManager.GetString("Label_SumtoTenAttributes", strLanguage))
+                                  .Append(strSpace).Append(intAttributesValue.ToString(GlobalSettings.CultureInfo))
+                                  .Append(strSpace).Append(strKarmaString);
+                    }
+
+                    intReturn += intTemp;
+
+                    // Karma needs to be added based on the character's metatype/metavariant Point Buy karma cost because that is what is used in Point Buy,
+                    // not the metatype/metavariant attribute/quality costs.
+                    intTemp = 0;
+                    if (GetNode()?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
+                        intExtraKarmaToRemoveForPointBuyComparison -= intTemp;
+
+                    intTemp = 0;
+                    // This is where "Talent" qualities like Adept and Technomancer get added in
+                    foreach (Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Heritage))
+                    {
+                        XmlNode xmlQualityNode = objQuality.GetNode();
+                        if (xmlQualityNode == null)
+                            continue;
+                        int intLoopKarma = 0;
+                        if (xmlQualityNode?.TryGetInt32FieldQuickly("karma", ref intLoopKarma) == true)
+                            intTemp += intLoopKarma;
+                    }
+
+                    if (intTemp != 0)
+                    {
+                        sbdMessage.AppendLine().Append(LanguageManager.GetString("String_Qualities", strLanguage))
+                                  .Append(strColonCharacter).Append(strSpace)
+                                  .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .Append(strKarmaString);
+                        intReturn += intTemp;
+                    }
+
+                    // Value from free spells
+                    intTemp = FreeSpells * SpellKarmaCost("Spells");
+                    if (intTemp != 0)
+                    {
+                        sbdMessage.AppendLine().Append(LanguageManager.GetString("String_FreeSpells", strLanguage))
+                                  .Append(strColonCharacter).Append(strSpace)
+                                  .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .Append(strKarmaString);
+                        intReturn += intTemp;
+                    }
+
+                    // Value from free complex forms
+                    intTemp = CFPLimit * ComplexFormKarmaCost;
+                    if (intTemp != 0)
+                    {
+                        sbdMessage.AppendLine().Append(LanguageManager.GetString("String_FreeCFs", strLanguage))
+                                  .Append(strColonCharacter).Append(strSpace)
+                                  .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .Append(strKarmaString);
+                        intReturn += intTemp;
+                    }
+
+                    intTemp = 0;
+                    // Value from skill points
+                    foreach (Skill objLoopActiveSkill in SkillsSection.Skills)
+                    {
+                        if (!(objLoopActiveSkill.SkillGroupObject?.Base > 0))
                         {
-                            intTemp += i;
-                            break;
+                            int intLoopRating = objLoopActiveSkill.Base;
+                            if (intLoopRating > 0)
+                            {
+                                intTemp += Settings.KarmaNewActiveSkill;
+                                intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1)
+                                           * Settings.KarmaImproveActiveSkill;
+                                if (EffectiveBuildMethodIsLifeModule)
+                                    intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) *
+                                               Settings.KarmaSpecialization;
+                                else if (!objLoopActiveSkill.BuyWithKarma)
+                                    intTemp += objLoopActiveSkill.Specializations.Count * Settings.KarmaSpecialization;
+                            }
                         }
                     }
+
+                    if (intTemp != 0)
+                    {
+                        sbdMessage.AppendLine().Append(LanguageManager.GetString("String_SkillPoints", strLanguage))
+                                  .Append(strColonCharacter).Append(strSpace)
+                                  .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .Append(strKarmaString);
+                        intReturn += intTemp;
+                    }
+
+                    intTemp = 0;
+                    // Value from skill group points
+                    foreach (int intLoopRating in SkillsSection.SkillGroups.Select(x => x.Base))
+                    {
+                        if (intLoopRating <= 0)
+                            continue;
+                        intTemp += Settings.KarmaNewSkillGroup;
+                        intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Settings.KarmaImproveSkillGroup;
+                    }
+
                     if (intTemp != 0)
                     {
                         sbdMessage.AppendLine()
-                                  .Append(LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen",
-                                                                    strLanguage)).Append(strColonCharacter)
-                                  .Append(strSpace).Append(intTemp.ToString(GlobalSettings.CultureInfo))
-                                  .Append(strSpace).Append(strKarmaString);
+                                  .Append(LanguageManager.GetString("String_SkillGroupPoints", strLanguage))
+                                  .Append(strColonCharacter).Append(strSpace)
+                                  .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .Append(strKarmaString);
                         intReturn += intTemp;
                     }
+
+                    // Starting Nuyen karma value
+                    decimal decBaseStartingNuyen
+                        = CalculateStartingNuyenFromKarma(Math.Min(NuyenBP, TotalNuyenMaximumBP), StartingNuyen);
+                    if (decBaseStartingNuyen != 0)
+                    {
+                        // Start off with the negative value of the karma we put into nuyen to make this calculation work properly for weird, nonlinear scaling
+                        intTemp = -Math.Min(NuyenBP, TotalNuyenMaximumBP).ToInt32();
+                        // This looks horrible, but we cannot use binary search or calculate karma value directly because XPath expressions are so free-form
+                        // The only option is to loop through every possible Karma value until we find the lowest one that gives more nuyen than Priority gives
+                        for (int i = 0; i < int.MaxValue; ++i)
+                        {
+                            decimal decLoopNuyen = CalculateStartingNuyenFromKarma(i, 0);
+                            // This looks quite wonky when what we're actually looking for is the exact value, but effectively rounds karma requirements up in cases where Nuyen doesn't divide cleanly
+                            if (decLoopNuyen >= decBaseStartingNuyen)
+                            {
+                                intTemp += i;
+                                break;
+                            }
+                        }
+
+                        if (intTemp != 0)
+                        {
+                            sbdMessage.AppendLine()
+                                      .Append(LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen",
+                                                                        strLanguage)).Append(strColonCharacter)
+                                      .Append(strSpace).Append(intTemp.ToString(GlobalSettings.CultureInfo))
+                                      .Append(strSpace).Append(strKarmaString);
+                            intReturn += intTemp;
+                        }
+                    }
                 }
-            }
 
-            int intContactPointsValue = ContactPoints * Settings.KarmaContact;
-            if(intContactPointsValue != 0)
-            {
-                sbdMessage.AppendLine().Append(LanguageManager.GetString("String_Contacts", strLanguage))
-                          .Append(strColonCharacter).Append(strSpace)
-                          .Append(intContactPointsValue.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                          .Append(strKarmaString);
-                intReturn += intContactPointsValue;
-                intExtraKarmaToRemoveForPointBuyComparison += intContactPointsValue;
-            }
-
-            int intKnowledgePointsValue = 0;
-            foreach(KnowledgeSkill objLoopKnowledgeSkill in SkillsSection.KnowledgeSkills)
-            {
-                int intLoopRating = objLoopKnowledgeSkill.Base;
-                if(intLoopRating > 0)
+                int intContactPointsValue = ContactPoints * Settings.KarmaContact;
+                if (intContactPointsValue != 0)
                 {
-                    intKnowledgePointsValue += Settings.KarmaNewKnowledgeSkill;
-                    intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
-                                               Settings.KarmaImproveKnowledgeSkill;
-                    if(EffectiveBuildMethodIsLifeModule)
-                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) *
-                                                   Settings.KarmaKnowledgeSpecialization;
-                    else if(!objLoopKnowledgeSkill.BuyWithKarma)
-                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count *
-                                                   Settings.KarmaKnowledgeSpecialization;
+                    sbdMessage.AppendLine().Append(LanguageManager.GetString("String_Contacts", strLanguage))
+                              .Append(strColonCharacter).Append(strSpace)
+                              .Append(intContactPointsValue.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                              .Append(strKarmaString);
+                    intReturn += intContactPointsValue;
+                    intExtraKarmaToRemoveForPointBuyComparison += intContactPointsValue;
                 }
-            }
 
-            if(intKnowledgePointsValue != 0)
-            {
-                sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_KnowledgeSkills", strLanguage))
+                int intKnowledgePointsValue = 0;
+                foreach (KnowledgeSkill objLoopKnowledgeSkill in SkillsSection.KnowledgeSkills)
+                {
+                    int intLoopRating = objLoopKnowledgeSkill.Base;
+                    if (intLoopRating > 0)
+                    {
+                        intKnowledgePointsValue += Settings.KarmaNewKnowledgeSkill;
+                        intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
+                                                   Settings.KarmaImproveKnowledgeSkill;
+                        if (EffectiveBuildMethodIsLifeModule)
+                            intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) *
+                                                       Settings.KarmaKnowledgeSpecialization;
+                        else if (!objLoopKnowledgeSkill.BuyWithKarma)
+                            intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count *
+                                                       Settings.KarmaKnowledgeSpecialization;
+                    }
+                }
+
+                if (intKnowledgePointsValue != 0)
+                {
+                    sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_KnowledgeSkills", strLanguage))
+                              .Append(strColonCharacter).Append(strSpace)
+                              .Append(intKnowledgePointsValue.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                              .Append(strKarmaString);
+                    intReturn += intKnowledgePointsValue;
+                    intExtraKarmaToRemoveForPointBuyComparison += intKnowledgePointsValue;
+                }
+
+                sbdMessage.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Total", strLanguage))
                           .Append(strColonCharacter).Append(strSpace)
-                          .Append(intKnowledgePointsValue.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                          .Append(strKarmaString);
-                intReturn += intKnowledgePointsValue;
-                intExtraKarmaToRemoveForPointBuyComparison += intKnowledgePointsValue;
+                          .Append(intReturn.ToString(GlobalSettings.CultureInfo))
+                          .Append(strSpace).AppendLine(strKarmaString).AppendLine()
+                          .Append(LanguageManager.GetString("String_TotalComparisonWithPointBuy", strLanguage))
+                          .Append(strColonCharacter).Append(strSpace)
+                          .Append((intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(
+                                      GlobalSettings.CultureInfo)).Append(strSpace).Append(strKarmaString);
+
+                return sbdMessage.ToString();
             }
-
-            sbdMessage.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Total", strLanguage))
-                      .Append(strColonCharacter).Append(strSpace).Append(intReturn.ToString(GlobalSettings.CultureInfo))
-                      .Append(strSpace).AppendLine(strKarmaString).AppendLine()
-                      .Append(LanguageManager.GetString("String_TotalComparisonWithPointBuy", strLanguage))
-                      .Append(strColonCharacter).Append(strSpace)
-                      .Append((intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(
-                                  GlobalSettings.CultureInfo)).Append(strSpace).Append(strKarmaString);
-
-            return sbdMessage.ToString();
         }
 
         /// <summary>
@@ -8485,12 +8501,17 @@ namespace Chummer
                     string strExpression = Settings.ContactPointsExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                     {
-                        StringBuilder objValue = new StringBuilder(strExpression);
-                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        _intCachedContactPoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            object objProcess
+                                = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                            _intCachedContactPoints = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                        }
                     }
                     else
                         int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intCachedContactPoints);
@@ -9311,12 +9332,17 @@ namespace Chummer
                     string strExpression = Settings.BoundSpiritExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                     {
-                        StringBuilder objValue = new StringBuilder(strExpression);
-                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            object objProcess
+                                = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                            _intBoundSpiritLimit = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                        }
                     }
                     else
                         int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intBoundSpiritLimit);
@@ -9350,12 +9376,17 @@ namespace Chummer
                     string strExpression = Settings.RegisteredSpriteExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                     {
-                        StringBuilder objValue = new StringBuilder(strExpression);
-                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            object objProcess
+                                = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                            _intRegisteredSpriteLimit = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                        }
                     }
                     else
                         int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _intRegisteredSpriteLimit);
@@ -13353,14 +13384,17 @@ namespace Chummer
                 .Replace("{PriorityNuyen}", decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
-                StringBuilder objValue = new StringBuilder(strExpression);
-                AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strExpression);
+                    AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
-                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                object objProcess =
-                    CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                if (blnIsSuccess)
-                    decFromKarma = Convert.ToDecimal((double)objProcess);
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    object objProcess =
+                        CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        decFromKarma = Convert.ToDecimal((double) objProcess);
+                }
             }
             else
                 decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
@@ -13453,29 +13487,27 @@ namespace Chummer
                         strSpace, "[", (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalSettings.CultureInfo), "]");
                 }
 
-                StringBuilder sbdToolTip = new StringBuilder("(" + STR.DisplayAbbrev + strSpace + '[' +
-                                                             STR.TotalValue.ToString(GlobalSettings.CultureInfo) + ']' +
-                                                             strSpace + '×' + strSpace +
-                                                             2.ToString(GlobalSettings.CultureInfo) + strSpace + '+' +
-                                                             strSpace + BOD.DisplayAbbrev + strSpace + '[' +
-                                                             BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ']' +
-                                                             strSpace + '+' + strSpace + REA.DisplayAbbrev + strSpace +
-                                                             '[' + REA.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             "])" + strSpace + '/' + strSpace +
-                                                             3.ToString(GlobalSettings.CultureInfo));
-
-                foreach(Improvement objLoopImprovement in Improvements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit
-                        && objLoopImprovement.Enabled)
+                    sbdToolTip.Append('(').Append(STR.DisplayAbbrev).Append(strSpace).Append('[')
+                              .Append(STR.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']').Append(strSpace)
+                              .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(BOD.DisplayAbbrev).Append(strSpace)
+                              .Append('[').Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
+                              .Append(strSpace).Append('+').Append(strSpace).Append(REA.DisplayAbbrev).Append(strSpace)
+                              .Append('[').Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append("])")
+                              .Append(strSpace).Append('/').Append(strSpace)
+                              .Append(3.ToString(GlobalSettings.CultureInfo));
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.PhysicalLimit))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
+                    return sbdToolTip.ToString();
                 }
-
-                return sbdToolTip.ToString();
             }
         }
 
@@ -13514,53 +13546,56 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder("(" + LOG.DisplayAbbrev + strSpace + '[' +
-                                                             LOG.TotalValue.ToString(GlobalSettings.CultureInfo) + ']' +
-                                                             strSpace + '×' + strSpace +
-                                                             2.ToString(GlobalSettings.CultureInfo) + strSpace + '+' +
-                                                             strSpace + INT.DisplayAbbrev + strSpace + '[' +
-                                                             INT.TotalValue.ToString(GlobalSettings.CultureInfo) + ']' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '[' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             "])" + strSpace + '/' + strSpace +
-                                                             3.ToString(GlobalSettings.CultureInfo));
-                if(IsAI && HomeNode != null)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
-                    if (HomeNode is Vehicle objHomeNodeVehicle)
+                    sbdToolTip.Append('(').Append(LOG.DisplayAbbrev).Append(strSpace).Append('[')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']').Append(strSpace)
+                              .Append('×').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
+                              .Append(strSpace).Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace)
+                              .Append('[').Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
+                              .Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace)
+                              .Append('[').Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append("])")
+                              .Append(strSpace).Append('/').Append(strSpace)
+                              .Append(3.ToString(GlobalSettings.CultureInfo));
+
+                    if (IsAI && HomeNode != null)
                     {
-                        int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
-                        if(intHomeNodeSensor > intLimit)
+                        int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
+                        if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
-                            intLimit = intHomeNodeSensor;
-                            sbdToolTip = new StringBuilder(LanguageManager.GetString("String_Sensor") + strSpace +
-                                                           '[' + intLimit.ToString(GlobalSettings.CultureInfo) +
-                                                           ']');
+                            int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                            if (intHomeNodeSensor > intLimit)
+                            {
+                                intLimit = intHomeNodeSensor;
+                                sbdToolTip.Clear();
+                                sbdToolTip.Append(LanguageManager.GetString("String_Sensor")).Append(strSpace)
+                                          .Append('[').Append(intLimit.ToString(GlobalSettings.CultureInfo))
+                                          .Append(']');
+                            }
+                        }
+
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                        if (intHomeNodeDP > intLimit)
+                        {
+                            intLimit = intHomeNodeDP;
+                            sbdToolTip.Clear();
+                            sbdToolTip.Append(LanguageManager.GetString("String_DataProcessing")).Append(strSpace)
+                                      .Append('[').Append(intLimit.ToString(GlobalSettings.CultureInfo))
+                                      .Append(']');
                         }
                     }
 
-                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                    if(intHomeNodeDP > intLimit)
-                    {
-                        intLimit = intHomeNodeDP;
-                        sbdToolTip = new StringBuilder(LanguageManager.GetString("String_DataProcessing") +
-                                                       strSpace + '[' +
-                                                       intLimit.ToString(GlobalSettings.CultureInfo) + ']');
-                    }
-                }
-
-                foreach(Improvement objLoopImprovement in Improvements)
-                {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.MentalLimit
-                        && objLoopImprovement.Enabled)
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MentalLimit))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -13599,50 +13634,51 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder("(" + CHA.DisplayAbbrev + strSpace + '[' +
-                                                             CHA.TotalValue.ToString(GlobalSettings.CultureInfo) + ']');
-
-                if(IsAI && HomeNode != null)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                    string strDPString = LanguageManager.GetString("String_DataProcessing");
-                    if(HomeNode is Vehicle objHomeNodeVehicle)
+                    sbdToolTip.Append('(').Append(CHA.DisplayAbbrev).Append(strSpace).Append('[')
+                              .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']');
+                    if (IsAI && HomeNode != null)
                     {
-                        int intHomeNodePilot = objHomeNodeVehicle.Pilot;
-                        if(intHomeNodePilot > intHomeNodeDP)
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                        string strDPString = LanguageManager.GetString("String_DataProcessing");
+                        if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
-                            intHomeNodeDP = intHomeNodePilot;
-                            strDPString = LanguageManager.GetString("String_Pilot");
+                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            if (intHomeNodePilot > intHomeNodeDP)
+                            {
+                                intHomeNodeDP = intHomeNodePilot;
+                                strDPString = LanguageManager.GetString("String_Pilot");
+                            }
                         }
+
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(strDPString).Append(strSpace)
+                                  .Append('[').Append(intHomeNodeDP.ToString(GlobalSettings.CultureInfo)).Append(']');
+                    }
+                    else
+                    {
+                        sbdToolTip.Append(strSpace).Append('×').Append(strSpace)
+                                  .Append(2.ToString(GlobalSettings.CultureInfo));
                     }
 
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(strDPString).Append(strSpace)
-                              .Append('[').Append(intHomeNodeDP.ToString(GlobalSettings.CultureInfo)).Append(']');
-                }
-                else
-                {
-                    sbdToolTip.Append(strSpace).Append('×').Append(strSpace)
-                              .Append(2.ToString(GlobalSettings.CultureInfo));
-                }
+                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace)
+                              .Append('[').Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
+                              .Append(strSpace).Append('+').Append(strSpace).Append(ESS.DisplayAbbrev).Append(strSpace)
+                              .Append('[').Append(DisplayEssence).Append("])").Append(strSpace).Append('/')
+                              .Append(strSpace)
+                              .Append(3.ToString(GlobalSettings.CultureInfo));
 
-                sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace)
-                          .Append('[').Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(']')
-                          .Append(strSpace).Append('+').Append(strSpace).Append(ESS.DisplayAbbrev).Append(strSpace)
-                          .Append('[').Append(DisplayEssence).Append("])").Append(strSpace).Append('/').Append(strSpace)
-                          .Append(3.ToString(GlobalSettings.CultureInfo));
-
-                foreach(Improvement objLoopImprovement in Improvements)
-                {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SocialLimit
-                       && objLoopImprovement.Enabled)
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SocialLimit))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
