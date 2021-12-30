@@ -63,12 +63,8 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
-                int intNewCapacity = strInput.Length + 1
-                                                     + Math.Max(
-                                                         0,
-                                                         strInput.Length * (strNewValue.Length - strOldValue.Length)
-                                                         / strOldValue.Length);
-                if (intNewCapacity > sbdReturn.Capacity)
+                int intNewCapacity = strInput.Length + 1 + Math.Max(0, strNewValue.Length - strOldValue.Length);
+                if (sbdReturn.Capacity < intNewCapacity)
                     sbdReturn.Capacity = intNewCapacity;
                 int intEndPositionOfLastReplace = 0;
                 // intHead already set to the index of the first instance, for loop's initializer can be left empty
@@ -1020,7 +1016,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strText.Length;
-                if (intNewCapacity > sbdReturn.Capacity)
+                if (sbdReturn.Capacity < intNewCapacity)
                     sbdReturn.Capacity = intNewCapacity;
                 string strNewLine = Environment.NewLine;
                 // Parse each line of text
@@ -1142,7 +1138,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strSearch.Length + 10;
-                if (intNewCapacity > sbdReturn.Capacity)
+                if (sbdReturn.Capacity < intNewCapacity)
                     sbdReturn.Capacity = intNewCapacity;
                 sbdReturn.Append("concat(\"");
                 int intSubStringStart = 0;

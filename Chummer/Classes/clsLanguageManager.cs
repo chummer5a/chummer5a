@@ -457,7 +457,7 @@ namespace Chummer
                                                           out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strInput.Length;
-                if (sbdReturn.Capacity > intNewCapacity)
+                if (sbdReturn.Capacity < intNewCapacity)
                     sbdReturn.Capacity = intNewCapacity;
                 foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
                 {

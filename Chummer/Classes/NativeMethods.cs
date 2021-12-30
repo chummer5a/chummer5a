@@ -423,8 +423,6 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBuffer))
                 {
-                    if (sbdBuffer.Capacity > ptrBuffer)
-                        sbdBuffer.Capacity = ptrBuffer;
                     if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
                     {
                         return sbdBuffer.ToString();
