@@ -1203,12 +1203,32 @@ namespace Chummer
                                                     {
                                                         if (objNodeToEdit.HasChildNodes)
                                                         {
-                                                            XmlNode objChildToEdit = objNodeToEdit.ChildNodes
-                                                                .OfType<XmlNode>()
-                                                                .FirstOrDefault(
-                                                                    x => x.NodeType == eChildNodeType
-                                                                         && (eChildNodeType != XmlNodeType.Attribute
-                                                                             || x.Name == xmlChild.Name));
+                                                            XmlNode objChildToEdit = null;
+                                                            if (eChildNodeType == XmlNodeType.Attribute)
+                                                            {
+                                                                foreach (XmlNode objLoopChildNode in objNodeToEdit
+                                                                             .ChildNodes)
+                                                                {
+                                                                    if (objLoopChildNode.NodeType == eChildNodeType
+                                                                        && objLoopChildNode.Name == xmlChild.Name)
+                                                                    {
+                                                                        objChildToEdit = objLoopChildNode;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                foreach (XmlNode objLoopChildNode in objNodeToEdit
+                                                                             .ChildNodes)
+                                                                {
+                                                                    if (objLoopChildNode.NodeType == eChildNodeType)
+                                                                    {
+                                                                        objChildToEdit = objLoopChildNode;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
                                                             if (objChildToEdit != null)
                                                             {
                                                                 objChildToEdit.Value += xmlChild.Value;
