@@ -6247,23 +6247,26 @@ namespace Chummer
             return string.Empty;
         }
 
-        public void FormatImprovementModifiers(StringBuilder sbdToolTip, ICollection<Improvement.ImprovementType> improvements, string strSpace, int intModifiers)
+        public void FormatImprovementModifiers(StringBuilder sbdToolTip, IEnumerable<Improvement.ImprovementType> improvements, string strSpace, int intModifiers)
         {
             if (sbdToolTip == null)
                 return;
             sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers"));
             bool blnFirstModifier = true;
-            foreach (Improvement objLoopImprovement in Improvements.Where(imp => improvements.Contains(imp.ImproveType) && imp.Enabled))
+            foreach (Improvement.ImprovementType eType in improvements)
             {
-                if (blnFirstModifier)
+                foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, eType))
                 {
-                    blnFirstModifier = false;
-                    sbdToolTip.Append(LanguageManager.GetString("String_Colon"));
-                }
-                else
-                    sbdToolTip.Append(',');
+                    if (blnFirstModifier)
+                    {
+                        blnFirstModifier = false;
+                        sbdToolTip.Append(LanguageManager.GetString("String_Colon"));
+                    }
+                    else
+                        sbdToolTip.Append(',');
 
-                sbdToolTip.Append(strSpace).Append(GetObjectName(objLoopImprovement));
+                    sbdToolTip.Append(strSpace).Append(GetObjectName(objLoopImprovement));
+                }
             }
 
             sbdToolTip.Append(strSpace).Append('(').Append(intModifiers.ToString(GlobalSettings.CultureInfo)).Append(')');
@@ -6809,11 +6812,9 @@ namespace Chummer
                 }
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
                 HashSet<string> setNames = new HashSet<string>();
-                foreach(Improvement objImprovement in Improvements)
+                foreach(Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.BlackMarketDiscount))
                 {
-                    if(objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount &&
-                        objImprovement.Enabled)
-                        setNames.Add(objImprovement.ImprovedName);
+                    setNames.Add(objImprovement.ImprovedName);
                 }
 
                 // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
@@ -7332,9 +7333,9 @@ namespace Chummer
         /// </summary>
         public void ClearMagic(bool blnKeepAdeptEligible)
         {
-            if(Improvements.All(x => !x.Enabled || (x.ImproveType != Improvement.ImprovementType.FreeSpells &&
-                                                    x.ImproveType != Improvement.ImprovementType.FreeSpellsATT &&
-                                                    x.ImproveType != Improvement.ImprovementType.FreeSpellsSkill)))
+            if (ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpells).Count > 0
+                || ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsATT).Count > 0
+                || ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsSkill).Count > 0)
             {
                 // Run through all of the Spells and remove their Improvements.
                 for(int i = Spells.Count - 1; i >= 0; --i)
@@ -8323,18 +8324,20 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder(AstralReputation.ToString(GlobalSettings.CultureInfo));
-
-                foreach (Improvement objImprovement in _lstImprovements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.AstralReputation
-                        && objImprovement.Enabled)
+                    sbdReturn.Append(AstralReputation.ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AstralReputation))
+                    {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                                  .Append(strSpace).Append('(')
                                  .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
-                }
+                    }
 
-                return sbdReturn.ToString();
+                    return sbdReturn.ToString();
+                }
             }
         }
 
@@ -8367,18 +8370,20 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder(WildReputation.ToString(GlobalSettings.CultureInfo));
-
-                foreach (Improvement objImprovement in _lstImprovements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.AstralReputationWild
-                        && objImprovement.Enabled)
+                    sbdReturn.Append(WildReputation.ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AstralReputationWild))
+                    {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                                  .Append(strSpace).Append('(')
                                  .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
-                }
+                    }
 
-                return sbdReturn.ToString();
+                    return sbdReturn.ToString();
+                }
             }
         }
 
@@ -8880,9 +8885,9 @@ namespace Chummer
                 decimal decMultiplier = 1.0m;
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if(objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                                                       (objLoopImprovement.Condition == "career") == Created ||
-                                                       (objLoopImprovement.Condition == "create") != Created))
+                    if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         || (objLoopImprovement.Condition == "career") == Created
+                         || (objLoopImprovement.Condition == "create") != Created) && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
                         {
@@ -8912,9 +8917,9 @@ namespace Chummer
                 decimal decMultiplier = 1.0m;
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if(objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                                                       (objLoopImprovement.Condition == "career") == Created ||
-                                                       (objLoopImprovement.Condition == "create") != Created))
+                    if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         || (objLoopImprovement.Condition == "career") == Created
+                         || (objLoopImprovement.Condition == "create") != Created) && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
                         {
@@ -8944,9 +8949,9 @@ namespace Chummer
                 decimal decMultiplier = 1.0m;
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                                                       (objLoopImprovement.Condition == "career") == Created ||
-                                                       (objLoopImprovement.Condition == "create") != Created))
+                    if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         || (objLoopImprovement.Condition == "career") == Created
+                         || (objLoopImprovement.Condition == "create") != Created) && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
                         {
@@ -9217,10 +9222,13 @@ namespace Chummer
                                         }
                                         else if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
-                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && x.Enabled);
+                                            Improvement objParentImprovement = ImprovementManager
+                                                                               .GetCachedImprovementListForValueOf(
+                                                                                   this,
+                                                                                   Improvement.ImprovementType
+                                                                                       .SpecificQuality,
+                                                                                   objQuality.InternalId)
+                                                                               .FirstOrDefault();
                                             if (objParentImprovement == null)
                                                 break;
                                             if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
@@ -9667,10 +9675,13 @@ namespace Chummer
                                         }
                                         else if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
-                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && x.Enabled);
+                                            Improvement objParentImprovement = ImprovementManager
+                                                                               .GetCachedImprovementListForValueOf(
+                                                                                   this,
+                                                                                   Improvement.ImprovementType
+                                                                                       .SpecificQuality,
+                                                                                   objQuality.InternalId)
+                                                                               .FirstOrDefault();
                                             if (objParentImprovement == null)
                                                 break;
                                             if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
@@ -9889,10 +9900,13 @@ namespace Chummer
                                         }
                                         else if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
-                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                && x.ImprovedName == objQuality.InternalId
-                                                && x.Enabled);
+                                            Improvement objParentImprovement = ImprovementManager
+                                                                               .GetCachedImprovementListForValueOf(
+                                                                                   this,
+                                                                                   Improvement.ImprovementType
+                                                                                       .SpecificQuality,
+                                                                                   objQuality.InternalId)
+                                                                               .FirstOrDefault();
                                             if (objParentImprovement == null)
                                                 break;
                                             if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
@@ -10845,30 +10859,28 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpace + '(' +
-                                                             CHA.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
-                                                             '(' + WoundModifier.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
-                                                             '(' +
-                                                             SustainingPenalty.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-                foreach (Improvement objLoopImprovement in Improvements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Composure &&
-                        objLoopImprovement.Enabled)
+                    sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
+                              .Append(strSpace).Append('(').Append(WoundModifier.ToString(GlobalSettings.CultureInfo))
+                              .Append(')').Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("Tip_Skill_Sustain")).Append(strSpace).Append('(')
+                              .Append(SustainingPenalty.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Composure))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -10886,31 +10898,35 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpace + '(' +
-                                                             CHA.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace +
-                                                             '(' + INT.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
-                                                             '(' + WoundModifier.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
-                                                             '(' +
-                                                             SustainingPenalty.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-                foreach (Improvement objLoopImprovement in Improvements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions
-                        || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsOffense)
-                       && objLoopImprovement.Enabled)
+                    sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
+                              .Append(strSpace).Append('(').Append(WoundModifier.ToString(GlobalSettings.CultureInfo))
+                              .Append(')').Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("Tip_Skill_Sustain")).Append(strSpace).Append('(')
+                              .Append(SustainingPenalty.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.JudgeIntentions))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense))
+                    {
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+                    }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -10926,24 +10942,30 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpace + '(' +
-                                                             CHA.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-                foreach(Improvement objLoopImprovement in Improvements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions
-                        || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsDefense)
-                       && objLoopImprovement.Enabled)
+                    sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.JudgeIntentions))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense))
+                    {
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+                    }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -10960,32 +10982,32 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(BOD.DisplayAbbrev + strSpace + '(' +
-                                                             BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + STR.DisplayAbbrev + strSpace +
-                                                             '(' + STR.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
-                                                             '(' + WoundModifier.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
-                                                             '(' +
-                                                             SustainingPenalty.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-                foreach (Improvement objLoopImprovement in Improvements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.LiftAndCarry
-                       && objLoopImprovement.Enabled)
+                    sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(STR.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(STR.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
+                              .Append(strSpace).Append('(').Append(WoundModifier.ToString(GlobalSettings.CultureInfo))
+                              .Append(')').Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("Tip_Skill_Sustain")).Append(strSpace).Append('(')
+                              .Append(SustainingPenalty.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.LiftAndCarry))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
 
-                sbdToolTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_LiftAndCarry"),
-                    (STR.TotalValue * 15).ToString(GlobalSettings.CultureInfo), (STR.TotalValue * 10).ToString(GlobalSettings.CultureInfo));
-                return sbdToolTip.ToString();
+                    sbdToolTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo,
+                                                         LanguageManager.GetString("Tip_LiftAndCarry"),
+                                                         (STR.TotalValue * 15).ToString(GlobalSettings.CultureInfo),
+                                                         (STR.TotalValue * 10).ToString(GlobalSettings.CultureInfo));
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -11002,30 +11024,28 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
-                                                             '(' + WoundModifier.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
-                                                             '(' +
-                                                             SustainingPenalty.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-                foreach (Improvement objLoopImprovement in Improvements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Memory &&
-                        objLoopImprovement.Enabled)
+                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
+                              .Append(strSpace).Append('(').Append(WoundModifier.ToString(GlobalSettings.CultureInfo))
+                              .Append(')').Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("Tip_Skill_Sustain")).Append(strSpace).Append('(')
+                              .Append(SustainingPenalty.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Memory))
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
                                   .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
-                }
 
-                return sbdToolTip.ToString();
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -11294,34 +11314,39 @@ namespace Chummer
         {
             get
             {
-                StringBuilder sbdReturn = new StringBuilder(StreetCred.ToString(GlobalSettings.CultureInfo));
                 string strSpace = LanguageManager.GetString("String_Space");
-
-                foreach(Improvement objImprovement in _lstImprovements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.StreetCred && objImprovement.Enabled)
+                    sbdReturn.Append(StreetCred.ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.StreetCred))
+                    {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                                  .Append(strSpace).Append('(')
                                  .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[')
+                             .Append(LanguageManager.GetString("String_CareerKarma")).Append(strSpace).Append('÷')
+                             .Append(strSpace)
+                             .Append((10 + ImprovementManager.ValueOf(
+                                         this, Improvement.ImprovementType.StreetCredMultiplier))
+                                     .ToString(GlobalSettings.CultureInfo)).Append(']').Append(strSpace).Append('(')
+                             .Append(
+                                 (CareerKarma
+                                  / (10 + ImprovementManager.ValueOf(
+                                      this, Improvement.ImprovementType.StreetCredMultiplier)))
+                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    if (BurntStreetCred != 0)
+                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                                 .Append(LanguageManager.GetString("String_BurntStreetCred")).Append(strSpace)
+                                 .Append('(')
+                                 .Append(BurntStreetCred.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    return sbdReturn.ToString();
                 }
-
-                sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[')
-                         .Append(LanguageManager.GetString("String_CareerKarma")).Append(strSpace).Append('÷')
-                         .Append(strSpace)
-                         .Append((10 + ImprovementManager.ValueOf(
-                                     this, Improvement.ImprovementType.StreetCredMultiplier))
-                                 .ToString(GlobalSettings.CultureInfo)).Append(']').Append(strSpace).Append('(').Append(
-                             (CareerKarma
-                              / (10 + ImprovementManager.ValueOf(
-                                  this, Improvement.ImprovementType.StreetCredMultiplier)))
-                             .ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                if (BurntStreetCred != 0)
-                    sbdReturn.Append(strSpace).Append('-').Append(strSpace)
-                             .Append(LanguageManager.GetString("String_BurntStreetCred")).Append(strSpace).Append('(')
-                             .Append(BurntStreetCred.ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                return sbdReturn.ToString();
             }
         }
 
@@ -11368,21 +11393,27 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder(Notoriety.ToString(GlobalSettings.CultureInfo));
-
-                foreach(Improvement objImprovement in _lstImprovements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Notoriety && objImprovement.Enabled)
+                    sbdReturn.Append(Notoriety.ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 this, Improvement.ImprovementType.Notoriety))
+                    {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                                  .Append(strSpace).Append('(')
                                  .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    if (BurntStreetCred > 0)
+                        sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                                 .Append(LanguageManager.GetString("String_BurntStreetCred")).Append(
+                                     strSpace).Append('(')
+                                 .Append((BurntStreetCred / 2).ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                    return sbdReturn.ToString();
                 }
-
-                if (BurntStreetCred > 0)
-                    sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_BurntStreetCred")).Append(
-                                     strSpace).Append('(').Append((BurntStreetCred / 2).ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                return sbdReturn.ToString();
             }
         }
 
@@ -11442,51 +11473,57 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder(PublicAwareness.ToString(GlobalSettings.CultureInfo));
-
-                foreach(Improvement objImprovement in _lstImprovements)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.PublicAwareness &&
-                        objImprovement.Enabled)
+                    sbdReturn.Append(PublicAwareness.ToString(GlobalSettings.CultureInfo));
+
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 this, Improvement.ImprovementType.PublicAwareness))
+                    {
                         sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                                  .Append(strSpace).Append('(')
                                  .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
-                }
+                    }
 
-                if(Settings.UseCalculatedPublicAwareness)
-                {
-                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[')
-                             .Append(LanguageManager.GetString("String_StreetCred")).Append(strSpace).Append('+')
-                             .Append(strSpace).Append(LanguageManager.GetString("String_Notoriety")).Append(']')
-                             .Append(strSpace).Append('÷').Append(strSpace)
-                             .Append(3.ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append('(')
-                             .Append(((TotalStreetCred + TotalNotoriety) / 3).ToString(GlobalSettings.CultureInfo))
-                             .Append(')');
-                }
-
-                if(Erased)
-                {
-                    int intTotalPublicAwareness = PublicAwareness + CalculatedPublicAwareness;
-                    if(intTotalPublicAwareness > 1)
+                    if (Settings.UseCalculatedPublicAwareness)
                     {
-                        string strErasedString = Qualities.FirstOrDefault(x => x.Name == "Erased")
-                            ?.DisplayNameShort(GlobalSettings.Language);
-                        if(string.IsNullOrEmpty(strErasedString))
-                        {
-                            XPathNavigator xmlErasedQuality = LoadDataXPath("qualities.xml").SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
-                            if(xmlErasedQuality != null)
-                            {
-                                strErasedString = xmlErasedQuality.SelectSingleNode("translate")?.Value ?? "Erased";
-                            }
-                        }
-
-                        sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(strErasedString).Append(strSpace)
-                                 .Append('(').Append((intTotalPublicAwareness - 1).ToString(GlobalSettings.CultureInfo))
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[')
+                                 .Append(LanguageManager.GetString("String_StreetCred")).Append(strSpace).Append('+')
+                                 .Append(strSpace).Append(LanguageManager.GetString("String_Notoriety")).Append(']')
+                                 .Append(strSpace).Append('÷').Append(strSpace)
+                                 .Append(3.ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append('(')
+                                 .Append(((TotalStreetCred + TotalNotoriety) / 3).ToString(GlobalSettings.CultureInfo))
                                  .Append(')');
                     }
-                }
 
-                return sbdReturn.ToString();
+                    if (Erased)
+                    {
+                        int intTotalPublicAwareness = PublicAwareness + CalculatedPublicAwareness;
+                        if (intTotalPublicAwareness > 1)
+                        {
+                            string strErasedString = Qualities.FirstOrDefault(x => x.Name == "Erased")
+                                                              ?.DisplayNameShort(GlobalSettings.Language);
+                            if (string.IsNullOrEmpty(strErasedString))
+                            {
+                                XPathNavigator xmlErasedQuality = LoadDataXPath("qualities.xml")
+                                    .SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
+                                if (xmlErasedQuality != null)
+                                {
+                                    strErasedString = xmlErasedQuality.SelectSingleNode("translate")?.Value ?? "Erased";
+                                }
+                            }
+
+                            sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(strErasedString)
+                                     .Append(strSpace)
+                                     .Append('(')
+                                     .Append((intTotalPublicAwareness - 1).ToString(GlobalSettings.CultureInfo))
+                                     .Append(')');
+                        }
+                    }
+
+                    return sbdReturn.ToString();
+                }
             }
         }
 
@@ -11825,37 +11862,34 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdToolTip))
+                int intBody;
+                string strBodyAbbrev;
+                if (IsAI)
                 {
-                    if (IsAI)
-                    {
-                        if (HomeNode is Vehicle objVehicle)
-                            sbdToolTip.Append(LanguageManager.GetString("String_VehicleBody")).Append(strSpace)
-                                      .Append('(')
-                                      .Append(objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo)).Append(')')
-                                      .Append(strSpace).Append('+').Append(strSpace);
-                    }
-                    else
-                    {
-                        sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
-                                  .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
-                                  .Append(strSpace)
-                                  .Append('+').Append(strSpace);
-                    }
+                    intBody = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
+                    strBodyAbbrev = LanguageManager.GetString("String_VehicleBody");
+                }
+                else
+                {
+                    intBody = BOD.TotalValue;
+                    strBodyAbbrev = BOD.DisplayAbbrev;
+                }
 
-                    sbdToolTip.Append(LanguageManager.GetString("Tip_Armor")).Append(strSpace).Append('(')
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                              .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Armor"))
+                              .Append(strSpace).Append('(')
                               .Append(TotalArmorRating.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                    foreach (Improvement objLoopImprovement in Improvements)
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.DamageResistance))
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.DamageResistance &&
-                            objLoopImprovement.Enabled)
-                        {
-                            sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                      .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                      .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
-                                      .Append(')');
-                        }
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
+                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
                     }
 
                     return sbdToolTip.ToString();
@@ -11885,30 +11919,32 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(REA.DisplayAbbrev + strSpace + '(' +
-                                                             REA.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace +
-                                                             '(' + INT.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
-                                                             '(' + WoundModifier.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
-                                                             '(' +
-                                                             SustainingPenalty.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                int intModifiers = TotalBonusDodgeRating;
-
-                if (intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(sbdToolTip,
-                        new HashSet<Improvement.ImprovementType> { Improvement.ImprovementType.Dodge },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
+                              .Append(strSpace).Append('(').Append(WoundModifier.ToString(GlobalSettings.CultureInfo))
+                              .Append(')').Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("Tip_Skill_Sustain")).Append(strSpace).Append('(')
+                              .Append(SustainingPenalty.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    int intModifiers = TotalBonusDodgeRating;
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            Improvement.ImprovementType.Dodge.Yield(),
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
         #endregion
@@ -11970,41 +12006,51 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip;
-                if(IsAI)
+                int intBody;
+                string strBodyAbbrev;
+                if (IsAI)
                 {
-                    sbdToolTip = new StringBuilder(LanguageManager.GetString("String_VehicleBody") + strSpace + '(' +
-                                                   (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(
-                                                       GlobalSettings.CultureInfo) + ')');
+                    intBody = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
+                    strBodyAbbrev = LanguageManager.GetString("String_VehicleBody");
                 }
                 else
                 {
-                    sbdToolTip = new StringBuilder(BOD.DisplayAbbrev + strSpace + '(' +
-                                                   BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')');
+                    intBody = BOD.TotalValue;
+                    strBodyAbbrev = BOD.DisplayAbbrev;
                 }
 
-                sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Armor"))
-                          .Append(strSpace).Append('(').Append(TotalArmorRating.ToString(GlobalSettings.CultureInfo))
-                          .Append(')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                              .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')')
+                              .Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("Tip_Armor"))
+                              .Append(strSpace).Append('(')
+                              .Append(TotalArmorRating.ToString(GlobalSettings.CultureInfo))
                               .Append(')');
 
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance)).StandardRound();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
 
-                if(intModifiers != 0)
-                {
-                    FormatImprovementModifiers(sbdToolTip,
-                        new HashSet<Improvement.ImprovementType> { Improvement.ImprovementType.DamageResistance },
-                        strSpace,
-                        intModifiers);
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DamageResistance)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            Improvement.ImprovementType.DamageResistance.Yield(),
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
                 }
-
-                return sbdToolTip.ToString();
             }
         }
         #endregion
@@ -12024,28 +12070,33 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(WIL.DisplayAbbrev + strSpace + '(' +
-                                                             WIL.TotalValue.ToString(GlobalSettings.CultureInfo) + ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType> { Improvement.ImprovementType.SpellResistance },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DirectManaSpellResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            Improvement.ImprovementType.SpellResistance.Yield(),
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
         #endregion
@@ -12081,41 +12132,52 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip;
-                if(IsAI)
+
+                int intBody;
+                string strBodyAbbrev;
+                if (IsAI)
                 {
-                    sbdToolTip = new StringBuilder(LanguageManager.GetString("String_VehicleBody") + strSpace + '(' +
-                                                   (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0).ToString(
-                                                       GlobalSettings.CultureInfo) + ')');
+                    intBody = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
+                    strBodyAbbrev = LanguageManager.GetString("String_VehicleBody");
                 }
                 else
                 {
-                    sbdToolTip = new StringBuilder(BOD.DisplayAbbrev + strSpace + '(' +
-                                                   BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')');
+                    intBody = BOD.TotalValue;
+                    strBodyAbbrev = BOD.DisplayAbbrev;
                 }
 
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DirectPhysicalSpellResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                              .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DirectPhysicalSpellResist))
+                        .StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new[]
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DirectPhysicalSpellResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
         #endregion
@@ -12134,35 +12196,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DetectionSpellResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DetectionSpellResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DetectionSpellResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
         #endregion
@@ -12182,35 +12248,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(BOD.DisplayAbbrev + strSpace + '(' +
-                                                             BOD.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DecreaseBODResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseBODResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseBODResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12229,35 +12299,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(AGI.DisplayAbbrev + strSpace + '(' +
-                                                             AGI.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DecreaseAGIResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(AGI.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(AGI.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseAGIResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseAGIResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12276,35 +12350,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(REA.DisplayAbbrev + strSpace + '(' +
-                                                             REA.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DecreaseREAResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseREAResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseREAResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12323,34 +12401,35 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(STR.DisplayAbbrev + strSpace + '(' +
-                                                             STR.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(STR.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(STR.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseSTRResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            Improvement.ImprovementType.SpellResistance.Yield(),
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12369,35 +12448,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpace + '(' +
-                                                             CHA.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DecreaseCHAResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseCHAResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseCHAResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12416,35 +12499,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(INT.DisplayAbbrev + strSpace + '(' +
-                                                             INT.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DecreaseINTResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseINTResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseINTResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12463,35 +12550,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DecreaseLOGResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseLOGResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseLOGResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12510,35 +12601,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(WIL.DisplayAbbrev + strSpace + '(' +
-                                                             WIL.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.DecreaseWILResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.DecreaseWILResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.DecreaseWILResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
         #endregion
@@ -12554,40 +12649,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(REA.DisplayAbbrev + strSpace + '(' +
-                                                             REA.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace +
-                                                             '(' + INT.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
-                                                             '(' + WoundModifier.ToString(GlobalSettings.CultureInfo) +
-                                                             ')' + strSpace + '+' + strSpace +
-                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
-                                                             '(' +
-                                                             SustainingPenalty.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise).StandardRound();
-
-                if (intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.Surprise
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
+                              .Append(strSpace).Append('(').Append(WoundModifier.ToString(GlobalSettings.CultureInfo))
+                              .Append(')').Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("Tip_Skill_Sustain")).Append(strSpace).Append('(')
+                              .Append(SustainingPenalty.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise)
+                                                         .StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            Improvement.ImprovementType.Surprise.Yield(),
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12617,27 +12711,32 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LanguageManager.GetString("Tip_Armor") + strSpace + '(' +
-                                                             (GetArmorRatingWithImprovement(
-                                                                  Improvement.ImprovementType.Armor,
-                                                                  out int intFromHighestArmorImprovements,
-                                                                  out List<Improvement> lstUsedImprovements)
-                                                              - ImprovementManager.ValueOf(this,
-                                                                  Improvement.ImprovementType.Armor).StandardRound()
-                                                              + intFromHighestArmorImprovements)
-                                                             .ToString(GlobalSettings.CultureInfo) + ')');
-                foreach (Improvement objLoopImprovement in lstUsedImprovements)
-                {
-                    if (objLoopImprovement.ImproveSource != Improvement.ImprovementSource.Armor
-                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod)
-                    {
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
-                                  .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
-                    }
-                }
+                int intArmor
+                    = GetArmorRatingWithImprovement(Improvement.ImprovementType.Armor,
+                                                    out int intFromHighestArmorImprovements,
+                                                    out List<Improvement> lstUsedImprovements)
+                      - ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor).StandardRound()
+                      + intFromHighestArmorImprovements;
 
-                return sbdToolTip.ToString();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
+                {
+                    sbdToolTip.Append(LanguageManager.GetString("Tip_Armor")).Append(strSpace).Append('(')
+                              .Append(intArmor.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    foreach (Improvement objLoopImprovement in lstUsedImprovements)
+                    {
+                        if (objLoopImprovement.ImproveSource != Improvement.ImprovementSource.Armor
+                            && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod)
+                        {
+                            sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                      .Append(GetObjectName(objLoopImprovement)).Append(strSpace).Append('(')
+                                      .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
+                                      .Append(')');
+                        }
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12812,36 +12911,40 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist))
-                    .StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.ManaIllusionResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.ManaIllusionResist))
+                        .StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.ManaIllusionResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12860,35 +12963,39 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace +
-                                                             '(' + INT.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.PhysicalIllusionResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.PhysicalIllusionResist)).StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.PhysicalIllusionResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12907,35 +13014,40 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
-                                                             '(' + WIL.TotalValue.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
-                                    + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.MentalManipulationResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
+                              .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                        + ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.MentalManipulationResist))
+                        .StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.MentalManipulationResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
 
@@ -12987,35 +13099,40 @@ namespace Chummer
                     strStrengthAbbrev = STR.DisplayAbbrev;
                 }
 
-                StringBuilder sbdToolTip = new StringBuilder(strBodyAbbrev + strSpace + '(' +
-                                                             intBody.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace + strStrengthAbbrev + strSpace +
-                                                             '(' + intStrength.ToString(GlobalSettings.CultureInfo) +
-                                                             ')');
-
-                if (CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                              .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                              .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                              .Append(')');
-
-                int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
-                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist)).StandardRound();
-
-                if(intModifiers != 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdToolTip))
                 {
-                    FormatImprovementModifiers(
-                        sbdToolTip,
-                        new HashSet<Improvement.ImprovementType>
-                        {
-                            Improvement.ImprovementType.SpellResistance,
-                            Improvement.ImprovementType.PhysicalManipulationResist
-                        },
-                        strSpace,
-                        intModifiers);
-                }
+                    sbdToolTip.Append(strBodyAbbrev).Append(strSpace).Append('(')
+                              .Append(intBody.ToString(GlobalSettings.CultureInfo)).Append(')').Append(strSpace)
+                              .Append('+').Append(strSpace).Append(strStrengthAbbrev).Append(strSpace).Append('(')
+                              .Append(intStrength.ToString(GlobalSettings.CultureInfo)).Append(')');
 
-                return sbdToolTip.ToString();
+                    if (CurrentCounterspellingDice != 0)
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
+                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
+                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
+                                  .Append(')');
+
+                    int intModifiers = (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                                        ImprovementManager.ValueOf(
+                                            this, Improvement.ImprovementType.PhysicalManipulationResist))
+                        .StandardRound();
+
+                    if (intModifiers != 0)
+                    {
+                        FormatImprovementModifiers(
+                            sbdToolTip,
+                            new []
+                            {
+                                Improvement.ImprovementType.SpellResistance,
+                                Improvement.ImprovementType.PhysicalManipulationResist
+                            },
+                            strSpace,
+                            intModifiers);
+                    }
+
+                    return sbdToolTip.ToString();
+                }
             }
         }
         #endregion
@@ -15136,7 +15253,7 @@ namespace Chummer
                                         objImprovement.SourceName == objXmlQuality.InnerText && objImprovement.Enabled)
                                     {
                                         strForceValue = objImprovement.ImprovedName;
-                                        _lstImprovements.Remove(objImprovement);
+                                        Improvements.Remove(objImprovement);
                                         break;
                                     }
                                 }
@@ -15145,7 +15262,7 @@ namespace Chummer
                             // Convert the item to the new Quality class.
                             Quality objQuality = new Quality(this);
                             objQuality.Create(objXmlQualityNode, QualitySource.Selected, _lstWeapons, strForceValue);
-                            _lstQualities.Add(objQuality);
+                            Qualities.Add(objQuality);
                         }
                     }
                 }
@@ -15188,7 +15305,7 @@ namespace Chummer
                                             "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                     objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                         strForceValue);
-                                    _lstQualities.Add(objQuality);
+                                    Qualities.Add(objQuality);
                                 }
                             }
                         }
@@ -15225,7 +15342,7 @@ namespace Chummer
                                             "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                     objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                         strForceValue);
-                                    _lstQualities.Add(objQuality);
+                                    Qualities.Add(objQuality);
                                 }
                             }
                         }
@@ -15270,7 +15387,7 @@ namespace Chummer
                                                     "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                                 strForceValue);
-                                            _lstQualities.Add(objQuality);
+                                            Qualities.Add(objQuality);
                                         }
                                     }
                                 }
@@ -15307,7 +15424,7 @@ namespace Chummer
                                                     "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                                 strForceValue);
-                                            _lstQualities.Add(objQuality);
+                                            Qualities.Add(objQuality);
                                         }
                                     }
                                 }
@@ -15786,7 +15903,7 @@ namespace Chummer
                     if(xmlOldQuality["bp"] != null && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
                         objQuality.BP = intOldBP / intRanks;
 
-                    _lstQualities.Add(objQuality);
+                    Qualities.Add(objQuality);
                 }
 
                 return true;
@@ -16122,11 +16239,9 @@ namespace Chummer
                     int intOldDEPCareerMinimumReduction = 0;
                     int intOldMAGCareerMinimumReduction = 0;
                     int intOldMAGAdeptCareerMinimumReduction = 0;
-                    foreach(Improvement objImprovement in Improvements)
+                    foreach(Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Attribute))
                     {
-                        if(objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss
-                           && objImprovement.ImproveType == Improvement.ImprovementType.Attribute
-                           && objImprovement.Enabled)
+                        if(objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss)
                         {
                             // Values get subtracted because negative modifier = positive reduction, positive modifier = negative reduction
                             // Augmented values also get factored in in case the character is switching off the option to treat essence loss as an augmented malus

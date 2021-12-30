@@ -2314,7 +2314,6 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdOutdatedItems))
                 {
-
                     // Record the status of any flags that normally trigger character events.
                     bool blnMAGEnabled = CharacterObject.MAGEnabled;
                     bool blnRESEnabled = CharacterObject.RESEnabled;
