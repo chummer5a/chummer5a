@@ -64,8 +64,10 @@ namespace Chummer.Backend.Skills
         private void RecacheAttribute()
         {
             string strAttributeString = DefaultAttribute;
-            Improvement objImprovementOverride = CharacterObject.Improvements.FirstOrDefault(x =>
-                x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && x.Target == DictionaryKey && x.Enabled);
+            Improvement objImprovementOverride = ImprovementManager
+                                                 .GetCachedImprovementListForValueOf(
+                                                     CharacterObject, Improvement.ImprovementType.SwapSkillAttribute)
+                                                 .Find(x => x.Target == DictionaryKey);
             if (objImprovementOverride != null)
                 strAttributeString = objImprovementOverride.ImprovedName;
             CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
@@ -1816,12 +1818,14 @@ namespace Chummer.Backend.Skills
                 decimal decSpecCostMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
-                    if (objLoopImprovement.Minimum > intTotalBaseRating ||
-                        (!string.IsNullOrEmpty(objLoopImprovement.Condition) &&
-                         (objLoopImprovement.Condition == "career") != CharacterObject.Created &&
-                         (objLoopImprovement.Condition == "create") == CharacterObject.Created) ||
-                        !objLoopImprovement.Enabled) continue;
-                    if (objLoopImprovement.ImprovedName != SkillCategory) continue;
+                    if (objLoopImprovement.Minimum > intTotalBaseRating
+                        || (!string.IsNullOrEmpty(objLoopImprovement.Condition)
+                            && (objLoopImprovement.Condition == "career") != CharacterObject.Created
+                            && (objLoopImprovement.Condition == "create") == CharacterObject.Created)
+                        || !objLoopImprovement.Enabled)
+                        continue;
+                    if (objLoopImprovement.ImprovedName != SkillCategory)
+                        continue;
                     switch (objLoopImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
@@ -1967,13 +1971,10 @@ namespace Chummer.Backend.Skills
             SkillSpecialization objTargetSpecialization = default;
             if (string.IsNullOrEmpty(strSpecialization))
             {
-                if (CharacterObject.Improvements.All(x =>
-                                                         x.ImproveType
-                                                         != Improvement.ImprovementType
-                                                                       .DisableSpecializationEffects
-                                                         || x.ImprovedName != DictionaryKey
-                                                         || !string.IsNullOrEmpty(x.Condition)
-                                                         || !x.Enabled))
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(CharacterObject,
+                                                        Improvement.ImprovementType.DisableSpecializationEffects,
+                                                        DictionaryKey).Count == 0)
                     objTargetSpecialization = Specializations.FirstOrDefault();
             }
             else
@@ -2027,12 +2028,9 @@ namespace Chummer.Backend.Skills
                 //TODO: method is here, but not used in any form, needs testing (worried about child items...)
                 //this might do hardwires if i understand how they works correctly
                 int intMaxHardwire = -1;
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.Hardwire, DictionaryKey))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.Enabled && objImprovement.ImprovedName == DictionaryKey)
-                    {
-                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                    }
+                    intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                 }
                 if (intMaxHardwire >= 0)
                 {
@@ -2047,12 +2045,12 @@ namespace Chummer.Backend.Skills
                 {
                     int intMax = 0;
                     //TODO this works with translate?
-                    foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
+                    foreach (Improvement objSkillsoftImprovement in ImprovementManager
+                                 .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                     Improvement.ImprovementType.Activesoft,
+                                                                     DictionaryKey))
                     {
-                        if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Activesoft && objSkillsoftImprovement.Enabled && objSkillsoftImprovement.ImprovedName == DictionaryKey)
-                        {
-                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                        }
+                        intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
                     }
                     return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
                 }

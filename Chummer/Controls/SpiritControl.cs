@@ -327,10 +327,10 @@ namespace Chummer
                     : "streams.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
-            foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                         _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
             {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && objImprovement.Enabled)
-                    lstLimitCategories.Add(objImprovement.ImprovedName);
+                lstLimitCategories.Add(objImprovement.ImprovedName);
             }
 
             List<ListItem> lstCritters = new List<ListItem>(30);
@@ -413,18 +413,38 @@ namespace Chummer
                 }
             }
 
-            if (_objSpirit.CharacterObject.MAGEnabled || _objSpirit.CharacterObject.RESEnabled)
+            // Add any additional Spirits and Sprites the character has Access to through improvements.
+
+            if (_objSpirit.CharacterObject.MAGEnabled)
             {
-                // Add any additional Spirits and Sprites the character has Access to through improvements.
-                foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit))
                 {
-                    if (((objImprovement.ImproveType == Improvement.ImprovementType.AddSpirit && _objSpirit.CharacterObject.MAGEnabled)
-                         || (objImprovement.ImproveType == Improvement.ImprovementType.AddSprite && _objSpirit.CharacterObject.RESEnabled))
-                        && !string.IsNullOrEmpty(objImprovement.ImprovedName) && objImprovement.Enabled)
+                    string strImprovedName = objImprovement.ImprovedName;
+                    if (!string.IsNullOrEmpty(strImprovedName))
                     {
-                        lstCritters.Add(new ListItem(objImprovement.ImprovedName,
-                            objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + objImprovement.ImprovedName.CleanXPath() + "]/translate")?.Value
-                            ?? objImprovement.ImprovedName));
+                        lstCritters.Add(new ListItem(strImprovedName,
+                                                     objXmlDocument
+                                                         .SelectSingleNode(
+                                                             "/chummer/spirits/spirit[name = "
+                                                             + strImprovedName.CleanXPath() + "]/translate")?.Value
+                                                     ?? strImprovedName));
+                    }
+                }
+            }
+
+            if (_objSpirit.CharacterObject.RESEnabled)
+            {
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite))
+                {
+                    string strImprovedName = objImprovement.ImprovedName;
+                    if (!string.IsNullOrEmpty(strImprovedName))
+                    {
+                        lstCritters.Add(new ListItem(strImprovedName,
+                                                     objXmlDocument
+                                                         .SelectSingleNode(
+                                                             "/chummer/spirits/spirit[name = "
+                                                             + strImprovedName.CleanXPath() + "]/translate")?.Value
+                                                     ?? strImprovedName));
                     }
                 }
             }

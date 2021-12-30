@@ -213,14 +213,16 @@ namespace Chummer.Backend.Skills
 
                 string strTranslatedName = CurrentDisplayName;
                 int intMaxHardwire = -1;
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager
+                                                       .GetCachedImprovementListForValueOf(
+                                                           CharacterObject, Improvement.ImprovementType.Hardwire,
+                                                           DictionaryKey)
+                                                       .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                                   CharacterObject,
+                                                                   Improvement.ImprovementType.Hardwire,
+                                                                   strTranslatedName)))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
-                        (objImprovement.ImprovedName == DictionaryKey ||
-                         objImprovement.ImprovedName == strTranslatedName) && objImprovement.Enabled)
-                    {
-                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                    }
+                    intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                 }
                 if (intMaxHardwire >= 0)
                 {
@@ -231,13 +233,10 @@ namespace Chummer.Backend.Skills
                 if (intMaxSkillsoftRating <= 0)
                     return _intCachedCyberwareRating = 0;
                 int intMax = 0;
-                foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
+                foreach (Improvement objSkillsoftImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                             CharacterObject, Improvement.ImprovementType.Skillsoft, InternalId))
                 {
-                    if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
-                        objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                    {
-                        intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                    }
+                    intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
                 }
 
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);

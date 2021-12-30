@@ -1945,39 +1945,51 @@ namespace Chummer.Backend.Equipment
                 switch (strAttributeName)
                 {
                     case "Device Rating":
-                        strExtraExpression = string.Concat(CharacterObject.Improvements
-                            .Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaDeviceRating &&
-                                        x.Enabled).Select(x => x.ImprovedName));
+                        strExtraExpression
+                            = string.Concat(ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                CharacterObject, Improvement.ImprovementType.LivingPersonaDeviceRating)
+                                            .Select(x => x.ImprovedName));
                         break;
 
                     case "Program Limit":
-                        strExtraExpression = string.Concat(CharacterObject.Improvements
-                            .Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaProgramLimit &&
-                                        x.Enabled).Select(x => x.ImprovedName));
+                        strExtraExpression
+                            = string.Concat(ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                CharacterObject, Improvement.ImprovementType.LivingPersonaProgramLimit)
+                                            .Select(x => x.ImprovedName));
                         break;
 
                     case "Attack":
-                        strExtraExpression = string.Concat(CharacterObject.Improvements
-                            .Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaAttack && x.Enabled)
-                            .Select(x => x.ImprovedName));
+                        strExtraExpression
+                            = string.Concat(ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                CharacterObject, Improvement.ImprovementType.LivingPersonaAttack)
+                                            .Select(x => x.ImprovedName));
                         break;
 
                     case "Sleaze":
-                        strExtraExpression = string.Concat(CharacterObject.Improvements
-                            .Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaSleaze && x.Enabled)
-                            .Select(x => x.ImprovedName));
+                        strExtraExpression
+                            = string.Concat(ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                CharacterObject, Improvement.ImprovementType.LivingPersonaSleaze)
+                                            .Select(x => x.ImprovedName));
                         break;
 
                     case "Data Processing":
-                        strExtraExpression = string.Concat(CharacterObject.Improvements
-                            .Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaDataProcessing &&
-                                        x.Enabled).Select(x => x.ImprovedName));
+                        strExtraExpression
+                            = string.Concat(ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                CharacterObject, Improvement.ImprovementType.LivingPersonaDataProcessing)
+                                            .Select(x => x.ImprovedName));
                         break;
 
                     case "Firewall":
-                        strExtraExpression = string.Concat(CharacterObject.Improvements
-                            .Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaFirewall && x.Enabled)
-                            .Select(x => x.ImprovedName));
+                        strExtraExpression
+                            = string.Concat(ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                CharacterObject, Improvement.ImprovementType.LivingPersonaFirewall)
+                                            .Select(x => x.ImprovedName));
                         break;
                 }
 
@@ -3007,9 +3019,11 @@ namespace Chummer.Backend.Equipment
                 int intReturn = BonusMatrixBoxes;
                 if (Name == "Living Persona")
                 {
-                    string strExpression = string.Concat(CharacterObject.Improvements
-                        .Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaMatrixCM && x.Enabled)
-                        .Select(x => x.ImprovedName));
+                    string strExpression
+                        = string.Concat(ImprovementManager
+                                        .GetCachedImprovementListForValueOf(
+                                            CharacterObject, Improvement.ImprovementType.LivingPersonaMatrixCM)
+                                        .Select(x => x.ImprovedName));
                     intReturn += string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
                 }
 

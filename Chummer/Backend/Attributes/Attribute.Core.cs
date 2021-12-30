@@ -224,11 +224,9 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeMin;
-                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
-                if (objImprovement != null)
-                {
-                    intReturn = objImprovement.Minimum;
-                }
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                             _objCharacter, Improvement.ImprovementType.ReplaceAttribute, Abbrev))
+                    intReturn = Math.Max(intReturn, objImprovement.Minimum);
                 return intReturn;
             }
             set
@@ -252,11 +250,9 @@ namespace Chummer.Backend.Attributes
                     return _objCharacter.DEP.TotalValue;
 
                 int intReturn = _intMetatypeMax;
-                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
-                if (objImprovement != null)
-                {
-                    intReturn = objImprovement.Maximum;
-                }
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                             _objCharacter, Improvement.ImprovementType.ReplaceAttribute, Abbrev))
+                    intReturn = Math.Min(intReturn, objImprovement.Maximum);
 
                 if (Abbrev == "ESS")
                 {
@@ -282,12 +278,9 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeAugMax;
-                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
-                if (objImprovement != null)
-                {
-                    intReturn = objImprovement.AugmentedMaximum;
-                }
-
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                             _objCharacter, Improvement.ImprovementType.ReplaceAttribute, Abbrev))
+                    intReturn = Math.Min(intReturn, objImprovement.AugmentedMaximum);
                 return intReturn;
             }
             set
@@ -369,22 +362,24 @@ namespace Chummer.Backend.Attributes
             int intRawMaximum = MetatypeMaximum;
             int intMinimumLossFromEssence = 0;
             int intMaximumLossFromEssence = 0;
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
+            foreach (Improvement objImprovement in ImprovementManager
+                                                   .GetCachedImprovementListForValueOf(
+                                                       _objCharacter, Improvement.ImprovementType.Attribute, Abbrev)
+                                                   .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                               _objCharacter, Improvement.ImprovementType.Attribute,
+                                                               Abbrev + "Base")))
             {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
+                if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon)
                 {
-                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
-                        && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
-                        && objImprovement.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon)
-                    {
-                        intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
-                        intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
-                    }
-                    else
-                    {
-                        intMinimumLossFromEssence += objImprovement.Minimum * objImprovement.Rating;
-                        intMaximumLossFromEssence += objImprovement.Maximum * objImprovement.Rating;
-                    }
+                    intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
+                    intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
+                }
+                else
+                {
+                    intMinimumLossFromEssence += objImprovement.Minimum * objImprovement.Rating;
+                    intMaximumLossFromEssence += objImprovement.Maximum * objImprovement.Rating;
                 }
             }
 
@@ -429,20 +424,33 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager
+                                                       .GetCachedImprovementListForValueOf(
+                                                           _objCharacter, Improvement.ImprovementType.Attribute, Abbrev))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
-                    {
-                        if (objImprovement.Augmented != 0)
-                            return true;
-                        if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
-                             objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
-                             objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
-                            (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
-                             _objCharacter.RESEnabled && Abbrev == "RES" ||
-                             _objCharacter.DEPEnabled && Abbrev == "DEP"))
-                            return true;
-                    }
+                    if (objImprovement.Augmented != 0)
+                        return true;
+                    if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                         objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                         objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
+                        (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                         _objCharacter.RESEnabled && Abbrev == "RES" ||
+                         _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                        return true;
+                }
+                foreach (Improvement objImprovement in ImprovementManager
+                                                       .GetCachedImprovementListForValueOf(
+                                                           _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base"))
+                {
+                    if (objImprovement.Augmented != 0)
+                        return true;
+                    if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                         objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                         objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
+                        (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                         _objCharacter.RESEnabled && Abbrev == "RES" ||
+                         _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                        return true;
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
@@ -467,13 +475,14 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intModifier = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager
+                                                       .GetCachedImprovementListForValueOf(
+                                                           _objCharacter, Improvement.ImprovementType.Attribute, Abbrev)
+                                                       .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                                   _objCharacter, Improvement.ImprovementType.Attribute,
+                                                                   Abbrev + "Base")))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                        (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
-                    {
-                        intModifier += objImprovement.Minimum * objImprovement.Rating;
-                    }
+                    intModifier += objImprovement.Minimum * objImprovement.Rating;
                 }
                 return intModifier;
             }
@@ -487,13 +496,14 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intModifier = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager
+                                                       .GetCachedImprovementListForValueOf(
+                                                           _objCharacter, Improvement.ImprovementType.Attribute, Abbrev)
+                                                       .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                                   _objCharacter, Improvement.ImprovementType.Attribute,
+                                                                   Abbrev + "Base")))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                        (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
-                    {
-                        intModifier += objImprovement.Maximum * objImprovement.Rating;
-                    }
+                    intModifier += objImprovement.Maximum * objImprovement.Rating;
                 }
                 return intModifier;
             }
@@ -507,12 +517,10 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intModifier = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == Abbrev && objImprovement.Enabled)
-                    {
-                        intModifier += objImprovement.AugmentedMaximum * objImprovement.Rating;
-                    }
+                    intModifier += objImprovement.AugmentedMaximum * objImprovement.Rating;
                 }
                 return intModifier;
             }

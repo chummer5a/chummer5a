@@ -627,14 +627,8 @@ namespace Chummer
                     }
 
                     // Include any Improvements to the Spell Category.
-                    foreach (Improvement objImprovement in _objCharacter.Improvements
-                                                                        .Where(objImprovement =>
-                                                                                   objImprovement.ImproveType
-                                                                                   == Improvement.ImprovementType
-                                                                                       .ActionDicePool
-                                                                                   && objImprovement.Enabled
-                                                                                   && objImprovement.ImprovedName
-                                                                                   == "Threading"))
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 _objCharacter, Improvement.ImprovementType.ActionDicePool, "Threading"))
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(strSpace).Append('+').Append(strSpace);

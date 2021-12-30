@@ -1613,8 +1613,11 @@ namespace Chummer
                         if (!CharacterObject.AddBiowareEnabled)
                         {
                             string strBiowareDisabledSource = string.Empty;
-                            Improvement objDisablingImprovement = CharacterObject.Improvements.FirstOrDefault(x =>
-                                x.ImproveType == Improvement.ImprovementType.DisableBioware && x.Enabled);
+                            Improvement objDisablingImprovement = ImprovementManager
+                                                                  .GetCachedImprovementListForValueOf(
+                                                                      CharacterObject,
+                                                                      Improvement.ImprovementType.DisableBioware)
+                                                                  .FirstOrDefault();
                             if (objDisablingImprovement != null)
                             {
                                 strBiowareDisabledSource =
@@ -1669,8 +1672,11 @@ namespace Chummer
                         if (!CharacterObject.AddCyberwareEnabled)
                         {
                             string strCyberwareDisabledSource = string.Empty;
-                            Improvement objDisablingImprovement = CharacterObject.Improvements.FirstOrDefault(x =>
-                                x.ImproveType == Improvement.ImprovementType.DisableCyberware && x.Enabled);
+                            Improvement objDisablingImprovement = ImprovementManager
+                                                                  .GetCachedImprovementListForValueOf(
+                                                                      CharacterObject,
+                                                                      Improvement.ImprovementType.DisableCyberware)
+                                                                  .FirstOrDefault();
                             if (objDisablingImprovement != null)
                             {
                                 strCyberwareDisabledSource =
@@ -1725,9 +1731,12 @@ namespace Chummer
                         if (CharacterObject.CyberwareDisabled)
                         {
                             string strDisabledSource = string.Empty;
-                            Improvement objDisablingImprovement = CharacterObject.Improvements.FirstOrDefault(x =>
-                                x.ImproveType == Improvement.ImprovementType.SpecialTab && x.ImprovedName == "Cyberware" &&
-                                x.UniqueName == "disabletab" && x.Enabled);
+                            Improvement objDisablingImprovement = ImprovementManager
+                                                                  .GetCachedImprovementListForValueOf(
+                                                                      CharacterObject,
+                                                                      Improvement.ImprovementType.SpecialTab,
+                                                                      "Cyberware")
+                                                                  .FirstOrDefault(x => x.UniqueName == "disabletab");
                             if (objDisablingImprovement != null)
                             {
                                 strDisabledSource = LanguageManager.GetString("String_Space") +
@@ -1773,8 +1782,11 @@ namespace Chummer
                         {
                             bool blnDoRefresh = false;
                             string strExConString = string.Empty;
-                            Improvement objExConImprovement = CharacterObject.Improvements.FirstOrDefault(x =>
-                                x.ImproveType == Improvement.ImprovementType.ExCon && x.Enabled);
+                            Improvement objExConImprovement = ImprovementManager
+                                                              .GetCachedImprovementListForValueOf(
+                                                                  CharacterObject,
+                                                                  Improvement.ImprovementType.ExCon)
+                                                              .FirstOrDefault();
                             if (objExConImprovement != null)
                             {
                                 strExConString = LanguageManager.GetString("String_Space") + '(' +
@@ -14863,54 +14875,63 @@ namespace Chummer
         {
             using (frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware))
             {
+                List<Improvement> lstUsedImprovements;
                 decimal decMultiplier = 1.0m;
                 switch (objSource)
                 {
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Cyberware:
-                        {
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareEssCost) != 0)
+                    {
+                        lstUsedImprovements
+                            = ImprovementManager.GetCachedImprovementListForValueOf(
+                                CharacterObject, Improvement.ImprovementType.CyberwareEssCost);
+                            if (lstUsedImprovements.Count != 0)
                             {
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
-                                        decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    decMultiplier -= 1 - objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplier);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplier && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    decMultiplier -= 1 - objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
@@ -14921,94 +14942,108 @@ namespace Chummer
                     // Apply the character's Bioware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Bioware:
                         {
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareEssCost) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareEssCost);
+                            if (lstUsedImprovements.Count != 0)
                             {
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCost && objImprovement.Enabled)
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplier) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplier);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplier && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareEssCostNonRetroactive) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier -= 1 - objImprovement.Value / 100;
+                                    decMultiplier -= 1 - objImprovement.Value / 100;
                                 }
 
                                 frmPickCyberware.CharacterESSMultiplier = decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                                foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
-                                    if (objImprovement.ImproveType == Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive && objImprovement.Enabled)
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
                                 frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
+                            }
+
+                            // Apply the character's Basic Bioware Essence cost multiplier if applicable.
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.BasicBiowareEssCost);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                decMultiplier = 1.0m;
+                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                {
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                }
+
+                                frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
+                            }
+
+                            // Genetech Cost multiplier.
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.GenetechCostMultiplier);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                decMultiplier = 1.0m;
+                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                {
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                }
+
+                                frmPickCyberware.GenetechCostMultiplier = decMultiplier;
+                            }
+
+                            // Apply the character's Genetech Essence cost multiplier if applicable.
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                    CharacterObject, Improvement.ImprovementType.GenetechEssMultiplier);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                decMultiplier = 1.0m;
+                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                {
+                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                }
+
+                                frmPickCyberware.GenetechEssMultiplier = decMultiplier;
                             }
 
                             break;
                         }
-                }
-
-                // Apply the character's Basic Bioware Essence cost multiplier if applicable.
-                if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.BasicBiowareEssCost) != 0 && objSource == Improvement.ImprovementSource.Bioware)
-                {
-                    decMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.BasicBiowareEssCost && objImprovement.Enabled)
-                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                    }
-
-                    frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
-                }
-
-                // Genetech Cost multiplier.
-                if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.GenetechCostMultiplier) != 0 && objSource == Improvement.ImprovementSource.Bioware)
-                {
-                    decMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.GenetechCostMultiplier && objImprovement.Enabled)
-                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                    }
-
-                    frmPickCyberware.GenetechCostMultiplier = decMultiplier;
-                }
-
-                // Apply the character's Genetech Essence cost multiplier if applicable.
-                if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.GenetechEssMultiplier) != 0 && objSource == Improvement.ImprovementSource.Bioware)
-                {
-                    decMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in CharacterObject.Improvements
-                        .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.GenetechEssMultiplier && objImprovement.Enabled))
-                    {
-                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                    }
-
-                    frmPickCyberware.GenetechEssMultiplier = decMultiplier;
                 }
 
                 Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>();

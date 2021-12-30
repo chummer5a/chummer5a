@@ -3595,21 +3595,13 @@ namespace Chummer.Backend.Equipment
                 if (RangeType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
-                    decReach += _objCharacter.Improvements
-                        .Where(objImprovement =>
-                            objImprovement.ImproveType == Improvement.ImprovementType.Reach &&
-                            (objImprovement.ImprovedName == Name || string.IsNullOrEmpty(objImprovement.ImprovedName)) &&
-                            objImprovement.Enabled)
-                        .Sum(objImprovement => objImprovement.Value);
+                    decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Reach, strImprovedName: Name, blnIncludeNonImproved: true);
                 }
 
                 if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
                     _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                 {
-                    decReach += _objCharacter.Improvements
-                        .Where(objImprovement =>
-                            objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach &&
-                            objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
+                    decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedReach);
                 }
 
                 return decReach.StandardRound();
@@ -3677,17 +3669,14 @@ namespace Chummer.Backend.Equipment
                 string strNameUpper = Name.ToUpperInvariant();
 
                 decimal decImproveAccuracy = 0;
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponAccuracy))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponAccuracy && objImprovement.Enabled)
+                    string strImprovedName = objImprovement.ImprovedName;
+                    if (string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name
+                                                              || strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
+                                                              && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase))
                     {
-                        string strImprovedName = objImprovement.ImprovedName;
-                        if (string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name
-                            || strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
-                            && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            decImproveAccuracy += objImprovement.Value;
-                        }
+                        decImproveAccuracy += objImprovement.Value;
                     }
                 }
 
@@ -3971,14 +3960,18 @@ namespace Chummer.Backend.Equipment
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
 
             string strNameUpper = Name.ToUpperInvariant();
-            decimal decImproveAccuracy = (from objImprovement in _objCharacter.Improvements
-                where objImprovement.ImproveType == Improvement.ImprovementType.WeaponRangeModifier &&
-                      objImprovement.Enabled
-                let strImprovedName = objImprovement.ImprovedName
-                where string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name ||
-                      strImprovedName.StartsWith("[contains]", StringComparison.Ordinal) &&
-                      strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase)
-                select objImprovement.Value).Sum();
+            decimal decImproveAccuracy = 0;
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponRangeModifier))
+            {
+                string strImprovedName = objImprovement.ImprovedName;
+                if (string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name
+                                                          || strImprovedName.StartsWith(
+                                                              "[contains]", StringComparison.Ordinal)
+                                                          && strNameUpper.Contains(
+                                                              strImprovedName.TrimStartOnce("[contains]", true),
+                                                              StringComparison.InvariantCultureIgnoreCase))
+                    decImproveAccuracy += objImprovement.Value;
+            }
 
             i += decImproveAccuracy.StandardRound();
             i = Math.Min(0, i);
@@ -4526,21 +4519,17 @@ namespace Chummer.Backend.Equipment
                                                       decSmartlinkBonus);
                         }
 
-                        foreach (Improvement objImprovement in _objCharacter.Improvements
-                                                                            .Where(objImprovement =>
-                                                                                objImprovement.Enabled
-                                                                                && (objImprovement.ImproveType
-                                                                                    == Improvement.ImprovementType
-                                                                                        .WeaponCategoryDice &&
-                                                                                    objImprovement.ImprovedName
-                                                                                    == Category
-                                                                                    || objImprovement.ImproveType
-                                                                                    == Improvement.ImprovementType
-                                                                                        .WeaponSpecificDice &&
-                                                                                    objImprovement.ImprovedName
-                                                                                    == InternalId)
-                                                                                && string.IsNullOrEmpty(
-                                                                                    objImprovement.Condition)))
+                        foreach (Improvement objImprovement in ImprovementManager
+                                                               .GetCachedImprovementListForValueOf(
+                                                                   _objCharacter,
+                                                                   Improvement.ImprovementType.WeaponCategoryDice,
+                                                                   Category)
+                                                               .Concat(
+                                                                   ImprovementManager
+                                                                       .GetCachedImprovementListForValueOf(
+                                                                           _objCharacter,
+                                                                           Improvement.ImprovementType
+                                                                               .WeaponSpecificDice, InternalId)))
                         {
                             sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                                   strSpace, _objCharacter.GetObjectName(objImprovement),

@@ -1024,12 +1024,9 @@ namespace Chummer
                     return _intCachedForcedLoyalty;
 
                 int intMaxForcedLoyalty = 0;
-                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.ContactForcedLoyalty, UniqueId))
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == UniqueId && objImprovement.Enabled)
-                    {
-                        intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value.StandardRound());
-                    }
+                    intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value.StandardRound());
                 }
 
                 return _intCachedForcedLoyalty = intMaxForcedLoyalty;

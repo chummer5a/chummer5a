@@ -286,13 +286,10 @@ namespace Chummer
         {
             get
             {
-                return Rating + _objCharacter.Improvements
-                                             .Where(objImprovement =>
-                                                        objImprovement.ImprovedName == Name
-                                                        && objImprovement.ImproveType
-                                                        == Improvement.ImprovementType.CritterPowerLevel
-                                                        && objImprovement.Enabled)
-                                             .Sum(objImprovement => objImprovement.Rating);
+                return Rating + ImprovementManager
+                                .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                    Improvement.ImprovementType.CritterPowerLevel, Name)
+                                .Sum(objImprovement => objImprovement.Rating);
             }
         }
 

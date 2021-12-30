@@ -15247,7 +15247,7 @@ namespace Chummer
                             if (objXmlQualityNode.InnerXml.Contains("<bonus>"))
                             {
                                 // Look for the existing Improvement.
-                                foreach(Improvement objImprovement in _lstImprovements)
+                                foreach(Improvement objImprovement in Improvements)
                                 {
                                     if(objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
                                         objImprovement.SourceName == objXmlQuality.InnerText && objImprovement.Enabled)
