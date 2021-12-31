@@ -3556,7 +3556,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(xmlBonusNode));
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            string strSelectedSkill;
+            string strSelectedSkill = string.Empty;
             blnIsKnowledgeSkill = blnIsKnowledgeSkill || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerText == bool.TrueString;
             if (blnIsKnowledgeSkill)
             {
@@ -3727,85 +3727,97 @@ namespace Chummer
 
                 lstDropdownItems.Sort(CompareListItems.CompareNames);
 
-                using (frmSelectItem frmPickSkill = new frmSelectItem
+                DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
                 {
-                    Description = LanguageManager.GetString("Title_SelectSkill"),
-                    AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                })
-                {
-                    if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
-                        frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
-                    else
-                        frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
-
-                    frmPickSkill.ShowDialog(Program.MainForm);
-
-                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                    using (frmSelectItem frmPickSkill = new frmSelectItem
+                           {
+                               Description = LanguageManager.GetString("Title_SelectSkill"),
+                               AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
+                           })
                     {
-                        throw new AbortedException();
-                    }
+                        if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
+                            frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
+                        else
+                            frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
 
-                    strSelectedSkill = frmPickSkill.SelectedItem;
-                }
+                        frmPickSkill.ShowDialog(Program.MainForm);
+
+                        if (frmPickSkill.DialogResult != DialogResult.Cancel)
+                        {
+                            strSelectedSkill = frmPickSkill.SelectedItem;
+                        }
+
+                        return frmPickSkill.DialogResult;
+                    }
+                });
+                if (eResult == DialogResult.Cancel)
+                    throw new AbortedException();
             }
             else
             {
-                // Display the Select Skill window and record which Skill was selected.
-                using (frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
+                DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
                 {
-                    Description = !string.IsNullOrEmpty(strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectSkill")
-                })
-                {
-                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                        frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                        frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-
-                    XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
-                    if (xmlSkillCategories != null)
-                        frmPickSkill.LimitToCategories = xmlSkillCategories;
-                    string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.OnlyCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.OnlySkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.ExcludeCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.ExcludeSkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.LimitToSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.ExcludeSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.LinkedAttribute = strTemp;
-
-                    if (!string.IsNullOrEmpty(ForcedValue))
+                    // Display the Select Skill window and record which Skill was selected.
+                    using (frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
+                           {
+                               Description = !string.IsNullOrEmpty(strFriendlyName)
+                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
+                                                   strFriendlyName)
+                                   : LanguageManager.GetString("String_Improvement_SelectSkill")
+                           })
                     {
-                        frmPickSkill.OnlySkill = ForcedValue;
-                        frmPickSkill.Opacity = 0;
+                        string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                        if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                            frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                        string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                        if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                            frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+
+                        XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                        if (xmlSkillCategories != null)
+                            frmPickSkill.LimitToCategories = xmlSkillCategories;
+                        string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.OnlyCategory = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.OnlySkillGroup = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.ExcludeCategory = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.ExcludeSkillGroup = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.LimitToSkill = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.ExcludeSkill = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.LinkedAttribute = strTemp;
+
+                        if (!string.IsNullOrEmpty(ForcedValue))
+                        {
+                            frmPickSkill.OnlySkill = ForcedValue;
+                            frmPickSkill.Opacity = 0;
+                        }
+
+                        frmPickSkill.ShowDialog(Program.MainForm);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickSkill.DialogResult != DialogResult.Cancel)
+                        {
+                            strSelectedSkill = frmPickSkill.SelectedSkill;
+                        }
+
+                        return frmPickSkill.DialogResult;
                     }
-
-                    frmPickSkill.ShowDialog(Program.MainForm);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
-                    {
-                        throw new AbortedException();
-                    }
-
-                    strSelectedSkill = frmPickSkill.SelectedSkill;
-                }
+                });
+                if (eResult == DialogResult.Cancel)
+                    throw new AbortedException();
             }
 
             return strSelectedSkill;
@@ -3882,97 +3894,114 @@ namespace Chummer
                     }
                     else if (nodBonus["selecttext"].Attributes.Count == 0)
                     {
-                        // Display the Select Text window and record the value that was entered.
-                        using (frmSelectText frmPickText = new frmSelectText
+                        DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
                         {
-                            Description =
-                                string.Format(GlobalSettings.CultureInfo,
-                                    LanguageManager.GetString("String_Improvement_SelectText"),
-                                    strFriendlyName)
-                        })
-                        {
-                            frmPickText.ShowDialog(Program.MainForm);
-
-                            // Make sure the dialogue window was not canceled.
-                            if (frmPickText.DialogResult == DialogResult.Cancel)
+                            // Display the Select Text window and record the value that was entered.
+                            using (frmSelectText frmPickText = new frmSelectText
+                                   {
+                                       Description =
+                                           string.Format(GlobalSettings.CultureInfo,
+                                                         LanguageManager.GetString("String_Improvement_SelectText"),
+                                                         strFriendlyName)
+                                   })
                             {
-                                Rollback(objCharacter);
-                                ForcedValue = string.Empty;
-                                LimitSelection = string.Empty;
-                                Log.Debug("CreateImprovements exit");
-                                return false;
-                            }
+                                frmPickText.ShowDialog(Program.MainForm);
 
-                            _strSelectedValue = frmPickText.SelectedValue;
+                                // Make sure the dialogue window was not canceled.
+                                if (frmPickText.DialogResult != DialogResult.Cancel)
+                                {
+                                    _strSelectedValue = frmPickText.SelectedValue;
+                                }
+
+                                return frmPickText.DialogResult;
+                            }
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            Rollback(objCharacter);
+                            ForcedValue = string.Empty;
+                            LimitSelection = string.Empty;
+                            Log.Debug("CreateImprovements exit");
+                            return false;
                         }
                     }
                     else if (objCharacter != null)
                     {
-                        using (frmSelectItem frmSelect = new frmSelectItem
+                        DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
                         {
-                            Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
-                        })
-                        {
-                            string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
-                            if (string.IsNullOrEmpty(strXPath))
+                            using (frmSelectItem frmSelect = new frmSelectItem
+                                   {
+                                       Description = string.Format(GlobalSettings.CultureInfo,
+                                                                   LanguageManager.GetString(
+                                                                       "String_Improvement_SelectText"),
+                                                                   strFriendlyName)
+                                   })
                             {
-                                Rollback(objCharacter);
-                                ForcedValue = string.Empty;
-                                LimitSelection = string.Empty;
-                                Log.Debug("CreateImprovements exit");
-                                return false;
-                            }
-                            XPathNavigator xmlDoc = objCharacter.LoadDataXPath(nodBonus.SelectSingleNode("selecttext/@xml")?.Value);
-                            List<ListItem> lstItems = new List<ListItem>(5);
-                            foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
-                            {
-                                string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                                if (string.IsNullOrWhiteSpace(strName))
+                                string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
+                                if (string.IsNullOrEmpty(strXPath))
                                 {
-                                    // Assume that if we're not looking at something that has an XML node,
-                                    // we're looking at a direct xpath filter or something that has proper names
-                                    // like the lifemodule storybuilder macros.
-                                    lstItems.Add(new ListItem(objNode.Value, objNode.Value));
+                                    return DialogResult.Cancel;
+                                }
+
+                                XPathNavigator xmlDoc
+                                    = objCharacter.LoadDataXPath(nodBonus.SelectSingleNode("selecttext/@xml")?.Value);
+                                List<ListItem> lstItems = new List<ListItem>(5);
+                                foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                                {
+                                    string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                     ?? string.Empty;
+                                    if (string.IsNullOrWhiteSpace(strName))
+                                    {
+                                        // Assume that if we're not looking at something that has an XML node,
+                                        // we're looking at a direct xpath filter or something that has proper names
+                                        // like the lifemodule storybuilder macros.
+                                        lstItems.Add(new ListItem(objNode.Value, objNode.Value));
+                                    }
+                                    else
+                                    {
+                                        lstItems.Add(new ListItem(strName,
+                                                                  objNode.SelectSingleNodeAndCacheExpression(
+                                                                      "translate")?.Value ?? strName));
+                                    }
+                                }
+
+                                //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
+                                //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
+                                lstItems = new List<ListItem>(lstItems.GroupBy(o => new {o.Value, o.Name})
+                                                                      .Select(o => o.FirstOrDefault()));
+
+                                if (lstItems.Count == 0)
+                                {
+                                    return DialogResult.Cancel;
+                                }
+
+                                if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
+                                                      GlobalSettings.InvariantCultureInfo))
+                                {
+                                    frmSelect.SetDropdownItemsMode(lstItems);
                                 }
                                 else
                                 {
-                                    lstItems.Add(new ListItem(strName,
-                                        objNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    frmSelect.SetGeneralItemsMode(lstItems);
                                 }
-                            }
-                            //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
-                            //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                            lstItems = new List<ListItem>(lstItems.GroupBy(o => new { o.Value, o.Name }).Select(o => o.FirstOrDefault()));
 
-                            if (lstItems.Count == 0)
-                            {
-                                Rollback(objCharacter);
-                                ForcedValue = string.Empty;
-                                LimitSelection = string.Empty;
-                                Log.Debug("CreateImprovements exit");
-                                return false;
-                            }
+                                frmSelect.ShowDialog(Program.MainForm);
 
-                            if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value, GlobalSettings.InvariantCultureInfo))
-                            {
-                                frmSelect.SetDropdownItemsMode(lstItems);
-                            }
-                            else
-                            {
-                                frmSelect.SetGeneralItemsMode(lstItems);
-                            }
+                                if (frmSelect.DialogResult != DialogResult.Cancel)
+                                {
+                                    _strSelectedValue = frmSelect.SelectedItem;
+                                }
 
-                            frmSelect.ShowDialog(Program.MainForm);
-
-                            if (frmSelect.DialogResult == DialogResult.Cancel)
-                            {
-                                Rollback(objCharacter);
-                                ForcedValue = string.Empty;
-                                LimitSelection = string.Empty;
-                                Log.Debug("CreateImprovements exit");
-                                return false;
+                                return frmSelect.DialogResult;
                             }
-                            _strSelectedValue = frmSelect.SelectedItem;
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            Rollback(objCharacter);
+                            ForcedValue = string.Empty;
+                            LimitSelection = string.Empty;
+                            Log.Debug("CreateImprovements exit");
+                            return false;
                         }
                     }
                     Log.Info("_strSelectedValue = " + SelectedValue);
