@@ -739,7 +739,7 @@ namespace Chummer
             {
                 int intRating = ImprovementManager
                                 .GetCachedImprovementListForValueOf(CharacterObject,
-                                                                    Improvement.ImprovementType.AdeptPowerFreeLevels,
+                                                                    Improvement.ImprovementType.AdeptPowerFreePoints,
                                                                     Name)
                                 .Where(objImprovement => objImprovement.UniqueName == Extra)
                                 .Sum(objImprovement => objImprovement.Rating);
