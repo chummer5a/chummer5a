@@ -91,7 +91,7 @@ namespace Chummer
 
             cboSize.BeginUpdate();
             cboSize.PopulateWithListItems(lstSize);
-            cboSize.Enabled = !_objMount.IncludedInVehicle && lstSize.Count > 1;
+            cboSize.Enabled = _objMount?.IncludedInVehicle != true && lstSize.Count > 1;
             cboSize.EndUpdate();
 
             if (_objMount != null)
@@ -491,7 +491,7 @@ namespace Chummer
                 return;
             }
             // Cost.
-            if (!_objMount.IncludedInVehicle)
+            if (_objMount?.IncludedInVehicle != true)
             {
                 bool blnCanBlackMarketDiscount
                     = _setBlackMarketMaps.Contains(xmlSelectedMount.SelectSingleNode("category")?.Value);
@@ -510,7 +510,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Enabled = false;
 
             decimal decCost = 0;
-            if (!chkFreeItem.Checked && !_objMount.IncludedInVehicle)
+            if (!chkFreeItem.Checked && _objMount?.IncludedInVehicle != true)
                 xmlSelectedMount.TryGetDecFieldQuickly("cost", ref decCost);
             int intSlots = 0;
             xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
@@ -530,7 +530,7 @@ namespace Chummer
                 XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
                 if (xmlLoopNode == null)
                     continue;
-                if (!chkFreeItem.Checked && !_objMount.IncludedInVehicle)
+                if (!chkFreeItem.Checked && _objMount?.IncludedInVehicle != true)
                 {
                     decimal decLoopCost = 0;
                     if (xmlLoopNode.TryGetDecFieldQuickly("cost", ref decLoopCost))
@@ -983,7 +983,7 @@ namespace Chummer
             string strOldControl = cboControl.SelectedValue?.ToString();
             cboVisibility.BeginUpdate();
             cboVisibility.PopulateWithListItems(lstVisibility);
-            cboVisibility.Enabled = !_objMount.IncludedInVehicle && lstVisibility.Count > 1;
+            cboVisibility.Enabled = _objMount?.IncludedInVehicle != true && lstVisibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldVisibility))
                 cboVisibility.SelectedValue = strOldVisibility;
             if (cboVisibility.SelectedIndex == -1 && lstVisibility.Count > 0)
@@ -992,7 +992,7 @@ namespace Chummer
 
             cboFlexibility.BeginUpdate();
             cboFlexibility.PopulateWithListItems(lstFlexibility);
-            cboFlexibility.Enabled = !_objMount.IncludedInVehicle && lstFlexibility.Count > 1;
+            cboFlexibility.Enabled = _objMount?.IncludedInVehicle != true && lstFlexibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldFlexibility))
                 cboFlexibility.SelectedValue = strOldFlexibility;
             if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
@@ -1001,7 +1001,7 @@ namespace Chummer
 
             cboControl.BeginUpdate();
             cboControl.PopulateWithListItems(lstControl);
-            cboControl.Enabled = !_objMount.IncludedInVehicle && lstControl.Count > 1;
+            cboControl.Enabled = _objMount?.IncludedInVehicle != true && lstControl.Count > 1;
             if (!string.IsNullOrEmpty(strOldControl))
                 cboControl.SelectedValue = strOldControl;
             if (cboControl.SelectedIndex == -1 && lstControl.Count > 0)
