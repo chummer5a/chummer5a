@@ -729,7 +729,7 @@ namespace Chummer
             {
                 List<ListItem> lstMetatypeItems = new List<ListItem>();
                 foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                             "metatype[category = " + strSelectedCategory.CleanXPath() + " and ("
+                             "metatypes/metatype[category = " + strSelectedCategory.CleanXPath() + " and ("
                              + _objCharacter.Settings.BookXPath() + ")]"))
                 {
                     string strId = xmlMetatype.SelectSingleNodeAndCacheExpression("id")?.Value;
