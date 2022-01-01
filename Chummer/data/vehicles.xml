@@ -2324,13 +2324,13 @@
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
