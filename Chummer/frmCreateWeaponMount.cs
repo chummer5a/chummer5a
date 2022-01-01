@@ -298,14 +298,15 @@ namespace Chummer
                 if (!blnRequirementsMet)
                     return;
             }
-            if (_objMount == null)
+
+            if (_objMount?.IncludedInVehicle != true)
             {
-                _objMount = new WeaponMount(_objCharacter, _objVehicle);
-                _objMount.Create(xmlSelectedMount);
-            }
-            else if (!_objMount.IncludedInVehicle)
-            {
-                if (_objMount.SourceIDString != strSelectedMount)
+                if (_objMount == null)
+                {
+                    _objMount = new WeaponMount(_objCharacter, _objVehicle);
+                    _objMount.Create(xmlSelectedMount);
+                }
+                else if (_objMount.SourceIDString != strSelectedMount)
                 {
                     _objMount.Create(xmlSelectedMount);
                 }
