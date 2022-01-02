@@ -362,12 +362,24 @@ namespace Chummer.Backend.Attributes
             int intRawMaximum = MetatypeMaximum;
             int intMinimumLossFromEssence = 0;
             int intMaximumLossFromEssence = 0;
-            foreach (Improvement objImprovement in ImprovementManager
-                                                   .GetCachedImprovementListForValueOf(
-                                                       _objCharacter, Improvement.ImprovementType.Attribute, Abbrev)
-                                                   .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
-                                                               _objCharacter, Improvement.ImprovementType.Attribute,
-                                                               Abbrev + "Base")))
+            List<Improvement> lstModifiers = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon)
+                {
+                    intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
+                    intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
+                }
+                else
+                {
+                    intMinimumLossFromEssence += objImprovement.Minimum * objImprovement.Rating;
+                    intMaximumLossFromEssence += objImprovement.Maximum * objImprovement.Rating;
+                }
+            }
+            lstModifiers = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base");
+            foreach (Improvement objImprovement in lstModifiers)
             {
                 if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
                     && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
@@ -475,12 +487,13 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intModifier = 0;
-                foreach (Improvement objImprovement in ImprovementManager
-                                                       .GetCachedImprovementListForValueOf(
-                                                           _objCharacter, Improvement.ImprovementType.Attribute, Abbrev)
-                                                       .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
-                                                                   _objCharacter, Improvement.ImprovementType.Attribute,
-                                                                   Abbrev + "Base")))
+                List<Improvement> lstModifiers = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+                foreach (Improvement objImprovement in lstModifiers)
+                {
+                    intModifier += objImprovement.Minimum * objImprovement.Rating;
+                }
+                lstModifiers = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base");
+                foreach (Improvement objImprovement in lstModifiers)
                 {
                     intModifier += objImprovement.Minimum * objImprovement.Rating;
                 }
@@ -496,15 +509,17 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intModifier = 0;
-                foreach (Improvement objImprovement in ImprovementManager
-                                                       .GetCachedImprovementListForValueOf(
-                                                           _objCharacter, Improvement.ImprovementType.Attribute, Abbrev)
-                                                       .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
-                                                                   _objCharacter, Improvement.ImprovementType.Attribute,
-                                                                   Abbrev + "Base")))
+                List<Improvement> lstModifiers = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+                foreach (Improvement objImprovement in lstModifiers)
                 {
                     intModifier += objImprovement.Maximum * objImprovement.Rating;
                 }
+                lstModifiers = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base");
+                foreach (Improvement objImprovement in lstModifiers)
+                {
+                    intModifier += objImprovement.Maximum * objImprovement.Rating;
+                }
+
                 return intModifier;
             }
         }

@@ -3016,7 +3016,7 @@ namespace Chummer
                     }
 
                     // Also make sure we block off the conditionless check because we will be adding cached keys that will be used by the conditionless check
-                    if (!string.IsNullOrWhiteSpace(strImprovedName))
+                    if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
                     {
                         intLoopCount = 0;
                         while (!s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck) && intLoopCount < 1000)
@@ -3037,20 +3037,14 @@ namespace Chummer
                         ImprovementDictionaryKey objCacheKey
                             = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName);
                         if (dicCachedValuesToUse.TryGetValue(objCacheKey,
-                                                             out Tuple<decimal, List<Improvement>> tupCachedValue))
+                                                             out Tuple<decimal, List<Improvement>> tupCachedValue) && tupCachedValue.Item1 != decimal.MinValue)
                         {
-                            lstUsedImprovements = tupCachedValue.Item2; // For reduced memory usage
-                            if (tupCachedValue.Item1 != decimal.MinValue)
-                            {
-                                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
-                                s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
-                                lstUsedImprovements = lstUsedImprovements.ToList(); // To make sure we do not inadvertently alter the cached list
-                                return tupCachedValue.Item1;
-                            }
-                            lstUsedImprovements.Clear();
+                            s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
+                            s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
+                            lstUsedImprovements = tupCachedValue.Item2.ToList(); // To make sure we do not inadvertently alter the cached list
+                            return tupCachedValue.Item1;
                         }
-                        else
-                            lstUsedImprovements = new List<Improvement>();
+                        lstUsedImprovements = new List<Improvement>();
                     }
                     else
                     {
@@ -3064,6 +3058,10 @@ namespace Chummer
                             ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
                             if (objLoopKey.CharacterObject != objCharacter ||
                                 objLoopKey.ImprovementType != eImprovementType)
+                                continue;
+                            if (!string.IsNullOrWhiteSpace(strImprovedName)
+                                && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
+                                && strImprovedName != objLoopKey.ImprovementName)
                                 continue;
                             blnDoRecalculate = false;
                             decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
@@ -3080,7 +3078,6 @@ namespace Chummer
                         if (!blnDoRecalculate)
                         {
                             s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
-                            lstUsedImprovements = lstUsedImprovements.ToList(); // To make sure we do not inadvertently alter the cached list
                             return decCachedValue;
                         }
 
@@ -3107,28 +3104,40 @@ namespace Chummer
                 Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
                 Dictionary<string, List<Improvement>> dicImprovementsForValues
                     = new Dictionary<string, List<Improvement>>();
+                List<Improvement> lstImprovementsToConsider = new List<Improvement>(objCharacter.Improvements.Count);
                 foreach (Improvement objImprovement in objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled ||
-                        objImprovement.Custom ||
-                        (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))) continue;
-                    string strLoopImprovedName = objImprovement.ImprovedName;
-                    bool blnAllowed = objImprovement.ImproveType == eImprovementType &&
-                                      !((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
-                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiative
-                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiativeDiceAdd)
-                                        && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
-                                        && objCharacter.ActiveCommlink is Gear objCommlink
-                                        && objCommlink.Name == "Living Persona") &&
-                                      // Ignore items that apply to a Skill's Rating.
-                                      objImprovement.AddToRating == blnAddToRating &&
-                                      // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                                      (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName
-                                                                             || blnIncludeNonImproved
-                                                                             && string.IsNullOrWhiteSpace(
-                                                                                 strLoopImprovedName));
+                    if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
+                        continue;
+                    if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))
+                        continue;
+                    // Matrix initiative boosting gear does not help Living Personas
+                    if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
+                         || eImprovementType == Improvement.ImprovementType.MatrixInitiative
+                         || eImprovementType == Improvement.ImprovementType.MatrixInitiativeDiceAdd)
+                        && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                        && objCharacter.ActiveCommlink is Gear objCommlink
+                        && objCommlink.Name == "Living Persona")
+                        continue;
+                    // Ignore items that apply to a Skill's Rating.
+                    if (objImprovement.AddToRating != blnAddToRating)
+                        continue;
+                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                    if (!string.IsNullOrEmpty(strImprovedName))
+                    {
+                        string strLoopImprovedName = objImprovement.ImprovedName;
+                        if (strImprovedName != strLoopImprovedName && !(blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName)))
+                            continue;
+                    }
+                    lstImprovementsToConsider.Add(objImprovement);
+                }
 
-                    if (!blnAllowed) continue;
+                foreach (Improvement objImprovement in lstImprovementsToConsider)
+                {
+                    // Count custom improvements later
+                    if (objImprovement.Custom)
+                        continue;
+                    string strLoopImprovedName = objImprovement.ImprovedName;
                     string strUniqueName = objImprovement.UniqueName;
                     if (!string.IsNullOrEmpty(strUniqueName))
                     {
@@ -3292,24 +3301,11 @@ namespace Chummer
                 Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
                 Dictionary<string, List<Improvement>> dicCustomImprovementsForValues
                     = new Dictionary<string, List<Improvement>>();
-                foreach (Improvement objImprovement in objCharacter.Improvements)
+                foreach (Improvement objImprovement in lstImprovementsToConsider)
                 {
-                    if (!objImprovement.Custom || !objImprovement.Enabled ||
-                        (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))) continue;
+                    if (!objImprovement.Custom)
+                        continue;
                     string strLoopImprovedName = objImprovement.ImprovedName;
-                    bool blnAllowed = objImprovement.ImproveType == eImprovementType &&
-                                      !((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
-                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiative
-                                         || eImprovementType == Improvement.ImprovementType.MatrixInitiativeDiceAdd)
-                                        && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
-                                        && objCharacter.ActiveCommlink is Gear objCommlink
-                                        && objCommlink.Name == "Living Persona") &&
-                                      // Ignore items that apply to a Skill's Rating.
-                                      objImprovement.AddToRating == blnAddToRating &&
-                                      // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                                      (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
-
-                    if (!blnAllowed) continue;
                     string strUniqueName = objImprovement.UniqueName;
                     if (!string.IsNullOrEmpty(strUniqueName))
                     {
@@ -3453,7 +3449,6 @@ namespace Chummer
                         lstUsedImprovements.AddRange(tupNewValue.Item2);
                     }
                 }
-                lstUsedImprovements = lstUsedImprovements.ToList(); // To make sure we do not inadvertently alter the cached list
                 return decReturn;
             }
             finally
