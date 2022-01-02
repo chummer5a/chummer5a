@@ -78,7 +78,7 @@
         <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove" />
         <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove" />
-        <skillgroupdisable xpathfilter=". 'Enchanting'" amendoperation="remove" />
+        <skillgroupdisable xpathfilter=". = 'Enchanting'" amendoperation="remove" />
       </bonus>
       <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
@@ -159,7 +159,7 @@
             <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove" />
             <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove" />
             <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove" />
-            <skillgroupdisable xpathfilter=". 'Enchanting'" amendoperation="remove" />
+            <skillgroupdisable xpathfilter=". = 'Enchanting'" amendoperation="remove" />
           </bonus>
           <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
             <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
