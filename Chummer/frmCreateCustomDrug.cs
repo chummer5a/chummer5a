@@ -205,15 +205,15 @@ namespace Chummer
                             dctBlockAttributes.TryGetValue(objItem.Key, out decimal decBlockAttrValue) &&
                             decBlockAttrValue > 0)
                         {
-                            string message = LanguageManager.GetString("String_MaximumDrugBlockLevel") +
-                                             Environment.NewLine + Environment.NewLine +
-                                             objFoundationComponent.CurrentDisplayName + strColonString +
-                                             strSpaceString + objItem.Key +
-                                             objItem.Value.ToString("+#;-#;", GlobalSettings.CultureInfo) +
-                                             objNodeData.DrugComponent.CurrentDisplayName + strColonString +
-                                             strSpaceString + objItem.Key +
-                                             decBlockAttrValue.ToString("+#.#;-#.#;", GlobalSettings.CultureInfo);
-                            Program.MainForm.ShowMessageBox(this, message);
+                            string strMessage = LanguageManager.GetString("String_MaximumDrugBlockLevel") +
+                                                Environment.NewLine + Environment.NewLine +
+                                                objFoundationComponent.CurrentDisplayName + strColonString +
+                                                strSpaceString + objItem.Key +
+                                                objItem.Value.ToString("+#;-#;", GlobalSettings.CultureInfo) +
+                                                objNodeData.DrugComponent.CurrentDisplayName + strColonString +
+                                                strSpaceString + objItem.Key +
+                                                decBlockAttrValue.ToString("+#.#;-#.#;", GlobalSettings.CultureInfo);
+                            Program.MainForm.ShowMessageBox(this, strMessage);
                             return;
                         }
                     }

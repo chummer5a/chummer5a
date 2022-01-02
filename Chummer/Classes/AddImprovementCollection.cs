@@ -627,7 +627,6 @@ namespace Chummer.Classes
             string strVal = bonusNode["val"]?.InnerText;
             string strMax = bonusNode["max"]?.InnerText;
             bool blnDisableSpec = bonusNode.InnerXml.Contains("disablespecializationeffects");
-            bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
@@ -669,6 +668,7 @@ namespace Chummer.Classes
                 }
                 else
                 {
+                    bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
                     KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
                     // We've found the selected Skill.
@@ -4437,12 +4437,11 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlNode objXmlSelectedMetamagic = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = " + bonusNode.InnerText.CleanXPath() + "]");
-            string strForcedValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
-
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
                 objXmlSelectedMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName) == true)
             {
+                string strForcedValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic, strForcedValue);
                 objAddMetamagic.Grade = -1;
@@ -4541,12 +4540,12 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = _objCharacter.LoadData("echoes.xml");
             XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = " + bonusNode.InnerText.CleanXPath() + "]");
-            string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
                 objXmlSelectedEcho?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName) == true)
             {
+                string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
                 objAddEcho.Grade = -1;
@@ -5201,12 +5200,10 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("freespells");
             Log.Info("freespells = " + bonusNode.OuterXml);
-            string strSpellTypeLimit = string.Empty;
             XmlAttributeCollection objNodeAttributes = bonusNode.Attributes;
             if (objNodeAttributes != null)
             {
-                if (!string.IsNullOrWhiteSpace(objNodeAttributes["limit"]?.InnerText))
-                    strSpellTypeLimit = objNodeAttributes["limit"].InnerText;
+                string strSpellTypeLimit = objNodeAttributes["limit"]?.InnerText ?? string.Empty;
                 if (objNodeAttributes["attribute"] != null)
                 {
                     Log.Info("attribute");
@@ -6025,9 +6022,9 @@ namespace Chummer.Classes
                 }
             }
 
-            string strName = bonusNode.Attributes?["name"]?.InnerText;
             if (Enum.TryParse(final, out SkillsSection.FilterOption skills))
             {
+                string strName = bonusNode.Attributes?["name"]?.InnerText;
                 if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.HasActiveSkill(strName))
                 {
                     _objCharacter.SkillsSection.AddSkills(skills, strName);
@@ -6161,7 +6158,7 @@ namespace Chummer.Classes
                             strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
                             string strName = objXmlAddQuality.InnerText;
 
-                            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
+                            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                             if (objXmlQuality != null)
                             {
                                 string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;

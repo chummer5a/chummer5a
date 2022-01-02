@@ -31,8 +31,8 @@ namespace Chummer
     /// Provided it doesn't contain "FixedValues" the expression is evaluated
     /// at runtime as a mathematical expression, allowing stuff such as
     /// "Rating * Rating * 4", "Rating * 5 + 2" or "(Rating / 2) * 4000"
-    /// <c>Expressions are evaluated in the order of expression NOT as defined
-    /// by mathematics. That means "1 + 0 * 10" evaluates to 10</c> <i>so far</i>
+    /// Expressions are evaluated in the order of expression NOT as defined
+    /// by mathematics. That means "1 + 0 * 10" evaluates to 10 <i>so far</i>
     /// </summary>
     public sealed class ParameterAttribute
     {
