@@ -50,6 +50,7 @@ Data Changes:
 - Initiative-boosting powers and 'ware now properly disable the defense test bonus given by Lightning Reflexes.
 - Synaptic Acceleration now properly adds +1 to defense tests. Known issue: this defense test increase is not disabled if the character buys any initiative-boosting 'ware the way its initiative boost is.
 - Two of the Sea Ray Cottonmouth's built-in weapon mounts now properly have Flexible flexibility. Fixes #4656.
+- Enabling Delnar Skills Remake no longer causes Chummer to crash.
 
 Changed/New Strings:
 - String_GameplayOption
