@@ -78,6 +78,8 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnStolen;
         private readonly Character _objCharacter;
+        private Vehicle _objParent;
+        private WeaponMount _objWeaponMountParent;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -509,7 +511,19 @@ namespace Chummer.Backend.Equipment
 
         public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
-        public WeaponMount WeaponMountParent { get; set; }
+        public WeaponMount WeaponMountParent
+        {
+            get => _objWeaponMountParent;
+            set
+            {
+                if (_objWeaponMountParent == value)
+                    return;
+                _objWeaponMountParent = value;
+                Vehicle objNewParent = value?.Parent;
+                if (objNewParent != null)
+                    Parent = objNewParent;
+            }
+        }
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -806,7 +820,22 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle that the Mod is attached to.
         /// </summary>
-        public Vehicle Parent { get; set; }
+        public Vehicle Parent
+        {
+            get => _objParent;
+            set
+            {
+                if (_objParent == value)
+                    return;
+                _objParent = value;
+                if (WeaponMountParent?.Parent != value)
+                    WeaponMountParent = null;
+                foreach (Weapon objChild in Weapons)
+                    objChild.ParentVehicle = value;
+                foreach (Cyberware objCyberware in Cyberware)
+                    objCyberware.ParentVehicle = value;
+            }
+        }
 
         /// <summary>
         /// Adjust the Weapon's Ammo amount by the specified flat value.

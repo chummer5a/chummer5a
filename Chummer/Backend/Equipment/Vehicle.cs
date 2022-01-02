@@ -26,7 +26,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
@@ -2708,8 +2707,8 @@ namespace Chummer.Backend.Equipment
         public bool OverR5Capacity(string strCheckCapacity = "")
         {
             return !string.IsNullOrEmpty(strCheckCapacity) && ModCategoryStrings.Contains(strCheckCapacity)
-                ? CalcCategoryUsed(strCheckCapacity) > CalcCategoryAvail(strCheckCapacity)
-                : ModCategoryStrings.Any(strCategory => CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory));
+                ? CalcCategoryAvail(strCheckCapacity) < 0
+                : ModCategoryStrings.Any(strCategory => CalcCategoryAvail(strCategory) < 0);
         }
 
         /// <summary>
@@ -2718,30 +2717,7 @@ namespace Chummer.Backend.Equipment
         public string PowertrainModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddPowertrainModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - PowertrainModSlots + intModSlots, intTotal);
-        }
-
-        /// <summary>
-        /// Calculate remaining Powertrain slots
-        /// </summary>
-        public int PowertrainModSlots
-        {
-            get
-            {
-                int intPowertrain = _intBody + _intAddPowertrainModSlots;
-
-                foreach (VehicleMod objMod in Mods)
-                {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != "Powertrain")
-                        continue;
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = objMod.CalculatedSlots;
-                    if (intSlots > 0)
-                        intPowertrain -= intSlots;
-                }
-
-                return intPowertrain;
-            }
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Powertrain") + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2750,29 +2726,7 @@ namespace Chummer.Backend.Equipment
         public string ProtectionModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddProtectionModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - ProtectionModSlots + intModSlots, intTotal);
-        }
-
-        /// <summary>
-        /// Calculate remaining Protection slots
-        /// </summary>
-        public int ProtectionModSlots
-        {
-            get
-            {
-                int intProtection = _intBody + _intAddProtectionModSlots;
-
-                foreach (VehicleMod objMod in Mods)
-                {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != "Protection")
-                        continue;
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = objMod.CalculatedSlots;
-                    if (intSlots > 0)
-                        intProtection -= intSlots;
-                }
-                return intProtection;
-            }
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Protection") + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2781,39 +2735,7 @@ namespace Chummer.Backend.Equipment
         public string WeaponModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddWeaponModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - WeaponModSlots + intModSlots, intTotal);
-        }
-
-        /// <summary>
-        /// Calculate remaining Weapon slots
-        /// </summary>
-        public int WeaponModSlots
-        {
-            get
-            {
-                int intWeaponsmod = _intBody + _intAddWeaponModSlots;
-
-                foreach (VehicleMod objMod in Mods)
-                {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != "Weapons")
-                        continue;
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = objMod.CalculatedSlots;
-                    if (intSlots > 0)
-                        intWeaponsmod -= intSlots;
-                }
-                foreach (WeaponMount wm in WeaponMounts)
-                {
-                    if (wm.IncludedInVehicle || !wm.Equipped)
-                        continue;
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = wm.CalculatedSlots;
-                    if (intSlots > 0)
-                        intWeaponsmod -= intSlots;
-                }
-
-                return intWeaponsmod;
-            }
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Weapons") + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2822,30 +2744,7 @@ namespace Chummer.Backend.Equipment
         public string BodyModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddBodyModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - BodyModSlots + intModSlots, intTotal);
-        }
-
-        /// <summary>
-        /// Calculate remaining Bodymod slots
-        /// </summary>
-        public int BodyModSlots
-        {
-            get
-            {
-                int intBodymod = _intBody + _intAddBodyModSlots;
-
-                foreach (VehicleMod objMod in Mods)
-                {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != "Body")
-                        continue;
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = objMod.CalculatedSlots;
-                    if (intSlots > 0)
-                        intBodymod -= intSlots;
-                }
-
-                return intBodymod;
-            }
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Body") + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2854,53 +2753,7 @@ namespace Chummer.Backend.Equipment
         public string ElectromagneticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddElectromagneticModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - ElectromagneticModSlots + intModSlots, intTotal);
-        }
-
-        /// <summary>
-        /// Calculate remaining Electromagnetic slots
-        /// </summary>
-        public int ElectromagneticModSlots
-        {
-            get
-            {
-                int intElectromagnetic = _intBody + _intAddElectromagneticModSlots;
-
-                foreach (VehicleMod objMod in Mods)
-                {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != "Electromagnetic")
-                        continue;
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = objMod.CalculatedSlots;
-                    if (intSlots > 0)
-                        intElectromagnetic -= intSlots;
-                }
-
-                return intElectromagnetic;
-            }
-        }
-
-        /// <summary>
-        /// Calculate remaining Cosmetic slots
-        /// </summary>
-        public int CosmeticModSlots
-        {
-            get
-            {
-                int intCosmetic = _intBody + _intAddCosmeticModSlots;
-
-                foreach (VehicleMod objMod in Mods)
-                {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != "Cosmetic")
-                        continue;
-                    // Subtract the Modification's Slots from the Vehicle's base Body.
-                    int intSlots = objMod.CalculatedSlots;
-                    if (intSlots > 0)
-                        intCosmetic -= intSlots;
-                }
-
-                return intCosmetic;
-            }
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Electromagnetic") + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -2909,7 +2762,7 @@ namespace Chummer.Backend.Equipment
         public string CosmeticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = _intBody + _intAddCosmeticModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CosmeticModSlots + intModSlots, intTotal);
+            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Cosmetic") + intModSlots, intTotal);
         }
 
         /// <summary>
@@ -3141,7 +2994,7 @@ namespace Chummer.Backend.Equipment
         #region Methods
 
         /// <summary>
-        /// Calculate remaining slots by provided Category
+        /// Total number of slots used by vehicle mods (and weapon mounts) in a given Rigger 5 vehicle mod category.
         /// </summary>
         public int CalcCategoryUsed(string strCategory)
         {
@@ -3157,15 +3010,29 @@ namespace Chummer.Backend.Equipment
                     intBase += intSlots;
             }
 
+            if (strCategory == "Weapons")
+            {
+                foreach (WeaponMount objMount in WeaponMounts)
+                {
+                    if (objMount.IncludedInVehicle || !objMount.Equipped)
+                        continue;
+                    // Subtract the Weapon Mount's Slots from the Vehicle's base Body.
+                    int intSlots = objMount.CalculatedSlots;
+                    if (intSlots > 0)
+                        intBase += intSlots;
+                }
+            }
+
             return intBase;
         }
 
         /// <summary>
-        /// Total Number of Slots a Vehicle has used for Modifications. (Rigger 5)
+        /// Total number of slots still available for vehicle mods (and weapon mounts) in a given Rigger 5 vehicle mod category.
         /// </summary>
         public int CalcCategoryAvail(string strCategory)
         {
             int intBase = _intBody;
+
             switch (strCategory)
             {
                 case "Powertrain":
@@ -3192,14 +3059,8 @@ namespace Chummer.Backend.Equipment
                     intBase += _intAddCosmeticModSlots;
                     break;
             }
-            foreach (VehicleMod objMod in Mods)
-            {
-                if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != strCategory)
-                    continue;
-                int intSlots = objMod.CalculatedSlots;
-                if (intSlots < 0)
-                    intBase -= intSlots;
-            }
+
+            intBase -= CalcCategoryUsed(strCategory);
             return intBase;
         }
 

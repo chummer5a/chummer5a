@@ -6830,26 +6830,16 @@ namespace Chummer
                     // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
                     if (CharacterObjectSettings.EnforceCapacity)
                     {
-                        bool blnOverCapacity = false;
+                        bool blnOverCapacity;
                         if (CharacterObjectSettings.BookEnabled("R5"))
                         {
                             if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
-                            {
-                                if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
-                                    blnOverCapacity = true;
-                            }
+                                blnOverCapacity = objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots;
                             else
-                            {
-                                int intUsed = objVehicle.CalcCategoryUsed(objMod.Category);
-                                int intAvail = objVehicle.CalcCategoryAvail(objMod.Category);
-                                if (intUsed > intAvail)
-                                    blnOverCapacity = true;
-                            }
+                                blnOverCapacity = objVehicle.OverR5Capacity("Weapons");
                         }
-                        else if (objVehicle.Slots < objVehicle.SlotsUsed)
-                        {
-                            blnOverCapacity = true;
-                        }
+                        else
+                            blnOverCapacity = objVehicle.Slots < objVehicle.SlotsUsed;
 
                         if (blnOverCapacity)
                         {
@@ -7043,7 +7033,9 @@ namespace Chummer
 
         private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle)) return;
+            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
+                return;
+            WeaponMount objNewWeaponMount;
             using (frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(objVehicle, CharacterObject)
             {
                 AllowDiscounts = true
@@ -7053,50 +7045,39 @@ namespace Chummer
 
                 if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
                     return;
-                if (!frmPickVehicleMod.FreeCost)
-                {
-                    // Check the item's Cost and make sure the character can afford it.
-                    decimal decCost = frmPickVehicleMod.WeaponMount.TotalCost;
-                    // Apply a markup if applicable.
-                    if (frmPickVehicleMod.Markup != 0)
-                    {
-                        decCost *= 1 + frmPickVehicleMod.Markup / 100.0m;
-                    }
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = frmPickVehicleMod.WeaponMount.TotalAvailTuple().Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
-
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
-
-                    if (decCost > CharacterObject.Nuyen)
-                    {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1,
-                        LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + LanguageManager.GetString("String_Space") + frmPickVehicleMod.WeaponMount.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
-                        DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen -= decCost;
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, frmPickVehicleMod.WeaponMount.InternalId);
-                    objExpense.Undo = objUndo;
-                }
-
-                objVehicle.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
+                objNewWeaponMount = frmPickVehicleMod.WeaponMount;
             }
+
+            // Calculate cost based on total vehicle cost change to make sure we capture everything
+            decimal decCost = -objVehicle.TotalCost;
+            objVehicle.WeaponMounts.Add(objNewWeaponMount);
+            decCost += objVehicle.TotalCost;
+
+            // Multiply the cost if applicable.
+            char chrAvail = objNewWeaponMount.TotalAvailTuple().Suffix;
+            switch (chrAvail)
+            {
+                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                    break;
+
+                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                    break;
+            }
+
+            // Create the Expense Log Entry.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(decCost * -1,
+                              LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory") + LanguageManager.GetString("String_Space") + objNewWeaponMount.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                              DateTime.Now);
+            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+            CharacterObject.Nuyen -= decCost;
+
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, objNewWeaponMount.InternalId);
+            objExpense.Undo = objUndo;
 
             IsCharacterUpdateRequested = true;
 

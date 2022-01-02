@@ -58,6 +58,7 @@ namespace Chummer.Backend.Equipment
         private string _strCategory = string.Empty;
         private string _strLimit = string.Empty;
         private int _intSlots;
+        private bool _blnFreeCost;
         private string _strCost = string.Empty;
         private string _strLocation = string.Empty;
         private string _strAllowedWeapons = string.Empty;
@@ -79,6 +80,7 @@ namespace Chummer.Backend.Equipment
             Parent = vehicle;
 
             _lstWeapons.AddTaggedCollectionChanged(this, EnforceWeaponCapacity);
+            _lstMods.AddTaggedCollectionChanged(this, SetModWeaponMountParent);
 
             void EnforceWeaponCapacity(object sender, NotifyCollectionChangedEventArgs args)
             {
@@ -96,6 +98,45 @@ namespace Chummer.Backend.Equipment
                     _lstWeapons.Remove(objNewWeapon);
                     --intNumFullWeapons;
                     if (intNumFullWeapons <= _intWeaponCapacity)
+                        break;
+                }
+            }
+
+            void SetModWeaponMountParent(object sender, NotifyCollectionChangedEventArgs args)
+            {
+                switch (args.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (VehicleMod objNewMod in args.NewItems)
+                        {
+                            objNewMod.WeaponMountParent = this;
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (VehicleMod objOldMod in args.OldItems)
+                        {
+                            if (objOldMod.WeaponMountParent != this)
+                                continue;
+                            objOldMod.Parent = null;
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (VehicleMod objOldMod in args.OldItems)
+                        {
+                            if (objOldMod.WeaponMountParent != this)
+                                continue;
+                            objOldMod.Parent = null;
+                        }
+                        foreach (VehicleMod objNewMod in args.NewItems)
+                        {
+                            objNewMod.WeaponMountParent = this;
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        foreach (VehicleMod objMod in Mods)
+                        {
+                            objMod.WeaponMountParent = this;
+                        }
                         break;
                 }
             }
@@ -222,6 +263,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("slots", _intSlots.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("freecost", _blnFreeCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("markup", _decMarkup.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
@@ -287,6 +329,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objNode.TryGetBoolFieldQuickly("freecost", ref _blnFreeCost);
             objNode.TryGetDecFieldQuickly("markup", ref _decMarkup);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
@@ -310,7 +353,7 @@ namespace Chummer.Backend.Equipment
                             ParentMount = this
                         };
                         objWeapon.Load(xmlWeaponNode, blnCopy);
-                        _lstWeapons.Add(objWeapon);
+                        Weapons.Add(objWeapon);
                     }
                 }
             }
@@ -336,13 +379,9 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (XmlNode xmlModNode in xmlModList)
                     {
-                        VehicleMod objMod = new VehicleMod(_objCharacter)
-                        {
-                            Parent = Parent,
-                            WeaponMountParent = this
-                        };
+                        VehicleMod objMod = new VehicleMod(_objCharacter);
                         objMod.Load(xmlModNode);
-                        _lstMods.Add(objMod);
+                        Mods.Add(objMod);
                     }
                 }
             }
@@ -487,13 +526,11 @@ namespace Chummer.Backend.Equipment
                         {
                             VehicleMod objMod = new VehicleMod(_objCharacter)
                             {
-                                Parent = Parent,
-                                WeaponMountParent = this,
                                 IncludedInVehicle = true
                             };
                             xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = " + xmlModNode.InnerText.CleanXPath() + "]");
                             objMod.Load(xmlDataNode);
-                            _lstMods.Add(objMod);
+                            Mods.Add(objMod);
                         }
                     }
                 }
@@ -517,7 +554,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether this mount can accommodate any more weapons or not
         /// </summary>
-        public bool IsWeaponsFull => _lstWeapons.Count(x => string.IsNullOrEmpty(x.ParentID) || _lstWeapons.DeepFindById(x.ParentID) == null) >= _intWeaponCapacity;
+        public bool IsWeaponsFull => Weapons.Count(x => string.IsNullOrEmpty(x.ParentID) || Weapons.DeepFindById(x.ParentID) == null) >= _intWeaponCapacity;
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
@@ -621,6 +658,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strCost;
             set => _strCost = value;
+        }
+
+        /// <summary>
+        /// Whether or not to consider this weapon mount free. Needs to be a separate thing from the Cost string because weapon mounts can be edited.
+        /// </summary>
+        public bool FreeCost
+        {
+            get => _blnFreeCost;
+            set => _blnFreeCost = value;
         }
 
         /// <summary>
@@ -916,6 +962,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                if (FreeCost)
+                    return 0;
                 decimal decReturn = 0;
                 // If the cost is determined by the Rating, evaluate the expression.
                 string strCost = Cost;

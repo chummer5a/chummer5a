@@ -4639,10 +4639,7 @@ namespace Chummer
 
                     if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
                         return;
-                    WeaponMount objWeaponMount = frmPickVehicleMod.WeaponMount;
-                    if (frmPickVehicleMod.FreeCost)
-                        objWeaponMount.Cost = "0";
-                    objVehicle.WeaponMounts.Add(objWeaponMount);
+                    objVehicle.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -16016,8 +16013,6 @@ namespace Chummer
 
                 if (frmCreateWeaponMount.DialogResult == DialogResult.Cancel)
                     return;
-                if (frmCreateWeaponMount.FreeCost)
-                    frmCreateWeaponMount.WeaponMount.Cost = "0";
             }
 
             IsCharacterUpdateRequested = true;

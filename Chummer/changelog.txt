@@ -37,6 +37,9 @@ Application Changes:
 - Adding a quality that is suppressed by something that is already on the character now properly disables the quality's effects.
 - Mastery Qualities bought with spell points now properly contribute to the positive quality karma limit. Fixes #4654.
 - Skill group labels' tooltips that show the skills in the given skill group now work properly again.
+- Checking the "Free" box when creating a weapon mount is now reversible, meaning that editing the mount and unchecking the box properly makes the mount not-free again.
+- Weapon mounts are now properly included in Chummer's calculations for if vehicles have too many used weapon slots or nots.
+- When adding a new weapon mount in Career mode, messages about not having enough money and/or enough capacity for the created weapon mount now occur before the weapon mount creation window is closed instead of after, allowing users to remedy their mistakes without recreating the entire weapon mount a second time.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
