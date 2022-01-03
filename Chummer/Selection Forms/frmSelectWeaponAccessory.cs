@@ -345,7 +345,6 @@ namespace Chummer
                 return;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
             string strRC = xmlAccessory.SelectSingleNode("rc")?.Value;
             if (!string.IsNullOrEmpty(strRC))
             {
@@ -490,8 +489,11 @@ namespace Chummer
                         lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+";
                     }
                     else
+                    {
+                        string strSpace = LanguageManager.GetString("String_Space");
                         lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strSpace + '-'
                                        + strSpace + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                    }
 
                     lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }

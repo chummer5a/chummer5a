@@ -4156,13 +4156,13 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
                             {
                                 // Powers.
-                                bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version(5, 198, 26);
                                 objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
                                 if (objXmlNodeList.Count > 0)
                                 {
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstPowerOrder))
                                     {
+                                        bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version(5, 198, 26);
                                         // Sort the Powers in alphabetical order.
                                         foreach (XmlNode xmlPower in objXmlNodeList)
                                         {

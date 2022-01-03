@@ -341,12 +341,12 @@ namespace Chummer
                 foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell" + strFilter))
                 {
                     string strSpellCategory = objXmlSpell.SelectSingleNode("category")?.Value ?? string.Empty;
-                    string strDescriptor = objXmlSpell.SelectSingleNode("descriptor")?.Value ?? string.Empty;
-                    string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
                     if (!_blnIgnoreRequirements)
                     {
                         if (!objXmlSpell.RequirementsMet(_objCharacter))
                             continue;
+
+                        string strDescriptor = objXmlSpell.SelectSingleNode("descriptor")?.Value ?? string.Empty;
 
                         if (limitDescriptors.Count != 0 && !limitDescriptors.Any(l => strDescriptor.Contains(l)))
                             continue;
@@ -366,6 +366,8 @@ namespace Chummer
                             AddSpell(objXmlSpell, strSpellCategory);
                             continue;
                         }
+
+                        string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
 
                         if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange,
                                                        strImprovedName: strRange) != 0)

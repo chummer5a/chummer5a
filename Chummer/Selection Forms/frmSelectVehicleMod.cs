@@ -449,7 +449,6 @@ namespace Chummer
                 return;
 
             _blnSkipUpdate = true;
-            string strSpace = LanguageManager.GetString("String_Space");
             XPathNavigator xmlVehicleMod = null;
             string strSelectedId = lstMod.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -606,9 +605,12 @@ namespace Chummer
                         if (decMax == decimal.MaxValue)
                             lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+";
                         else
+                        {
+                            string strSpace = LanguageManager.GetString("String_Space");
                             lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                            + strSpace + '-' + strSpace
                                            + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                        }
 
                         strCost = decMin.ToString(GlobalSettings.InvariantCultureInfo);
                     }

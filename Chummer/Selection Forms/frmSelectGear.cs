@@ -649,10 +649,14 @@ namespace Chummer
 
                     if (objCostNode.Value.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        string[] strValues = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         string strCost = "0";
                         if (nudRating.Value > 0)
-                            strCost = strValues[nudRating.ValueAsInt - 1].Trim('[', ']');
+                        {
+                            strCost = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                 .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                 .ElementAt(nudRating.ValueAsInt - 1).Trim('[', ']');
+                        }
+
                         decimal decCost = Convert.ToDecimal(strCost, GlobalSettings.InvariantCultureInfo) * decMultiplier;
                         decCost *= 1 + (nudMarkup.Value / 100.0m);
                         if (chkBlackMarketDiscount.Checked)
@@ -695,13 +699,13 @@ namespace Chummer
             lblTestLabel.Visible = true;
 
             // Capacity.
-            // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-            string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
 
             if (_eCapacityStyle == CapacityStyle.Zero)
                 lblCapacity.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']';
             else
             {
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
                 string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
                 if (!string.IsNullOrEmpty(strCapacityText))
                 {

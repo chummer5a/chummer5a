@@ -189,10 +189,10 @@ namespace Chummer
             }
 
             string strSpaceString = LanguageManager.GetString("String_Space");
-            string strColonString = LanguageManager.GetString("String_Colon");
             //restriction for maximum level of block (CF 191)
             if (objNodeData.Level + 1 > 2)
             {
+                string strColonString = LanguageManager.GetString("String_Colon");
                 foreach (DrugComponent objFoundationComponent in _lstSelectedDrugComponents.Select(x => x.DrugComponent))
                 {
                     if (objFoundationComponent.Category != "Foundation")

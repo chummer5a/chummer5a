@@ -2382,11 +2382,11 @@ namespace Chummer
                         // We're only re-apply improvements a list of items, not all of them
                         if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
                             continue;
-                        string strSelected = objQuality.Extra;
 
                         XmlNode objNode = objQuality.GetNode();
                         if (objNode != null)
                         {
+                            string strSelected = objQuality.Extra;
                             objQuality.Bonus = objNode["bonus"];
                             if (objQuality.Bonus != null)
                             {
