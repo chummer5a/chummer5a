@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Chummer
@@ -32,6 +33,7 @@ namespace Chummer
         private readonly T _objMyValue;
 
         [CLSCompliant(false)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FetchSafelyFromPool(ObjectPool<T> objMyPool, out T objReturn)
         {
             _objMyPool = objMyPool;
@@ -39,6 +41,7 @@ namespace Chummer
             objReturn = _objMyValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             _objMyPool.Return(_objMyValue);

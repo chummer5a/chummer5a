@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Chummer
@@ -29,12 +30,14 @@ namespace Chummer
     {
         private readonly ReaderWriterLockSlim _rwlMyLock;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EnterWriteLock(ReaderWriterLockSlim rwlMyLock)
         {
             _rwlMyLock = rwlMyLock;
             _rwlMyLock.EnterWriteLock();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             _rwlMyLock.ExitWriteLock();

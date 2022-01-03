@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -63,6 +64,7 @@ namespace Chummer
             ConstructorCommon();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ConstructorCommon()
         {
             Parse += NegateValue;
