@@ -41,7 +41,7 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private bool _blnRefresh;
 
         #region Control Events
@@ -282,140 +282,148 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strCategory = cboCategory.SelectedValue?.ToString();
-            List<ListItem> lstSpellItems = new List<ListItem>();
-            HashSet<string> limitDescriptors = new HashSet<string>();
-            HashSet<string> blockDescriptors = new HashSet<string>();
-            string strFilter = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpellItems))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
-                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
-                                                       && (GlobalSettings.SearchInCategoryOnly
-                                                           || txtSearch.TextLength == 0))
-                    sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                HashSet<string> limitDescriptors = new HashSet<string>();
+                HashSet<string> blockDescriptors = new HashSet<string>();
+                string strFilter = string.Empty;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                {
+                    sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                    if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
+                                                           && (GlobalSettings.SearchInCategoryOnly
+                                                               || txtSearch.TextLength == 0))
+                        sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                    else
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCategoryFilter))
+                        {
+                            foreach (string strItem in _lstCategory.Select(x => x.Value))
+                            {
+                                if (!string.IsNullOrEmpty(strItem))
+                                    sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                            }
+
+                            if (sbdCategoryFilter.Length > 0)
+                            {
+                                sbdCategoryFilter.Length -= 4;
+                                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                            }
+                        }
+                    }
+
+                    if (_objCharacter.Settings.ExtendAnyDetectionSpell)
+                        sbdFilter.Append(" and ((not(contains(name, \", Extended\"))))");
+                    if (!string.IsNullOrEmpty(txtSearch.Text))
+                        sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                    // Populate the Spell list.
+                    if (!_blnIgnoreRequirements)
+                    {
+                        foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                     _objCharacter, Improvement.ImprovementType.LimitSpellDescriptor))
+                        {
+                            limitDescriptors.Add(improvement.ImprovedName);
+                        }
+
+                        foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                     _objCharacter, Improvement.ImprovementType.BlockSpellDescriptor))
+                        {
+                            blockDescriptors.Add(improvement.ImprovedName);
+                        }
+                    }
+
+                    if (sbdFilter.Length > 0)
+                        strFilter = '[' + sbdFilter.ToString() + ']';
+                }
+
+                foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell" + strFilter))
+                {
+                    string strSpellCategory = objXmlSpell.SelectSingleNode("category")?.Value ?? string.Empty;
+                    string strDescriptor = objXmlSpell.SelectSingleNode("descriptor")?.Value ?? string.Empty;
+                    string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
+                    if (!_blnIgnoreRequirements)
+                    {
+                        if (!objXmlSpell.RequirementsMet(_objCharacter))
+                            continue;
+
+                        if (limitDescriptors.Count != 0 && !limitDescriptors.Any(l => strDescriptor.Contains(l)))
+                            continue;
+
+                        if (blockDescriptors.Count != 0 && blockDescriptors.Any(l => strDescriptor.Contains(l)))
+                            continue;
+                        if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellCategory,
+                                                       strImprovedName: strSpellCategory) != 0)
+                        {
+                            AddSpell(objXmlSpell, strSpellCategory);
+                            continue;
+                        }
+
+                        if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellCategory,
+                                                       strImprovedName: strSpellCategory) != 0)
+                        {
+                            AddSpell(objXmlSpell, strSpellCategory);
+                            continue;
+                        }
+
+                        if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange,
+                                                       strImprovedName: strRange) != 0)
+                        {
+                            AddSpell(objXmlSpell, strSpellCategory);
+                            continue;
+                        }
+
+                        if (ImprovementManager
+                            .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                Improvement.ImprovementType.LimitSpellCategory)
+                            .Any(x => x.ImprovedName != strSpellCategory))
+                        {
+                            continue;
+                        }
+
+                        if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange,
+                                                       out List<Improvement> lstUsedImprovements) != 0
+                            && lstUsedImprovements.All(x => x.ImprovedName != strRange))
+                        {
+                            continue;
+                        }
+                    }
+
+                    AddSpell(objXmlSpell, strSpellCategory);
+                }
+
+                lstSpellItems.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstSpells.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstSpells.BeginUpdate();
+                lstSpells.PopulateWithListItems(lstSpellItems);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstSpells.SelectedValue = strOldSelected;
                 else
+                    lstSpells.SelectedIndex = -1;
+                lstSpells.EndUpdate();
+
+                void AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategoryFilter))
+                    string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
+                                            objXmlSpell.SelectSingleNode("name")?.Value ??
+                                            LanguageManager.GetString("String_Unknown");
+                    if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0
+                                                             && !string.IsNullOrEmpty(strSpellCategory))
                     {
-                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        ListItem objFoundItem
+                            = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
+                        if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            if (!string.IsNullOrEmpty(strItem))
-                                sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                        }
-
-                        if (sbdCategoryFilter.Length > 0)
-                        {
-                            sbdCategoryFilter.Length -= 4;
-                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                         }
                     }
+
+                    lstSpellItems.Add(new ListItem(objXmlSpell.SelectSingleNode("id")?.Value ?? string.Empty,
+                                                   strDisplayName));
                 }
-
-                if (_objCharacter.Settings.ExtendAnyDetectionSpell)
-                    sbdFilter.Append(" and ((not(contains(name, \", Extended\"))))");
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
-                // Populate the Spell list.
-                if (!_blnIgnoreRequirements)
-                {
-                    foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 _objCharacter, Improvement.ImprovementType.LimitSpellDescriptor))
-                    {
-                        limitDescriptors.Add(improvement.ImprovedName);
-                    }
-
-                    foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 _objCharacter, Improvement.ImprovementType.BlockSpellDescriptor))
-                    {
-                        blockDescriptors.Add(improvement.ImprovedName);
-                    }
-                }
-
-                if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
-            }
-
-            foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell" + strFilter))
-            {
-                string strSpellCategory = objXmlSpell.SelectSingleNode("category")?.Value ?? string.Empty;
-                string strDescriptor = objXmlSpell.SelectSingleNode("descriptor")?.Value ?? string.Empty;
-                string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
-                if (!_blnIgnoreRequirements)
-                {
-                    if (!objXmlSpell.RequirementsMet(_objCharacter))
-                        continue;
-
-                    if (limitDescriptors.Count != 0 && !limitDescriptors.Any(l => strDescriptor.Contains(l)))
-                        continue;
-
-                    if (blockDescriptors.Count != 0 && blockDescriptors.Any(l => strDescriptor.Contains(l)))
-                        continue;
-                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellCategory, strImprovedName: strSpellCategory) != 0)
-                    {
-                        AddSpell(objXmlSpell, strSpellCategory);
-                        continue;
-                    }
-
-                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LimitSpellCategory, strImprovedName: strSpellCategory) != 0)
-                    {
-                        AddSpell(objXmlSpell, strSpellCategory);
-                        continue;
-                    }
-
-                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange, strImprovedName: strRange) != 0)
-                    {
-                        AddSpell(objXmlSpell, strSpellCategory);
-                        continue;
-                    }
-
-                    if (ImprovementManager
-                        .GetCachedImprovementListForValueOf(_objCharacter,
-                                                            Improvement.ImprovementType.LimitSpellCategory)
-                        .Any(x => x.ImprovedName != strSpellCategory))
-                    {
-                        continue;
-                    }
-
-                    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.AllowSpellRange,
-                                                   out List<Improvement> lstUsedImprovements) != 0
-                        && lstUsedImprovements.All(x => x.ImprovedName != strRange))
-                    {
-                        continue;
-                    }
-                }
-
-                AddSpell(objXmlSpell, strSpellCategory);
-            }
-
-            lstSpellItems.Sort(CompareListItems.CompareNames);
-            string strOldSelected = lstSpells.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstSpells.BeginUpdate();
-            lstSpells.PopulateWithListItems(lstSpellItems);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstSpells.SelectedValue = strOldSelected;
-            else
-                lstSpells.SelectedIndex = -1;
-            lstSpells.EndUpdate();
-
-            void AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
-            {
-                string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
-                                        objXmlSpell.SelectSingleNode("name")?.Value ??
-                                        LanguageManager.GetString("String_Unknown");
-                if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0 && !string.IsNullOrEmpty(strSpellCategory))
-                {
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
-                    if (!string.IsNullOrEmpty(objFoundItem.Name))
-                    {
-                        strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
-                    }
-                }
-
-                lstSpellItems.Add(new ListItem(objXmlSpell.SelectSingleNode("id")?.Value ?? string.Empty, strDisplayName));
             }
         }
 

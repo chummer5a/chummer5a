@@ -83,7 +83,6 @@ namespace Chummer.Backend.Skills
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
         private Color _colNotes = ColorManager.HasNotesColor;
-        public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(10); //List of suggested specializations for this skill
         private bool _blnDefault;
 
         public void WriteTo(XmlTextWriter objWriter)
@@ -391,15 +390,13 @@ namespace Chummer.Backend.Skills
             Skill objSkill;
             if (blnIsKnowledgeSkill)
             {
-                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
+                objSkill = new KnowledgeSkill(objCharacter)
                 {
                     WritableName = strName,
                     Karma = intKarmaRating,
                     Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic"),
                     IsNativeLanguage = blnIsNativeLanguage
                 };
-
-                objSkill = objKnowledgeSkill;
             }
             else
             {
@@ -597,41 +594,7 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            XmlNodeList xmlSpecList = xmlNode.SelectNodes("specs/spec");
-
-            if (xmlSpecList != null)
-            {
-                SuggestedSpecializations.Capacity = xmlSpecList.Count;
-
-                foreach (XmlNode xmlSpecNode in xmlSpecList)
-                {
-                    string strInnerText = xmlSpecNode.InnerText;
-                    SuggestedSpecializations.Add(new ListItem(strInnerText, xmlSpecNode.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-
-                SuggestedSpecializations.Sort(CompareListItems.CompareNames);
-            }
-        }
-
-        public void ReloadSuggestedSpecializations()
-        {
-            SuggestedSpecializations.Clear();
-
-            XmlNodeList xmlSpecList = GetNode()?.SelectNodes("specs/spec");
-
-            if (xmlSpecList != null)
-            {
-                SuggestedSpecializations.Capacity = xmlSpecList.Count;
-
-                foreach (XmlNode xmlSpecNode in xmlSpecList)
-                {
-                    string strInnerText = xmlSpecNode.InnerText;
-                    SuggestedSpecializations.Add(new ListItem(strInnerText, xmlSpecNode.Attributes?["translate"]?.InnerText ?? strInnerText));
-                }
-
-                SuggestedSpecializations.Sort(CompareListItems.CompareNames);
-            }
-            OnPropertyChanged(nameof(SuggestedSpecializations));
+            _blnRecalculateCachedSuggestedSpecializations = true;
         }
 
         #endregion Factory
@@ -1418,7 +1381,7 @@ namespace Chummer.Backend.Skills
                 if (_guidSkillId == value) return;
                 _guidSkillId = value;
                 _objCachedMyXmlNode = null;
-                ReloadSuggestedSpecializations();
+                _blnRecalculateCachedSuggestedSpecializations = true;
             }
         }
 
@@ -1439,6 +1402,21 @@ namespace Chummer.Backend.Skills
                 {
                     _blnRecalculateCachedSuggestedSpecializations = false;
                     _lstCachedSuggestedSpecializations.Clear();
+                    using (XmlNodeList xmlSpecList = GetNode()?.SelectNodes("specs/spec"))
+                    {
+                        if (xmlSpecList?.Count > 0)
+                        {
+                            foreach (XmlNode xmlSpecNode in xmlSpecList)
+                            {
+                                string strInnerText = xmlSpecNode.InnerText;
+                                if (string.IsNullOrEmpty(strInnerText))
+                                    continue;
+                                _lstCachedSuggestedSpecializations.Add(new ListItem(strInnerText,
+                                                                           xmlSpecNode.Attributes?["translate"]
+                                                                               ?.InnerText ?? strInnerText));
+                            }
+                        }
+                    }
                     foreach (string strSpecializationName in ImprovementManager.GetCachedImprovementListForValueOf(
                                  CharacterObject, Improvement.ImprovementType.SkillSpecializationOption, DictionaryKey).Select(x => x.UniqueName))
                     {
@@ -1448,6 +1426,7 @@ namespace Chummer.Backend.Skills
                             new ListItem(strSpecializationName,
                                          CharacterObject.TranslateExtra(strSpecializationName)));
                     }
+                    _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
                 }
 
                 return _lstCachedSuggestedSpecializations;
@@ -2194,9 +2173,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, Skill>(nameof(PreferredColor),
                     new DependencyGraphNode<string, Skill>(nameof(Notes))
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(CGLSpecializations),
-                    new DependencyGraphNode<string, Skill>(nameof(SuggestedSpecializations))
-                ),
+                new DependencyGraphNode<string, Skill>(nameof(CGLSpecializations)),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentSpCost),
                     new DependencyGraphNode<string, Skill>(nameof(BasePoints)),
                     new DependencyGraphNode<string, Skill>(nameof(Specializations)),

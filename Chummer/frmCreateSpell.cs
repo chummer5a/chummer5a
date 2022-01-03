@@ -48,21 +48,26 @@ namespace Chummer
             _blnLoading = true;
             lblDV.Text = 0.ToString(GlobalSettings.CultureInfo);
 
-            List<ListItem> lstCategory = new List<ListItem>();
-
-            // Populate the list of Spell Categories.
-            foreach (XPathNavigator objXmlCategory in _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstCategory))
             {
-                string strInnerText = objXmlCategory.Value;
-                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
-            }
+                // Populate the list of Spell Categories.
+                foreach (XPathNavigator objXmlCategory in _objXmlDocument.SelectAndCacheExpression(
+                             "/chummer/categories/category"))
+                {
+                    string strInnerText = objXmlCategory.Value;
+                    lstCategory.Add(new ListItem(strInnerText,
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 ?? strInnerText));
+                }
 
-            cboCategory.BeginUpdate();
-            cboType.BeginUpdate();
-            cboRange.BeginUpdate();
-            cboDuration.BeginUpdate();
-            cboCategory.PopulateWithListItems(lstCategory);
-            cboCategory.SelectedIndex = 0;
+                cboCategory.BeginUpdate();
+                cboType.BeginUpdate();
+                cboRange.BeginUpdate();
+                cboDuration.BeginUpdate();
+                cboCategory.PopulateWithListItems(lstCategory);
+                cboCategory.SelectedIndex = 0;
+            }
 
             // Populate the list of Spell Types.
             List<ListItem> lstTypes = new List<ListItem>(2)

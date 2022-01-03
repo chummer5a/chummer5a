@@ -169,38 +169,43 @@ namespace Chummer.UI.Skills
                     tlpRight.Controls.Add(lblCareerSpec, 0, 0);
                     tlpRight.Controls.Add(btnAddSpec, 1, 0);
 
-                    List<ListItem> lstAttributeItems = new List<ListItem>(AttributeSection.AttributeStrings.Count);
-                    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstAttributeItems))
                     {
-                        if (strLoopAttribute == "MAGAdept")
+                        foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
                         {
-                            if (!objSkill.CharacterObject.Settings.MysAdeptSecondMAGAttribute)
-                                continue;
-                            lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.MAGAdeptString()));
+                            if (strLoopAttribute == "MAGAdept")
+                            {
+                                if (!objSkill.CharacterObject.Settings.MysAdeptSecondMAGAttribute)
+                                    continue;
+                                lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.MAGAdeptString()));
+                            }
+                            else
+                            {
+                                string strAttributeShort = LanguageManager.GetString(
+                                    "String_Attribute" + strLoopAttribute + "Short", GlobalSettings.Language, false);
+                                lstAttributeItems.Add(new ListItem(strLoopAttribute,
+                                                                   !string.IsNullOrEmpty(strAttributeShort)
+                                                                       ? strAttributeShort
+                                                                       : strLoopAttribute));
+                            }
                         }
-                        else
-                        {
-                            string strAttributeShort = LanguageManager.GetString(
-                                "String_Attribute" + strLoopAttribute + "Short", GlobalSettings.Language, false);
-                            lstAttributeItems.Add(new ListItem(strLoopAttribute,
-                                !string.IsNullOrEmpty(strAttributeShort) ? strAttributeShort : strLoopAttribute));
-                        }
-                    }
 
-                    cboSelectAttribute = new ElasticComboBox
-                    {
-                        Dock = DockStyle.Fill,
-                        DropDownStyle = ComboBoxStyle.DropDownList,
-                        FormattingEnabled = true,
-                        Margin = new Padding(3, 0, 3, 0),
-                        Name = "cboSelectAttribute"
-                    };
-                    cboSelectAttribute.BeginUpdate();
-                    cboSelectAttribute.PopulateWithListItems(lstAttributeItems);
-                    cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
-                    cboSelectAttribute.EndUpdate();
-                    cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
-                    pnlAttributes.Controls.Add(cboSelectAttribute);
+                        cboSelectAttribute = new ElasticComboBox
+                        {
+                            Dock = DockStyle.Fill,
+                            DropDownStyle = ComboBoxStyle.DropDownList,
+                            FormattingEnabled = true,
+                            Margin = new Padding(3, 0, 3, 0),
+                            Name = "cboSelectAttribute"
+                        };
+                        cboSelectAttribute.BeginUpdate();
+                        cboSelectAttribute.PopulateWithListItems(lstAttributeItems);
+                        cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
+                        cboSelectAttribute.EndUpdate();
+                        cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
+                        pnlAttributes.Controls.Add(cboSelectAttribute);
+                    }
                 }
                 else
                 {

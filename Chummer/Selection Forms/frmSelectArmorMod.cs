@@ -400,92 +400,104 @@ namespace Chummer
         /// </summary>
         private void RefreshList()
         {
-            List<ListItem> lstMods = new List<ListItem>();
             string strFilter = string.Empty;
             // Populate the Mods list.
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstMods))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
-                using (new FetchSafelyFromPool<StringBuilder>(
-                           Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    if (!ExcludeGeneralCategory)
-                        sbdCategoryFilter.Append("category = \"General\" or ");
-                    foreach (string strCategory in AllowedCategories.SplitNoAlloc(
-                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                    sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                    using (new FetchSafelyFromPool<StringBuilder>(
+                               Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                     {
-                        if (!string.IsNullOrEmpty(strCategory))
-                            sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                        if (!ExcludeGeneralCategory)
+                            sbdCategoryFilter.Append("category = \"General\" or ");
+                        foreach (string strCategory in AllowedCategories.SplitNoAlloc(
+                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (!string.IsNullOrEmpty(strCategory))
+                                sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                        }
+
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        }
                     }
 
-                    if (sbdCategoryFilter.Length > 0)
+                    if (!string.IsNullOrEmpty(txtSearch.Text))
+                        sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                    if (sbdFilter.Length > 0)
+                        strFilter = '[' + sbdFilter.ToString() + ']';
+                }
+
+                int intOverLimit = 0;
+                XPathNodeIterator objXmlModList = _xmlBaseDataNode.Select("/chummer/mods/mod" + strFilter);
+                if (objXmlModList.Count > 0)
+                {
+                    foreach (XPathNavigator objXmlMod in objXmlModList)
                     {
-                        sbdCategoryFilter.Length -= 4;
-                        sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                        XPathNavigator xmlTestNode
+                            = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
+                        if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            // Assumes topmost parent is an AND node
+                            continue;
+                        }
+
+                        xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/parentdetails");
+                        if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        {
+                            // Assumes topmost parent is an AND node
+                            continue;
+                        }
+
+                        string strId = objXmlMod.SelectSingleNodeAndCacheExpression("id")?.Value;
+                        if (string.IsNullOrEmpty(strId)) continue;
+                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        if (_setBlackMarketMaps.Contains(
+                                objXmlMod.SelectSingleNodeAndCacheExpression("category")?.Value))
+                            decCostMultiplier *= 0.9m;
+                        if (!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter) &&
+                            (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
+                             objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                            && objXmlMod.RequirementsMet(_objCharacter, _objArmor))
+                        {
+                            lstMods.Add(new ListItem(
+                                            strId,
+                                            objXmlMod.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                            ?? objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value
+                                            ?? LanguageManager.GetString("String_Unknown")));
+                        }
+                        else
+                            ++intOverLimit;
                     }
                 }
 
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
-                if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
-            }
-
-            int intOverLimit = 0;
-            XPathNodeIterator objXmlModList = _xmlBaseDataNode.Select("/chummer/mods/mod" + strFilter);
-            if (objXmlModList.Count > 0)
-            {
-                foreach (XPathNavigator objXmlMod in objXmlModList)
+                lstMods.Sort(CompareListItems.CompareNames);
+                if (intOverLimit > 0)
                 {
-                    XPathNavigator xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
-                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        // Assumes topmost parent is an AND node
-                        continue;
-                    }
-
-                    xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/parentdetails");
-                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        // Assumes topmost parent is an AND node
-                        continue;
-                    }
-
-                    string strId = objXmlMod.SelectSingleNodeAndCacheExpression("id")?.Value;
-                    if (string.IsNullOrEmpty(strId)) continue;
-                    decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNodeAndCacheExpression("category")?.Value))
-                        decCostMultiplier *= 0.9m;
-                    if (!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter) &&
-                        (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                         objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)) && objXmlMod.RequirementsMet(_objCharacter, _objArmor))
-                    {
-                        lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
-                    }
-                    else
-                        ++intOverLimit;
+                    // Add after sort so that it's always at the end
+                    lstMods.Add(new ListItem(string.Empty,
+                                             string.Format(GlobalSettings.CultureInfo,
+                                                           LanguageManager.GetString("String_RestrictedItemsHidden"),
+                                                           intOverLimit)));
                 }
-            }
 
-            lstMods.Sort(CompareListItems.CompareNames);
-            if (intOverLimit > 0)
-            {
-                // Add after sort so that it's always at the end
-                lstMods.Add(new ListItem(string.Empty,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
-                        intOverLimit)));
+                string strOldSelected = lstMod.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstMod.BeginUpdate();
+                lstMod.PopulateWithListItems(lstMods);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstMod.SelectedValue = strOldSelected;
+                else
+                    lstMod.SelectedIndex = -1;
+                lstMod.EndUpdate();
             }
-            string strOldSelected = lstMod.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstMod.BeginUpdate();
-            lstMod.PopulateWithListItems(lstMods);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstMod.SelectedValue = strOldSelected;
-            else
-                lstMod.SelectedIndex = -1;
-            lstMod.EndUpdate();
         }
 
         /// <summary>

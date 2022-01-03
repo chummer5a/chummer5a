@@ -54,36 +54,42 @@ namespace Chummer
 
         private void frmSelectExoticSkill_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstSkills;
-
-            // Build the list of Exotic Active Skills from the Skills file.
-            using (XmlNodeList objXmlSkillList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
-                lstSkills = new List<ListItem>(objXmlSkillList?.Count ?? 0);
-                if (objXmlSkillList?.Count > 0)
+                // Build the list of Exotic Active Skills from the Skills file.
+                using (XmlNodeList objXmlSkillList = _objCharacter.LoadData("skills.xml")
+                                                                  .SelectNodes(
+                                                                      "/chummer/skills/skill[exotic = \"True\"]"))
                 {
-                    foreach (XmlNode objXmlSkill in objXmlSkillList)
+                    if (objXmlSkillList?.Count > 0)
                     {
-                        string strName = objXmlSkill["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName) && (string.IsNullOrEmpty(_strForceSkill) || strName.Equals(_strForceSkill, StringComparison.OrdinalIgnoreCase)))
-                            lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                        foreach (XmlNode objXmlSkill in objXmlSkillList)
+                        {
+                            string strName = objXmlSkill["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName) && (string.IsNullOrEmpty(_strForceSkill)
+                                                                   || strName.Equals(
+                                                                       _strForceSkill,
+                                                                       StringComparison.OrdinalIgnoreCase)))
+                                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                        }
                     }
                 }
-            }
-            lstSkills.Sort(CompareListItems.CompareNames);
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(lstSkills);
 
-            // Select the first Skill in the list.
-            if (lstSkills.Count > 0)
-            {
-                cboCategory.SelectedIndex = 0;
-                cboCategory.Enabled = lstSkills.Count > 1;
-            }
-            else
-                cmdOK.Enabled = false;
+                lstSkills.Sort(CompareListItems.CompareNames);
+                cboCategory.BeginUpdate();
+                cboCategory.PopulateWithListItems(lstSkills);
 
-            cboCategory.EndUpdate();
+                // Select the first Skill in the list.
+                if (lstSkills.Count > 0)
+                {
+                    cboCategory.SelectedIndex = 0;
+                    cboCategory.Enabled = lstSkills.Count > 1;
+                }
+                else
+                    cmdOK.Enabled = false;
+
+                cboCategory.EndUpdate();
+            }
 
             BuildList();
         }

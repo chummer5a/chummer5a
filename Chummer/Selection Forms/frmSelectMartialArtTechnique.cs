@@ -179,34 +179,41 @@ namespace Chummer
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");
 
-            List<ListItem> lstTechniqueItems = new List<ListItem>();
-            foreach (XPathNavigator xmlTechnique in objTechniquesList)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTechniqueItems))
             {
-                string strId = xmlTechnique.SelectSingleNodeAndCacheExpression("id")?.Value;
-                if (!string.IsNullOrEmpty(strId))
+                foreach (XPathNavigator xmlTechnique in objTechniquesList)
                 {
-                    string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-
-                    if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
-                        continue;
-
-                    if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
+                    string strId = xmlTechnique.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    if (!string.IsNullOrEmpty(strId))
                     {
-                        lstTechniqueItems.Add(new ListItem(strId, xmlTechnique.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strTechniqueName));
+                        string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                  ?? LanguageManager.GetString("String_Unknown");
+
+                        if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
+                            continue;
+
+                        if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
+                        {
+                            lstTechniqueItems.Add(new ListItem(
+                                                      strId,
+                                                      xmlTechnique.SelectSingleNodeAndCacheExpression("translate")
+                                                                  ?.Value ?? strTechniqueName));
+                        }
                     }
                 }
+
+                lstTechniqueItems.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstTechniques.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstTechniques.BeginUpdate();
+                lstTechniques.PopulateWithListItems(lstTechniqueItems);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstTechniques.SelectedValue = strOldSelected;
+                else
+                    lstTechniques.SelectedIndex = -1;
+                lstTechniques.EndUpdate();
             }
-            lstTechniqueItems.Sort(CompareListItems.CompareNames);
-            string strOldSelected = lstTechniques.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstTechniques.BeginUpdate();
-            lstTechniques.PopulateWithListItems(lstTechniqueItems);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstTechniques.SelectedValue = strOldSelected;
-            else
-                lstTechniques.SelectedIndex = -1;
-            lstTechniques.EndUpdate();
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

@@ -44,7 +44,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private readonly HashSet<string> _setBlackMarketMaps;
         private int _intRating;
         private bool _blnBlackMarketDiscount;

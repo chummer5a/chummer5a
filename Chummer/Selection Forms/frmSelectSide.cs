@@ -36,15 +36,15 @@ namespace Chummer
             this.TranslateWinForm();
 
             // Create a list for the sides.
-            List<ListItem> lstSides = new List<ListItem>
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
             {
-                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
-                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
-            };
+                lstSides.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
+                lstSides.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
 
-            cboSide.BeginUpdate();
-            cboSide.PopulateWithListItems(lstSides);
-            cboSide.EndUpdate();
+                cboSide.BeginUpdate();
+                cboSide.PopulateWithListItems(lstSides);
+                cboSide.EndUpdate();
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

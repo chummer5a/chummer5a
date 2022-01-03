@@ -191,44 +191,48 @@ namespace Chummer
             {
                 if (cboStage.DataSource == null)
                 {
-                    List<ListItem> lstStages = new List<ListItem>(6)
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStages))
                     {
-                        new ListItem("0", LanguageManager.GetString("String_All"))
-                    };
+                        lstStages.Add(new ListItem("0", LanguageManager.GetString("String_All")));
 
-                    using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
-                        if (xmlNodes != null)
-                            foreach (XmlNode xnode in xmlNodes)
+                        using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
+                        {
+                            if (xmlNodes?.Count > 0)
                             {
-                                string strOrder = xnode.Attributes?["order"]?.Value;
-                                if (!string.IsNullOrEmpty(strOrder))
+                                foreach (XmlNode xnode in xmlNodes)
                                 {
-                                    lstStages.Add(new ListItem(strOrder, xnode.InnerText));
+                                    string strOrder = xnode.Attributes?["order"]?.Value;
+                                    if (!string.IsNullOrEmpty(strOrder))
+                                    {
+                                        lstStages.Add(new ListItem(strOrder, xnode.InnerText));
+                                    }
                                 }
                             }
+                        }
 
-                    //Sort based on integer value of key
-                    lstStages.Sort((x, y) =>
-                    {
-                        if (int.TryParse(x.Value.ToString(), out int xint))
+                        //Sort based on integer value of key
+                        lstStages.Sort((x, y) =>
                         {
-                            if (int.TryParse(y.Value.ToString(), out int yint))
+                            if (int.TryParse(x.Value.ToString(), out int xint))
                             {
-                                return xint - yint;
+                                if (int.TryParse(y.Value.ToString(), out int yint))
+                                {
+                                    return xint - yint;
+                                }
+
+                                return 1;
                             }
 
-                            return 1;
-                        }
+                            if (int.TryParse(y.Value.ToString(), out int _))
+                            {
+                                return -1;
+                            }
 
-                        if (int.TryParse(y.Value.ToString(), out int _))
-                        {
-                            return -1;
-                        }
+                            return 0;
+                        });
 
-                        return 0;
-                    });
-
-                    cboStage.PopulateWithListItems(lstStages);
+                        cboStage.PopulateWithListItems(lstStages);
+                    }
                 }
 
                 string strToFind = _intStage.ToString(GlobalSettings.InvariantCultureInfo);

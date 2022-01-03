@@ -45,45 +45,54 @@ namespace Chummer
 
         private void frmSelectSkillGroup_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstGroups = new List<ListItem>();
-
-            if (string.IsNullOrEmpty(_strForceValue))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGroups))
             {
-                // Build the list of Skill Groups found in the Skills file.
-                foreach (XPathNavigator objXmlSkill in _objXmlDocument.SelectAndCacheExpression("/chummer/skillgroups/name"))
+                if (string.IsNullOrEmpty(_strForceValue))
                 {
-                    if (!string.IsNullOrEmpty(_strExcludeCategory))
+                    // Build the list of Skill Groups found in the Skills file.
+                    foreach (XPathNavigator objXmlSkill in _objXmlDocument.SelectAndCacheExpression(
+                                 "/chummer/skillgroups/name"))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdExclude))
+                        if (!string.IsNullOrEmpty(_strExcludeCategory))
                         {
-                            foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(
-                                         ',', StringSplitOptions.RemoveEmptyEntries))
-                                sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
-                            // Remove the trailing " and ";
-                            if (sbdExclude.Length > 0)
-                                sbdExclude.Length -= 5;
-                            if (_objXmlDocument.SelectSingleNode(
-                                    "/chummer/skills/skill[" + sbdExclude + " and skillgroup = "
-                                    + objXmlSkill.Value.CleanXPath() + "]") == null)
-                                continue;
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdExclude))
+                            {
+                                string strExclude = string.Empty;
+                                foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
+                                    sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
+                                // Remove the trailing " and ";
+                                if (sbdExclude.Length > 0)
+                                {
+                                    sbdExclude.Length -= 5;
+                                    strExclude = '(' + sbdExclude.ToString() + ") and ";
+                                }
+                                if (_objXmlDocument.SelectSingleNode(
+                                        "/chummer/skills/skill[" + strExclude + "skillgroup = "
+                                        + objXmlSkill.Value.CleanXPath() + ']') == null)
+                                    continue;
+                            }
                         }
-                    }
 
-                    string strInnerText = objXmlSkill.Value;
-                    lstGroups.Add(new ListItem(strInnerText, objXmlSkill.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                        string strInnerText = objXmlSkill.Value;
+                        lstGroups.Add(new ListItem(strInnerText,
+                                                   objXmlSkill.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                   ?? strInnerText));
+                    }
                 }
+                else
+                {
+                    lstGroups.Add(new ListItem(_strForceValue, _strForceValue));
+                }
+
+                lstGroups.Sort(CompareListItems.CompareNames);
+                cboSkillGroup.BeginUpdate();
+                cboSkillGroup.PopulateWithListItems(lstGroups);
+                // Select the first Skill in the list.
+                cboSkillGroup.SelectedIndex = 0;
+                cboSkillGroup.EndUpdate();
             }
-            else
-            {
-                lstGroups.Add(new ListItem(_strForceValue, _strForceValue));
-            }
-            lstGroups.Sort(CompareListItems.CompareNames);
-            cboSkillGroup.BeginUpdate();
-            cboSkillGroup.PopulateWithListItems(lstGroups);
-            // Select the first Skill in the list.
-            cboSkillGroup.SelectedIndex = 0;
-            cboSkillGroup.EndUpdate();
 
             if (cboSkillGroup.Items.Count == 1)
                 cmdOK_Click(sender, e);

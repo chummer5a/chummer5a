@@ -3500,41 +3500,45 @@ namespace Chummer
                                                 if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
                                                 {
                                                     // Populate the Magician Traditions list.
-                                                    List<ListItem> lstContacts = new List<ListItem>(Contacts.Count);
-                                                    foreach (Contact objContact in Contacts)
+                                                    using (new FetchSafelyFromPool<List<ListItem>>(
+                                                               Utils.ListItemListPool, out List<ListItem> lstContacts))
                                                     {
-                                                        if (objContact.IsGroup)
-                                                            lstContacts.Add(new ListItem(objContact.Name,
-                                                                objContact.UniqueId));
-                                                    }
-
-                                                    if (lstContacts.Count > 1)
-                                                    {
-                                                        lstContacts.Sort(CompareListItems.CompareNames);
-                                                    }
-
-                                                    DialogResult ePickItemResult = DialogResult.Cancel;
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        Program.MainForm.DoThreadSafe(DoSelectItem);
-                                                    else
-                                                        await Program.MainForm.DoThreadSafeAsync(DoSelectItem);
-                                                    void DoSelectItem()
-                                                    {
-                                                        using (frmSelectItem frmPickItem = new frmSelectItem())
+                                                        foreach (Contact objContact in Contacts)
                                                         {
-                                                            frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                            frmPickItem.ShowDialog(Program.MainForm);
-
-                                                            ePickItemResult = frmPickItem.DialogResult;
-                                                            selectedContactUniqueId = frmPickItem.SelectedItem;
+                                                            if (objContact.IsGroup)
+                                                                lstContacts.Add(new ListItem(objContact.Name,
+                                                                    objContact.UniqueId));
                                                         }
-                                                    }
 
-                                                    // Make sure the dialogue window was not canceled.
-                                                    if (ePickItemResult != DialogResult.OK)
-                                                    {
-                                                        return false;
+                                                        if (lstContacts.Count > 1)
+                                                        {
+                                                            lstContacts.Sort(CompareListItems.CompareNames);
+                                                        }
+
+                                                        DialogResult ePickItemResult = DialogResult.Cancel;
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            Program.MainForm.DoThreadSafe(DoSelectItem);
+                                                        else
+                                                            await Program.MainForm.DoThreadSafeAsync(DoSelectItem);
+
+                                                        void DoSelectItem()
+                                                        {
+                                                            using (frmSelectItem frmPickItem = new frmSelectItem())
+                                                            {
+                                                                frmPickItem.SetDropdownItemsMode(lstContacts);
+                                                                frmPickItem.ShowDialog(Program.MainForm);
+
+                                                                ePickItemResult = frmPickItem.DialogResult;
+                                                                selectedContactUniqueId = frmPickItem.SelectedItem;
+                                                            }
+                                                        }
+
+                                                        // Make sure the dialogue window was not canceled.
+                                                        if (ePickItemResult != DialogResult.OK)
+                                                        {
+                                                            return false;
+                                                        }
                                                     }
                                                 }
 
@@ -4154,40 +4158,50 @@ namespace Chummer
                                 // Powers.
                                 bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version(5, 198, 26);
                                 objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
-                                List<ListItem> lstPowerOrder = new List<ListItem>(objXmlNodeList?.Count ?? 0);
-                                // Sort the Powers in alphabetical order.
-                                foreach (XmlNode xmlPower in objXmlNodeList)
+                                if (objXmlNodeList.Count > 0)
                                 {
-                                    string strGuid = xmlPower["guid"]?.InnerText;
-                                    string strPowerName = xmlPower["name"]?.InnerText ?? string.Empty;
-                                    if (blnDoEnhancedAccuracyRefresh && strPowerName == "Enhanced Accuracy (skill)")
+                                    using (new FetchSafelyFromPool<List<ListItem>>(
+                                               Utils.ListItemListPool, out List<ListItem> lstPowerOrder))
                                     {
-                                        _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
-                                    }
+                                        // Sort the Powers in alphabetical order.
+                                        foreach (XmlNode xmlPower in objXmlNodeList)
+                                        {
+                                            string strGuid = xmlPower["guid"]?.InnerText;
+                                            string strPowerName = xmlPower["name"]?.InnerText ?? string.Empty;
+                                            if (blnDoEnhancedAccuracyRefresh
+                                                && strPowerName == "Enhanced Accuracy (skill)")
+                                            {
+                                                _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
+                                            }
 
-                                    if (!string.IsNullOrEmpty(strGuid))
-                                        lstPowerOrder.Add(new ListItem(strGuid,
-                                            strPowerName + (xmlPower["extra"]?.InnerText ?? string.Empty)));
-                                    else
-                                    {
-                                        Power objPower = new Power(this);
-                                        objPower.Load(xmlPower);
-                                        _lstPowers.Add(objPower);
-                                    }
-                                }
+                                            if (!string.IsNullOrEmpty(strGuid))
+                                                lstPowerOrder.Add(new ListItem(strGuid,
+                                                                               strPowerName
+                                                                               + (xmlPower["extra"]?.InnerText
+                                                                                   ?? string.Empty)));
+                                            else
+                                            {
+                                                Power objPower = new Power(this);
+                                                objPower.Load(xmlPower);
+                                                _lstPowers.Add(objPower);
+                                            }
+                                        }
 
-                                lstPowerOrder.Sort(CompareListItems.CompareNames);
+                                        lstPowerOrder.Sort(CompareListItems.CompareNames);
 
-                                foreach (ListItem objItem in lstPowerOrder)
-                                {
-                                    XmlNode objNode =
-                                        objXmlCharacter.SelectSingleNode(
-                                            "powers/power[guid = " + objItem.Value.ToString().CleanXPath() + "]");
-                                    if (objNode != null)
-                                    {
-                                        Power objPower = new Power(this);
-                                        objPower.Load(objNode);
-                                        _lstPowers.Add(objPower);
+                                        foreach (ListItem objItem in lstPowerOrder)
+                                        {
+                                            XmlNode objNode =
+                                                objXmlCharacter.SelectSingleNode(
+                                                    "powers/power[guid = " + objItem.Value.ToString().CleanXPath()
+                                                                           + "]");
+                                            if (objNode != null)
+                                            {
+                                                Power objPower = new Power(this);
+                                                objPower.Load(objNode);
+                                                _lstPowers.Add(objPower);
+                                            }
+                                        }
                                     }
                                 }
 

@@ -859,129 +859,149 @@ namespace Chummer
         private void LoadStatBlockLists()
         {
             // Read the list of Categories from the XML file.
-            List<ListItem> lstMetatypes = new List<ListItem>(10)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGenders))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAges))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPersonalLives))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPreferredPayments))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstHobbiesVices))
             {
-                ListItem.Blank
-            };
-            List<ListItem> lstGenders = new List<ListItem>(5)
-            {
-                ListItem.Blank
-            };
-            List<ListItem> lstAges = new List<ListItem>(5)
-            {
-                ListItem.Blank
-            };
-            List<ListItem> lstPersonalLives = new List<ListItem>(10)
-            {
-                ListItem.Blank
-            };
-            List<ListItem> lstTypes = new List<ListItem>(10)
-            {
-                ListItem.Blank
-            };
-            List<ListItem> lstPreferredPayments = new List<ListItem>(20)
-            {
-                ListItem.Blank
-            };
-            List<ListItem> lstHobbiesVices = new List<ListItem>(20)
-            {
-                ListItem.Blank
-            };
+                lstMetatypes.Add(ListItem.Blank);
+                lstGenders.Add(ListItem.Blank);
+                lstAges.Add(ListItem.Blank);
+                lstPersonalLives.Add(ListItem.Blank);
+                lstTypes.Add(ListItem.Blank);
+                lstPreferredPayments.Add(ListItem.Blank);
+                lstHobbiesVices.Add(ListItem.Blank);
 
-            XPathNavigator xmlContactsBaseNode = _objContact.CharacterObject.LoadDataXPath("contacts.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            if (xmlContactsBaseNode != null)
-            {
-                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("genders/gender"))
+                XPathNavigator xmlContactsBaseNode = _objContact.CharacterObject.LoadDataXPath("contacts.xml")
+                                                                .SelectSingleNodeAndCacheExpression("/chummer");
+                if (xmlContactsBaseNode != null)
                 {
-                    string strName = xmlNode.Value;
-                    lstGenders.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-                }
-
-                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("ages/age"))
-                {
-                    string strName = xmlNode.Value;
-                    lstAges.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-                }
-
-                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("personallives/personallife"))
-                {
-                    string strName = xmlNode.Value;
-                    lstPersonalLives.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-                }
-
-                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("types/type"))
-                {
-                    string strName = xmlNode.Value;
-                    lstTypes.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-                }
-
-                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("preferredpayments/preferredpayment"))
-                {
-                    string strName = xmlNode.Value;
-                    lstPreferredPayments.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-                }
-
-                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("hobbiesvices/hobbyvice"))
-                {
-                    string strName = xmlNode.Value;
-                    lstHobbiesVices.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-                }
-            }
-
-            string strSpace = LanguageManager.GetString("String_Space");
-            foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("metatypes.xml").SelectAndCacheExpression("/chummer/metatypes/metatype"))
-            {
-                string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
-                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
-                XPathNodeIterator xmlMetavariantsList = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
-                if (xmlMetavariantsList.Count > 0)
-                {
-                    string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
-                    foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("genders/gender"))
                     {
-                        string strMetavariantName = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                        if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
-                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalSettings.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strMetavariantName)));
+                        string strName = xmlNode.Value;
+                        lstGenders.Add(new ListItem(
+                                           strName,
+                                           xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("ages/age"))
+                    {
+                        string strName = xmlNode.Value;
+                        lstAges.Add(new ListItem(
+                                        strName,
+                                        xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "personallives/personallife"))
+                    {
+                        string strName = xmlNode.Value;
+                        lstPersonalLives.Add(new ListItem(
+                                                 strName,
+                                                 xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("types/type"))
+                    {
+                        string strName = xmlNode.Value;
+                        lstTypes.Add(new ListItem(
+                                         strName,
+                                         xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "preferredpayments/preferredpayment"))
+                    {
+                        string strName = xmlNode.Value;
+                        lstPreferredPayments.Add(new ListItem(
+                                                     strName,
+                                                     xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                     ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "hobbiesvices/hobbyvice"))
+                    {
+                        string strName = xmlNode.Value;
+                        lstHobbiesVices.Add(new ListItem(
+                                                strName,
+                                                xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                ?? strName));
                     }
                 }
+
+                string strSpace = LanguageManager.GetString("String_Space");
+                foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("metatypes.xml")
+                                                                      .SelectAndCacheExpression(
+                                                                          "/chummer/metatypes/metatype"))
+                {
+                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                ?? strName;
+                    lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                    XPathNodeIterator xmlMetavariantsList
+                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
+                    if (xmlMetavariantsList.Count > 0)
+                    {
+                        string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
+                        foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
+                        {
+                            string strMetavariantName
+                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                  ?? string.Empty;
+                            if (lstMetatypes.All(
+                                    x => strMetavariantName.Equals(x.Value.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase)))
+                                lstMetatypes.Add(new ListItem(strMetavariantName,
+                                                              string.Format(
+                                                                  GlobalSettings.CultureInfo, strMetavariantFormat,
+                                                                  objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                      ?.Value ?? strMetavariantName)));
+                        }
+                    }
+                }
+
+                lstMetatypes.Sort(CompareListItems.CompareNames);
+                lstGenders.Sort(CompareListItems.CompareNames);
+                lstAges.Sort(CompareListItems.CompareNames);
+                lstPersonalLives.Sort(CompareListItems.CompareNames);
+                lstTypes.Sort(CompareListItems.CompareNames);
+                lstHobbiesVices.Sort(CompareListItems.CompareNames);
+                lstPreferredPayments.Sort(CompareListItems.CompareNames);
+
+                cboMetatype.BeginUpdate();
+                cboMetatype.PopulateWithListItems(lstMetatypes);
+                cboMetatype.EndUpdate();
+
+                cboGender.BeginUpdate();
+                cboGender.PopulateWithListItems(lstGenders);
+                cboGender.EndUpdate();
+
+                cboAge.BeginUpdate();
+                cboAge.PopulateWithListItems(lstAges);
+                cboAge.EndUpdate();
+
+                cboPersonalLife.BeginUpdate();
+                cboPersonalLife.PopulateWithListItems(lstPersonalLives);
+                cboPersonalLife.EndUpdate();
+
+                cboType.BeginUpdate();
+                cboType.PopulateWithListItems(lstTypes);
+                cboType.EndUpdate();
+
+                cboPreferredPayment.BeginUpdate();
+                cboPreferredPayment.PopulateWithListItems(lstPreferredPayments);
+                cboPreferredPayment.EndUpdate();
+
+                cboHobbiesVice.BeginUpdate();
+                cboHobbiesVice.PopulateWithListItems(lstHobbiesVices);
+                cboHobbiesVice.EndUpdate();
             }
-
-            lstMetatypes.Sort(CompareListItems.CompareNames);
-            lstGenders.Sort(CompareListItems.CompareNames);
-            lstAges.Sort(CompareListItems.CompareNames);
-            lstPersonalLives.Sort(CompareListItems.CompareNames);
-            lstTypes.Sort(CompareListItems.CompareNames);
-            lstHobbiesVices.Sort(CompareListItems.CompareNames);
-            lstPreferredPayments.Sort(CompareListItems.CompareNames);
-
-            cboMetatype.BeginUpdate();
-            cboMetatype.PopulateWithListItems(lstMetatypes);
-            cboMetatype.EndUpdate();
-
-            cboGender.BeginUpdate();
-            cboGender.PopulateWithListItems(lstGenders);
-            cboGender.EndUpdate();
-
-            cboAge.BeginUpdate();
-            cboAge.PopulateWithListItems(lstAges);
-            cboAge.EndUpdate();
-
-            cboPersonalLife.BeginUpdate();
-            cboPersonalLife.PopulateWithListItems(lstPersonalLives);
-            cboPersonalLife.EndUpdate();
-
-            cboType.BeginUpdate();
-            cboType.PopulateWithListItems(lstTypes);
-            cboType.EndUpdate();
-
-            cboPreferredPayment.BeginUpdate();
-            cboPreferredPayment.PopulateWithListItems(lstPreferredPayments);
-            cboPreferredPayment.EndUpdate();
-
-            cboHobbiesVice.BeginUpdate();
-            cboHobbiesVice.PopulateWithListItems(lstHobbiesVices);
-            cboHobbiesVice.EndUpdate();
         }
 
         #endregion Methods

@@ -51,7 +51,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlPowersBasePowersNode;
         private readonly XPathNavigator _xmlMartialArtsBaseChummerNode;
 
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
 
         #region Control Events
 

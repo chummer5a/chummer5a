@@ -381,25 +381,33 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
-                    List<ListItem> lstQualities = new List<ListItem>(1);
-                    foreach (XmlNode xmlLifestyle in xmlLifestyles.SelectAndCacheExpression("/chummer/lifestyles/lifestyle"))
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
                     {
-                        string strName = xmlLifestyle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Error");
-                        lstQualities.Add(new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));
-                    }
-
-                    using (frmSelectItem frmSelect = new frmSelectItem
-                    {
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CannotFindLifestyle"), _strName)
-                    })
-                    {
-                        frmSelect.SetGeneralItemsMode(lstQualities);
-                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        foreach (XmlNode xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
+                                     "/chummer/lifestyles/lifestyle"))
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            string strName = xmlLifestyle.SelectSingleNode("name")?.Value
+                                             ?? LanguageManager.GetString("String_Error");
+                            lstQualities.Add(
+                                new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));
                         }
-                        _strBaseLifestyle = frmSelect.SelectedItem;
+
+                        using (frmSelectItem frmSelect = new frmSelectItem
+                               {
+                                   Description = string.Format(GlobalSettings.CultureInfo,
+                                                               LanguageManager.GetString("String_CannotFindLifestyle"),
+                                                               _strName)
+                               })
+                        {
+                            frmSelect.SetGeneralItemsMode(lstQualities);
+                            if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+
+                            _strBaseLifestyle = frmSelect.SelectedItem;
+                        }
                     }
                 }
             }

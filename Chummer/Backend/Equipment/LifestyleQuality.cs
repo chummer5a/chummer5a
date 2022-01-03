@@ -377,27 +377,34 @@ namespace Chummer.Backend.Equipment
                                                      ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
             if (objLifestyleQualityNode == null)
             {
-                List<ListItem> lstQualities = new List<ListItem>(1);
-                foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression("/chummer/qualities/quality"))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
                 {
-                    lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
-                                                  xmlNode.SelectSingleNode("translate")?.Value ?? xmlNode.SelectSingleNode("name")?.Value));
-                }
-
-                using (frmSelectItem frmSelect = new frmSelectItem
-                {
-                    Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_intCannotFindLifestyleQuality"), _strName)
-                })
-                {
-                    frmSelect.SetGeneralItemsMode(lstQualities);
-                    if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                    foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression(
+                                 "/chummer/qualities/quality"))
                     {
-                        _guiID = Guid.Empty;
-                        return;
+                        lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
+                                                      xmlNode.SelectSingleNode("translate")?.Value
+                                                      ?? xmlNode.SelectSingleNode("name")?.Value));
                     }
 
-                    objLifestyleQualityNode =
-                        objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelect.SelectedItem.CleanXPath() + "]");
+                    using (frmSelectItem frmSelect = new frmSelectItem
+                           {
+                               Description = string.Format(GlobalSettings.CultureInfo,
+                                                           LanguageManager.GetString(
+                                                               "String_intCannotFindLifestyleQuality"), _strName)
+                           })
+                    {
+                        frmSelect.SetGeneralItemsMode(lstQualities);
+                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+
+                        objLifestyleQualityNode =
+                            objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = "
+                                                            + frmSelect.SelectedItem.CleanXPath() + "]");
+                    }
                 }
             }
 

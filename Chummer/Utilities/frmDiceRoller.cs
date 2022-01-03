@@ -41,17 +41,17 @@ namespace Chummer
             nudDice.Value = intDice;
             ProcessGremlins(lstQualities);
 
-            List<ListItem> lstMethod = new List<ListItem>(3)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethod))
             {
-                new ListItem("Standard", LanguageManager.GetString("String_DiceRoller_Standard")),
-                new ListItem("Large", LanguageManager.GetString("String_DiceRoller_Large")),
-                new ListItem("ReallyLarge", LanguageManager.GetString("String_DiceRoller_ReallyLarge"))
-            };
+                lstMethod.Add(new ListItem("Standard", LanguageManager.GetString("String_DiceRoller_Standard")));
+                lstMethod.Add(new ListItem("Large", LanguageManager.GetString("String_DiceRoller_Large")));
+                lstMethod.Add(new ListItem("ReallyLarge", LanguageManager.GetString("String_DiceRoller_ReallyLarge")));
 
-            cboMethod.BeginUpdate();
-            cboMethod.PopulateWithListItems(lstMethod);
-            cboMethod.SelectedIndex = 0;
-            cboMethod.EndUpdate();
+                cboMethod.BeginUpdate();
+                cboMethod.PopulateWithListItems(lstMethod);
+                cboMethod.SelectedIndex = 0;
+                cboMethod.EndUpdate();
+            }
 
             lblResultsLabel.Visible = false;
             lblResults.Text = string.Empty;

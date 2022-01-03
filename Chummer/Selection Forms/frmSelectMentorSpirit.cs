@@ -73,40 +73,45 @@ namespace Chummer
                     XPathNavigator xmlChoices = objXmlMentor.SelectSingleNodeAndCacheExpression("choices");
                     if (xmlChoices != null)
                     {
-                        List<ListItem> lstChoice1 = new List<ListItem>();
-                        List<ListItem> lstChoice2 = new List<ListItem>();
-
-                        foreach (XPathNavigator objChoice in xmlChoices.SelectAndCacheExpression("choice"))
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstChoice1))
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstChoice2))
                         {
-                            string strName = objChoice.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                            if ((_objCharacter.AdeptEnabled ||
-                                 !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
-                                (_objCharacter.MagicianEnabled ||
-                                 !strName.StartsWith("Magician:", StringComparison.Ordinal)))
+                            foreach (XPathNavigator objChoice in xmlChoices.SelectAndCacheExpression("choice"))
                             {
-                                if (objChoice.SelectSingleNode("@set")?.Value == "2")
-                                    lstChoice2.Add(new ListItem(strName,
-                                        objChoice.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                                else
-                                    lstChoice1.Add(new ListItem(strName,
-                                        objChoice.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                string strName = objChoice.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                 ?? string.Empty;
+                                if ((_objCharacter.AdeptEnabled ||
+                                     !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
+                                    (_objCharacter.MagicianEnabled ||
+                                     !strName.StartsWith("Magician:", StringComparison.Ordinal)))
+                                {
+                                    if (objChoice.SelectSingleNode("@set")?.Value == "2")
+                                        lstChoice2.Add(new ListItem(strName,
+                                                                    objChoice.SelectSingleNodeAndCacheExpression(
+                                                                        "translate")?.Value ?? strName));
+                                    else
+                                        lstChoice1.Add(new ListItem(strName,
+                                                                    objChoice.SelectSingleNodeAndCacheExpression(
+                                                                        "translate")?.Value ?? strName));
+                                }
                             }
-                        }
 
-                        //If there is only a single option, show it as a label.
-                        //If there are more, show the drop down menu
-                        if (lstChoice1.Count > 0)
-                            cboChoice1.PopulateWithListItems(lstChoice1);
-                        cboChoice1.Visible = lstChoice1.Count > 1;
-                        lblBonusText1.Visible = lstChoice1.Count == 1;
-                        if (lstChoice1.Count == 1)
-                            lblBonusText1.Text = lstChoice1[0].Name;
-                        if (lstChoice2.Count > 0)
-                            cboChoice2.PopulateWithListItems(lstChoice2);
-                        cboChoice2.Visible = lstChoice2.Count > 1;
-                        lblBonusText2.Visible = lstChoice2.Count == 1;
-                        if (lstChoice2.Count == 1)
-                            lblBonusText2.Text = lstChoice2[0].Name;
+                            //If there is only a single option, show it as a label.
+                            //If there are more, show the drop down menu
+                            if (lstChoice1.Count > 0)
+                                cboChoice1.PopulateWithListItems(lstChoice1);
+                            cboChoice1.Visible = lstChoice1.Count > 1;
+                            lblBonusText1.Visible = lstChoice1.Count == 1;
+                            if (lstChoice1.Count == 1)
+                                lblBonusText1.Text = lstChoice1[0].Name;
+                            if (lstChoice2.Count > 0)
+                                cboChoice2.PopulateWithListItems(lstChoice2);
+                            cboChoice2.Visible = lstChoice2.Count > 1;
+                            lblBonusText2.Visible = lstChoice2.Count == 1;
+                            if (lstChoice2.Count == 1)
+                                lblBonusText2.Text = lstChoice2[0].Name;
+                        }
                     }
                     else
                     {
@@ -187,33 +192,41 @@ namespace Chummer
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-            List<ListItem> lstMentors = new List<ListItem>();
-            foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select("mentors/mentor[" + strFilter + "]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
             {
-                if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
+                foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
+                             "mentors/mentor[" + strFilter + "]"))
+                {
+                    if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
 
-                string strName = objXmlMentor.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strId = objXmlMentor.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
-                if (strName == _strForceMentor)
-                    strForceId = strId;
-                lstMentors.Add(new ListItem(strId, objXmlMentor.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                    string strName = objXmlMentor.SelectSingleNodeAndCacheExpression("name")?.Value
+                                     ?? LanguageManager.GetString("String_Unknown");
+                    string strId = objXmlMentor.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
+                    if (strName == _strForceMentor)
+                        strForceId = strId;
+                    lstMentors.Add(new ListItem(
+                                       strId,
+                                       objXmlMentor.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                }
+
+                lstMentors.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstMentor.SelectedValue?.ToString();
+                _blnSkipRefresh = true;
+                lstMentor.BeginUpdate();
+                lstMentor.PopulateWithListItems(lstMentors);
+                _blnSkipRefresh = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstMentor.SelectedValue = strOldSelected;
+                else
+                    lstMentor.SelectedIndex = -1;
+                if (!string.IsNullOrEmpty(strForceId))
+                {
+                    lstMentor.SelectedValue = strForceId;
+                    lstMentor.Enabled = false;
+                }
+
+                lstMentor.EndUpdate();
             }
-            lstMentors.Sort(CompareListItems.CompareNames);
-            string strOldSelected = lstMentor.SelectedValue?.ToString();
-            _blnSkipRefresh = true;
-            lstMentor.BeginUpdate();
-            lstMentor.PopulateWithListItems(lstMentors);
-            _blnSkipRefresh = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstMentor.SelectedValue = strOldSelected;
-            else
-                lstMentor.SelectedIndex = -1;
-            if (!string.IsNullOrEmpty(strForceId))
-            {
-                lstMentor.SelectedValue = strForceId;
-                lstMentor.Enabled = false;
-            }
-            lstMentor.EndUpdate();
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

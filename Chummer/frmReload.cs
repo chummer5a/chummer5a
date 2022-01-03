@@ -44,52 +44,58 @@ namespace Chummer
 
         private void frmReload_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstAmmo = new List<ListItem>(_lstAmmo.Count);
-            string strSpace = LanguageManager.GetString("String_Space");
-            // Add each of the items to a new List since we need to also grab their plugin information.
-            foreach (Gear objGear in _lstAmmo)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstAmmo))
             {
-                string strName = objGear.DisplayNameShort(GlobalSettings.Language) + " x" + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
-                if (objGear.Rating > 0)
-                    strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
-
-                if (objGear.Parent is Gear objParent)
+                string strSpace = LanguageManager.GetString("String_Space");
+                // Add each of the items to a new List since we need to also grab their plugin information.
+                foreach (Gear objGear in _lstAmmo)
                 {
-                    if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalSettings.Language)))
-                    {
-                        strName += strSpace + '(' + objParent.DisplayNameShort(GlobalSettings.Language);
-                        if (objParent.Location != null)
-                            strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
-                        strName += ')';
-                    }
-                }
-                else if (objGear.Location != null)
-                    strName += strSpace + '(' + objGear.Location.DisplayName() + ')';
+                    string strName = objGear.DisplayNameShort(GlobalSettings.Language) + " x"
+                        + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
+                    if (objGear.Rating > 0)
+                        strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace
+                                   + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
 
-                // Retrieve the plugin information if it has any.
-                if (objGear.Children.Count > 0)
-                {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdPlugins))
+                    if (objGear.Parent is Gear objParent)
                     {
-                        foreach (Gear objChild in objGear.Children)
+                        if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalSettings.Language)))
                         {
-                            sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',').Append(strSpace);
+                            strName += strSpace + '(' + objParent.DisplayNameShort(GlobalSettings.Language);
+                            if (objParent.Location != null)
+                                strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
+                            strName += ')';
                         }
-
-                        // Remove the trailing comma.
-                        sbdPlugins.Length -= 1 + strSpace.Length;
-                        // Append the plugin information to the name.
-                        strName += strSpace + '[' + sbdPlugins + ']';
                     }
-                }
-                lstAmmo.Add(new ListItem(objGear.InternalId, strName));
-            }
+                    else if (objGear.Location != null)
+                        strName += strSpace + '(' + objGear.Location.DisplayName() + ')';
 
-            // Populate the lists.
-            cboAmmo.BeginUpdate();
-            cboAmmo.PopulateWithListItems(lstAmmo);
-            cboAmmo.EndUpdate();
+                    // Retrieve the plugin information if it has any.
+                    if (objGear.Children.Count > 0)
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdPlugins))
+                        {
+                            foreach (Gear objChild in objGear.Children)
+                            {
+                                sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',').Append(strSpace);
+                            }
+
+                            // Remove the trailing comma.
+                            sbdPlugins.Length -= 1 + strSpace.Length;
+                            // Append the plugin information to the name.
+                            strName += strSpace + '[' + sbdPlugins + ']';
+                        }
+                    }
+
+                    lstAmmo.Add(new ListItem(objGear.InternalId, strName));
+                }
+
+                // Populate the lists.
+                cboAmmo.BeginUpdate();
+                cboAmmo.PopulateWithListItems(lstAmmo);
+                cboAmmo.EndUpdate();
+            }
 
             cboType.BeginUpdate();
             cboType.DataSource = null;

@@ -51,42 +51,6 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public static IReadOnlyList<ListItem> DefaultKnowledgeSkills(Character objCharacter = null, string strLanguage = "")
-        {
-            List<ListItem> lstReturn = new List<ListItem>();
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
-            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage);
-            foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression("/chummer/knowledgeskills/skill"))
-            {
-                string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                lstReturn.Add(new ListItem(strName, xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-            }
-            lstReturn.Sort(CompareListItems.CompareNames);
-            return lstReturn;
-        }
-
-        /// <summary>
-        /// Load the (possible translated) types of kno skills (Academic, Street...)
-        /// </summary>
-        /// <param name="objCharacter"></param>
-        /// <param name="strLanguage"></param>
-        /// <returns></returns>
-        public static IReadOnlyList<ListItem> KnowledgeTypes(Character objCharacter = null, string strLanguage = "")
-        {
-            List<ListItem> lstReturn = new List<ListItem>();
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
-            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage);
-            foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression("/chummer/categories/category[@type = \"knowledge\"]"))
-            {
-                string strInnerText = objXmlCategory.Value;
-                lstReturn.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
-            }
-            lstReturn.Sort(CompareListItems.CompareNames);
-            return lstReturn;
-        }
-
         public override bool IsKnowledgeSkill => true;
 
         public override bool AllowDelete => (!ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0) && !IsNativeLanguage;

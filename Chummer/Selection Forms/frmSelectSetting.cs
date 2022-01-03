@@ -43,37 +43,43 @@ namespace Chummer
         private void frmSelectSetting_Load(object sender, EventArgs e)
         {
             // Build the list of XML files found in the settings directory.
-            List<ListItem> lstSettings = new List<ListItem>();
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-            foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSettings))
             {
-                // Load the file so we can get the Setting name.
-                XPathDocument objXmlDocument;
-                try
+                foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        objXmlDocument = new XPathDocument(objXmlReader);
-                }
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
+                    // Load the file so we can get the Setting name.
+                    XPathDocument objXmlDocument;
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader
+                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                            objXmlDocument = new XPathDocument(objXmlReader);
+                    }
+                    catch (IOException)
+                    {
+                        continue;
+                    }
+                    catch (XmlException)
+                    {
+                        continue;
+                    }
+
+                    lstSettings.Add(new ListItem(Path.GetFileName(strFileName),
+                                                 objXmlDocument.CreateNavigator().SelectSingleNode("/settings/name")
+                                                               ?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
 
-                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.CreateNavigator().SelectSingleNode("/settings/name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                lstSettings.Sort(CompareListItems.CompareNames);
+                cboSetting.BeginUpdate();
+                cboSetting.PopulateWithListItems(lstSettings);
+                // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
+                cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
+                if (cboSetting.SelectedIndex == -1)
+                    cboSetting.SelectedIndex = 0;
+                cboSetting.EndUpdate();
             }
-            lstSettings.Sort(CompareListItems.CompareNames);
-            cboSetting.BeginUpdate();
-            cboSetting.PopulateWithListItems(lstSettings);
-            // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
-            cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
-            if (cboSetting.SelectedIndex == -1)
-                cboSetting.SelectedIndex = 0;
-            cboSetting.EndUpdate();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

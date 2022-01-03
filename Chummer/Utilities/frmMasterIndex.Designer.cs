@@ -17,6 +17,8 @@ namespace Chummer
             {
                 components.Dispose();
                 _dicCachedNotes?.Dispose();
+                Utils.ListItemListPool.Return(_lstFileNamesWithItems);
+                Utils.ListItemListPool.Return(_lstItems);
             }
             base.Dispose(disposing);
         }

@@ -32,7 +32,7 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<DrugNodeData> _lstSelectedDrugComponents;
-        private readonly List<ListItem> _lstGrade = new List<ListItem>(10);
+        private readonly List<ListItem> _lstGrade = Utils.ListItemListPool.Get();
         private readonly Character _objCharacter;
         private Drug _objDrug;
         private readonly XmlDocument _objXmlDocument;

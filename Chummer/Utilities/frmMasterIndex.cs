@@ -32,9 +32,9 @@ namespace Chummer
     {
         private bool _blnSkipRefresh = true;
         private CharacterSettings _objSelectedSetting = GetInitialSetting();
-        private readonly List<ListItem> _lstFileNamesWithItems;
         private readonly LockingDictionary<MasterIndexEntry, string> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, string>();
-        private readonly List<ListItem> _lstItems = new List<ListItem>(short.MaxValue);
+        private readonly List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
+        private readonly List<ListItem> _lstItems = Utils.ListItemListPool.Get();
 
         private static CharacterSettings GetInitialSetting()
         {
@@ -83,42 +83,50 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
             PopulateCharacterSettings();
         }
 
         private void PopulateCharacterSettings()
         {
             // Populate the Character Settings list.
-            List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
-            foreach (CharacterSettings objLoopSettings in SettingsManager.LoadedCharacterSettings.Select(x => x.Value))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstCharacterSettings))
             {
-                lstCharacterSettings.Add(new ListItem(objLoopSettings, objLoopSettings.DisplayName));
+                foreach (CharacterSettings objLoopSettings in SettingsManager.LoadedCharacterSettings.Select(
+                             x => x.Value))
+                {
+                    lstCharacterSettings.Add(new ListItem(objLoopSettings, objLoopSettings.DisplayName));
+                }
+
+                lstCharacterSettings.Sort(CompareListItems.CompareNames);
+
+                string strOldSettingKey = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey
+                                          ?? _objSelectedSetting?.DictionaryKey;
+
+                bool blnOldSkipRefresh = _blnSkipRefresh;
+                _blnSkipRefresh = true;
+
+                cboCharacterSetting.BeginUpdate();
+                cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                if (!string.IsNullOrEmpty(strOldSettingKey)
+                    && SettingsManager.LoadedCharacterSettings.TryGetValue(
+                        strOldSettingKey, out CharacterSettings objSettings))
+                    cboCharacterSetting.SelectedValue = objSettings;
+                cboCharacterSetting.EndUpdate();
+
+                _blnSkipRefresh = blnOldSkipRefresh;
+
+                if (cboCharacterSetting.SelectedIndex != -1)
+                    return;
+                if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
+                                                                        out objSettings))
+                    cboCharacterSetting.SelectedValue = objSettings;
+                else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
+                             GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
+                    cboCharacterSetting.SelectedValue = objSettings;
+                if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                    cboCharacterSetting.SelectedIndex = 0;
             }
-            lstCharacterSettings.Sort(CompareListItems.CompareNames);
-
-            string strOldSettingKey = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey ?? _objSelectedSetting?.DictionaryKey;
-
-            bool blnOldSkipRefresh = _blnSkipRefresh;
-            _blnSkipRefresh = true;
-
-            cboCharacterSetting.BeginUpdate();
-            cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
-            if (!string.IsNullOrEmpty(strOldSettingKey) && SettingsManager.LoadedCharacterSettings.TryGetValue(strOldSettingKey, out CharacterSettings objSettings))
-                cboCharacterSetting.SelectedValue = objSettings;
-            cboCharacterSetting.EndUpdate();
-
-            _blnSkipRefresh = blnOldSkipRefresh;
-
-            if (cboCharacterSetting.SelectedIndex != -1)
-                return;
-            if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting, out objSettings))
-                cboCharacterSetting.SelectedValue = objSettings;
-            else if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
-                cboCharacterSetting.SelectedValue = objSettings;
-            if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
-                cboCharacterSetting.SelectedIndex = 0;
         }
 
         private async void frmMasterIndex_Load(object sender, EventArgs e)
@@ -241,51 +249,74 @@ namespace Chummer
                     string strSpace = LanguageManager.GetString("String_Space");
                     string strFormat = "{0}" + strSpace + "[{1}]";
                     Dictionary<string, List<ListItem>> dicHelper = new Dictionary<string, List<ListItem>>(lstItemsForLoading.Count);
-                    foreach (ListItem objItem in lstItemsForLoading)
+                    try
                     {
-                        MasterIndexEntry objEntry = (MasterIndexEntry)objItem.Value;
-                        string strKey = objEntry.DisplayName.ToUpperInvariant();
-                        if (dicHelper.TryGetValue(strKey, out List<ListItem> lstExistingItems))
+                        foreach (ListItem objItem in lstItemsForLoading)
                         {
-                            ListItem objExistingItem = lstExistingItems.Find(x => objEntry.DisplaySource.Equals(((MasterIndexEntry)x.Value).DisplaySource));
-                            if (objExistingItem.Value != null)
+                            MasterIndexEntry objEntry = (MasterIndexEntry) objItem.Value;
+                            string strKey = objEntry.DisplayName.ToUpperInvariant();
+                            if (dicHelper.TryGetValue(strKey, out List<ListItem> lstExistingItems))
                             {
-                                ((MasterIndexEntry)objExistingItem.Value).FileNames.UnionWith(objEntry.FileNames);
-                            }
-                            else
-                            {
-                                List<ListItem> lstItemsNeedingNameChanges = lstExistingItems.FindAll(x => !objEntry.FileNames.IsSubsetOf(((MasterIndexEntry)x.Value).FileNames));
-                                if (lstItemsNeedingNameChanges.Count == 0)
+                                ListItem objExistingItem = lstExistingItems.Find(
+                                    x => objEntry.DisplaySource.Equals(((MasterIndexEntry) x.Value).DisplaySource));
+                                if (objExistingItem.Value != null)
                                 {
-                                    _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
-                                    lstExistingItems.Add(objItem);
+                                    ((MasterIndexEntry) objExistingItem.Value).FileNames.UnionWith(objEntry.FileNames);
                                 }
                                 else
                                 {
-                                    ListItem objItemToAdd = new ListItem(objItem.Value, string.Format(GlobalSettings.CultureInfo,
-                                        strFormat, objItem.Name, string.Join(',' + strSpace, objEntry.FileNames)));
-                                    _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
-                                    lstExistingItems.Add(objItemToAdd);
-
-                                    foreach (ListItem objToRename in lstItemsNeedingNameChanges)
+                                    List<ListItem> lstItemsNeedingNameChanges
+                                        = lstExistingItems.FindAll(
+                                            x => !objEntry.FileNames.IsSubsetOf(
+                                                ((MasterIndexEntry) x.Value).FileNames));
+                                    if (lstItemsNeedingNameChanges.Count == 0)
                                     {
-                                        _lstItems.Remove(objToRename);
-                                        lstExistingItems.Remove(objToRename);
-
-                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
-                                        objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalSettings.CultureInfo,
-                                            strFormat, objExistingEntry.DisplayName, string.Join(',' + strSpace, objExistingEntry.FileNames)));
-                                        _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
+                                        _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
+                                        lstExistingItems.Add(objItem);
+                                    }
+                                    else
+                                    {
+                                        ListItem objItemToAdd = new ListItem(
+                                            objItem.Value, string.Format(GlobalSettings.CultureInfo,
+                                                                         strFormat, objItem.Name,
+                                                                         string.Join(
+                                                                             ',' + strSpace, objEntry.FileNames)));
+                                        _lstItems.Add(
+                                            objItemToAdd); // Not using AddRange because of potential memory issues
                                         lstExistingItems.Add(objItemToAdd);
+
+                                        foreach (ListItem objToRename in lstItemsNeedingNameChanges)
+                                        {
+                                            _lstItems.Remove(objToRename);
+                                            lstExistingItems.Remove(objToRename);
+
+                                            MasterIndexEntry objExistingEntry = (MasterIndexEntry) objToRename.Value;
+                                            objItemToAdd = new ListItem(objToRename.Value, string.Format(
+                                                                            GlobalSettings.CultureInfo,
+                                                                            strFormat, objExistingEntry.DisplayName,
+                                                                            string.Join(
+                                                                                ',' + strSpace,
+                                                                                objExistingEntry.FileNames)));
+                                            _lstItems.Add(
+                                                objItemToAdd); // Not using AddRange because of potential memory issues
+                                            lstExistingItems.Add(objItemToAdd);
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
+                                List<ListItem> lstHelperItems = Utils.ListItemListPool.Get();
+                                lstHelperItems.Add(objItem);
+                                dicHelper.Add(strKey, lstHelperItems);
+                            }
                         }
-                        else
-                        {
-                            _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
-                            dicHelper.Add(strKey, new List<ListItem>(objItem.Yield()));
-                        }
+                    }
+                    finally
+                    {
+                        foreach (List<ListItem> lstHelperItems in dicHelper.Values)
+                            Utils.ListItemListPool.Return(lstHelperItems);
                     }
                     _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                 }
@@ -336,48 +367,55 @@ namespace Chummer
                 return;
             using (new CursorWait(this))
             {
-                List<ListItem> lstFilteredItems;
-                if (txtSearch.TextLength == 0 && string.IsNullOrEmpty(cboFile.SelectedValue?.ToString()))
+                bool blnCustomList = !(txtSearch.TextLength == 0 && string.IsNullOrEmpty(cboFile.SelectedValue?.ToString()));
+                List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
+                try
                 {
-                    lstFilteredItems = _lstItems;
-                }
-                else
-                {
-                    lstFilteredItems = new List<ListItem>(_lstItems.Count);
-                    string strFileFilter = cboFile.SelectedValue?.ToString() ?? string.Empty;
-                    string strSearchFilter = txtSearch.Text;
-                    foreach (ListItem objItem in _lstItems)
+                    if (blnCustomList)
                     {
-                        MasterIndexEntry objItemEntry = (MasterIndexEntry)objItem.Value;
-                        if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
-                            continue;
-                        if (!string.IsNullOrEmpty(strSearchFilter))
+                        string strFileFilter = cboFile.SelectedValue?.ToString() ?? string.Empty;
+                        string strSearchFilter = txtSearch.Text;
+                        foreach (ListItem objItem in _lstItems)
                         {
-                            string strDisplayNameNoFile = objItemEntry.DisplayName;
-                            if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
-                                strDisplayNameNoFile = strDisplayNameNoFile.Substring(0, strDisplayNameNoFile.LastIndexOf('[')).Trim();
-                            if (strDisplayNameNoFile.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase) == -1)
+                            MasterIndexEntry objItemEntry = (MasterIndexEntry) objItem.Value;
+                            if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
                                 continue;
+                            if (!string.IsNullOrEmpty(strSearchFilter))
+                            {
+                                string strDisplayNameNoFile = objItemEntry.DisplayName;
+                                if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
+                                    strDisplayNameNoFile = strDisplayNameNoFile
+                                                           .Substring(0, strDisplayNameNoFile.LastIndexOf('[')).Trim();
+                                if (strDisplayNameNoFile.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase)
+                                    == -1)
+                                    continue;
+                            }
+
+                            lstFilteredItems.Add(objItem);
                         }
-
-                        lstFilteredItems.Add(objItem);
                     }
-                }
 
-                object objOldSelectedValue = lstItems.SelectedValue;
-                lstItems.BeginUpdate();
-                _blnSkipRefresh = true;
-                lstItems.PopulateWithListItems(lstFilteredItems);
-                _blnSkipRefresh = false;
-                if (objOldSelectedValue != null)
+                    object objOldSelectedValue = lstItems.SelectedValue;
+                    lstItems.BeginUpdate();
+                    _blnSkipRefresh = true;
+                    lstItems.PopulateWithListItems(lstFilteredItems);
+                    _blnSkipRefresh = false;
+                    if (objOldSelectedValue != null)
+                    {
+                        MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry) objOldSelectedValue;
+                        lstItems.SelectedIndex
+                            = lstFilteredItems.FindIndex(x => ((MasterIndexEntry) x.Value).Equals(objOldSelectedEntry));
+                    }
+                    else
+                        lstItems.SelectedIndex = -1;
+
+                    lstItems.EndUpdate();
+                }
+                finally
                 {
-                    MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry)objOldSelectedValue;
-                    lstItems.SelectedIndex = lstFilteredItems.FindIndex(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
+                    if (blnCustomList)
+                        Utils.ListItemListPool.Return(lstFilteredItems);
                 }
-                else
-                    lstItems.SelectedIndex = -1;
-
-                lstItems.EndUpdate();
             }
         }
 

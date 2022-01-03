@@ -6474,48 +6474,57 @@ namespace Chummer.Classes
                 setAllowed.Add(n.InnerText);
             }
 
-            List<ListItem> lstSpirits = new List<ListItem>();
-            foreach (XPathNavigator xmlSpirit in _objCharacter.LoadDataXPath(strXmlDoc).SelectAndCacheExpression("/chummer/spirits/spirit"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
             {
-                string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
-                if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
-                    continue;
-                lstSpirits.Add(new ListItem(strSpiritName, xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
-            }
-
-            if (!string.IsNullOrEmpty(strCritterCategory))
-            {
-                foreach (XPathNavigator xmlSpirit in _objCharacter.LoadDataXPath("critters.xml").Select("/chummer/critters/critter[category = " + strCritterCategory.CleanXPath() + "]"))
+                foreach (XPathNavigator xmlSpirit in _objCharacter.LoadDataXPath(strXmlDoc)
+                                                                  .SelectAndCacheExpression("/chummer/spirits/spirit"))
                 {
                     string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
                     if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
                         continue;
-                    lstSpirits.Add(new ListItem(strSpiritName, xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
+                    lstSpirits.Add(new ListItem(strSpiritName,
+                                                xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                ?? strSpiritName));
                 }
-            }
 
-            using (frmSelectItem frmSelect = new frmSelectItem())
-            {
-                frmSelect.SetGeneralItemsMode(lstSpirits);
-                frmSelect.ForceItem(ForcedValue);
-                frmSelect.ShowDialog(Program.MainForm);
-                if (frmSelect.DialogResult == DialogResult.Cancel)
+                if (!string.IsNullOrEmpty(strCritterCategory))
                 {
-                    throw new AbortedException();
+                    foreach (XPathNavigator xmlSpirit in _objCharacter.LoadDataXPath("critters.xml")
+                                                                      .Select("/chummer/critters/critter[category = "
+                                                                              + strCritterCategory.CleanXPath() + "]"))
+                    {
+                        string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
+                            continue;
+                        lstSpirits.Add(new ListItem(strSpiritName,
+                                                    xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                    ?? strSpiritName));
+                    }
                 }
 
-                if (addToSelectedValue)
+                using (frmSelectItem frmSelect = new frmSelectItem())
                 {
-                    if (string.IsNullOrEmpty(SelectedValue))
-                        SelectedValue = frmSelect.SelectedItem;
-                    else
-                        SelectedValue += ", " + frmSelect.SelectedItem;
-                }
+                    frmSelect.SetGeneralItemsMode(lstSpirits);
+                    frmSelect.ForceItem(ForcedValue);
+                    frmSelect.ShowDialog(Program.MainForm);
+                    if (frmSelect.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
 
-                Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
-                Log.Info("SourceName = " + SourceName);
-                Log.Info("Calling CreateImprovement");
-                CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, impType, _strUnique);
+                    if (addToSelectedValue)
+                    {
+                        if (string.IsNullOrEmpty(SelectedValue))
+                            SelectedValue = frmSelect.SelectedItem;
+                        else
+                            SelectedValue += ", " + frmSelect.SelectedItem;
+                    }
+
+                    Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
+                    Log.Info("SourceName = " + SourceName);
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, impType, _strUnique);
+                }
             }
         }
         #endregion

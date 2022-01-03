@@ -18,6 +18,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                Utils.ListItemListPool.Return(_lstCategory);
             }
             base.Dispose(disposing);
         }

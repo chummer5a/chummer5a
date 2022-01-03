@@ -254,35 +254,43 @@ namespace Chummer
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             // Populate the Complex Form list.
-            List<ListItem> lstComplexFormItems = new List<ListItem>();
-            foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select("complexform[" + strFilter + ']'))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstComplexFormItems))
             {
-                string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id")?.Value;
-                if (string.IsNullOrEmpty(strId))
-                    continue;
+                foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
+                             "complexform[" + strFilter + ']'))
+                {
+                    string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    if (string.IsNullOrEmpty(strId))
+                        continue;
 
-                if (!xmlComplexForm.RequirementsMet(_objCharacter))
-                    continue;
+                    if (!xmlComplexForm.RequirementsMet(_objCharacter))
+                        continue;
 
-                string strName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform") != null && _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("complexform[. = " + strName.CleanXPath() + "]") == null)
-                    continue;
+                    string strName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name")?.Value
+                                     ?? LanguageManager.GetString("String_Unknown");
+                    // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
+                    if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform") != null
+                        && _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression(
+                            "complexform[. = " + strName.CleanXPath() + "]") == null)
+                        continue;
 
-                lstComplexFormItems.Add(new ListItem(strId, xmlComplexForm.SelectSingleNode("translate")?.Value ?? strName));
+                    lstComplexFormItems.Add(
+                        new ListItem(strId, xmlComplexForm.SelectSingleNode("translate")?.Value ?? strName));
+                }
+
+                lstComplexFormItems.Sort(CompareListItems.CompareNames);
+                _blnLoading = true;
+                string strOldSelected = lstComplexForms.SelectedValue?.ToString();
+                lstComplexForms.BeginUpdate();
+                lstComplexForms.PopulateWithListItems(lstComplexFormItems);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstComplexForms.SelectedValue = strOldSelected;
+                else
+                    lstComplexForms.SelectedIndex = -1;
+                lstComplexForms.EndUpdate();
             }
-
-            lstComplexFormItems.Sort(CompareListItems.CompareNames);
-            _blnLoading = true;
-            string strOldSelected = lstComplexForms.SelectedValue?.ToString();
-            lstComplexForms.BeginUpdate();
-            lstComplexForms.PopulateWithListItems(lstComplexFormItems);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstComplexForms.SelectedValue = strOldSelected;
-            else
-                lstComplexForms.SelectedIndex = -1;
-            lstComplexForms.EndUpdate();
         }
 
         /// <summary>

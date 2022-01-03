@@ -27,7 +27,7 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-        private readonly List<ListItem> _lstAttributes;
+        private readonly List<ListItem> _lstAttributes = Utils.ListItemListPool.Get();
 
         #region Control Events
 
@@ -38,7 +38,6 @@ namespace Chummer
             this.TranslateWinForm();
 
             // Build the list of Attributes.
-            _lstAttributes = new List<ListItem>(lstAttributeAbbrevs.Length);
             foreach (string strAbbrev in lstAttributeAbbrevs)
             {
                 string strAttributeDisplayName = strAbbrev == "MAGAdept"

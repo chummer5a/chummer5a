@@ -221,34 +221,47 @@ namespace Chummer
 
         private void LoadContactList()
         {
-            List<ListItem> lstMetatypes = new List<ListItem>(30)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {
-                ListItem.Blank
-            };
-            string strSpace = LanguageManager.GetString("String_Space");
-            foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("critters.xml").SelectAndCacheExpression("/chummer/metatypes/metatype"))
-            {
-                string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
-                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
-                XPathNodeIterator xmlMetavariantsList = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
-                if (xmlMetavariantsList.Count > 0)
+                lstMetatypes.Add(ListItem.Blank);
+                string strSpace = LanguageManager.GetString("String_Space");
+                foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("critters.xml")
+                                                                      .SelectAndCacheExpression(
+                                                                          "/chummer/metatypes/metatype"))
                 {
-                    string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
-                    foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
+                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                ?? strName;
+                    lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                    XPathNodeIterator xmlMetavariantsList
+                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
+                    if (xmlMetavariantsList.Count > 0)
                     {
-                        string strMetavariantName = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                        if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
-                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalSettings.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strMetavariantName)));
+                        string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
+                        foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
+                        {
+                            string strMetavariantName
+                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                  ?? string.Empty;
+                            if (lstMetatypes.All(
+                                    x => strMetavariantName.Equals(x.Value.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase)))
+                                lstMetatypes.Add(new ListItem(strMetavariantName,
+                                                              string.Format(
+                                                                  GlobalSettings.CultureInfo, strMetavariantFormat,
+                                                                  objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                      ?.Value ?? strMetavariantName)));
+                        }
                     }
                 }
+
+                lstMetatypes.Sort(CompareListItems.CompareNames);
+
+                cboMetatype.BeginUpdate();
+                cboMetatype.PopulateWithListItems(lstMetatypes);
+                cboMetatype.EndUpdate();
             }
-
-            lstMetatypes.Sort(CompareListItems.CompareNames);
-
-            cboMetatype.BeginUpdate();
-            cboMetatype.PopulateWithListItems(lstMetatypes);
-            cboMetatype.EndUpdate();
         }
 
         private void DoDataBindings()

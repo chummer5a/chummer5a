@@ -16,6 +16,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                Utils.ListItemListPool.Return(_lstCategory);
             }
             base.Dispose(disposing);
         }
@@ -94,7 +95,7 @@ namespace Chummer
             this.cboCategory.Size = new System.Drawing.Size(239, 21);
             this.cboCategory.TabIndex = 11;
             this.cboCategory.TooltipText = "";
-            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
+            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.RefreshListControlWithCurrentCategory);
             // 
             // lblSource
             // 
@@ -179,7 +180,7 @@ namespace Chummer
             this.chkLimitList.Tag = "Checkbox_SelectQuality_LimitList";
             this.chkLimitList.Text = "Show only Qualities I can take";
             this.chkLimitList.UseVisualStyleBackColor = true;
-            this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
+            this.chkLimitList.CheckedChanged += new System.EventHandler(this.RefreshListControlWithCurrentCategory);
             // 
             // lblBP
             // 
@@ -217,7 +218,7 @@ namespace Chummer
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
             this.chkFree.UseVisualStyleBackColor = true;
-            this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
+            this.chkFree.CheckedChanged += new System.EventHandler(this.RefreshListControlWithCurrentCategory);
             // 
             // txtSearch
             // 
@@ -227,7 +228,7 @@ namespace Chummer
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(247, 20);
             this.txtSearch.TabIndex = 1;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            this.txtSearch.TextChanged += new System.EventHandler(this.RefreshListControlWithCurrentCategory);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
             // 

@@ -46,70 +46,81 @@ namespace Chummer
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstItems = new List<ListItem>
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
-                new ListItem("Custom", string.Empty)
-            };
+                lstItems.Add(new ListItem("Custom", string.Empty));
 
-            if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
-            {
-                chkKarma.Checked = true;
-                chkKarma.Visible = false;
-            }
-            XPathNavigator xmlParentSkill;
-            if (Mode == "Knowledge")
-                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + _objSkill.Name.CleanXPath() + "]")
-                                 ?? _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + "]");
-            else
-                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and (" + _objCharacter.Settings.BookXPath() + ")]");
-            // Populate the Skill's Specializations (if any).
-            XPathNodeIterator xmlSpecList = xmlParentSkill?.SelectAndCacheExpression("specs/spec");
-            if (xmlSpecList?.Count > 0)
-            {
-                foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
+                if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
-                    string strInnerText = objXmlSpecialization.Value;
-                    lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                    chkKarma.Checked = true;
+                    chkKarma.Visible = false;
+                }
 
-                    if (_objSkill.SkillCategory != "Combat Active")
-                        continue;
-                    // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                    XPathNavigator objXmlWeaponDocument = _objCharacter.LoadDataXPath("weapons.xml");
-                    //Might need to include skill name or might miss some values?
-                    foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select("/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = " + strInnerText.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath() + ")]"))
+                XPathNavigator xmlParentSkill;
+                if (Mode == "Knowledge")
+                    xmlParentSkill
+                        = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = "
+                                                           + _objSkill.Name.CleanXPath() + "]")
+                          ?? _objXmlDocument.SelectSingleNode(
+                              "/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + "]");
+                else
+                    xmlParentSkill = _objXmlDocument.SelectSingleNode(
+                        "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
+                        + _objCharacter.Settings.BookXPath() + ")]");
+                // Populate the Skill's Specializations (if any).
+                XPathNodeIterator xmlSpecList = xmlParentSkill?.SelectAndCacheExpression("specs/spec");
+                if (xmlSpecList?.Count > 0)
+                {
+                    foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
                     {
-                        string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstItems.Add(new ListItem(strName, objXmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                        string strInnerText = objXmlSpecialization.Value;
+                        lstItems.Add(new ListItem(strInnerText,
+                                                  objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")
+                                                                      ?.Value ?? strInnerText));
+
+                        if (_objSkill.SkillCategory != "Combat Active")
+                            continue;
+                        // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
+                        XPathNavigator objXmlWeaponDocument = _objCharacter.LoadDataXPath("weapons.xml");
+                        //Might need to include skill name or might miss some values?
+                        foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select(
+                                     "/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = "
+                                     + strInnerText.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath()
+                                     + ")]"))
+                        {
+                            string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstItems.Add(new ListItem(
+                                                 strName,
+                                                 objXmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                 ?? strName));
+                        }
                     }
                 }
-            }
 
-            // Populate the lists.
-            cboSpec.BeginUpdate();
-            cboSpec.PopulateWithListItems(lstItems);
+                // Populate the lists.
+                cboSpec.BeginUpdate();
+                cboSpec.PopulateWithListItems(lstItems);
 
-            // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-            if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
-                AcceptForm();
-
-            if (!string.IsNullOrEmpty(_strForceItem))
-            {
-                cboSpec.SelectedIndex = cboSpec.FindStringExact(_strForceItem);
-                if (cboSpec.SelectedIndex != -1)
+                // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
+                if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
                     AcceptForm();
-                else
+
+                if (!string.IsNullOrEmpty(_strForceItem))
                 {
-                    List<ListItem> lstSingle = new List<ListItem>
+                    cboSpec.SelectedIndex = cboSpec.FindStringExact(_strForceItem);
+                    if (cboSpec.SelectedIndex != -1)
+                        AcceptForm();
+                    else
                     {
-                        new ListItem(_strForceItem, _strForceItem)
-                    };
-                    cboSpec.PopulateWithListItems(lstSingle);
-                    cboSpec.SelectedIndex = 0;
-                    AcceptForm();
+                        cboSpec.PopulateWithListItems((new ListItem(_strForceItem, _strForceItem)).Yield());
+                        cboSpec.SelectedIndex = 0;
+                        AcceptForm();
+                    }
                 }
+
+                cboSpec.EndUpdate();
             }
-            cboSpec.EndUpdate();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

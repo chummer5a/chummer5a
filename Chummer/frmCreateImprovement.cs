@@ -51,53 +51,61 @@ namespace Chummer
 
         private void frmCreateImprovement_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstTypes = new List<ListItem>((int)Improvement.ImprovementType.NumImprovementTypes);
-
-            // Populate the Improvement Type list.
-            XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
-            if (objXmlImprovementList != null)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {
-                foreach (XmlNode objXmlImprovement in objXmlImprovementList)
+                // Populate the Improvement Type list.
+                XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
+                if (objXmlImprovementList?.Count > 0)
                 {
-                    string strId = objXmlImprovement["id"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strId))
+                    foreach (XmlNode objXmlImprovement in objXmlImprovementList)
                     {
-                        lstTypes.Add(new ListItem(strId,
-                            objXmlImprovement["translate"]?.InnerText
-                            ?? objXmlImprovement["name"]?.InnerText
-                            ?? LanguageManager.GetString("String_Unknown")));
+                        string strId = objXmlImprovement["id"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strId))
+                        {
+                            lstTypes.Add(new ListItem(strId,
+                                                      objXmlImprovement["translate"]?.InnerText
+                                                      ?? objXmlImprovement["name"]?.InnerText
+                                                      ?? LanguageManager.GetString("String_Unknown")));
+                        }
                     }
                 }
-            }
 
-            lstTypes.Sort(CompareListItems.CompareNames);
-            cboImprovemetType.BeginUpdate();
-            cboImprovemetType.PopulateWithListItems(lstTypes);
+                lstTypes.Sort(CompareListItems.CompareNames);
+                cboImprovemetType.BeginUpdate();
+                cboImprovemetType.PopulateWithListItems(lstTypes);
 
-            // Load the information from the passed Improvement if one has been given.
-            if (EditImprovementObject != null)
-            {
-                cboImprovemetType.SelectedValue = EditImprovementObject.CustomId;
-                txtName.Text = EditImprovementObject.CustomName;
-                if (nudMax.Visible)
-                    nudMax.Value = EditImprovementObject.Maximum;
-                if (nudMin.Visible)
-                    nudMin.Value = EditImprovementObject.Minimum;
-                if (nudVal.Visible)
+                // Load the information from the passed Improvement if one has been given.
+                if (EditImprovementObject != null)
                 {
-                    // specificattribute stores the Value in Augmented instead.
-                    nudVal.Value = EditImprovementObject.CustomId == "specificattribute" ? EditImprovementObject.Augmented : EditImprovementObject.Value;
+                    cboImprovemetType.SelectedValue = EditImprovementObject.CustomId;
+                    txtName.Text = EditImprovementObject.CustomName;
+                    if (nudMax.Visible)
+                        nudMax.Value = EditImprovementObject.Maximum;
+                    if (nudMin.Visible)
+                        nudMin.Value = EditImprovementObject.Minimum;
+                    if (nudVal.Visible)
+                    {
+                        // specificattribute stores the Value in Augmented instead.
+                        nudVal.Value = EditImprovementObject.CustomId == "specificattribute"
+                            ? EditImprovementObject.Augmented
+                            : EditImprovementObject.Value;
+                    }
+
+                    chkApplyToRating.Checked = chkApplyToRating.Visible && EditImprovementObject.AddToRating;
+                    if (txtTranslateSelection.Visible)
+                    {
+                        txtSelect.Text = EditImprovementObject.ImprovedName;
+                        // get the selection type of improvement and generate translation
+                        XmlNode objFetchNode = _objDocument.SelectSingleNode(
+                            "/chummer/improvements/improvement[id = "
+                            + cboImprovemetType.SelectedValue.ToString().CleanXPath() + "]/fields/field");
+                        txtTranslateSelection.Text
+                            = TranslateField(objFetchNode?.InnerText, EditImprovementObject.ImprovedName);
+                    }
                 }
-                chkApplyToRating.Checked = chkApplyToRating.Visible && EditImprovementObject.AddToRating;
-                if (txtTranslateSelection.Visible)
-                {
-                    txtSelect.Text = EditImprovementObject.ImprovedName;
-                    // get the selection type of improvement and generate translation
-                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + "]/fields/field");
-                    txtTranslateSelection.Text = TranslateField(objFetchNode?.InnerText, EditImprovementObject.ImprovedName);
-                }
+
+                cboImprovemetType.EndUpdate();
             }
-            cboImprovemetType.EndUpdate();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -192,28 +200,37 @@ namespace Chummer
             switch (_strSelect)
             {
                 case "SelectActionDicePool":
-                    List<ListItem> lstActions = new List<ListItem>();
-                    foreach (XPathNavigator xmlAction in _objCharacter.LoadDataXPath("actions.xml").SelectAndCacheExpression("/chummer/actions/action"))
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstActions))
                     {
-                        string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstActions.Add(new ListItem(strName, xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                    }
-
-                    using (frmSelectItem frmSelectAction = new frmSelectItem
-                    {
-                        Description = LanguageManager.GetString("Title_SelectAction")
-                    })
-                    {
-                        frmSelectAction.SetDropdownItemsMode(lstActions);
-                        frmSelectAction.ShowDialog(this);
-
-                        if (frmSelectAction.DialogResult == DialogResult.OK)
+                        foreach (XPathNavigator xmlAction in _objCharacter.LoadDataXPath("actions.xml")
+                                                                          .SelectAndCacheExpression(
+                                                                              "/chummer/actions/action"))
                         {
-                            txtSelect.Text = frmSelectAction.SelectedName;
-                            txtTranslateSelection.Text = TranslateField(_strSelect, frmSelectAction.SelectedName);
+                            string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstActions.Add(new ListItem(
+                                                   strName,
+                                                   xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                   ?? strName));
+                        }
+
+                        using (frmSelectItem frmSelectAction = new frmSelectItem
+                               {
+                                   Description = LanguageManager.GetString("Title_SelectAction")
+                               })
+                        {
+                            frmSelectAction.SetDropdownItemsMode(lstActions);
+                            frmSelectAction.ShowDialog(this);
+
+                            if (frmSelectAction.DialogResult == DialogResult.OK)
+                            {
+                                txtSelect.Text = frmSelectAction.SelectedName;
+                                txtTranslateSelection.Text = TranslateField(_strSelect, frmSelectAction.SelectedName);
+                            }
                         }
                     }
+
                     break;
 
                 case "SelectAttribute":
@@ -397,12 +414,15 @@ namespace Chummer
                     break;
 
                 case "SelectKnowSkill":
+                {
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstDropdownItems))
                     {
-                        List<ListItem> lstDropdownItems = new List<ListItem>(_objCharacter.SkillsSection.KnowledgeSkills.Count);
                         HashSet<string> setProcessedSkillNames = new HashSet<string>();
                         foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
-                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
+                            lstDropdownItems.Add(
+                                new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
                             setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                         }
 
@@ -426,19 +446,24 @@ namespace Chummer
                                 strFilter = '[' + sbdFilters.ToString() + ']';
                         }
 
-                        foreach (XPathNavigator xmlSkill in _objCharacter.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill" + strFilter))
+                        foreach (XPathNavigator xmlSkill in _objCharacter.LoadDataXPath("skills.xml")
+                                                                         .Select("/chummer/knowledgeskills/skill"
+                                                                             + strFilter))
                         {
                             string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
-                                lstDropdownItems.Add(new ListItem(strName, xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                lstDropdownItems.Add(
+                                    new ListItem(
+                                        strName,
+                                        xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                         }
 
                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
                         using (frmSelectItem frmPickSkill = new frmSelectItem
-                        {
-                            Description = LanguageManager.GetString("Title_SelectSkill")
-                        })
+                               {
+                                   Description = LanguageManager.GetString("Title_SelectSkill")
+                               })
                         {
                             frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
                             frmPickSkill.ShowDialog(this);
@@ -450,6 +475,7 @@ namespace Chummer
                             }
                         }
                     }
+                }
                     break;
 
                 case "SelectSkillCategory":
@@ -481,53 +507,71 @@ namespace Chummer
                     break;
 
                 case "SelectComplexForm":
-                    List<ListItem> lstComplexForms = new List<ListItem>();
-                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("complexforms.xml").SelectAndCacheExpression("/chummer/complexforms/complexform"))
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstComplexForms))
                     {
-                        string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstComplexForms.Add(new ListItem(strName, xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                    }
-
-                    using (frmSelectItem selectComplexForm = new frmSelectItem
-                    {
-                        Description = LanguageManager.GetString("Title_SelectComplexForm")
-                    })
-                    {
-                        selectComplexForm.SetDropdownItemsMode(lstComplexForms);
-                        selectComplexForm.ShowDialog(this);
-
-                        if (selectComplexForm.DialogResult == DialogResult.OK)
+                        foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("complexforms.xml")
+                                                                         .SelectAndCacheExpression(
+                                                                             "/chummer/complexforms/complexform"))
                         {
-                            txtSelect.Text = selectComplexForm.SelectedName;
-                            txtTranslateSelection.Text = TranslateField(_strSelect, selectComplexForm.SelectedName);
+                            string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstComplexForms.Add(new ListItem(
+                                                        strName,
+                                                        xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                        ?? strName));
+                        }
+
+                        using (frmSelectItem selectComplexForm = new frmSelectItem
+                               {
+                                   Description = LanguageManager.GetString("Title_SelectComplexForm")
+                               })
+                        {
+                            selectComplexForm.SetDropdownItemsMode(lstComplexForms);
+                            selectComplexForm.ShowDialog(this);
+
+                            if (selectComplexForm.DialogResult == DialogResult.OK)
+                            {
+                                txtSelect.Text = selectComplexForm.SelectedName;
+                                txtTranslateSelection.Text = TranslateField(_strSelect, selectComplexForm.SelectedName);
+                            }
                         }
                     }
+
                     break;
 
                 case "SelectSpell":
-                    List<ListItem> lstSpells = new List<ListItem>();
-                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("spells.xml").SelectAndCacheExpression("/chummer/spells/spell"))
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstSpells))
                     {
-                        string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstSpells.Add(new ListItem(strName, xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                    }
-
-                    using (frmSelectItem selectSpell = new frmSelectItem
-                    {
-                        Description = LanguageManager.GetString("Title_SelectSpell")
-                    })
-                    {
-                        selectSpell.SetDropdownItemsMode(lstSpells);
-                        selectSpell.ShowDialog(this);
-
-                        if (selectSpell.DialogResult == DialogResult.OK)
+                        foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("spells.xml")
+                                                                         .SelectAndCacheExpression(
+                                                                             "/chummer/spells/spell"))
                         {
-                            txtSelect.Text = selectSpell.SelectedName;
-                            txtTranslateSelection.Text = TranslateField(_strSelect, selectSpell.SelectedName);
+                            string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstSpells.Add(new ListItem(
+                                                  strName,
+                                                  xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                  ?? strName));
+                        }
+
+                        using (frmSelectItem selectSpell = new frmSelectItem
+                               {
+                                   Description = LanguageManager.GetString("Title_SelectSpell")
+                               })
+                        {
+                            selectSpell.SetDropdownItemsMode(lstSpells);
+                            selectSpell.ShowDialog(this);
+
+                            if (selectSpell.DialogResult == DialogResult.OK)
+                            {
+                                txtSelect.Text = selectSpell.SelectedName;
+                                txtTranslateSelection.Text = TranslateField(_strSelect, selectSpell.SelectedName);
+                            }
                         }
                     }
+
                     break;
 
                 case "SelectWeaponCategory":

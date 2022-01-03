@@ -27,7 +27,7 @@ namespace Chummer
     {
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
-        private readonly List<ListItem> _lstPowerItems = new List<ListItem>();
+        private readonly List<ListItem> _lstPowerItems = Utils.ListItemListPool.Get();
 
         #region Control Events
 

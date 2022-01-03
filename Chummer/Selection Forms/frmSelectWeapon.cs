@@ -45,7 +45,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
         private Weapon _objSelectedWeapon;
 
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -823,6 +824,14 @@ namespace Chummer
         /// Memory Pool for empty StringBuilder objects. A bit slower up-front than a simple allocation, but reduces memory allocations, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
-        public static ObjectPool<StringBuilder> StringBuilderPool { get; } = s_ObjObjectPoolProvider.CreateStringBuilderPool();
+        public static ObjectPool<StringBuilder> StringBuilderPool { get; }
+            = s_ObjObjectPoolProvider.CreateStringBuilderPool();
+
+        /// <summary>
+        /// Memory Pool for empty lists of ListItems. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static ObjectPool<List<ListItem>> ListItemListPool { get; }
+            = s_ObjObjectPoolProvider.Create(new ListPooledObjectPolicy<ListItem>());
     }
 }

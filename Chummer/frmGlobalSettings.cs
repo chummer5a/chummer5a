@@ -701,7 +701,7 @@ namespace Chummer
 
         private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
         {
-            UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin)?.GetOptionsControl();
+            UserControl pluginControl = (clbPlugins.SelectedItem as IPlugin)?.GetOptionsControl();
             if (pluginControl != null)
             {
                 pnlPluginOption.Controls.Clear();
@@ -908,29 +908,37 @@ namespace Chummer
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
-            List<ListItem> lstSourcebookInfos = new List<ListItem>();
-            foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", null, _strSelectedLanguage).SelectAndCacheExpression("/chummer/books/book"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstSourcebookInfos))
             {
-                string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
-                if (!string.IsNullOrEmpty(strCode))
+                foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", null, _strSelectedLanguage)
+                                                                .SelectAndCacheExpression("/chummer/books/book"))
                 {
-                    ListItem objBookInfo = new ListItem(strCode, objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value ?? strCode);
-                    lstSourcebookInfos.Add(objBookInfo);
+                    string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
+                    if (!string.IsNullOrEmpty(strCode))
+                    {
+                        ListItem objBookInfo
+                            = new ListItem(
+                                strCode,
+                                objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                ?? objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value ?? strCode);
+                        lstSourcebookInfos.Add(objBookInfo);
+                    }
                 }
-            }
 
-            lstSourcebookInfos.Sort(CompareListItems.CompareNames);
-            bool blnOldSkipRefresh = _blnSkipRefresh;
-            _blnSkipRefresh = true;
-            lstGlobalSourcebookInfos.BeginUpdate();
-            string strOldSelected = lstGlobalSourcebookInfos.SelectedValue?.ToString();
-            lstGlobalSourcebookInfos.PopulateWithListItems(lstSourcebookInfos);
-            _blnSkipRefresh = blnOldSkipRefresh;
-            if (string.IsNullOrEmpty(strOldSelected))
-                lstGlobalSourcebookInfos.SelectedIndex = -1;
-            else
-                lstGlobalSourcebookInfos.SelectedValue = strOldSelected;
-            lstGlobalSourcebookInfos.EndUpdate();
+                lstSourcebookInfos.Sort(CompareListItems.CompareNames);
+                bool blnOldSkipRefresh = _blnSkipRefresh;
+                _blnSkipRefresh = true;
+                lstGlobalSourcebookInfos.BeginUpdate();
+                string strOldSelected = lstGlobalSourcebookInfos.SelectedValue?.ToString();
+                lstGlobalSourcebookInfos.PopulateWithListItems(lstSourcebookInfos);
+                _blnSkipRefresh = blnOldSkipRefresh;
+                if (string.IsNullOrEmpty(strOldSelected))
+                    lstGlobalSourcebookInfos.SelectedIndex = -1;
+                else
+                    lstGlobalSourcebookInfos.SelectedValue = strOldSelected;
+                lstGlobalSourcebookInfos.EndUpdate();
+            }
         }
 
         private void PopulateCustomDataDirectoryListBox()
@@ -1133,87 +1141,104 @@ namespace Chummer
 
         private void PopulateDefaultCharacterSettingLists()
         {
-            List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
-            foreach (KeyValuePair<string, CharacterSettings> kvpLoopCharacterOptions in SettingsManager.LoadedCharacterSettings)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstCharacterSettings))
             {
-                string strId = kvpLoopCharacterOptions.Key;
-                if (!string.IsNullOrEmpty(strId))
+                foreach (KeyValuePair<string, CharacterSettings> kvpLoopCharacterOptions in SettingsManager
+                             .LoadedCharacterSettings)
                 {
-                    string strName = kvpLoopCharacterOptions.Value.Name;
-                    if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
-                        strName = LanguageManager.GetString(strName.TrimStartOnce('{').TrimEndOnce('}'), _strSelectedLanguage);
-                    lstCharacterSettings.Add(new ListItem(strId, strName));
+                    string strId = kvpLoopCharacterOptions.Key;
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        string strName = kvpLoopCharacterOptions.Value.Name;
+                        if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
+                            strName = LanguageManager.GetString(strName.TrimStartOnce('{').TrimEndOnce('}'),
+                                                                _strSelectedLanguage);
+                        lstCharacterSettings.Add(new ListItem(strId, strName));
+                    }
                 }
+
+                lstCharacterSettings.Sort(CompareListItems.CompareNames);
+
+                string strOldSelectedDefaultCharacterSetting = cboDefaultCharacterSetting.SelectedValue?.ToString()
+                                                               ?? GlobalSettings.DefaultCharacterSetting;
+
+                cboDefaultCharacterSetting.BeginUpdate();
+                cboDefaultCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                if (!string.IsNullOrEmpty(strOldSelectedDefaultCharacterSetting))
+                {
+                    cboDefaultCharacterSetting.SelectedValue = strOldSelectedDefaultCharacterSetting;
+                    if (cboDefaultCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                        cboDefaultCharacterSetting.SelectedIndex = 0;
+                }
+
+                cboDefaultCharacterSetting.EndUpdate();
+
+                string strOldSelectedDefaultMasterIndexSetting = cboDefaultMasterIndexSetting.SelectedValue?.ToString()
+                                                                 ?? GlobalSettings.DefaultMasterIndexSetting;
+
+                cboDefaultMasterIndexSetting.BeginUpdate();
+                cboDefaultMasterIndexSetting.PopulateWithListItems(lstCharacterSettings);
+                if (!string.IsNullOrEmpty(strOldSelectedDefaultMasterIndexSetting))
+                {
+                    cboDefaultMasterIndexSetting.SelectedValue = strOldSelectedDefaultMasterIndexSetting;
+                    if (cboDefaultMasterIndexSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                        cboDefaultMasterIndexSetting.SelectedIndex = 0;
+                }
+
+                cboDefaultMasterIndexSetting.EndUpdate();
             }
-            lstCharacterSettings.Sort(CompareListItems.CompareNames);
-
-            string strOldSelectedDefaultCharacterSetting = cboDefaultCharacterSetting.SelectedValue?.ToString() ?? GlobalSettings.DefaultCharacterSetting;
-
-            cboDefaultCharacterSetting.BeginUpdate();
-            cboDefaultCharacterSetting.PopulateWithListItems(lstCharacterSettings);
-            if (!string.IsNullOrEmpty(strOldSelectedDefaultCharacterSetting))
-            {
-                cboDefaultCharacterSetting.SelectedValue = strOldSelectedDefaultCharacterSetting;
-                if (cboDefaultCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
-                    cboDefaultCharacterSetting.SelectedIndex = 0;
-            }
-            cboDefaultCharacterSetting.EndUpdate();
-
-            string strOldSelectedDefaultMasterIndexSetting = cboDefaultMasterIndexSetting.SelectedValue?.ToString() ?? GlobalSettings.DefaultMasterIndexSetting;
-
-            cboDefaultMasterIndexSetting.BeginUpdate();
-            cboDefaultMasterIndexSetting.PopulateWithListItems(lstCharacterSettings);
-            if (!string.IsNullOrEmpty(strOldSelectedDefaultMasterIndexSetting))
-            {
-                cboDefaultMasterIndexSetting.SelectedValue = strOldSelectedDefaultMasterIndexSetting;
-                if (cboDefaultMasterIndexSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
-                    cboDefaultMasterIndexSetting.SelectedIndex = 0;
-            }
-            cboDefaultMasterIndexSetting.EndUpdate();
         }
 
         private void PopulateMugshotCompressionOptions()
         {
-            List<ListItem> lstMugshotCompressionOptions = new List<ListItem>(2)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstMugshotCompressionOptions))
             {
-                new ListItem("png", LanguageManager.GetString("String_Lossless_Compression_Option")),
-                new ListItem("jpeg_automatic", LanguageManager.GetString("String_Lossy_Automatic_Compression_Option")),
-                new ListItem("jpeg_manual", LanguageManager.GetString("String_Lossy_Manual_Compression_Option"))
-            };
+                lstMugshotCompressionOptions.Add(
+                    new ListItem("png", LanguageManager.GetString("String_Lossless_Compression_Option")));
+                lstMugshotCompressionOptions.Add(new ListItem("jpeg_automatic",
+                                                              LanguageManager.GetString(
+                                                                  "String_Lossy_Automatic_Compression_Option")));
+                lstMugshotCompressionOptions.Add(new ListItem("jpeg_manual",
+                                                              LanguageManager.GetString(
+                                                                  "String_Lossy_Manual_Compression_Option")));
 
-            string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
+                string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
 
-            if (_blnLoading)
-            {
-                int intQuality = GlobalSettings.SavedImageQuality;
-                if (intQuality == int.MaxValue)
+                if (_blnLoading)
                 {
-                    strOldSelected = "png";
-                    intQuality = 90;
-                }
-                else if (intQuality < 0)
-                {
-                    strOldSelected = "jpeg_automatic";
-                    intQuality = 90;
-                }
-                else
-                {
-                    strOldSelected = "jpeg_manual";
+                    int intQuality = GlobalSettings.SavedImageQuality;
+                    if (intQuality == int.MaxValue)
+                    {
+                        strOldSelected = "png";
+                        intQuality = 90;
+                    }
+                    else if (intQuality < 0)
+                    {
+                        strOldSelected = "jpeg_automatic";
+                        intQuality = 90;
+                    }
+                    else
+                    {
+                        strOldSelected = "jpeg_manual";
+                    }
+
+                    nudMugshotCompressionQuality.ValueAsInt = intQuality;
                 }
 
-                nudMugshotCompressionQuality.ValueAsInt = intQuality;
+                cboMugshotCompression.BeginUpdate();
+                cboMugshotCompression.PopulateWithListItems(lstMugshotCompressionOptions);
+                if (!string.IsNullOrEmpty(strOldSelected))
+                {
+                    cboMugshotCompression.SelectedValue = strOldSelected;
+                    if (cboMugshotCompression.SelectedIndex == -1 && lstMugshotCompressionOptions.Count > 0)
+                        cboMugshotCompression.SelectedIndex = 0;
+                }
+
+                cboMugshotCompression.EndUpdate();
             }
 
-            cboMugshotCompression.BeginUpdate();
-            cboMugshotCompression.PopulateWithListItems(lstMugshotCompressionOptions);
-            if (!string.IsNullOrEmpty(strOldSelected))
-            {
-                cboMugshotCompression.SelectedValue = strOldSelected;
-                if (cboMugshotCompression.SelectedIndex == -1 && lstMugshotCompressionOptions.Count > 0)
-                    cboMugshotCompression.SelectedIndex = 0;
-            }
-
-            cboMugshotCompression.EndUpdate();
             bool blnShowQualitySelector = Equals(cboMugshotCompression.SelectedValue, "jpeg_manual");
             lblMugshotCompressionQuality.Visible = blnShowQualitySelector;
             nudMugshotCompressionQuality.Visible = blnShowQualitySelector;
@@ -1221,105 +1246,137 @@ namespace Chummer
 
         private void PopulatePdfParameters()
         {
-            List<ListItem> lstPdfParameters = new List<ListItem>();
-
             int intIndex = 0;
 
-            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", null, _strSelectedLanguage).SelectAndCacheExpression("/chummer/pdfarguments/pdfargument"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstPdfParameters))
             {
-                string strValue = objXmlNode.SelectSingleNodeAndCacheExpression("value")?.Value;
-                lstPdfParameters.Add(new ListItem(strValue, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
-                if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfParameters) && GlobalSettings.PdfParameters == strValue)
+                foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", null, _strSelectedLanguage)
+                                                                .SelectAndCacheExpression(
+                                                                    "/chummer/pdfarguments/pdfargument"))
                 {
-                    intIndex = lstPdfParameters.Count - 1;
+                    string strValue = objXmlNode.SelectSingleNodeAndCacheExpression("value")?.Value;
+                    lstPdfParameters.Add(new ListItem(
+                                             strValue,
+                                             objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                             ?? objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                             ?? string.Empty));
+                    if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfParameters)
+                        && GlobalSettings.PdfParameters == strValue)
+                    {
+                        intIndex = lstPdfParameters.Count - 1;
+                    }
                 }
+
+                string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
+
+                cboPDFParameters.BeginUpdate();
+                cboPDFParameters.PopulateWithListItems(lstPdfParameters);
+                cboPDFParameters.SelectedIndex = intIndex;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                {
+                    cboPDFParameters.SelectedValue = strOldSelected;
+                    if (cboPDFParameters.SelectedIndex == -1 && lstPdfParameters.Count > 0)
+                        cboPDFParameters.SelectedIndex = 0;
+                }
+
+                cboPDFParameters.EndUpdate();
             }
-
-            string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
-
-            cboPDFParameters.BeginUpdate();
-            cboPDFParameters.PopulateWithListItems(lstPdfParameters);
-            cboPDFParameters.SelectedIndex = intIndex;
-            if (!string.IsNullOrEmpty(strOldSelected))
-            {
-                cboPDFParameters.SelectedValue = strOldSelected;
-                if (cboPDFParameters.SelectedIndex == -1 && lstPdfParameters.Count > 0)
-                    cboPDFParameters.SelectedIndex = 0;
-            }
-
-            cboPDFParameters.EndUpdate();
         }
 
         private void PopulateApplicationInsightsOptions()
         {
             string strOldSelected = cboUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalSettings.UseLoggingApplicationInsights.ToString();
-
-            List<ListItem> lstUseAIOptions = new List<ListItem>(6);
-            foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
+            
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstUseAIOptions))
             {
-                //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
-                if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !Debugger.IsAttached && eOption > UseAILogging.NotSet)
-                    continue;
-                lstUseAIOptions.Add(new ListItem(eOption, LanguageManager.GetString("String_ApplicationInsights_" + eOption, _strSelectedLanguage)));
-            }
+                foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
+                {
+                    //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
+                    if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !Debugger.IsAttached
+                        && eOption > UseAILogging.NotSet)
+                        continue;
+                    lstUseAIOptions.Add(new ListItem(
+                                            eOption,
+                                            LanguageManager.GetString("String_ApplicationInsights_" + eOption,
+                                                                      _strSelectedLanguage)));
+                }
 
-            cboUseLoggingApplicationInsights.BeginUpdate();
-            cboUseLoggingApplicationInsights.PopulateWithListItems(lstUseAIOptions);
-            if (!string.IsNullOrEmpty(strOldSelected))
-                cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
-            if (cboUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
-                cboUseLoggingApplicationInsights.SelectedIndex = 0;
-            cboUseLoggingApplicationInsights.EndUpdate();
+                cboUseLoggingApplicationInsights.BeginUpdate();
+                cboUseLoggingApplicationInsights.PopulateWithListItems(lstUseAIOptions);
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
+                if (cboUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
+                    cboUseLoggingApplicationInsights.SelectedIndex = 0;
+                cboUseLoggingApplicationInsights.EndUpdate();
+            }
         }
 
         private void PopulateColorModes()
         {
             string strOldSelected = cboColorMode.SelectedValue?.ToString() ?? GlobalSettings.ColorModeSetting.ToString();
-
-            List<ListItem> lstColorModes = new List<ListItem>(3);
-            foreach (ColorMode eLoopColorMode in Enum.GetValues(typeof(ColorMode)))
+            
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstColorModes))
             {
-                lstColorModes.Add(new ListItem(eLoopColorMode, LanguageManager.GetString("String_" + eLoopColorMode, _strSelectedLanguage)));
-            }
+                foreach (ColorMode eLoopColorMode in Enum.GetValues(typeof(ColorMode)))
+                {
+                    lstColorModes.Add(new ListItem(eLoopColorMode,
+                                                   LanguageManager.GetString(
+                                                       "String_" + eLoopColorMode, _strSelectedLanguage)));
+                }
 
-            cboColorMode.BeginUpdate();
-            cboColorMode.PopulateWithListItems(lstColorModes);
-            if (!string.IsNullOrEmpty(strOldSelected))
-                cboColorMode.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);
-            if (cboColorMode.SelectedIndex == -1 && lstColorModes.Count > 0)
-                cboColorMode.SelectedIndex = 0;
-            cboColorMode.EndUpdate();
+                cboColorMode.BeginUpdate();
+                cboColorMode.PopulateWithListItems(lstColorModes);
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    cboColorMode.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);
+                if (cboColorMode.SelectedIndex == -1 && lstColorModes.Count > 0)
+                    cboColorMode.SelectedIndex = 0;
+                cboColorMode.EndUpdate();
+            }
         }
 
         private void PopulateDpiScalingMethods()
         {
             string strOldSelected = cboDpiScalingMethod.SelectedValue?.ToString() ?? GlobalSettings.DpiScalingMethodSetting.ToString();
-
-            List<ListItem> lstDpiScalingMethods = new List<ListItem>(3);
-            foreach (DpiScalingMethod eLoopDpiScalingMethod in Enum.GetValues(typeof(DpiScalingMethod)))
+            
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstDpiScalingMethods))
             {
-                switch (eLoopDpiScalingMethod)
+                foreach (DpiScalingMethod eLoopDpiScalingMethod in Enum.GetValues(typeof(DpiScalingMethod)))
                 {
-                    case DpiScalingMethod.Rescale:
-                        if (Environment.OSVersion.Version < new Version(6, 3, 0)) // Need at least Windows 8.1 to get PerMonitor/PerMonitorV2 Scaling
-                            continue;
-                        break;
+                    switch (eLoopDpiScalingMethod)
+                    {
+                        case DpiScalingMethod.Rescale:
+                            if (Environment.OSVersion.Version
+                                < new Version(
+                                    6, 3, 0)) // Need at least Windows 8.1 to get PerMonitor/PerMonitorV2 Scaling
+                                continue;
+                            break;
 
-                    case DpiScalingMethod.SmartZoom:
-                        if (Environment.OSVersion.Version < new Version(10, 0, 17763)) // Need at least Windows 10 Version 1809 to get GDI+ Scaling
-                            continue;
-                        break;
+                        case DpiScalingMethod.SmartZoom:
+                            if (Environment.OSVersion.Version
+                                < new Version(
+                                    10, 0, 17763)) // Need at least Windows 10 Version 1809 to get GDI+ Scaling
+                                continue;
+                            break;
+                    }
+
+                    lstDpiScalingMethods.Add(new ListItem(eLoopDpiScalingMethod,
+                                                          LanguageManager.GetString(
+                                                              "String_" + eLoopDpiScalingMethod,
+                                                              _strSelectedLanguage)));
                 }
-                lstDpiScalingMethods.Add(new ListItem(eLoopDpiScalingMethod, LanguageManager.GetString("String_" + eLoopDpiScalingMethod, _strSelectedLanguage)));
-            }
 
-            cboDpiScalingMethod.BeginUpdate();
-            cboDpiScalingMethod.PopulateWithListItems(lstDpiScalingMethods);
-            if (!string.IsNullOrEmpty(strOldSelected))
-                cboDpiScalingMethod.SelectedValue = Enum.Parse(typeof(DpiScalingMethod), strOldSelected);
-            if (cboDpiScalingMethod.SelectedIndex == -1 && lstDpiScalingMethods.Count > 0)
-                cboDpiScalingMethod.SelectedIndex = 0;
-            cboDpiScalingMethod.EndUpdate();
+                cboDpiScalingMethod.BeginUpdate();
+                cboDpiScalingMethod.PopulateWithListItems(lstDpiScalingMethods);
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    cboDpiScalingMethod.SelectedValue = Enum.Parse(typeof(DpiScalingMethod), strOldSelected);
+                if (cboDpiScalingMethod.SelectedIndex == -1 && lstDpiScalingMethods.Count > 0)
+                    cboDpiScalingMethod.SelectedIndex = 0;
+                cboDpiScalingMethod.EndUpdate();
+            }
         }
 
         private void SetToolTips()
@@ -1332,47 +1389,44 @@ namespace Chummer
         {
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-            List<ListItem> lstLanguages = new List<ListItem>(languageFilePaths.Length);
-            foreach (string filePath in languageFilePaths)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
             {
-                XPathDocument xmlDocument;
-                try
+                foreach (string filePath in languageFilePaths)
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        xmlDocument = new XPathDocument(objXmlReader);
-                }
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
+                    XPathDocument xmlDocument;
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader
+                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                            xmlDocument = new XPathDocument(objXmlReader);
+                    }
+                    catch (IOException)
+                    {
+                        continue;
+                    }
+                    catch (XmlException)
+                    {
+                        continue;
+                    }
+
+                    XPathNavigator node = xmlDocument.CreateNavigator()
+                                                     .SelectSingleNodeAndCacheExpression("/chummer/name");
+                    if (node == null)
+                        continue;
+
+                    lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.Value));
                 }
 
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name");
-                if (node == null)
-                    continue;
+                lstLanguages.Sort(CompareListItems.CompareNames);
 
-                lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.Value));
+                cboLanguage.BeginUpdate();
+                cboLanguage.PopulateWithListItems(lstLanguages);
+                cboLanguage.EndUpdate();
             }
-
-            lstLanguages.Sort(CompareListItems.CompareNames);
-
-            cboLanguage.BeginUpdate();
-            cboLanguage.PopulateWithListItems(lstLanguages);
-            cboLanguage.EndUpdate();
         }
 
         private void PopulateSheetLanguageList()
-        {
-            cboSheetLanguage.BeginUpdate();
-            cboSheetLanguage.PopulateWithListItems(GetSheetLanguageList());
-            cboSheetLanguage.EndUpdate();
-        }
-
-        public static List<ListItem> GetSheetLanguageList()
         {
             HashSet<string> setLanguagesWithSheets = new HashSet<string>();
 
@@ -1384,56 +1438,46 @@ namespace Chummer
 
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-            List<ListItem> lstSheetLanguages = new List<ListItem>(languageFilePaths.Length);
-            foreach (string filePath in languageFilePaths)
+
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSheetLanguages))
             {
-                string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
-                if (!setLanguagesWithSheets.Contains(strLanguageName))
-                    continue;
-
-                XPathDocument xmlDocument;
-                try
+                foreach (string filePath in languageFilePaths)
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        xmlDocument = new XPathDocument(objXmlReader);
-                }
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (XmlException)
-                {
-                    continue;
+                    string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
+                    if (!setLanguagesWithSheets.Contains(strLanguageName))
+                        continue;
+
+                    XPathDocument xmlDocument;
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader
+                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                            xmlDocument = new XPathDocument(objXmlReader);
+                    }
+                    catch (IOException)
+                    {
+                        continue;
+                    }
+                    catch (XmlException)
+                    {
+                        continue;
+                    }
+
+                    XPathNavigator node = xmlDocument.CreateNavigator()
+                                                     .SelectSingleNodeAndCacheExpression("/chummer/name");
+                    if (node == null)
+                        continue;
+
+                    lstSheetLanguages.Add(new ListItem(strLanguageName, node.Value));
                 }
 
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name");
-                if (node == null)
-                    continue;
+                lstSheetLanguages.Sort(CompareListItems.CompareNames);
 
-                lstSheetLanguages.Add(new ListItem(strLanguageName, node.Value));
+                cboSheetLanguage.BeginUpdate();
+                cboSheetLanguage.PopulateWithListItems(lstSheetLanguages);
+                cboSheetLanguage.EndUpdate();
             }
-
-            lstSheetLanguages.Sort(CompareListItems.CompareNames);
-
-            return lstSheetLanguages;
-        }
-
-        private static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
-        {
-            List<ListItem> lstSheets = new List<ListItem>();
-
-            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            foreach (XPathNavigator xmlSheet in XmlManager.LoadXPath("sheets.xml", null, strLanguage).SelectAndCacheExpression("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
-            {
-                string strFile = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value ?? string.Empty;
-                lstSheets.Add(new ListItem(
-                    !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                        ? Path.Combine(strLanguage, strFile)
-                        : strFile, xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
-            }
-
-            return lstSheets;
         }
 
         private void PopulateXsltList()
@@ -1443,40 +1487,59 @@ namespace Chummer
                 ? FlagImageGetter.GetFlagFromCountryCode192Dpi(strSelectedSheetLanguage?.Substring(3, 2))
                 : FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2));
 
-            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
-
-            string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
-            // Strip away the language prefix
-            int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
-            if (intPos != -1)
-                strOldSelected = strOldSelected.Substring(intPos + 1);
-
-            cboXSLT.BeginUpdate();
-            cboXSLT.PopulateWithListItems(lstFiles);
-            if (!string.IsNullOrEmpty(strOldSelected))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFiles))
             {
-                cboXSLT.SelectedValue =
-                    !string.IsNullOrEmpty(strSelectedSheetLanguage) &&
-                    !strSelectedSheetLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                        ? Path.Combine(strSelectedSheetLanguage, strOldSelected)
-                        : strOldSelected;
-                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-                if (cboXSLT.SelectedIndex == -1 && lstFiles.Count > 0)
+                // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+                foreach (XPathNavigator xmlSheet in XmlManager.LoadXPath("sheets.xml")
+                                                              .SelectAndCacheExpression(
+                                                                  "/chummer/sheets[@lang="
+                                                                  + GlobalSettings.Language.CleanXPath()
+                                                                  + "]/sheet[not(hide)]"))
+                {
+                    string strFile = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value ?? string.Empty;
+                    lstFiles.Add(new ListItem(
+                                     !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                     StringComparison.OrdinalIgnoreCase)
+                                         ? Path.Combine(GlobalSettings.Language, strFile)
+                                         : strFile,
+                                     xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
+                }
+
+                string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                // Strip away the language prefix
+                int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
+                if (intPos != -1)
+                    strOldSelected = strOldSelected.Substring(intPos + 1);
+
+                cboXSLT.BeginUpdate();
+                cboXSLT.PopulateWithListItems(lstFiles);
+                if (!string.IsNullOrEmpty(strOldSelected))
                 {
                     cboXSLT.SelectedValue =
                         !string.IsNullOrEmpty(strSelectedSheetLanguage) &&
                         !strSelectedSheetLanguage.Equals(GlobalSettings.DefaultLanguage,
-                            StringComparison.OrdinalIgnoreCase)
-                            ? Path.Combine(strSelectedSheetLanguage, GlobalSettings.DefaultCharacterSheetDefaultValue)
-                            : GlobalSettings.DefaultCharacterSheetDefaultValue;
-                    if (cboXSLT.SelectedIndex == -1)
+                                                         StringComparison.OrdinalIgnoreCase)
+                            ? Path.Combine(strSelectedSheetLanguage, strOldSelected)
+                            : strOldSelected;
+                    // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+                    if (cboXSLT.SelectedIndex == -1 && lstFiles.Count > 0)
                     {
-                        cboXSLT.SelectedIndex = 0;
+                        cboXSLT.SelectedValue =
+                            !string.IsNullOrEmpty(strSelectedSheetLanguage) &&
+                            !strSelectedSheetLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                             StringComparison.OrdinalIgnoreCase)
+                                ? Path.Combine(strSelectedSheetLanguage,
+                                               GlobalSettings.DefaultCharacterSheetDefaultValue)
+                                : GlobalSettings.DefaultCharacterSheetDefaultValue;
+                        if (cboXSLT.SelectedIndex == -1)
+                        {
+                            cboXSLT.SelectedIndex = 0;
+                        }
                     }
                 }
-            }
 
-            cboXSLT.EndUpdate();
+                cboXSLT.EndUpdate();
+            }
         }
 
         private void SetDefaultValueForLanguageList()

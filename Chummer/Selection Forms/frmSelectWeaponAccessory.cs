@@ -87,72 +87,78 @@ namespace Chummer
         /// </summary>
         private void RefreshList()
         {
-            List<ListItem> lstAccessories = new List<ListItem>();
-
-            // Populate the Accessory list.
-            string strFilter = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath())
-                         .Append(") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
-                foreach (string strAllowedMount in _lstAllowedMounts.Where(
-                             strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
+                // Populate the Accessory list.
+                string strFilter = string.Empty;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    sbdFilter.Append(" or contains(mount, ").Append(strAllowedMount.CleanXPath()).Append(')');
+                    sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath())
+                             .Append(
+                                 ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+                    foreach (string strAllowedMount in _lstAllowedMounts.Where(
+                                 strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
+                    {
+                        sbdFilter.Append(" or contains(mount, ").Append(strAllowedMount.CleanXPath()).Append(')');
+                    }
+
+                    sbdFilter.Append(')');
+                    if (!string.IsNullOrEmpty(txtSearch.Text))
+                        sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                    if (sbdFilter.Length > 0)
+                        strFilter = '[' + sbdFilter.ToString() + ']';
                 }
 
-                sbdFilter.Append(')');
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
-                if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
-            }
-
-            int intOverLimit = 0;
-            foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory" + strFilter))
-            {
-                string strId = objXmlAccessory.SelectSingleNodeAndCacheExpression("id")?.Value;
-                if (string.IsNullOrEmpty(strId))
-                    continue;
-                if (!_objParentWeapon.CheckAccessoryRequirements(objXmlAccessory))
-                    continue;
-
-                decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                if (_blnIsParentWeaponBlackMarketAllowed)
-                    decCostMultiplier *= 0.9m;
-                if (!chkHideOverAvailLimit.Checked || objXmlAccessory.CheckAvailRestriction(_objCharacter)
-                    && (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked
-                                            || objXmlAccessory.CheckNuyenRestriction(
-                                                _objCharacter.Nuyen, decCostMultiplier)))
+                int intOverLimit = 0;
+                foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(
+                             "accessories/accessory" + strFilter))
                 {
-                    lstAccessories.Add(new ListItem(
-                                           strId,
-                                           objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                           ?? objXmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value
-                                           ?? LanguageManager.GetString("String_Unknown")));
+                    string strId = objXmlAccessory.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    if (string.IsNullOrEmpty(strId))
+                        continue;
+                    if (!_objParentWeapon.CheckAccessoryRequirements(objXmlAccessory))
+                        continue;
+
+                    decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                    if (_blnIsParentWeaponBlackMarketAllowed)
+                        decCostMultiplier *= 0.9m;
+                    if (!chkHideOverAvailLimit.Checked || objXmlAccessory.CheckAvailRestriction(_objCharacter)
+                        && (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked
+                                                || objXmlAccessory.CheckNuyenRestriction(
+                                                    _objCharacter.Nuyen, decCostMultiplier)))
+                    {
+                        lstAccessories.Add(new ListItem(
+                                               strId,
+                                               objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                               ?? objXmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value
+                                               ?? LanguageManager.GetString("String_Unknown")));
+                    }
+                    else
+                        ++intOverLimit;
                 }
+
+                lstAccessories.Sort(CompareListItems.CompareNames);
+                if (intOverLimit > 0)
+                {
+                    // Add after sort so that it's always at the end
+                    lstAccessories.Add(new ListItem(string.Empty, string.Format(
+                                                        GlobalSettings.CultureInfo,
+                                                        LanguageManager.GetString("String_RestrictedItemsHidden"),
+                                                        intOverLimit)));
+                }
+
+                string strOldSelected = lstAccessory.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstAccessory.BeginUpdate();
+                lstAccessory.PopulateWithListItems(lstAccessories);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstAccessory.SelectedValue = strOldSelected;
                 else
-                    ++intOverLimit;
+                    lstAccessory.SelectedIndex = -1;
+                lstAccessory.EndUpdate();
             }
-
-            lstAccessories.Sort(CompareListItems.CompareNames);
-            if (intOverLimit > 0)
-            {
-                // Add after sort so that it's always at the end
-                lstAccessories.Add(new ListItem(string.Empty, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
-                    intOverLimit)));
-            }
-            string strOldSelected = lstAccessory.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstAccessory.BeginUpdate();
-            lstAccessory.PopulateWithListItems(lstAccessories);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstAccessory.SelectedValue = strOldSelected;
-            else
-                lstAccessory.SelectedIndex = -1;
-            lstAccessory.EndUpdate();
         }
 
         private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)

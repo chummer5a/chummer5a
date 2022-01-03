@@ -37,19 +37,22 @@ namespace Chummer
             this.TranslateWinForm();
 
             // Build the list of Limits.
-            List<ListItem> lstLimitItems = new List<ListItem>();
-            foreach (string strLimit in lstLimits)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
             {
-                lstLimitItems.Add(new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short")));
-            }
+                foreach (string strLimit in lstLimits)
+                {
+                    lstLimitItems.Add(
+                        new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short")));
+                }
 
-            cboLimit.BeginUpdate();
-            cboLimit.PopulateWithListItems(lstLimitItems);
-            if (lstLimitItems.Count >= 1)
-                cboLimit.SelectedIndex = 0;
-            else
-                cmdOK.Enabled = false;
-            cboLimit.EndUpdate();
+                cboLimit.BeginUpdate();
+                cboLimit.PopulateWithListItems(lstLimitItems);
+                if (lstLimitItems.Count >= 1)
+                    cboLimit.SelectedIndex = 0;
+                else
+                    cmdOK.Enabled = false;
+                cboLimit.EndUpdate();
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

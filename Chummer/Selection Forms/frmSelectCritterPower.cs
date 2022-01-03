@@ -38,7 +38,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlMetatypeDataNode;
         private readonly Character _objCharacter;
 
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
 
         #region Control Events
 

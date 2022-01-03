@@ -471,76 +471,57 @@ namespace Chummer.Backend.Equipment
                             XmlNodeList objXmlNodeList = objXmlChooseGearNode.SelectNodes("usegear");
                             if (objXmlNodeList == null)
                                 continue;
-                            List<ListItem> lstGears = new List<ListItem>(objXmlNodeList.Count);
-                            foreach (XmlNode objChoiceNode in objXmlNodeList)
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstGears))
                             {
-                                XmlNode xmlChoiceName = objChoiceNode["name"];
-                                XmlNode xmlChoiceCategory = objChoiceNode["category"];
-                                string strFilter = "/chummer/gears/gear";
-                                if (xmlChoiceName != null || xmlChoiceCategory != null)
+                                foreach (XmlNode objChoiceNode in objXmlNodeList)
                                 {
-                                    strFilter += '[';
-                                    if (xmlChoiceName != null)
+                                    XmlNode xmlChoiceName = objChoiceNode["name"];
+                                    XmlNode xmlChoiceCategory = objChoiceNode["category"];
+                                    string strFilter = "/chummer/gears/gear";
+                                    if (xmlChoiceName != null || xmlChoiceCategory != null)
                                     {
-                                        strFilter += "name = " + xmlChoiceName.InnerText.CleanXPath();
-                                        if (xmlChoiceCategory != null)
-                                            strFilter += " and category = " + xmlChoiceCategory.InnerText.CleanXPath();
+                                        strFilter += '[';
+                                        if (xmlChoiceName != null)
+                                        {
+                                            strFilter += "name = " + xmlChoiceName.InnerText.CleanXPath();
+                                            if (xmlChoiceCategory != null)
+                                                strFilter += " and category = "
+                                                             + xmlChoiceCategory.InnerText.CleanXPath();
+                                        }
+                                        else
+                                            strFilter += "category = " + xmlChoiceCategory.InnerText.CleanXPath();
+
+                                        strFilter += ']';
                                     }
-                                    else
-                                        strFilter += "category = " + xmlChoiceCategory.InnerText.CleanXPath();
-                                    strFilter += ']';
-                                }
-                                XmlNode objXmlLoopGear = xmlDocument.SelectSingleNode(strFilter);
-                                if (objXmlLoopGear == null)
-                                    continue;
-                                XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
-                                if (xmlTestNode != null &&
-                                    xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                {
-                                    // Assumes topmost parent is an AND node
-                                    continue;
-                                }
 
-                                xmlTestNode = objXmlLoopGear.SelectSingleNode("required/geardetails");
-                                if (xmlTestNode != null &&
-                                    !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                {
-                                    // Assumes topmost parent is an AND node
-                                    continue;
-                                }
+                                    XmlNode objXmlLoopGear = xmlDocument.SelectSingleNode(strFilter);
+                                    if (objXmlLoopGear == null)
+                                        continue;
+                                    XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
+                                    if (xmlTestNode != null &&
+                                        xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        continue;
+                                    }
 
-                                string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
-                                string strDisplayName = LanguageManager.GetString(strName, false);
-                                if (string.IsNullOrEmpty(strDisplayName))
-                                    strDisplayName = _objCharacter.TranslateExtra(strName);
-                                lstGears.Add(new ListItem(strName, strDisplayName));
-                            }
+                                    xmlTestNode = objXmlLoopGear.SelectSingleNode("required/geardetails");
+                                    if (xmlTestNode != null &&
+                                        !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        continue;
+                                    }
 
-                            if (lstGears.Count == 0)
-                            {
-                                if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
-                                {
-                                    blnCancelledDialog = true;
-                                    break;
+                                    string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
+                                    string strDisplayName = LanguageManager.GetString(strName, false);
+                                    if (string.IsNullOrEmpty(strDisplayName))
+                                        strDisplayName = _objCharacter.TranslateExtra(strName);
+                                    lstGears.Add(new ListItem(strName, strDisplayName));
                                 }
 
-                                continue;
-                            }
-
-                            string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
-                            string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
-                            if (string.IsNullOrEmpty(strFriendlyName))
-                                strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
-                            using (frmSelectItem frmPickItem = new frmSelectItem
-                            {
-                                Description = string.Format(GlobalSettings.CultureInfo,
-                                    LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
-                            })
-                            {
-                                frmPickItem.SetGeneralItemsMode(lstGears);
-
-                                // Make sure the dialogue window was not canceled.
-                                if (frmPickItem.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                                if (lstGears.Count == 0)
                                 {
                                     if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                                     {
@@ -551,22 +532,50 @@ namespace Chummer.Backend.Equipment
                                     continue;
                                 }
 
-                                XmlNode objXmlChosenGear =
-                                    objXmlChooseGearNode.SelectSingleNode("usegear[name = " +
-                                                                          frmPickItem.SelectedItem.CleanXPath() + "]");
-
-                                if (objXmlChosenGear == null)
+                                string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
+                                string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
+                                if (string.IsNullOrEmpty(strFriendlyName))
+                                    strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
+                                using (frmSelectItem frmPickItem = new frmSelectItem
+                                       {
+                                           Description = string.Format(GlobalSettings.CultureInfo,
+                                                                       LanguageManager.GetString(
+                                                                           "String_Improvement_SelectText"),
+                                                                       strFriendlyName)
+                                       })
                                 {
-                                    if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                    frmPickItem.SetGeneralItemsMode(lstGears);
+
+                                    // Make sure the dialogue window was not canceled.
+                                    if (frmPickItem.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                                     {
-                                        blnCancelledDialog = true;
-                                        break;
+                                        if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                        {
+                                            blnCancelledDialog = true;
+                                            break;
+                                        }
+
+                                        continue;
                                     }
 
-                                    continue;
-                                }
+                                    XmlNode objXmlChosenGear =
+                                        objXmlChooseGearNode.SelectSingleNode("usegear[name = " +
+                                                                              frmPickItem.SelectedItem.CleanXPath()
+                                                                              + "]");
 
-                                lstChildrenToCreate.Add(objXmlChosenGear);
+                                    if (objXmlChosenGear == null)
+                                    {
+                                        if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
+                                        {
+                                            blnCancelledDialog = true;
+                                            break;
+                                        }
+
+                                        continue;
+                                    }
+
+                                    lstChildrenToCreate.Add(objXmlChosenGear);
+                                }
                             }
                         }
 

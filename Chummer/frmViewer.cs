@@ -748,11 +748,17 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage, _lstCharacters);
-
-            cboXSLT.BeginUpdate();
-            cboXSLT.PopulateWithListItems(lstFiles);
-            cboXSLT.EndUpdate();
+            List<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage, _lstCharacters, true);
+            try
+            {
+                cboXSLT.BeginUpdate();
+                cboXSLT.PopulateWithListItems(lstFiles);
+                cboXSLT.EndUpdate();
+            }
+            finally
+            {
+                Utils.ListItemListPool.Return(lstFiles);
+            }
         }
 
         /// <summary>

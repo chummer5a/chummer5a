@@ -226,38 +226,49 @@ namespace Chummer
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
-            List<ListItem> lstPower = new List<ListItem>();
-            foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
             {
-                decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNodeAndCacheExpression("points")?.Value, GlobalSettings.InvariantCultureInfo);
-                string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost")?.Value;
-                string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                if (!string.IsNullOrEmpty(strExtraPointCost) && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
+                foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
                 {
-                    //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
-                    decPoints += Convert.ToDecimal(strExtraPointCost, GlobalSettings.InvariantCultureInfo);
-                }
-                if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
-                {
-                    continue;
+                    decimal decPoints
+                        = Convert.ToDecimal(objXmlPower.SelectSingleNodeAndCacheExpression("points")?.Value,
+                                            GlobalSettings.InvariantCultureInfo);
+                    string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost")?.Value;
+                    string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value
+                                     ?? LanguageManager.GetString("String_Unknown");
+                    if (!string.IsNullOrEmpty(strExtraPointCost)
+                        && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
+                    {
+                        //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
+                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalSettings.InvariantCultureInfo);
+                    }
+
+                    if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
+                    {
+                        continue;
+                    }
+
+                    if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty,
+                                                     string.Empty, IgnoreLimits))
+                        continue;
+
+                    lstPower.Add(new ListItem(
+                                     objXmlPower.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
+                                     objXmlPower.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                 }
 
-                if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
-                    continue;
-
-                lstPower.Add(new ListItem(objXmlPower.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                lstPower.Sort(CompareListItems.CompareNames);
+                _blnLoading = true;
+                string strOldSelected = lstPowers.SelectedValue?.ToString();
+                lstPowers.BeginUpdate();
+                lstPowers.PopulateWithListItems(lstPower);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstPowers.SelectedValue = strOldSelected;
+                else
+                    lstPowers.SelectedIndex = -1;
+                lstPowers.EndUpdate();
             }
-            lstPower.Sort(CompareListItems.CompareNames);
-            _blnLoading = true;
-            string strOldSelected = lstPowers.SelectedValue?.ToString();
-            lstPowers.BeginUpdate();
-            lstPowers.PopulateWithListItems(lstPower);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstPowers.SelectedValue = strOldSelected;
-            else
-                lstPowers.SelectedIndex = -1;
-            lstPowers.EndUpdate();
         }
 
         /// <summary>

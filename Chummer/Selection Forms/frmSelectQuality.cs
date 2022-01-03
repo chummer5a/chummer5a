@@ -37,7 +37,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
 
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
 
         private static string _strSelectCategory = string.Empty;
 
@@ -550,31 +550,42 @@ namespace Chummer
             }
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
-            List<ListItem> lstQuality = new List<ListItem>();
-            foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality" + strFilter))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQuality))
             {
-                string strLoopName = objXmlQuality.SelectSingleNodeAndCacheExpression("name")?.Value;
-                if (string.IsNullOrEmpty(strLoopName))
-                    continue;
-                if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
-                    continue;
-                if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
+                foreach (XPathNavigator objXmlQuality in
+                         _xmlBaseQualityDataNode.Select("qualities/quality" + strFilter))
                 {
-                    lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strLoopName));
+                    string strLoopName = objXmlQuality.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    if (string.IsNullOrEmpty(strLoopName))
+                        continue;
+                    if (_xmlMetatypeQualityRestrictionNode != null
+                        && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(
+                            strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
+                        continue;
+                    if (!chkLimitList.Checked
+                        || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
+                    {
+                        lstQuality.Add(new ListItem(
+                                           objXmlQuality.SelectSingleNodeAndCacheExpression("id")?.Value
+                                           ?? string.Empty,
+                                           objXmlQuality.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                           ?? strLoopName));
+                    }
                 }
-            }
-            lstQuality.Sort(CompareListItems.CompareNames);
 
-            string strOldSelectedQuality = lstQualities.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstQualities.BeginUpdate();
-            lstQualities.PopulateWithListItems(lstQuality);
-            _blnLoading = false;
-            if (string.IsNullOrEmpty(strOldSelectedQuality))
-                lstQualities.SelectedIndex = -1;
-            else
-                lstQualities.SelectedValue = strOldSelectedQuality;
-            lstQualities.EndUpdate();
+                lstQuality.Sort(CompareListItems.CompareNames);
+
+                string strOldSelectedQuality = lstQualities.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstQualities.BeginUpdate();
+                lstQualities.PopulateWithListItems(lstQuality);
+                _blnLoading = false;
+                if (string.IsNullOrEmpty(strOldSelectedQuality))
+                    lstQualities.SelectedIndex = -1;
+                else
+                    lstQualities.SelectedValue = strOldSelectedQuality;
+                lstQualities.EndUpdate();
+            }
         }
 
         /// <summary>

@@ -58,45 +58,56 @@ namespace ChummerHub.Client.UI
             if (sinGroups == null)
                 return res;
 
-            List<ListItem> lstLanguages = new List<ListItem>(LanguageManager.GetSheetLanguageList());
-            foreach (SINnerSearchGroup ssg in sinGroups)
+            List<ListItem> lstLanguages = LanguageManager.GetSheetLanguageList(null, true);
+            try
             {
-                TreeNode tn = new TreeNode(ssg.GroupDisplayname);
-                if (string.IsNullOrEmpty(ssg.Language))
-                    ssg.Language = "en-us";
-                int index = lstLanguages.FindIndex(c => c.Value?.ToString() == ssg.Language);
-                if (index != -1)
+                foreach (SINnerSearchGroup ssg in sinGroups)
                 {
-                    tn.ImageIndex = index;
-                    tn.SelectedImageIndex = index;
-                }
-                tn.Tag = ssg;
-                tn.ToolTipText = ssg.Description;
-                if (cbShowMembers.Checked)
-                {
-                    foreach (SINnerSearchGroupMember member in ssg.MyMembers)
+                    TreeNode tn = new TreeNode(ssg.GroupDisplayname);
+                    if (string.IsNullOrEmpty(ssg.Language))
+                        ssg.Language = "en-us";
+                    int index = lstLanguages.FindIndex(c => c.Value?.ToString() == ssg.Language);
+                    if (index != -1)
                     {
-                        TreeNode tnm = new TreeNode(member.MySINner.Alias)
-                        {
-                            Tag = member,
-                            ImageIndex = tvGroupSearchResult.ImageList.Images.Count - 1,
-                            SelectedImageIndex = tvGroupSearchResult.ImageList.Images.Count - 1
-                        };
-                        if (!string.IsNullOrEmpty(member.MySINner?.Language))
-                        {
-                            int mindex = lstLanguages.FindIndex(c => c.Value?.ToString() == member.MySINner?.Language);
-                            if (mindex != -1)
-                            {
-                                tnm.ImageIndex = mindex;
-                                tnm.SelectedImageIndex = mindex;
-                            }
-                        }
-                        tn.Nodes.Add(tnm);
+                        tn.ImageIndex = index;
+                        tn.SelectedImageIndex = index;
                     }
+
+                    tn.Tag = ssg;
+                    tn.ToolTipText = ssg.Description;
+                    if (cbShowMembers.Checked)
+                    {
+                        foreach (SINnerSearchGroupMember member in ssg.MyMembers)
+                        {
+                            TreeNode tnm = new TreeNode(member.MySINner.Alias)
+                            {
+                                Tag = member,
+                                ImageIndex = tvGroupSearchResult.ImageList.Images.Count - 1,
+                                SelectedImageIndex = tvGroupSearchResult.ImageList.Images.Count - 1
+                            };
+                            if (!string.IsNullOrEmpty(member.MySINner?.Language))
+                            {
+                                int mindex = lstLanguages.FindIndex(
+                                    c => c.Value?.ToString() == member.MySINner?.Language);
+                                if (mindex != -1)
+                                {
+                                    tnm.ImageIndex = mindex;
+                                    tnm.SelectedImageIndex = mindex;
+                                }
+                            }
+
+                            tn.Nodes.Add(tnm);
+                        }
+                    }
+
+                    List<TreeNode> nodes = CreateTreeViewNodes(ssg.MySINSearchGroups);
+                    tn.Nodes.AddRange(nodes.ToArray());
+                    res.Add(tn);
                 }
-                List<TreeNode> nodes = CreateTreeViewNodes(ssg.MySINSearchGroups);
-                tn.Nodes.AddRange(nodes.ToArray());
-                res.Add(tn);
+            }
+            finally
+            {
+                Chummer.Utils.ListItemListPool.Return(lstLanguages);
             }
 
             return res;
@@ -108,10 +119,18 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             ImageList myCountryImageList = new ImageList();
-            foreach (ListItem lang in LanguageManager.GetSheetLanguageList())
+            List<ListItem> lstLanguages = LanguageManager.GetSheetLanguageList(null, true);
+            try
             {
-                Image img = FlagImageGetter.GetFlagFromCountryCode(lang.Value.ToString().Substring(3, 2));
-                myCountryImageList.Images.Add(img);
+                foreach (ListItem lang in lstLanguages)
+                {
+                    Image img = FlagImageGetter.GetFlagFromCountryCode(lang.Value.ToString().Substring(3, 2));
+                    myCountryImageList.Images.Add(img);
+                }
+            }
+            finally
+            {
+                Chummer.Utils.ListItemListPool.Return(lstLanguages);
             }
             Image empty = FlagImageGetter.GetFlagFromCountryCode("noimagedots");
             myCountryImageList.Images.Add(empty);

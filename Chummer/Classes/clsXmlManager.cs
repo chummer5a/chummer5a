@@ -1424,48 +1424,81 @@ namespace Chummer
                     StripAmendAttributesRecursively(xmlChildNode);
         }
 
-        public static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage, IEnumerable<Character> lstCharacters = null, bool blnTerminateAfterFirstMatch = false)
+        public static bool AnyXslFiles(string strLanguage, IEnumerable<Character> lstCharacters = null)
         {
-            List<ListItem> lstSheets = new List<ListItem>();
+            GetXslFilesFromLocalDirectory(strLanguage, out bool blnReturn, out List<ListItem> _, lstCharacters, false, false);
+            return blnReturn;
+        }
 
+        public static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage,
+                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
+        {
+            GetXslFilesFromLocalDirectory(strLanguage, out bool _, out List<ListItem> lstReturn, lstCharacters, true, blnUsePool);
+            return lstReturn;
+        }
+
+        private static void GetXslFilesFromLocalDirectory(string strLanguage, out bool blnAnyItem, out List<ListItem> lstSheets, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool)
+        {
+            blnAnyItem = false;
+            HashSet<string> setAddedSheetFileNames = blnDoList ? new HashSet<string>() : null;
             if (lstCharacters != null)
             {
+                if (blnDoList)
+                    lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(10);
+                else
+                    lstSheets = null;
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
                 foreach (Character objCharacter in lstCharacters)
                 {
-                    foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage).SelectAndCacheExpression("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
+                    foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage).SelectAndCacheExpression("/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]"))
                     {
                         string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
-                        if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
+                        if (string.IsNullOrEmpty(strSheetFileName))
+                            continue;
+                        if (!blnDoList)
                         {
-                            lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                                    ? Path.Combine(strLanguage, strSheetFileName)
-                                    : strSheetFileName,
-                                xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
-                            if (blnTerminateAfterFirstMatch)
-                                return lstSheets;
+                            blnAnyItem = true;
+                            return;
                         }
+                        if (!setAddedSheetFileNames.Add(strSheetFileName))
+                            continue;
+                        blnAnyItem = true;
+                        lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                                                       ? Path.Combine(strLanguage, strSheetFileName)
+                                                       : strSheetFileName,
+                                                   xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                     }
                 }
             }
             else
             {
-                foreach (XPathNavigator xmlSheet in LoadXPath("sheets.xml", null, strLanguage).SelectAndCacheExpression("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
+                XPathNodeIterator xmlIterator = LoadXPath("sheets.xml", null, strLanguage)
+                    .SelectAndCacheExpression(
+                        "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
+                if (blnDoList)
+                    lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
+                else
+                    lstSheets = null;
+
+                foreach (XPathNavigator xmlSheet in xmlIterator)
                 {
                     string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
-                    if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
+                    if (string.IsNullOrEmpty(strSheetFileName))
+                        continue;
+                    if (!blnDoList)
                     {
-                        lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                                ? Path.Combine(strLanguage, strSheetFileName)
-                                : strSheetFileName,
-                            xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
-                        if (blnTerminateAfterFirstMatch)
-                            return lstSheets;
+                        blnAnyItem = true;
+                        return;
                     }
+                    if (!setAddedSheetFileNames.Add(strSheetFileName))
+                        continue;
+                    blnAnyItem = true;
+                    lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                                                   ? Path.Combine(strLanguage, strSheetFileName)
+                                                   : strSheetFileName,
+                                               xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
             }
-
-            return lstSheets;
         }
 
         /// <summary>

@@ -1203,20 +1203,30 @@ namespace Chummer
                     strDefaultSheetLanguage = strSheetLanguage;
             }
 
-            cboLanguage.BeginUpdate();
-            cboLanguage.PopulateWithListItems(GetSheetLanguageList(lstCharacters));
-            cboLanguage.SelectedValue = strDefaultSheetLanguage;
-            if (cboLanguage.SelectedIndex == -1)
-                cboLanguage.SelectedValue = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
-            cboLanguage.EndUpdate();
+            List<ListItem> lstSheetLanguageList = GetSheetLanguageList(lstCharacters, true);
+            try
+            {
+                cboLanguage.BeginUpdate();
+                cboLanguage.PopulateWithListItems(lstSheetLanguageList);
+                cboLanguage.SelectedValue = strDefaultSheetLanguage;
+                if (cboLanguage.SelectedIndex == -1)
+                    cboLanguage.SelectedValue
+                        = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                cboLanguage.EndUpdate();
+            }
+            finally
+            {
+                Utils.ListItemListPool.Return(lstSheetLanguageList);
+            }
         }
 
-        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
+        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
         {
-            List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
-            foreach (string filePath in Directory.GetFiles(languageDirectoryPath, "*.xml"))
+            string[] astrFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(astrFilePaths.Length);
+            foreach (string filePath in astrFilePaths)
             {
                 XPathDocument xmlDocument;
                 try
@@ -1240,7 +1250,7 @@ namespace Chummer
                     continue;
 
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (XmlManager.GetXslFilesFromLocalDirectory(strLanguageCode, lstCharacterToUse, true).Count > 0)
+                if (XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse))
                 {
                     lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
                 }

@@ -3618,135 +3618,142 @@ namespace Chummer
                     setAllowedLinkedAttributes = new HashSet<string>(strLimitToAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
                 }
 
-                List<ListItem> lstDropdownItems = new List<ListItem>(objCharacter.SkillsSection.Skills.Count * 2);
-                HashSet<string> setProcessedSkillNames = new HashSet<string>();
-                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills)
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstDropdownItems))
                 {
-                    if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false &&
-                        setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory) != true &&
-                        setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
-                        setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute) != false)
+                    HashSet<string> setProcessedSkillNames = new HashSet<string>();
+                    foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills)
                     {
-                        int intSkillRating = objKnowledgeSkill.Rating;
-                        if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                        if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false &&
+                            setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory) != true &&
+                            setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
+                            setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute) != false)
                         {
-                            lstDropdownItems.Add(new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
-                        }
-                    }
-                    setProcessedSkillNames.Add(objKnowledgeSkill.Name);
-                }
-
-                if (!string.IsNullOrEmpty(strPrompt) && !setProcessedSkillNames.Contains(strPrompt))
-                {
-                    lstDropdownItems.Add(new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
-                    setProcessedSkillNames.Add(strPrompt);
-                }
-                if (intMinimumRating <= 0)
-                {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdFilter))
-                    {
-                        if (setAllowedCategories?.Count > 0)
-                        {
-                            sbdFilter.Append('(');
-                            foreach (string strCategory in setAllowedCategories)
+                            int intSkillRating = objKnowledgeSkill.Rating;
+                            if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
                             {
-                                sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
-                            }
-
-                            sbdFilter.Length -= 4;
-                            sbdFilter.Append(')');
-                        }
-
-                        if (setForbiddenCategories?.Count > 0)
-                        {
-                            sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                            foreach (string strCategory in setForbiddenCategories)
-                            {
-                                sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
-                            }
-
-                            sbdFilter.Length -= 4;
-                            sbdFilter.Append(')');
-                        }
-
-                        if (setAllowedNames?.Count > 0)
-                        {
-                            sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                            foreach (string strName in setAllowedNames)
-                            {
-                                sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
-                            }
-
-                            sbdFilter.Length -= 4;
-                            sbdFilter.Append(')');
-                        }
-
-                        if (setProcessedSkillNames.Count > 0)
-                        {
-                            sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                            foreach (string strName in setProcessedSkillNames)
-                            {
-                                sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
-                            }
-
-                            sbdFilter.Length -= 4;
-                            sbdFilter.Append(')');
-                        }
-
-                        if (setAllowedLinkedAttributes?.Count > 0)
-                        {
-                            sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                            foreach (string strAttribute in setAllowedLinkedAttributes)
-                            {
-                                sbdFilter.Append("attribute = ").Append(strAttribute.CleanXPath()).Append(" or ");
-                            }
-
-                            sbdFilter.Length -= 4;
-                            sbdFilter.Append(')');
-                        }
-
-                        string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
-                        foreach (XPathNavigator xmlSkill in objCharacter.LoadDataXPath("skills.xml")
-                                                                        .Select(
-                                                                            "/chummer/knowledgeskills/skill[(not(hide)"
-                                                                            + strFilter + ")]"))
-                        {
-                            string strName = xmlSkill.SelectSingleNode("name")?.Value;
-                            if (!string.IsNullOrEmpty(strName))
                                 lstDropdownItems.Add(
-                                    new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                                    new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
+                            }
                         }
+
+                        setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                     }
-                }
 
-                lstDropdownItems.Sort(CompareListItems.CompareNames);
-
-                DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
-                {
-                    using (frmSelectItem frmPickSkill = new frmSelectItem
-                           {
-                               Description = LanguageManager.GetString("Title_SelectSkill"),
-                               AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                           })
+                    if (!string.IsNullOrEmpty(strPrompt) && !setProcessedSkillNames.Contains(strPrompt))
                     {
-                        if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
-                            frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
-                        else
-                            frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
-
-                        frmPickSkill.ShowDialog(Program.MainForm);
-
-                        if (frmPickSkill.DialogResult != DialogResult.Cancel)
-                        {
-                            strSelectedSkill = frmPickSkill.SelectedItem;
-                        }
-
-                        return frmPickSkill.DialogResult;
+                        lstDropdownItems.Add(new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
+                        setProcessedSkillNames.Add(strPrompt);
                     }
-                });
-                if (eResult == DialogResult.Cancel)
-                    throw new AbortedException();
+
+                    if (intMinimumRating <= 0)
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdFilter))
+                        {
+                            if (setAllowedCategories?.Count > 0)
+                            {
+                                sbdFilter.Append('(');
+                                foreach (string strCategory in setAllowedCategories)
+                                {
+                                    sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                                }
+
+                                sbdFilter.Length -= 4;
+                                sbdFilter.Append(')');
+                            }
+
+                            if (setForbiddenCategories?.Count > 0)
+                            {
+                                sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                                foreach (string strCategory in setForbiddenCategories)
+                                {
+                                    sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                                }
+
+                                sbdFilter.Length -= 4;
+                                sbdFilter.Append(')');
+                            }
+
+                            if (setAllowedNames?.Count > 0)
+                            {
+                                sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                                foreach (string strName in setAllowedNames)
+                                {
+                                    sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                                }
+
+                                sbdFilter.Length -= 4;
+                                sbdFilter.Append(')');
+                            }
+
+                            if (setProcessedSkillNames.Count > 0)
+                            {
+                                sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                                foreach (string strName in setProcessedSkillNames)
+                                {
+                                    sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                                }
+
+                                sbdFilter.Length -= 4;
+                                sbdFilter.Append(')');
+                            }
+
+                            if (setAllowedLinkedAttributes?.Count > 0)
+                            {
+                                sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                                foreach (string strAttribute in setAllowedLinkedAttributes)
+                                {
+                                    sbdFilter.Append("attribute = ").Append(strAttribute.CleanXPath()).Append(" or ");
+                                }
+
+                                sbdFilter.Length -= 4;
+                                sbdFilter.Append(')');
+                            }
+
+                            string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
+                            foreach (XPathNavigator xmlSkill in objCharacter.LoadDataXPath("skills.xml")
+                                                                            .Select(
+                                                                                "/chummer/knowledgeskills/skill[(not(hide)"
+                                                                                + strFilter + ")]"))
+                            {
+                                string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                                if (!string.IsNullOrEmpty(strName))
+                                    lstDropdownItems.Add(
+                                        new ListItem(
+                                            strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                            }
+                        }
+                    }
+
+                    lstDropdownItems.Sort(CompareListItems.CompareNames);
+
+                    DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
+                    {
+                        using (frmSelectItem frmPickSkill = new frmSelectItem
+                               {
+                                   Description = LanguageManager.GetString("Title_SelectSkill"),
+                                   AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
+                               })
+                        {
+                            if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
+                                frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
+                            else
+                                frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
+
+                            frmPickSkill.ShowDialog(Program.MainForm);
+
+                            if (frmPickSkill.DialogResult != DialogResult.Cancel)
+                            {
+                                strSelectedSkill = frmPickSkill.SelectedItem;
+                            }
+
+                            return frmPickSkill.DialogResult;
+                        }
+                    });
+                    if (eResult == DialogResult.Cancel)
+                        throw new AbortedException();
+                }
             }
             else
             {
@@ -3940,54 +3947,57 @@ namespace Chummer
 
                                 XPathNavigator xmlDoc
                                     = objCharacter.LoadDataXPath(nodBonus.SelectSingleNode("selecttext/@xml")?.Value);
-                                List<ListItem> lstItems = new List<ListItem>(5);
-                                foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstItems))
                                 {
-                                    string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                     ?? string.Empty;
-                                    if (string.IsNullOrWhiteSpace(strName))
+                                    //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
+                                    //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
+                                    HashSet<string> setUsedValues = new HashSet<string>();
+                                    foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                                     {
-                                        // Assume that if we're not looking at something that has an XML node,
-                                        // we're looking at a direct xpath filter or something that has proper names
-                                        // like the lifemodule storybuilder macros.
-                                        lstItems.Add(new ListItem(objNode.Value, objNode.Value));
+                                        string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                         ?? string.Empty;
+                                        if (string.IsNullOrWhiteSpace(strName))
+                                        {
+                                            // Assume that if we're not looking at something that has an XML node,
+                                            // we're looking at a direct xpath filter or something that has proper names
+                                            // like the lifemodule storybuilder macros.
+                                            string strValue = objNode.Value;
+                                            if (setUsedValues.Add(strValue))
+                                                lstItems.Add(new ListItem(strValue, strValue));
+                                        }
+                                        else if (setUsedValues.Add(strName))
+                                        {
+                                            lstItems.Add(new ListItem(strName,
+                                                                      objNode.SelectSingleNodeAndCacheExpression(
+                                                                          "translate")?.Value ?? strName));
+                                        }
+                                    }
+
+                                    if (lstItems.Count == 0)
+                                    {
+                                        return DialogResult.Cancel;
+                                    }
+
+                                    if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
+                                                          GlobalSettings.InvariantCultureInfo))
+                                    {
+                                        frmSelect.SetDropdownItemsMode(lstItems);
                                     }
                                     else
                                     {
-                                        lstItems.Add(new ListItem(strName,
-                                                                  objNode.SelectSingleNodeAndCacheExpression(
-                                                                      "translate")?.Value ?? strName));
+                                        frmSelect.SetGeneralItemsMode(lstItems);
                                     }
+
+                                    frmSelect.ShowDialog(Program.MainForm);
+
+                                    if (frmSelect.DialogResult != DialogResult.Cancel)
+                                    {
+                                        _strSelectedValue = frmSelect.SelectedItem;
+                                    }
+
+                                    return frmSelect.DialogResult;
                                 }
-
-                                //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
-                                //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                lstItems = new List<ListItem>(lstItems.GroupBy(o => new {o.Value, o.Name})
-                                                                      .Select(o => o.FirstOrDefault()));
-
-                                if (lstItems.Count == 0)
-                                {
-                                    return DialogResult.Cancel;
-                                }
-
-                                if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
-                                                      GlobalSettings.InvariantCultureInfo))
-                                {
-                                    frmSelect.SetDropdownItemsMode(lstItems);
-                                }
-                                else
-                                {
-                                    frmSelect.SetGeneralItemsMode(lstItems);
-                                }
-
-                                frmSelect.ShowDialog(Program.MainForm);
-
-                                if (frmSelect.DialogResult != DialogResult.Cancel)
-                                {
-                                    _strSelectedValue = frmSelect.SelectedItem;
-                                }
-
-                                return frmSelect.DialogResult;
                             }
                         });
                         if (eResult == DialogResult.Cancel)

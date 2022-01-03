@@ -49,33 +49,37 @@ namespace Chummer
 
         private void frmSelectProgramOption_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstOption = new List<ListItem>();
-
-            // Populate the Program list.
-            XmlNodeList objXmlOptionList = _objXmlDocument.SelectNodes("/chummer/options/option[" + _objCharacter.Options.BookXPath() + "]");
-
-            foreach (XmlNode objXmlOption in objXmlOptionList)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstOption))
             {
-                // If the Option has Category requirements, make sure they are met before adding the item to the list.
-                if (objXmlOption["programtypes"] != null)
+                // Populate the Program list.
+                XmlNodeList objXmlOptionList
+                    = _objXmlDocument.SelectNodes("/chummer/options/option[" + _objCharacter.Options.BookXPath() + "]");
+
+                foreach (XmlNode objXmlOption in objXmlOptionList)
                 {
-                    bool blnAdd = false;
-                    foreach (XmlNode objXmlCategory in objXmlOption.SelectNodes("programtypes/programtype"))
+                    // If the Option has Category requirements, make sure they are met before adding the item to the list.
+                    if (objXmlOption["programtypes"] != null)
                     {
-                        if (objXmlCategory.InnerText == _strProgramCategory)
-                            blnAdd = true;
+                        bool blnAdd = false;
+                        foreach (XmlNode objXmlCategory in objXmlOption.SelectNodes("programtypes/programtype"))
+                        {
+                            if (objXmlCategory.InnerText == _strProgramCategory)
+                                blnAdd = true;
+                        }
+
+                        if (!blnAdd)
+                            continue;
                     }
-                    if (!blnAdd)
-                        continue;
+
+                    string strName = objXmlOption["name"].InnerText;
+                    lstOption.Add(new ListItem(strName, objXmlOption["translate"]?.InnerText ?? strName));
                 }
 
-                string strName = objXmlOption["name"].InnerText;
-                lstOption.Add(new ListItem(strName, objXmlOption["translate"]?.InnerText ?? strName));
+                lstOption.Sort(CompareListItems.CompareNames);
+                lstOptions.BeginUpdate();
+                lstOptions.PopulateWithListItems(lstOption);
+                lstOptions.EndUpdate();
             }
-            lstOption.Sort(CompareListItems.CompareNames);
-            lstOptions.BeginUpdate();
-            lstOptions.PopulateWithListItems(lstOption);
-            lstOptions.EndUpdate();
         }
 
         private void lstOptions_SelectedIndexChanged(object sender, EventArgs e)

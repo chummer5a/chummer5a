@@ -44,27 +44,35 @@ namespace Chummer
             this.TranslateWinForm();
 
             // Populate the Character Settings list.
-            List<ListItem> lstCharacterSettings = new List<ListItem>(SettingsManager.LoadedCharacterSettings.Count);
-            foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
             {
-                lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
-            }
-            lstCharacterSettings.Sort(CompareListItems.CompareNames);
-            cboCharacterSetting.BeginUpdate();
-            cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
-            if (blnUseCurrentValues)
-            {
-                if (SettingsManager.LoadedCharacterSettings.TryGetValue(_objCharacter.SettingsKey, out CharacterSettings objSetting))
+                foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
+                {
+                    lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
+                }
+
+                lstCharacterSettings.Sort(CompareListItems.CompareNames);
+                cboCharacterSetting.BeginUpdate();
+                cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                if (blnUseCurrentValues)
+                {
+                    if (SettingsManager.LoadedCharacterSettings.TryGetValue(
+                            _objCharacter.SettingsKey, out CharacterSettings objSetting))
+                        cboCharacterSetting.SelectedValue = objSetting;
+                    if (cboCharacterSetting.SelectedIndex == -1
+                        && SettingsManager.LoadedCharacterSettings.TryGetValue(
+                            GlobalSettings.DefaultCharacterSetting, out objSetting))
+                        cboCharacterSetting.SelectedValue = objSetting;
+                    chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
+                }
+                else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
+                             GlobalSettings.DefaultCharacterSetting, out CharacterSettings objSetting))
                     cboCharacterSetting.SelectedValue = objSetting;
-                if (cboCharacterSetting.SelectedIndex == -1 && SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out objSetting))
-                    cboCharacterSetting.SelectedValue = objSetting;
-                chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
+
+                if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                    cboCharacterSetting.SelectedIndex = 0;
+                cboCharacterSetting.EndUpdate();
             }
-            else if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out CharacterSettings objSetting))
-                cboCharacterSetting.SelectedValue = objSetting;
-            if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
-                cboCharacterSetting.SelectedIndex = 0;
-            cboCharacterSetting.EndUpdate();
 
             chkIgnoreRules.SetToolTip(LanguageManager.GetString("Tip_SelectKarma_IgnoreRules"));
         }

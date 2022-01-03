@@ -92,34 +92,37 @@ namespace Chummer
                     Lifestyle objCurrentlySelectedLifestyle = cboSelectLifestyle.SelectedIndex >= 0
                         ? ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle
                         : null;
-                    List<ListItem> lstLifestyleItems = new List<ListItem>();
-                    foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstLifestyleItems))
                     {
-                        ListItem objLifestyleItem = new ListItem(objLifestyle, objLifestyle.CurrentDisplayName);
-                        lstLifestyleItems.Add(new ListItem(objLifestyle, objLifestyle.CurrentDisplayName));
-                        // We already selected a lifestyle, so keep the selection if possible despite the refresh
-                        if (objCurrentlySelectedLifestyle != null)
+                        foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
                         {
-                            if (objCurrentlySelectedLifestyle == objLifestyle)
+                            ListItem objLifestyleItem = new ListItem(objLifestyle, objLifestyle.CurrentDisplayName);
+                            lstLifestyleItems.Add(new ListItem(objLifestyle, objLifestyle.CurrentDisplayName));
+                            // We already selected a lifestyle, so keep the selection if possible despite the refresh
+                            if (objCurrentlySelectedLifestyle != null)
+                            {
+                                if (objCurrentlySelectedLifestyle == objLifestyle)
+                                    objPreferredLifestyleItem = objLifestyleItem;
+                            }
+                            else if (objPreferredLifestyle == null ||
+                                     objLifestyle.ExpectedValue > objPreferredLifestyle.ExpectedValue)
+                            {
                                 objPreferredLifestyleItem = objLifestyleItem;
+                                objPreferredLifestyle = objLifestyle;
+                            }
                         }
-                        else if (objPreferredLifestyle == null ||
-                                 objLifestyle.ExpectedValue > objPreferredLifestyle.ExpectedValue)
-                        {
-                            objPreferredLifestyleItem = objLifestyleItem;
-                            objPreferredLifestyle = objLifestyle;
-                        }
+
+                        lstLifestyleItems.Sort(CompareListItems.CompareNames);
+
+                        cboSelectLifestyle.BeginUpdate();
+                        cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
+                        cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
+                        if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
+                            cboSelectLifestyle.SelectedIndex = 0;
+                        cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
+                        cboSelectLifestyle.EndUpdate();
                     }
-
-                    lstLifestyleItems.Sort(CompareListItems.CompareNames);
-
-                    cboSelectLifestyle.BeginUpdate();
-                    cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
-                    cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
-                    if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
-                        cboSelectLifestyle.SelectedIndex = 0;
-                    cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
-                    cboSelectLifestyle.EndUpdate();
                 }
                 finally
                 {

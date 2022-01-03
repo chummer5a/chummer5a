@@ -36,7 +36,7 @@ namespace Chummer
         private readonly bool _blnAdvancedProgramAllowed;
         private readonly bool _blnInherentProgram;
         private readonly Character _objCharacter;
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
 
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly XPathNavigator _xmlOptionalAIProgramsNode;
@@ -300,56 +300,65 @@ namespace Chummer
         private void UpdateProgramList(XPathNodeIterator objXmlNodeList)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            List<ListItem> lstPrograms = new List<ListItem>();
-            foreach (XPathNavigator objXmlProgram in objXmlNodeList)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstPrograms))
             {
-                string strId = objXmlProgram.SelectSingleNode("id")?.Value;
-                if (string.IsNullOrEmpty(strId))
-                    continue;
-
-                if (chkLimitList.Checked)
+                foreach (XPathNavigator objXmlProgram in objXmlNodeList)
                 {
-                    string strRequire = objXmlProgram.SelectSingleNode("require")?.Value;
-                    if (!string.IsNullOrEmpty(strRequire))
+                    string strId = objXmlProgram.SelectSingleNode("id")?.Value;
+                    if (string.IsNullOrEmpty(strId))
+                        continue;
+
+                    if (chkLimitList.Checked)
                     {
-                        bool blnAdd = false;
-                        foreach (AIProgram objAIProgram in _objCharacter.AIPrograms)
+                        string strRequire = objXmlProgram.SelectSingleNode("require")?.Value;
+                        if (!string.IsNullOrEmpty(strRequire))
                         {
-                            if (objAIProgram.Name == strRequire)
+                            bool blnAdd = false;
+                            foreach (AIProgram objAIProgram in _objCharacter.AIPrograms)
                             {
-                                blnAdd = true;
-                                break;
+                                if (objAIProgram.Name == strRequire)
+                                {
+                                    blnAdd = true;
+                                    break;
+                                }
+                            }
+
+                            if (!blnAdd)
+                                continue;
+                        }
+                    }
+
+                    string strName = objXmlProgram.SelectSingleNode("name")?.Value
+                                     ?? LanguageManager.GetString("String_Unknown");
+                    // If this is a critter with Optional Programs, see if this Program is allowed.
+                    if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null
+                        && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + "]")
+                        == null)
+                        continue;
+                    string strDisplayName = objXmlProgram.SelectSingleNode("translate")?.Value ?? strName;
+                    if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                    {
+                        string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;
+                        if (!string.IsNullOrEmpty(strCategory))
+                        {
+                            ListItem objFoundItem
+                                = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
+                            if (!string.IsNullOrEmpty(objFoundItem.Name))
+                            {
+                                strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                             }
                         }
-                        if (!blnAdd)
-                            continue;
                     }
+
+                    lstPrograms.Add(new ListItem(strId, strDisplayName));
                 }
 
-                string strName = objXmlProgram.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                // If this is a critter with Optional Programs, see if this Program is allowed.
-                if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + "]") == null)
-                    continue;
-                string strDisplayName = objXmlProgram.SelectSingleNode("translate")?.Value ?? strName;
-                if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
-                {
-                    string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;
-                    if (!string.IsNullOrEmpty(strCategory))
-                    {
-                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
-                        if (!string.IsNullOrEmpty(objFoundItem.Name))
-                        {
-                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
-                        }
-                    }
-                }
-                lstPrograms.Add(new ListItem(strId, strDisplayName));
+                lstPrograms.Sort(CompareListItems.CompareNames);
+                lstAIPrograms.BeginUpdate();
+                lstAIPrograms.PopulateWithListItems(lstPrograms);
+                lstAIPrograms.EndUpdate();
             }
-
-            lstPrograms.Sort(CompareListItems.CompareNames);
-            lstAIPrograms.BeginUpdate();
-            lstAIPrograms.PopulateWithListItems(lstPrograms);
-            lstAIPrograms.EndUpdate();
         }
 
         /// <summary>

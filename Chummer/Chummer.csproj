@@ -435,6 +435,7 @@
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
     <Compile Include="Classes\XslManager.cs" />
+    <Compile Include="helpers\ListPooledObjectPolicy.cs" />
     <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
     </Compile>

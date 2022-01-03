@@ -43,7 +43,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private readonly string _strLimitToCategories = string.Empty;
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private readonly HashSet<string> _setBlackMarketMaps;
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 

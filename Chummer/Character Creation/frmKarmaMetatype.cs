@@ -63,61 +63,73 @@ namespace Chummer
         private void frmMetatype_Load(object sender, EventArgs e)
         {
             // Populate the Metatype Category list.
-            List<ListItem> lstCategories = new List<ListItem>(3);
-
-            // Create a list of Categories.
-            XPathNavigator xmlMetatypesNode = _xmlBaseMetatypeDataNode.SelectSingleNodeAndCacheExpression("metatypes");
-            if (xmlMetatypesNode != null)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategories))
             {
-                HashSet<string> lstAlreadyProcessed = new HashSet<string>();
-                foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression("categories/category"))
+                // Create a list of Categories.
+                XPathNavigator xmlMetatypesNode
+                    = _xmlBaseMetatypeDataNode.SelectSingleNodeAndCacheExpression("metatypes");
+                if (xmlMetatypesNode != null)
                 {
-                    string strInnerText = objXmlCategory.Value;
-                    if (!lstAlreadyProcessed.Contains(strInnerText))
+                    HashSet<string> lstAlreadyProcessed = new HashSet<string>();
+                    foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
+                                 "categories/category"))
                     {
-                        lstAlreadyProcessed.Add(strInnerText);
-                        if (xmlMetatypesNode.SelectSingleNode("metatype[category = " + strInnerText.CleanXPath()
-                                                              + " and (" + _objCharacter.Settings.BookXPath() + ")]")
-                            != null)
+                        string strInnerText = objXmlCategory.Value;
+                        if (!lstAlreadyProcessed.Contains(strInnerText))
                         {
-                            lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
-                                                                         ?? strInnerText));
+                            lstAlreadyProcessed.Add(strInnerText);
+                            if (xmlMetatypesNode.SelectSingleNode("metatype[category = " + strInnerText.CleanXPath()
+                                                                  + " and (" + _objCharacter.Settings.BookXPath()
+                                                                  + ")]")
+                                != null)
+                            {
+                                lstCategories.Add(new ListItem(strInnerText,
+                                                               objXmlCategory
+                                                                   .SelectSingleNodeAndCacheExpression("@translate")
+                                                                   ?.Value
+                                                               ?? strInnerText));
+                            }
                         }
                     }
                 }
+
+                lstCategories.Sort(CompareListItems.CompareNames);
+                cboCategory.BeginUpdate();
+                cboCategory.PopulateWithListItems(lstCategories);
+                // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
+                cboCategory.SelectedValue = _objCharacter.MetatypeCategory;
+                if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
+                    cboCategory.SelectedIndex = 0;
+
+                cboCategory.EndUpdate();
             }
-
-            lstCategories.Sort(CompareListItems.CompareNames);
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(lstCategories);
-            // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
-            cboCategory.SelectedValue = _objCharacter.MetatypeCategory;
-            if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
-                cboCategory.SelectedIndex = 0;
-
-            cboCategory.EndUpdate();
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
 
-            List<ListItem> lstMethods = new List<ListItem>(2)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethods))
             {
-                new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
-                new ListItem("Inhabitation", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
-            };
+                lstMethods.Add(new ListItem("Possession",
+                                            _xmlCritterPowerDocumentPowersNode
+                                                ?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText
+                                            ?? "Possession"));
+                lstMethods.Add(new ListItem("Inhabitation",
+                                            _xmlCritterPowerDocumentPowersNode
+                                                ?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText
+                                            ?? "Inhabitation"));
+                lstMethods.Sort(CompareListItems.CompareNames);
 
-            lstMethods.Sort(CompareListItems.CompareNames);
+                _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
+                                                           .FirstOrDefault(
+                                                               y => lstMethods.Any(
+                                                                   x => y.Equals(
+                                                                       x.Value.ToString(),
+                                                                       StringComparison.OrdinalIgnoreCase)));
 
-            _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
-                                                       .FirstOrDefault(
-                                                           y => lstMethods.Any(
-                                                               x => y.Equals(
-                                                                   x.Value.ToString(),
-                                                                   StringComparison.OrdinalIgnoreCase)));
-
-            cboPossessionMethod.BeginUpdate();
-            cboPossessionMethod.PopulateWithListItems(lstMethods);
-            cboPossessionMethod.EndUpdate();
+                cboPossessionMethod.BeginUpdate();
+                cboPossessionMethod.PopulateWithListItems(lstMethods);
+                cboPossessionMethod.EndUpdate();
+            }
 
             PopulateMetatypes();
             PopulateMetavariants();
@@ -617,41 +629,47 @@ namespace Chummer
             // Don't attempt to do anything if nothing is selected.
             if (objXmlMetatype != null)
             {
-                List<ListItem> lstMetavariants = new List<ListItem>(5)
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetavariants))
                 {
-                    new ListItem(Guid.Empty, LanguageManager.GetString("String_None"))
-                };
-                foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + "]"))
-                {
-                    string strId = objXmlMetavariant.SelectSingleNodeAndCacheExpression("id")?.Value;
-                    if (!string.IsNullOrEmpty(strId))
+                    lstMetavariants.Add(new ListItem(Guid.Empty, LanguageManager.GetString("String_None")));
+                    foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
+                                 "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + "]"))
                     {
-                        lstMetavariants.Add(new ListItem(strId,
-                            objXmlMetavariant.SelectSingleNodeAndCacheExpression("translate")?.Value
-                            ?? objXmlMetavariant.SelectSingleNodeAndCacheExpression("name")?.Value
-                            ?? LanguageManager.GetString("String_Unknown")));
+                        string strId = objXmlMetavariant.SelectSingleNodeAndCacheExpression("id")?.Value;
+                        if (!string.IsNullOrEmpty(strId))
+                        {
+                            lstMetavariants.Add(new ListItem(strId,
+                                                             objXmlMetavariant
+                                                                 .SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                             ?? objXmlMetavariant
+                                                                .SelectSingleNodeAndCacheExpression("name")?.Value
+                                                             ?? LanguageManager.GetString("String_Unknown")));
+                        }
                     }
-                }
 
-                // Retrieve the list of Metavariants for the selected Metatype.
+                    // Retrieve the list of Metavariants for the selected Metatype.
 
-                bool blnOldLoading = _blnLoading;
-                string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo);
-                _blnLoading = true;
-                cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(lstMetavariants);
-                cboMetavariant.Enabled = lstMetavariants.Count > 1;
-                _blnLoading = blnOldLoading;
-                if (!string.IsNullOrEmpty(strOldSelectedValue))
-                {
-                    if (cboMetavariant.SelectedValue?.ToString() == strOldSelectedValue)
-                        cboMetavariant_SelectedIndexChanged(null, null);
-                    else
-                        cboMetavariant.SelectedValue = strOldSelectedValue;
+                    bool blnOldLoading = _blnLoading;
+                    string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString()
+                                                 ?? _objCharacter?.MetavariantGuid.ToString(
+                                                     "D", GlobalSettings.InvariantCultureInfo);
+                    _blnLoading = true;
+                    cboMetavariant.BeginUpdate();
+                    cboMetavariant.PopulateWithListItems(lstMetavariants);
+                    cboMetavariant.Enabled = lstMetavariants.Count > 1;
+                    _blnLoading = blnOldLoading;
+                    if (!string.IsNullOrEmpty(strOldSelectedValue))
+                    {
+                        if (cboMetavariant.SelectedValue?.ToString() == strOldSelectedValue)
+                            cboMetavariant_SelectedIndexChanged(null, null);
+                        else
+                            cboMetavariant.SelectedValue = strOldSelectedValue;
+                    }
+
+                    if (cboMetavariant.SelectedIndex == -1 && lstMetavariants.Count > 0)
+                        cboMetavariant.SelectedIndex = 0;
+                    cboMetavariant.EndUpdate();
                 }
-                if (cboMetavariant.SelectedIndex == -1 && lstMetavariants.Count > 0)
-                    cboMetavariant.SelectedIndex = 0;
-                cboMetavariant.EndUpdate();
 
                 // If the Metatype has Force enabled, show the Force NUD.
                 string strEssMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax")?.Value ?? string.Empty;
@@ -700,15 +718,10 @@ namespace Chummer
                 lblMetavariantLabel.Visible = false;
                 cboMetavariant.Visible = false;
                 // Clear the Metavariant list if nothing is currently selected.
-                List<ListItem> lstMetavariants = new List<ListItem>(5)
-                {
-                    new ListItem(Guid.Empty, LanguageManager.GetString("String_None"))
-                };
-
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(lstMetavariants);
+                cboMetavariant.PopulateWithListItems(new ListItem(Guid.Empty, LanguageManager.GetString("String_None")).Yield());
                 cboMetavariant.Enabled = false;
                 _blnLoading = blnOldLoading;
                 cboMetavariant.SelectedIndex = 0;
@@ -727,43 +740,53 @@ namespace Chummer
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedCategory))
             {
-                List<ListItem> lstMetatypeItems = new List<ListItem>();
-                foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                             "metatypes/metatype[category = " + strSelectedCategory.CleanXPath() + " and ("
-                             + _objCharacter.Settings.BookXPath() + ")]"))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstMetatypeItems))
                 {
-                    string strId = xmlMetatype.SelectSingleNodeAndCacheExpression("id")?.Value;
-                    if (!string.IsNullOrEmpty(strId))
+                    foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(
+                                 "metatypes/metatype[category = " + strSelectedCategory.CleanXPath() + " and ("
+                                 + _objCharacter.Settings.BookXPath() + ")]"))
                     {
-                        lstMetatypeItems.Add(new ListItem(strId,
-                            xmlMetatype.SelectSingleNodeAndCacheExpression("translate")?.Value
-                            ?? xmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value
-                            ?? LanguageManager.GetString("String_Unknown")));
+                        string strId = xmlMetatype.SelectSingleNodeAndCacheExpression("id")?.Value;
+                        if (!string.IsNullOrEmpty(strId))
+                        {
+                            lstMetatypeItems.Add(new ListItem(strId,
+                                                              xmlMetatype
+                                                                  .SelectSingleNodeAndCacheExpression("translate")
+                                                                  ?.Value
+                                                              ?? xmlMetatype.SelectSingleNodeAndCacheExpression("name")
+                                                                            ?.Value
+                                                              ?? LanguageManager.GetString("String_Unknown")));
+                        }
                     }
+
+                    lstMetatypeItems.Sort(CompareListItems.CompareNames);
+
+                    bool blnOldLoading = _blnLoading;
+                    string strOldSelected = lstMetatypes.SelectedValue?.ToString()
+                                            ?? _objCharacter?.MetatypeGuid.ToString(
+                                                "D", GlobalSettings.InvariantCultureInfo);
+                    if (strOldSelected == Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
+                        strOldSelected = _objCharacter.GetNode(true)?.SelectSingleNodeAndCacheExpression("id")?.Value
+                                         ?? string.Empty;
+                    _blnLoading = true;
+                    lstMetatypes.BeginUpdate();
+                    lstMetatypes.PopulateWithListItems(lstMetatypeItems);
+                    _blnLoading = blnOldLoading;
+                    // Attempt to select the default Human item. If it could not be found, select the first item in the list instead.
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                    {
+                        if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
+                            lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);
+                        else
+                            lstMetatypes.SelectedValue = strOldSelected;
+                    }
+
+                    if (lstMetatypes.SelectedIndex == -1 && lstMetatypeItems.Count > 0)
+                        lstMetatypes.SelectedIndex = 0;
+
+                    lstMetatypes.EndUpdate();
                 }
-
-                lstMetatypeItems.Sort(CompareListItems.CompareNames);
-
-                bool blnOldLoading = _blnLoading;
-                string strOldSelected = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter?.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo);
-                if (strOldSelected == Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
-                    strOldSelected = _objCharacter.GetNode(true)?.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
-                _blnLoading = true;
-                lstMetatypes.BeginUpdate();
-                lstMetatypes.PopulateWithListItems(lstMetatypeItems);
-                _blnLoading = blnOldLoading;
-                // Attempt to select the default Human item. If it could not be found, select the first item in the list instead.
-                if (!string.IsNullOrEmpty(strOldSelected))
-                {
-                    if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
-                        lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);
-                    else
-                        lstMetatypes.SelectedValue = strOldSelected;
-                }
-                if (lstMetatypes.SelectedIndex == -1 && lstMetatypeItems.Count > 0)
-                    lstMetatypes.SelectedIndex = 0;
-
-                lstMetatypes.EndUpdate();
 
                 if (strSelectedCategory.EndsWith("Spirits", StringComparison.Ordinal))
                 {

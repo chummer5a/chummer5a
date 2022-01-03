@@ -45,22 +45,28 @@ namespace Chummer
         private void frmSelectSpellCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Spell Categories from the Spells file.
-            List<ListItem> lstCategory = new List<ListItem>();
-            foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
-                ? _objXmlDocument.Select("/chummer/categories/category[. = " + _strForceCategory.CleanXPath() + "]")
-                : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                string strInnerText = objXmlCategory.Value;
-                if (_setExcludeCategories.Contains(strInnerText))
-                    continue;
-                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
+                             ? _objXmlDocument.Select("/chummer/categories/category[. = "
+                                                      + _strForceCategory.CleanXPath() + "]")
+                             : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+                {
+                    string strInnerText = objXmlCategory.Value;
+                    if (_setExcludeCategories.Contains(strInnerText))
+                        continue;
+                    lstCategory.Add(new ListItem(strInnerText,
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 ?? strInnerText));
+                }
+
+                cboCategory.BeginUpdate();
+                cboCategory.PopulateWithListItems(lstCategory);
+                // Select the first Skill in the list.
+                cboCategory.SelectedIndex = 0;
+                cboCategory.EndUpdate();
             }
 
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(lstCategory);
-            // Select the first Skill in the list.
-            cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
             if (cboCategory.Items.Count == 1)
                 cmdOK_Click(sender, e);
         }

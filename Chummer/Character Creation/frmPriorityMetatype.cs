@@ -127,53 +127,56 @@ namespace Chummer
 
                     if (objItems.Count > 0)
                     {
-                        List<ListItem> lstItems = new List<ListItem>(objItems.Count);
-
-                        foreach (XPathNavigator objXmlPriority in objItems)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstItems))
                         {
-                            string strValue = objXmlPriority.SelectSingleNodeAndCacheExpression("value")?.Value;
-                            if (!string.IsNullOrEmpty(strValue) && _lstPriorities.Contains(strValue))
+                            foreach (XPathNavigator objXmlPriority in objItems)
                             {
-                                lstItems.Add(new ListItem(
-                                    strValue,
-                                    objXmlPriority.SelectSingleNodeAndCacheExpression("translate")?.Value ??
-                                    objXmlPriority.SelectSingleNodeAndCacheExpression("name")?.Value ??
-                                    LanguageManager.GetString("String_Unknown")));
+                                string strValue = objXmlPriority.SelectSingleNodeAndCacheExpression("value")?.Value;
+                                if (!string.IsNullOrEmpty(strValue) && _lstPriorities.Contains(strValue))
+                                {
+                                    lstItems.Add(new ListItem(
+                                                     strValue,
+                                                     objXmlPriority.SelectSingleNodeAndCacheExpression("translate")
+                                                                   ?.Value ??
+                                                     objXmlPriority.SelectSingleNodeAndCacheExpression("name")?.Value ??
+                                                     LanguageManager.GetString("String_Unknown")));
+                                }
                             }
-                        }
 
-                        lstItems.Sort(CompareListItems.CompareNames);
-                        switch (objXmlPriorityCategory.Value)
-                        {
-                            case "Heritage":
-                                cboHeritage.BeginUpdate();
-                                cboHeritage.PopulateWithListItems(lstItems);
-                                cboHeritage.EndUpdate();
-                                break;
+                            lstItems.Sort(CompareListItems.CompareNames);
+                            switch (objXmlPriorityCategory.Value)
+                            {
+                                case "Heritage":
+                                    cboHeritage.BeginUpdate();
+                                    cboHeritage.PopulateWithListItems(lstItems);
+                                    cboHeritage.EndUpdate();
+                                    break;
 
-                            case "Talent":
-                                cboTalent.BeginUpdate();
-                                cboTalent.PopulateWithListItems(lstItems);
-                                cboTalent.EndUpdate();
-                                break;
+                                case "Talent":
+                                    cboTalent.BeginUpdate();
+                                    cboTalent.PopulateWithListItems(lstItems);
+                                    cboTalent.EndUpdate();
+                                    break;
 
-                            case "Attributes":
-                                cboAttributes.BeginUpdate();
-                                cboAttributes.PopulateWithListItems(lstItems);
-                                cboAttributes.EndUpdate();
-                                break;
+                                case "Attributes":
+                                    cboAttributes.BeginUpdate();
+                                    cboAttributes.PopulateWithListItems(lstItems);
+                                    cboAttributes.EndUpdate();
+                                    break;
 
-                            case "Skills":
-                                cboSkills.BeginUpdate();
-                                cboSkills.PopulateWithListItems(lstItems);
-                                cboSkills.EndUpdate();
-                                break;
+                                case "Skills":
+                                    cboSkills.BeginUpdate();
+                                    cboSkills.PopulateWithListItems(lstItems);
+                                    cboSkills.EndUpdate();
+                                    break;
 
-                            case "Resources":
-                                cboResources.BeginUpdate();
-                                cboResources.PopulateWithListItems(lstItems);
-                                cboResources.EndUpdate();
-                                break;
+                                case "Resources":
+                                    cboResources.BeginUpdate();
+                                    cboResources.PopulateWithListItems(lstItems);
+                                    cboResources.EndUpdate();
+                                    break;
+                            }
                         }
                     }
                 }
@@ -279,24 +282,30 @@ namespace Chummer
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
 
-            List<ListItem> lstMethods = new List<ListItem>(2)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethods))
             {
-                new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
-                new ListItem("Inhabitation", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
-            };
+                lstMethods.Add(new ListItem("Possession",
+                                            _xmlCritterPowerDocumentPowersNode
+                                                ?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText
+                                            ?? "Possession"));
+                lstMethods.Add(new ListItem("Inhabitation",
+                                            _xmlCritterPowerDocumentPowersNode
+                                                ?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")
+                                                ?.InnerText
+                                            ?? "Inhabitation"));
+                lstMethods.Sort(CompareListItems.CompareNames);
 
-            lstMethods.Sort(CompareListItems.CompareNames);
+                _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
+                                                           .FirstOrDefault(
+                                                               y => lstMethods.Any(
+                                                                   x => y.Equals(
+                                                                       x.Value.ToString(),
+                                                                       StringComparison.OrdinalIgnoreCase)));
 
-            _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
-                                                       .FirstOrDefault(
-                                                           y => lstMethods.Any(
-                                                               x => y.Equals(
-                                                                   x.Value.ToString(),
-                                                                   StringComparison.OrdinalIgnoreCase)));
-
-            cboPossessionMethod.BeginUpdate();
-            cboPossessionMethod.PopulateWithListItems(lstMethods);
-            cboPossessionMethod.EndUpdate();
+                cboPossessionMethod.BeginUpdate();
+                cboPossessionMethod.PopulateWithListItems(lstMethods);
+                cboPossessionMethod.EndUpdate();
+            }
 
             _blnLoading = false;
         }
@@ -394,94 +403,117 @@ namespace Chummer
 
                         if (intSkillCount > 0)
                         {
-                            List<ListItem> lstSkills = new List<ListItem>(intSkillCount);
-                            if (objNodeList.Count > 0)
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstSkills))
                             {
-                                foreach (XPathNavigator objXmlSkill in xmlSkillsList)
+                                if (objNodeList.Count > 0)
                                 {
-                                    string strInnerText = objXmlSkill.Value;
-                                    lstSkills.Add(new ListItem(strInnerText, objXmlSkill.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                                    foreach (XPathNavigator objXmlSkill in xmlSkillsList)
+                                    {
+                                        string strInnerText = objXmlSkill.Value;
+                                        lstSkills.Add(new ListItem(strInnerText,
+                                                                   objXmlSkill.SelectSingleNodeAndCacheExpression(
+                                                                       "@translate")?.Value ?? strInnerText));
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                foreach (XPathNavigator objXmlSkill in xmlSkillsList)
+                                else
                                 {
-                                    string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                                    lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    foreach (XPathNavigator objXmlSkill in xmlSkillsList)
+                                    {
+                                        string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                         ?? LanguageManager.GetString("String_Unknown");
+                                        lstSkills.Add(
+                                            new ListItem(
+                                                strName,
+                                                objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                ?? strName));
+                                    }
                                 }
-                            }
-                            lstSkills.Sort(CompareListItems.CompareNames);
-                            bool blnOldLoading = _blnLoading;
-                            int intOldSelectedIndex = cboSkill1.SelectedIndex;
-                            int intOldDataSourceSize = cboSkill1.Items.Count;
-                            cboSkill1.PopulateWithListItems(lstSkills);
-                            cboSkill1.Visible = true;
-                            if (intOldDataSourceSize == cboSkill1.Items.Count)
-                            {
-                                _blnLoading = true;
-                                cboSkill1.SelectedIndex = intOldSelectedIndex;
-                                _blnLoading = blnOldLoading;
-                            }
 
-                            if (intSkillCount > 1)
-                            {
-                                intOldSelectedIndex = cboSkill2.SelectedIndex;
-                                intOldDataSourceSize = cboSkill2.Items.Count;
-                                cboSkill2.PopulateWithListItems(lstSkills);
-                                cboSkill2.Visible = true;
-                                if (intOldDataSourceSize == cboSkill2.Items.Count)
+                                lstSkills.Sort(CompareListItems.CompareNames);
+                                bool blnOldLoading = _blnLoading;
+                                int intOldSelectedIndex = cboSkill1.SelectedIndex;
+                                int intOldDataSourceSize = cboSkill1.Items.Count;
+                                cboSkill1.PopulateWithListItems(lstSkills);
+                                cboSkill1.Visible = true;
+                                if (intOldDataSourceSize == cboSkill1.Items.Count)
                                 {
                                     _blnLoading = true;
-                                    cboSkill2.SelectedIndex = intOldSelectedIndex;
+                                    cboSkill1.SelectedIndex = intOldSelectedIndex;
                                     _blnLoading = blnOldLoading;
                                 }
-                                if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex && ExoticSkill.IsExoticSkillName(cboSkill2.SelectedValue?.ToString()))
+
+                                if (intSkillCount > 1)
                                 {
-                                    if (cboSkill2.SelectedIndex + 1 >= cboSkill2.Items.Count)
-                                        cboSkill2.SelectedIndex = 0;
-                                    else
-                                        cboSkill2.SelectedIndex = cboSkill1.SelectedIndex + 1;
-                                }
-                                if (intSkillCount > 2)
-                                {
-                                    intOldSelectedIndex = cboSkill3.SelectedIndex;
-                                    intOldDataSourceSize = cboSkill3.Items.Count;
-                                    cboSkill3.PopulateWithListItems(lstSkills);
-                                    cboSkill3.Visible = true;
-                                    if (intOldDataSourceSize == cboSkill3.Items.Count)
+                                    intOldSelectedIndex = cboSkill2.SelectedIndex;
+                                    intOldDataSourceSize = cboSkill2.Items.Count;
+                                    cboSkill2.PopulateWithListItems(lstSkills);
+                                    cboSkill2.Visible = true;
+                                    if (intOldDataSourceSize == cboSkill2.Items.Count)
                                     {
                                         _blnLoading = true;
-                                        cboSkill3.SelectedIndex = intOldSelectedIndex;
+                                        cboSkill2.SelectedIndex = intOldSelectedIndex;
                                         _blnLoading = blnOldLoading;
                                     }
 
-                                    if ((cboSkill3.SelectedIndex == cboSkill1.SelectedIndex ||
-                                         cboSkill3.SelectedIndex == cboSkill2.SelectedIndex) &&
-                                        ExoticSkill.IsExoticSkillName(cboSkill3.SelectedValue?.ToString()))
+                                    if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex
+                                        && ExoticSkill.IsExoticSkillName(cboSkill2.SelectedValue?.ToString()))
                                     {
-                                        int intNewIndex = cboSkill3.SelectedIndex;
-                                        do
+                                        if (cboSkill2.SelectedIndex + 1 >= cboSkill2.Items.Count)
+                                            cboSkill2.SelectedIndex = 0;
+                                        else
+                                            cboSkill2.SelectedIndex = cboSkill1.SelectedIndex + 1;
+                                    }
+
+                                    if (intSkillCount > 2)
+                                    {
+                                        intOldSelectedIndex = cboSkill3.SelectedIndex;
+                                        intOldDataSourceSize = cboSkill3.Items.Count;
+                                        cboSkill3.PopulateWithListItems(lstSkills);
+                                        cboSkill3.Visible = true;
+                                        if (intOldDataSourceSize == cboSkill3.Items.Count)
                                         {
-                                            ++intNewIndex;
-                                            if (intNewIndex >= cboSkill3.Items.Count)
-                                                intNewIndex = 0;
+                                            _blnLoading = true;
+                                            cboSkill3.SelectedIndex = intOldSelectedIndex;
+                                            _blnLoading = blnOldLoading;
                                         }
-                                        while ((intNewIndex == cboSkill1.SelectedIndex || intNewIndex == cboSkill2.SelectedIndex) && intNewIndex != cboSkill3.SelectedIndex &&
-                                               !ExoticSkill.IsExoticSkillName(((ListItem)cboSkill3.Items[intNewIndex]).Value.ToString()));
-                                        cboSkill3.SelectedIndex = intNewIndex;
+
+                                        if ((cboSkill3.SelectedIndex == cboSkill1.SelectedIndex ||
+                                             cboSkill3.SelectedIndex == cboSkill2.SelectedIndex) &&
+                                            ExoticSkill.IsExoticSkillName(cboSkill3.SelectedValue?.ToString()))
+                                        {
+                                            int intNewIndex = cboSkill3.SelectedIndex;
+                                            do
+                                            {
+                                                ++intNewIndex;
+                                                if (intNewIndex >= cboSkill3.Items.Count)
+                                                    intNewIndex = 0;
+                                            } while ((intNewIndex == cboSkill1.SelectedIndex
+                                                      || intNewIndex == cboSkill2.SelectedIndex)
+                                                     && intNewIndex != cboSkill3.SelectedIndex &&
+                                                     !ExoticSkill.IsExoticSkillName(
+                                                         ((ListItem) cboSkill3.Items[intNewIndex]).Value.ToString()));
+
+                                            cboSkill3.SelectedIndex = intNewIndex;
+                                        }
                                     }
                                 }
+
+                                string strMetamagicSkillSelection = string.Format(
+                                    GlobalSettings.CultureInfo, LanguageManager.GetString("String_MetamagicSkillBase"),
+                                    LanguageManager.GetString("String_MetamagicSkills"));
+                                // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
+                                // So the language file should contain each of those like String_MetamagicSkillType_magic
+                                string strSkillVal = xmlTalentNode.SelectSingleNodeAndCacheExpression("skillval")?.Value
+                                                     ?? xmlTalentNode
+                                                        .SelectSingleNodeAndCacheExpression("skillgroupval")
+                                                        ?.Value;
+                                lblMetatypeSkillSelection.Text = string.Format(
+                                    GlobalSettings.CultureInfo, strMetamagicSkillSelection, strSkillCount,
+                                    LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType),
+                                    strSkillVal);
+                                lblMetatypeSkillSelection.Visible = true;
                             }
-                            string strMetamagicSkillSelection = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_MetamagicSkillBase"),
-                                LanguageManager.GetString("String_MetamagicSkills"));
-                            // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
-                            // So the language file should contain each of those like String_MetamagicSkillType_magic
-                            string strSkillVal = xmlTalentNode.SelectSingleNodeAndCacheExpression("skillval")?.Value
-                                                 ?? xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgroupval")
-                                                                 ?.Value;
-                            lblMetatypeSkillSelection.Text = string.Format(GlobalSettings.CultureInfo, strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType), strSkillVal);
-                            lblMetatypeSkillSelection.Visible = true;
                         }
 
                         int intSpecialAttribPoints = 0;
@@ -1625,50 +1657,63 @@ namespace Chummer
         private void PopulateTalents()
         {
             // Load the Priority information.
-            List<ListItem> lstTalent = new List<ListItem>(5);
-
-            // Populate the Priority Category list.
-            XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
-                + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-            foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTalent))
             {
-                if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                // Populate the Priority Category list.
+                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Talent\" and value = "
+                    + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
+                    + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath()
+                    + ")]");
+                foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    foreach (XPathNavigator objXmlPriorityTalent in xmlBaseTalentPriority.SelectAndCacheExpression("talents/talent"))
+                    if (xmlBaseTalentPriorityList.Count == 1
+                        || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
                     {
-                        XPathNavigator xmlQualitiesNode = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("qualities");
-                        if (xmlQualitiesNode != null)
+                        foreach (XPathNavigator objXmlPriorityTalent in xmlBaseTalentPriority.SelectAndCacheExpression(
+                                     "talents/talent"))
                         {
-                            bool blnFoundUnavailableQuality = false;
-
-                            foreach (XPathNavigator xmlQuality in xmlQualitiesNode.SelectAndCacheExpression("quality"))
+                            XPathNavigator xmlQualitiesNode
+                                = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("qualities");
+                            if (xmlQualitiesNode != null)
                             {
-                                if (_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[" + _objCharacter.Settings.BookXPath() + " and name = " + xmlQuality.Value.CleanXPath() + "]") == null)
+                                bool blnFoundUnavailableQuality = false;
+
+                                foreach (XPathNavigator xmlQuality in xmlQualitiesNode.SelectAndCacheExpression(
+                                             "quality"))
                                 {
-                                    blnFoundUnavailableQuality = true;
-                                    break;
+                                    if (_xmlBaseQualityDataNode.SelectSingleNode(
+                                            "qualities/quality[" + _objCharacter.Settings.BookXPath() + " and name = "
+                                            + xmlQuality.Value.CleanXPath() + "]") == null)
+                                    {
+                                        blnFoundUnavailableQuality = true;
+                                        break;
+                                    }
                                 }
+
+                                if (blnFoundUnavailableQuality)
+                                    continue;
                             }
 
-                            if (blnFoundUnavailableQuality)
-                                continue;
-                        }
-                        XPathNavigator xmlForbiddenNode = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("forbidden");
-                        if (xmlForbiddenNode != null)
-                        {
-                            bool blnRequirementForbidden = false;
-
-                            // Loop through the oneof requirements.
-                            XPathNodeIterator objXmlForbiddenList = xmlForbiddenNode.SelectAndCacheExpression("oneof");
-                            foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
+                            XPathNavigator xmlForbiddenNode
+                                = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("forbidden");
+                            if (xmlForbiddenNode != null)
                             {
-                                XPathNodeIterator objXmlOneOfList = objXmlOneOf.SelectChildren(XPathNodeType.Element);
+                                bool blnRequirementForbidden = false;
 
-                                foreach (XPathNavigator objXmlForbidden in objXmlOneOfList)
+                                // Loop through the oneof requirements.
+                                XPathNodeIterator objXmlForbiddenList
+                                    = xmlForbiddenNode.SelectAndCacheExpression("oneof");
+                                foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
-                                    switch (objXmlForbidden.Name)
+                                    XPathNodeIterator objXmlOneOfList
+                                        = objXmlOneOf.SelectChildren(XPathNodeType.Element);
+
+                                    foreach (XPathNavigator objXmlForbidden in objXmlOneOfList)
                                     {
-                                        case "metatype":
+                                        switch (objXmlForbidden.Name)
+                                        {
+                                            case "metatype":
                                             {
                                                 // Check the Metatype restriction.
                                                 if (objXmlForbidden.Value == lstMetatypes.SelectedValue?.ToString())
@@ -1679,8 +1724,8 @@ namespace Chummer
 
                                                 break;
                                             }
-                                        // Check the Metavariant restriction.
-                                        case "metatypecategory":
+                                            // Check the Metavariant restriction.
+                                            case "metatypecategory":
                                             {
                                                 // Check the Metatype Category restriction.
                                                 if (objXmlForbidden.Value == cboCategory.SelectedValue?.ToString())
@@ -1691,32 +1736,38 @@ namespace Chummer
 
                                                 break;
                                             }
-                                        case "metavariant" when objXmlForbidden.Value == cboMetavariant.SelectedValue?.ToString():
-                                            blnRequirementForbidden = true;
-                                            goto EndForbiddenLoop;
+                                            case "metavariant" when objXmlForbidden.Value
+                                                                    == cboMetavariant.SelectedValue?.ToString():
+                                                blnRequirementForbidden = true;
+                                                goto EndForbiddenLoop;
+                                        }
                                     }
                                 }
+
+                                EndForbiddenLoop:
+                                if (blnRequirementForbidden)
+                                    continue;
                             }
-                            EndForbiddenLoop:
-                            if (blnRequirementForbidden)
-                                continue;
-                        }
-                        XPathNavigator xmlRequiredNode = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("required");
-                        if (xmlRequiredNode != null)
-                        {
-                            bool blnRequirementMet = false;
 
-                            // Loop through the oneof requirements.
-                            XPathNodeIterator objXmlForbiddenList = xmlRequiredNode.SelectAndCacheExpression("oneof");
-                            foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
+                            XPathNavigator xmlRequiredNode
+                                = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("required");
+                            if (xmlRequiredNode != null)
                             {
-                                XPathNodeIterator objXmlOneOfList = objXmlOneOf.SelectChildren(XPathNodeType.Element);
+                                bool blnRequirementMet = false;
 
-                                foreach (XPathNavigator objXmlRequired in objXmlOneOfList)
+                                // Loop through the oneof requirements.
+                                XPathNodeIterator objXmlForbiddenList
+                                    = xmlRequiredNode.SelectAndCacheExpression("oneof");
+                                foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
-                                    switch (objXmlRequired.Name)
+                                    XPathNodeIterator objXmlOneOfList
+                                        = objXmlOneOf.SelectChildren(XPathNodeType.Element);
+
+                                    foreach (XPathNavigator objXmlRequired in objXmlOneOfList)
                                     {
-                                        case "metatype":
+                                        switch (objXmlRequired.Name)
+                                        {
+                                            case "metatype":
                                             {
                                                 // Check the Metatype restriction.
                                                 if (objXmlRequired.Value == lstMetatypes.SelectedValue?.ToString())
@@ -1727,8 +1778,8 @@ namespace Chummer
 
                                                 break;
                                             }
-                                        // Check the Metavariant restriction.
-                                        case "metatypecategory":
+                                            // Check the Metavariant restriction.
+                                            case "metatypecategory":
                                             {
                                                 // Check the Metatype Category restriction.
                                                 if (objXmlRequired.Value == cboCategory.SelectedValue?.ToString())
@@ -1739,39 +1790,47 @@ namespace Chummer
 
                                                 break;
                                             }
-                                        case "metavariant" when objXmlRequired.Value == cboMetavariant.SelectedValue?.ToString():
-                                            blnRequirementMet = true;
-                                            goto EndRequiredLoop;
+                                            case "metavariant" when objXmlRequired.Value
+                                                                    == cboMetavariant.SelectedValue?.ToString():
+                                                blnRequirementMet = true;
+                                                goto EndRequiredLoop;
+                                        }
                                     }
                                 }
-                            }
-                            EndRequiredLoop:
-                            if (!blnRequirementMet)
-                                continue;
-                        }
-                        lstTalent.Add(new ListItem(objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("value")?.Value,
-                            objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("translate")?.Value ??
-                            objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("name")?.Value ??
-                            LanguageManager.GetString("String_Unknown")));
-                    }
-                    break;
-                }
-            }
 
-            lstTalent.Sort(CompareListItems.CompareNames);
-            int intOldSelectedIndex = cboTalents.SelectedIndex;
-            int intOldDataSourceSize = cboTalents.Items.Count;
-            cboTalents.BeginUpdate();
-            cboTalents.PopulateWithListItems(lstTalent);
-            if (intOldDataSourceSize == cboTalents.Items.Count)
-            {
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                cboTalents.SelectedIndex = intOldSelectedIndex;
-                _blnLoading = blnOldLoading;
+                                EndRequiredLoop:
+                                if (!blnRequirementMet)
+                                    continue;
+                            }
+
+                            lstTalent.Add(new ListItem(
+                                              objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("value")?.Value,
+                                              objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("translate")
+                                                                  ?.Value ??
+                                              objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("name")?.Value ??
+                                              LanguageManager.GetString("String_Unknown")));
+                        }
+
+                        break;
+                    }
+                }
+
+                lstTalent.Sort(CompareListItems.CompareNames);
+                int intOldSelectedIndex = cboTalents.SelectedIndex;
+                int intOldDataSourceSize = cboTalents.Items.Count;
+                cboTalents.BeginUpdate();
+                cboTalents.PopulateWithListItems(lstTalent);
+                if (intOldDataSourceSize == cboTalents.Items.Count)
+                {
+                    bool blnOldLoading = _blnLoading;
+                    _blnLoading = true;
+                    cboTalents.SelectedIndex = intOldSelectedIndex;
+                    _blnLoading = blnOldLoading;
+                }
+
+                cboTalents.Enabled = cboTalents.Items.Count > 1;
+                cboTalents.EndUpdate();
             }
-            cboTalents.Enabled = cboTalents.Items.Count > 1;
-            cboTalents.EndUpdate();
         }
 
         private void PopulateMetavariants()
@@ -1795,81 +1854,97 @@ namespace Chummer
                         break;
                     }
                 }
-
-                List<ListItem> lstMetavariants = new List<ListItem>(5)
-                {
-                    new ListItem("None", LanguageManager.GetString("String_None"))
-                };
-
+                
                 if (objXmlMetatype != null && objXmlMetatypeBP != null)
                 {
-                    // Retrieve the list of Metavariants for the selected Metatype.
-                    foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + "]"))
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstMetavariants))
                     {
-                        string strName = objXmlMetavariant.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                        if (objXmlMetatypeBP.SelectSingleNode("metavariants/metavariant[name = " + strName.CleanXPath() + "]") != null)
+                        lstMetavariants.Add(new ListItem(Guid.Empty, LanguageManager.GetString("String_None")));
+                        // Retrieve the list of Metavariants for the selected Metatype.
+                        foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
+                                     "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + "]"))
                         {
-                            lstMetavariants.Add(new ListItem(strName, objXmlMetavariant.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                        }
-                    }
-
-                    string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter.Metavariant;
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
-                    cboMetavariant.BeginUpdate();
-                    cboMetavariant.PopulateWithListItems(lstMetavariants);
-                    cboMetavariant.Enabled = lstMetavariants.Count > 1;
-                    _blnLoading = blnOldLoading;
-                    if (!string.IsNullOrEmpty(strOldSelectedValue))
-                        cboMetavariant.SelectedValue = strOldSelectedValue;
-                    if (cboMetavariant.SelectedIndex == -1)
-                        cboMetavariant.SelectedIndex = 0;
-                    cboMetavariant.EndUpdate();
-
-                    // If the Metatype has Force enabled, show the Force NUD.
-                    string strEssMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax")?.Value ?? string.Empty;
-                    int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
-                    if (objXmlMetatype.SelectSingleNodeAndCacheExpression("forcecreature") != null || intPos != -1)
-                    {
-                        if (intPos != -1)
-                        {
-                            if (intPos > 0)
+                            string strName = objXmlMetavariant.SelectSingleNodeAndCacheExpression("name")?.Value
+                                             ?? LanguageManager.GetString("String_Unknown");
+                            if (objXmlMetatypeBP.SelectSingleNode(
+                                    "metavariants/metavariant[name = " + strName.CleanXPath() + "]") != null)
                             {
-                                --intPos;
-                                lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
-                                nudForce.Maximum = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
+                                lstMetavariants.Add(new ListItem(
+                                                        strName,
+                                                        objXmlMetavariant
+                                                            .SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                        ?? strName));
+                            }
+                        }
+
+                        string strOldSelectedValue
+                            = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter.Metavariant;
+                        bool blnOldLoading = _blnLoading;
+                        _blnLoading = true;
+                        cboMetavariant.BeginUpdate();
+                        cboMetavariant.PopulateWithListItems(lstMetavariants);
+                        cboMetavariant.Enabled = lstMetavariants.Count > 1;
+                        _blnLoading = blnOldLoading;
+                        if (!string.IsNullOrEmpty(strOldSelectedValue))
+                            cboMetavariant.SelectedValue = strOldSelectedValue;
+                        if (cboMetavariant.SelectedIndex == -1)
+                            cboMetavariant.SelectedIndex = 0;
+                        cboMetavariant.EndUpdate();
+
+                        // If the Metatype has Force enabled, show the Force NUD.
+                        string strEssMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax")?.Value
+                                           ?? string.Empty;
+                        int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
+                        if (objXmlMetatype.SelectSingleNodeAndCacheExpression("forcecreature") != null || intPos != -1)
+                        {
+                            if (intPos != -1)
+                            {
+                                if (intPos > 0)
+                                {
+                                    --intPos;
+                                    lblForceLabel.Text = strEssMax.Substring(intPos, 3)
+                                                                  .Replace(
+                                                                      "D6", LanguageManager.GetString("String_D6"));
+                                    nudForce.Maximum
+                                        = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
+                                }
+                                else
+                                {
+                                    lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo)
+                                                         + LanguageManager.GetString("String_D6");
+                                    nudForce.Maximum = 6;
+                                }
                             }
                             else
                             {
-                                lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_D6");
-                                nudForce.Maximum = 6;
+                                // TODO: Unhardcode whether Force is called "Force" or "Level"
+                                lblForceLabel.Text = LanguageManager.GetString(
+                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax")?.Value == "0" &&
+                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax")?.Value == "0" &&
+                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax")?.Value == "0" &&
+                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax")?.Value == "0" &&
+                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("magmin")?.Value.Contains('F')
+                                    != true
+                                        ? "String_Level"
+                                        : "String_Force");
+                                nudForce.Maximum = 100;
                             }
+
+                            lblForceLabel.Visible = true;
+                            nudForce.Visible = true;
                         }
                         else
                         {
-                            // TODO: Unhardcode whether Force is called "Force" or "Level"
-                            lblForceLabel.Text = LanguageManager.GetString(objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax")?.Value == "0" &&
-                                                                           objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax")?.Value == "0" &&
-                                                                           objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax")?.Value == "0" &&
-                                                                           objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax")?.Value == "0" &&
-                                                                           objXmlMetatype.SelectSingleNodeAndCacheExpression("magmin")?.Value.Contains('F') != true
-                                ? "String_Level"
-                                : "String_Force");
-                            nudForce.Maximum = 100;
+                            lblForceLabel.Visible = false;
+                            nudForce.Visible = false;
                         }
-                        lblForceLabel.Visible = true;
-                        nudForce.Visible = true;
-                    }
-                    else
-                    {
-                        lblForceLabel.Visible = false;
-                        nudForce.Visible = false;
                     }
                 }
                 else
                 {
                     cboMetavariant.BeginUpdate();
-                    cboMetavariant.PopulateWithListItems(lstMetavariants);
+                    cboMetavariant.PopulateWithListItems(new ListItem("None", LanguageManager.GetString("String_None")).Yield());
                     cboMetavariant.Enabled = false;
                     cboMetavariant.EndUpdate();
 
@@ -1880,13 +1955,8 @@ namespace Chummer
             else
             {
                 // Clear the Metavariant list if nothing is currently selected.
-                List<ListItem> lstMetavariants = new List<ListItem>(5)
-                {
-                    new ListItem("None", LanguageManager.GetString("String_None"))
-                };
-
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(lstMetavariants);
+                cboMetavariant.PopulateWithListItems(new ListItem("None", LanguageManager.GetString("String_None")).Yield());
                 cboMetavariant.Enabled = false;
                 cboMetavariant.EndUpdate();
 
@@ -1903,38 +1973,52 @@ namespace Chummer
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedCategory))
             {
-                List<ListItem> lstMetatype = new List<ListItem>(10);
-
-                XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (cboHeritage.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
-                    + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
                 {
-                    if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                    XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                        "priorities/priority[category = \"Heritage\" and value = "
+                        + (cboHeritage.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
+                        + " and (not(prioritytable) or prioritytable = "
+                        + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                    foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
-                        foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select("metatypes/metatype[(" + _objCharacter.Settings.BookXPath() + ") and category = " + strSelectedCategory.CleanXPath() + "]"))
+                        if (xmlBaseMetatypePriorityList.Count == 1
+                            || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
                         {
-                            string strName = objXmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value;
-                            if (!string.IsNullOrEmpty(strName) && xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strName.CleanXPath() + "]") != null)
+                            foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
+                                         "metatypes/metatype[(" + _objCharacter.Settings.BookXPath()
+                                                                + ") and category = " + strSelectedCategory.CleanXPath()
+                                                                + "]"))
                             {
-                                lstMetatype.Add(new ListItem(strName, objXmlMetatype.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                string strName = objXmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                if (!string.IsNullOrEmpty(strName)
+                                    && xmlBaseMetatypePriority.SelectSingleNode(
+                                        "metatypes/metatype[name = " + strName.CleanXPath() + "]") != null)
+                                {
+                                    lstMetatype.Add(new ListItem(
+                                                        strName,
+                                                        objXmlMetatype.SelectSingleNodeAndCacheExpression("translate")
+                                                                      ?.Value ?? strName));
+                                }
                             }
-                        }
-                        break;
-                    }
-                }
 
-                lstMetatype.Sort(CompareListItems.CompareNames);
-                string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metatype;
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                lstMetatypes.BeginUpdate();
-                lstMetatypes.PopulateWithListItems(lstMetatype);
-                _blnLoading = blnOldLoading;
-                if (!string.IsNullOrEmpty(strOldSelectedValue))
-                    lstMetatypes.SelectedValue = strOldSelectedValue;
-                if (lstMetatypes.SelectedIndex == -1 && lstMetatype.Count > 0)
-                    lstMetatypes.SelectedIndex = 0;
-                lstMetatypes.EndUpdate();
+                            break;
+                        }
+                    }
+
+                    lstMetatype.Sort(CompareListItems.CompareNames);
+                    string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metatype;
+                    bool blnOldLoading = _blnLoading;
+                    _blnLoading = true;
+                    lstMetatypes.BeginUpdate();
+                    lstMetatypes.PopulateWithListItems(lstMetatype);
+                    _blnLoading = blnOldLoading;
+                    if (!string.IsNullOrEmpty(strOldSelectedValue))
+                        lstMetatypes.SelectedValue = strOldSelectedValue;
+                    if (lstMetatypes.SelectedIndex == -1 && lstMetatype.Count > 0)
+                        lstMetatypes.SelectedIndex = 0;
+                    lstMetatypes.EndUpdate();
+                }
 
                 if (strSelectedCategory.EndsWith("Spirits", StringComparison.Ordinal))
                 {
@@ -1967,9 +2051,6 @@ namespace Chummer
 
         private void LoadMetatypes()
         {
-            List<ListItem> lstCategory = new List<ListItem>(3);
-
-            // Populate the Metatype Category list.
             // Create a list of any Categories that should not be in the list.
             HashSet<string> lstRemoveCategory = new HashSet<string>();
             foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression("categories/category"))
@@ -1997,31 +2078,38 @@ namespace Chummer
                     lstRemoveCategory.Add(objXmlCategory.Value);
             }
 
-            foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression("categories/category"))
+            // Populate the Metatype Category list.
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                string strInnerText = objXmlCategory.Value;
-
-                // Make sure the Category isn't in the exclusion list.
-                if (!lstRemoveCategory.Contains(strInnerText) &&
-                    // Also make sure it is not already in the Category list.
-                    lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
+                foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
+                             "categories/category"))
                 {
-                    lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
-                }
-            }
+                    string strInnerText = objXmlCategory.Value;
 
-            lstCategory.Sort(CompareListItems.CompareNames);
-            string strOldSelected = cboCategory.SelectedValue?.ToString() ?? _objCharacter.MetatypeCategory;
-            bool blnOldLoading = _blnLoading;
-            _blnLoading = true;
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(lstCategory);
-            _blnLoading = blnOldLoading;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                cboCategory.SelectedValue = strOldSelected;
-            if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
-                cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
+                    // Make sure the Category isn't in the exclusion list.
+                    if (!lstRemoveCategory.Contains(strInnerText) &&
+                        // Also make sure it is not already in the Category list.
+                        lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
+                    {
+                        lstCategory.Add(new ListItem(strInnerText,
+                                                     objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")
+                                                                   ?.Value ?? strInnerText));
+                    }
+                }
+
+                lstCategory.Sort(CompareListItems.CompareNames);
+                string strOldSelected = cboCategory.SelectedValue?.ToString() ?? _objCharacter.MetatypeCategory;
+                bool blnOldLoading = _blnLoading;
+                _blnLoading = true;
+                cboCategory.BeginUpdate();
+                cboCategory.PopulateWithListItems(lstCategory);
+                _blnLoading = blnOldLoading;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    cboCategory.SelectedValue = strOldSelected;
+                if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
+                    cboCategory.SelectedIndex = 0;
+                cboCategory.EndUpdate();
+            }
         }
 
         private XPathNodeIterator GetMatrixSkillList()

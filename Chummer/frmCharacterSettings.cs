@@ -35,7 +35,7 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly CharacterSettings _objCharacterSettings;
         private CharacterSettings _objReferenceCharacterSettings;
-        private readonly List<ListItem> _lstSettings = new List<ListItem>();
+        private readonly List<ListItem> _lstSettings = Utils.ListItemListPool.Get();
 
         // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
         private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos = new TypedOrderedDictionary<object, bool>();
@@ -83,18 +83,19 @@ namespace Chummer
             SetToolTips();
             PopulateSettingsList();
 
-            List<ListItem> lstBuildMethods = new List<ListItem>(4)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBuildMethods))
             {
-                new ListItem(CharacterBuildMethod.Priority, LanguageManager.GetString("String_Priority")),
-                new ListItem(CharacterBuildMethod.SumtoTen, LanguageManager.GetString("String_SumtoTen")),
-                new ListItem(CharacterBuildMethod.Karma, LanguageManager.GetString("String_Karma"))
-            };
-            if (GlobalSettings.LifeModuleEnabled)
-                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule, LanguageManager.GetString("String_LifeModule")));
+                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.Priority, LanguageManager.GetString("String_Priority")));
+                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.SumtoTen, LanguageManager.GetString("String_SumtoTen")));
+                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.Karma, LanguageManager.GetString("String_Karma")));
+                if (GlobalSettings.LifeModuleEnabled)
+                    lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule,
+                                                     LanguageManager.GetString("String_LifeModule")));
 
-            cboBuildMethod.BeginUpdate();
-            cboBuildMethod.PopulateWithListItems(lstBuildMethods);
-            cboBuildMethod.EndUpdate();
+                cboBuildMethod.BeginUpdate();
+                cboBuildMethod.PopulateWithListItems(lstBuildMethods);
+                cboBuildMethod.EndUpdate();
+            }
 
             PopulateOptions();
             SetupDataBindings();
@@ -1019,30 +1020,38 @@ namespace Chummer
 
         private void PopulatePriorityTableList()
         {
-            List<ListItem> lstPriorityTables = new List<ListItem>();
-
-            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("priorities.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths)
-                .SelectAndCacheExpression("/chummer/prioritytables/prioritytable"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstPriorityTables))
             {
-                string strName = objXmlNode.Value;
-                if (!string.IsNullOrEmpty(strName))
-                    lstPriorityTables.Add(new ListItem(objXmlNode.Value, objXmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                foreach (XPathNavigator objXmlNode in XmlManager
+                                                      .LoadXPath("priorities.xml",
+                                                                 _objCharacterSettings.EnabledCustomDataDirectoryPaths)
+                                                      .SelectAndCacheExpression(
+                                                          "/chummer/prioritytables/prioritytable"))
+                {
+                    string strName = objXmlNode.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstPriorityTables.Add(new ListItem(objXmlNode.Value,
+                                                           objXmlNode.SelectSingleNodeAndCacheExpression("@translate")
+                                                                     ?.Value ?? strName));
+                }
+
+                string strOldSelected = _objCharacterSettings.PriorityTable;
+
+                bool blnOldLoading = _blnLoading;
+                _blnLoading = true;
+                cboPriorityTable.BeginUpdate();
+                cboPriorityTable.PopulateWithListItems(lstPriorityTables);
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    cboPriorityTable.SelectedValue = strOldSelected;
+                if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
+                    cboPriorityTable.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
+                if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
+                    cboPriorityTable.SelectedIndex = 0;
+                cboPriorityTable.EndUpdate();
+                _blnLoading = blnOldLoading;
             }
 
-            string strOldSelected = _objCharacterSettings.PriorityTable;
-
-            bool blnOldLoading = _blnLoading;
-            _blnLoading = true;
-            cboPriorityTable.BeginUpdate();
-            cboPriorityTable.PopulateWithListItems(lstPriorityTables);
-            if (!string.IsNullOrEmpty(strOldSelected))
-                cboPriorityTable.SelectedValue = strOldSelected;
-            if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
-                cboPriorityTable.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
-            if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
-                cboPriorityTable.SelectedIndex = 0;
-            cboPriorityTable.EndUpdate();
-            _blnLoading = blnOldLoading;
             string strSelectedTable = cboPriorityTable.SelectedValue?.ToString();
             if (!string.IsNullOrWhiteSpace(strSelectedTable) && _objCharacterSettings.PriorityTable != strSelectedTable)
                 _objCharacterSettings.PriorityTable = strSelectedTable;
@@ -1050,89 +1059,114 @@ namespace Chummer
 
         private void PopulateLimbCountList()
         {
-            List<ListItem> lstLimbCount = new List<ListItem>();
-
-            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths)
-                .SelectAndCacheExpression("/chummer/limbcounts/limb"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstLimbCount))
             {
-                string strExclude = objXmlNode.SelectSingleNodeAndCacheExpression("exclude")?.Value ?? string.Empty;
-                if (!string.IsNullOrEmpty(strExclude))
-                    strExclude = '<' + strExclude;
-                lstLimbCount.Add(new ListItem(objXmlNode.SelectSingleNodeAndCacheExpression("limbcount")?.Value + strExclude, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
+                foreach (XPathNavigator objXmlNode in XmlManager
+                                                      .LoadXPath("options.xml",
+                                                                 _objCharacterSettings.EnabledCustomDataDirectoryPaths)
+                                                      .SelectAndCacheExpression("/chummer/limbcounts/limb"))
+                {
+                    string strExclude = objXmlNode.SelectSingleNodeAndCacheExpression("exclude")?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strExclude))
+                        strExclude = '<' + strExclude;
+                    lstLimbCount.Add(new ListItem(
+                                         objXmlNode.SelectSingleNodeAndCacheExpression("limbcount")?.Value + strExclude,
+                                         objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                         ?? objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                         ?? string.Empty));
+                }
+
+                string strLimbSlot = _objCharacterSettings.LimbCount.ToString(GlobalSettings.InvariantCultureInfo);
+                if (!string.IsNullOrEmpty(_objCharacterSettings.ExcludeLimbSlot))
+                    strLimbSlot += '<' + _objCharacterSettings.ExcludeLimbSlot;
+
+                _blnSkipLimbCountUpdate = true;
+                cboLimbCount.BeginUpdate();
+                cboLimbCount.PopulateWithListItems(lstLimbCount);
+                if (!string.IsNullOrEmpty(strLimbSlot))
+                    cboLimbCount.SelectedValue = strLimbSlot;
+                if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
+                    cboLimbCount.SelectedIndex = 0;
+
+                cboLimbCount.EndUpdate();
             }
 
-            string strLimbSlot = _objCharacterSettings.LimbCount.ToString(GlobalSettings.InvariantCultureInfo);
-            if (!string.IsNullOrEmpty(_objCharacterSettings.ExcludeLimbSlot))
-                strLimbSlot += '<' + _objCharacterSettings.ExcludeLimbSlot;
-
-            _blnSkipLimbCountUpdate = true;
-            cboLimbCount.BeginUpdate();
-            cboLimbCount.PopulateWithListItems(lstLimbCount);
-            if (!string.IsNullOrEmpty(strLimbSlot))
-                cboLimbCount.SelectedValue = strLimbSlot;
-            if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
-                cboLimbCount.SelectedIndex = 0;
-
-            cboLimbCount.EndUpdate();
             _blnSkipLimbCountUpdate = false;
         }
 
         private void PopulateAllowedGrades()
         {
-            List<ListItem> lstGrades = new List<ListItem>();
-
-            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("bioware.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths)
-                .SelectAndCacheExpression("/chummer/grades/grade[not(hide)]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstGrades))
             {
-                string strName = objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                if (!string.IsNullOrEmpty(strName) && strName != "None")
+                foreach (XPathNavigator objXmlNode in XmlManager
+                                                      .LoadXPath("bioware.xml",
+                                                                 _objCharacterSettings.EnabledCustomDataDirectoryPaths)
+                                                      .SelectAndCacheExpression("/chummer/grades/grade[not(hide)]"))
                 {
-                    string strBook = objXmlNode.SelectSingleNodeAndCacheExpression("source")?.Value;
-                    if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
-                        continue;
-                    if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
-                        continue;
-                    ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
-                    if (objExistingCoveredGrade.Value != null)
-                        lstGrades.Remove(objExistingCoveredGrade);
-                    lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                    string strName = objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName) && strName != "None")
+                    {
+                        string strBook = objXmlNode.SelectSingleNodeAndCacheExpression("source")?.Value;
+                        if (!string.IsNullOrEmpty(strBook)
+                            && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
+                            continue;
+                        if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
+                            continue;
+                        ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
+                        if (objExistingCoveredGrade.Value != null)
+                            lstGrades.Remove(objExistingCoveredGrade);
+                        lstGrades.Add(new ListItem(
+                                          strName,
+                                          objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                          ?? strName));
+                    }
                 }
-            }
-            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("cyberware.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths)
-                .SelectAndCacheExpression("/chummer/grades/grade[not(hide)]"))
-            {
-                string strName = objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                if (!string.IsNullOrEmpty(strName) && strName != "None")
-                {
-                    string strBook = objXmlNode.SelectSingleNodeAndCacheExpression("source")?.Value;
-                    if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
-                        continue;
-                    if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
-                        continue;
-                    ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
-                    if (objExistingCoveredGrade.Value != null)
-                        lstGrades.Remove(objExistingCoveredGrade);
-                    lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                }
-            }
 
-            flpAllowedCyberwareGrades.SuspendLayout();
-            flpAllowedCyberwareGrades.Controls.Clear();
-            foreach (ListItem objGrade in lstGrades)
-            {
-                CheckBox chkGrade = new CheckBox
+                foreach (XPathNavigator objXmlNode in XmlManager
+                                                      .LoadXPath("cyberware.xml",
+                                                                 _objCharacterSettings.EnabledCustomDataDirectoryPaths)
+                                                      .SelectAndCacheExpression("/chummer/grades/grade[not(hide)]"))
                 {
-                    UseVisualStyleBackColor = true,
-                    Text = objGrade.Name,
-                    Tag = objGrade.Value,
-                    AutoSize = true,
-                    Anchor = AnchorStyles.Left,
-                    Checked = !_objCharacterSettings.BannedWareGrades.Contains(objGrade.Value.ToString())
-                };
-                chkGrade.CheckedChanged += chkGrade_CheckedChanged;
-                flpAllowedCyberwareGrades.Controls.Add(chkGrade);
+                    string strName = objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName) && strName != "None")
+                    {
+                        string strBook = objXmlNode.SelectSingleNodeAndCacheExpression("source")?.Value;
+                        if (!string.IsNullOrEmpty(strBook)
+                            && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
+                            continue;
+                        if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
+                            continue;
+                        ListItem objExistingCoveredGrade = lstGrades.Find(x => x.Value.ToString().Contains(strName));
+                        if (objExistingCoveredGrade.Value != null)
+                            lstGrades.Remove(objExistingCoveredGrade);
+                        lstGrades.Add(new ListItem(
+                                          strName,
+                                          objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                          ?? strName));
+                    }
+                }
+
+                flpAllowedCyberwareGrades.SuspendLayout();
+                flpAllowedCyberwareGrades.Controls.Clear();
+                foreach (ListItem objGrade in lstGrades)
+                {
+                    CheckBox chkGrade = new CheckBox
+                    {
+                        UseVisualStyleBackColor = true,
+                        Text = objGrade.Name,
+                        Tag = objGrade.Value,
+                        AutoSize = true,
+                        Anchor = AnchorStyles.Left,
+                        Checked = !_objCharacterSettings.BannedWareGrades.Contains(objGrade.Value.ToString())
+                    };
+                    chkGrade.CheckedChanged += chkGrade_CheckedChanged;
+                    flpAllowedCyberwareGrades.Controls.Add(chkGrade);
+                }
+
+                flpAllowedCyberwareGrades.ResumeLayout();
             }
-            flpAllowedCyberwareGrades.ResumeLayout();
         }
 
         private void RebuildCustomDataDirectoryInfos()

@@ -47,46 +47,50 @@ namespace Chummer
         private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
         {
             // Build a list of Weapon Categories found in the Weapons file.
-            List<ListItem> lstCategory = new List<ListItem>();
-            foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
-                ? _objXmlDocument.Select("/chummer/categories/category[. = " + _strForceCategory.CleanXPath() + "]")
-                : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
+                foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
+                             ? _objXmlDocument.Select("/chummer/categories/category[. = "
+                                                      + _strForceCategory.CleanXPath() + ']')
+                             : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
-                    string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
-                    if (string.IsNullOrEmpty(strType) || strType != WeaponType)
-                        continue;
+                    if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
+                    {
+                        string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
+                        if (string.IsNullOrEmpty(strType) || strType != WeaponType)
+                            continue;
+                    }
+
+                    string strInnerText = objXmlCategory.Value;
+                    lstCategory.Add(new ListItem(strInnerText,
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 ?? strInnerText));
                 }
 
-                string strInnerText = objXmlCategory.Value;
-                lstCategory.Add(new ListItem(strInnerText,
-                    objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                // Add the Cyberware Category.
+                if ( /*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
+                {
+                    lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
+                }
+
+                switch (lstCategory.Count)
+                {
+                    case 0:
+                        ConfirmSelection(string.Empty);
+                        break;
+
+                    case 1:
+                        ConfirmSelection(lstCategory[0].Value.ToString());
+                        break;
+                }
+
+                cboCategory.BeginUpdate();
+                cboCategory.PopulateWithListItems(lstCategory);
+                // Select the first Skill in the list.
+                if (cboCategory.Items.Count > 0)
+                    cboCategory.SelectedIndex = 0;
+                cboCategory.EndUpdate();
             }
-
-            // Add the Cyberware Category.
-            if ( /*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
-            {
-                lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
-            }
-
-            switch (lstCategory.Count)
-            {
-                case 0:
-                    ConfirmSelection(string.Empty);
-                    break;
-
-                case 1:
-                    ConfirmSelection(lstCategory[0].Value.ToString());
-                    break;
-            }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(lstCategory);
-            // Select the first Skill in the list.
-            if (cboCategory.Items.Count > 0)
-                cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

@@ -167,30 +167,39 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-
-            List<ListItem> lstArts = new List<ListItem>();
+            
             string strFilter = _strXPathFilter;
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-            foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstArts))
             {
-                string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
-                if (!string.IsNullOrEmpty(strId) && (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter)))
+                foreach (XPathNavigator objXmlMetamagic in
+                         _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
                 {
-                    lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value, objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    if (!string.IsNullOrEmpty(strId)
+                        && (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter)))
+                    {
+                        lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value,
+                                                 objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                 ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                 ?? LanguageManager.GetString("String_Unknown")));
+                    }
                 }
+
+                lstArts.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstArt.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstArt.BeginUpdate();
+                lstArt.PopulateWithListItems(lstArts);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstArt.SelectedValue = strOldSelected;
+                else
+                    lstArt.SelectedIndex = -1;
+                lstArt.EndUpdate();
             }
-            lstArts.Sort(CompareListItems.CompareNames);
-            string strOldSelected = lstArt.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstArt.BeginUpdate();
-            lstArt.PopulateWithListItems(lstArts);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstArt.SelectedValue = strOldSelected;
-            else
-                lstArt.SelectedIndex = -1;
-            lstArt.EndUpdate();
         }
 
         /// <summary>

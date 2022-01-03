@@ -52,7 +52,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseGearDataNode;
         private readonly Character _objCharacter;
 
-        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private readonly HashSet<string> _setAllowedCategories = new HashSet<string>();
         private readonly HashSet<string> _setAllowedNames = new HashSet<string>();
         private readonly HashSet<string> _setBlackMarketMaps;
@@ -140,7 +140,7 @@ namespace Chummer
                 {
                     continue;
                 }
-                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && RefreshList(strCategory, false, true).Count > 0)
+                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && AnyItemInList(strCategory))
                 {
                     _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strCategory));
                 }
@@ -939,8 +939,20 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private List<ListItem> RefreshList(string strCategory = "", bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private bool AnyItemInList(string strCategory = "")
         {
+            RefreshList(out bool blnReturn, strCategory, false);
+            return blnReturn;
+        }
+
+        private void RefreshList(string strCategory = "")
+        {
+            RefreshList(out bool _, strCategory, true);
+        }
+
+        private void RefreshList(out bool blnAnyItem, string strCategory, bool blnDoUIUpdate)
+        {
+            blnAnyItem = false;
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = string.Empty;
@@ -1008,149 +1020,160 @@ namespace Chummer
                     strFilter = '[' + sbdFilter.ToString() + ']';
             }
 
-            return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear" + strFilter), blnDoUIUpdate, blnTerminateAfterFirst);
-        }
-
-        private List<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
-        {
             int intOverLimit = 0;
-            List<ListItem> lstGears = new List<ListItem>();
-            foreach (XPathNavigator objXmlGear in objXmlGearList)
+            List<ListItem> lstGears = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
+            try
             {
-                XPathNavigator xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
-                if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                foreach (XPathNavigator objXmlGear in _xmlBaseGearDataNode.Select("gears/gear" + strFilter))
                 {
-                    // Assumes topmost parent is an AND node
-                    continue;
-                }
-                xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/parentdetails");
-                if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                {
-                    // Assumes topmost parent is an AND node
-                    continue;
-                }
-                xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/geardetails");
-                if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                {
-                    // Assumes topmost parent is an AND node
-                    continue;
-                }
-                xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/geardetails");
-                if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                {
-                    // Assumes topmost parent is an AND node
-                    continue;
-                }
+                    XPathNavigator xmlTestNode
+                        = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
+                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        // Assumes topmost parent is an AND node
+                        continue;
+                    }
 
-                if (!objXmlGear.RequirementsMet(_objCharacter))
-                    continue;
+                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/parentdetails");
+                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        // Assumes topmost parent is an AND node
+                        continue;
+                    }
 
-                if (!blnDoUIUpdate && blnTerminateAfterFirst)
-                {
-                    lstGears.Add(new ListItem(string.Empty, string.Empty));
-                    break;
-                }
+                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/geardetails");
+                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        // Assumes topmost parent is an AND node
+                        continue;
+                    }
 
-                decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
-                if (chkDoItYourself.Checked)
-                    decCostMultiplier *= 0.5m;
-                decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value))
-                    decCostMultiplier *= 0.9m;
-                if (!blnDoUIUpdate || !chkHideOverAvailLimit.Checked
-                                   || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier)
-                                   && (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked
-                                                           || objXmlGear.CheckNuyenRestriction(
-                                                               _objCharacter.Nuyen, decCostMultiplier)))
-                {
-                    string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlGear.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    lstGears.Add(new ListItem(objXmlGear.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty, strDisplayName));
+                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/geardetails");
+                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        // Assumes topmost parent is an AND node
+                        continue;
+                    }
 
-                    if (blnTerminateAfterFirst)
+                    if (!objXmlGear.RequirementsMet(_objCharacter))
+                        continue;
+
+                    if (!blnDoUIUpdate)
+                    {
+                        blnAnyItem = true;
                         break;
-                }
-                else
-                    ++intOverLimit;
-            }
+                    }
 
-            // Find all entries that have duplicate names so that we can add category labels next to them
-            // But only if it's even possible for the list to have multiple items from different categories
-            if (lstGears.Count > 1)
-            {
-                string strSelectCategory = cboCategory.SelectedValue?.ToString();
-                if (!GlobalSettings.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
-                    strSelectCategory == "Show All")
-                {
-                    HashSet<string> setDuplicateNames = new HashSet<string>();
-
-                    for (int i = 0; i < lstGears.Count - 1; ++i)
+                    decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
+                    if (chkDoItYourself.Checked)
+                        decCostMultiplier *= 0.5m;
+                    decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
+                    if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value))
+                        decCostMultiplier *= 0.9m;
+                    if (!chkHideOverAvailLimit.Checked
+                              || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier)
+                              && (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked
+                                                      || objXmlGear.CheckNuyenRestriction(
+                                                          _objCharacter.Nuyen, decCostMultiplier)))
                     {
-                        string strLoopName = lstGears[i].Name;
-                        if (setDuplicateNames.Contains(strLoopName))
-                            continue;
-                        for (int j = i + 1; j < lstGears.Count; ++j)
+                        blnAnyItem = true;
+                        string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                ?? objXmlGear.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                ?? LanguageManager.GetString("String_Unknown");
+                        lstGears.Add(new ListItem(
+                                         objXmlGear.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
+                                         strDisplayName));
+                    }
+                    else
+                        ++intOverLimit;
+                }
+
+                // Find all entries that have duplicate names so that we can add category labels next to them
+                // But only if it's even possible for the list to have multiple items from different categories
+                if (lstGears.Count > 1)
+                {
+                    string strSelectCategory = cboCategory.SelectedValue?.ToString();
+                    if (!GlobalSettings.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
+                        strSelectCategory == "Show All")
+                    {
+                        HashSet<string> setDuplicateNames = new HashSet<string>();
+
+                        for (int i = 0; i < lstGears.Count - 1; ++i)
                         {
-                            if (strLoopName.Equals(lstGears[j].Name, StringComparison.OrdinalIgnoreCase))
+                            string strLoopName = lstGears[i].Name;
+                            if (setDuplicateNames.Contains(strLoopName))
+                                continue;
+                            for (int j = i + 1; j < lstGears.Count; ++j)
                             {
-                                setDuplicateNames.Add(strLoopName);
-                                break;
+                                if (strLoopName.Equals(lstGears[j].Name, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    setDuplicateNames.Add(strLoopName);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (setDuplicateNames.Count > 0)
+                        {
+                            string strSpace = LanguageManager.GetString("String_Space");
+                            for (int i = 0; i < lstGears.Count; ++i)
+                            {
+                                ListItem objLoopItem = lstGears[i];
+                                if (!setDuplicateNames.Contains(objLoopItem.Name))
+                                    continue;
+                                XPathNavigator objXmlGear
+                                    = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " +
+                                                                            objLoopItem.Value.ToString().CleanXPath() +
+                                                                            "]");
+                                if (objXmlGear == null)
+                                    continue;
+                                string strLoopCategory
+                                    = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
+                                if (string.IsNullOrEmpty(strLoopCategory))
+                                    continue;
+                                ListItem objFoundItem
+                                    = _lstCategory.Find(objFind => objFind.Value.ToString() == strLoopCategory);
+                                if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                {
+                                    lstGears[i] = new ListItem(objLoopItem.Value
+                                                               , objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
+                                }
                             }
                         }
                     }
-
-                    if (setDuplicateNames.Count > 0)
-                    {
-                        string strSpace = LanguageManager.GetString("String_Space");
-                        for (int i = 0; i < lstGears.Count; ++i)
-                        {
-                            ListItem objLoopItem = lstGears[i];
-                            if (!setDuplicateNames.Contains(objLoopItem.Name))
-                                continue;
-                            XPathNavigator objXmlGear
-                                = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " +
-                                                                        objLoopItem.Value.ToString().CleanXPath() +
-                                                                        "]");
-                            if (objXmlGear == null)
-                                continue;
-                            string strCategory = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
-                            if (string.IsNullOrEmpty(strCategory))
-                                continue;
-                            ListItem objFoundItem
-                                = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
-                            if (!string.IsNullOrEmpty(objFoundItem.Name))
-                            {
-                                lstGears[i] = new ListItem(objLoopItem.Value
-                                    , objLoopItem.Name + strSpace +'[' + objFoundItem.Name + ']');
-                            }
-                        }
-                    }
                 }
-            }
 
-            if (blnDoUIUpdate)
-            {
-                lstGears.Sort(CompareListItems.CompareNames);
-                if (intOverLimit > 0)
+                if (blnDoUIUpdate)
                 {
-                    // Add after sort so that it's always at the end
-                    lstGears.Add(new ListItem(string.Empty,
-                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
-                            intOverLimit)));
-                }
-                lstGear.BeginUpdate();
-                string strOldSelected = lstGear.SelectedValue?.ToString();
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                lstGear.PopulateWithListItems(lstGears);
-                _blnLoading = blnOldLoading;
-                if (string.IsNullOrEmpty(strOldSelected))
-                    lstGear.SelectedIndex = -1;
-                else
-                    lstGear.SelectedValue = strOldSelected;
-                lstGear.EndUpdate();
-            }
+                    lstGears.Sort(CompareListItems.CompareNames);
+                    if (intOverLimit > 0)
+                    {
+                        // Add after sort so that it's always at the end
+                        lstGears.Add(new ListItem(string.Empty,
+                                                  string.Format(GlobalSettings.CultureInfo,
+                                                                LanguageManager.GetString(
+                                                                    "String_RestrictedItemsHidden"),
+                                                                intOverLimit)));
+                    }
 
-            return lstGears;
+                    lstGear.BeginUpdate();
+                    string strOldSelected = lstGear.SelectedValue?.ToString();
+                    bool blnOldLoading = _blnLoading;
+                    _blnLoading = true;
+                    lstGear.PopulateWithListItems(lstGears);
+                    _blnLoading = blnOldLoading;
+                    if (string.IsNullOrEmpty(strOldSelected))
+                        lstGear.SelectedIndex = -1;
+                    else
+                        lstGear.SelectedValue = strOldSelected;
+                    lstGear.EndUpdate();
+                }
+            }
+            finally
+            {
+                if (lstGears != null)
+                    Utils.ListItemListPool.Return(lstGears);
+            }
         }
 
         /// <summary>

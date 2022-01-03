@@ -653,18 +653,31 @@ namespace Chummer
 
         private bool _blnSkipListRefresh;
 
-        private List<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private bool AnyItemInList(string strCategory = "")
         {
+            RefreshList(out bool blnReturn, strCategory, false);
+            return blnReturn;
+        }
+
+        private void RefreshList(string strCategory = "")
+        {
+            RefreshList(out bool _, strCategory, true);
+        }
+
+        private void RefreshList(out bool blnAnyItem, string strCategory, bool blnDoUIUpdate)
+        {
+            blnAnyItem = false;
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
-                return new List<ListItem>();
+                return;
+            string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
+            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
+                ? null
+                : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                       == strCurrentGradeId);
+            string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
-                string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-                Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
-                    ? null
-                    : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                           == strCurrentGradeId);
                 if (objCurrentGrade != null)
                 {
                     sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
@@ -676,48 +689,52 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(txtSearch.Text))
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-                return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate,
-                                     blnTerminateAfterFirst);
+                if (sbdFilter.Length > 0)
+                    strFilter = '[' + sbdFilter.ToString() + ']';
             }
-        }
 
-        private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
-        {
-            if (_blnLoading && blnDoUIUpdate)
-                return new List<ListItem>();
-
-            List<ListItem> lstDrugs = new List<ListItem>();
             int intOverLimit = 0;
-            string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
-            foreach (XPathNavigator xmlDrug in objXmlDrugList)
+            List<ListItem> lstDrugs = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
+            try
             {
-                bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
-                if (objCurrentGrade != null && blnIsForceGrade && ImprovementManager
-                                                                  .GetCachedImprovementListForValueOf(
-                                                                      _objCharacter,
-                                                                      Improvement.ImprovementType.DisableDrugGrade)
-                                                                  .Any(x => objCurrentGrade.Name.Contains(
-                                                                           x.ImprovedName)))
-                    continue;
-
-                string strMaxRating = xmlDrug.SelectSingleNode("rating")?.Value;
-                string strMinRating = xmlDrug.SelectSingleNode("minrating")?.Value;
-                int intMinRating = 1;
-                // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
-                if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating) || !string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
+                foreach (XPathNavigator xmlDrug in _xmlBaseDrugDataNode.Select(_strNodeXPath + strFilter))
                 {
-                    var objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
-                    intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
-                    objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
-                    intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
-                    if (intMaxRating < intMinRating)
+                    bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
+                    if (objCurrentGrade != null && blnIsForceGrade && ImprovementManager
+                                                                      .GetCachedImprovementListForValueOf(
+                                                                          _objCharacter,
+                                                                          Improvement.ImprovementType.DisableDrugGrade)
+                                                                      .Any(x => objCurrentGrade.Name.Contains(
+                                                                               x.ImprovedName)))
                         continue;
-                }
 
-                if (blnDoUIUpdate)
-                {
-                    if (chkHideOverAvailLimit.Checked && !xmlDrug.CheckAvailRestriction(_objCharacter, intMinRating, blnIsForceGrade ? 0 : _intAvailModifier))
+                    string strMaxRating = xmlDrug.SelectSingleNode("rating")?.Value;
+                    string strMinRating = xmlDrug.SelectSingleNode("minrating")?.Value;
+                    int intMinRating = 1;
+                    // If our rating tag is a complex property, check to make sure our maximum rating is not less than our minimum rating
+                    if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)
+                        || !string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
+                    {
+                        var objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
+                        intMinRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
+                        objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
+                        intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
+                        if (intMaxRating < intMinRating)
+                            continue;
+                    }
+
+                    if (ParentVehicle == null && !xmlDrug.RequirementsMet(_objCharacter))
+                        continue;
+
+                    if (!blnDoUIUpdate)
+                    {
+                        blnAnyItem = true;
+                        return;
+                    }
+
+                    if (chkHideOverAvailLimit.Checked
+                        && !xmlDrug.CheckAvailRestriction(_objCharacter, intMinRating,
+                                                          blnIsForceGrade ? 0 : _intAvailModifier))
                     {
                         ++intOverLimit;
                         continue;
@@ -734,38 +751,44 @@ namespace Chummer
                             continue;
                         }
                     }
+
+                    blnAnyItem = true;
+                    lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNode("id")?.Value,
+                                              xmlDrug.SelectSingleNode("translate")?.Value
+                                              ?? xmlDrug.SelectSingleNode("name")?.Value));
                 }
 
-                if (ParentVehicle == null && !xmlDrug.RequirementsMet(_objCharacter))
-                    continue;
-                lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNode("id")?.Value, xmlDrug.SelectSingleNode("translate")?.Value ?? xmlDrug.SelectSingleNode("name")?.Value));
-                if (blnTerminateAfterFirst)
-                    break;
-            }
+                if (blnDoUIUpdate)
+                {
+                    lstDrugs.Sort(CompareListItems.CompareNames);
+                    if (intOverLimit > 0)
+                    {
+                        // Add after sort so that it's always at the end
+                        lstDrugs.Add(new ListItem(string.Empty,
+                                                  string.Format(GlobalSettings.CultureInfo,
+                                                                LanguageManager.GetString(
+                                                                    "String_RestrictedItemsHidden"),
+                                                                intOverLimit)));
+                    }
 
-            if (!blnDoUIUpdate)
-                return lstDrugs;
-            lstDrugs.Sort(CompareListItems.CompareNames);
-            if (intOverLimit > 0)
+                    string strOldSelected = lstDrug.SelectedValue?.ToString();
+                    _blnLoading = true;
+                    lstDrug.BeginUpdate();
+                    lstDrug.PopulateWithListItems(lstDrugs);
+                    _blnLoading = false;
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        lstDrug.SelectedValue = strOldSelected;
+                    else
+                        lstDrug.SelectedIndex = -1;
+
+                    lstDrug.EndUpdate();
+                }
+            }
+            finally
             {
-                // Add after sort so that it's always at the end
-                lstDrugs.Add(new ListItem(string.Empty,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
-                        intOverLimit)));
+                if (lstDrugs != null)
+                    Utils.ListItemListPool.Return(lstDrugs);
             }
-            string strOldSelected = lstDrug.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstDrug.BeginUpdate();
-            lstDrug.PopulateWithListItems(lstDrugs);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstDrug.SelectedValue = strOldSelected;
-            else
-                lstDrug.SelectedIndex = -1;
-
-            lstDrug.EndUpdate();
-
-            return lstDrugs;
         }
 
         /// <summary>
