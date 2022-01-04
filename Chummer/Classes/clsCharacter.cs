@@ -1442,35 +1442,36 @@ namespace Chummer
             {
                 foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
                 {
+                    string strName = xmlSkill.InnerText;
+                    if (string.IsNullOrEmpty(strName))
+                        continue;
                     string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strRating))
+                    if (string.IsNullOrEmpty(strRating))
+                        continue;
+                    if (SkillsSection.KnowledgeSkills.All(x => x.Name != strName))
                     {
-                        if (SkillsSection.KnowledgeSkills.All(x => x.Name != xmlSkill.InnerText))
+                        XmlNode objXmlSkillNode =
+                            xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " + strName.CleanXPath() + "]");
+                        if (objXmlSkillNode != null)
                         {
-                            XmlNode objXmlSkillNode =
-                                xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " +
-                                    xmlSkill.InnerText.CleanXPath() + "]");
-                            if (objXmlSkillNode != null)
-                            {
-                                KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this, true) as KnowledgeSkill;
-                                SkillsSection.KnowledgeSkills.Add(objSkill);
-                            }
-                            else
-                            {
-                                KnowledgeSkill objSkill = new KnowledgeSkill(this, xmlSkill.InnerText, true)
-                                {
-                                    Type = xmlSkill.Attributes?["category"]?.InnerText
-                                };
-                                SkillsSection.KnowledgeSkills.Add(objSkill);
-                            }
+                            KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this, true) as KnowledgeSkill;
+                            SkillsSection.KnowledgeSkills.Add(objSkill);
                         }
-
-                        ImprovementManager.CreateImprovement(this, xmlSkill.InnerText,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.SkillLevel, string.Empty,
-                            CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
-                        ImprovementManager.Commit(this);
+                        else
+                        {
+                            KnowledgeSkill objSkill = new KnowledgeSkill(this, strName, true)
+                            {
+                                Type = xmlSkill.Attributes?["category"]?.InnerText
+                            };
+                            SkillsSection.KnowledgeSkills.Add(objSkill);
+                        }
                     }
+
+                    ImprovementManager.CreateImprovement(this, strName,
+                                                         Improvement.ImprovementSource.Metatype, string.Empty,
+                                                         Improvement.ImprovementType.SkillLevel, string.Empty,
+                                                         CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
+                    ImprovementManager.Commit(this);
                 }
             }
 
