@@ -1160,7 +1160,7 @@
           </xsl:call-template>
         </xsl:if>
 
-        <xsl:if test="initiategrade > 0">
+        <xsl:if test="initiategrade > 0 or metamagics/metamagic">
           <div class="block" id="InitiationBlock">
             <table class="tablestyle">
               <tr>
@@ -1365,7 +1365,7 @@
           <xsl:with-param name="blockname" select="'StreamBlock'" />
         </xsl:call-template>
 
-        <xsl:if test="submersiongrade > 0">
+        <xsl:if test="submersiongrade > 0 or metamagics/metamagic">
           <div class="block" id="SubmersionBlock">
             <table class="tablestyle">
               <tr>
