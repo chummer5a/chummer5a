@@ -965,14 +965,8 @@ namespace Chummer
 
         private bool IsVisibleOnAnyScreen()
         {
-            Point objUpperLeft = Location;
-            Point objUpperRight = new Point(objUpperLeft.X + Width, objUpperLeft.Y);
-            Point objLowerLeft = new Point(objUpperLeft.X, objUpperLeft.Y + Height);
-            Point objLowerRight = new Point(objUpperRight.X, objLowerLeft.Y);
-            return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(objUpperLeft)
-                                                   || screen.WorkingArea.Contains(objUpperRight)
-                                                   || screen.WorkingArea.Contains(objLowerLeft)
-                                                   || screen.WorkingArea.Contains(objLowerRight));
+            Rectangle objMyRectangle = ClientRectangle;
+            return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(objMyRectangle));
         }
 
         private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
