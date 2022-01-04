@@ -788,7 +788,9 @@ namespace Chummer.Backend.Skills
                     {
                         Parallel.ForEach(SkillGroups, x =>
                         {
+                            // ReSharper disable once AccessToDisposedClosure
                             if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
+                                // ReSharper disable once AccessToDisposedClosure
                                 dicGroups.TryAdd(x.Name, x.Id);
                         });
                     },
@@ -797,9 +799,11 @@ namespace Chummer.Backend.Skills
                         Parallel.ForEach(Skills, x =>
                         {
                             if (x.TotalBaseRating > 0)
+                                // ReSharper disable once AccessToDisposedClosure
                                 dicSkills.TryAdd(x.Name, x.Id);
                         });
                     },
+                    // ReSharper disable once AccessToDisposedClosure
                     () => Parallel.ForEach(KnowledgeSkills, x => dicSkills.TryAdd(x.Name, x.Id)));
                 UpdateUndoSpecific(dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
                 UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());

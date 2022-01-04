@@ -4293,7 +4293,8 @@ namespace Chummer
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objArt != null)
                         {
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == objArt.SourceType && x.SourceName == objArt.InternalId && x.Enabled));
+                            Art art = objArt;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == art.SourceType && x.SourceName == art.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4303,7 +4304,8 @@ namespace Chummer
                         if (objMetamagic != null)
                         {
                             Improvement.ImprovementSource eSource = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo;
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == eSource && x.SourceName == objMetamagic.InternalId && x.Enabled));
+                            Metamagic metamagic = objMetamagic;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == eSource && x.SourceName == metamagic.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4311,7 +4313,8 @@ namespace Chummer
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || (x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
                         if (objCritterPower != null)
                         {
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.CritterPower && x.SourceName == objCritterPower.InternalId && x.Enabled));
+                            CritterPower power = objCritterPower;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.CritterPower && x.SourceName == power.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4320,7 +4323,8 @@ namespace Chummer
                         MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMentor != null)
                         {
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit && x.SourceName == objMentor.InternalId && x.Enabled));
+                            MentorSpirit mentor = objMentor;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit && x.SourceName == mentor.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4337,7 +4341,8 @@ namespace Chummer
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objSpell != null)
                         {
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Spell && x.SourceName == objSpell.InternalId && x.Enabled));
+                            Spell spell = objSpell;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Spell && x.SourceName == spell.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4345,7 +4350,8 @@ namespace Chummer
                         ComplexForm objComplexForm = objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objComplexForm != null)
                         {
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm && x.SourceName == objComplexForm.InternalId && x.Enabled));
+                            ComplexForm form = objComplexForm;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm && x.SourceName == form.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4353,7 +4359,8 @@ namespace Chummer
                         MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMartialArt != null)
                         {
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled));
+                            MartialArt art = objMartialArt;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == art.InternalId && x.Enabled));
                             // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
@@ -4394,7 +4401,8 @@ namespace Chummer
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
                         if (objQuality != null)
                         {
-                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == objQuality.InternalId && x.Enabled));
+                            Quality quality = objQuality;
+                            EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == quality.InternalId && x.Enabled));
                         }
                         break;
                     /*
@@ -4411,7 +4419,8 @@ namespace Chummer
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
                         if (objProgram != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled));
+                            AIProgram program = objProgram;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == program.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4601,7 +4610,8 @@ namespace Chummer
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objArt != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == objArt.SourceType && x.SourceName == objArt.InternalId && x.Enabled));
+                            Art art = objArt;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == art.SourceType && x.SourceName == art.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4611,7 +4621,8 @@ namespace Chummer
                         if (objMetamagic != null)
                         {
                             Improvement.ImprovementSource eSource = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic ? Improvement.ImprovementSource.Metamagic : Improvement.ImprovementSource.Echo;
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == eSource && x.SourceName == objMetamagic.InternalId && x.Enabled));
+                            Metamagic metamagic = objMetamagic;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == eSource && x.SourceName == metamagic.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4619,7 +4630,8 @@ namespace Chummer
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName || (x.Name == objImprovement.ImprovedName && x.Extra == objImprovement.UniqueName));
                         if (objCritterPower != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.CritterPower && x.SourceName == objCritterPower.InternalId && x.Enabled));
+                            CritterPower power = objCritterPower;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.CritterPower && x.SourceName == power.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4628,7 +4640,8 @@ namespace Chummer
                         MentorSpirit objMentor = objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMentor != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit && x.SourceName == objMentor.InternalId && x.Enabled));
+                            MentorSpirit mentor = objMentor;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit && x.SourceName == mentor.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4645,7 +4658,8 @@ namespace Chummer
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objSpell != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Spell && x.SourceName == objSpell.InternalId && x.Enabled));
+                            Spell spell = objSpell;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Spell && x.SourceName == spell.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4653,7 +4667,8 @@ namespace Chummer
                         ComplexForm objComplexForm = objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objComplexForm != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm && x.SourceName == objComplexForm.InternalId && x.Enabled));
+                            ComplexForm form = objComplexForm;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm && x.SourceName == form.InternalId && x.Enabled));
                         }
                         break;
 
@@ -4661,7 +4676,8 @@ namespace Chummer
                         MartialArt objMartialArt = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objMartialArt != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled));
+                            MartialArt art = objMartialArt;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == art.InternalId && x.Enabled));
                             // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
@@ -4727,7 +4743,8 @@ namespace Chummer
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
                         if (objQuality != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == objQuality.InternalId && x.Enabled));
+                            Quality quality = objQuality;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Quality && x.SourceName == quality.InternalId && x.Enabled));
                         }
                         break;
                     /*
@@ -4744,7 +4761,8 @@ namespace Chummer
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
                         if (objProgram != null)
                         {
-                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == objProgram.InternalId && x.Enabled));
+                            AIProgram program = objProgram;
+                            DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AIProgram && x.SourceName == program.InternalId && x.Enabled));
                         }
                         break;
 

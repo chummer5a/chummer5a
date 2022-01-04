@@ -489,6 +489,7 @@ namespace Chummer
 
                         if (objState.ShouldExitCurrentIteration)
                             return;
+                        // ReSharper disable once AccessToDisposedClosure
                         dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value);
                     });
                     foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))

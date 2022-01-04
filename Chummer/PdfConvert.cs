@@ -259,6 +259,7 @@ namespace Codaxy.WkHtmlToPdf
                         {
                             if (e.Data == null)
                             {
+                                // ReSharper disable once AccessToDisposedClosure
                                 outputWaitHandle.Set();
                             }
                             else
@@ -271,6 +272,7 @@ namespace Codaxy.WkHtmlToPdf
                         {
                             if (e.Data == null)
                             {
+                                // ReSharper disable once AccessToDisposedClosure
                                 errorWaitHandle.Set();
                             }
                             else

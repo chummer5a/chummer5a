@@ -1699,8 +1699,10 @@ namespace Chummer
                     FileInfo fileInfo = new FileInfo(file);
                     frmProgressBar.PerformStep(fileInfo.Name, frmLoading.ProgressBarTextPatterns.Scanning);
                     SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
+                    // ReSharper disable once AccessToDisposedClosure
                     if (info == null || resultCollection.ContainsKey(info.Code))
                         return;
+                    // ReSharper disable once AccessToDisposedClosure
                     resultCollection.TryAdd(info.Code, info);
                 });
                 foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)

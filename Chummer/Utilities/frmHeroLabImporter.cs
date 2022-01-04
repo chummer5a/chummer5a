@@ -101,6 +101,7 @@ namespace Chummer
                                         = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
                                         xmlSourceDoc = new XPathDocument(objXmlReader);
                                     XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
+                                    // ReSharper disable once AccessToDisposedClosure
                                     lstCharacterXmlStatblocks.Add(objToAdd);
                                 }
                                 // If we run into any problems loading the character cache, fail out early.

@@ -7506,7 +7506,7 @@ namespace Chummer.Classes
     [Serializable]
     public sealed class AbortedException : Exception
     {
-        public AbortedException() : base()
+        public AbortedException()
         {
         }
 

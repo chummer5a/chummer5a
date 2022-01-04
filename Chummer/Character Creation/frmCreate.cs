@@ -9921,6 +9921,7 @@ namespace Chummer
                         lock (objStolenDeductionsLock)
                             decStolenDeductions += decTempStolen;
                         lock (objDeductionsLock)
+                            // ReSharper disable once AccessToModifiedClosure
                             decDeductions += decTemp;
                     },
                     () =>
@@ -10024,6 +10025,7 @@ namespace Chummer
                         // Cyberware/Bioware cost.
                         decimal decTemp = CharacterObject.Cyberware.Sum(x => x.CurrentTotalCost);
                         lock (objDeductionsLock)
+                            // ReSharper disable once AccessToModifiedClosure
                             decDeductions += decTemp;
                     },
                     () =>
