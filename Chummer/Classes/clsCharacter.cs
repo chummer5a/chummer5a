@@ -2818,7 +2818,21 @@ namespace Chummer
                                     intDummy = setSavedBooks.Count *
                                                (lstSavedCustomDataDirectoryNames.Count + 1) *
                                                intBaseline;
-                                    if (objOptionsToCheck.BuildMethod == eSavedBuildMethod || (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule))
+                                    if (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule)
+                                    {
+                                        if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
+                                        {
+                                            intReturn += int.MaxValue / 2 + 4;
+                                        }
+                                        else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                 eSavedBuildMethod.UsesPriorityTables())
+                                        {
+                                            intReturn += int.MaxValue / 2 + 2;
+                                        }
+                                        else
+                                            intReturn += int.MaxValue / 2;
+                                    }
+                                    else if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
                                     {
                                         intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
                                     }
