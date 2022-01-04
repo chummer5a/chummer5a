@@ -54,6 +54,7 @@ Data Changes:
 - Two of the Sea Ray Cottonmouth's built-in weapon mounts now properly have Flexible flexibility. Fixes #4656.
 - Enabling Delnar Skills Remake no longer causes Chummer to crash.
 - Metamagics and echoes acquired outside of initiation and submersion now show up on character sheets that have no initiations or submersions.
+- Extended Clip in German Data Changes now properly scales its cost based on the accessory's rating.
 
 Changed/New Strings:
 - String_GameplayOption
