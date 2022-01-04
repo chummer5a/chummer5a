@@ -1757,7 +1757,7 @@ namespace Chummer.Backend.Equipment
         public string AmmoCategory => !string.IsNullOrEmpty(_strAmmoCategory) ? _strAmmoCategory : Category;
 
         /// <summary>
-        /// Category of Ammo the Weapon uses.
+        /// Whether the weapon is melee or ranged.
         /// </summary>
         public string WeaponType => _strWeaponType;
 
@@ -3664,6 +3664,20 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
+                if (IncludedInWeapon && Parent != null && WeaponType == Parent.WeaponType)
+                {
+                    foreach (WeaponAccessory objWeaponAccessory in Parent.WeaponAccessories)
+                    {
+                        if (objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && objWeaponAccessory.IncludedInWeapon && objWeaponAccessory.Equipped)
+                        {
+                            int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                            if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
+                                intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
+                        }
+                    }
+                }
+
                 intAccuracy += intBonusAccuracyFromAccessories + intBonusAccuracyFromNonStackingAccessories;
 
                 string strNameUpper = Name.ToUpperInvariant();
@@ -4152,6 +4166,25 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Returns true if the weapon has a smartgun addon/accessory/modification that is wirelessly on
+        /// </summary>
+        public bool HasWirelessSmartgun
+        {
+            get
+            {
+                if (WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped
+                                              && x.WirelessOn))
+                    return true;
+                // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
+                return IncludedInWeapon && Parent != null && WeaponType == Parent.WeaponType
+                       && Parent.WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal)
+                                                            && x.IncludedInWeapon
+                                                            && x.Equipped
+                                                            && x.WirelessOn);
+            }
+        }
+
+        /// <summary>
         /// The Dice Pool size for the Active Skill required to use the Weapon.
         /// </summary>
         public int DicePool
@@ -4169,8 +4202,7 @@ namespace Chummer.Backend.Equipment
 
                             intDicePool += objAutosoft?.Rating ?? -1;
 
-                            if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn)
-                                           && ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
+                            if (WirelessOn && HasWirelessSmartgun && ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
                             {
                                 ++decDicePoolModifier;
                             }
@@ -4180,7 +4212,7 @@ namespace Chummer.Backend.Equipment
                         {
                             intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
 
-                            if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
+                            if (WirelessOn && HasWirelessSmartgun)
                             {
                                 decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
                                     Improvement.ImprovementType.Smartlink);
@@ -4225,7 +4257,7 @@ namespace Chummer.Backend.Equipment
                             else
                                 intDicePool = objSkill.Pool;
 
-                            if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
+                            if (WirelessOn && HasWirelessSmartgun)
                             {
                                 decDicePoolModifier +=
                                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
@@ -4261,7 +4293,7 @@ namespace Chummer.Backend.Equipment
                                 else
                                     intDicePool = objSkill.Pool;
 
-                                if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
+                                if (WirelessOn && HasWirelessSmartgun)
                                 {
                                     decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
                                 }
@@ -4508,8 +4540,7 @@ namespace Chummer.Backend.Equipment
 
                     if (ParentVehicle == null)
                     {
-                        if (WirelessOn && WeaponAccessories.Any(
-                                x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
+                        if (WirelessOn && HasWirelessSmartgun)
                         {
                             decimal decSmartlinkBonus =
                                 ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
@@ -4536,10 +4567,7 @@ namespace Chummer.Backend.Equipment
                                                   objImprovement.Value);
                         }
                     }
-                    else if (WirelessOn &&
-                             WeaponAccessories.Any(x =>
-                                                       x.Name.StartsWith("Smartgun", StringComparison.Ordinal)
-                                                       && x.WirelessOn))
+                    else if (WirelessOn && HasWirelessSmartgun)
                     {
                         decimal decSmartlinkBonus
                             = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
