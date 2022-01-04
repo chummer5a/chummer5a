@@ -40,6 +40,7 @@ Application Changes:
 - Checking the "Free" box when creating a weapon mount is now reversible, meaning that editing the mount and unchecking the box properly makes the mount not-free again.
 - Weapon mounts are now properly included in Chummer's calculations for if vehicles have too many used weapon slots or nots.
 - When adding a new weapon mount in Career mode, messages about not having enough money and/or enough capacity for the created weapon mount now occur before the weapon mount creation window is closed instead of after, allowing users to remedy their mistakes without recreating the entire weapon mount a second time.
+- The character roster's Recent Characters list no longer gets doubly populated by entries that also exist in the Favorite Characters list whenever a character from that list is opened or closed. Fixes #4565.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

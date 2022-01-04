@@ -249,7 +249,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            List<string> lstFavorites = blnRefreshFavorites ? GlobalSettings.FavoriteCharacters.ToList() : new List<string>();
+            List<string> lstFavorites = GlobalSettings.FavoriteCharacters.ToList();
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
             if (objFavoriteNode == null && blnRefreshFavorites)
@@ -258,7 +258,7 @@ namespace Chummer
                     {Tag = "Favorite"};
                 blnAddFavoriteNode = true;
             }
-            TreeNode[] lstFavoritesNodes = lstFavorites.Count > 0 ? new TreeNode[lstFavorites.Count] : null;
+            TreeNode[] lstFavoritesNodes = blnRefreshFavorites && lstFavorites.Count > 0 ? new TreeNode[lstFavorites.Count] : null;
 
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
@@ -293,7 +293,7 @@ namespace Chummer
                 await Task.WhenAll(
                     Task.Run(() =>
                     {
-                        if (lstFavoritesNodes == null || lstFavorites.Count == 0 ||
+                        if (!blnRefreshFavorites || lstFavoritesNodes == null || lstFavorites.Count == 0 ||
                             _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                             return;
                         Parallel.For(0, lstFavorites.Count, (i, objState) =>
