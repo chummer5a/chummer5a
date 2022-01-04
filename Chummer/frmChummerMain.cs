@@ -48,7 +48,7 @@ namespace Chummer
         private frmLoading _frmProgressBar;
         private frmUpdate _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
-        private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
+        private readonly ThreadSafeObservableCollection<CharacterShared> _lstOpenCharacterForms = new ThreadSafeObservableCollection<CharacterShared>();
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
 
@@ -212,7 +212,6 @@ namespace Chummer
                             _frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
 
                             _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
-                            _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
 
                             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
                             bool blnShowTest = false;
@@ -423,48 +422,6 @@ namespace Chummer
 
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
-
-        private async void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (CharacterRoster != null)
-            {
-                switch (e.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        CharacterRoster.RefreshNodeTexts();
-                        break;
-
-                    case NotifyCollectionChangedAction.Move:
-                    case NotifyCollectionChangedAction.Remove:
-                    {
-                        // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
-                        await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>().Any(objClosedForm =>
-                                                                  GlobalSettings.FavoriteCharacters.Contains(
-                                                                      objClosedForm.CharacterObject.FileName))
-                                                                  ? "stickymru"
-                                                                  : "mru");
-                    }
-                        break;
-
-                    case NotifyCollectionChangedAction.Replace:
-                    {
-                        // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
-                        await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>()
-                                                               .Concat(e.NewItems.Cast<CharacterShared>()).Any(
-                                                                   objClosedForm =>
-                                                                       GlobalSettings.FavoriteCharacters.Contains(
-                                                                           objClosedForm.CharacterObject.FileName))
-                                                                  ? "stickymru"
-                                                                  : "mru");
-                    }
-                        break;
-
-                    case NotifyCollectionChangedAction.Reset:
-                        await CharacterRoster.RefreshMruLists(string.Empty);
-                        break;
-                }
-            }
-        }
 
         private void LstCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
@@ -1048,6 +1005,9 @@ namespace Chummer
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
+            _lstCharacters.CollectionChanged -= LstCharactersOnCollectionChanged;
+            foreach (Character objCharacter in _lstCharacters)
+                objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
 #if !DEBUG
             _objVersionUpdaterCancellationTokenSource?.Cancel(false);
 #endif
@@ -1972,7 +1932,7 @@ namespace Chummer
 
         public ThreadSafeObservableCollection<Character> OpenCharacters => _lstCharacters;
 
-        public ObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
+        public ThreadSafeObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
 
         /// <summary>
         /// Set to True at the end of the OnLoad method. Useful for unit testing because the load method is executed asynchronously, so form might end up getting closed before it fully loads.

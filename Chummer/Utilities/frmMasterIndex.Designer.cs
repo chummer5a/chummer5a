@@ -46,8 +46,8 @@ namespace Chummer
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
             this.tlpGameplayOption = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
+            this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();
             this.tlpRight.SuspendLayout();
@@ -254,18 +254,6 @@ namespace Chummer
             this.tlpGameplayOption.Size = new System.Drawing.Size(766, 29);
             this.tlpGameplayOption.TabIndex = 3;
             // 
-            // lblCharacterSetting
-            // 
-            this.lblCharacterSetting.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblCharacterSetting.AutoSize = true;
-            this.lblCharacterSetting.Location = new System.Drawing.Point(3, 8);
-            this.lblCharacterSetting.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCharacterSetting.Name = "lblCharacterSetting";
-            this.lblCharacterSetting.Size = new System.Drawing.Size(65, 13);
-            this.lblCharacterSetting.TabIndex = 19;
-            this.lblCharacterSetting.Tag = "Label_SelectBP_UseSetting";
-            this.lblCharacterSetting.Text = "Use Setting:";
-            // 
             // cmdEditCharacterSetting
             // 
             this.cmdEditCharacterSetting.AutoSize = true;
@@ -286,6 +274,18 @@ namespace Chummer
             this.cmdEditCharacterSetting.ToolTipText = "";
             this.cmdEditCharacterSetting.UseVisualStyleBackColor = true;
             this.cmdEditCharacterSetting.Click += new System.EventHandler(this.cmdEditCharacterSetting_Click);
+            // 
+            // lblCharacterSetting
+            // 
+            this.lblCharacterSetting.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCharacterSetting.AutoSize = true;
+            this.lblCharacterSetting.Location = new System.Drawing.Point(3, 8);
+            this.lblCharacterSetting.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCharacterSetting.Name = "lblCharacterSetting";
+            this.lblCharacterSetting.Size = new System.Drawing.Size(65, 13);
+            this.lblCharacterSetting.TabIndex = 19;
+            this.lblCharacterSetting.Tag = "Label_SelectBP_UseSetting";
+            this.lblCharacterSetting.Text = "Use Setting:";
             // 
             // cboCharacterSetting
             // 
@@ -312,6 +312,7 @@ namespace Chummer
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "Title_MasterIndex";
             this.Text = "Master Index";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMasterIndex_FormClosing);
             this.Load += new System.EventHandler(this.frmMasterIndex_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

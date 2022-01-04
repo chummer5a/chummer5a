@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -62,6 +63,7 @@ namespace Chummer
         {
             if (!deleteThem)
             {
+                Program.MainForm.OpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged += RefreshMruLists;
                 treCharacterList.ItemDrag += treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter += treCharacterList_OnDefaultDragEnter;
@@ -79,6 +81,7 @@ namespace Chummer
             }
             else
             {
+                Program.MainForm.OpenCharacterForms.CollectionChanged -= LstOpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged -= RefreshMruLists;
                 treCharacterList.ItemDrag -= treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
@@ -118,7 +121,7 @@ namespace Chummer
         {
             SetMyEventHandlers();
             _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
-            _tskMostRecentlyUsedsRefresh = LoadMruCharacters(true);
+            _tskMostRecentlyUsedsRefresh = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
             _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
             _tskWatchFolderRefresh = LoadWatchFolderCharacters();
             try
@@ -158,6 +161,10 @@ namespace Chummer
             {
                 //swallow this
             }
+
+            if (this.IsNullOrDisposed())
+                return;
+
             SuspendLayout();
             _tskWatchFolderRefresh = LoadWatchFolderCharacters();
             try
@@ -173,6 +180,9 @@ namespace Chummer
                 //swallow this
             }
             ResumeLayout();
+            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                return;
+            PurgeUnusedCharacterCaches();
         }
 
         private async void RefreshMruLists(object sender, TextEventArgs e)
@@ -197,8 +207,12 @@ namespace Chummer
             {
                 //swallow this
             }
+
+            if (this.IsNullOrDisposed())
+                return;
+
             SuspendLayout();
-            _tskMostRecentlyUsedsRefresh = LoadMruCharacters(strMruType != "mru");
+            _tskMostRecentlyUsedsRefresh = LoadMruCharacters(strMruType != "mru", _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
             try
             {
                 await _tskMostRecentlyUsedsRefresh;
@@ -212,6 +226,68 @@ namespace Chummer
                 //swallow this
             }
             ResumeLayout();
+            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                return;
+            PurgeUnusedCharacterCaches();
+        }
+
+        private async void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    RefreshNodeTexts();
+                    break;
+
+                case NotifyCollectionChangedAction.Move:
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        string strMruToUpdate = "mru";
+                        foreach (CharacterShared objForm in e.OldItems)
+                        {
+                            if (GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName))
+                            {
+                                strMruToUpdate = "stickymru"; // Will also update the most recents list, too
+                                break;
+                            }
+                        }
+                        await RefreshMruLists(strMruToUpdate);
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strMruToUpdate = "mru";
+                        foreach (CharacterShared objForm in e.OldItems)
+                        {
+                            if (GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName))
+                            {
+                                strMruToUpdate = "stickymru"; // Will also update the most recents list, too
+                                break;
+                            }
+                        }
+
+                        if (strMruToUpdate == "mru")
+                        {
+                            foreach (CharacterShared objForm in e.NewItems)
+                            {
+                                if (GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName))
+                                {
+                                    strMruToUpdate = "stickymru"; // Will also update the most recents list, too
+                                    break;
+                                }
+                            }
+                        }
+                        await RefreshMruLists(strMruToUpdate);
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    await RefreshMruLists(string.Empty);
+                    break;
+            }
         }
 
         public void RefreshNodeTexts()
@@ -241,9 +317,9 @@ namespace Chummer
             }
         }
 
-        private async Task LoadMruCharacters(bool blnRefreshFavorites)
+        private async Task LoadMruCharacters(bool blnRefreshFavorites, CancellationToken objCancellationToken)
         {
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+            if (objCancellationToken.IsCancellationRequested)
                 return;
 
             if (treCharacterList.IsNullOrDisposed())
@@ -260,7 +336,7 @@ namespace Chummer
             }
             TreeNode[] lstFavoritesNodes = blnRefreshFavorites && lstFavorites.Count > 0 ? new TreeNode[lstFavorites.Count] : null;
 
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+            if (objCancellationToken.IsCancellationRequested)
                 return;
 
             bool blnAddRecentNode = false;
@@ -285,7 +361,7 @@ namespace Chummer
             }
             TreeNode[] lstRecentsNodes = lstRecents.Count > 0 ? new TreeNode[lstRecents.Count] : null;
 
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+            if (objCancellationToken.IsCancellationRequested)
                 return;
 
             try
@@ -294,11 +370,11 @@ namespace Chummer
                     Task.Run(() =>
                     {
                         if (!blnRefreshFavorites || lstFavoritesNodes == null || lstFavorites.Count == 0 ||
-                            _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            objCancellationToken.IsCancellationRequested)
                             return;
                         Parallel.For(0, lstFavorites.Count, (i, objState) =>
                         {
-                            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            if (objCancellationToken.IsCancellationRequested)
                             {
                                 objState.Stop();
                                 return;
@@ -309,11 +385,11 @@ namespace Chummer
                             lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]);
                         });
                         if (!blnAddFavoriteNode || objFavoriteNode == null ||
-                            _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            objCancellationToken.IsCancellationRequested)
                             return;
                         foreach (TreeNode objNode in lstFavoritesNodes)
                         {
-                            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            if (objCancellationToken.IsCancellationRequested)
                                 return;
                             if (objNode == null)
                                 continue;
@@ -326,15 +402,15 @@ namespace Chummer
                             else
                                 objFavoriteNode.Nodes.Add(objNode);
                         }
-                    }, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token),
+                    }, objCancellationToken),
                     Task.Run(() =>
                     {
                         if (lstRecentsNodes == null || lstRecents.Count == 0 ||
-                            _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            objCancellationToken.IsCancellationRequested)
                             return;
                         Parallel.For(0, lstRecents.Count, (i, objState) =>
                         {
-                            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            if (objCancellationToken.IsCancellationRequested)
                             {
                                 objState.Stop();
                                 return;
@@ -345,11 +421,11 @@ namespace Chummer
                             lstRecentsNodes[i] = CacheCharacter(lstRecents[i]);
                         });
                         if (!blnAddRecentNode || objRecentNode == null ||
-                            _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            objCancellationToken.IsCancellationRequested)
                             return;
                         foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                            if (objCancellationToken.IsCancellationRequested)
                                 return;
                             if (objNode == null)
                                 continue;
@@ -362,14 +438,14 @@ namespace Chummer
                             else
                                 objRecentNode.Nodes.Add(objNode);
                         }
-                    }, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token));
+                    }, objCancellationToken));
             }
             catch (TaskCanceledException)
             {
                 //swallow this
             }
 
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+            if (objCancellationToken.IsCancellationRequested)
                 return;
 
             if (treCharacterList.IsNullOrDisposed())
@@ -425,7 +501,7 @@ namespace Chummer
                 treCharacterList.ResumeLayout();
             });
 
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+            if (objCancellationToken.IsCancellationRequested)
                 return;
 
             await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
@@ -667,13 +743,35 @@ namespace Chummer
             }
         }
 
+        private readonly LockingDictionary<string, CharacterCache> _dicSavedCharacterCaches = new LockingDictionary<string, CharacterCache>();
+
+        /// <summary>
+        /// Remove all character caches from the cached dictionary that are not present in any of the form's lists (and are therefore unnecessary).
+        /// </summary>
+        private void PurgeUnusedCharacterCaches()
+        {
+            foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values.ToList())
+            {
+                if (treCharacterList.FindNodeByTag(objCache) == null)
+                    _dicSavedCharacterCaches.Remove(objCache.FilePath);
+            }
+        }
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
+        /// The cache is then saved in a dictionary to prevent us from storing duplicate image data in memory (which can get expensive!)
         /// </summary>
         /// <param name="strFile"></param>
-        private static TreeNode CacheCharacter(string strFile)
+        private TreeNode CacheCharacter(string strFile)
         {
-            CharacterCache objCache = new CharacterCache(strFile);
+            CharacterCache objCache;
+            while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
+            {
+                objCache = new CharacterCache(strFile);
+                if (_dicSavedCharacterCaches.TryAdd(strFile, objCache))
+                    break;
+            }
+
             TreeNode objNode = new TreeNode
             {
                 Text = objCache.CalculatedName(),

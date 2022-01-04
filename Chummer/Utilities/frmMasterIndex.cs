@@ -135,6 +135,11 @@ namespace Chummer
             _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
         }
 
+        private void frmMasterIndex_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+        }
+
         private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(CharacterSettings.Books)
