@@ -1092,64 +1092,65 @@ namespace Chummer
                         ++intOverLimit;
                 }
 
-                // Find all entries that have duplicate names so that we can add category labels next to them
-                // But only if it's even possible for the list to have multiple items from different categories
-                if (lstGears.Count > 1)
+                if (blnDoUIUpdate)
                 {
-                    string strSelectCategory = cboCategory.SelectedValue?.ToString();
-                    if (!GlobalSettings.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
-                        strSelectCategory == "Show All")
+                    // Find all entries that have duplicate names so that we can add category labels next to them
+                    // But only if it's even possible for the list to have multiple items from different categories
+                    if (lstGears.Count > 1)
                     {
-                        HashSet<string> setDuplicateNames = new HashSet<string>();
-
-                        for (int i = 0; i < lstGears.Count - 1; ++i)
+                        string strSelectCategory = cboCategory.SelectedValue?.ToString();
+                        if (!GlobalSettings.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
+                            strSelectCategory == "Show All")
                         {
-                            string strLoopName = lstGears[i].Name;
-                            if (setDuplicateNames.Contains(strLoopName))
-                                continue;
-                            for (int j = i + 1; j < lstGears.Count; ++j)
+                            HashSet<string> setDuplicateNames = new HashSet<string>();
+
+                            for (int i = 0; i < lstGears.Count - 1; ++i)
                             {
-                                if (strLoopName.Equals(lstGears[j].Name, StringComparison.OrdinalIgnoreCase))
+                                string strLoopName = lstGears[i].Name;
+                                if (setDuplicateNames.Contains(strLoopName))
+                                    continue;
+                                for (int j = i + 1; j < lstGears.Count; ++j)
                                 {
-                                    setDuplicateNames.Add(strLoopName);
-                                    break;
+                                    if (strLoopName.Equals(lstGears[j].Name, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        setDuplicateNames.Add(strLoopName);
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        if (setDuplicateNames.Count > 0)
-                        {
-                            string strSpace = LanguageManager.GetString("String_Space");
-                            for (int i = 0; i < lstGears.Count; ++i)
+                            if (setDuplicateNames.Count > 0)
                             {
-                                ListItem objLoopItem = lstGears[i];
-                                if (!setDuplicateNames.Contains(objLoopItem.Name))
-                                    continue;
-                                XPathNavigator objXmlGear
-                                    = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " +
-                                                                            objLoopItem.Value.ToString().CleanXPath() +
-                                                                            "]");
-                                if (objXmlGear == null)
-                                    continue;
-                                string strLoopCategory
-                                    = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
-                                if (string.IsNullOrEmpty(strLoopCategory))
-                                    continue;
-                                ListItem objFoundItem
-                                    = _lstCategory.Find(objFind => objFind.Value.ToString() == strLoopCategory);
-                                if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                string strSpace = LanguageManager.GetString("String_Space");
+                                for (int i = 0; i < lstGears.Count; ++i)
                                 {
-                                    lstGears[i] = new ListItem(objLoopItem.Value
-                                                               , objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
+                                    ListItem objLoopItem = lstGears[i];
+                                    if (!setDuplicateNames.Contains(objLoopItem.Name))
+                                        continue;
+                                    XPathNavigator objXmlGear
+                                        = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " +
+                                                                                objLoopItem.Value.ToString().CleanXPath() +
+                                                                                "]");
+                                    if (objXmlGear == null)
+                                        continue;
+                                    string strLoopCategory
+                                        = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
+                                    if (string.IsNullOrEmpty(strLoopCategory))
+                                        continue;
+                                    ListItem objFoundItem
+                                        = _lstCategory.Find(objFind => objFind.Value.ToString() == strLoopCategory);
+                                    if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                    {
+                                        lstGears[i] = new ListItem(objLoopItem.Value
+                                                                   , objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                if (blnDoUIUpdate)
-                {
                     lstGears.Sort(CompareListItems.CompareNames);
+
                     if (intOverLimit > 0)
                     {
                         // Add after sort so that it's always at the end
