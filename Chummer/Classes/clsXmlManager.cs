@@ -162,6 +162,7 @@ namespace Chummer
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
+            strFileName = Path.GetFileName(strFileName);
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
                 if (blnSync)
@@ -285,6 +286,7 @@ namespace Chummer
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
+            strFileName = Path.GetFileName(strFileName);
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
                 if (blnSync)
