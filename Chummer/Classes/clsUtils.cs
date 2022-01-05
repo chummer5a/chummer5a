@@ -832,6 +832,6 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static ObjectPool<List<ListItem>> ListItemListPool { get; }
-            = s_ObjObjectPoolProvider.Create(new ListPooledObjectPolicy<ListItem>());
+            = s_ObjObjectPoolProvider.Create(new CollectionPooledObjectPolicy<List<ListItem>, ListItem>());
     }
 }

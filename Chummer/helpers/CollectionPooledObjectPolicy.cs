@@ -24,23 +24,24 @@ using Microsoft.Extensions.ObjectPool;
 namespace Chummer
 {
     /// <summary>
-    /// A version of DefaultPooledObjectPolicy that is set up for lists so that they are cleared whenever they are returned to the pool.
+    /// A version of DefaultPooledObjectPolicy that is set up for collections so that they are cleared whenever they are returned to the pool.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ListPooledObjectPolicy<T> : IPooledObjectPolicy<List<T>>
+    /// <typeparam name="T2"></typeparam>
+    public class CollectionPooledObjectPolicy<T, T2> : IPooledObjectPolicy<T> where T : class, ICollection<T2>, new()
     {
-        private readonly DefaultPooledObjectPolicy<List<T>> _objBasePolicy = new DefaultPooledObjectPolicy<List<T>>();
+        private readonly DefaultPooledObjectPolicy<T> _objBasePolicy = new DefaultPooledObjectPolicy<T>();
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public List<T> Create()
+        public T Create()
         {
             return _objBasePolicy.Create();
         }
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Return(List<T> obj)
+        public bool Return(T obj)
         {
             obj.Clear();
             return _objBasePolicy.Return(obj);
