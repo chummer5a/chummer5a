@@ -370,16 +370,9 @@ namespace Chummer
         /// <param name="lstQualities">Qualities that the character has.</param>
         public void ProcessGremlins(IEnumerable<Quality> lstQualities)
         {
-            nudGremlins.Value = 0;
-            if (lstQualities == null)
-                return;
-            foreach (Quality objQuality in lstQualities)
-            {
-                if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
-                {
-                    nudGremlins.Value = objQuality.Levels;
-                }
-            }
+            Quality objGremlinsQuality
+                = lstQualities?.FirstOrDefault(x => x.Name.StartsWith("Gremlins", StringComparison.Ordinal));
+            nudGremlins.Value = objGremlinsQuality?.Levels ?? 0;
         }
 
         #endregion Properties
