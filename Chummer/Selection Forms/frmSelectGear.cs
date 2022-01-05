@@ -1147,9 +1147,9 @@ namespace Chummer
                                 }
                             }
                         }
-                    }
 
-                    lstGears.Sort(CompareListItems.CompareNames);
+                        lstGears.Sort(CompareListItems.CompareNames);
+                    }
 
                     if (intOverLimit > 0)
                     {
