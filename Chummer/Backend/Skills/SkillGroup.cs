@@ -364,7 +364,7 @@ namespace Chummer.Backend.Skills
                 (l, r) =>
                 {
                     foreach (Skill x in r.SkillList.Where(x => !l.SkillList.Contains(x)))
-                        l.SkillList.Add(x);
+                        l.Add(x);
                 });
 
             return objNewGroup;
@@ -591,10 +591,15 @@ namespace Chummer.Backend.Skills
                 }
                 if (_objCharacter.Created && !CareerIncrease)
                     return LanguageManager.GetString("Label_SkillGroup_Broken");
-                List<Skill> lstEnabledSkills = SkillList.Where(x => x.Enabled).ToList();
-                return lstEnabledSkills.Count > 1
-                    ? lstEnabledSkills.Min(x => x.TotalBaseRating).ToString(GlobalSettings.CultureInfo)
-                    : 0.ToString(GlobalSettings.CultureInfo);
+                int intReturn = int.MaxValue;
+                foreach (Skill objSkill in SkillList)
+                {
+                    if (objSkill.Enabled)
+                        intReturn = Math.Min(intReturn, objSkill.TotalBaseRating);
+                }
+                return intReturn == int.MaxValue
+                    ? 0.ToString(GlobalSettings.CultureInfo)
+                    : intReturn.ToString(GlobalSettings.CultureInfo);
             }
         }
 
@@ -639,9 +644,17 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                List<Skill> lstSkills = SkillList.Where(x => x.Enabled).ToList();
+                int intRating = int.MaxValue;
+                foreach (Skill objSkill in SkillList)
+                {
+                    if (objSkill.Enabled)
+                        intRating = Math.Min(intRating, objSkill.TotalBaseRating);
+                }
+
+                if (intRating == int.MaxValue)
+                    intRating = 0;
                 return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
-                    (lstSkills.Count > 0 ? lstSkills.Min(x => x.TotalBaseRating) : 0) + 1, UpgradeKarmaCost);
+                                     intRating + 1, UpgradeKarmaCost);
             }
         }
 
@@ -989,7 +1002,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// List of skills that belong to this skill group.
         /// </summary>
-        public List<Skill> SkillList => _lstAffectedSkills;
+        public IReadOnlyList<Skill> SkillList => _lstAffectedSkills;
 
         #endregion All the other stuff that is required
     }
