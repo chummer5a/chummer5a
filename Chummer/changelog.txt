@@ -55,6 +55,7 @@ Data Changes:
 - Enabling Delnar Skills Remake no longer causes Chummer to crash.
 - Metamagics and echoes acquired outside of initiation and submersion now show up on character sheets that have no initiations or submersions.
 - Extended Clip in German Data Changes now properly scales its cost based on the accessory's rating.
+- Improved Potential can now properly be taken at multiple levels with German Data Changes.
 
 Changed/New Strings:
 - String_GameplayOption
