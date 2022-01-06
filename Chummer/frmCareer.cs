@@ -8111,10 +8111,16 @@ namespace Chummer
                 case KarmaExpenseType.SkillSpec:  //I am reasonably sure those 2 are the same. Was written looking at old AddSpecialization code
                 case KarmaExpenseType.AddSpecialization:
                     {
-                        Skill ContainingSkill = CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objExpense.Undo.ObjectId)) ??
-                                                CharacterObject.SkillsSection.Skills.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objExpense.Undo.ObjectId));
+                        SkillSpecialization objSpec = CharacterObject.SkillsSection.KnowledgeSkills
+                                                                     .SelectMany(x => x.Specializations)
+                                                                     .FirstOrDefault(
+                                                                         x => x.InternalId == objExpense.Undo.ObjectId)
+                                                      ?? CharacterObject.SkillsSection.Skills
+                                                                        .SelectMany(x => x.Specializations)
+                                                                        .FirstOrDefault(
+                                                                            x => x.InternalId == objExpense.Undo.ObjectId);
 
-                        ContainingSkill?.Specializations.Remove(ContainingSkill.Specializations.FirstOrDefault(x => x.InternalId == objExpense.Undo.ObjectId));
+                        objSpec?.Parent.Specializations.Remove(objSpec);
 
                         break;
                     }
