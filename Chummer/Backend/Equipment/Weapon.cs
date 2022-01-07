@@ -2205,7 +2205,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Name of Autosoft that is used for a weapon's dicepool. Melee weapons use Melee autosoft per R5 127
         /// </summary>
-        private string RelevantAutosoft => WeaponType == "melee" ? "[Weapon] Melee Autosoft" : "[Weapon] Targeting Autosoft";
+        private string RelevantAutosoft => RangeType == "Melee" ? "[Weapon] Melee Autosoft" : "[Weapon] Targeting Autosoft";
 
         #endregion Properties
 
@@ -3230,7 +3230,7 @@ namespace Chummer.Backend.Equipment
                             sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
                     }
 
-                    if (_objCharacter != null && (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
+                    if (_objCharacter != null && (Name == "Unarmed Attack" || Skill?.DictionaryKey == "Unarmed Combat" &&
                             _objCharacter.Settings.UnarmedImprovementsApplyToWeapons))
                     {
                         // Add any UnarmedAP bonus for the Unarmed Attack item.
@@ -3546,7 +3546,7 @@ namespace Chummer.Backend.Equipment
                     intUseSTR = _objCharacter.STR.TotalValue;
                 }
 
-                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
+                if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
                                                    .StandardRound();
 
@@ -3592,7 +3592,7 @@ namespace Chummer.Backend.Equipment
                     decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Reach, strImprovedName: Name, blnIncludeNonImproved: true);
                 }
 
-                if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
+                if (Name == "Unarmed Attack" || Skill?.DictionaryKey == "Unarmed Combat" &&
                     _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                 {
                     decReach += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedReach);
@@ -3659,7 +3659,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
-                if (IncludedInWeapon && Parent != null && WeaponType == Parent.WeaponType)
+                if (IncludedInWeapon && Parent != null && RangeType == Parent.RangeType)
                 {
                     foreach (WeaponAccessory objWeaponAccessory in Parent.WeaponAccessories)
                     {
@@ -3676,107 +3676,24 @@ namespace Chummer.Backend.Equipment
 
                 string strNameUpper = Name.ToUpperInvariant();
 
-                decimal decImproveAccuracy = 0;
+                decimal decImproveAccuracy = ImprovementManager.ValueOf(
+                    _objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, strImprovedName: Name,
+                    blnIncludeNonImproved: true);
+                string strSkill = Skill?.DictionaryKey ?? string.Empty;
+                if (!string.IsNullOrEmpty(strSkill))
+                    decImproveAccuracy += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, strImprovedName: strSkill);
                 foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponAccuracy))
                 {
                     string strImprovedName = objImprovement.ImprovedName;
-                    if (string.IsNullOrEmpty(strImprovedName) || strImprovedName == Name
-                                                              || strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
-                                                              && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true), StringComparison.InvariantCultureIgnoreCase))
+                    if (strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
+                        && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true),
+                                                 StringComparison.InvariantCultureIgnoreCase))
                     {
                         decImproveAccuracy += objImprovement.Value;
                     }
                 }
 
                 intAccuracy += decImproveAccuracy.StandardRound();
-
-                string strSkill = UseSkill;
-                string strSpec = Spec;
-                // Use the Skill defined by the Weapon if one is present.
-                if (string.IsNullOrEmpty(strSkill))
-                {
-                    // Exotic Skills require a matching Specialization.
-                    switch (Category)
-                    {
-                        case "Bows":
-                        case "Crossbows":
-                            strSkill = "Archery";
-                            break;
-
-                        case "Assault Rifles":
-                        case "Carbines":
-                        case "Machine Pistols":
-                        case "Submachine Guns":
-                            strSkill = "Automatics";
-                            break;
-
-                        case "Blades":
-                            strSkill = "Blades";
-                            break;
-
-                        case "Clubs":
-                        case "Improvised Weapons":
-                            strSkill = "Clubs";
-                            break;
-
-                        case "Exotic Melee Weapons":
-                            strSkill = "Exotic Melee Weapon";
-                            if (string.IsNullOrEmpty(strSpec))
-                                strSpec = UseSkillSpec;
-                            break;
-
-                        case "Exotic Ranged Weapons":
-                        case "Special Weapons":
-                            strSkill = "Exotic Ranged Weapon";
-                            if (string.IsNullOrEmpty(strSpec))
-                                strSpec = UseSkillSpec;
-                            break;
-
-                        case "Flamethrowers":
-                            strSkill = "Exotic Ranged Weapon";
-                            strSpec = "Flamethrowers";
-                            break;
-
-                        case "Laser Weapons":
-                            strSkill = "Exotic Ranged Weapon";
-                            strSpec = "Laser Weapons";
-                            break;
-
-                        case "Assault Cannons":
-                        case "Grenade Launchers":
-                        case "Missile Launchers":
-                        case "Light Machine Guns":
-                        case "Medium Machine Guns":
-                        case "Heavy Machine Guns":
-                            strSkill = "Heavy Weapons";
-                            break;
-
-                        case "Shotguns":
-                        case "Sniper Rifles":
-                        case "Sporting Rifles":
-                            strSkill = "Longarms";
-                            break;
-
-                        case "Throwing Weapons":
-                            strSkill = "Throwing Weapons";
-                            break;
-
-                        case "Unarmed":
-                            strSkill = "Unarmed Combat";
-                            break;
-
-                        default:
-                            strSkill = "Pistols";
-                            break;
-                    }
-                }
-
-                if (strSkill.StartsWith("Exotic", StringComparison.Ordinal))
-                {
-                    strSkill += LanguageManager.GetString("String_Space")
-                                + '(' + (!string.IsNullOrEmpty(strSpec) ? strSpec : UseSkillSpec) + ')';
-                }
-                intAccuracy += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, false, strSkill).StandardRound();
 
                 return intAccuracy;
             }
@@ -3911,7 +3828,7 @@ namespace Chummer.Backend.Equipment
                 sbdRange.Append(strRange);
                 ProcessAttributesInXPath(sbdRange, strRange, true);
 
-                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
+                if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
                     sbdRange.Append(" + ").Append(ImprovementManager
                                                   .ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRange)
                                                   .ToString(GlobalSettings.InvariantCultureInfo));
@@ -4170,7 +4087,7 @@ namespace Chummer.Backend.Equipment
                                               && x.WirelessOn))
                     return true;
                 // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
-                return IncludedInWeapon && Parent != null && WeaponType == Parent.WeaponType
+                return IncludedInWeapon && Parent != null && RangeType == Parent.RangeType
                        && Parent.WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal)
                                                             && x.IncludedInWeapon
                                                             && x.Equipped
@@ -5743,7 +5660,7 @@ namespace Chummer.Backend.Equipment
                     yield return objGear;
                 }
             }
-            else if (UseSkill == "Throwing Weapons")
+            else if (Skill?.DictionaryKey == "Throwing Weapons")
             {
                 if (Damage.Contains("(f)"))
                 {
@@ -6609,7 +6526,7 @@ namespace Chummer.Backend.Equipment
                     intUseAGIBase = _objCharacter.AGI.TotalBase;
                 }
 
-                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
+                if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
                     intUseSTR += (blnForRange
                             ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR) +
                               ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR)
