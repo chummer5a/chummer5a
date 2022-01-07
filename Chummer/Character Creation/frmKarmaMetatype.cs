@@ -94,6 +94,8 @@ namespace Chummer
                 }
 
                 lstCategories.Sort(CompareListItems.CompareNames);
+                lstCategories.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+
                 cboCategory.BeginUpdate();
                 cboCategory.PopulateWithListItems(lstCategories);
                 // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
@@ -607,6 +609,64 @@ namespace Chummer
 
                 cmdOK.Enabled = false;
             }
+
+            if (objXmlMetatype.SelectSingleNode("category").InnerXml.EndsWith("Spirits", StringComparison.Ordinal))
+            {
+                if (!chkPossessionBased.Visible && !string.IsNullOrEmpty(_strCurrentPossessionMethod))
+                {
+                    chkPossessionBased.Checked = true;
+                    cboPossessionMethod.SelectedValue = _strCurrentPossessionMethod;
+                }
+                chkPossessionBased.Visible = true;
+                cboPossessionMethod.Visible = true;
+            }
+            else
+            {
+                chkPossessionBased.Visible = false;
+                chkPossessionBased.Checked = false;
+                cboPossessionMethod.Visible = false;
+            }
+
+            // If the Metatype has Force enabled, show the Force NUD.
+            string strEssMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax")?.Value ?? string.Empty;
+            int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
+            if (objXmlMetatype.SelectSingleNodeAndCacheExpression("forcecreature") != null || intPos != -1)
+            {
+                if (intPos != -1)
+                {
+                    if (intPos > 0)
+                    {
+                        --intPos;
+                        lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
+                        nudForce.Maximum = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
+                    }
+                    else
+                    {
+                        lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_D6");
+                        nudForce.Maximum = 6;
+                    }
+                }
+                else
+                {
+                    // TODO: Unhardcode whether Force is called "Force" or "Level"
+                    lblForceLabel.Text = LanguageManager.GetString(objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax")?.Value == "0" &&
+                                                                   objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax")?.Value == "0" &&
+                                                                   objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax")?.Value == "0" &&
+                                                                   objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax")?.Value == "0" &&
+                                                                   objXmlMetatype.SelectSingleNodeAndCacheExpression("magmin")?.Value.Contains('F') != true
+                        ? "String_Level"
+                        : "String_Force");
+                    nudForce.Maximum = 100;
+                }
+                lblForceLabel.Visible = true;
+                nudForce.Visible = true;
+            }
+            else
+            {
+                lblForceLabel.Visible = false;
+                nudForce.Visible = false;
+            }
+
             lblBODLabel.Visible = !string.IsNullOrEmpty(lblBOD.Text);
             lblAGILabel.Visible = !string.IsNullOrEmpty(lblAGI.Text);
             lblREALabel.Visible = !string.IsNullOrEmpty(lblREA.Text);
@@ -671,45 +731,6 @@ namespace Chummer
                     cboMetavariant.EndUpdate();
                 }
 
-                // If the Metatype has Force enabled, show the Force NUD.
-                string strEssMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax")?.Value ?? string.Empty;
-                int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
-                if (objXmlMetatype.SelectSingleNodeAndCacheExpression("forcecreature") != null || intPos != -1)
-                {
-                    if (intPos != -1)
-                    {
-                        if (intPos > 0)
-                        {
-                            --intPos;
-                            lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
-                            nudForce.Maximum = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
-                        }
-                        else
-                        {
-                            lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_D6");
-                            nudForce.Maximum = 6;
-                        }
-                    }
-                    else
-                    {
-                        // TODO: Unhardcode whether Force is called "Force" or "Level"
-                        lblForceLabel.Text = LanguageManager.GetString(objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax")?.Value == "0" &&
-                                                                       objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax")?.Value == "0" &&
-                                                                       objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax")?.Value == "0" &&
-                                                                       objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax")?.Value == "0" &&
-                                                                       objXmlMetatype.SelectSingleNodeAndCacheExpression("magmin")?.Value.Contains('F') != true
-                            ? "String_Level"
-                            : "String_Force");
-                        nudForce.Maximum = 100;
-                    }
-                    lblForceLabel.Visible = true;
-                    nudForce.Visible = true;
-                }
-                else
-                {
-                    lblForceLabel.Visible = false;
-                    nudForce.Visible = false;
-                }
                 lblMetavariantLabel.Visible = true;
                 cboMetavariant.Visible = true;
             }
@@ -738,14 +759,30 @@ namespace Chummer
         private void PopulateMetatypes()
         {
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedCategory))
+            string strSearchText       = txtSearch.Text;
+            string strFilter = string.Empty;
+            if (!string.IsNullOrEmpty(strSelectedCategory) || !string.IsNullOrEmpty(strSearchText))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstMetatypeItems))
                 {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    {
+                        sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                        if (!string.IsNullOrEmpty(strSelectedCategory) && strSelectedCategory != "Show All"
+                                                                       && (GlobalSettings.SearchInCategoryOnly
+                                                                           || strSearchText.Length == 0))
+                            sbdFilter.Append(" and category = ").Append(strSelectedCategory.CleanXPath());
+                        
+                        if (!string.IsNullOrEmpty(txtSearch.Text))
+                            sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearchText));
+                        
+                        if (sbdFilter.Length > 0)
+                            strFilter = '[' + sbdFilter.ToString() + ']';
+                    }
+
                     foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                                 "metatypes/metatype[category = " + strSelectedCategory.CleanXPath() + " and ("
-                                 + _objCharacter.Settings.BookXPath() + ")]"))
+                                 "metatypes/metatype" + strFilter))
                     {
                         string strId = xmlMetatype.SelectSingleNodeAndCacheExpression("id")?.Value;
                         if (!string.IsNullOrEmpty(strId))
@@ -787,23 +824,6 @@ namespace Chummer
 
                     lstMetatypes.EndUpdate();
                 }
-
-                if (strSelectedCategory.EndsWith("Spirits", StringComparison.Ordinal))
-                {
-                    if (!chkPossessionBased.Visible && !string.IsNullOrEmpty(_strCurrentPossessionMethod))
-                    {
-                        chkPossessionBased.Checked = true;
-                        cboPossessionMethod.SelectedValue = _strCurrentPossessionMethod;
-                    }
-                    chkPossessionBased.Visible = true;
-                    cboPossessionMethod.Visible = true;
-                }
-                else
-                {
-                    chkPossessionBased.Visible = false;
-                    chkPossessionBased.Checked = false;
-                    cboPossessionMethod.Visible = false;
-                }
             }
             else
             {
@@ -823,5 +843,10 @@ namespace Chummer
         }
 
         #endregion Custom Methods
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            PopulateMetatypes();
+        }
     }
 }

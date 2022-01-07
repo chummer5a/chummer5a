@@ -42,6 +42,7 @@ Application Changes:
 - When adding a new weapon mount in Career mode, messages about not having enough money and/or enough capacity for the created weapon mount now occur before the weapon mount creation window is closed instead of after, allowing users to remedy their mistakes without recreating the entire weapon mount a second time.
 - The character roster's Recent Characters list no longer gets doubly populated by entries that also exist in the Favorite Characters list whenever a character from that list is opened or closed. Fixes #4565.
 - Underbarrel weapons that come with their parent weapon now properly automatically inherit any smartgun features that also come built into their parent weapon. Fixes #4662.
+- Added a basic implementation of search for metatypes and critters using Point Buy. This will later be extended to include Priority options. Implements #4546
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
