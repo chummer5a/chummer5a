@@ -2337,22 +2337,15 @@ namespace Chummer.Backend.Equipment
                     strCategory = "Unarmed Combat";
                 }
 
-                string strUseSkill = Skill?.Name ?? string.Empty;
-
                 decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
                                                          strImprovedName: strCategory);
-                if (strCategory != strUseSkill)
+                string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
+                if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
                     decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
                                                              strImprovedName: strUseSkill);
                 if (strCategory.StartsWith("Cyberware "))
                     decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
                                                              strImprovedName: strCategory.TrimStartOnce("Cyberware ", true));
-                if (Skill?.IsExoticSkill == true)
-                {
-                    decImprove += ImprovementManager.ValueOf(_objCharacter,
-                                                             Improvement.ImprovementType.WeaponCategoryDV,
-                                                             strImprovedName: Skill.DictionaryKey);
-                }
 
                 // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                 // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
@@ -2364,7 +2357,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-                else if (Skill?.Name == "Unarmed Combat" && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                else if (strUseSkill == "Unarmed Combat" && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                 {
                     decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
                 }
