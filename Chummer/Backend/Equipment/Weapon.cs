@@ -2341,16 +2341,19 @@ namespace Chummer.Backend.Equipment
 
                 decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
                                                          strImprovedName: strCategory);
-                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
-                                                         strImprovedName: strUseSkill);
-                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
-                                                         strImprovedName: strCategory.TrimStartOnce("Cyberware "));
+                if (strCategory != strUseSkill)
+                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
+                                                             strImprovedName: strUseSkill);
+                if (strCategory.StartsWith("Cyberware "))
+                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
+                                                             strImprovedName: strCategory.TrimStartOnce("Cyberware ", true));
                 if (Skill?.IsExoticSkill == true)
                 {
-                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
-                                                             strImprovedName: "Exotic Melee Weapon (" + UseSkillSpec + ')');
-                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
-                                                             strImprovedName: "Exotic Ranged Weapon (" + UseSkillSpec + ')');
+                    decImprove += ImprovementManager.ValueOf(_objCharacter,
+                                                             Improvement.ImprovementType.WeaponCategoryDV,
+                                                             strImprovedName: (WeaponType == "melee"
+                                                                 ? "Exotic Melee Weapon ("
+                                                                 : "Exotic Ranged Weapon (") + UseSkillSpec + ')');
                 }
 
                 // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
