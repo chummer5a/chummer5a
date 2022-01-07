@@ -2351,9 +2351,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decImprove += ImprovementManager.ValueOf(_objCharacter,
                                                              Improvement.ImprovementType.WeaponCategoryDV,
-                                                             strImprovedName: (WeaponType == "melee"
-                                                                 ? "Exotic Melee Weapon ("
-                                                                 : "Exotic Ranged Weapon (") + UseSkillSpec + ')');
+                                                             strImprovedName: Skill.DictionaryKey);
                 }
 
                 // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
