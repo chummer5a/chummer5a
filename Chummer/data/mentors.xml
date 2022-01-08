@@ -2908,16 +2908,13 @@
     <mentor>
       <id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
       <name>Badger</name>
-      <advantage>All: 1 level of Perceptive is gained for free</advantage>
+      <advantage>All: 2 levels of Perceptive quality are gained for free</advantage>
       <disadvantage>Badger relentlessly guards his territory. Should enemies invade an area guarded by a follower, for instance a building, or steal an object under their protection, must succeed at a WIL + CHA (3) test to not immediately go after the culprits.</disadvantage>
       <bonus>
         <addqualities>
           <addquality>Perceptive</addquality>
+          <addquality>Perceptive</addquality>
         </addqualities>
-        <specificskill>
-          <name>Perception</name>
-          <bonus>2</bonus>
-        </specificskill>
       </bonus>
       <choices>
         <choice>
