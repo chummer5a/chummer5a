@@ -59,45 +59,50 @@ namespace Chummer
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
         {
             XmlNode xmlVehicleNode = _objVehicle.GetNode();
-            List<ListItem> lstSize;
             // Populate the Weapon Mount Category list.
             string strSizeFilter = "category = \"Size\" and " + _objCharacter.Settings.BookXPath();
             if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                 strSizeFilter += " and not(optionaldrone)";
-            using (XmlNodeList xmlSizeNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSize))
             {
-                lstSize = new List<ListItem>(xmlSizeNodeList?.Count ?? 0);
-                if (xmlSizeNodeList?.Count > 0)
+                using (XmlNodeList xmlSizeNodeList
+                       = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + ']'))
                 {
-                    foreach (XmlNode xmlSizeNode in xmlSizeNodeList)
+                    if (xmlSizeNodeList?.Count > 0)
                     {
-                        string strId = xmlSizeNode["id"]?.InnerText;
-                        if (string.IsNullOrEmpty(strId))
-                            continue;
-
-                        XmlNode xmlTestNode = xmlSizeNode.SelectSingleNode("forbidden/vehicledetails");
-                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        foreach (XmlNode xmlSizeNode in xmlSizeNodeList)
                         {
-                            // Assumes topmost parent is an AND node
-                            continue;
-                        }
+                            string strId = xmlSizeNode["id"]?.InnerText;
+                            if (string.IsNullOrEmpty(strId))
+                                continue;
 
-                        xmlTestNode = xmlSizeNode.SelectSingleNode("required/vehicledetails");
-                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            // Assumes topmost parent is an AND node
-                            continue;
-                        }
+                            XmlNode xmlTestNode = xmlSizeNode.SelectSingleNode("forbidden/vehicledetails");
+                            if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
 
-                        lstSize.Add(new ListItem(strId, xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown")));
+                            xmlTestNode = xmlSizeNode.SelectSingleNode("required/vehicledetails");
+                            if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
+
+                            lstSize.Add(new ListItem(
+                                            strId,
+                                            xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"]?.InnerText
+                                            ?? LanguageManager.GetString("String_Unknown")));
+                        }
                     }
                 }
-            }
 
-            cboSize.BeginUpdate();
-            cboSize.PopulateWithListItems(lstSize);
-            cboSize.Enabled = _blnAllowEditOptions && lstSize.Count > 1;
-            cboSize.EndUpdate();
+                cboSize.BeginUpdate();
+                cboSize.PopulateWithListItems(lstSize);
+                cboSize.Enabled = _blnAllowEditOptions && lstSize.Count > 1;
+                cboSize.EndUpdate();
+            }
 
             if (_objMount != null)
             {
@@ -120,7 +125,7 @@ namespace Chummer
             }
             if (cboSize.SelectedIndex == -1)
             {
-                if (lstSize.Count > 0)
+                if (cboSize.Items.Count > 0)
                     cboSize.SelectedIndex = 0;
             }
             else
@@ -852,45 +857,45 @@ namespace Chummer
             }
 
             XmlNode xmlVehicleNode = _objVehicle.GetNode();
-            List<ListItem> lstVisibility;
-            List<ListItem> lstFlexibility;
-            List<ListItem> lstControl;
-            // Populate the Weapon Mount Category list.
-            string strFilter = "category != \"Size\" and " + _objCharacter.Settings.BookXPath();
-            if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
-                strFilter += " and not(optionaldrone)";
-            using (XmlNodeList xmlWeaponMountOptionNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstVisibility))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFlexibility))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstControl))
             {
-                lstVisibility = new List<ListItem>(xmlWeaponMountOptionNodeList?.Count ?? 0);
-                lstFlexibility = new List<ListItem>(xmlWeaponMountOptionNodeList?.Count ?? 0);
-                lstControl = new List<ListItem>(xmlWeaponMountOptionNodeList?.Count ?? 0);
-                if (xmlWeaponMountOptionNodeList?.Count > 0)
+                // Populate the Weapon Mount Category list.
+                string strFilter = "category != \"Size\" and " + _objCharacter.Settings.BookXPath();
+                if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
+                    strFilter += " and not(optionaldrone)";
+                using (XmlNodeList xmlWeaponMountOptionNodeList
+                       = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + ']'))
                 {
-                    foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionNodeList)
+                    if (xmlWeaponMountOptionNodeList?.Count > 0)
                     {
-                        string strId = xmlWeaponMountOptionNode["id"]?.InnerText;
-                        if (string.IsNullOrEmpty(strId))
-                            continue;
-
-                        XmlNode xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("forbidden/vehicledetails");
-                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        foreach (XmlNode xmlWeaponMountOptionNode in xmlWeaponMountOptionNodeList)
                         {
-                            // Assumes topmost parent is an AND node
-                            continue;
-                        }
+                            string strId = xmlWeaponMountOptionNode["id"]?.InnerText;
+                            if (string.IsNullOrEmpty(strId))
+                                continue;
 
-                        xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("required/vehicledetails");
-                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            // Assumes topmost parent is an AND node
-                            continue;
-                        }
+                            XmlNode xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("forbidden/vehicledetails");
+                            if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
 
-                        string strName = xmlWeaponMountOptionNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-                        bool blnAddItem = true;
-                        switch (xmlWeaponMountOptionNode["category"]?.InnerText)
-                        {
-                            case "Visibility":
+                            xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("required/vehicledetails");
+                            if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
+
+                            string strName = xmlWeaponMountOptionNode["name"]?.InnerText
+                                             ?? LanguageManager.GetString("String_Unknown");
+                            bool blnAddItem = true;
+                            switch (xmlWeaponMountOptionNode["category"]?.InnerText)
+                            {
+                                case "Visibility":
                                 {
                                     XmlNodeList xmlNodeList = xmlForbiddenNode?.SelectNodes("visibility");
                                     if (xmlNodeList?.Count > 0)
@@ -923,11 +928,13 @@ namespace Chummer
                                     }
 
                                     if (blnAddItem)
-                                        lstVisibility.Add(new ListItem(strId, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
+                                        lstVisibility.Add(
+                                            new ListItem(
+                                                strId, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
                                 }
-                                break;
+                                    break;
 
-                            case "Flexibility":
+                                case "Flexibility":
                                 {
                                     XmlNodeList xmlNodeList = xmlForbiddenNode?.SelectNodes("flexibility");
                                     if (xmlNodeList?.Count > 0)
@@ -960,11 +967,13 @@ namespace Chummer
                                     }
 
                                     if (blnAddItem)
-                                        lstFlexibility.Add(new ListItem(strId, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
+                                        lstFlexibility.Add(
+                                            new ListItem(
+                                                strId, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
                                 }
-                                break;
+                                    break;
 
-                            case "Control":
+                                case "Control":
                                 {
                                     XmlNodeList xmlNodeList = xmlForbiddenNode?.SelectNodes("control");
                                     if (xmlNodeList?.Count > 0)
@@ -997,51 +1006,54 @@ namespace Chummer
                                     }
 
                                     if (blnAddItem)
-                                        lstControl.Add(new ListItem(strId, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
+                                        lstControl.Add(
+                                            new ListItem(
+                                                strId, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
                                 }
-                                break;
+                                    break;
 
-                            default:
-                                Utils.BreakIfDebug();
-                                break;
+                                default:
+                                    Utils.BreakIfDebug();
+                                    break;
+                            }
                         }
                     }
                 }
+
+                bool blnOldLoading = _blnLoading;
+                _blnLoading = true;
+                string strOldVisibility = cboVisibility.SelectedValue?.ToString();
+                string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
+                string strOldControl = cboControl.SelectedValue?.ToString();
+                cboVisibility.BeginUpdate();
+                cboVisibility.PopulateWithListItems(lstVisibility);
+                cboVisibility.Enabled = _blnAllowEditOptions && lstVisibility.Count > 1;
+                if (!string.IsNullOrEmpty(strOldVisibility))
+                    cboVisibility.SelectedValue = strOldVisibility;
+                if (cboVisibility.SelectedIndex == -1 && lstVisibility.Count > 0)
+                    cboVisibility.SelectedIndex = 0;
+                cboVisibility.EndUpdate();
+
+                cboFlexibility.BeginUpdate();
+                cboFlexibility.PopulateWithListItems(lstFlexibility);
+                cboFlexibility.Enabled = _blnAllowEditOptions && lstFlexibility.Count > 1;
+                if (!string.IsNullOrEmpty(strOldFlexibility))
+                    cboFlexibility.SelectedValue = strOldFlexibility;
+                if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
+                    cboFlexibility.SelectedIndex = 0;
+                cboFlexibility.EndUpdate();
+
+                cboControl.BeginUpdate();
+                cboControl.PopulateWithListItems(lstControl);
+                cboControl.Enabled = _blnAllowEditOptions && lstControl.Count > 1;
+                if (!string.IsNullOrEmpty(strOldControl))
+                    cboControl.SelectedValue = strOldControl;
+                if (cboControl.SelectedIndex == -1 && lstControl.Count > 0)
+                    cboControl.SelectedIndex = 0;
+                cboControl.EndUpdate();
+
+                _blnLoading = blnOldLoading;
             }
-
-            bool blnOldLoading = _blnLoading;
-            _blnLoading = true;
-            string strOldVisibility = cboVisibility.SelectedValue?.ToString();
-            string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
-            string strOldControl = cboControl.SelectedValue?.ToString();
-            cboVisibility.BeginUpdate();
-            cboVisibility.PopulateWithListItems(lstVisibility);
-            cboVisibility.Enabled = _blnAllowEditOptions && lstVisibility.Count > 1;
-            if (!string.IsNullOrEmpty(strOldVisibility))
-                cboVisibility.SelectedValue = strOldVisibility;
-            if (cboVisibility.SelectedIndex == -1 && lstVisibility.Count > 0)
-                cboVisibility.SelectedIndex = 0;
-            cboVisibility.EndUpdate();
-
-            cboFlexibility.BeginUpdate();
-            cboFlexibility.PopulateWithListItems(lstFlexibility);
-            cboFlexibility.Enabled = _blnAllowEditOptions && lstFlexibility.Count > 1;
-            if (!string.IsNullOrEmpty(strOldFlexibility))
-                cboFlexibility.SelectedValue = strOldFlexibility;
-            if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
-                cboFlexibility.SelectedIndex = 0;
-            cboFlexibility.EndUpdate();
-
-            cboControl.BeginUpdate();
-            cboControl.PopulateWithListItems(lstControl);
-            cboControl.Enabled = _blnAllowEditOptions && lstControl.Count > 1;
-            if (!string.IsNullOrEmpty(strOldControl))
-                cboControl.SelectedValue = strOldControl;
-            if (cboControl.SelectedIndex == -1 && lstControl.Count > 0)
-                cboControl.SelectedIndex = 0;
-            cboControl.EndUpdate();
-
-            _blnLoading = blnOldLoading;
         }
 
         private void lblSource_Click(object sender, EventArgs e)

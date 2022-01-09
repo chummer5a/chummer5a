@@ -128,21 +128,25 @@ namespace Chummer
             }
 
             // Retrieve the list of Kits for the selected Category.
-            XPathNodeIterator xmlPacksKits = _xmlBaseChummerNode.Select("packs/pack[" + strFilter + "]");
-            List<ListItem> lstKit = new List<ListItem>(xmlPacksKits.Count);
-            foreach (XPathNavigator objXmlPack in xmlPacksKits)
+            XPathNodeIterator xmlPacksKits = _xmlBaseChummerNode.Select("packs/pack[" + strFilter + ']');
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstKit))
             {
-                string strName = objXmlPack.SelectSingleNodeAndCacheExpression("name")?.Value;
-                // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
-                lstKit.Add(new ListItem(strName + '<' + objXmlPack.SelectSingleNodeAndCacheExpression("category")?.Value, objXmlPack.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-            }
-            lstKit.Sort(CompareListItems.CompareNames);
-            lstKits.BeginUpdate();
-            lstKits.PopulateWithListItems(lstKit);
-            lstKits.EndUpdate();
+                foreach (XPathNavigator objXmlPack in xmlPacksKits)
+                {
+                    string strName = objXmlPack.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
+                    lstKit.Add(new ListItem(
+                                   strName + '<' + objXmlPack.SelectSingleNodeAndCacheExpression("category")?.Value,
+                                   objXmlPack.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                }
 
-            if (lstKit.Count == 0)
-                treContents.Nodes.Clear();
+                lstKit.Sort(CompareListItems.CompareNames);
+                lstKits.BeginUpdate();
+                lstKits.PopulateWithListItems(lstKit);
+                lstKits.EndUpdate();
+                if (lstKit.Count == 0)
+                    treContents.Nodes.Clear();
+            }
 
             cmdDelete.Visible = false;
         }

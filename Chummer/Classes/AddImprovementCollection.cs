@@ -481,40 +481,46 @@ namespace Chummer.Classes
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlTraditionsBaseChummerNode =
                     _objCharacter.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                List<ListItem> lstTraditions = new List<ListItem>(30);
-                if (xmlTraditionsBaseChummerNode != null)
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstTraditions))
                 {
-                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                        "traditions/tradition[" + _objCharacter.Settings.BookXPath() + "]"))
+                    if (xmlTraditionsBaseChummerNode != null)
                     {
-                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstTraditions.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                    }
-                }
-
-                if (lstTraditions.Count > 1)
-                {
-                    lstTraditions.Sort(CompareListItems.CompareNames);
-                }
-
-                using (frmSelectItem frmPickItem = new frmSelectItem
-                {
-                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
-                    AllowAutoSelect = false
-                })
-                {
-                    frmPickItem.SetDropdownItemsMode(lstTraditions);
-                    frmPickItem.ShowDialog(Program.MainForm);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    {
-                        throw new AbortedException();
+                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                     "traditions/tradition[" + _objCharacter.Settings.BookXPath() + ']'))
+                        {
+                            string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstTraditions.Add(new ListItem(
+                                                      xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value
+                                                      ?? strName,
+                                                      xmlTradition.SelectSingleNodeAndCacheExpression("translate")
+                                                                  ?.Value ?? strName));
+                        }
                     }
 
-                    SelectedValue = frmPickItem.SelectedName;
+                    if (lstTraditions.Count > 1)
+                    {
+                        lstTraditions.Sort(CompareListItems.CompareNames);
+                    }
+
+                    using (frmSelectItem frmPickItem = new frmSelectItem
+                           {
+                               SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                               AllowAutoSelect = false
+                           })
+                    {
+                        frmPickItem.SetDropdownItemsMode(lstTraditions);
+                        frmPickItem.ShowDialog(Program.MainForm);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        SelectedValue = frmPickItem.SelectedName;
+                    }
                 }
             }
 
@@ -1538,8 +1544,8 @@ namespace Chummer.Classes
                 // Open the Spells XML file and locate the selected piece.
                 XmlDocument objXmlDocument = _objCharacter.LoadData("spells.xml");
 
-                node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + frmPickSpell.SelectedSpell.CleanXPath() + "]") ??
-                       objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = " + frmPickSpell.SelectedSpell.CleanXPath() + "]");
+                node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + frmPickSpell.SelectedSpell.CleanXPath() + ']') ??
+                       objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = " + frmPickSpell.SelectedSpell.CleanXPath() + ']');
             }
 
             if (node == null)
@@ -1597,7 +1603,7 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             XmlDocument objXmlSpellDocument = _objCharacter.LoadData("spells.xml");
 
-            XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = " + bonusNode.InnerText.CleanXPath() + "]");
+            XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = " + bonusNode.InnerText.CleanXPath() + ']');
 
             if (node == null)
                 throw new AbortedException();
@@ -1672,8 +1678,8 @@ namespace Chummer.Classes
             // Open the ComplexForms XML file and locate the selected piece.
             XmlDocument objXmlDocument = _objCharacter.LoadData("complexforms.xml");
 
-            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = " + strSelectedComplexForm.CleanXPath() + "]") ??
-                           objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + strSelectedComplexForm.CleanXPath() + "]");
+            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = " + strSelectedComplexForm.CleanXPath() + ']') ??
+                           objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + strSelectedComplexForm.CleanXPath() + ']');
             if (node == null)
                 throw new AbortedException();
 
@@ -1710,7 +1716,7 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             XmlDocument objXmlComplexFormDocument = _objCharacter.LoadData("complexforms.xml");
 
-            XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + bonusNode.InnerText.CleanXPath() + "]");
+            XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + bonusNode.InnerText.CleanXPath() + ']');
 
             if (node == null)
                 throw new AbortedException();
@@ -1843,7 +1849,7 @@ namespace Chummer.Classes
 
             Log.Info("Adding Weapon");
             string strName = bonusNode["name"]?.InnerText ?? throw new AbortedException();
-            XmlNode node = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + "]") ?? throw new AbortedException();
+            XmlNode node = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + ']') ?? throw new AbortedException();
 
             // Create the new piece of Gear.
             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -1934,8 +1940,8 @@ namespace Chummer.Classes
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
-                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = " + ForcedValue.CleanXPath() + "]")
-                             ?? xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + ForcedValue.CleanXPath() + "]");
+                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = " + ForcedValue.CleanXPath() + ']')
+                             ?? xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + ForcedValue.CleanXPath() + ']');
             }
 
             if (xmlProgram == null)
@@ -1951,7 +1957,7 @@ namespace Chummer.Classes
                         throw new AbortedException();
                     }
 
-                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.SelectedProgram.CleanXPath() + "]");
+                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.SelectedProgram.CleanXPath() + ']');
                 }
             }
 
@@ -2012,8 +2018,8 @@ namespace Chummer.Classes
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
-                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = " + ForcedValue.CleanXPath() + "]")
-                             ?? xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + ForcedValue.CleanXPath() + "]");
+                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = " + ForcedValue.CleanXPath() + ']')
+                             ?? xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + ForcedValue.CleanXPath() + ']');
             }
 
             if (xmlProgram == null)
@@ -2029,7 +2035,7 @@ namespace Chummer.Classes
                         throw new AbortedException();
                     }
 
-                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.SelectedProgram.CleanXPath() + "]");
+                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.SelectedProgram.CleanXPath() + ']');
                 }
             }
 
@@ -2817,7 +2823,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("martialart");
             Log.Info("martialart = " + bonusNode.OuterXml);
-            XmlNode objXmlArt = _objCharacter.LoadData("martialarts.xml").SelectSingleNode("/chummer/martialarts/martialart[name = " + bonusNode.InnerText.CleanXPath() + "]");
+            XmlNode objXmlArt = _objCharacter.LoadData("martialarts.xml").SelectSingleNode("/chummer/martialarts/martialart[name = " + bonusNode.InnerText.CleanXPath() + ']');
 
             MartialArt objMartialArt = new MartialArt(_objCharacter);
             objMartialArt.Create(objXmlArt);
@@ -3733,46 +3739,57 @@ namespace Chummer.Classes
                     foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
                     {
                         // Display the Select Category window and record which Category was selected.
-                        XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category");
-                        List<ListItem> lstGeneralItems = new List<ListItem>(xmlCategoryList?.Count ?? 0);
-                        if (xmlCategoryList?.Count > 0)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstGeneralItems))
                         {
-                            foreach (XmlNode objXmlCategory in xmlCategoryList)
+                            using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
                             {
-                                string strInnerText = objXmlCategory.InnerText;
-                                lstGeneralItems.Add(new ListItem(strInnerText, _objCharacter.TranslateExtra(strInnerText, GlobalSettings.Language, "weapons.xml")));
-                            }
-                        }
-
-                        using (frmSelectItem frmPickCategory = new frmSelectItem
-                        {
-                            Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
-                                : LanguageManager.GetString("Title_SelectWeaponCategory")
-                        })
-                        {
-                            frmPickCategory.SetGeneralItemsMode(lstGeneralItems);
-
-                            Log.Info("_strForcedValue = " + ForcedValue);
-
-                            if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal) || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
-                                ForcedValue = string.Empty;
-
-                            if (!string.IsNullOrEmpty(ForcedValue))
-                            {
-                                frmPickCategory.Opacity = 0;
-                                frmPickCategory.ForceItem(ForcedValue);
+                                if (xmlCategoryList?.Count > 0)
+                                {
+                                    foreach (XmlNode objXmlCategory in xmlCategoryList)
+                                    {
+                                        string strInnerText = objXmlCategory.InnerText;
+                                        lstGeneralItems.Add(new ListItem(strInnerText,
+                                                                         _objCharacter.TranslateExtra(
+                                                                             strInnerText, GlobalSettings.Language,
+                                                                             "weapons.xml")));
+                                    }
+                                }
                             }
 
-                            frmPickCategory.ShowDialog(Program.MainForm);
-
-                            // Make sure the dialogue window was not canceled.
-                            if (frmPickCategory.DialogResult == DialogResult.Cancel)
+                            using (frmSelectItem frmPickCategory = new frmSelectItem
+                                   {
+                                       Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                           ? string.Format(GlobalSettings.CultureInfo,
+                                                           LanguageManager.GetString(
+                                                               "String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                                           : LanguageManager.GetString("Title_SelectWeaponCategory")
+                                   })
                             {
-                                throw new AbortedException();
-                            }
+                                frmPickCategory.SetGeneralItemsMode(lstGeneralItems);
 
-                            SelectedValue = frmPickCategory.SelectedItem;
+                                Log.Info("_strForcedValue = " + ForcedValue);
+
+                                if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
+                                    || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
+                                    ForcedValue = string.Empty;
+
+                                if (!string.IsNullOrEmpty(ForcedValue))
+                                {
+                                    frmPickCategory.Opacity = 0;
+                                    frmPickCategory.ForceItem(ForcedValue);
+                                }
+
+                                frmPickCategory.ShowDialog(Program.MainForm);
+
+                                // Make sure the dialogue window was not canceled.
+                                if (frmPickCategory.DialogResult == DialogResult.Cancel)
+                                {
+                                    throw new AbortedException();
+                                }
+
+                                SelectedValue = frmPickCategory.SelectedItem;
+                            }
                         }
 
                         Log.Info("strSelected = " + SelectedValue);
@@ -3812,60 +3829,66 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("weaponspecificdice");
             Log.Info("weaponspecificdice = " + bonusNode.OuterXml);
-            List<ListItem> lstGeneralItems = new List<ListItem>(_objCharacter.Weapons.Count);
-            string strType = bonusNode.Attributes?["type"]?.InnerText;
-            if (!string.IsNullOrEmpty(strType))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGeneralItems))
             {
-                foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
-                    weapon.RangeType == strType))
+                string strType = bonusNode.Attributes?["type"]?.InnerText;
+                if (!string.IsNullOrEmpty(strType))
                 {
-                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
+                    foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
+                                                                                 weapon.RangeType == strType))
+                    {
+                        lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
+                    }
                 }
+                else
+                {
+                    foreach (Weapon objWeapon in _objCharacter.Weapons)
+                    {
+                        lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
+                    }
+                }
+
+                Weapon objSelectedWeapon;
+                using (frmSelectItem frmPickWeapon = new frmSelectItem
+                       {
+                           Description = !string.IsNullOrEmpty(_strFriendlyName)
+                               ? string.Format(GlobalSettings.CultureInfo,
+                                               LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
+                                               _strFriendlyName)
+                               : LanguageManager.GetString("Title_SelectWeapon")
+                       })
+                {
+                    frmPickWeapon.SetGeneralItemsMode(lstGeneralItems);
+                    Log.Info("_strForcedValue = " + ForcedValue);
+                    if (!string.IsNullOrEmpty(ForcedValue))
+                    {
+                        frmPickWeapon.Opacity = 0;
+                    }
+
+                    frmPickWeapon.ForceItem(ForcedValue);
+                    frmPickWeapon.ShowDialog(Program.MainForm);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    objSelectedWeapon
+                        = _objCharacter.Weapons.FirstOrDefault(
+                            weapon => weapon.InternalId == frmPickWeapon.SelectedItem);
+                    if (objSelectedWeapon == null)
+                    {
+                        throw new AbortedException();
+                    }
+                }
+
+                SelectedValue = objSelectedWeapon.Name;
+                Log.Info("Calling CreateImprovement");
+                CreateImprovement(objSelectedWeapon.InternalId, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.WeaponSpecificDice, _strUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
             }
-            else
-            {
-                foreach (Weapon objWeapon in _objCharacter.Weapons)
-                {
-                    lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
-                }
-            }
-
-            Weapon objSelectedWeapon;
-            using (frmSelectItem frmPickWeapon = new frmSelectItem
-            {
-                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
-                    : LanguageManager.GetString("Title_SelectWeapon")
-            })
-            {
-                frmPickWeapon.SetGeneralItemsMode(lstGeneralItems);
-                Log.Info("_strForcedValue = " + ForcedValue);
-                if (!string.IsNullOrEmpty(ForcedValue))
-                {
-                    frmPickWeapon.Opacity = 0;
-                }
-
-                frmPickWeapon.ForceItem(ForcedValue);
-                frmPickWeapon.ShowDialog(Program.MainForm);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickWeapon.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(weapon => weapon.InternalId == frmPickWeapon.SelectedItem);
-                if (objSelectedWeapon == null)
-                {
-                    throw new AbortedException();
-                }
-            }
-
-            SelectedValue = objSelectedWeapon.Name;
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(objSelectedWeapon.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.WeaponSpecificDice, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
         // Check for Mentor Spirit bonuses.
@@ -3888,7 +3911,7 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.SelectedMentor.CleanXPath() + "]");
+                XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.SelectedMentor.CleanXPath() + ']');
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
@@ -3933,7 +3956,7 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.SelectedMentor.CleanXPath() + "]");
+                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.SelectedMentor.CleanXPath() + ']');
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
@@ -4208,7 +4231,7 @@ namespace Chummer.Classes
                     // Check if the character already has this power
                     Log.Info("strSelection = " + strSelection);
                     Power objNewPower = new Power(_objCharacter);
-                    XmlNode objXmlPower = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[name = " + strPowerName.CleanXPath() + "]");
+                    XmlNode objXmlPower = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[name = " + strPowerName.CleanXPath() + ']');
                     if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
                         throw new AbortedException();
 
@@ -4291,7 +4314,7 @@ namespace Chummer.Classes
                                     throw new AbortedException();
                                 }
 
-                                objXmlPower = xmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]");
+                                objXmlPower = xmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + ']');
                             }
 
                             // If no, add the power and mark it free or give it free levels
@@ -4344,7 +4367,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlNode objXmlSelectedArt = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[name = " + bonusNode.InnerText.CleanXPath() + "]");
+            XmlNode objXmlSelectedArt = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[name = " + bonusNode.InnerText.CleanXPath() + ']');
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
@@ -4371,52 +4394,70 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = _objCharacter.LoadData("metamagic.xml");
             XmlNode objXmlSelectedArt;
-            XmlNodeList xmlArtList = bonusNode.SelectNodes("art");
-            if (xmlArtList?.Count > 0)
+            using (XmlNodeList xmlArtList = bonusNode.SelectNodes("art"))
             {
-                List<ListItem> lstArts = new List<ListItem>(xmlArtList.Count);
-                using (frmSelectItem frmPickItem = new frmSelectItem())
+                if (xmlArtList?.Count > 0)
                 {
-                    foreach (XmlNode objXmlAddArt in xmlArtList)
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstArts))
                     {
-                        string strLoopName = objXmlAddArt.InnerText;
-                        XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = " + strLoopName.CleanXPath() + "]");
-                        // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                        if (objXmlArt != null && objXmlAddArt.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        using (frmSelectItem frmPickItem = new frmSelectItem())
                         {
-                            lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText, objXmlArt["translate"]?.InnerText ?? strLoopName));
+                            foreach (XmlNode objXmlAddArt in xmlArtList)
+                            {
+                                string strLoopName = objXmlAddArt.InnerText;
+                                XmlNode objXmlArt
+                                    = objXmlDocument.SelectSingleNode(
+                                        "/chummer/arts/art[name = " + strLoopName.CleanXPath() + ']');
+                                // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                                if (objXmlArt != null && objXmlAddArt.CreateNavigator()
+                                                                     .RequirementsMet(
+                                                                         _objCharacter, string.Empty, string.Empty,
+                                                                         _strFriendlyName))
+                                {
+                                    lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText,
+                                                             objXmlArt["translate"]?.InnerText ?? strLoopName));
+                                }
+                            }
+
+                            if (lstArts.Count == 0)
+                            {
+                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                              LanguageManager.GetString(
+                                                                                  "Message_Improvement_EmptySelectionListNamed"),
+                                                                              SourceName));
+                                throw new AbortedException();
+                            }
+
+                            frmPickItem.SetGeneralItemsMode(lstArts);
+                            frmPickItem.ShowDialog(Program.MainForm);
+                            // Don't do anything else if the form was canceled.
+                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                throw new AbortedException();
+
+                            objXmlSelectedArt
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/arts/art[id = " + frmPickItem.SelectedItem.CleanXPath() + ']');
                         }
                     }
 
-                    if (lstArts.Count == 0)
-                    {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
+                    string strSelectedName = objXmlSelectedArt?["name"]?.InnerText;
+                    if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
-                    }
-
-                    frmPickItem.SetGeneralItemsMode(lstArts);
-                    frmPickItem.ShowDialog(Program.MainForm);
-                    // Don't do anything else if the form was canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                        throw new AbortedException();
-
-                    objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = " + frmPickItem.SelectedItem.CleanXPath() + "]");
                 }
-
-                string strSelectedName = objXmlSelectedArt?["name"]?.InnerText;
-                if (string.IsNullOrEmpty(strSelectedName))
-                    throw new AbortedException();
-            }
-            else
-            {
-                using (frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art))
+                else
                 {
-                    frmPickArt.ShowDialog(Program.MainForm);
-                    // Don't do anything else if the form was canceled.
-                    if (frmPickArt.DialogResult == DialogResult.Cancel)
-                        throw new AbortedException();
+                    using (frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art))
+                    {
+                        frmPickArt.ShowDialog(Program.MainForm);
+                        // Don't do anything else if the form was canceled.
+                        if (frmPickArt.DialogResult == DialogResult.Cancel)
+                            throw new AbortedException();
 
-                    objXmlSelectedArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
+                        objXmlSelectedArt
+                            = objXmlDocument.SelectSingleNode(
+                                "/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                    }
                 }
             }
 
@@ -4436,7 +4477,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlNode objXmlSelectedMetamagic = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = " + bonusNode.InnerText.CleanXPath() + "]");
+            XmlNode objXmlSelectedMetamagic = _objCharacter.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[name = " + bonusNode.InnerText.CleanXPath() + ']');
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
                 objXmlSelectedMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName) == true)
@@ -4464,61 +4505,78 @@ namespace Chummer.Classes
             XmlDocument objXmlDocument = _objCharacter.LoadData("metamagic.xml");
             string strForceValue = string.Empty;
             XmlNode objXmlSelectedMetamagic;
-            XmlNodeList xmlMetamagicList = bonusNode.SelectNodes("metamagic");
-            if (xmlMetamagicList?.Count > 0)
+            using (XmlNodeList xmlMetamagicList = bonusNode.SelectNodes("metamagic"))
             {
-                List<ListItem> lstMetamagics = new List<ListItem>(xmlMetamagicList.Count);
-                using (frmSelectItem frmPickItem = new frmSelectItem())
+                if (xmlMetamagicList?.Count > 0)
                 {
-                    foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstMetamagics))
                     {
-                        string strLoopName = objXmlAddMetamagic.InnerText;
-                        XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + "]");
-                        // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                        if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        using (frmSelectItem frmPickItem = new frmSelectItem())
                         {
-                            lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText, objXmlMetamagic["translate"]?.InnerText ?? strLoopName));
+                            foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
+                            {
+                                string strLoopName = objXmlAddMetamagic.InnerText;
+                                XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode(
+                                    "/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + ']');
+                                // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                                if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator()
+                                        .RequirementsMet(
+                                            _objCharacter, string.Empty,
+                                            string.Empty, _strFriendlyName))
+                                {
+                                    lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText,
+                                                                   objXmlMetamagic["translate"]?.InnerText
+                                                                   ?? strLoopName));
+                                }
+                            }
+
+                            if (lstMetamagics.Count == 0)
+                            {
+                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                              LanguageManager.GetString(
+                                                                                  "Message_Improvement_EmptySelectionListNamed"),
+                                                                              SourceName));
+                                throw new AbortedException();
+                            }
+
+                            frmPickItem.SetGeneralItemsMode(lstMetamagics);
+                            frmPickItem.ShowDialog(Program.MainForm);
+                            // Don't do anything else if the form was canceled.
+                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                throw new AbortedException();
+
+                            objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode(
+                                "/chummer/metamagics/metamagic[id = " + frmPickItem.SelectedItem.CleanXPath() + ']');
                         }
                     }
 
-                    if (lstMetamagics.Count == 0)
-                    {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
+                    string strSelectedName = objXmlSelectedMetamagic?["name"]?.InnerText;
+                    if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
-                    }
-
-                    frmPickItem.SetGeneralItemsMode(lstMetamagics);
-                    frmPickItem.ShowDialog(Program.MainForm);
-                    // Don't do anything else if the form was canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                        throw new AbortedException();
-
-                    objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickItem.SelectedItem.CleanXPath() + "]");
-                }
-
-                string strSelectedName = objXmlSelectedMetamagic?["name"]?.InnerText;
-                if (string.IsNullOrEmpty(strSelectedName))
-                    throw new AbortedException();
-                foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
-                {
-                    if (strSelectedName == objXmlAddMetamagic.InnerText)
+                    foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
                     {
-                        strForceValue = objXmlAddMetamagic.Attributes?["select"]?.InnerText ?? string.Empty;
-                        break;
+                        if (strSelectedName == objXmlAddMetamagic.InnerText)
+                        {
+                            strForceValue = objXmlAddMetamagic.Attributes?["select"]?.InnerText ?? string.Empty;
+                            break;
+                        }
                     }
                 }
-            }
-            else
-            {
-                InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
-                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                else
                 {
-                    frmPickMetamagic.ShowDialog(Program.MainForm);
-                    // Don't do anything else if the form was canceled.
-                    if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
-                        throw new AbortedException();
+                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
+                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                    {
+                        frmPickMetamagic.ShowDialog(Program.MainForm);
+                        // Don't do anything else if the form was canceled.
+                        if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                            throw new AbortedException();
 
-                    objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
+                        objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode(
+                            "/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath()
+                                                                  + ']');
+                    }
                 }
             }
 
@@ -4539,7 +4597,7 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = _objCharacter.LoadData("echoes.xml");
-            XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = " + bonusNode.InnerText.CleanXPath() + "]");
+            XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = " + bonusNode.InnerText.CleanXPath() + ']');
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
@@ -4568,36 +4626,52 @@ namespace Chummer.Classes
             XmlDocument objXmlDocument = _objCharacter.LoadData("echoes.xml");
             string strForceValue = string.Empty;
             XmlNode xmlSelectedEcho;
-            XmlNodeList xmlEchoList = bonusNode.SelectNodes("echo");
-            if (xmlEchoList?.Count > 0)
+            using (XmlNodeList xmlEchoList = bonusNode.SelectNodes("echo"))
             {
-                List<ListItem> lstEchoes = new List<ListItem>(xmlEchoList.Count);
-                using (frmSelectItem frmPickItem = new frmSelectItem())
+                if (xmlEchoList?.Count > 0)
                 {
-                    foreach (XmlNode objXmlAddEcho in xmlEchoList)
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstEchoes))
                     {
-                        string strLoopName = objXmlAddEcho.InnerText;
-                        XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + "]");
-                        // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                        if (objXmlEcho != null && objXmlAddEcho.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        using (frmSelectItem frmPickItem = new frmSelectItem())
                         {
-                            lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText, objXmlEcho["translate"]?.InnerText ?? strLoopName));
+                            foreach (XmlNode objXmlAddEcho in xmlEchoList)
+                            {
+                                string strLoopName = objXmlAddEcho.InnerText;
+                                XmlNode objXmlEcho = objXmlDocument.SelectSingleNode(
+                                    "/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + ']');
+                                // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                                if (objXmlEcho != null && objXmlAddEcho.CreateNavigator()
+                                                                       .RequirementsMet(
+                                                                           _objCharacter, string.Empty, string.Empty,
+                                                                           _strFriendlyName))
+                                {
+                                    lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText,
+                                                               objXmlEcho["translate"]?.InnerText ?? strLoopName));
+                                }
+                            }
+
+                            if (lstEchoes.Count == 0)
+                            {
+                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                              LanguageManager.GetString(
+                                                                                  "Message_Improvement_EmptySelectionListNamed"),
+                                                                              SourceName));
+                                throw new AbortedException();
+                            }
+
+                            frmPickItem.SetGeneralItemsMode(lstEchoes);
+                            frmPickItem.ShowDialog(Program.MainForm);
+                            // Don't do anything else if the form was canceled.
+                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                throw new AbortedException();
+
+                            xmlSelectedEcho
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/echoes/echo[id = " + frmPickItem.SelectedItem.CleanXPath() + ']');
                         }
                     }
 
-                    if (lstEchoes.Count == 0)
-                    {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
-                        throw new AbortedException();
-                    }
-
-                    frmPickItem.SetGeneralItemsMode(lstEchoes);
-                    frmPickItem.ShowDialog(Program.MainForm);
-                    // Don't do anything else if the form was canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                        throw new AbortedException();
-
-                    xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = " + frmPickItem.SelectedItem.CleanXPath() + "]");
                     string strSelectedName = xmlSelectedEcho?["name"]?.InnerText;
                     if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
@@ -4610,18 +4684,19 @@ namespace Chummer.Classes
                         }
                     }
                 }
-            }
-            else
-            {
-                InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
-                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                else
                 {
-                    frmPickMetamagic.ShowDialog(Program.MainForm);
-                    // Don't do anything else if the form was canceled.
-                    if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
-                        throw new AbortedException();
+                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1, Technomancer = true};
+                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                    {
+                        frmPickMetamagic.ShowDialog(Program.MainForm);
+                        // Don't do anything else if the form was canceled.
+                        if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                            throw new AbortedException();
 
-                    xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + "]");
+                        xmlSelectedEcho = objXmlDocument.SelectSingleNode(
+                            "/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
+                    }
                 }
             }
 
@@ -5478,35 +5553,39 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectsprite");
             Log.Info("selectsprite = " + bonusNode.OuterXml);
-            List<ListItem> lstCritters = new List<ListItem>(10);
-            using (XmlNodeList objXmlNodeList = _objCharacter.LoadData("critters.xml").SelectNodes("/chummer/metatypes/metatype[contains(category, \"Sprites\")]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
             {
-                if (objXmlNodeList != null)
+                using (XmlNodeList objXmlNodeList = _objCharacter.LoadData("critters.xml")
+                                                                 .SelectNodes(
+                                                                     "/chummer/metatypes/metatype[contains(category, \"Sprites\")]"))
                 {
-                    foreach (XmlNode objXmlNode in objXmlNodeList)
+                    if (objXmlNodeList != null)
                     {
-                        string strName = objXmlNode["name"]?.InnerText;
-                        lstCritters.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
+                        foreach (XmlNode objXmlNode in objXmlNodeList)
+                        {
+                            string strName = objXmlNode["name"]?.InnerText;
+                            lstCritters.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
+                        }
                     }
                 }
-            }
 
-            using (frmSelectItem frmPickItem = new frmSelectItem())
-            {
-                frmPickItem.SetGeneralItemsMode(lstCritters);
-                frmPickItem.ShowDialog(Program.MainForm);
-
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
-                    throw new AbortedException();
+                    frmPickItem.SetGeneralItemsMode(lstCritters);
+                    frmPickItem.ShowDialog(Program.MainForm);
+
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedItem;
+
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.AddSprite,
+                                      _strUnique);
                 }
-
-                SelectedValue = frmPickItem.SelectedItem;
-
-                Log.Info("Calling CreateImprovement");
-                CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.AddSprite,
-                    _strUnique);
             }
         }
 
@@ -5584,49 +5663,56 @@ namespace Chummer.Classes
                     objXmlDocument.Select("/chummer/armors/armor[(" + _objCharacter.Settings.BookXPath() + ") and mods[name = 'Custom Fit']]");
             }
 
-            //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(filter) + "]");
+            //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(filter) + ']');
 
-            List<ListItem> lstArmors = new List<ListItem>(objXmlNodeList.Count);
-            if (objXmlNodeList.Count > 0)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
             {
-                foreach (XPathNavigator objNode in objXmlNodeList)
+                if (objXmlNodeList.Count > 0)
                 {
-                    string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                    if (!string.IsNullOrEmpty(strName))
-                        lstArmors.Add(new ListItem(strName, objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    foreach (XPathNavigator objNode in objXmlNodeList)
+                    {
+                        string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstArmors.Add(new ListItem(
+                                              strName,
+                                              objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                              ?? strName));
+                    }
                 }
-            }
 
-            if (lstArmors.Count > 0)
-            {
-                using (frmSelectItem frmPickItem = new frmSelectItem
+                if (lstArmors.Count > 0)
                 {
-                    Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
-                })
-                {
-                    frmPickItem.SetGeneralItemsMode(lstArmors);
-
-                    Log.Info("_strLimitSelection = " + LimitSelection);
-                    Log.Info("_strForcedValue = " + ForcedValue);
-
-                    if (!string.IsNullOrEmpty(LimitSelection))
+                    using (frmSelectItem frmPickItem = new frmSelectItem
+                           {
+                               Description = string.Format(GlobalSettings.CultureInfo,
+                                                           LanguageManager.GetString("String_Improvement_SelectText"),
+                                                           _strFriendlyName)
+                           })
                     {
-                        frmPickItem.ForceItem(LimitSelection);
-                        frmPickItem.Opacity = 0;
+                        frmPickItem.SetGeneralItemsMode(lstArmors);
+
+                        Log.Info("_strLimitSelection = " + LimitSelection);
+                        Log.Info("_strForcedValue = " + ForcedValue);
+
+                        if (!string.IsNullOrEmpty(LimitSelection))
+                        {
+                            frmPickItem.ForceItem(LimitSelection);
+                            frmPickItem.Opacity = 0;
+                        }
+
+                        frmPickItem.ShowDialog(Program.MainForm);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        SelectedValue = frmPickItem.SelectedItem;
+
+                        Log.Info("_strSelectedValue = " + SelectedValue);
+                        Log.Info("SelectedValue = " + frmPickItem.SelectedItem);
                     }
-
-                    frmPickItem.ShowDialog(Program.MainForm);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    {
-                        throw new AbortedException();
-                    }
-
-                    SelectedValue = frmPickItem.SelectedItem;
-
-                    Log.Info("_strSelectedValue = " + SelectedValue);
-                    Log.Info("SelectedValue = " + frmPickItem.SelectedItem);
                 }
             }
         }
@@ -5647,48 +5733,54 @@ namespace Chummer.Classes
                 ? "/chummer/cyberwares/cyberware[(category = " + strCategory.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath() + ")]"
                 : "/chummer/cyberwares/cyberware[(" + _objCharacter.Settings.BookXPath() + ")]");
 
-            List<ListItem> list = new List<ListItem>(objXmlNodeList.Count);
-            if (objXmlNodeList.Count > 0)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> list))
             {
-                foreach (XPathNavigator objNode in objXmlNodeList)
+                if (objXmlNodeList.Count > 0)
                 {
-                    string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
-                    if (!string.IsNullOrEmpty(strName))
-                        list.Add(new ListItem(strName, objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-                }
-            }
-
-            if (list.Count == 0)
-                throw new AbortedException();
-            using (frmSelectItem frmPickItem = new frmSelectItem
-            {
-                Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
-            })
-            {
-                frmPickItem.SetGeneralItemsMode(list);
-
-                Log.Info("_strLimitSelection = " + LimitSelection);
-                Log.Info("_strForcedValue = " + ForcedValue);
-
-                if (!string.IsNullOrEmpty(LimitSelection))
-                {
-                    frmPickItem.ForceItem(LimitSelection);
-                    frmPickItem.Opacity = 0;
+                    foreach (XPathNavigator objNode in objXmlNodeList)
+                    {
+                        string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strName))
+                            list.Add(new ListItem(
+                                         strName,
+                                         objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    }
                 }
 
-                frmPickItem.ShowDialog(Program.MainForm);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                {
+                if (list.Count == 0)
                     throw new AbortedException();
+                using (frmSelectItem frmPickItem = new frmSelectItem
+                       {
+                           Description = string.Format(GlobalSettings.CultureInfo,
+                                                       LanguageManager.GetString("String_Improvement_SelectText"),
+                                                       _strFriendlyName)
+                       })
+                {
+                    frmPickItem.SetGeneralItemsMode(list);
+
+                    Log.Info("_strLimitSelection = " + LimitSelection);
+                    Log.Info("_strForcedValue = " + ForcedValue);
+
+                    if (!string.IsNullOrEmpty(LimitSelection))
+                    {
+                        frmPickItem.ForceItem(LimitSelection);
+                        frmPickItem.Opacity = 0;
+                    }
+
+                    frmPickItem.ShowDialog(Program.MainForm);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedItem;
+
+                    string strSelectedValue = frmPickItem.SelectedItem;
+                    Log.Info("_strSelectedValue = " + SelectedValue);
+                    Log.Info("SelectedValue = " + strSelectedValue);
                 }
-
-                SelectedValue = frmPickItem.SelectedItem;
-
-                string strSelectedValue = frmPickItem.SelectedItem;
-                Log.Info("_strSelectedValue = " + SelectedValue);
-                Log.Info("SelectedValue = " + strSelectedValue);
             }
         }
 
@@ -5736,55 +5828,62 @@ namespace Chummer.Classes
             }
             else
             {
-                List <ListItem> lstWeapons = new List<ListItem>(_objCharacter.Weapons.Count);
-                bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
-                foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeapons))
                 {
-                    if ((string.IsNullOrEmpty(strExclude) || objWeapon.RangeType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
+                    bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
+                    string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
+                    foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                     {
-                        lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayNameShort(GlobalSettings.Language)));
-                    }
-                }
-
-                if (string.IsNullOrWhiteSpace(LimitSelection) || lstWeapons.Any(item => item.Name == LimitSelection))
-                {
-                    using (frmSelectItem frmPickItem = new frmSelectItem
-                    {
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
-                    })
-                    {
-                        frmPickItem.SetGeneralItemsMode(lstWeapons);
-
-                        Log.Info("_strLimitSelection = " + LimitSelection);
-                        Log.Info("_strForcedValue = " + ForcedValue);
-
-                        if (!string.IsNullOrEmpty(LimitSelection))
+                        if ((string.IsNullOrEmpty(strExclude) || objWeapon.RangeType != strExclude)
+                            && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                         {
-                            frmPickItem.ForceItem(LimitSelection);
-                            frmPickItem.Opacity = 0;
+                            lstWeapons.Add(new ListItem(objWeapon.InternalId,
+                                                        objWeapon.DisplayNameShort(GlobalSettings.Language)));
                         }
-
-                        frmPickItem.ShowDialog(Program.MainForm);
-
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickItem.DialogResult == DialogResult.Cancel)
-                        {
-                            throw new AbortedException();
-                        }
-
-                        SelectedValue = frmPickItem.SelectedName;
                     }
 
-                    Log.Info("_strSelectedValue = " + SelectedValue);
-                    Log.Info("SelectedValue = " + SelectedValue);
-                }
-                else
-                {
-                    SelectedValue = LimitSelection;
+                    if (string.IsNullOrWhiteSpace(LimitSelection)
+                        || lstWeapons.Any(item => item.Name == LimitSelection))
+                    {
+                        using (frmSelectItem frmPickItem = new frmSelectItem
+                               {
+                                   Description = string.Format(GlobalSettings.CultureInfo,
+                                                               LanguageManager.GetString(
+                                                                   "String_Improvement_SelectText"), _strFriendlyName)
+                               })
+                        {
+                            frmPickItem.SetGeneralItemsMode(lstWeapons);
 
-                    Log.Info("_strSelectedValue = " + SelectedValue);
-                    Log.Info("SelectedValue = " + SelectedValue);
+                            Log.Info("_strLimitSelection = " + LimitSelection);
+                            Log.Info("_strForcedValue = " + ForcedValue);
+
+                            if (!string.IsNullOrEmpty(LimitSelection))
+                            {
+                                frmPickItem.ForceItem(LimitSelection);
+                                frmPickItem.Opacity = 0;
+                            }
+
+                            frmPickItem.ShowDialog(Program.MainForm);
+
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                            {
+                                throw new AbortedException();
+                            }
+
+                            SelectedValue = frmPickItem.SelectedName;
+                        }
+
+                        Log.Info("_strSelectedValue = " + SelectedValue);
+                        Log.Info("SelectedValue = " + SelectedValue);
+                    }
+                    else
+                    {
+                        SelectedValue = LimitSelection;
+
+                        Log.Info("_strSelectedValue = " + SelectedValue);
+                        Log.Info("SelectedValue = " + SelectedValue);
+                    }
                 }
             }
 
@@ -5855,7 +5954,7 @@ namespace Chummer.Classes
 
                     // Record the improvement.
                     XmlNode objXmlPowerNode = _objCharacter.LoadData("critterpowers.xml")
-                        .SelectSingleNode("/chummer/powers/power[name = " + frmPickPower.SelectedPower.CleanXPath() + "]");
+                        .SelectSingleNode("/chummer/powers/power[name = " + frmPickPower.SelectedPower.CleanXPath() + ']');
                     CritterPower objPower = new CritterPower(_objCharacter);
                     objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
                     if (objPower.InternalId.IsEmptyGuid())
@@ -5880,7 +5979,7 @@ namespace Chummer.Classes
                 {
                     foreach (XmlNode objXmlPower in xmlPowerList)
                     {
-                        XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
+                        XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + ']');
                         CritterPower objPower = new CritterPower(_objCharacter);
                         string strForcedValue = string.Empty;
                         int intRating = 0;
@@ -5936,49 +6035,59 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("dealerconnection");
-            List<ListItem> lstItems;
-            using (XmlNodeList objXmlList = bonusNode.SelectNodes("category"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
-                lstItems = new List<ListItem>(objXmlList?.Count ?? 0);
-                if (objXmlList?.Count > 0)
+                using (XmlNodeList objXmlList = bonusNode.SelectNodes("category"))
                 {
-                    foreach (XmlNode objNode in objXmlList)
+                    if (objXmlList?.Count > 0)
                     {
-                        if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DealerConnection).All(x => x.UniqueName != objNode.InnerText))
+                        foreach (XmlNode objNode in objXmlList)
                         {
-                            lstItems.Add(new ListItem(objNode.InnerText, LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText)));
+                            if (ImprovementManager
+                                .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                    Improvement.ImprovementType.DealerConnection)
+                                .All(x => x.UniqueName != objNode.InnerText))
+                            {
+                                lstItems.Add(new ListItem(objNode.InnerText,
+                                                          LanguageManager.GetString(
+                                                              "String_DealerConnection_" + objNode.InnerText)));
+                            }
                         }
                     }
                 }
-            }
 
-            if (lstItems.Count == 0)
-            {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo ,LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
-                throw new AbortedException();
-            }
-
-            using (frmSelectItem frmPickItem = new frmSelectItem
-            {
-                AllowAutoSelect = false
-            })
-            {
-                frmPickItem.SetGeneralItemsMode(lstItems);
-                frmPickItem.ShowDialog(Program.MainForm);
-                // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                if (lstItems.Count == 0)
                 {
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "Message_Improvement_EmptySelectionListNamed"),
+                                                                  SourceName));
                     throw new AbortedException();
                 }
 
-                SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem);
+                using (frmSelectItem frmPickItem = new frmSelectItem
+                       {
+                           AllowAutoSelect = false
+                       })
+                {
+                    frmPickItem.SetGeneralItemsMode(lstItems);
+                    frmPickItem.ShowDialog(Program.MainForm);
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
 
-                Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
-                Log.Info("SourceName = " + SourceName);
+                    SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem);
 
-                // Create the Improvement.
-                Log.Info("Calling CreateImprovement");
-                CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.DealerConnection, frmPickItem.SelectedItem);
+                    Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
+                    Log.Info("SourceName = " + SourceName);
+
+                    // Create the Improvement.
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.DealerConnection, frmPickItem.SelectedItem);
+                }
             }
         }
 
@@ -6050,7 +6159,7 @@ namespace Chummer.Classes
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
                         if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
-                        XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
+                        XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + ']');
                         if (objXmlSelectedQuality == null){
                             Utils.BreakIfDebug();
                         }
@@ -6096,75 +6205,25 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
-            List<ListItem> lstQualities;
-            using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("quality"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
             {
-                lstQualities = new List<ListItem>(xmlQualityList?.Count ?? 0);
-                if (xmlQualityList?.Count > 0)
+                using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("quality"))
                 {
-                    foreach (XmlNode objXmlAddQuality in xmlQualityList)
+                    if (xmlQualityList?.Count > 0)
                     {
-                        string strName = objXmlAddQuality.InnerText;
-                        XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
-                        // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName) == true)
+                        foreach (XmlNode objXmlAddQuality in xmlQualityList)
                         {
-                            lstQualities.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
-                        }
-                    }
-                }
-            }
-
-            if (lstQualities.Count == 0)
-            {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
-                throw new AbortedException();
-            }
-
-            XmlNode objXmlSelectedQuality;
-            XmlNode objXmlBonusQuality;
-            using (frmSelectItem frmPickItem = new frmSelectItem())
-            {
-                frmPickItem.SetGeneralItemsMode(lstQualities);
-                frmPickItem.ShowDialog(Program.MainForm);
-
-                // Don't do anything else if the form was canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    throw new AbortedException();
-                objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + frmPickItem.SelectedItem.CleanXPath() + "]");
-                objXmlBonusQuality = bonusNode.SelectSingleNode("quality[" + frmPickItem.SelectedItem.CleanXPath() + "]");
-            }
-
-            Quality objAddQuality = new Quality(_objCharacter);
-            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-            string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
-            objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
-            if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
-            {
-                objAddQuality.BP = 0;
-                objAddQuality.ContributeToLimit = false;
-            }
-            if (bonusNode["discountqualities"] != null)
-            {
-                lstQualities.Clear();
-                lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
-                using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
-                {
-                    if (xmlQualityNodeList?.Count > 0)
-                    {
-                        foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
-                        {
-                            strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
                             string strName = objXmlAddQuality.InnerText;
-
-                            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
-                            if (objXmlQuality != null)
+                            XmlNode objXmlQuality
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/qualities/quality[name = " + strName.CleanXPath() + ']');
+                            // Makes sure we aren't over our limits for this particular quality from this overall source
+                            if (objXmlQuality?.CreateNavigator()
+                                             .RequirementsMet(_objCharacter, string.Empty, string.Empty,
+                                                              _strFriendlyName) == true)
                             {
-                                string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
-                                if (!string.IsNullOrWhiteSpace(strForceValue))
-                                    strDisplayName += " (" + strForceValue + ')';
-                                lstQualities.Add(new ListItem(strName, strDisplayName));
+                                lstQualities.Add(
+                                    new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
                             }
                         }
                     }
@@ -6172,10 +6231,15 @@ namespace Chummer.Classes
 
                 if (lstQualities.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"), SourceName));
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "Message_Improvement_EmptySelectionListNamed"),
+                                                                  SourceName));
                     throw new AbortedException();
                 }
 
+                XmlNode objXmlSelectedQuality;
+                XmlNode objXmlBonusQuality;
                 using (frmSelectItem frmPickItem = new frmSelectItem())
                 {
                     frmPickItem.SetGeneralItemsMode(lstQualities);
@@ -6184,28 +6248,99 @@ namespace Chummer.Classes
                     // Don't do anything else if the form was canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
-                    if (frmPickItem.SelectedItem != "None")
+                    objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
+                        "/chummer/qualities/quality[name = " + frmPickItem.SelectedItem.CleanXPath() + ']');
+                    objXmlBonusQuality
+                        = bonusNode.SelectSingleNode("quality[" + frmPickItem.SelectedItem.CleanXPath() + ']');
+                }
+
+                Quality objAddQuality = new Quality(_objCharacter);
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue,
+                                     _strFriendlyName);
+                if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
+                {
+                    objAddQuality.BP = 0;
+                    objAddQuality.ContributeToLimit = false;
+                }
+
+                if (bonusNode["discountqualities"] != null)
+                {
+                    lstQualities.Clear();
+                    lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
+                    using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
                     {
-                        objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + frmPickItem.SelectedItem.CleanXPath() + "]");
-                        objXmlBonusQuality = bonusNode.SelectSingleNode("discountqualities/quality[" + frmPickItem.SelectedItem.CleanXPath() + "]");
-                        int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value, GlobalSettings.InvariantCultureInfo);
-                        Quality discountQuality = new Quality(_objCharacter)
+                        if (xmlQualityNodeList?.Count > 0)
                         {
-                            BP = 0
-                        };
-                        strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
-                        discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
-                        _objCharacter.Qualities.Add(discountQuality);
-                        objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
-                        CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                            foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
+                            {
+                                strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                string strName = objXmlAddQuality.InnerText;
+
+                                XmlNode objXmlQuality
+                                    = objXmlDocument.SelectSingleNode(
+                                        "/chummer/qualities/quality[name = " + strName.CleanXPath() + ']');
+                                if (objXmlQuality != null)
+                                {
+                                    string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
+                                    if (!string.IsNullOrWhiteSpace(strForceValue))
+                                        strDisplayName += " (" + strForceValue + ')';
+                                    lstQualities.Add(new ListItem(strName, strDisplayName));
+                                }
+                            }
+                        }
+                    }
+
+                    if (lstQualities.Count == 0)
+                    {
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                      LanguageManager.GetString(
+                                                                          "Message_Improvement_EmptySelectionListNamed"),
+                                                                      SourceName));
+                        throw new AbortedException();
+                    }
+
+                    using (frmSelectItem frmPickItem = new frmSelectItem())
+                    {
+                        frmPickItem.SetGeneralItemsMode(lstQualities);
+                        frmPickItem.ShowDialog(Program.MainForm);
+
+                        // Don't do anything else if the form was canceled.
+                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                            throw new AbortedException();
+                        if (frmPickItem.SelectedItem != "None")
+                        {
+                            objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
+                                "/chummer/qualities/quality[name = " + frmPickItem.SelectedItem.CleanXPath() + ']');
+                            objXmlBonusQuality
+                                = bonusNode.SelectSingleNode(
+                                    "discountqualities/quality[" + frmPickItem.SelectedItem.CleanXPath() + ']');
+                            int qualityDiscount
+                                = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value,
+                                                  GlobalSettings.InvariantCultureInfo);
+                            Quality discountQuality = new Quality(_objCharacter)
+                            {
+                                BP = 0
+                            };
+                            strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                            discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
+                                                   strForceValue, _strFriendlyName);
+                            _objCharacter.Qualities.Add(discountQuality);
+                            objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
+                            CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName,
+                                              Improvement.ImprovementType.SpecificQuality, _strUnique);
+                        }
                     }
                 }
-            }
 
-            _objCharacter.Qualities.Add(objAddQuality);
-            foreach (Weapon objWeapon in lstWeapons)
-                _objCharacter.Weapons.Add(objWeapon);
-            CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                _objCharacter.Qualities.Add(objAddQuality);
+                foreach (Weapon objWeapon in lstWeapons)
+                    _objCharacter.Weapons.Add(objWeapon);
+                CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SpecificQuality, _strUnique);
+            }
         }
 
         public void addskillspecialization(XmlNode bonusNode)
@@ -6491,7 +6626,7 @@ namespace Chummer.Classes
                 {
                     foreach (XPathNavigator xmlSpirit in _objCharacter.LoadDataXPath("critters.xml")
                                                                       .Select("/chummer/critters/critter[category = "
-                                                                              + strCritterCategory.CleanXPath() + "]"))
+                                                                              + strCritterCategory.CleanXPath() + ']'))
                     {
                         string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
                         if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
@@ -6681,42 +6816,45 @@ namespace Chummer.Classes
             }
             else
             {
-                List<ListItem> lstSkills;
-                using (XmlNodeList objXmlGroups = bonusNode.SelectNodes("skillgroup"))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
                 {
-                    lstSkills = new List<ListItem>(objXmlGroups?.Count ?? 0);
-                    if (objXmlGroups?.Count > 0)
+                    using (XmlNodeList objXmlGroups = bonusNode.SelectNodes("skillgroup"))
                     {
-                        foreach (XmlNode objXmlGroup in objXmlGroups)
+                        if (objXmlGroups?.Count > 0)
                         {
-                            lstSkills.Add(new ListItem(objXmlGroup.InnerText,
-                                _objCharacter.TranslateExtra(objXmlGroup.InnerText, GlobalSettings.Language, "skills.xml")));
+                            foreach (XmlNode objXmlGroup in objXmlGroups)
+                            {
+                                lstSkills.Add(new ListItem(objXmlGroup.InnerText,
+                                                           _objCharacter.TranslateExtra(
+                                                               objXmlGroup.InnerText, GlobalSettings.Language,
+                                                               "skills.xml")));
+                            }
                         }
                     }
-                }
 
-                if (lstSkills.Count > 1)
-                {
-                    lstSkills.Sort(CompareListItems.CompareNames);
-                }
-
-                using (frmSelectItem frmPickItem = new frmSelectItem
-                {
-                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
-                    Description = LanguageManager.GetString("String_DisableSkillGroupPrompt"),
-                    AllowAutoSelect = false
-                })
-                {
-                    frmPickItem.SetGeneralItemsMode(lstSkills);
-                    frmPickItem.ShowDialog(Program.MainForm);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (lstSkills.Count > 1)
                     {
-                        throw new AbortedException();
+                        lstSkills.Sort(CompareListItems.CompareNames);
                     }
 
-                    SelectedValue = frmPickItem.SelectedName;
+                    using (frmSelectItem frmPickItem = new frmSelectItem
+                           {
+                               SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                               Description = LanguageManager.GetString("String_DisableSkillGroupPrompt"),
+                               AllowAutoSelect = false
+                           })
+                    {
+                        frmPickItem.SetGeneralItemsMode(lstSkills);
+                        frmPickItem.ShowDialog(Program.MainForm);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        SelectedValue = frmPickItem.SelectedName;
+                    }
                 }
             }
 
@@ -7197,12 +7335,12 @@ namespace Chummer.Classes
                 throw new AbortedException();
             if (bonusNode["type"]?.InnerText == "bioware")
             {
-                node = _objCharacter.LoadData("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = " + strName.CleanXPath() + "]");
+                node = _objCharacter.LoadData("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = " + strName.CleanXPath() + ']');
                 eSource = Improvement.ImprovementSource.Bioware;
             }
             else
             {
-                node = _objCharacter.LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = " + strName.CleanXPath() + "]");
+                node = _objCharacter.LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = " + strName.CleanXPath() + ']');
                 eSource = Improvement.ImprovementSource.Cyberware;
             }
 

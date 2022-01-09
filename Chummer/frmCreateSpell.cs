@@ -70,31 +70,33 @@ namespace Chummer
             }
 
             // Populate the list of Spell Types.
-            List<ListItem> lstTypes = new List<ListItem>(2)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {
-                new ListItem("P", LanguageManager.GetString("String_DescPhysical")),
-                new ListItem("M", LanguageManager.GetString("String_DescMana"))
-            };
-            cboType.PopulateWithListItems(lstTypes);
+                lstTypes.Add(new ListItem("P", LanguageManager.GetString("String_DescPhysical")));
+                lstTypes.Add(new ListItem("M", LanguageManager.GetString("String_DescMana")));
+                cboType.PopulateWithListItems(lstTypes);
+            }
+
             cboType.SelectedIndex = 0;
 
             // Populate the list of Ranges.
-            List<ListItem> lstRanges = new List<ListItem>(2)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstRanges))
             {
-                new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")),
-                new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"))
-            };
-            cboRange.PopulateWithListItems(lstRanges);
+                lstRanges.Add(new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")));
+                lstRanges.Add(new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight")));
+                cboRange.PopulateWithListItems(lstRanges);
+            }
             cboRange.SelectedIndex = 0;
 
             // Populate the list of Durations.
-            List<ListItem> lstDurations = new List<ListItem>(3)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDurations))
             {
-                new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong")),
-                new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")),
-                new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong"))
-            };
-            cboDuration.PopulateWithListItems(lstDurations);
+                lstDurations.Add(new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong")));
+                lstDurations.Add(new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")));
+                lstDurations.Add(new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong")));
+                cboDuration.PopulateWithListItems(lstDurations);
+            }
+
             cboDuration.SelectedIndex = 0;
             _blnLoading = false;
             cboCategory.EndUpdate();

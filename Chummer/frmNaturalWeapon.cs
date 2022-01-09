@@ -50,45 +50,48 @@ namespace Chummer
         private void frmNaturalWeapon_Load(object sender, EventArgs e)
         {
             // Load the list of Combat Active Skills and populate the Skills list.
-            List<ListItem> lstSkills = new List<ListItem>(5);
-            foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression("skills/skill[category = \"Combat Active\"]"))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
             {
-                string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
-                if (!string.IsNullOrEmpty(strName))
-                    lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression(
+                             "skills/skill[category = \"Combat Active\"]"))
+                {
+                    string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstSkills.Add(new ListItem(
+                                          strName,
+                                          objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                          ?? strName));
+                }
+
+                lstDVBase.Add(new ListItem("(STR/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"));
+                lstDVBase.Add(new ListItem("(STR)", '(' + _objCharacter.STR.DisplayAbbrev + ')'));
+                for (int i = 1; i <= 20; ++i)
+                {
+                    lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
+                                               i.ToString(GlobalSettings.CultureInfo)));
+                }
+
+                lstDVType.Add(new ListItem("P", LanguageManager.GetString("String_DamagePhysical")));
+                lstDVType.Add(new ListItem("S", LanguageManager.GetString("String_DamageStun")));
+
+                // Bind the Lists to the ComboBoxes.
+                cboSkill.BeginUpdate();
+                cboSkill.PopulateWithListItems(lstSkills);
+                cboSkill.SelectedIndex = 0;
+                cboSkill.EndUpdate();
+
+                cboDVBase.BeginUpdate();
+                cboDVBase.PopulateWithListItems(lstDVBase);
+                cboDVBase.SelectedIndex = 0;
+                cboDVBase.EndUpdate();
+
+                cboDVType.BeginUpdate();
+                cboDVType.PopulateWithListItems(lstDVType);
+                cboDVType.SelectedIndex = 0;
+                cboDVType.EndUpdate();
             }
-
-            List<ListItem> lstDVBase = new List<ListItem>(2)
-            {
-                new ListItem("(STR/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"),
-                new ListItem("(STR)", '(' + _objCharacter.STR.DisplayAbbrev + ')')
-            };
-            for (int i = 1; i <= 20; ++i)
-            {
-                lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo), i.ToString(GlobalSettings.CultureInfo)));
-            }
-
-            List<ListItem> lstDVType = new List<ListItem>(2)
-            {
-                new ListItem("P", LanguageManager.GetString("String_DamagePhysical")),
-                new ListItem("S", LanguageManager.GetString("String_DamageStun"))
-            };
-
-            // Bind the Lists to the ComboBoxes.
-            cboSkill.BeginUpdate();
-            cboSkill.PopulateWithListItems(lstSkills);
-            cboSkill.SelectedIndex = 0;
-            cboSkill.EndUpdate();
-
-            cboDVBase.BeginUpdate();
-            cboDVBase.PopulateWithListItems(lstDVBase);
-            cboDVBase.SelectedIndex = 0;
-            cboDVBase.EndUpdate();
-
-            cboDVType.BeginUpdate();
-            cboDVType.PopulateWithListItems(lstDVType);
-            cboDVType.SelectedIndex = 0;
-            cboDVType.EndUpdate();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

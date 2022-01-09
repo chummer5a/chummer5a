@@ -1361,82 +1361,93 @@ namespace Chummer
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
-                List<ListItem> lstGrade = new List<ListItem>(5);
-                foreach (Grade objWareGrade in _lstGrades)
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGrade))
                 {
-                    if (objWareGrade.SourceIDString == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
-                        continue;
-                    if (string.IsNullOrEmpty(strForceGrade))
+                    foreach (Grade objWareGrade in _lstGrades)
                     {
-                        if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                        if (objWareGrade.SourceIDString == _strNoneGradeId
+                            && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
                             continue;
-                        if (WindowMode == Mode.Bioware)
+                        if (string.IsNullOrEmpty(strForceGrade))
                         {
-                            if (ImprovementManager
-                                .GetCachedImprovementListForValueOf(_objCharacter,
-                                                                    Improvement.ImprovementType.DisableBiowareGrade)
-                                .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
+                            if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                                 continue;
-                            if (objWareGrade.Adapsin)
+                            if (WindowMode == Mode.Bioware)
+                            {
+                                if (ImprovementManager
+                                    .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                        Improvement.ImprovementType.DisableBiowareGrade)
+                                    .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
+                                    continue;
+                                if (objWareGrade.Adapsin)
+                                    continue;
+                            }
+                            else
+                            {
+                                if (ImprovementManager
+                                    .GetCachedImprovementListForValueOf(_objCharacter,
+                                                                        Improvement.ImprovementType
+                                                                            .DisableCyberwareGrade)
+                                    .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
+                                    continue;
+                                if (_objCharacter.AdapsinEnabled && !objWareGrade.Adapsin
+                                                                 && _lstGrades.Any(
+                                                                     x => objWareGrade.Name.Contains(x.Name)))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            if (_objCharacter.BurnoutEnabled)
+                            {
+                                if (!objWareGrade.Burnout && _lstGrades.Any(x =>
+                                                                                objWareGrade.Burnout
+                                                                                && objWareGrade.Name.Contains(x.Name)))
+                                {
+                                    continue;
+                                }
+                            }
+                            else if (objWareGrade.Burnout)
                                 continue;
+
+                            if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules &&
+                                _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                                continue;
+                        }
+
+                        if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules
+                            && _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                        {
+                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString,
+                                                      '*' + objWareGrade.CurrentDisplayName));
                         }
                         else
                         {
-                            if (ImprovementManager
-                                .GetCachedImprovementListForValueOf(_objCharacter,
-                                                                    Improvement.ImprovementType.DisableCyberwareGrade)
-                                .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
-                                continue;
-                            if (_objCharacter.AdapsinEnabled && !objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
-                            {
-                                continue;
-                            }
+                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString, objWareGrade.CurrentDisplayName));
                         }
-
-                        if (_objCharacter.BurnoutEnabled)
-                        {
-                            if (!objWareGrade.Burnout && _lstGrades.Any(x =>
-                                objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
-                            {
-                                continue;
-                            }
-                        }
-                        else if (objWareGrade.Burnout)
-                            continue;
-                        if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules &&
-                            _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
-                            continue;
                     }
 
-                    if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
-                    {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + objWareGrade.CurrentDisplayName));
-                    }
-                    else
-                    {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString, objWareGrade.CurrentDisplayName));
-                    }
+                    string strOldSelected = cboGrade.SelectedValue?.ToString();
+                    bool blnOldSkipListRefresh = _blnSkipListRefresh;
+                    if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId
+                                                         || lstGrade.Any(x => x.Value.ToString() == strOldSelected))
+                        _blnSkipListRefresh = true;
+                    bool blnOldLoading = _blnLoading;
+                    _blnLoading = true;
+                    cboGrade.BeginUpdate();
+                    cboGrade.PopulateWithListItems(lstGrade);
+                    _blnLoading = blnOldLoading;
+                    if (!string.IsNullOrEmpty(strForceGrade))
+                        cboGrade.SelectedValue = strForceGrade;
+                    else if (cboGrade.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
+                        cboGrade.SelectedValue = strOldSelected;
+                    if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
+                        cboGrade.SelectedIndex = 0;
+
+                    cboGrade.EndUpdate();
+
+                    _blnSkipListRefresh = blnOldSkipListRefresh;
                 }
-
-                string strOldSelected = cboGrade.SelectedValue?.ToString();
-                bool blnOldSkipListRefresh = _blnSkipListRefresh;
-                if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId || lstGrade.Any(x => x.Value.ToString() == strOldSelected))
-                    _blnSkipListRefresh = true;
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                cboGrade.BeginUpdate();
-                cboGrade.PopulateWithListItems(lstGrade);
-                _blnLoading = blnOldLoading;
-                if (!string.IsNullOrEmpty(strForceGrade))
-                    cboGrade.SelectedValue = strForceGrade;
-                else if (cboGrade.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
-                    cboGrade.SelectedValue = strOldSelected;
-                if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
-                    cboGrade.SelectedIndex = 0;
-
-                cboGrade.EndUpdate();
-
-                _blnSkipListRefresh = blnOldSkipListRefresh;
             }
             _blnPopulatingGrades = false;
         }
@@ -1459,36 +1470,41 @@ namespace Chummer
             {
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.SelectAndCacheExpression("categories/category");
             }
-            List<ListItem> lstCategory = new List<ListItem>(objXmlCategoryList.Count);
-            foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
-            {
-                // Make sure the category contains items that we can actually display
-                if (AnyItemInList(objXmlCategory.Value))
-                {
-                    string strInnerText = objXmlCategory.Value;
-                    lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
-                }
-            }
 
-            lstCategory.Sort(CompareListItems.CompareNames);
-
-            if (lstCategory.Count > 0)
-            {
-                lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
-            }
-
-            string strOldSelected = _strSelectedCategory;
             string strOldSelectedCyberware = lstCyberware.SelectedValue?.ToString();
-            bool blnOldLoading = _blnLoading;
-            _blnLoading = true;
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(lstCategory);
-            _blnLoading = blnOldLoading;
-            cboCategory.SelectedValue = strOldSelected;
-            if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
-                cboCategory.SelectedIndex = 0;
 
-            cboCategory.EndUpdate();
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
+            {
+                foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
+                {
+                    // Make sure the category contains items that we can actually display
+                    if (AnyItemInList(objXmlCategory.Value))
+                    {
+                        string strInnerText = objXmlCategory.Value;
+                        lstCategory.Add(new ListItem(strInnerText,
+                                                     objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")
+                                                                   ?.Value ?? strInnerText));
+                    }
+                }
+
+                lstCategory.Sort(CompareListItems.CompareNames);
+
+                if (lstCategory.Count > 0)
+                {
+                    lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                }
+
+                string strOldSelected = _strSelectedCategory;
+                bool blnOldLoading = _blnLoading;
+                _blnLoading = true;
+                cboCategory.BeginUpdate();
+                cboCategory.PopulateWithListItems(lstCategory);
+                _blnLoading = blnOldLoading;
+                cboCategory.SelectedValue = strOldSelected;
+                if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
+                    cboCategory.SelectedIndex = 0;
+                cboCategory.EndUpdate();
+            }
 
             if (!string.IsNullOrEmpty(strOldSelectedCyberware))
                 lstCyberware.SelectedValue = strOldSelectedCyberware;

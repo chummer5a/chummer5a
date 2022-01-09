@@ -495,7 +495,12 @@ namespace Chummer
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
-            List<ListItem> lstItemsToSet = lstItems?.ToList();
+            List<ListItem> lstItemsToSet = null;
+            if (lstItems != null)
+            {
+                lstItemsToSet = Utils.ListItemListPool.Get();
+                lstItemsToSet.AddRange(lstItems);
+            }
             if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
             {
                 lsbThis.ValueMember = nameof(ListItem.Value);
@@ -504,9 +509,15 @@ namespace Chummer
             // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
             else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                 return;
+            List<ListItem> lstOldItems = null;
             if (lsbThis.DataSource != null)
+            {
+                lstOldItems = lsbThis.DataSource as List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
                 lsbThis.BindingContext = new BindingContext();
+            }
             lsbThis.DataSource = lstItemsToSet;
+            if (lstOldItems != null)
+                Utils.ListItemListPool.Return(lstOldItems);
         }
 
         public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
@@ -516,7 +527,12 @@ namespace Chummer
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
-            List<ListItem> lstItemsToSet = lstItems?.ToList();
+            List<ListItem> lstItemsToSet = null;
+            if (lstItems != null)
+            {
+                lstItemsToSet = Utils.ListItemListPool.Get();
+                lstItemsToSet.AddRange(lstItems);
+            }
             if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
             {
                 cboThis.ValueMember = nameof(ListItem.Value);
@@ -525,9 +541,15 @@ namespace Chummer
             // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
             else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                 return;
+            List<ListItem> lstOldItems = null;
             if (cboThis.DataSource != null)
+            {
+                lstOldItems = cboThis.DataSource as List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
                 cboThis.BindingContext = new BindingContext();
+            }
             cboThis.DataSource = lstItemsToSet;
+            if (lstOldItems != null)
+                Utils.ListItemListPool.Return(lstOldItems);
         }
 
         public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
@@ -537,7 +559,12 @@ namespace Chummer
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
-            List<ListItem> lstItemsToSet = lstItems?.ToList();
+            List<ListItem> lstItemsToSet = null;
+            if (lstItems != null)
+            {
+                lstItemsToSet = Utils.ListItemListPool.Get();
+                lstItemsToSet.AddRange(lstItems);
+            }
             if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
             {
                 cboThis.ValueMember = nameof(ListItem.Value);
@@ -546,9 +573,15 @@ namespace Chummer
             // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
             else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                 return;
+            List<ListItem> lstOldItems = null;
             if (cboThis.DataSource != null)
+            {
+                lstOldItems = cboThis.DataSource as List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
                 cboThis.BindingContext = new BindingContext();
+            }
             cboThis.DataSource = lstItemsToSet;
+            if (lstOldItems != null)
+                Utils.ListItemListPool.Return(lstOldItems);
         }
 
         #endregion ComboBox Extensions

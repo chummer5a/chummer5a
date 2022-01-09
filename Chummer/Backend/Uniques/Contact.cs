@@ -237,7 +237,11 @@ namespace Chummer
             if (_lstCachedContactArchetypes != null && _objCharacterForCachedContactArchetypes == objCharacter && !GlobalSettings.LiveCustomData)
                 return _lstCachedContactArchetypes;
             _objCharacterForCachedContactArchetypes = objCharacter;
-            _lstCachedContactArchetypes = new List<ListItem> { ListItem.Blank };
+            if (_lstCachedContactArchetypes == null)
+                _lstCachedContactArchetypes = Utils.ListItemListPool.Get();
+            else
+                _lstCachedContactArchetypes.Clear();
+            _lstCachedContactArchetypes.Add(ListItem.Blank);
             XPathNavigator xmlContactsBaseNode = objCharacter.LoadDataXPath("contacts.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (xmlContactsBaseNode == null)
                 return _lstCachedContactArchetypes;
@@ -1317,6 +1321,8 @@ namespace Chummer
 
         public void Dispose()
         {
+            if (_lstCachedContactArchetypes != null)
+                Utils.ListItemListPool.Return(_lstCachedContactArchetypes);
             if (_objLinkedCharacter != null && !Utils.IsUnitTest
                                             && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
                                             && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))

@@ -228,28 +228,35 @@ namespace Chummer
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
-            XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + "]");
-
-            List<ListItem> lstMartialArt = new List<ListItem>(objArtList.Count);
-            foreach (XPathNavigator objXmlArt in objArtList)
+            XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + ']');
+            
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMartialArt))
             {
-                string strId = objXmlArt.SelectSingleNodeAndCacheExpression("id")?.Value;
-                if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
+                foreach (XPathNavigator objXmlArt in objArtList)
                 {
-                    lstMartialArt.Add(new ListItem(strId, objXmlArt.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlArt.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                    string strId = objXmlArt.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
+                    {
+                        lstMartialArt.Add(new ListItem(
+                                              strId,
+                                              objXmlArt.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                              ?? objXmlArt.SelectSingleNodeAndCacheExpression("name")?.Value
+                                              ?? LanguageManager.GetString("String_Unknown")));
+                    }
                 }
+
+                lstMartialArt.Sort(CompareListItems.CompareNames);
+                string strOldSelected = lstMartialArts.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstMartialArts.BeginUpdate();
+                lstMartialArts.PopulateWithListItems(lstMartialArt);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstMartialArts.SelectedValue = strOldSelected;
+                else
+                    lstMartialArts.SelectedIndex = -1;
+                lstMartialArts.EndUpdate();
             }
-            lstMartialArt.Sort(CompareListItems.CompareNames);
-            string strOldSelected = lstMartialArts.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstMartialArts.BeginUpdate();
-            lstMartialArts.PopulateWithListItems(lstMartialArt);
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstMartialArts.SelectedValue = strOldSelected;
-            else
-                lstMartialArts.SelectedIndex = -1;
-            lstMartialArts.EndUpdate();
         }
 
         #endregion Methods
