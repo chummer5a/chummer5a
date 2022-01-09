@@ -138,17 +138,22 @@ namespace Chummer
 
             if (_objMount != null)
             {
-                List<ListItem> lstVisibility = cboVisibility.Items.Cast<ListItem>().ToList();
-                List<ListItem> lstFlexibility = cboFlexibility.Items.Cast<ListItem>().ToList();
-                List<ListItem> lstControl = cboControl.Items.Cast<ListItem>().ToList();
-                foreach (string strLoopId in _objMount.WeaponMountOptions.Select(x => x.SourceIDString))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstVisibility))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFlexibility))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstControl))
                 {
-                    if (lstVisibility.Any(x => x.Value.ToString() == strLoopId))
-                        cboVisibility.SelectedValue = strLoopId;
-                    else if (lstFlexibility.Any(x => x.Value.ToString() == strLoopId))
-                        cboFlexibility.SelectedValue = strLoopId;
-                    else if (lstControl.Any(x => x.Value.ToString() == strLoopId))
-                        cboControl.SelectedValue = strLoopId;
+                    lstVisibility.AddRange(cboVisibility.Items.Cast<ListItem>());
+                    lstFlexibility.AddRange(cboFlexibility.Items.Cast<ListItem>());
+                    lstControl.AddRange(cboControl.Items.Cast<ListItem>());
+                    foreach (string strLoopId in _objMount.WeaponMountOptions.Select(x => x.SourceIDString))
+                    {
+                        if (lstVisibility.Any(x => x.Value.ToString() == strLoopId))
+                            cboVisibility.SelectedValue = strLoopId;
+                        else if (lstFlexibility.Any(x => x.Value.ToString() == strLoopId))
+                            cboFlexibility.SelectedValue = strLoopId;
+                        else if (lstControl.Any(x => x.Value.ToString() == strLoopId))
+                            cboControl.SelectedValue = strLoopId;
+                    }
                 }
             }
 

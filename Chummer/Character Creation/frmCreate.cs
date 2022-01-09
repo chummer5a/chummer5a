@@ -15815,32 +15815,39 @@ namespace Chummer
         {
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
-            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
-            //Mounted cyberware should always be allowed to be dismounted.
-            //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
-            {
-                Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_NoValidModularMount"),
-                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
             string strSelectedParentID;
-            using (frmSelectItem frmPickMount = new frmSelectItem
+            using (new FetchSafelyFromPool<List<ListItem>>(
+                       Utils.ListItemListPool, out List<ListItem> lstModularMounts))
             {
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
-            })
-            {
-                frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                frmPickMount.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickMount.DialogResult == DialogResult.Cancel)
+                lstModularMounts.AddRange(CharacterObject.ConstructModularCyberlimbList(objModularCyberware));
+                //Mounted cyberware should always be allowed to be dismounted.
+                //Unmounted cyberware requires that a valid mount be present.
+                if (!objModularCyberware.IsModularCurrentlyEquipped
+                    && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                 {
+                    Program.MainForm.ShowMessageBox(this,
+                                                    LanguageManager.GetString("Message_NoValidModularMount"),
+                                                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                strSelectedParentID = frmPickMount.SelectedItem;
+                using (frmSelectItem frmPickMount = new frmSelectItem
+                       {
+                           Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                       })
+                {
+                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
+                    frmPickMount.ShowDialog(this);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+
+                    strSelectedParentID = frmPickMount.SelectedItem;
+                }
             }
 
             Cyberware objOldParent = objModularCyberware.Parent;
@@ -15909,36 +15916,44 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
-            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
-            //Mounted cyberware should always be allowed to be dismounted.
-            //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
-            {
-                Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_NoValidModularMount"),
-                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
             string strSelectedParentID;
-            using (frmSelectItem frmPickMount = new frmSelectItem
+            using (new FetchSafelyFromPool<List<ListItem>>(
+                       Utils.ListItemListPool, out List<ListItem> lstModularMounts))
             {
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
-            })
-            {
-                frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                frmPickMount.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickMount.DialogResult == DialogResult.Cancel)
+                lstModularMounts.AddRange(CharacterObject.ConstructModularCyberlimbList(objModularCyberware));
+                //Mounted cyberware should always be allowed to be dismounted.
+                //Unmounted cyberware requires that a valid mount be present.
+                if (!objModularCyberware.IsModularCurrentlyEquipped
+                    && lstModularMounts.All(
+                        x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                 {
+                    Program.MainForm.ShowMessageBox(this,
+                                                    LanguageManager.GetString("Message_NoValidModularMount"),
+                                                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                strSelectedParentID = frmPickMount.SelectedItem;
+                using (frmSelectItem frmPickMount = new frmSelectItem
+                       {
+                           Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                       })
+                {
+                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
+                    frmPickMount.ShowDialog(this);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+
+                    strSelectedParentID = frmPickMount.SelectedItem;
+                }
             }
 
             CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId,
-                out VehicleMod objOldParentVehicleMod);
+                                                          out VehicleMod objOldParentVehicleMod);
             Cyberware objOldParent = objModularCyberware.Parent;
             if (objOldParent != null)
                 objModularCyberware.ChangeModularEquip(false);

@@ -281,43 +281,46 @@ namespace Chummer
                                     }
                                     else
                                     {
-                                        List<ListItem> lstItemsNeedingNameChanges
-                                            = lstExistingItems.FindAll(
+                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                                   Utils.ListItemListPool, out List<ListItem> lstItemsNeedingNameChanges))
+                                        {
+                                            lstItemsNeedingNameChanges.AddRange(lstExistingItems.FindAll(
                                                 x => !objEntry.FileNames.IsSubsetOf(
-                                                    ((MasterIndexEntry) x.Value).FileNames));
-                                        if (lstItemsNeedingNameChanges.Count == 0)
-                                        {
-                                            _lstItems.Add(
-                                                objItem); // Not using AddRange because of potential memory issues
-                                            lstExistingItems.Add(objItem);
-                                        }
-                                        else
-                                        {
-                                            ListItem objItemToAdd = new ListItem(
-                                                objItem.Value, string.Format(GlobalSettings.CultureInfo,
-                                                                             strFormat, objItem.Name,
-                                                                             string.Join(
-                                                                                 ',' + strSpace, objEntry.FileNames)));
-                                            _lstItems.Add(
-                                                objItemToAdd); // Not using AddRange because of potential memory issues
-                                            lstExistingItems.Add(objItemToAdd);
-
-                                            foreach (ListItem objToRename in lstItemsNeedingNameChanges)
+                                                    ((MasterIndexEntry) x.Value).FileNames)));
+                                            if (lstItemsNeedingNameChanges.Count == 0)
                                             {
-                                                _lstItems.Remove(objToRename);
-                                                lstExistingItems.Remove(objToRename);
-
-                                                MasterIndexEntry objExistingEntry
-                                                    = (MasterIndexEntry) objToRename.Value;
-                                                objItemToAdd = new ListItem(objToRename.Value, string.Format(
-                                                                                GlobalSettings.CultureInfo,
-                                                                                strFormat, objExistingEntry.DisplayName,
-                                                                                string.Join(
-                                                                                    ',' + strSpace,
-                                                                                    objExistingEntry.FileNames)));
+                                                _lstItems.Add(
+                                                    objItem); // Not using AddRange because of potential memory issues
+                                                lstExistingItems.Add(objItem);
+                                            }
+                                            else
+                                            {
+                                                ListItem objItemToAdd = new ListItem(
+                                                    objItem.Value, string.Format(GlobalSettings.CultureInfo,
+                                                        strFormat, objItem.Name,
+                                                        string.Join(
+                                                            ',' + strSpace, objEntry.FileNames)));
                                                 _lstItems.Add(
                                                     objItemToAdd); // Not using AddRange because of potential memory issues
                                                 lstExistingItems.Add(objItemToAdd);
+
+                                                foreach (ListItem objToRename in lstItemsNeedingNameChanges)
+                                                {
+                                                    _lstItems.Remove(objToRename);
+                                                    lstExistingItems.Remove(objToRename);
+
+                                                    MasterIndexEntry objExistingEntry
+                                                        = (MasterIndexEntry) objToRename.Value;
+                                                    objItemToAdd = new ListItem(objToRename.Value, string.Format(
+                                                        GlobalSettings.CultureInfo,
+                                                        strFormat, objExistingEntry.DisplayName,
+                                                        string.Join(
+                                                            ',' + strSpace,
+                                                            objExistingEntry.FileNames)));
+                                                    _lstItems.Add(
+                                                        objItemToAdd); // Not using AddRange because of potential memory issues
+                                                    lstExistingItems.Add(objItemToAdd);
+                                                }
                                             }
                                         }
                                     }
