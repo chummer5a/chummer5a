@@ -1454,8 +1454,14 @@ namespace Chummer
                             xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " + strName.CleanXPath() + "]");
                         if (objXmlSkillNode != null)
                         {
-                            KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this, true) as KnowledgeSkill;
-                            SkillsSection.KnowledgeSkills.Add(objSkill);
+                            Skill objUncastSkill = Skill.FromData(objXmlSkillNode, this, true);
+                            if (objUncastSkill is KnowledgeSkill objSkill)
+                                SkillsSection.KnowledgeSkills.Add(objSkill);
+                            else
+                            {
+                                Utils.BreakIfDebug();
+                                objUncastSkill.Dispose();
+                            }
                         }
                         else
                         {
@@ -5729,6 +5735,7 @@ namespace Chummer
                 objSpirit.Dispose();
             ImprovementManager.ClearCachedValues(this);
             AttributeSection.Dispose();
+            SkillsSection.Dispose();
             DoOnSaveCompleted.Dispose();
             _blnDisposing = false;
         }

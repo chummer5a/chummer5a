@@ -346,7 +346,7 @@ namespace Chummer.Backend.Skills
 
             if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
                 return null;
-
+            
             foreach (SkillGroup objSkillGroup in objSkill.CharacterObject.SkillsSection.SkillGroups)
             {
                 if (objSkillGroup.Name == objSkill.SkillGroup)
@@ -359,18 +359,18 @@ namespace Chummer.Backend.Skills
 
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup,
-                (l, r) => string.CompareOrdinal(l.CurrentDisplayName, r.CurrentDisplayName),
-                (l, r) =>
+            objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup, SkillsSection.CompareSkillGroups,
+                (objExistingSkillGroup, objNewSkillGroup) =>
                 {
-                    foreach (Skill x in r.SkillList.Where(x => !l.SkillList.Contains(x)))
-                        l.Add(x);
+                    foreach (Skill x in objExistingSkillGroup.SkillList.Where(x => !objExistingSkillGroup.SkillList.Contains(x)))
+                        objExistingSkillGroup.Add(x);
+                    objNewSkillGroup.UnbindSkillGroup();
                 });
 
             return objNewGroup;
         }
 
-        private void Add(Skill skill)
+        public void Add(Skill skill)
         {
             _lstAffectedSkills.Add(skill);
             skill.PropertyChanged += SkillOnPropertyChanged;

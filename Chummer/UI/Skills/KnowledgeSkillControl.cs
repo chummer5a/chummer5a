@@ -427,9 +427,10 @@ namespace Chummer.UI.Skills
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
+            if (!_objSkill.AllowDelete)
+                return;
             if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
                 return;
-            _objSkill.UnbindSkill();
             _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_objSkill);
         }
 

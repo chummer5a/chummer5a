@@ -546,13 +546,11 @@ namespace Chummer.UI.Skills
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (_objSkill.AllowDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
-                    return;
-                _objSkill.UnbindSkill();
-                _objSkill.CharacterObject.SkillsSection.Skills.Remove(_objSkill);
-            }
+            if (!_objSkill.AllowDelete)
+                return;
+            if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
+                return;
+            _objSkill.CharacterObject.SkillsSection.Skills.Remove(_objSkill);
         }
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)

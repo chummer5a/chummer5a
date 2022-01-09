@@ -4897,7 +4897,6 @@ namespace Chummer
                                 if (objSkill.InternalId == objImprovement.ImprovedName)
                                 {
                                     objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
-                                    objSkill.UnbindSkill();
                                     objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
                                 }
                             }
