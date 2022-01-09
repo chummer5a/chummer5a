@@ -215,7 +215,7 @@ namespace Chummer
 
         private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
         private readonly ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
-        private readonly ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
+        private readonly CachedBindingList<Lifestyle> _lstLifestyles = new CachedBindingList<Lifestyle>();
         private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
         private readonly ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
         private readonly ObservableCollection<Metamagic> _lstMetamagics = new ObservableCollection<Metamagic>();
@@ -294,7 +294,15 @@ namespace Chummer
             _lstCritterPowers.CollectionChanged += SustainableOnCollectionChanged;
             _lstSustainedObjects.CollectionChanged += SustainedObjectsOnCollectionChanged;
             _lstInitiationGrades.CollectionChanged += InitiationGradesOnCollectionChanged;
+            _lstLifestyles.BeforeRemove += LstLifestylesOnBeforeRemove;
             _objTradition = new Tradition(this);
+        }
+
+        private void LstLifestylesOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            if (IsLoading)
+                return;
+            Lifestyles[e.OldIndex].Dispose();
         }
 
         private bool _blnClearingInitiations;
@@ -600,226 +608,277 @@ namespace Chummer
         {
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                 new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            switch (e.ListChangedType)
+            try
             {
-                case ListChangedType.Reset:
+                switch (e.ListChangedType)
                 {
-                    dicChangedProperties.Add(this, new HashSet<string>
+                    case ListChangedType.Reset:
                     {
-                        nameof(PowerPointsUsed),
-                        nameof(AnyPowerAdeptWayDiscountEnabled),
-                        nameof(AllowAdeptWayPowerDiscount)
-                    });
-                }
-                    break;
-                case ListChangedType.ItemAdded:
-                {
-                    dicChangedProperties.Add(this, new HashSet<string> {nameof(PowerPointsUsed)});
-                    Power objNewPower = Powers[e.NewIndex];
-                    if (!IsLoading)
-                    {
-                        // Needed in order to properly process named sources where
-                        // the tooltip was built before the object was added to the character
-                        foreach (Improvement objImprovement in Improvements)
-                        {
-                            if (objImprovement.SourceName != objNewPower.InternalId || !objImprovement.Enabled)
-                                continue;
-                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                                objImprovement.GetRelevantPropertyChangers())
-                            {
-                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                    out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(strPropertyToUpdate);
-                                else
-                                    dicChangedProperties.Add(objItemToUpdate,
-                                        new HashSet<string> { strPropertyToUpdate });
-                            }
-                        }
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(PowerPointsUsed));
+                        strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                        strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                        dicChangedProperties.Add(this, strTemp);
                     }
-
-                    if (objNewPower.AdeptWayDiscountEnabled)
-                    {
-                        dicChangedProperties[this].Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                        dicChangedProperties[this].Add(nameof(AllowAdeptWayPowerDiscount));
-                    }
-                }
-                    break;
-                case ListChangedType.ItemDeleted:
-                {
-                    dicChangedProperties.Add(this, new HashSet<string> {nameof(PowerPointsUsed)});
-                }
-                    break;
-                case ListChangedType.ItemChanged:
-                {
-                    if (e.PropertyDescriptor == null)
-                    {
                         break;
-                    }
-
-                    switch (e.PropertyDescriptor.Name)
+                    case ListChangedType.ItemAdded:
                     {
-                        case nameof(Power.AdeptWayDiscountEnabled):
-                            dicChangedProperties.Add(this, new HashSet<string>
-                            {
-                                nameof(AnyPowerAdeptWayDiscountEnabled),
-                                nameof(AllowAdeptWayPowerDiscount)
-                            });
-                            break;
-                        case nameof(Power.DiscountedAdeptWay):
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(PowerPointsUsed));
+                        dicChangedProperties.Add(this, strTemp);
+                        Power objNewPower = Powers[e.NewIndex];
+                        if (!IsLoading)
                         {
-                            dicChangedProperties.Add(this, new HashSet<string>
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            foreach (Improvement objImprovement in Improvements)
                             {
-                                nameof(PowerPointsUsed),
-                                nameof(AnyPowerAdeptWayDiscountEnabled),
-                                nameof(AllowAdeptWayPowerDiscount)
-                            });
-                            foreach (Power objPower in Powers)
-                            {
-                                dicChangedProperties.Add(objPower,
-                                    new HashSet<string> {nameof(Power.AdeptWayDiscountEnabled)});
+                                if (objImprovement.SourceName != objNewPower.InternalId || !objImprovement.Enabled)
+                                    continue;
+                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                         objImprovement.GetRelevantPropertyChangers())
+                                {
+                                    if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                                         out HashSet<string> setChangedProperties))
+                                        setChangedProperties.Add(strPropertyToUpdate);
+                                    else
+                                    {
+                                        HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                                        strInnerTemp.Add(strPropertyToUpdate);
+                                        dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                    }
+                                }
                             }
+                        }
 
+                        if (objNewPower.AdeptWayDiscountEnabled)
+                        {
+                            strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                            strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                        }
+                    }
+                        break;
+                    case ListChangedType.ItemDeleted:
+                    {
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(PowerPointsUsed));
+                        dicChangedProperties.Add(this, strTemp);
+                    }
+                        break;
+                    case ListChangedType.ItemChanged:
+                    {
+                        if (e.PropertyDescriptor == null)
+                        {
                             break;
                         }
-                        case nameof(Power.PowerPoints):
-                            dicChangedProperties.Add(this, new HashSet<string> {nameof(PowerPointsUsed)});
-                            break;
-                    }
-                }
-                    break;
-            }
 
-            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                        switch (e.PropertyDescriptor.Name)
+                        {
+                            case nameof(Power.AdeptWayDiscountEnabled):
+                            {
+                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                                strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                dicChangedProperties.Add(this, strTemp);
+                                break;
+                            }
+                            case nameof(Power.DiscountedAdeptWay):
+                            {
+                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                                strTemp.Add(nameof(PowerPointsUsed));
+                                strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                dicChangedProperties.Add(this, strTemp);
+                                foreach (Power objPower in Powers)
+                                {
+                                    HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                                    strInnerTemp.Add(nameof(Power.AdeptWayDiscountEnabled));
+                                    dicChangedProperties.Add(objPower, strInnerTemp);
+                                }
+
+                                break;
+                            }
+                            case nameof(Power.PowerPoints):
+                            {
+                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                                strTemp.Add(nameof(PowerPointsUsed));
+                                dicChangedProperties.Add(this, strTemp);
+                                break;
+                            }
+                        }
+                    }
+                        break;
+                }
+
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                }
+            }
+            finally
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
             }
         }
 
         private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
-                {
-                    {this, new HashSet<string> {nameof(MentorSpirits)}}
-                };
-            if (e.Action == NotifyCollectionChangedAction.Add && !IsLoading)
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+            try
             {
-                foreach (MentorSpirit objNewItem in e.NewItems)
+                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                strTemp.Add(nameof(MentorSpirits));
+                dicChangedProperties.Add(this, strTemp);
+                if (e.Action == NotifyCollectionChangedAction.Add && !IsLoading)
                 {
-                    // Needed in order to properly process named sources where
-                    // the tooltip was built before the object was added to the character
-                    foreach (Improvement objImprovement in Improvements)
+                    foreach (MentorSpirit objNewItem in e.NewItems)
                     {
-                        if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                            continue;
-                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                            objImprovement.GetRelevantPropertyChangers())
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        foreach (Improvement objImprovement in Improvements)
                         {
-                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                out HashSet<string> setChangedProperties))
-                                setChangedProperties.Add(strPropertyToUpdate);
-                            else
-                                dicChangedProperties.Add(objItemToUpdate,
-                                    new HashSet<string> { strPropertyToUpdate });
+                            if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                continue;
+                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                     objImprovement.GetRelevantPropertyChangers())
+                            {
+                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                                     out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(strPropertyToUpdate);
+                                else
+                                {
+                                    HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                                    strInnerTemp.Add(strPropertyToUpdate);
+                                    dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                }
+            }
+            finally
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
             }
         }
 
         private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
-                {
-                    {this, new HashSet<string> {nameof(Qualities)}}
-                };
-            if (e.Action != NotifyCollectionChangedAction.Move)
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+            try
             {
-                foreach (Power objPower in Powers)
+                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                strTemp.Add(nameof(Qualities));
+                dicChangedProperties.Add(this, strTemp);
+                if (e.Action != NotifyCollectionChangedAction.Move)
                 {
-                    dicChangedProperties.Add(objPower, new HashSet<string> {nameof(Power.AdeptWayDiscountEnabled)});
-                }
-
-                if (!IsLoading)
-                {
-                    switch (e.Action)
+                    foreach (Power objPower in Powers)
                     {
-                        case NotifyCollectionChangedAction.Add:
+                        HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                        strInnerTemp.Add(nameof(Power.AdeptWayDiscountEnabled));
+                        dicChangedProperties.Add(objPower, strInnerTemp);
+                    }
+
+                    if (!IsLoading)
+                    {
+                        switch (e.Action)
                         {
-                            foreach (Quality objNewItem in e.NewItems)
+                            case NotifyCollectionChangedAction.Add:
                             {
-                                // Needed in order to properly process named sources where
-                                // the tooltip was built before the object was added to the character
-                                foreach (Improvement objImprovement in Improvements)
+                                foreach (Quality objNewItem in e.NewItems)
                                 {
-                                    if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                        continue;
-                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                                        objImprovement.GetRelevantPropertyChangers())
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                                             out HashSet<string> setChangedProperties))
-                                            setChangedProperties.Add(strPropertyToUpdate);
-                                        else
-                                            dicChangedProperties.Add(objItemToUpdate,
-                                                                     new HashSet<string> {strPropertyToUpdate});
+                                        if (objImprovement.SourceName != objNewItem.InternalId
+                                            || !objImprovement.Enabled)
+                                            continue;
+                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                  string strPropertyToUpdate) in
+                                                 objImprovement.GetRelevantPropertyChangers())
+                                        {
+                                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                    out HashSet<string> setChangedProperties))
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            else
+                                            {
+                                                HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                                                strInnerTemp.Add(strPropertyToUpdate);
+                                                dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                            }
+                                        }
                                     }
                                 }
-                            }
 
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (Quality objOldItem in e.OldItems)
-                            {
-                                objOldItem.DeleteQuality();
+                                break;
                             }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            foreach (Quality objOldItem in e.OldItems)
+                            case NotifyCollectionChangedAction.Remove:
                             {
-                                objOldItem.DeleteQuality();
-                            }
-                            foreach (Quality objNewItem in e.NewItems)
-                            {
-                                // Needed in order to properly process named sources where
-                                // the tooltip was built before the object was added to the character
-                                foreach (Improvement objImprovement in Improvements)
+                                foreach (Quality objOldItem in e.OldItems)
                                 {
-                                    if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                        continue;
-                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                                        objImprovement.GetRelevantPropertyChangers())
+                                    objOldItem.DeleteQuality();
+                                }
+
+                                break;
+                            }
+                            case NotifyCollectionChangedAction.Replace:
+                            {
+                                foreach (Quality objOldItem in e.OldItems)
+                                {
+                                    objOldItem.DeleteQuality();
+                                }
+
+                                foreach (Quality objNewItem in e.NewItems)
+                                {
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
                                     {
-                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                                             out HashSet<string> setChangedProperties))
-                                            setChangedProperties.Add(strPropertyToUpdate);
-                                        else
-                                            dicChangedProperties.Add(objItemToUpdate,
-                                                                     new HashSet<string> { strPropertyToUpdate });
+                                        if (objImprovement.SourceName != objNewItem.InternalId
+                                            || !objImprovement.Enabled)
+                                            continue;
+                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                  string strPropertyToUpdate) in
+                                                 objImprovement.GetRelevantPropertyChangers())
+                                        {
+                                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                    out HashSet<string> setChangedProperties))
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            else
+                                            {
+                                                HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                                                strInnerTemp.Add(strPropertyToUpdate);
+                                                dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                            }
+                                        }
                                     }
                                 }
-                            }
 
-                            break;
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                }
+            }
+            finally
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
             }
         }
 
@@ -829,31 +888,41 @@ namespace Chummer
             {
                 Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                     new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-                foreach (MartialArt objNewItem in e.NewItems)
+                try
                 {
-                    // Needed in order to properly process named sources where
-                    // the tooltip was built before the object was added to the character
-                    foreach (Improvement objImprovement in Improvements)
+                    foreach (MartialArt objNewItem in e.NewItems)
                     {
-                        if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                            continue;
-                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                            objImprovement.GetRelevantPropertyChangers())
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        foreach (Improvement objImprovement in Improvements)
                         {
-                            if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                out HashSet<string> setChangedProperties))
+                            if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                continue;
+                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                     objImprovement.GetRelevantPropertyChangers())
                             {
-                                setChangedProperties = new HashSet<string>(1);
-                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                                      out HashSet<string> setChangedProperties))
+                                {
+                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                }
+
+                                setChangedProperties.Add(strPropertyToUpdate);
                             }
-                            setChangedProperties.Add(strPropertyToUpdate);
                         }
                     }
-                }
 
-                foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                             dicChangedProperties)
+                    {
+                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                    }
+                }
+                finally
                 {
-                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
                 }
             }
         }
@@ -886,93 +955,107 @@ namespace Chummer
             {
                 Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                     new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-                foreach (Metamagic objNewItem in lstImprovementSourcesToProcess)
+                try
                 {
-                    // Needed in order to properly process named sources where
-                    // the tooltip was built before the object was added to the character
-                    foreach (Improvement objImprovement in Improvements)
+                    foreach (Metamagic objNewItem in lstImprovementSourcesToProcess)
                     {
-                        if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                            continue;
-                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                            objImprovement.GetRelevantPropertyChangers())
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        foreach (Improvement objImprovement in Improvements)
                         {
-                            if (!dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
+                            if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                continue;
+                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                     objImprovement.GetRelevantPropertyChangers())
                             {
-                                setChangedProperties = new HashSet<string>(1);
-                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                                      out HashSet<string> setChangedProperties))
+                                {
+                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                }
+
+                                setChangedProperties.Add(strPropertyToUpdate);
                             }
-                            setChangedProperties.Add(strPropertyToUpdate);
                         }
                     }
-                }
 
-                foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                             dicChangedProperties)
+                    {
+                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                    }
+                }
+                finally
                 {
-                    kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
                 }
             }
         }
 
         private void ExpenseLogOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            HashSet<string> setPropertiesToRefresh = new HashSet<string>();
-            switch (e.Action)
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> setPropertiesToRefresh))
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (ExpenseLogEntry objNewItem in e.NewItems)
-                    {
-                        if ((objNewItem.Amount > 0 || objNewItem.ForceCareerVisible) && !objNewItem.Refund)
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (ExpenseLogEntry objNewItem in e.NewItems)
                         {
-                            setPropertiesToRefresh.Add(objNewItem.Type == ExpenseType.Nuyen
-                                ? nameof(CareerNuyen)
-                                : nameof(CareerKarma));
+                            if ((objNewItem.Amount > 0 || objNewItem.ForceCareerVisible) && !objNewItem.Refund)
+                            {
+                                setPropertiesToRefresh.Add(objNewItem.Type == ExpenseType.Nuyen
+                                                               ? nameof(CareerNuyen)
+                                                               : nameof(CareerKarma));
+                            }
                         }
-                    }
 
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (ExpenseLogEntry objOldItem in e.OldItems)
-                    {
-                        if ((objOldItem.Amount > 0 || objOldItem.ForceCareerVisible) && !objOldItem.Refund)
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (ExpenseLogEntry objOldItem in e.OldItems)
                         {
-                            setPropertiesToRefresh.Add(objOldItem.Type == ExpenseType.Nuyen
-                                ? nameof(CareerNuyen)
-                                : nameof(CareerKarma));
+                            if ((objOldItem.Amount > 0 || objOldItem.ForceCareerVisible) && !objOldItem.Refund)
+                            {
+                                setPropertiesToRefresh.Add(objOldItem.Type == ExpenseType.Nuyen
+                                                               ? nameof(CareerNuyen)
+                                                               : nameof(CareerKarma));
+                            }
                         }
-                    }
 
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    foreach (ExpenseLogEntry objOldItem in e.OldItems)
-                    {
-                        if ((objOldItem.Amount > 0 || objOldItem.ForceCareerVisible) && !objOldItem.Refund)
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (ExpenseLogEntry objOldItem in e.OldItems)
                         {
-                            setPropertiesToRefresh.Add(objOldItem.Type == ExpenseType.Nuyen
-                                ? nameof(CareerNuyen)
-                                : nameof(CareerKarma));
+                            if ((objOldItem.Amount > 0 || objOldItem.ForceCareerVisible) && !objOldItem.Refund)
+                            {
+                                setPropertiesToRefresh.Add(objOldItem.Type == ExpenseType.Nuyen
+                                                               ? nameof(CareerNuyen)
+                                                               : nameof(CareerKarma));
+                            }
                         }
-                    }
 
-                    foreach (ExpenseLogEntry objNewItem in e.NewItems)
-                    {
-                        if ((objNewItem.Amount > 0 || objNewItem.ForceCareerVisible) && !objNewItem.Refund)
+                        foreach (ExpenseLogEntry objNewItem in e.NewItems)
                         {
-                            setPropertiesToRefresh.Add(objNewItem.Type == ExpenseType.Nuyen
-                                ? nameof(CareerNuyen)
-                                : nameof(CareerKarma));
+                            if ((objNewItem.Amount > 0 || objNewItem.ForceCareerVisible) && !objNewItem.Refund)
+                            {
+                                setPropertiesToRefresh.Add(objNewItem.Type == ExpenseType.Nuyen
+                                                               ? nameof(CareerNuyen)
+                                                               : nameof(CareerKarma));
+                            }
                         }
-                    }
 
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    setPropertiesToRefresh.Add(nameof(CareerNuyen));
-                    setPropertiesToRefresh.Add(nameof(CareerKarma));
-                    break;
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        setPropertiesToRefresh.Add(nameof(CareerNuyen));
+                        setPropertiesToRefresh.Add(nameof(CareerKarma));
+                        break;
+                }
+
+                if (setPropertiesToRefresh.Count > 0)
+                    OnMultiplePropertyChanged(setPropertiesToRefresh);
             }
-
-            if (setPropertiesToRefresh.Count > 0)
-                OnMultiplePropertyChanged(setPropertiesToRefresh);
         }
 
         private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -980,91 +1063,107 @@ namespace Chummer
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                 new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             bool blnDoEncumbranceRefresh = false;
-            switch (e.Action)
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (Armor objNewItem in e.NewItems)
-                    {
-                        if (objNewItem.Equipped && objNewItem.Encumbrance)
-                        {
-                            blnDoEncumbranceRefresh = true;
-                        }
-
-                        if (!IsLoading)
-                        {
-                            // Needed in order to properly process named sources where
-                            // the tooltip was built before the object was added to the character
-                            foreach (Improvement objImprovement in Improvements)
-                            {
-                                if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId &&
-                                    objImprovement.Enabled)
-                                {
-                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                                        objImprovement.GetRelevantPropertyChangers())
-                                    {
-                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                            out HashSet<string> setChangedProperties))
-                                            setChangedProperties.Add(strPropertyToUpdate);
-                                        else
-                                            dicChangedProperties.Add(objItemToUpdate,
-                                                new HashSet<string> { strPropertyToUpdate });
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (Armor objOldItem in e.OldItems)
-                    {
-                        if (objOldItem.Equipped && objOldItem.Encumbrance)
-                        {
-                            blnDoEncumbranceRefresh = true;
-                            break;
-                        }
-                    }
-
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    foreach (Armor objOldItem in e.OldItems)
-                    {
-                        if (objOldItem.Equipped && objOldItem.Encumbrance)
-                        {
-                            blnDoEncumbranceRefresh = true;
-                            break;
-                        }
-                    }
-
-                    if (!blnDoEncumbranceRefresh)
-                    {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
                         foreach (Armor objNewItem in e.NewItems)
                         {
                             if (objNewItem.Equipped && objNewItem.Encumbrance)
                             {
                                 blnDoEncumbranceRefresh = true;
+                            }
+
+                            if (!IsLoading)
+                            {
+                                // Needed in order to properly process named sources where
+                                // the tooltip was built before the object was added to the character
+                                foreach (Improvement objImprovement in Improvements)
+                                {
+                                    if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId &&
+                                        objImprovement.Enabled)
+                                    {
+                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                  string strPropertyToUpdate) in
+                                                 objImprovement.GetRelevantPropertyChangers())
+                                        {
+                                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                    out HashSet<string> setChangedProperties))
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            else
+                                            {
+                                                HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                                                strInnerTemp.Add(strPropertyToUpdate);
+                                                dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Armor objOldItem in e.OldItems)
+                        {
+                            if (objOldItem.Equipped && objOldItem.Encumbrance)
+                            {
+                                blnDoEncumbranceRefresh = true;
                                 break;
                             }
                         }
+
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (Armor objOldItem in e.OldItems)
+                        {
+                            if (objOldItem.Equipped && objOldItem.Encumbrance)
+                            {
+                                blnDoEncumbranceRefresh = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnDoEncumbranceRefresh)
+                        {
+                            foreach (Armor objNewItem in e.NewItems)
+                            {
+                                if (objNewItem.Equipped && objNewItem.Encumbrance)
+                                {
+                                    blnDoEncumbranceRefresh = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        blnDoEncumbranceRefresh = true;
+                        break;
+                }
+
+                if (blnDoEncumbranceRefresh)
+                {
+                    if (dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(nameof(GetArmorRating));
+                    else
+                    {
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(GetArmorRating));
+                        dicChangedProperties.Add(this, strTemp);
                     }
+                }
 
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    blnDoEncumbranceRefresh = true;
-                    break;
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                }
             }
-
-            if (blnDoEncumbranceRefresh)
+            finally
             {
-                if (dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
-                    setChangedProperties.Add(nameof(GetArmorRating));
-                else
-                    dicChangedProperties.Add(this, new HashSet<string> {nameof(GetArmorRating)});
-            }
-
-            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
-            {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
             }
 
             if (blnDoEncumbranceRefresh)
@@ -1076,67 +1175,62 @@ namespace Chummer
             bool blnDoCyberlimbAttributesRefresh = false;
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                 new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            switch (e.Action)
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                    dicChangedProperties.Add(this, new HashSet<string> {nameof(RedlinerBonus)});
-                    foreach (Cyberware objNewItem in e.NewItems)
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
                     {
-                        dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                        if (!IsLoading)
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(RedlinerBonus));
+                        dicChangedProperties.Add(this, strTemp);
+                        foreach (Cyberware objNewItem in e.NewItems)
                         {
-                            // Needed in order to properly process named sources where
-                            // the tooltip was built before the object was added to the character
-                            foreach (Improvement objImprovement in Improvements)
+                            dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
+                            if (!IsLoading)
                             {
-                                if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
-                                    objNewItem.InternalId && objImprovement.Enabled)
+                                // Needed in order to properly process named sources where
+                                // the tooltip was built before the object was added to the character
+                                foreach (Improvement objImprovement in Improvements)
                                 {
-                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
-                                        objImprovement.GetRelevantPropertyChangers())
+                                    if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
+                                        objNewItem.InternalId && objImprovement.Enabled)
                                     {
-                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
-                                            out HashSet<string> setChangedProperties))
-                                            setChangedProperties.Add(strPropertyToUpdate);
-                                        else
-                                            dicChangedProperties.Add(objItemToUpdate,
-                                                new HashSet<string> { strPropertyToUpdate });
+                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                  string strPropertyToUpdate) in
+                                                 objImprovement.GetRelevantPropertyChangers())
+                                        {
+                                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                    out HashSet<string> setChangedProperties))
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            else
+                                            {
+                                                HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
+                                                strInnerTemp.Add(strPropertyToUpdate);
+                                                dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                            }
+                                        }
                                     }
                                 }
                             }
+
+                            if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
+                                objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
+                                objNewItem.ParentVehicle == null &&
+                                !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
+                                !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                            {
+                                blnDoCyberlimbAttributesRefresh = true;
+                            }
                         }
 
-                        if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                            objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
-                            objNewItem.ParentVehicle == null &&
-                            !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
-                            !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
-                        {
-                            blnDoCyberlimbAttributesRefresh = true;
-                        }
+                        break;
                     }
-
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    dicChangedProperties.Add(this, new HashSet<string> {nameof(RedlinerBonus)});
-                    foreach (Cyberware objOldItem in e.OldItems)
+                    case NotifyCollectionChangedAction.Remove:
                     {
-                        dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                        if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                            objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
-                            objOldItem.ParentVehicle == null &&
-                            !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
-                            !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
-                        {
-                            blnDoCyberlimbAttributesRefresh = true;
-                        }
-                    }
-
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    dicChangedProperties.Add(this, new HashSet<string> {nameof(RedlinerBonus)});
-                    if (!Settings.DontUseCyberlimbCalculation)
-                    {
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(RedlinerBonus));
+                        dicChangedProperties.Add(this, strTemp);
                         foreach (Cyberware objOldItem in e.OldItems)
                         {
                             dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
@@ -1150,47 +1244,85 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Cyberware objNewItem in e.NewItems)
+                        break;
+                    }
+                    case NotifyCollectionChangedAction.Replace:
+                    {
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(RedlinerBonus));
+                        dicChangedProperties.Add(this, strTemp);
+                        if (!Settings.DontUseCyberlimbCalculation)
                         {
-                            dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                            if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
-                                objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
-                                objNewItem.ParentVehicle == null &&
-                                !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
-                                !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                            foreach (Cyberware objOldItem in e.OldItems)
                             {
-                                blnDoCyberlimbAttributesRefresh = true;
+                                dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
+                                if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
+                                    objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
+                                    objOldItem.ParentVehicle == null &&
+                                    !string.IsNullOrWhiteSpace(objOldItem.LimbSlot) &&
+                                    !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                                {
+                                    blnDoCyberlimbAttributesRefresh = true;
+                                }
+                            }
+
+                            foreach (Cyberware objNewItem in e.NewItems)
+                            {
+                                dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
+                                if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
+                                    objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
+                                    objNewItem.ParentVehicle == null &&
+                                    !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
+                                    !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                {
+                                    blnDoCyberlimbAttributesRefresh = true;
+                                }
                             }
                         }
+
+                        break;
                     }
-
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
-                    dicChangedProperties.Add(this, new HashSet<string>
+                    case NotifyCollectionChangedAction.Reset:
                     {
-                        nameof(RedlinerBonus),
-                        nameof(PrototypeTranshumanEssenceUsed),
-                        nameof(BiowareEssence),
-                        nameof(CyberwareEssence),
-                        nameof(EssenceHole)
-                    });
-                    break;
-            }
+                        blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(RedlinerBonus));
+                        strTemp.Add(nameof(PrototypeTranshumanEssenceUsed));
+                        strTemp.Add(nameof(BiowareEssence));
+                        strTemp.Add(nameof(CyberwareEssence));
+                        strTemp.Add(nameof(EssenceHole));
+                        dicChangedProperties.Add(this, strTemp);
+                        break;
+                    }
+                }
 
-            if (blnDoCyberlimbAttributesRefresh)
-            {
-                CharacterAttrib objAttribute = GetAttribute("AGI");
-                if (objAttribute != null)
-                    dicChangedProperties.Add(objAttribute, new HashSet<string> {nameof(CharacterAttrib.TotalValue)});
-                objAttribute = GetAttribute("STR");
-                if (objAttribute != null)
-                    dicChangedProperties.Add(objAttribute, new HashSet<string> {nameof(CharacterAttrib.TotalValue)});
-            }
+                if (blnDoCyberlimbAttributesRefresh)
+                {
+                    CharacterAttrib objAttribute = GetAttribute("AGI");
+                    if (objAttribute != null)
+                    {
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(CharacterAttrib.TotalValue));
+                        dicChangedProperties.Add(objAttribute, strTemp);
+                    }
+                    objAttribute = GetAttribute("STR");
+                    if (objAttribute != null)
+                    {
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(CharacterAttrib.TotalValue));
+                        dicChangedProperties.Add(objAttribute, strTemp);
+                    }
+                }
 
-            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                }
+            }
+            finally
             {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
             }
         }
 
@@ -2785,246 +2917,273 @@ namespace Chummer
                                         GlobalSettings.DefaultCharacterSettingDefaultValue, out objDefaultSettings))
                                     objDefaultSettings = SettingsManager.LoadedCharacterSettings.Values.First();
 
-                                HashSet<string> setSavedBooks = new HashSet<string>();
-                                foreach (XPathNavigator xmlBook in xmlCharacterNavigator.SelectAndCacheExpression(
-                                    "sources/source"))
+                                CharacterSettings objProspectiveSettings;
+                                bool blnShowSelectBP = false;
+                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                           out HashSet<string> setSavedBooks))
                                 {
-                                    if (!string.IsNullOrEmpty(xmlBook.Value))
-                                        setSavedBooks.Add(xmlBook.Value);
-                                }
-                                if (setSavedBooks.Count == 0)
-                                    setSavedBooks = objDefaultSettings.Books.ToHashSet();
-
-                                XPathNodeIterator xmlCustomDirectoryNames = xmlCharacterNavigator
-                                    .SelectAndCacheExpression(
-                                        "customdatadirectorynames/directoryname");
-                                List<string> lstSavedCustomDataDirectoryNames = new List<string>(xmlCustomDirectoryNames.Count);
-                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCustomDirectoryNames)
-                                {
-                                    if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
-                                        lstSavedCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
-                                }
-
-                                decimal decLegacyMaxNuyen = objDefaultSettings.NuyenMaximumBP;
-                                xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref decLegacyMaxNuyen);
-                                int intLegacyMaxKarma = objDefaultSettings.BuildKarma;
-                                xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref intLegacyMaxKarma);
-
-                                // Calculate a score for a character option that roughly coincides with how suitable it is as a replacement for the current one the character save contains
-                                // Settings with a negative score should not be considered suitable at all
-                                int CalculateCharacterSettingsMatchScore(CharacterSettings objOptionsToCheck)
-                                {
-                                    int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
-                                    int intDummy = intLegacyMaxKarma - objOptionsToCheck.BuildKarma;
-                                    intReturn -= intDummy.RaiseToPower(2);
-                                    intDummy = decLegacyMaxNuyen.StandardRound() -
-                                               objOptionsToCheck.NuyenMaximumBP.StandardRound();
-                                    intReturn -= intDummy.RaiseToPower(2);
-                                    int intBaseline = decLegacyMaxNuyen.StandardRound().RaiseToPower(2) +
-                                                      intLegacyMaxKarma.RaiseToPower(2);
-                                    intDummy = setSavedBooks.Count *
-                                               (lstSavedCustomDataDirectoryNames.Count + 1) *
-                                               intBaseline;
-                                    if (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule)
+                                    foreach (XPathNavigator xmlBook in xmlCharacterNavigator.SelectAndCacheExpression(
+                                                 "sources/source"))
                                     {
-                                        if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
+                                        if (!string.IsNullOrEmpty(xmlBook.Value))
+                                            setSavedBooks.Add(xmlBook.Value);
+                                    }
+
+                                    if (setSavedBooks.Count == 0)
+                                        setSavedBooks.AddRange(objDefaultSettings.Books);
+
+                                    XPathNodeIterator xmlCustomDirectoryNames = xmlCharacterNavigator
+                                        .SelectAndCacheExpression(
+                                            "customdatadirectorynames/directoryname");
+                                    List<string> lstSavedCustomDataDirectoryNames
+                                        = new List<string>(xmlCustomDirectoryNames.Count);
+                                    foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCustomDirectoryNames)
+                                    {
+                                        if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
+                                            lstSavedCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
+                                    }
+
+                                    decimal decLegacyMaxNuyen = objDefaultSettings.NuyenMaximumBP;
+                                    xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref decLegacyMaxNuyen);
+                                    int intLegacyMaxKarma = objDefaultSettings.BuildKarma;
+                                    xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref intLegacyMaxKarma);
+
+                                    // Calculate a score for a character option that roughly coincides with how suitable it is as a replacement for the current one the character save contains
+                                    // Settings with a negative score should not be considered suitable at all
+                                    int CalculateCharacterSettingsMatchScore(CharacterSettings objOptionsToCheck)
+                                    {
+                                        int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
+                                        int intDummy = intLegacyMaxKarma - objOptionsToCheck.BuildKarma;
+                                        intReturn -= intDummy.RaiseToPower(2);
+                                        intDummy = decLegacyMaxNuyen.StandardRound() -
+                                                   objOptionsToCheck.NuyenMaximumBP.StandardRound();
+                                        intReturn -= intDummy.RaiseToPower(2);
+                                        int intBaseline = decLegacyMaxNuyen.StandardRound().RaiseToPower(2) +
+                                                          intLegacyMaxKarma.RaiseToPower(2);
+                                        intDummy = setSavedBooks.Count *
+                                                   (lstSavedCustomDataDirectoryNames.Count + 1) *
+                                                   intBaseline;
+                                        if (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule)
                                         {
-                                            intReturn += int.MaxValue / 2 + 4;
+                                            if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
+                                            {
+                                                intReturn += int.MaxValue / 2 + 4;
+                                            }
+                                            else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                     eSavedBuildMethod.UsesPriorityTables())
+                                            {
+                                                intReturn += int.MaxValue / 2 + 2;
+                                            }
+                                            else
+                                                intReturn += int.MaxValue / 2;
+                                        }
+                                        else if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
+                                        {
+                                            intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
                                         }
                                         else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
                                                  eSavedBuildMethod.UsesPriorityTables())
                                         {
-                                            intReturn += int.MaxValue / 2 + 2;
+                                            intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2) / 2;
                                         }
-                                        else
-                                            intReturn += int.MaxValue / 2;
-                                    }
-                                    else if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
-                                    {
-                                        intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
-                                    }
-                                    else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
-                                             eSavedBuildMethod.UsesPriorityTables())
-                                    {
-                                        intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2) / 2;
-                                    }
 
-                                    for (int i = 0; i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count; ++i)
-                                    {
-                                        string strLoopCustomDataName =
-                                            objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
-                                        int intLoopIndex =
-                                            lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
-                                        if (intLoopIndex < 0)
-                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
-                                                         intBaseline;
-                                        else
-                                            intReturn -= (i - intLoopIndex).RaiseToPower(2) * intBaseline;
-                                    }
-
-                                    foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
-                                    {
-                                        if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
-                                                x => x.Name != strLoopCustomDataName))
-                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
-                                                                          .RaiseToPower(2) *
-                                                         intBaseline;
-                                    }
-
-                                    int intBookBaselineScore =
-                                        (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
-                                    HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
-                                    setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                    intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(4)
-                                                  + (objOptionsToCheck.Books.Count - setDummyBooks.Count).RaiseToPower(2))
-                                                 * intBookBaselineScore;
-                                    return intReturn;
-                                }
-
-                                bool blnShowSelectBP = false;
-                                if (!SettingsManager.LoadedCharacterSettings.TryGetValue(_strSettingsKey, out CharacterSettings objProspectiveSettings))
-                                {
-                                    // Prompt if we want to switch options or leave
-                                    if (!Utils.IsUnitTest && showWarnings)
-                                    {
-                                        if (Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"),
-                                                Path.GetFileNameWithoutExtension(_strSettingsKey)),
-                                            LanguageManager.GetString(
-                                                "MessageTitle_CharacterOptions_CannotLoadSetting"),
-                                            MessageBoxButtons.YesNo) == DialogResult.No)
+                                        for (int i = 0;
+                                             i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+                                             ++i)
                                         {
-                                            return false;
+                                            string strLoopCustomDataName =
+                                                objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
+                                            int intLoopIndex =
+                                                lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
+                                            if (intLoopIndex < 0)
+                                                intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
+                                                                              .RaiseToPower(2) *
+                                                             intBaseline;
+                                            else
+                                                intReturn -= (i - intLoopIndex).RaiseToPower(2) * intBaseline;
                                         }
 
-                                        blnShowSelectBP = true;
-                                    }
-
-                                    // Set up interim options for selection by build method
-                                    string strReplacementSettingsKey = string.Empty;
-                                    int intMostSuitable = 0;
-                                    foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in SettingsManager
-                                        .LoadedCharacterSettings)
-                                    {
-                                        int intLoopScore = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
-                                        if (intLoopScore > intMostSuitable)
+                                        foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
                                         {
-                                            intMostSuitable = intLoopScore;
-                                            strReplacementSettingsKey = kvpLoopOptions.Key;
-                                        }
-                                    }
-
-                                    if (string.IsNullOrEmpty(strReplacementSettingsKey)
-                                        || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                            strReplacementSettingsKey, out objProspectiveSettings))
-                                    {
-                                        strReplacementSettingsKey = GlobalSettings.DefaultCharacterSettingDefaultValue;
-                                        if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                            strReplacementSettingsKey, out objProspectiveSettings))
-                                        {
-                                            objProspectiveSettings
-                                                = SettingsManager.LoadedCharacterSettings.Values.First();
-                                            strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
-                                        }
-                                    }
-                                    _strSettingsKey = strReplacementSettingsKey;
-                                    LoadAsDirty = true;
-                                }
-                                else if (!Created && objProspectiveSettings.BuildMethod != eSavedBuildMethod)
-                                {
-                                    // Prompt if we want to switch options or leave
-                                    if (!Utils.IsUnitTest && showWarnings)
-                                    {
-                                        if (Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                LanguageManager.GetString("Message_CharacterOptions_DesyncBuildMethod"),
-                                                Path.GetFileNameWithoutExtension(_strSettingsKey),
-                                                LanguageManager.GetString("String_" + objProspectiveSettings.BuildMethod),
-                                                LanguageManager.GetString("String_" + eSavedBuildMethod)),
-                                            LanguageManager.GetString(
-                                                "MessageTitle_CharacterOptions_DesyncBuildMethod"),
-                                            MessageBoxButtons.YesNo) == DialogResult.No)
-                                        {
-                                            return false;
+                                            if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
+                                                    x => x.Name != strLoopCustomDataName))
+                                                intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
+                                                                              .RaiseToPower(2) *
+                                                             intBaseline;
                                         }
 
-                                        blnShowSelectBP = true;
+                                        int intBookBaselineScore =
+                                            (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
+                                        HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
+                                        setDummyBooks.IntersectWith(objOptionsToCheck.Books);
+                                        intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(4)
+                                                      + (objOptionsToCheck.Books.Count - setDummyBooks.Count)
+                                                      .RaiseToPower(2))
+                                                     * intBookBaselineScore;
+                                        return intReturn;
                                     }
 
-                                    // Set up interim options for selection by build method
-                                    string strReplacementSettingsKey = string.Empty;
-                                    int intMostSuitable = 0;
-                                    foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in SettingsManager
-                                        .LoadedCharacterSettings)
+                                    if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            _strSettingsKey, out objProspectiveSettings))
                                     {
-                                        int intLoopScore = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
-                                        if (intLoopScore > intMostSuitable)
+                                        // Prompt if we want to switch options or leave
+                                        if (!Utils.IsUnitTest && showWarnings)
                                         {
-                                            intMostSuitable = intLoopScore;
-                                            strReplacementSettingsKey = kvpLoopOptions.Key;
-                                        }
-                                    }
+                                            if (Program.MainForm.ShowMessageBox(
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "Message_CharacterOptions_CannotLoadSetting"),
+                                                                  Path.GetFileNameWithoutExtension(_strSettingsKey)),
+                                                    LanguageManager.GetString(
+                                                        "MessageTitle_CharacterOptions_CannotLoadSetting"),
+                                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                            {
+                                                return false;
+                                            }
 
-                                    if (string.IsNullOrEmpty(strReplacementSettingsKey)
-                                        || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                            strReplacementSettingsKey, out objProspectiveSettings))
-                                    {
-                                        strReplacementSettingsKey = GlobalSettings.DefaultCharacterSettingDefaultValue;
-                                        if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                            strReplacementSettingsKey, out objProspectiveSettings))
-                                        {
-                                            objProspectiveSettings
-                                                = SettingsManager.LoadedCharacterSettings.Values.First();
-                                            strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                            blnShowSelectBP = true;
                                         }
+
+                                        // Set up interim options for selection by build method
+                                        string strReplacementSettingsKey = string.Empty;
+                                        int intMostSuitable = 0;
+                                        foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
+                                                 SettingsManager
+                                                     .LoadedCharacterSettings)
+                                        {
+                                            int intLoopScore
+                                                = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
+                                            if (intLoopScore > intMostSuitable)
+                                            {
+                                                intMostSuitable = intLoopScore;
+                                                strReplacementSettingsKey = kvpLoopOptions.Key;
+                                            }
+                                        }
+
+                                        if (string.IsNullOrEmpty(strReplacementSettingsKey)
+                                            || !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                strReplacementSettingsKey, out objProspectiveSettings))
+                                        {
+                                            strReplacementSettingsKey
+                                                = GlobalSettings.DefaultCharacterSettingDefaultValue;
+                                            if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                    strReplacementSettingsKey, out objProspectiveSettings))
+                                            {
+                                                objProspectiveSettings
+                                                    = SettingsManager.LoadedCharacterSettings.Values.First();
+                                                strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                            }
+                                        }
+
+                                        _strSettingsKey = strReplacementSettingsKey;
+                                        LoadAsDirty = true;
                                     }
-                                    _strSettingsKey = strReplacementSettingsKey;
-                                    LoadAsDirty = true;
-                                }
-                                // Legacy load stuff
-                                else if (!Utils.IsUnitTest && showWarnings &&
-                                         (setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
-                                {
-                                    CharacterSettings objCurrentlyLoadedSettings = objProspectiveSettings;
-                                    // More books is fine, so just test if the stored book list is a subset of the current option's book list
-                                    bool blnPromptConfirmSetting =
-                                        !setSavedBooks.IsSubsetOf(objCurrentlyLoadedSettings.Books);
-                                    if (!blnPromptConfirmSetting)
+                                    else if (!Created && objProspectiveSettings.BuildMethod != eSavedBuildMethod)
                                     {
-                                        // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
-                                        blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count !=
-                                                                  objCurrentlyLoadedSettings
-                                                                      .EnabledCustomDataDirectoryInfos
-                                                                      .Count;
+                                        // Prompt if we want to switch options or leave
+                                        if (!Utils.IsUnitTest && showWarnings)
+                                        {
+                                            if (Program.MainForm.ShowMessageBox(
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "Message_CharacterOptions_DesyncBuildMethod"),
+                                                                  Path.GetFileNameWithoutExtension(_strSettingsKey),
+                                                                  LanguageManager.GetString(
+                                                                      "String_" + objProspectiveSettings.BuildMethod),
+                                                                  LanguageManager.GetString(
+                                                                      "String_" + eSavedBuildMethod)),
+                                                    LanguageManager.GetString(
+                                                        "MessageTitle_CharacterOptions_DesyncBuildMethod"),
+                                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                            {
+                                                return false;
+                                            }
+
+                                            blnShowSelectBP = true;
+                                        }
+
+                                        // Set up interim options for selection by build method
+                                        string strReplacementSettingsKey = string.Empty;
+                                        int intMostSuitable = 0;
+                                        foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
+                                                 SettingsManager
+                                                     .LoadedCharacterSettings)
+                                        {
+                                            int intLoopScore
+                                                = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
+                                            if (intLoopScore > intMostSuitable)
+                                            {
+                                                intMostSuitable = intLoopScore;
+                                                strReplacementSettingsKey = kvpLoopOptions.Key;
+                                            }
+                                        }
+
+                                        if (string.IsNullOrEmpty(strReplacementSettingsKey)
+                                            || !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                strReplacementSettingsKey, out objProspectiveSettings))
+                                        {
+                                            strReplacementSettingsKey
+                                                = GlobalSettings.DefaultCharacterSettingDefaultValue;
+                                            if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                    strReplacementSettingsKey, out objProspectiveSettings))
+                                            {
+                                                objProspectiveSettings
+                                                    = SettingsManager.LoadedCharacterSettings.Values.First();
+                                                strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                            }
+                                        }
+
+                                        _strSettingsKey = strReplacementSettingsKey;
+                                        LoadAsDirty = true;
+                                    }
+                                    // Legacy load stuff
+                                    else if (!Utils.IsUnitTest && showWarnings &&
+                                             (setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
+                                    {
+                                        CharacterSettings objCurrentlyLoadedSettings = objProspectiveSettings;
+                                        // More books is fine, so just test if the stored book list is a subset of the current option's book list
+                                        bool blnPromptConfirmSetting =
+                                            !setSavedBooks.IsSubsetOf(objCurrentlyLoadedSettings.Books);
                                         if (!blnPromptConfirmSetting)
                                         {
-                                            // Check to make sure all the names are the same
-                                            for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
+                                            // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
+                                            blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count !=
+                                                                      objCurrentlyLoadedSettings
+                                                                          .EnabledCustomDataDirectoryInfos
+                                                                          .Count;
+                                            if (!blnPromptConfirmSetting)
                                             {
-                                                if (lstSavedCustomDataDirectoryNames[i] != objCurrentlyLoadedSettings.EnabledCustomDataDirectoryInfos[i].Name)
+                                                // Check to make sure all the names are the same
+                                                for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
                                                 {
-                                                    blnPromptConfirmSetting = true;
-                                                    break;
+                                                    if (lstSavedCustomDataDirectoryNames[i]
+                                                        != objCurrentlyLoadedSettings.EnabledCustomDataDirectoryInfos[i]
+                                                            .Name)
+                                                    {
+                                                        blnPromptConfirmSetting = true;
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    if (blnPromptConfirmSetting)
-                                    {
-                                        DialogResult eShowBPResult = Program.MainForm.ShowMessageBox(string.Format(
-                                                GlobalSettings.CultureInfo,
-                                                LanguageManager.GetString(
-                                                    "Message_CharacterOptions_DesyncBooksOrCustomData"),
-                                                objCurrentlyLoadedSettings.Name),
-                                            LanguageManager.GetString(
-                                                "MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
-                                            MessageBoxButtons.YesNoCancel);
-                                        if (eShowBPResult == DialogResult.Cancel)
+                                        if (blnPromptConfirmSetting)
                                         {
-                                            return false;
-                                        }
+                                            DialogResult eShowBPResult = Program.MainForm.ShowMessageBox(string.Format(
+                                                    GlobalSettings.CultureInfo,
+                                                    LanguageManager.GetString(
+                                                        "Message_CharacterOptions_DesyncBooksOrCustomData"),
+                                                    objCurrentlyLoadedSettings.Name),
+                                                LanguageManager.GetString(
+                                                    "MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
+                                                MessageBoxButtons.YesNoCancel);
+                                            if (eShowBPResult == DialogResult.Cancel)
+                                            {
+                                                return false;
+                                            }
 
-                                        blnShowSelectBP = eShowBPResult == DialogResult.Yes;
+                                            blnShowSelectBP = eShowBPResult == DialogResult.Yes;
+                                        }
                                     }
                                 }
 
@@ -5733,10 +5892,13 @@ namespace Chummer
                 objContact.Dispose();
             foreach (Spirit objSpirit in _lstSpirits)
                 objSpirit.Dispose();
+            _lstLifestyles.Clear(); // Will automatically dispose all Lifestyles
             ImprovementManager.ClearCachedValues(this);
             AttributeSection.Dispose();
             SkillsSection.Dispose();
             DoOnSaveCompleted.Dispose();
+            if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
+                _objSettings.Dispose();
             _blnDisposing = false;
         }
 
@@ -6829,43 +6991,46 @@ namespace Chummer
         /// <summary>
         /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
         /// </summary>
-        public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList)
+        public IEnumerable<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList)
         {
-            HashSet<string> setBlackMarketMaps = new HashSet<string>();
             // Character has no Black Market discount qualities. Fail out early.
             if (BlackMarketDiscount)
             {
                 if (xmlCategoryList == null)
                 {
-                    return setBlackMarketMaps;
+                    yield break;
                 }
                 // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter.
                 if (xmlCategoryList.Name == "chummer")
                 {
                     xmlCategoryList = xmlCategoryList.SelectSingleNodeAndCacheExpression("categories");
                     if (xmlCategoryList == null)
-                        return new HashSet<string>();
+                        yield break;
                 }
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
-                HashSet<string> setNames = new HashSet<string>();
-                foreach(Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.BlackMarketDiscount))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setNames))
                 {
-                    setNames.Add(objImprovement.ImprovedName);
-                }
-
-                // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                foreach(XPathNavigator xmlCategoryNode in xmlCategoryList.SelectAndCacheExpression("category"))
-                {
-                    string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNodeAndCacheExpression("@blackmarket")?.Value;
-                    if(!string.IsNullOrEmpty(strBlackMarketAttribute) &&
-                        strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(x => setNames.Contains(x)))
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 this, Improvement.ImprovementType.BlackMarketDiscount))
                     {
-                        setBlackMarketMaps.Add(xmlCategoryNode.Value);
+                        setNames.Add(objImprovement.ImprovedName);
+                    }
+
+                    // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
+                    foreach (XPathNavigator xmlCategoryNode in xmlCategoryList.SelectAndCacheExpression("category"))
+                    {
+                        string strBlackMarketAttribute
+                            = xmlCategoryNode.SelectSingleNodeAndCacheExpression("@blackmarket")?.Value;
+                        if (!string.IsNullOrEmpty(strBlackMarketAttribute) &&
+                            strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                   .Any(x => setNames.Contains(x)))
+                        {
+                            yield return xmlCategoryNode.Value;
+                        }
                     }
                 }
             }
-
-            return setBlackMarketMaps;
         }
 
         /// <summary>
@@ -11658,7 +11823,7 @@ namespace Chummer
         /// <summary>
         /// Lifestyles.
         /// </summary>
-        public ObservableCollection<Lifestyle> Lifestyles => _lstLifestyles;
+        public CachedBindingList<Lifestyle> Lifestyles => _lstLifestyles;
 
         /// <summary>
         /// Gear.
@@ -14690,18 +14855,22 @@ namespace Chummer
 
             if (DealerConnectionDiscount)
                 return;
-
-            HashSet<string> setDealerConnectionMaps = new HashSet<string>();
-            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.DealerConnection))
+            
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> setDealerConnectionMaps))
             {
-                setDealerConnectionMaps.Add(objImprovement.UniqueName);
-            }
+                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                             this, Improvement.ImprovementType.DealerConnection))
+                {
+                    setDealerConnectionMaps.Add(objImprovement.UniqueName);
+                }
 
-            foreach (Vehicle objVehicle in Vehicles)
-            {
-                objVehicle.DealerConnectionDiscount = objVehicle.DealerConnectionDiscount
-                                                      && Vehicle.DoesDealerConnectionApply(
-                                                          setDealerConnectionMaps, objVehicle.Category);
+                foreach (Vehicle objVehicle in Vehicles)
+                {
+                    objVehicle.DealerConnectionDiscount = objVehicle.DealerConnectionDiscount
+                                                          && Vehicle.DoesDealerConnectionApply(
+                                                              setDealerConnectionMaps, objVehicle.Category);
+                }
             }
         }
 
@@ -14737,93 +14906,86 @@ namespace Chummer
 
             if (BlackMarketDiscount)
             {
-                HashSet<string> setArmorBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer"));
-                HashSet<string> setArmorModBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer/modcategories"));
-                HashSet<string> setBiowareBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("bioware.xml").SelectSingleNodeAndCacheExpression("/chummer"));
-                HashSet<string> setCyberwareBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml").SelectSingleNodeAndCacheExpression("/chummer"));
-                HashSet<string> setGearBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer"));
-                HashSet<string> setVehicleBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer"));
-                HashSet<string> setVehicleModBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer/modcategories"));
-                HashSet<string> setWeaponMountBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer/weaponmountcategories"));
-                HashSet<string> setWeaponBlackMarketMaps
-                    = GenerateBlackMarketMappings(LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer"));
-
-                foreach (Armor objArmor in Armor)
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setArmorBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setArmorModBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setBiowareBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setCyberwareBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setGearBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setVehicleBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setVehicleModBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setWeaponMountBlackMarketMaps))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setWeaponBlackMarketMaps))
                 {
-                    objArmor.DiscountCost = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
-                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    setArmorBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml")
+                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
+                    setArmorModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml")
+                                                            .SelectSingleNodeAndCacheExpression(
+                                                                "/chummer/modcategories")));
+                    setBiowareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("bioware.xml")
+                                                           .SelectSingleNodeAndCacheExpression("/chummer")));
+                    setCyberwareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml")
+                                                             .SelectSingleNodeAndCacheExpression("/chummer")));
+                    setGearBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("gear.xml")
+                                                        .SelectSingleNodeAndCacheExpression("/chummer")));
+                    setVehicleBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml")
+                                                           .SelectSingleNodeAndCacheExpression("/chummer")));
+                    setVehicleModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml")
+                                                              .SelectSingleNodeAndCacheExpression(
+                                                                  "/chummer/modcategories")));
+                    setWeaponMountBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml")
+                                                               .SelectSingleNodeAndCacheExpression(
+                                                                   "/chummer/weaponmountcategories")));
+                    setWeaponBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("weapons.xml")
+                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
+
+                    foreach (Armor objArmor in Armor)
                     {
-                        objMod.DiscountCost = objMod.DiscountCost && setArmorModBlackMarketMaps.Contains(objMod.Category);
-                        foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
-                            objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
-                    }
-
-                    foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
-                        objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
-                }
-
-                foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
-                {
-                    if (objCyberware.DiscountCost)
-                    {
-                        objCyberware.DiscountCost
-                            = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
-                                ? setBiowareBlackMarketMaps
-                                : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
-                    }
-                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
-                        objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
-                }
-
-                foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
-                    objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
-
-                foreach (Vehicle objVehicle in Vehicles)
-                {
-                    objVehicle.DiscountCost = objVehicle.DiscountCost && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
-                    foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
-                        objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
-                    foreach (VehicleMod objMod in objVehicle.Mods)
-                    {
-                        objMod.DiscountCost = objMod.DiscountCost && setVehicleModBlackMarketMaps.Contains(objMod.Category);
-                        foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                        objArmor.DiscountCost
+                            = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
-                            if (objCyberware.DiscountCost)
-                            {
-                                objCyberware.DiscountCost
-                                    = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
-                                        ? setBiowareBlackMarketMaps
-                                        : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
-                            }
-                            foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
-                                objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            objMod.DiscountCost = objMod.DiscountCost
+                                                  && setArmorModBlackMarketMaps.Contains(objMod.Category);
+                            foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
+                                objGear.DiscountCost = objGear.DiscountCost
+                                                       && setGearBlackMarketMaps.Contains(objGear.Category);
                         }
-                    }
-                    foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
-                    {
-                        objWeapon.DiscountCost = objWeapon.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                        {
-                            objAccessory.DiscountCost = objAccessory.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
-                                objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
-                        }
+
+                        foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
+                            objGear.DiscountCost
+                                = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                     }
 
-                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
                     {
-                        objMount.DiscountCost = objMount.DiscountCost && setWeaponMountBlackMarketMaps.Contains(objMount.Category);
-                        foreach (VehicleMod objMod in objMount.Mods)
+                        if (objCyberware.DiscountCost)
                         {
-                            objMod.DiscountCost = objMod.DiscountCost && setVehicleModBlackMarketMaps.Contains(objMod.Category);
+                            objCyberware.DiscountCost
+                                = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                    ? setBiowareBlackMarketMaps
+                                    : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                        }
+
+                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                            objGear.DiscountCost
+                                = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                    }
+
+                    foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
+                        objGear.DiscountCost
+                            = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+
+                    foreach (Vehicle objVehicle in Vehicles)
+                    {
+                        objVehicle.DiscountCost = objVehicle.DiscountCost
+                                                  && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
+                        foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                            objGear.DiscountCost
+                                = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                        foreach (VehicleMod objMod in objVehicle.Mods)
+                        {
+                            objMod.DiscountCost = objMod.DiscountCost
+                                                  && setVehicleModBlackMarketMaps.Contains(objMod.Category);
                             foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
                             {
                                 if (objCyberware.DiscountCost)
@@ -14833,31 +14995,82 @@ namespace Chummer
                                             ? setBiowareBlackMarketMaps
                                             : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
                                 }
+
                                 foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
-                                    objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                                    objGear.DiscountCost = objGear.DiscountCost
+                                                           && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
                         }
-                        foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+
+                        foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
                         {
-                            objWeapon.DiscountCost = objWeapon.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                            objWeapon.DiscountCost = objWeapon.DiscountCost
+                                                     && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
-                                objAccessory.DiscountCost = objAccessory.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                                objAccessory.DiscountCost = objAccessory.DiscountCost
+                                                            && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
-                                    objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                                    objGear.DiscountCost = objGear.DiscountCost
+                                                           && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
+                        }
+
+                        foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                        {
+                            objMount.DiscountCost = objMount.DiscountCost
+                                                    && setWeaponMountBlackMarketMaps.Contains(objMount.Category);
+                            foreach (VehicleMod objMod in objMount.Mods)
+                            {
+                                objMod.DiscountCost = objMod.DiscountCost
+                                                      && setVehicleModBlackMarketMaps.Contains(objMod.Category);
+                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                                {
+                                    if (objCyberware.DiscountCost)
+                                    {
+                                        objCyberware.DiscountCost
+                                            = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                                ? setBiowareBlackMarketMaps
+                                                : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                                    }
+
+                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
+                                        objGear.DiscountCost = objGear.DiscountCost
+                                                               && setGearBlackMarketMaps.Contains(objGear.Category);
+                                }
+                            }
+
+                            foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                            {
+                                objWeapon.DiscountCost = objWeapon.DiscountCost
+                                                         && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                {
+                                    objAccessory.DiscountCost = objAccessory.DiscountCost
+                                                                && setWeaponBlackMarketMaps
+                                                                    .Contains(objWeapon.Category);
+                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
+                                        objGear.DiscountCost = objGear.DiscountCost
+                                                               && setGearBlackMarketMaps.Contains(objGear.Category);
+                                }
                             }
                         }
                     }
-                }
 
-                foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
-                {
-                    objWeapon.DiscountCost = objWeapon.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                    foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
                     {
-                        objAccessory.DiscountCost = objAccessory.DiscountCost && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                        foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
-                            objGear.DiscountCost = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                        objWeapon.DiscountCost = objWeapon.DiscountCost
+                                                 && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        {
+                            objAccessory.DiscountCost = objAccessory.DiscountCost
+                                                        && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                                objGear.DiscountCost = objGear.DiscountCost
+                                                       && setGearBlackMarketMaps.Contains(objGear.Category);
+                        }
                     }
                 }
             }

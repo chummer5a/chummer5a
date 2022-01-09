@@ -542,21 +542,29 @@ namespace Chummer.Backend.Skills
                 }
 
                 XPathNavigator skillsDocXPath = _objCharacter.LoadDataXPath("skills.xml");
-                HashSet<string> hashSkillGuids = new HashSet<string>();
-                foreach (XPathNavigator node in skillsDocXPath.Select("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(FilterOption.NonSpecial) + ']'))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string>
+                                                                    setSkillGuids))
                 {
-                    string strName = node.SelectSingleNodeAndCacheExpression("name")?.Value;
-                    if (!string.IsNullOrEmpty(strName))
-                        hashSkillGuids.Add(strName);
-                }
-                XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
-                foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
-                {
-                    XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
-                    if (objXmlSkillNode != null)
+                    foreach (XPathNavigator node in skillsDocXPath.Select(
+                                 "/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')'
+                                 + SkillFilter(FilterOption.NonSpecial) + ']'))
                     {
-                        Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter, false);
-                        Skills.Add(objSkill);
+                        string strName = node.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                            setSkillGuids.Add(strName);
+                    }
+
+                    XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
+                    foreach (string skillId in setSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
+                    {
+                        XmlNode objXmlSkillNode
+                            = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
+                        if (objXmlSkillNode != null)
+                        {
+                            Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter, false);
+                            Skills.Add(objSkill);
+                        }
                     }
                 }
                 //This might give subtle bugs in the future,

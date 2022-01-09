@@ -24,8 +24,7 @@ using System.ComponentModel;
 
 namespace Chummer.UI.Table
 {
-    public sealed class TableColumnCollection<T> : IEnumerable<TableColumn<T>>
-        where T : class, INotifyPropertyChanged
+    public sealed class TableColumnCollection<T> : IEnumerable<TableColumn<T>>, IDisposable where T : class, INotifyPropertyChanged
     {
         private readonly List<TableColumn<T>> _lstColumns = new List<TableColumn<T>>();
         private readonly TableView<T> _table;
@@ -68,6 +67,13 @@ namespace Chummer.UI.Table
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _lstColumns.GetEnumerator();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            foreach (TableColumn<T> objColumn in _lstColumns)
+                objColumn.Dispose();
         }
     }
 }

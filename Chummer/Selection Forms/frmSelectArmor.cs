@@ -45,7 +45,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private int _intRating;
         private bool _blnBlackMarketDiscount;
 
@@ -59,7 +59,9 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
-            _setBlackMarketMaps = objCharacter.GenerateBlackMarketMappings(objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer"));
+            _setBlackMarketMaps.AddRange(objCharacter.GenerateBlackMarketMappings(
+                                             objCharacter.LoadDataXPath("armor.xml")
+                                                         .SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
         private void frmSelectArmor_Load(object sender, EventArgs e)

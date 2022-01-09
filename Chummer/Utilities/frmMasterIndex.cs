@@ -21,6 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -182,21 +183,27 @@ namespace Chummer
                 CustomActivity.OperationType.RequestOperation, null))
             {
                 _dicCachedNotes.Clear();
+                foreach (MasterIndexEntry objExistingEntry in _lstItems.Select(x => (MasterIndexEntry)x.Value))
+                    objExistingEntry.Dispose();
                 _lstItems.Clear();
                 _lstFileNamesWithItems.Clear();
-
-                HashSet<string> setValidCodes = new HashSet<string>();
-                foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync("books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths))
-                    .SelectAndCacheExpression("/chummer/books/book/code"))
+                string strSourceFilter;
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setValidCodes))
                 {
-                    setValidCodes.Add(xmlBookNode.Value);
+                    foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync(
+                                 "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths))
+                             .SelectAndCacheExpression("/chummer/books/book/code"))
+                    {
+                        setValidCodes.Add(xmlBookNode.Value);
+                    }
+
+                    setValidCodes.IntersectWith(_objSelectedSetting.Books);
+
+                    strSourceFilter = setValidCodes.Count > 0
+                        ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = " + x.CleanXPath())) + ')'
+                        : "source";
                 }
-
-                setValidCodes.IntersectWith(_objSelectedSetting.Books);
-
-                string strSourceFilter = setValidCodes.Count > 0
-                    ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")) + ')'
-                    : "source";
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_andpopulate_entries",
                                                    opLoadFrmMasterindex))
@@ -482,15 +489,13 @@ namespace Chummer
             }
         }
 
-        private readonly struct MasterIndexEntry
+        private readonly struct MasterIndexEntry : IDisposable
         {
             public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, SourceString objDisplaySource, string strEnglishNameOnPage, string strTranslatedNameOnPage)
             {
                 DisplayName = strDisplayName;
-                FileNames = new HashSet<string>
-                {
-                    strFileName
-                };
+                FileNames = Utils.StringHashSetPool.Get();
+                FileNames.Add(strFileName);
                 Source = objSource;
                 DisplaySource = objDisplaySource;
                 EnglishNameOnPage = strEnglishNameOnPage;
@@ -503,6 +508,12 @@ namespace Chummer
             internal SourceString DisplaySource { get; }
             internal string EnglishNameOnPage { get; }
             internal string TranslatedNameOnPage { get; }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                Utils.StringHashSetPool.Return(FileNames);
+            }
         }
 
         private void cmdEditCharacterSetting_Click(object sender, EventArgs e)

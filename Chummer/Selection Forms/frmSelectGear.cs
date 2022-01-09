@@ -53,9 +53,9 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setAllowedCategories = new HashSet<string>();
-        private readonly HashSet<string> _setAllowedNames = new HashSet<string>();
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setAllowedCategories = Utils.StringHashSetPool.Get();
+        private readonly HashSet<string> _setAllowedNames = Utils.StringHashSetPool.Get();
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
@@ -83,7 +83,7 @@ namespace Chummer
 
             // Load the Gear information.
             _xmlBaseGearDataNode = objCharacter.LoadDataXPath("gear.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode));
             foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 if (!string.IsNullOrWhiteSpace(strCategory))
@@ -1102,47 +1102,49 @@ namespace Chummer
                         if (!GlobalSettings.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
                             strSelectCategory == "Show All")
                         {
-                            HashSet<string> setDuplicateNames = new HashSet<string>();
-
-                            for (int i = 0; i < lstGears.Count - 1; ++i)
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setDuplicateNames))
                             {
-                                string strLoopName = lstGears[i].Name;
-                                if (setDuplicateNames.Contains(strLoopName))
-                                    continue;
-                                for (int j = i + 1; j < lstGears.Count; ++j)
+                                for (int i = 0; i < lstGears.Count - 1; ++i)
                                 {
-                                    if (strLoopName.Equals(lstGears[j].Name, StringComparison.OrdinalIgnoreCase))
+                                    string strLoopName = lstGears[i].Name;
+                                    if (setDuplicateNames.Contains(strLoopName))
+                                        continue;
+                                    for (int j = i + 1; j < lstGears.Count; ++j)
                                     {
-                                        setDuplicateNames.Add(strLoopName);
-                                        break;
+                                        if (strLoopName.Equals(lstGears[j].Name, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            setDuplicateNames.Add(strLoopName);
+                                            break;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (setDuplicateNames.Count > 0)
-                            {
-                                string strSpace = LanguageManager.GetString("String_Space");
-                                for (int i = 0; i < lstGears.Count; ++i)
+                                if (setDuplicateNames.Count > 0)
                                 {
-                                    ListItem objLoopItem = lstGears[i];
-                                    if (!setDuplicateNames.Contains(objLoopItem.Name))
-                                        continue;
-                                    XPathNavigator objXmlGear
-                                        = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " +
-                                                                                objLoopItem.Value.ToString().CleanXPath() +
-                                                                                "]");
-                                    if (objXmlGear == null)
-                                        continue;
-                                    string strLoopCategory
-                                        = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
-                                    if (string.IsNullOrEmpty(strLoopCategory))
-                                        continue;
-                                    ListItem objFoundItem
-                                        = _lstCategory.Find(objFind => objFind.Value.ToString() == strLoopCategory);
-                                    if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                    string strSpace = LanguageManager.GetString("String_Space");
+                                    for (int i = 0; i < lstGears.Count; ++i)
                                     {
-                                        lstGears[i] = new ListItem(objLoopItem.Value
-                                                                   , objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
+                                        ListItem objLoopItem = lstGears[i];
+                                        if (!setDuplicateNames.Contains(objLoopItem.Name))
+                                            continue;
+                                        XPathNavigator objXmlGear
+                                            = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " +
+                                                objLoopItem.Value.ToString().CleanXPath() +
+                                                "]");
+                                        if (objXmlGear == null)
+                                            continue;
+                                        string strLoopCategory
+                                            = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
+                                        if (string.IsNullOrEmpty(strLoopCategory))
+                                            continue;
+                                        ListItem objFoundItem
+                                            = _lstCategory.Find(objFind => objFind.Value.ToString() == strLoopCategory);
+                                        if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                        {
+                                            lstGears[i] = new ListItem(objLoopItem.Value
+                                                                       , objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
+                                        }
                                     }
                                 }
                             }

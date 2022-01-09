@@ -497,32 +497,35 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            HashSet<string> setDuplicateIDs = new HashSet<string>();
             List<string> lstItemsWithMalformedIDs = new List<string>(1);
-            // Key is ID, Value is a list of the names of all items with that ID.
-            Dictionary<string, IList<string>> dicItemsWithIDs = new Dictionary<string, IList<string>>();
-            CheckIdNode(xmlParentNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs);
-
-            if (setDuplicateIDs.Count > 0)
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> setDuplicateIDs))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdDuplicatesNames))
-                {
-                    foreach (IList<string> lstDuplicateNames in dicItemsWithIDs
-                                                                .Where(x => setDuplicateIDs.Contains(x.Key))
-                                                                .Select(x => x.Value))
-                    {
-                        if (sbdDuplicatesNames.Length != 0)
-                            sbdDuplicatesNames.AppendLine();
-                        sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
-                    }
+                // Key is ID, Value is a list of the names of all items with that ID.
+                Dictionary<string, IList<string>> dicItemsWithIDs = new Dictionary<string, IList<string>>();
+                CheckIdNode(xmlParentNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs);
 
-                    Program.MainForm?.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
-                                                                   , LanguageManager.GetString(
-                                                                       "Message_DuplicateGuidWarning")
-                                                                   , setDuplicateIDs.Count
-                                                                   , strFileName
-                                                                   , sbdDuplicatesNames.ToString()));
+                if (setDuplicateIDs.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdDuplicatesNames))
+                    {
+                        foreach (IList<string> lstDuplicateNames in dicItemsWithIDs
+                                                                    .Where(x => setDuplicateIDs.Contains(x.Key))
+                                                                    .Select(x => x.Value))
+                        {
+                            if (sbdDuplicatesNames.Length != 0)
+                                sbdDuplicatesNames.AppendLine();
+                            sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
+                        }
+
+                        Program.MainForm?.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
+                                                                       , LanguageManager.GetString(
+                                                                           "Message_DuplicateGuidWarning")
+                                                                       , setDuplicateIDs.Count
+                                                                       , strFileName
+                                                                       , sbdDuplicatesNames.ToString()));
+                    }
                 }
             }
 
@@ -1442,17 +1445,57 @@ namespace Chummer
         private static void GetXslFilesFromLocalDirectory(string strLanguage, out bool blnAnyItem, out List<ListItem> lstSheets, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool)
         {
             blnAnyItem = false;
-            HashSet<string> setAddedSheetFileNames = blnDoList ? new HashSet<string>() : null;
-            if (lstCharacters != null)
+            HashSet<string> setAddedSheetFileNames = blnDoList ? Utils.StringHashSetPool.Get() : null;
+            try
             {
-                if (blnDoList)
-                    lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(10);
-                else
-                    lstSheets = null;
-                // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-                foreach (Character objCharacter in lstCharacters)
+                if (lstCharacters != null)
                 {
-                    foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage).SelectAndCacheExpression("/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]"))
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(10);
+                    else
+                        lstSheets = null;
+                    // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+                    foreach (Character objCharacter in lstCharacters)
+                    {
+                        foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage)
+                                                                        .SelectAndCacheExpression(
+                                                                            "/chummer/sheets[@lang="
+                                                                            + strLanguage.CleanXPath()
+                                                                            + "]/sheet[not(hide)]"))
+                        {
+                            string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
+                            if (string.IsNullOrEmpty(strSheetFileName))
+                                continue;
+                            if (!blnDoList)
+                            {
+                                blnAnyItem = true;
+                                return;
+                            }
+
+                            if (!setAddedSheetFileNames.Add(strSheetFileName))
+                                continue;
+                            blnAnyItem = true;
+                            lstSheets.Add(new ListItem(
+                                              !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                                  StringComparison.OrdinalIgnoreCase)
+                                                  ? Path.Combine(strLanguage, strSheetFileName)
+                                                  : strSheetFileName,
+                                              xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value
+                                              ?? LanguageManager.GetString("String_Unknown")));
+                        }
+                    }
+                }
+                else
+                {
+                    XPathNodeIterator xmlIterator = LoadXPath("sheets.xml", null, strLanguage)
+                        .SelectAndCacheExpression(
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
+                    else
+                        lstSheets = null;
+
+                    foreach (XPathNavigator xmlSheet in xmlIterator)
                     {
                         string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
                         if (string.IsNullOrEmpty(strSheetFileName))
@@ -1462,44 +1505,24 @@ namespace Chummer
                             blnAnyItem = true;
                             return;
                         }
+
                         if (!setAddedSheetFileNames.Add(strSheetFileName))
                             continue;
                         blnAnyItem = true;
-                        lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                                                       ? Path.Combine(strLanguage, strSheetFileName)
-                                                       : strSheetFileName,
-                                                   xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                        lstSheets.Add(new ListItem(
+                                          !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                              StringComparison.OrdinalIgnoreCase)
+                                              ? Path.Combine(strLanguage, strSheetFileName)
+                                              : strSheetFileName,
+                                          xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value
+                                          ?? LanguageManager.GetString("String_Unknown")));
                     }
                 }
             }
-            else
+            finally
             {
-                XPathNodeIterator xmlIterator = LoadXPath("sheets.xml", null, strLanguage)
-                    .SelectAndCacheExpression(
-                        "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
-                if (blnDoList)
-                    lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
-                else
-                    lstSheets = null;
-
-                foreach (XPathNavigator xmlSheet in xmlIterator)
-                {
-                    string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
-                    if (string.IsNullOrEmpty(strSheetFileName))
-                        continue;
-                    if (!blnDoList)
-                    {
-                        blnAnyItem = true;
-                        return;
-                    }
-                    if (!setAddedSheetFileNames.Add(strSheetFileName))
-                        continue;
-                    blnAnyItem = true;
-                    lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                                                   ? Path.Combine(strLanguage, strSheetFileName)
-                                                   : strSheetFileName,
-                                               xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
-                }
+                if (setAddedSheetFileNames != null)
+                    Utils.StringHashSetPool.Return(setAddedSheetFileNames);
             }
         }
 

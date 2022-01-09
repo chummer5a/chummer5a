@@ -513,92 +513,101 @@ namespace Chummer
         /// <param name="strLanguage">Language to check.</param>
         public static async Task VerifyStrings(string strLanguage)
         {
-            HashSet<string> lstEnglish = new HashSet<string>();
-            HashSet<string> lstLanguage = new HashSet<string>();
-            // Potentially expensive checks that can (and therefore should) be parallelized.
-            await Task.WhenAll(
-                Task.Run(() =>
-                {
-                    // Load the English version.
-                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
-                    try
-                    {
-                        XPathDocument objEnglishDocument;
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            objEnglishDocument = new XPathDocument(objXmlReader);
-                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string"))
-                        {
-                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
-                            if (!string.IsNullOrEmpty(strKey))
-                                lstEnglish.Add(strKey);
-                        }
-                    }
-                    catch (IOException)
-                    {
-                        //swallow this
-                    }
-                    catch (XmlException)
-                    {
-                        //swallow this
-                    }
-                }),
-                Task.Run(() =>
-                {
-                    // Load the selected language version.
-                    string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
-                    try
-                    {
-                        XPathDocument objLanguageDocument;
-                        using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            objLanguageDocument = new XPathDocument(objXmlReader);
-                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string"))
-                        {
-                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
-                            if (!string.IsNullOrEmpty(strKey))
-                                lstLanguage.Add(strKey);
-                        }
-                    }
-                    catch (IOException)
-                    {
-                        //swallow this
-                    }
-                    catch (XmlException)
-                    {
-                        //swallow this
-                    }
-                }));
-
             string strMessage;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdMissingMessage))
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdUnusedMessage))
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> lstEnglish))
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> lstLanguage))
             {
-                // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-                // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                // Potentially expensive checks that can (and therefore should) be parallelized.
                 await Task.WhenAll(
                     Task.Run(() =>
                     {
-                        // Check for strings that are in the English file but not in the selected language file.
-                        foreach (string strKey in lstEnglish)
+                        // Load the English version.
+                        string strFilePath
+                            = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
+                        try
                         {
-                            if (!lstLanguage.Contains(strKey))
-                                sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
+                            XPathDocument objEnglishDocument;
+                            using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader
+                                   = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                                objEnglishDocument = new XPathDocument(objXmlReader);
+                            foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
+                                         .SelectAndCacheExpression("/chummer/strings/string"))
+                            {
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
+                                if (!string.IsNullOrEmpty(strKey))
+                                    lstEnglish.Add(strKey);
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            //swallow this
+                        }
+                        catch (XmlException)
+                        {
+                            //swallow this
                         }
                     }),
                     Task.Run(() =>
                     {
-                        // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
-                        foreach (string strKey in lstLanguage)
+                        // Load the selected language version.
+                        string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+                        try
                         {
-                            if (!lstEnglish.Contains(strKey))
-                                sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
+                            XPathDocument objLanguageDocument;
+                            using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader
+                                   = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                                objLanguageDocument = new XPathDocument(objXmlReader);
+                            foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
+                                         .SelectAndCacheExpression("/chummer/strings/string"))
+                            {
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
+                                if (!string.IsNullOrEmpty(strKey))
+                                    lstLanguage.Add(strKey);
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            //swallow this
+                        }
+                        catch (XmlException)
+                        {
+                            //swallow this
                         }
                     }));
 
-                strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdMissingMessage))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdUnusedMessage))
+                {
+                    // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+                    // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                    await Task.WhenAll(
+                        Task.Run(() =>
+                        {
+                            // Check for strings that are in the English file but not in the selected language file.
+                            foreach (string strKey in lstEnglish)
+                            {
+                                if (!lstLanguage.Contains(strKey))
+                                    sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
+                            }
+                        }),
+                        Task.Run(() =>
+                        {
+                            // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
+                            foreach (string strKey in lstLanguage)
+                            {
+                                if (!lstEnglish.Contains(strKey))
+                                    sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
+                            }
+                        }));
+
+                    strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+                }
             }
 
             // Display the message.

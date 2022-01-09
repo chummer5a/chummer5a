@@ -983,46 +983,55 @@ namespace Chummer
                 case ImprovementType.Attribute:
                     {
                         string strTargetAttribute = ImprovedName;
-                        HashSet<string> setAttributePropertiesChanged = new HashSet<string>();
-                        if (AugmentedMaximum != 0)
-                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
-                        if (Maximum != 0)
-                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
-                        if (Minimum != 0)
-                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
-                        if (strTargetAttribute.EndsWith("Base", StringComparison.Ordinal))
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string>
+                                                                            setAttributePropertiesChanged))
                         {
-                            strTargetAttribute = strTargetAttribute.TrimEndOnce("Base", true);
-                            if (Augmented != 0)
-                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeValueModifiers));
-                        }
-                        else
-                        {
-                            if (Augmented != 0)
-                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
-                        }
-
-                        if (setAttributePropertiesChanged.Count > 0)
-                        {
-                            // Keeping two enumerations separate helps avoid extra heap allocations
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
+                            if (AugmentedMaximum != 0)
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
+                            if (Maximum != 0)
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
+                            if (Minimum != 0)
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
+                            if (strTargetAttribute.EndsWith("Base", StringComparison.Ordinal))
                             {
-                                if (objCharacterAttrib.Abbrev != strTargetAttribute)
-                                    continue;
-                                foreach (string strPropertyName in setAttributePropertiesChanged)
-                                {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                        strPropertyName);
-                                }
+                                strTargetAttribute = strTargetAttribute.TrimEndOnce("Base", true);
+                                if (Augmented != 0)
+                                    setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeValueModifiers));
                             }
-                            foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                            else
                             {
-                                if (objCharacterAttrib.Abbrev != strTargetAttribute)
-                                    continue;
-                                foreach (string strPropertyName in setAttributePropertiesChanged)
+                                if (Augmented != 0)
+                                    setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                            }
+
+                            if (setAttributePropertiesChanged.Count > 0)
+                            {
+                                // Keeping two enumerations separate helps avoid extra heap allocations
+                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
+                                             .AttributeList)
                                 {
-                                    yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                        strPropertyName);
+                                    if (objCharacterAttrib.Abbrev != strTargetAttribute)
+                                        continue;
+                                    foreach (string strPropertyName in setAttributePropertiesChanged)
+                                    {
+                                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                                            objCharacterAttrib,
+                                            strPropertyName);
+                                    }
+                                }
+
+                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
+                                             .SpecialAttributeList)
+                                {
+                                    if (objCharacterAttrib.Abbrev != strTargetAttribute)
+                                        continue;
+                                    foreach (string strPropertyName in setAttributePropertiesChanged)
+                                    {
+                                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                                            objCharacterAttrib,
+                                            strPropertyName);
+                                    }
                                 }
                             }
                         }
@@ -3098,7 +3107,6 @@ namespace Chummer
 
             try
             {
-                Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
                 Dictionary<string, List<Tuple<string, Improvement>>> dicUniquePairs
                     = new Dictionary<string, List<Tuple<string, Improvement>>>();
                 Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
@@ -3132,136 +3140,255 @@ namespace Chummer
                     lstImprovementsToConsider.Add(objImprovement);
                 }
 
-                foreach (Improvement objImprovement in lstImprovementsToConsider)
+                List<Improvement> lstLoopImprovements;
+                Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
+                try
                 {
-                    // Count custom improvements later
-                    if (objImprovement.Custom)
-                        continue;
-                    string strLoopImprovedName = objImprovement.ImprovedName;
-                    string strUniqueName = objImprovement.UniqueName;
-                    if (!string.IsNullOrEmpty(strUniqueName))
+                    foreach (Improvement objImprovement in lstImprovementsToConsider)
                     {
-                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                        if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                        // Count custom improvements later
+                        if (objImprovement.Custom)
+                            continue;
+                        string strLoopImprovedName = objImprovement.ImprovedName;
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
                         {
-                            if (!lstUniqueNames.Contains(strUniqueName))
-                                lstUniqueNames.Add(strUniqueName);
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            {
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(strUniqueName);
+                                dicUniqueNames.Add(strLoopImprovedName, setTemp);
+                            }
+
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName,
+                                                           out List<Tuple<string, Improvement>> lstUniquePairs))
+                            {
+                                lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
+                            }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName,
+                                                   new List<Tuple<string, Improvement>>(1)
+                                                       {new Tuple<string, Improvement>(strUniqueName, objImprovement)});
+                            }
+
+                            if (!dicValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicValues.Add(strLoopImprovedName, 0);
+                                dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
+                            }
+                        }
+                        else if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
+                        {
+                            dicValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
+                            dicImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                         }
                         else
                         {
-                            dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
+                            dicValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
+                            dicImprovementsForValues.Add(strLoopImprovedName,
+                                                         new List<Improvement>(objImprovement.Yield()));
                         }
+                    }
 
-                        // Add the values to the UniquePair List so we can check them later.
+                    List<Improvement> lstInnerLoopImprovements = new List<Improvement>();
+                    foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+                    {
+                        string strLoopImprovedName = objLoopValuePair.Key;
+                        bool blnValuesDictionaryContains
+                            = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                        if (blnValuesDictionaryContains)
+                            dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
+                        else
+                            lstLoopImprovements = new List<Improvement>();
                         if (dicUniquePairs.TryGetValue(strLoopImprovedName,
                                                        out List<Tuple<string, Improvement>> lstUniquePairs))
                         {
-                            lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
-                        }
-                        else
-                        {
-                            dicUniquePairs.Add(strLoopImprovedName,
-                                               new List<Tuple<string, Improvement>>(1)
-                                                   {new Tuple<string, Improvement>(strUniqueName, objImprovement)});
-                        }
-
-                        if (!dicValues.ContainsKey(strLoopImprovedName))
-                        {
-                            dicValues.Add(strLoopImprovedName, 0);
-                            dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
-                        }
-                    }
-                    else if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
-                    {
-                        dicValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
-                        dicImprovementsForValues[strLoopImprovedName].Add(objImprovement);
-                    }
-                    else
-                    {
-                        dicValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
-                        dicImprovementsForValues.Add(strLoopImprovedName,
-                                                     new List<Improvement>(objImprovement.Yield()));
-                    }
-                }
-
-                List<Improvement> lstLoopImprovements;
-                List<Improvement> lstInnerLoopImprovements = new List<Improvement>();
-                foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
-                {
-                    string strLoopImprovedName = objLoopValuePair.Key;
-                    bool blnValuesDictionaryContains
-                        = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                    if (blnValuesDictionaryContains)
-                        dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
-                    else
-                        lstLoopImprovements = new List<Improvement>();
-                    if (dicUniquePairs.TryGetValue(strLoopImprovedName,
-                                                   out List<Tuple<string, Improvement>> lstUniquePairs))
-                    {
-                        HashSet<string> lstUniqueNames = objLoopValuePair.Value;
-                        lstInnerLoopImprovements.Clear();
-                        if (lstUniqueNames.Contains("precedence0"))
-                        {
-                            // Retrieve only the highest precedence0 value.
-                            // Run through the list of UniqueNames and pick out the highest value for each one.
-                            Improvement objHighestImprovement = null;
-                            decimal decHighest = decimal.MinValue;
-                            foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                            HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                            lstInnerLoopImprovements.Clear();
+                            if (lstUniqueNames.Contains("precedence0"))
                             {
-                                if (strUnique != "precedence0")
-                                    continue;
-                                decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
-                                if (decHighest < decInnerLoopValue)
-                                {
-                                    decHighest = decInnerLoopValue;
-                                    objHighestImprovement = objLoopImprovement;
-                                }
-                            }
-
-                            if (objHighestImprovement != null)
-                                lstInnerLoopImprovements.Add(objHighestImprovement);
-
-                            if (lstUniqueNames.Contains("precedence-1"))
-                            {
+                                // Retrieve only the highest precedence0 value.
+                                // Run through the list of UniqueNames and pick out the highest value for each one.
+                                Improvement objHighestImprovement = null;
+                                decimal decHighest = decimal.MinValue;
                                 foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                                 {
-                                    if (strUnique != "precedence-1")
+                                    if (strUnique != "precedence0")
+                                        continue;
+                                    decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                                    if (decHighest < decInnerLoopValue)
+                                    {
+                                        decHighest = decInnerLoopValue;
+                                        objHighestImprovement = objLoopImprovement;
+                                    }
+                                }
+
+                                if (objHighestImprovement != null)
+                                    lstInnerLoopImprovements.Add(objHighestImprovement);
+
+                                if (lstUniqueNames.Contains("precedence-1"))
+                                {
+                                    foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                    {
+                                        if (strUnique != "precedence-1")
+                                            continue;
+                                        decHighest += funcValueGetter(objLoopImprovement);
+                                        lstInnerLoopImprovements.Add(objLoopImprovement);
+                                    }
+                                }
+
+                                if (decLoopValue < decHighest)
+                                {
+                                    decLoopValue = decHighest;
+                                    lstLoopImprovements.Clear();
+                                    lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                }
+                            }
+                            else if (lstUniqueNames.Contains("precedence1"))
+                            {
+                                // Retrieve all of the items that are precedence1 and nothing else.
+                                decimal decHighest = 0;
+                                foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                {
+                                    if (strUnique != "precedence1" && strUnique != "precedence-1")
                                         continue;
                                     decHighest += funcValueGetter(objLoopImprovement);
                                     lstInnerLoopImprovements.Add(objLoopImprovement);
                                 }
+
+                                if (decLoopValue < decHighest)
+                                {
+                                    decLoopValue = decHighest;
+                                    lstLoopImprovements.Clear();
+                                    lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                }
+                            }
+                            else
+                            {
+                                // Run through the list of UniqueNames and pick out the highest value for each one.
+                                foreach (string strUniqueName in lstUniqueNames)
+                                {
+                                    Improvement objHighestImprovement = null;
+                                    decimal decHighest = decimal.MinValue;
+                                    foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                    {
+                                        if (strUnique != strUniqueName)
+                                            continue;
+                                        decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                                        if (decHighest < decInnerLoopValue)
+                                        {
+                                            decHighest = decInnerLoopValue;
+                                            objHighestImprovement = objLoopImprovement;
+                                        }
+                                    }
+
+                                    if (decHighest != decimal.MinValue)
+                                    {
+                                        decLoopValue += decHighest;
+                                        lstLoopImprovements.Add(objHighestImprovement);
+                                    }
+                                }
                             }
 
-                            if (decLoopValue < decHighest)
+                            if (blnValuesDictionaryContains)
+                                dicValues[strLoopImprovedName] = decLoopValue;
+                            else
                             {
-                                decLoopValue = decHighest;
-                                lstLoopImprovements.Clear();
-                                lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                dicValues.Add(strLoopImprovedName, decLoopValue);
+                                dicImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
                             }
                         }
-                        else if (lstUniqueNames.Contains("precedence1"))
+                    }
+                }
+                finally
+                {
+                    foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
+                }
+
+                // Factor in Custom Improvements.
+                dicUniqueNames.Clear();
+                dicUniquePairs.Clear();
+                Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
+                Dictionary<string, List<Improvement>> dicCustomImprovementsForValues
+                    = new Dictionary<string, List<Improvement>>();
+                try
+                {
+                    foreach (Improvement objImprovement in lstImprovementsToConsider)
+                    {
+                        if (!objImprovement.Custom)
+                            continue;
+                        string strLoopImprovedName = objImprovement.ImprovedName;
+                        string strUniqueName = objImprovement.UniqueName;
+                        if (!string.IsNullOrEmpty(strUniqueName))
                         {
-                            // Retrieve all of the items that are precedence1 and nothing else.
-                            decimal decHighest = 0;
-                            foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
                             {
-                                if (strUnique != "precedence1" && strUnique != "precedence-1")
-                                    continue;
-                                decHighest += funcValueGetter(objLoopImprovement);
-                                lstInnerLoopImprovements.Add(objLoopImprovement);
+                                if (!lstUniqueNames.Contains(strUniqueName))
+                                    lstUniqueNames.Add(strUniqueName);
+                            }
+                            else
+                            {
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(strUniqueName);
+                                dicUniqueNames.Add(strLoopImprovedName, setTemp);
                             }
 
-                            if (decLoopValue < decHighest)
+                            // Add the values to the UniquePair List so we can check them later.
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName,
+                                                           out List<Tuple<string, Improvement>> lstUniquePairs))
                             {
-                                decLoopValue = decHighest;
-                                lstLoopImprovements.Clear();
-                                lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
                             }
+                            else
+                            {
+                                dicUniquePairs.Add(strLoopImprovedName,
+                                                   new List<Tuple<string, Improvement>>(1)
+                                                       {new Tuple<string, Improvement>(strUniqueName, objImprovement)});
+                            }
+
+                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
+                            {
+                                dicCustomValues.Add(strLoopImprovedName, 0);
+                                dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
+                            }
+                        }
+                        else if (dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
+                        {
+                            dicCustomValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
+                            dicCustomImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                         }
                         else
                         {
+                            dicCustomValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
+                            dicCustomImprovementsForValues.Add(strLoopImprovedName,
+                                                               new List<Improvement>(objImprovement.Yield()));
+                        }
+                    }
+
+                    foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+                    {
+                        string strLoopImprovedName = objLoopValuePair.Key;
+                        bool blnValuesDictionaryContains
+                            = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                        if (blnValuesDictionaryContains)
+                            dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
+                        else
+                            lstLoopImprovements = new List<Improvement>();
+                        if (dicUniquePairs.TryGetValue(strLoopImprovedName,
+                                                       out List<Tuple<string, Improvement>> lstUniquePairs))
+                        {
                             // Run through the list of UniqueNames and pick out the highest value for each one.
-                            foreach (string strUniqueName in lstUniqueNames)
+                            foreach (string strUniqueName in objLoopValuePair.Value)
                             {
                                 Improvement objHighestImprovement = null;
                                 decimal decHighest = decimal.MinValue;
@@ -3283,119 +3410,21 @@ namespace Chummer
                                     lstLoopImprovements.Add(objHighestImprovement);
                                 }
                             }
-                        }
 
-                        if (blnValuesDictionaryContains)
-                            dicValues[strLoopImprovedName] = decLoopValue;
-                        else
-                        {
-                            dicValues.Add(strLoopImprovedName, decLoopValue);
-                            dicImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
+                            if (blnValuesDictionaryContains)
+                                dicCustomValues[strLoopImprovedName] = decLoopValue;
+                            else
+                            {
+                                dicCustomValues.Add(strLoopImprovedName, decLoopValue);
+                                dicCustomImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
+                            }
                         }
                     }
                 }
-
-                // Factor in Custom Improvements.
-                dicUniqueNames.Clear();
-                dicUniquePairs.Clear();
-                Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
-                Dictionary<string, List<Improvement>> dicCustomImprovementsForValues
-                    = new Dictionary<string, List<Improvement>>();
-                foreach (Improvement objImprovement in lstImprovementsToConsider)
+                finally
                 {
-                    if (!objImprovement.Custom)
-                        continue;
-                    string strLoopImprovedName = objImprovement.ImprovedName;
-                    string strUniqueName = objImprovement.UniqueName;
-                    if (!string.IsNullOrEmpty(strUniqueName))
-                    {
-                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                        if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
-                        {
-                            if (!lstUniqueNames.Contains(strUniqueName))
-                                lstUniqueNames.Add(strUniqueName);
-                        }
-                        else
-                        {
-                            dicUniqueNames.Add(strLoopImprovedName, new HashSet<string> {strUniqueName});
-                        }
-
-                        // Add the values to the UniquePair List so we can check them later.
-                        if (dicUniquePairs.TryGetValue(strLoopImprovedName,
-                                                       out List<Tuple<string, Improvement>> lstUniquePairs))
-                        {
-                            lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
-                        }
-                        else
-                        {
-                            dicUniquePairs.Add(strLoopImprovedName,
-                                               new List<Tuple<string, Improvement>>(1)
-                                                   {new Tuple<string, Improvement>(strUniqueName, objImprovement)});
-                        }
-
-                        if (!dicCustomValues.ContainsKey(strLoopImprovedName))
-                        {
-                            dicCustomValues.Add(strLoopImprovedName, 0);
-                            dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
-                        }
-                    }
-                    else if (dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
-                    {
-                        dicCustomValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
-                        dicCustomImprovementsForValues[strLoopImprovedName].Add(objImprovement);
-                    }
-                    else
-                    {
-                        dicCustomValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
-                        dicCustomImprovementsForValues.Add(strLoopImprovedName,
-                                                           new List<Improvement>(objImprovement.Yield()));
-                    }
-                }
-
-                foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
-                {
-                    string strLoopImprovedName = objLoopValuePair.Key;
-                    bool blnValuesDictionaryContains
-                        = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                    if (blnValuesDictionaryContains)
-                        dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
-                    else
-                        lstLoopImprovements = new List<Improvement>();
-                    if (dicUniquePairs.TryGetValue(strLoopImprovedName,
-                                                   out List<Tuple<string, Improvement>> lstUniquePairs))
-                    {
-                        // Run through the list of UniqueNames and pick out the highest value for each one.
-                        foreach (string strUniqueName in objLoopValuePair.Value)
-                        {
-                            Improvement objHighestImprovement = null;
-                            decimal decHighest = decimal.MinValue;
-                            foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
-                            {
-                                if (strUnique != strUniqueName)
-                                    continue;
-                                decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
-                                if (decHighest < decInnerLoopValue)
-                                {
-                                    decHighest = decInnerLoopValue;
-                                    objHighestImprovement = objLoopImprovement;
-                                }
-                            }
-
-                            if (decHighest != decimal.MinValue)
-                            {
-                                decLoopValue += decHighest;
-                                lstLoopImprovements.Add(objHighestImprovement);
-                            }
-                        }
-
-                        if (blnValuesDictionaryContains)
-                            dicCustomValues[strLoopImprovedName] = decLoopValue;
-                        else
-                        {
-                            dicCustomValues.Add(strLoopImprovedName, decLoopValue);
-                            dicCustomImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
-                        }
-                    }
+                    foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
                 }
 
                 foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
@@ -3566,193 +3595,240 @@ namespace Chummer
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
                     intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
 
-                HashSet<string> setAllowedCategories = null;
-                string strOnlyCategory = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
-                if (!string.IsNullOrEmpty(strOnlyCategory))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string>
+                                                                    setAllowedCategories))
                 {
-                    setAllowedCategories = new HashSet<string>(strOnlyCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
-                }
-                else
-                {
-                    using (XmlNodeList xmlCategoryList = xmlBonusNode.SelectNodes("skillcategories/category"))
+                    string strOnlyCategory = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                    if (!string.IsNullOrEmpty(strOnlyCategory))
                     {
-                        if (xmlCategoryList?.Count > 0)
+                        setAllowedCategories.AddRange(strOnlyCategory
+                                                      .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                      .Select(x => x.Trim()));
+                    }
+                    else
+                    {
+                        using (XmlNodeList xmlCategoryList = xmlBonusNode.SelectNodes("skillcategories/category"))
                         {
-                            setAllowedCategories = new HashSet<string>();
-                            foreach (XmlNode objNode in xmlCategoryList)
+                            if (xmlCategoryList?.Count > 0)
                             {
-                                setAllowedCategories.Add(objNode.InnerText);
-                            }
-                        }
-                    }
-                }
-
-                HashSet<string> setForbiddenCategories = null;
-                string strExcludeCategory = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
-                if (!string.IsNullOrEmpty(strExcludeCategory))
-                {
-                    setForbiddenCategories = new HashSet<string>(strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
-                }
-                HashSet<string> setAllowedNames = null;
-                if (!string.IsNullOrEmpty(ForcedValue))
-                {
-                    setAllowedNames = new HashSet<string> { ForcedValue };
-                }
-                else if (!string.IsNullOrEmpty(strPrompt))
-                {
-                    setAllowedNames = new HashSet<string> { strPrompt };
-                }
-                else
-                {
-                    string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
-                    if (!string.IsNullOrEmpty(strLimitToSkill))
-                    {
-                        setAllowedNames = new HashSet<string>(strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
-                    }
-                }
-
-                HashSet<string> setAllowedLinkedAttributes = null;
-                string strLimitToAttribute = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
-                if (!string.IsNullOrEmpty(strLimitToAttribute))
-                {
-                    setAllowedLinkedAttributes = new HashSet<string>(strLimitToAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
-                }
-
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                               out List<ListItem> lstDropdownItems))
-                {
-                    HashSet<string> setProcessedSkillNames = new HashSet<string>();
-                    foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowledgeSkills)
-                    {
-                        if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false &&
-                            setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory) != true &&
-                            setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
-                            setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute) != false)
-                        {
-                            int intSkillRating = objKnowledgeSkill.Rating;
-                            if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
-                            {
-                                lstDropdownItems.Add(
-                                    new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
-                            }
-                        }
-
-                        setProcessedSkillNames.Add(objKnowledgeSkill.Name);
-                    }
-
-                    if (!string.IsNullOrEmpty(strPrompt) && !setProcessedSkillNames.Contains(strPrompt))
-                    {
-                        lstDropdownItems.Add(new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
-                        setProcessedSkillNames.Add(strPrompt);
-                    }
-
-                    if (intMinimumRating <= 0)
-                    {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdFilter))
-                        {
-                            if (setAllowedCategories?.Count > 0)
-                            {
-                                sbdFilter.Append('(');
-                                foreach (string strCategory in setAllowedCategories)
+                                foreach (XmlNode objNode in xmlCategoryList)
                                 {
-                                    sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
+                                    setAllowedCategories.Add(objNode.InnerText);
                                 }
-
-                                sbdFilter.Length -= 4;
-                                sbdFilter.Append(')');
-                            }
-
-                            if (setForbiddenCategories?.Count > 0)
-                            {
-                                sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                                foreach (string strCategory in setForbiddenCategories)
-                                {
-                                    sbdFilter.Append("category = ").Append(strCategory.CleanXPath()).Append(" or ");
-                                }
-
-                                sbdFilter.Length -= 4;
-                                sbdFilter.Append(')');
-                            }
-
-                            if (setAllowedNames?.Count > 0)
-                            {
-                                sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                                foreach (string strName in setAllowedNames)
-                                {
-                                    sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
-                                }
-
-                                sbdFilter.Length -= 4;
-                                sbdFilter.Append(')');
-                            }
-
-                            if (setProcessedSkillNames.Count > 0)
-                            {
-                                sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                                foreach (string strName in setProcessedSkillNames)
-                                {
-                                    sbdFilter.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
-                                }
-
-                                sbdFilter.Length -= 4;
-                                sbdFilter.Append(')');
-                            }
-
-                            if (setAllowedLinkedAttributes?.Count > 0)
-                            {
-                                sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                                foreach (string strAttribute in setAllowedLinkedAttributes)
-                                {
-                                    sbdFilter.Append("attribute = ").Append(strAttribute.CleanXPath()).Append(" or ");
-                                }
-
-                                sbdFilter.Length -= 4;
-                                sbdFilter.Append(')');
-                            }
-
-                            string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
-                            foreach (XPathNavigator xmlSkill in objCharacter.LoadDataXPath("skills.xml")
-                                                                            .Select(
-                                                                                "/chummer/knowledgeskills/skill[(not(hide)"
-                                                                                + strFilter + ")]"))
-                            {
-                                string strName = xmlSkill.SelectSingleNode("name")?.Value;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstDropdownItems.Add(
-                                        new ListItem(
-                                            strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
                             }
                         }
                     }
 
-                    lstDropdownItems.Sort(CompareListItems.CompareNames);
-
-                    DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string>
+                                                                        setForbiddenCategories))
                     {
-                        using (frmSelectItem frmPickSkill = new frmSelectItem
-                               {
-                                   Description = LanguageManager.GetString("Title_SelectSkill"),
-                                   AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                               })
+                        string strExcludeCategory = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                        if (!string.IsNullOrEmpty(strExcludeCategory))
                         {
-                            if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
-                                frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
+                            setForbiddenCategories.AddRange(
+                                strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                  .Select(x => x.Trim()));
+                        }
+
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string>
+                                                                            setAllowedNames))
+                        {
+                            if (!string.IsNullOrEmpty(ForcedValue))
+                            {
+                                setAllowedNames.Add(ForcedValue);
+                            }
+                            else if (!string.IsNullOrEmpty(strPrompt))
+                            {
+                                setAllowedNames.Add(strPrompt);
+                            }
                             else
-                                frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
-
-                            frmPickSkill.ShowDialog(Program.MainForm);
-
-                            if (frmPickSkill.DialogResult != DialogResult.Cancel)
                             {
-                                strSelectedSkill = frmPickSkill.SelectedItem;
+                                string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                                if (!string.IsNullOrEmpty(strLimitToSkill))
+                                {
+                                    setAllowedNames.AddRange(
+                                        strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                       .Select(x => x.Trim()));
+                                }
                             }
 
-                            return frmPickSkill.DialogResult;
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string>
+                                                                                setAllowedLinkedAttributes))
+                            {
+                                string strLimitToAttribute
+                                    = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                                if (!string.IsNullOrEmpty(strLimitToAttribute))
+                                {
+                                    setAllowedLinkedAttributes.AddRange(
+                                        strLimitToAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                           .Select(x => x.Trim()));
+                                }
+
+                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                               out List<ListItem> lstDropdownItems))
+                                {
+                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                               out HashSet<string>
+                                                   setProcessedSkillNames))
+                                    {
+                                        foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
+                                                     .KnowledgeSkills)
+                                        {
+                                            if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false
+                                                &&
+                                                setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory)
+                                                != true &&
+                                                setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
+                                                setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute)
+                                                != false)
+                                            {
+                                                int intSkillRating = objKnowledgeSkill.Rating;
+                                                if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                                                {
+                                                    lstDropdownItems.Add(
+                                                        new ListItem(objKnowledgeSkill.Name,
+                                                                     objKnowledgeSkill.CurrentDisplayName));
+                                                }
+                                            }
+
+                                            setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                                        }
+
+                                        if (!string.IsNullOrEmpty(strPrompt)
+                                            && !setProcessedSkillNames.Contains(strPrompt))
+                                        {
+                                            lstDropdownItems.Add(
+                                                new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
+                                            setProcessedSkillNames.Add(strPrompt);
+                                        }
+
+                                        if (intMinimumRating <= 0)
+                                        {
+                                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                       out StringBuilder sbdFilter))
+                                            {
+                                                if (setAllowedCategories?.Count > 0)
+                                                {
+                                                    sbdFilter.Append('(');
+                                                    foreach (string strCategory in setAllowedCategories)
+                                                    {
+                                                        sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
+                                                                 .Append(" or ");
+                                                    }
+
+                                                    sbdFilter.Length -= 4;
+                                                    sbdFilter.Append(')');
+                                                }
+
+                                                if (setForbiddenCategories?.Count > 0)
+                                                {
+                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                                                    foreach (string strCategory in setForbiddenCategories)
+                                                    {
+                                                        sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
+                                                                 .Append(" or ");
+                                                    }
+
+                                                    sbdFilter.Length -= 4;
+                                                    sbdFilter.Append(')');
+                                                }
+
+                                                if (setAllowedNames?.Count > 0)
+                                                {
+                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                                                    foreach (string strName in setAllowedNames)
+                                                    {
+                                                        sbdFilter.Append("name = ").Append(strName.CleanXPath())
+                                                                 .Append(" or ");
+                                                    }
+
+                                                    sbdFilter.Length -= 4;
+                                                    sbdFilter.Append(')');
+                                                }
+
+                                                if (setProcessedSkillNames.Count > 0)
+                                                {
+                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                                                    foreach (string strName in setProcessedSkillNames)
+                                                    {
+                                                        sbdFilter.Append("name = ").Append(strName.CleanXPath())
+                                                                 .Append(" or ");
+                                                    }
+
+                                                    sbdFilter.Length -= 4;
+                                                    sbdFilter.Append(')');
+                                                }
+
+                                                if (setAllowedLinkedAttributes?.Count > 0)
+                                                {
+                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                                                    foreach (string strAttribute in setAllowedLinkedAttributes)
+                                                    {
+                                                        sbdFilter.Append("attribute = ")
+                                                                 .Append(strAttribute.CleanXPath())
+                                                                 .Append(" or ");
+                                                    }
+
+                                                    sbdFilter.Length -= 4;
+                                                    sbdFilter.Append(')');
+                                                }
+
+                                                string strFilter = sbdFilter.Length > 0
+                                                    ? ") and (" + sbdFilter
+                                                    : string.Empty;
+                                                foreach (XPathNavigator xmlSkill in objCharacter
+                                                             .LoadDataXPath("skills.xml")
+                                                             .Select(
+                                                                 "/chummer/knowledgeskills/skill[(not(hide)"
+                                                                 + strFilter + ")]"))
+                                                {
+                                                    string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                                                    if (!string.IsNullOrEmpty(strName))
+                                                        lstDropdownItems.Add(
+                                                            new ListItem(
+                                                                strName,
+                                                                xmlSkill.SelectSingleNode("translate")?.Value
+                                                                ?? strName));
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    lstDropdownItems.Sort(CompareListItems.CompareNames);
+
+                                    DialogResult eResult = Program.MainForm.DoThreadSafeFunc(() =>
+                                    {
+                                        using (frmSelectItem frmPickSkill = new frmSelectItem
+                                               {
+                                                   Description = LanguageManager.GetString("Title_SelectSkill"),
+                                                   AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
+                                               })
+                                        {
+                                            if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
+                                                frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
+                                            else
+                                                frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
+
+                                            frmPickSkill.ShowDialog(Program.MainForm);
+
+                                            if (frmPickSkill.DialogResult != DialogResult.Cancel)
+                                            {
+                                                strSelectedSkill = frmPickSkill.SelectedItem;
+                                            }
+
+                                            return frmPickSkill.DialogResult;
+                                        }
+                                    });
+                                    if (eResult == DialogResult.Cancel)
+                                        throw new AbortedException();
+                                }
+                            }
                         }
-                    });
-                    if (eResult == DialogResult.Cancel)
-                        throw new AbortedException();
+                    }
                 }
             }
             else
@@ -3952,25 +4028,28 @@ namespace Chummer
                                 {
                                     //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
                                     //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                    HashSet<string> setUsedValues = new HashSet<string>();
-                                    foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                               out HashSet<string> setUsedValues))
                                     {
-                                        string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                         ?? string.Empty;
-                                        if (string.IsNullOrWhiteSpace(strName))
+                                        foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                                         {
-                                            // Assume that if we're not looking at something that has an XML node,
-                                            // we're looking at a direct xpath filter or something that has proper names
-                                            // like the lifemodule storybuilder macros.
-                                            string strValue = objNode.Value;
-                                            if (setUsedValues.Add(strValue))
-                                                lstItems.Add(new ListItem(strValue, strValue));
-                                        }
-                                        else if (setUsedValues.Add(strName))
-                                        {
-                                            lstItems.Add(new ListItem(strName,
-                                                                      objNode.SelectSingleNodeAndCacheExpression(
-                                                                          "translate")?.Value ?? strName));
+                                            string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                             ?? string.Empty;
+                                            if (string.IsNullOrWhiteSpace(strName))
+                                            {
+                                                // Assume that if we're not looking at something that has an XML node,
+                                                // we're looking at a direct xpath filter or something that has proper names
+                                                // like the lifemodule storybuilder macros.
+                                                string strValue = objNode.Value;
+                                                if (setUsedValues.Add(strValue))
+                                                    lstItems.Add(new ListItem(strValue, strValue));
+                                            }
+                                            else if (setUsedValues.Add(strName))
+                                            {
+                                                lstItems.Add(new ListItem(strName,
+                                                                          objNode.SelectSingleNodeAndCacheExpression(
+                                                                              "translate")?.Value ?? strName));
+                                            }
                                         }
                                     }
 
@@ -5345,19 +5424,34 @@ namespace Chummer
                 return;
             // Create a hashset of events to fire to make sure we only ever fire each event once
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicPropertiesChanged = new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
+            try
             {
-                foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement.GetRelevantPropertyChangers())
+                foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
                 {
-                    if (dicPropertiesChanged.TryGetValue(objToNotify, out HashSet<string> setLoopPropertiesChanged))
-                        setLoopPropertiesChanged.Add(strProperty);
-                    else
-                        dicPropertiesChanged.Add(objToNotify, new HashSet<string> { strProperty });
+                    foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                                 .GetRelevantPropertyChangers())
+                    {
+                        if (dicPropertiesChanged.TryGetValue(objToNotify, out HashSet<string> setLoopPropertiesChanged))
+                            setLoopPropertiesChanged.Add(strProperty);
+                        else
+                        {
+                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                            setTemp.Add(strProperty);
+                            dicPropertiesChanged.Add(objToNotify, setTemp);
+                        }
+                    }
                 }
+
+                // Fire each event once
+                foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> pairPropertiesChanged in
+                         dicPropertiesChanged)
+                    pairPropertiesChanged.Key.OnMultiplePropertyChanged(pairPropertiesChanged.Value);
             }
-            // Fire each event once
-            foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> pairPropertiesChanged in dicPropertiesChanged)
-                pairPropertiesChanged.Key.OnMultiplePropertyChanged(pairPropertiesChanged.Value);
+            finally
+            {
+                foreach (HashSet<string> setToReturn in dicPropertiesChanged.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
+            }
         }
 
         #endregion Improvement System

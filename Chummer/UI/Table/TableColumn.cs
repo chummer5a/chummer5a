@@ -28,8 +28,7 @@ namespace Chummer.UI.Table
     /// a item in a certain table column.
     /// </summary>
     /// <typeparam name="T">the table item type</typeparam>
-    public class TableColumn<T>
-        where T : INotifyPropertyChanged
+    public class TableColumn<T> : IDisposable where T : INotifyPropertyChanged
     {
         private readonly Func<TableCell> _cellFactory;
         private Comparison<object> _sorter;
@@ -40,7 +39,7 @@ namespace Chummer.UI.Table
         private int _intPrefWidth;
         private Func<T, object> _funcExtractor;
         private Comparison<T> _itemSorter;
-        private readonly HashSet<string> _setDependencies = new HashSet<string>();
+        private readonly HashSet<string> _setDependencies = Utils.StringHashSetPool.Get();
 
         public TableColumn(Func<TableCell> cellFactory)
         {
@@ -204,5 +203,11 @@ namespace Chummer.UI.Table
         }
 
         #endregion Properties
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Utils.StringHashSetPool.Return(_setDependencies);
+        }
     }
 }

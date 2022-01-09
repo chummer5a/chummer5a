@@ -44,8 +44,8 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setDealerConnectionMaps = new HashSet<string>();
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setDealerConnectionMaps = Utils.StringHashSetPool.Get();
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
@@ -63,7 +63,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode);
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode));
 
             if (_objCharacter.DealerConnectionDiscount)
             {

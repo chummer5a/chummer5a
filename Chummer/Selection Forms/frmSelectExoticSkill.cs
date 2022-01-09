@@ -165,13 +165,18 @@ namespace Chummer
                     }
                 }
 
-                HashSet<string> lstExistingExoticSkills = new HashSet<string>(_objCharacter.SkillsSection.Skills
-                                                                                  .Where(
-                                                                                      x => x.Name
-                                                                                          == strSelectedCategory)
-                                                                                  .Select(x => ((ExoticSkill) x)
-                                                                                      .Specific));
-                lstSkillSpecializations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> lstExistingExoticSkills))
+                {
+                    lstExistingExoticSkills.AddRange(_objCharacter.SkillsSection.Skills
+                                                         .Where(
+                                                             x => x.Name
+                                                                  == strSelectedCategory)
+                                                         .Select(x => ((ExoticSkill) x)
+                                                                     .Specific));
+                    lstSkillSpecializations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
+                }
+
                 lstSkillSpecializations.Sort(
                     Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
                 string strOldText = cboSkillSpecialisations.Text;

@@ -39,14 +39,14 @@ namespace Chummer
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
-        private readonly HashSet<string> _setLimitToCategories = new HashSet<string>();
+        private readonly HashSet<string> _setLimitToCategories = Utils.StringHashSetPool.Get();
         private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
         private Weapon _objSelectedWeapon;
 
         private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
@@ -63,7 +63,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             // Load the Weapon information.
             _objXmlDocument = _objCharacter.LoadData("weapons.xml");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer"));
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)
@@ -635,7 +635,7 @@ namespace Chummer
         }
 
         public Weapon ParentWeapon { get; set; }
-        public HashSet<string> Mounts { get; } = new HashSet<string>();
+        public HashSet<string> Mounts { get; } = Utils.StringHashSetPool.Get();
 
         #endregion Properties
 

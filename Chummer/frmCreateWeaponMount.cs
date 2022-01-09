@@ -36,7 +36,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private WeaponMount _objMount;
         private readonly XmlDocument _xmlDoc;
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly decimal _decOldBaseCost;
 
         public WeaponMount WeaponMount => _objMount;
@@ -50,7 +50,10 @@ namespace Chummer
             _decOldBaseCost = _objCharacter.Created ? _objVehicle.TotalCost : 0;
             _blnAllowEditOptions = _objMount == null || (!_objMount.IncludedInVehicle && !_objCharacter.Created);
             _xmlDoc = _objCharacter.LoadData("vehicles.xml");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer/weaponmountcategories"));
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(
+                                             _objCharacter.LoadDataXPath("vehicles.xml")
+                                                          .SelectSingleNodeAndCacheExpression(
+                                                              "/chummer/weaponmountcategories")));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

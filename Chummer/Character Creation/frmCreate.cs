@@ -363,7 +363,8 @@ namespace Chummer
                         CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
                         CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
                         CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-                        CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
+                        CharacterObject.Lifestyles.ListChanged += LifestylesOnListChanged;
+                        CharacterObject.Lifestyles.BeforeRemove += LifestylesOnBeforeRemove;
                         CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
                         CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
                         CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
@@ -459,86 +460,93 @@ namespace Chummer
                         lblFadingAttributesValue.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
 
-                        HashSet<string> limit = new HashSet<string>();
-                        foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> limit))
                         {
-                            limit.Add(improvement.ImprovedName);
-                        }
-
-                        /* Populate drugs. //TODO: fix
-                        foreach (Drug objDrug in CharacterObj.Drugs)
-                        {
-                            treCustomDrugs.Add(objDrug);
-                        }
-                        */
-
-                        // Populate the Magician Custom Spirits lists - Combat.
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                       out List<ListItem> lstSpirit))
-                        {
-                            lstSpirit.Add(ListItem.Blank);
-                            if (xmlTraditionsBaseChummerNode != null)
+                            foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                         CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                             {
-                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
-                                             .SelectAndCacheExpression("spirits/spirit"))
-                                {
-                                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strSpiritName)
-                                        && (limit.Count == 0 || limit.Contains(strSpiritName)))
-                                    {
-                                        lstSpirit.Add(new ListItem(strSpiritName,
-                                                                   xmlSpirit.SelectSingleNodeAndCacheExpression(
-                                                                       "translate")?.Value ?? strSpiritName));
-                                    }
-                                }
+                                limit.Add(improvement.ImprovedName);
                             }
 
-                            lstSpirit.Sort(CompareListItems.CompareNames);
+                            /* Populate drugs. //TODO: fix
+                            foreach (Drug objDrug in CharacterObj.Drugs)
+                            {
+                                treCustomDrugs.Add(objDrug);
+                            }
+                            */
 
-                            cboSpiritCombat.BeginUpdate();
-                            cboSpiritCombat.PopulateWithListItems(lstSpirit);
-                            cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                          nameof(Tradition.SpiritCombat));
-                            lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                            cboSpiritCombat.EndUpdate();
+                            // Populate the Magician Custom Spirits lists - Combat.
+                            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                           out List<ListItem> lstSpirit))
+                            {
+                                lstSpirit.Add(ListItem.Blank);
+                                if (xmlTraditionsBaseChummerNode != null)
+                                {
+                                    foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                 .SelectAndCacheExpression("spirits/spirit"))
+                                    {
+                                        string strSpiritName
+                                            = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strSpiritName)
+                                            && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                        {
+                                            lstSpirit.Add(new ListItem(strSpiritName,
+                                                                       xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                           "translate")?.Value ?? strSpiritName));
+                                        }
+                                    }
+                                }
 
-                            cboSpiritDetection.BeginUpdate();
-                            cboSpiritDetection.PopulateWithListItems(lstSpirit);
-                            cboSpiritDetection.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                             nameof(Tradition.SpiritDetection));
-                            lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                            cboSpiritDetection.EndUpdate();
+                                lstSpirit.Sort(CompareListItems.CompareNames);
 
-                            cboSpiritHealth.BeginUpdate();
-                            cboSpiritHealth.PopulateWithListItems(lstSpirit);
-                            cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                          nameof(Tradition.SpiritHealth));
-                            lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                            cboSpiritHealth.EndUpdate();
+                                cboSpiritCombat.BeginUpdate();
+                                cboSpiritCombat.PopulateWithListItems(lstSpirit);
+                                cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                              nameof(Tradition.SpiritCombat));
+                                lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritCombat.EndUpdate();
 
-                            cboSpiritIllusion.BeginUpdate();
-                            cboSpiritIllusion.PopulateWithListItems(lstSpirit);
-                            cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                            nameof(Tradition.SpiritIllusion));
-                            lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                            cboSpiritIllusion.EndUpdate();
+                                cboSpiritDetection.BeginUpdate();
+                                cboSpiritDetection.PopulateWithListItems(lstSpirit);
+                                cboSpiritDetection.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                                 nameof(Tradition.SpiritDetection));
+                                lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritDetection.EndUpdate();
 
-                            cboSpiritManipulation.BeginUpdate();
-                            cboSpiritManipulation.PopulateWithListItems(lstSpirit);
-                            cboSpiritManipulation.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                                nameof(Tradition.SpiritManipulation));
-                            lblSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                            cboSpiritManipulation.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                            cboSpiritManipulation.EndUpdate();
+                                cboSpiritHealth.BeginUpdate();
+                                cboSpiritHealth.PopulateWithListItems(lstSpirit);
+                                cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                              nameof(Tradition.SpiritHealth));
+                                lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritHealth.EndUpdate();
+
+                                cboSpiritIllusion.BeginUpdate();
+                                cboSpiritIllusion.PopulateWithListItems(lstSpirit);
+                                cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                                nameof(Tradition.SpiritIllusion));
+                                lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritIllusion.EndUpdate();
+
+                                cboSpiritManipulation.BeginUpdate();
+                                cboSpiritManipulation.PopulateWithListItems(lstSpirit);
+                                cboSpiritManipulation.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                                    nameof(Tradition.SpiritManipulation));
+                                lblSpiritManipulation.Visible
+                                    = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritManipulation.Visible
+                                    = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritManipulation.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritManipulation.EndUpdate();
+                            }
                         }
 
                         // Populate the Technomancer Streams list.
@@ -942,7 +950,8 @@ namespace Chummer
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
-                CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
+                CharacterObject.Lifestyles.ListChanged -= LifestylesOnListChanged;
+                CharacterObject.Lifestyles.BeforeRemove -= LifestylesOnBeforeRemove;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
@@ -1613,10 +1622,11 @@ namespace Chummer
                             RefreshFociFromGear(treFoci, null);
                             RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                             RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                cmsWeaponAccessoryGear);
+                                           cmsWeaponAccessoryGear);
                             RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount,
-                                cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
+                                            cmsWeaponMount,
+                                            cmsVehicleCyberware, cmsVehicleCyberwareGear);
                             RefreshDrugs(treCustomDrugs);
                             treWeapons.SortCustomOrder();
                             treArmor.SortCustomOrder();
@@ -1628,7 +1638,8 @@ namespace Chummer
                             treCritterPowers.SortCustomOrder();
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                                CharacterObject.LoadDataXPath("traditions.xml")
+                                               .SelectSingleNodeAndCacheExpression("/chummer");
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstTraditions))
                             {
@@ -1699,69 +1710,78 @@ namespace Chummer
                                 }
                             }
 
-                            HashSet<string> limit = new HashSet<string>();
-                            foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> limit))
                             {
-                                limit.Add(improvement.ImprovedName);
-                            }
-
-                            using (new FetchSafelyFromPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstSpirit))
-                            {
-                                lstSpirit.Add(ListItem.Blank);
-                                if (xmlTraditionsBaseChummerNode != null)
+                                foreach (Improvement improvement in ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                                 {
-                                    foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
-                                                 .SelectAndCacheExpression("spirits/spirit"))
-                                    {
-                                        string strSpiritName
-                                            = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                        if (!string.IsNullOrEmpty(strSpiritName)
-                                            && (limit.Count == 0 || limit.Contains(strSpiritName)))
-                                        {
-                                            lstSpirit.Add(new ListItem(strSpiritName,
-                                                                       xmlSpirit.SelectSingleNodeAndCacheExpression(
-                                                                           "translate")?.Value ?? strSpiritName));
-                                        }
-                                    }
+                                    limit.Add(improvement.ImprovedName);
                                 }
 
-                                lstSpirit.Sort(CompareListItems.CompareNames);
-                                if (!lstSpirit.SequenceEqual(cboSpiritCombat.Items.Cast<ListItem>()))
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstSpirit))
                                 {
-                                    cboSpiritCombat.BeginUpdate();
-                                    cboSpiritCombat.PopulateWithListItems(lstSpirit);
-                                    cboSpiritCombat.EndUpdate();
+                                    lstSpirit.Add(ListItem.Blank);
+                                    if (xmlTraditionsBaseChummerNode != null)
+                                    {
+                                        foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                     .SelectAndCacheExpression("spirits/spirit"))
+                                        {
+                                            string strSpiritName
+                                                = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                            if (!string.IsNullOrEmpty(strSpiritName)
+                                                && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                            {
+                                                lstSpirit.Add(new ListItem(strSpiritName,
+                                                                           xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                               "translate")?.Value ?? strSpiritName));
+                                            }
+                                        }
+                                    }
 
-                                    cboSpiritDetection.BeginUpdate();
-                                    cboSpiritDetection.PopulateWithListItems(lstSpirit);
-                                    cboSpiritDetection.EndUpdate();
+                                    lstSpirit.Sort(CompareListItems.CompareNames);
+                                    if (!lstSpirit.SequenceEqual(cboSpiritCombat.Items.Cast<ListItem>()))
+                                    {
+                                        cboSpiritCombat.BeginUpdate();
+                                        cboSpiritCombat.PopulateWithListItems(lstSpirit);
+                                        cboSpiritCombat.EndUpdate();
 
-                                    cboSpiritHealth.BeginUpdate();
-                                    cboSpiritHealth.PopulateWithListItems(lstSpirit);
-                                    cboSpiritHealth.EndUpdate();
+                                        cboSpiritDetection.BeginUpdate();
+                                        cboSpiritDetection.PopulateWithListItems(lstSpirit);
+                                        cboSpiritDetection.EndUpdate();
 
-                                    cboSpiritIllusion.BeginUpdate();
-                                    cboSpiritIllusion.PopulateWithListItems(lstSpirit);
-                                    cboSpiritIllusion.EndUpdate();
+                                        cboSpiritHealth.BeginUpdate();
+                                        cboSpiritHealth.PopulateWithListItems(lstSpirit);
+                                        cboSpiritHealth.EndUpdate();
 
-                                    cboSpiritManipulation.BeginUpdate();
-                                    cboSpiritManipulation.PopulateWithListItems(lstSpirit);
-                                    cboSpiritManipulation.EndUpdate();
+                                        cboSpiritIllusion.BeginUpdate();
+                                        cboSpiritIllusion.PopulateWithListItems(lstSpirit);
+                                        cboSpiritIllusion.EndUpdate();
+
+                                        cboSpiritManipulation.BeginUpdate();
+                                        cboSpiritManipulation.PopulateWithListItems(lstSpirit);
+                                        cboSpiritManipulation.EndUpdate();
+                                    }
                                 }
                             }
 
                             // Populate the Technomancer Streams list.
                             xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStreams))
+                                CharacterObject.LoadDataXPath("streams.xml")
+                                               .SelectSingleNodeAndCacheExpression("/chummer");
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstStreams))
                             {
                                 if (xmlTraditionsBaseChummerNode != null)
                                 {
                                     foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                                         + "]"))
                                     {
-                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")
+                                                                     ?.Value;
                                         if (!string.IsNullOrEmpty(strName))
                                             lstStreams.Add(new ListItem(
                                                                xmlTradition.SelectSingleNodeAndCacheExpression("id")
@@ -1799,6 +1819,7 @@ namespace Chummer
                             RefreshSelectedVehicle();
                             ResumeLayout();
                         }
+
                         break;
                     }
                 case nameof(CharacterSettings.AllowFreeGrids):
@@ -3332,7 +3353,8 @@ namespace Chummer
                         // Make sure the dialogue window was not canceled.
                         if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                         {
-                            break;
+                            frmPickLifestyle.SelectedLifestyle.Dispose();
+                            return;
                         }
 
                         blnAddAgain = frmPickLifestyle.AddAgain;
@@ -5262,14 +5284,19 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Lifestyle objLifestyle;
-                    using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject)))
+                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
+                    using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, objLifestyle))
                     {
                         frmPickLifestyle.ShowDialog(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                            break;
+                        {
+                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle))
+                                frmPickLifestyle.SelectedLifestyle.Dispose();
+                            return;
+                        }
+
                         blnAddAgain = frmPickLifestyle.AddAgain;
 
                         objLifestyle = frmPickLifestyle.SelectedLifestyle;
@@ -5698,48 +5725,55 @@ namespace Chummer
                             //frmPickCyberware.SetGrade = "Standard";
                             frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
                             frmPickCyberware.Subsystems = objMod.Subsystems;
-                            HashSet<string> setDisallowedMounts = new HashSet<string>();
-                            HashSet<string> setHasMounts = new HashSet<string>();
-                            foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setHasMounts))
                             {
-                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                                 {
-                                    if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    }
+
+                                    string strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                        && !setHasMounts.Contains(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
                                 }
 
-                                string strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount) && !setHasMounts.Contains(strLoopHasModularMount))
-                                    setHasMounts.Add(strLoopHasModularMount);
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdDisallowedMounts))
-                            {
-                                foreach (string strLoop in setDisallowedMounts)
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdDisallowedMounts))
                                 {
-                                    if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
-                                        && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                            || setDisallowedMounts.Contains(
-                                                strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                        sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(
+                                                    strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    }
+
+                                    // Remove trailing ","
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
                                 }
 
-                                // Remove trailing ","
-                                if (sbdDisallowedMounts.Length > 0)
-                                    --sbdDisallowedMounts.Length;
-                                frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdHasMounts))
-                            {
-                                foreach (string strLoop in setHasMounts)
-                                    sbdHasMounts.Append(strLoop).Append(',');
-                                // Remove trailing ","
-                                if (sbdHasMounts.Length > 0)
-                                    --sbdHasMounts.Length;
-                                frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop).Append(',');
+                                    // Remove trailing ","
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                }
                             }
                         }
                         else
@@ -5762,53 +5796,61 @@ namespace Chummer
 
                             frmPickCyberware.CyberwareParent = objCyberwareParent;
                             frmPickCyberware.Subsystems = objCyberwareParent.AllowedSubsystems;
-                            HashSet<string> setDisallowedMounts = new HashSet<string>();
-                            HashSet<string> setHasMounts = new HashSet<string>();
-                            foreach (string strLoop in objCyberwareParent.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
-                            string strLoopHasModularMount = objCyberwareParent.HasModularMount;
-                            if (!string.IsNullOrEmpty(strLoopHasModularMount))
-                                setHasMounts.Add(strLoopHasModularMount);
-                            foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setHasMounts))
                             {
-                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                {
-                                    if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
-                                }
-
-                                strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount) && !setHasMounts.Contains(strLoopHasModularMount))
+                                foreach (string strLoop in objCyberwareParent.BlocksMounts.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
+                                    setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
+                                string strLoopHasModularMount = objCyberwareParent.HasModularMount;
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                     setHasMounts.Add(strLoopHasModularMount);
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdDisallowedMounts))
-                            {
-                                foreach (string strLoop in setDisallowedMounts)
+                                foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                                 {
-                                    if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
-                                        && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                            || setDisallowedMounts.Contains(
-                                                strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                        sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    }
+
+                                    strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                        && !setHasMounts.Contains(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
                                 }
 
-                                // Remove trailing ","
-                                if (sbdDisallowedMounts.Length > 0)
-                                    --sbdDisallowedMounts.Length;
-                                frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
-                            }
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdDisallowedMounts))
+                                {
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(
+                                                    strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    }
 
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdHasMounts))
-                            {
-                                foreach (string strLoop in setHasMounts)
-                                    sbdHasMounts.Append(strLoop).Append(',');
-                                // Remove trailing ","
-                                if (sbdHasMounts.Length > 0)
-                                    --sbdHasMounts.Length;
-                                frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                    // Remove trailing ","
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop).Append(',');
+                                    // Remove trailing ","
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                }
                             }
                         }
 
@@ -7285,7 +7327,11 @@ namespace Chummer
                     frmPickLifestyle.ShowDialog(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    {
+                        if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle))
+                            frmPickLifestyle.SelectedLifestyle.Dispose();
                         return;
+                    }
 
                     // Update the selected Lifestyle and refresh the list.
                     objLifestyle = frmPickLifestyle.SelectedLifestyle;
@@ -7300,7 +7346,10 @@ namespace Chummer
                     frmPickLifestyle.ShowDialog(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    {
+                        frmPickLifestyle.SelectedLifestyle.Dispose();
                         return;
+                    }
 
                     // Update the selected Lifestyle and refresh the list.
                     objLifestyle = frmPickLifestyle.SelectedLifestyle;
@@ -11737,34 +11786,45 @@ namespace Chummer
                 }
                 else
                 {
-                    foreach (Cyberware objLoopCyberware in CharacterObject.Cyberware)
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setLoopDisallowedMounts))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setLoopHasModularMount))
                     {
-                        HashSet<string> setLoopDisallowedMounts = new HashSet<string>(objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
-                        HashSet<string> setLoopHasModularMount = new HashSet<string>();
-                        if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
-                            setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
-                        foreach (Cyberware objInnerLoopCyberware in objLoopCyberware.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                        foreach (Cyberware objLoopCyberware in CharacterObject.Cyberware)
                         {
-                            foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                setLoopDisallowedMounts.Add(strLoop);
-                            if (!string.IsNullOrEmpty(objInnerLoopCyberware.HasModularMount))
-                                setLoopHasModularMount.Add(objInnerLoopCyberware.HasModularMount);
-                        }
-                        foreach (string strLoop in setLoopDisallowedMounts)
-                        {
-                            string strKey = strLoop + objLoopCyberware.Location;
-                            if (!dicDisallowedMounts.ContainsKey(strKey))
-                                dicDisallowedMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
-                            else
-                                dicDisallowedMounts[strKey] += objLoopCyberware.LimbSlotCount;
-                        }
-                        foreach (string strLoop in setLoopHasModularMount)
-                        {
-                            string strKey = strLoop + objLoopCyberware.Location;
-                            if (!dicHasMounts.ContainsKey(strKey))
-                                dicHasMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
-                            else
-                                dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                            setLoopDisallowedMounts.Clear();
+                            setLoopDisallowedMounts.AddRange(objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
+                            setLoopHasModularMount.Clear();
+                            if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
+                                setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
+                            foreach (Cyberware objInnerLoopCyberware in objLoopCyberware.Children.DeepWhere(
+                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            {
+                                foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
+                                    setLoopDisallowedMounts.Add(strLoop);
+                                if (!string.IsNullOrEmpty(objInnerLoopCyberware.HasModularMount))
+                                    setLoopHasModularMount.Add(objInnerLoopCyberware.HasModularMount);
+                            }
+
+                            foreach (string strLoop in setLoopDisallowedMounts)
+                            {
+                                string strKey = strLoop + objLoopCyberware.Location;
+                                if (!dicDisallowedMounts.ContainsKey(strKey))
+                                    dicDisallowedMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                else
+                                    dicDisallowedMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                            }
+
+                            foreach (string strLoop in setLoopHasModularMount)
+                            {
+                                string strKey = strLoop + objLoopCyberware.Location;
+                                if (!dicHasMounts.ContainsKey(strKey))
+                                    dicHasMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                else
+                                    dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                            }
                         }
                     }
                 }
@@ -14460,11 +14520,10 @@ namespace Chummer
                 foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
                     // Create the Lifestyle.
-                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-
                     XmlNode objXmlLifestyleNode = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + objXmlLifestyle["baselifestyle"].InnerText.CleanXPath() + "]");
                     if (objXmlLifestyleNode == null)
                         continue;
+                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                     objLifestyle.Create(objXmlLifestyleNode);
                     // This is an Advanced Lifestyle, so build it manually.
                     objLifestyle.CustomName = objXmlLifestyle["name"]?.InnerText ?? string.Empty;
@@ -15722,9 +15781,14 @@ namespace Chummer
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, notifyCollectionChangedEventArgs);
         }
 
-        private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void LifestylesOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
+            RefreshLifestylesBeforeRemove(treLifestyles, e);
+        }
+
+        private void LifestylesOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e);
         }
 
         private void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

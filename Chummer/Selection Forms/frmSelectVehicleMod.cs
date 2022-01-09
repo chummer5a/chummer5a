@@ -44,7 +44,7 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
         private readonly string _strLimitToCategories = string.Empty;
         private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 
         #region Control Events
@@ -59,7 +59,9 @@ namespace Chummer
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (_xmlBaseVehicleDataNode != null)
-                _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode.SelectSingleNodeAndCacheExpression("modcategories"));
+                _setBlackMarketMaps.AddRange(
+                    _objCharacter.GenerateBlackMarketMappings(
+                        _xmlBaseVehicleDataNode.SelectSingleNodeAndCacheExpression("modcategories")));
             if (lstExistingMods != null)
                 _lstMods.AddRange(lstExistingMods);
         }
@@ -321,16 +323,18 @@ namespace Chummer
                     if (xmlTestNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> setForbiddenAccessory = new HashSet<string>();
-                        foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setForbiddenAccessory))
                         {
-                            setForbiddenAccessory.Add(node.Value);
-                        }
+                            foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
+                            {
+                                setForbiddenAccessory.Add(node.Value);
+                            }
 
-                        if (_lstMods.Any(objAccessory => setForbiddenAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
+                            if (_lstMods.Any(objAccessory => setForbiddenAccessory.Contains(objAccessory.Name)))
+                            {
+                                continue;
+                            }
                         }
                     }
 
@@ -338,16 +342,18 @@ namespace Chummer
                     if (xmlTestNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> setRequiredAccessory = new HashSet<string>();
-                        foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setRequiredAccessory))
                         {
-                            setRequiredAccessory.Add(node.Value);
-                        }
+                            foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
+                            {
+                                setRequiredAccessory.Add(node.Value);
+                            }
 
-                        if (!_lstMods.Any(objAccessory => setRequiredAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
+                            if (!_lstMods.Any(objAccessory => setRequiredAccessory.Contains(objAccessory.Name)))
+                            {
+                                continue;
+                            }
                         }
                     }
 

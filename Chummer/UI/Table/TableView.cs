@@ -405,13 +405,10 @@ namespace Chummer.UI.Table
         private void DisposeAll()
         {
             _lstPermutation.Clear();
-            foreach (ColumnHolder col in _lstCells)
-            {
-                foreach (TableCell cell in col.cells)
-                {
-                    cell.Dispose();
-                }
-            }
+            foreach (TableCell cell in _lstCells.SelectMany(col => col.cells))
+                cell.Dispose();
+            foreach (TableColumn<T> objColumn in Columns)
+                objColumn.Dispose();
             Controls.Clear();
         }
 

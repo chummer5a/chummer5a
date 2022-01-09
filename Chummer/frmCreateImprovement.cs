@@ -418,32 +418,35 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstDropdownItems))
                     {
-                        HashSet<string> setProcessedSkillNames = new HashSet<string>();
-                        foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
-                        {
-                            lstDropdownItems.Add(
-                                new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
-                            setProcessedSkillNames.Add(objKnowledgeSkill.Name);
-                        }
-
                         string strFilter = string.Empty;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdFilters))
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setProcessedSkillNames))
                         {
-                            if (setProcessedSkillNames.Count > 0)
+                            foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                             {
-                                sbdFilters.Append("not(");
-                                foreach (string strName in setProcessedSkillNames)
-                                {
-                                    sbdFilters.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
-                                }
-
-                                sbdFilters.Length -= 4;
-                                sbdFilters.Append(')');
+                                lstDropdownItems.Add(
+                                    new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
+                                setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                             }
 
-                            if (sbdFilters.Length > 0)
-                                strFilter = '[' + sbdFilters.ToString() + ']';
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdFilters))
+                            {
+                                if (setProcessedSkillNames.Count > 0)
+                                {
+                                    sbdFilters.Append("not(");
+                                    foreach (string strName in setProcessedSkillNames)
+                                    {
+                                        sbdFilters.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                                    }
+
+                                    sbdFilters.Length -= 4;
+                                    sbdFilters.Append(')');
+                                }
+
+                                if (sbdFilters.Length > 0)
+                                    strFilter = '[' + sbdFilters.ToString() + ']';
+                            }
                         }
 
                         foreach (XPathNavigator xmlSkill in _objCharacter.LoadDataXPath("skills.xml")

@@ -2052,63 +2052,78 @@ namespace Chummer
         private void LoadMetatypes()
         {
             // Create a list of any Categories that should not be in the list.
-            HashSet<string> lstRemoveCategory = new HashSet<string>();
-            foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression("categories/category"))
-            {
-                XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (cboHeritage.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
-                    + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                bool blnRemoveCategory = true;
-                foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
-                {
-                    if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
-                    {
-                        foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select("metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and (" + _objCharacter.Settings.BookXPath() + ")]"))
-                        {
-                            if (xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + (objXmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty).CleanXPath() + ']') != null)
-                            {
-                                blnRemoveCategory = false;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-                // Remove metatypes not covered by heritage
-                if (blnRemoveCategory)
-                    lstRemoveCategory.Add(objXmlCategory.Value);
-            }
-
-            // Populate the Metatype Category list.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> lstRemoveCategory))
             {
                 foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
                              "categories/category"))
                 {
-                    string strInnerText = objXmlCategory.Value;
-
-                    // Make sure the Category isn't in the exclusion list.
-                    if (!lstRemoveCategory.Contains(strInnerText) &&
-                        // Also make sure it is not already in the Category list.
-                        lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
+                    XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                        "priorities/priority[category = \"Heritage\" and value = "
+                        + (cboHeritage.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
+                        + " and (not(prioritytable) or prioritytable = "
+                        + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                    bool blnRemoveCategory = true;
+                    foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
-                        lstCategory.Add(new ListItem(strInnerText,
-                                                     objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")
-                                                                   ?.Value ?? strInnerText));
+                        if (xmlBaseMetatypePriorityList.Count == 1
+                            || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                        {
+                            foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
+                                         "metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and ("
+                                         + _objCharacter.Settings.BookXPath() + ")]"))
+                            {
+                                if (xmlBaseMetatypePriority.SelectSingleNode(
+                                        "metatypes/metatype[name = "
+                                        + (objXmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value
+                                           ?? string.Empty).CleanXPath() + ']') != null)
+                                {
+                                    blnRemoveCategory = false;
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
                     }
+
+                    // Remove metatypes not covered by heritage
+                    if (blnRemoveCategory)
+                        lstRemoveCategory.Add(objXmlCategory.Value);
                 }
 
-                lstCategory.Sort(CompareListItems.CompareNames);
-                string strOldSelected = cboCategory.SelectedValue?.ToString() ?? _objCharacter.MetatypeCategory;
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                cboCategory.BeginUpdate();
-                cboCategory.PopulateWithListItems(lstCategory);
-                _blnLoading = blnOldLoading;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    cboCategory.SelectedValue = strOldSelected;
-                if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
-                    cboCategory.SelectedIndex = 0;
-                cboCategory.EndUpdate();
+                // Populate the Metatype Category list.
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
+                {
+                    foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
+                                 "categories/category"))
+                    {
+                        string strInnerText = objXmlCategory.Value;
+
+                        // Make sure the Category isn't in the exclusion list.
+                        if (!lstRemoveCategory.Contains(strInnerText) &&
+                            // Also make sure it is not already in the Category list.
+                            lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
+                        {
+                            lstCategory.Add(new ListItem(strInnerText,
+                                                         objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")
+                                                                       ?.Value ?? strInnerText));
+                        }
+                    }
+
+                    lstCategory.Sort(CompareListItems.CompareNames);
+                    string strOldSelected = cboCategory.SelectedValue?.ToString() ?? _objCharacter.MetatypeCategory;
+                    bool blnOldLoading = _blnLoading;
+                    _blnLoading = true;
+                    cboCategory.BeginUpdate();
+                    cboCategory.PopulateWithListItems(lstCategory);
+                    _blnLoading = blnOldLoading;
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        cboCategory.SelectedValue = strOldSelected;
+                    if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
+                        cboCategory.SelectedIndex = 0;
+                    cboCategory.EndUpdate();
+                }
             }
         }
 

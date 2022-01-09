@@ -17,6 +17,9 @@ namespace Chummer
             {
                 components?.Dispose();
                 Utils.ListItemListPool.Return(_lstCategory);
+                Utils.StringHashSetPool.Return(_setLimitToCategories);
+                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(Mounts);
             }
             base.Dispose(disposing);
         }

@@ -60,7 +60,7 @@ namespace Chummer
         private string _strForceGrade = string.Empty;
         private readonly object _objParentObject;
         private readonly XPathNavigator _objParentNode;
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly XPathNavigator _xmlBaseCyberwareDataNode;
 
         private enum Mode
@@ -101,7 +101,7 @@ namespace Chummer
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource).ToList();
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode);
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode));
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)

@@ -1746,23 +1746,26 @@ namespace Chummer
                     treQualities.Nodes.Clear();
 
                     // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
-                    HashSet<string> strQualitiesToPrint = new HashSet<string>();
-                    foreach (Quality objQuality in _objCharacter.Qualities)
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setQualitiesToPrint))
                     {
-                        strQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
-                                                objQuality.GetSourceName(GlobalSettings.Language) + '|' +
-                                                objQuality.Extra);
-                    }
+                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        {
+                            setQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
+                                                    objQuality.GetSourceName(GlobalSettings.Language) + '|' +
+                                                    objQuality.Extra);
+                        }
 
-                    // Add Qualities
-                    foreach (Quality objQuality in _objCharacter.Qualities)
-                    {
-                        if (!strQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
-                                                        objQuality.GetSourceName(GlobalSettings.Language) + '|' +
-                                                        objQuality.Extra))
-                            continue;
+                        // Add Qualities
+                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        {
+                            if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
+                                                            objQuality.GetSourceName(GlobalSettings.Language) + '|' +
+                                                            objQuality.Extra))
+                                continue;
 
-                        AddToTree(objQuality, false);
+                            AddToTree(objQuality, false);
+                        }
                     }
 
                     treQualities.SortCustomAlphabetically(strSelectedNode);
@@ -4748,17 +4751,37 @@ namespace Chummer
             }
         }
 
-        protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected void RefreshLifestylesBeforeRemove(TreeView treLifestyles, RemovingOldEventArgs e)
+        {
+            TreeNode objNode = treLifestyles.FindNodeByTag(CharacterObject.Lifestyles[e.OldIndex]);
+            if (objNode == null)
+                return;
+            TreeNode objParent = objNode.Parent;
+            objNode.Remove();
+            if (objParent != null && objParent.Level == 0 && objParent.Nodes.Count == 0)
+                objParent.Remove();
+        }
+
+        protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,
+                                         ContextMenuStrip cmsAdvancedLifestyle, ListChangedEventArgs e = null)
         {
             if (treLifestyles == null)
                 return;
+            switch (e?.ListChangedType)
+            {
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.ItemMoved:
+                case ListChangedType.PropertyDescriptorAdded:
+                case ListChangedType.PropertyDescriptorDeleted:
+                case ListChangedType.PropertyDescriptorChanged:
+                    return;
+            }
             using (new CursorWait(this))
             {
                 string strSelectedId = (treLifestyles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                 TreeNode objParentNode = null;
 
-                if (notifyCollectionChangedEventArgs == null ||
-                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e == null || e.ListChangedType == ListChangedType.Reset)
                 {
                     treLifestyles.SuspendLayout();
                     treLifestyles.Nodes.Clear();
@@ -4778,59 +4801,28 @@ namespace Chummer
                 else
                 {
                     objParentNode = treLifestyles.FindNode("Node_SelectedLifestyles", false);
-                    switch (notifyCollectionChangedEventArgs.Action)
+                    switch (e.ListChangedType)
                     {
-                        case NotifyCollectionChangedAction.Add:
+                        case ListChangedType.ItemAdded:
                             {
-                                foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    AddToTree(objLifestyle);
-                                }
-
+                                AddToTree(CharacterObject.Lifestyles[e.NewIndex]);
                                 break;
                             }
-                        case NotifyCollectionChangedAction.Remove:
+                        case ListChangedType.ItemChanged:
+                        {
+                            Lifestyle objLifestyle = CharacterObject.Lifestyles[e.NewIndex];
+                            TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
+                            TreeNode objOldParent = null;
+                            if (objNode != null)
                             {
-                                foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
-                                    if (objNode != null)
-                                    {
-                                        TreeNode objParent = objNode.Parent;
-                                        objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                            objParent.Remove();
-                                    }
-                                }
-
-                                break;
+                                objOldParent = objNode.Parent;
+                                objNode.Remove();
                             }
-                        case NotifyCollectionChangedAction.Replace:
-                            {
-                                HashSet<TreeNode> setOldParentNodes = new HashSet<TreeNode>();
-                                foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
-                                    if (objNode != null)
-                                    {
-                                        setOldParentNodes.Add(objNode.Parent);
-                                        objNode.Remove();
-                                    }
-                                }
-
-                                foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    AddToTree(objLifestyle);
-                                }
-
-                                foreach (TreeNode nodOldParent in setOldParentNodes)
-                                {
-                                    if (nodOldParent.Level == 0 && nodOldParent.Nodes.Count == 0)
-                                        nodOldParent.Remove();
-                                }
-
-                                break;
-                            }
+                            AddToTree(CharacterObject.Lifestyles[e.NewIndex]);
+                            if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                objOldParent.Remove();
+                            break;
+                        }
                     }
                 }
 

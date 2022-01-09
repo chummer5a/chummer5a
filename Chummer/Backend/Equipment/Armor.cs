@@ -108,78 +108,105 @@ namespace Chummer.Backend.Equipment
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                 new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             bool blnDoEncumbranceRefresh = false;
-            switch (e.Action)
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (ArmorMod objNewItem in e.NewItems)
-                    {
-                        objNewItem.Parent = this;
-                        if (objNewItem.Equipped)
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (ArmorMod objNewItem in e.NewItems)
                         {
-                            if (!blnDoEncumbranceRefresh)
-                                blnDoEncumbranceRefresh = true;
-                            if (_objCharacter?.IsLoading == false)
+                            objNewItem.Parent = this;
+                            if (objNewItem.Equipped)
                             {
-                                // Needed in order to properly process named sources where
-                                // the tooltip was built before the object was added to the character
-                                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                if (!blnDoEncumbranceRefresh)
+                                    blnDoEncumbranceRefresh = true;
+                                if (_objCharacter?.IsLoading == false)
                                 {
-                                    if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in _objCharacter.Improvements)
                                     {
-                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in objImprovement.GetRelevantPropertyChangers())
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId
+                                            && objImprovement.Enabled)
                                         {
-                                            if (dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            else
-                                                dicChangedProperties.Add(objItemToUpdate, new HashSet<string> { strPropertyToUpdate });
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                      string strPropertyToUpdate) in objImprovement
+                                                         .GetRelevantPropertyChangers())
+                                            {
+                                                if (dicChangedProperties.TryGetValue(
+                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                else
+                                                {
+                                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                                    setTemp.Add(strPropertyToUpdate);
+                                                    dicChangedProperties.Add(objItemToUpdate, setTemp);
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                    break;
 
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (ArmorMod objOldItem in e.OldItems)
-                    {
-                        objOldItem.Parent = null;
-                        if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
-                    }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Replace:
-                    foreach (ArmorMod objOldItem in e.OldItems)
-                    {
-                        objOldItem.Parent = null;
-                        if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
-                    }
-                    foreach (ArmorMod objNewItem in e.NewItems)
-                    {
-                        objNewItem.Parent = this;
-                        if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
-                    }
-                    break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (ArmorMod objOldItem in e.OldItems)
+                        {
+                            objOldItem.Parent = null;
+                            if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                                blnDoEncumbranceRefresh = true;
+                        }
 
-                case NotifyCollectionChangedAction.Reset:
-                    blnDoEncumbranceRefresh = true;
-                    break;
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (ArmorMod objOldItem in e.OldItems)
+                        {
+                            objOldItem.Parent = null;
+                            if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                                blnDoEncumbranceRefresh = true;
+                        }
+
+                        foreach (ArmorMod objNewItem in e.NewItems)
+                        {
+                            objNewItem.Parent = this;
+                            if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
+                                blnDoEncumbranceRefresh = true;
+                        }
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        blnDoEncumbranceRefresh = true;
+                        break;
+                }
+
+                if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(nameof(Character.GetArmorRating));
+                    else
+                    {
+                        HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                        setTemp.Add(nameof(Character.GetArmorRating));
+                        dicChangedProperties.Add(_objCharacter, setTemp);
+                    }
+                }
+
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                }
+
             }
-
-            if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
+            finally
             {
-                if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
-                    setChangedProperties.Add(nameof(Character.GetArmorRating));
-                else
-                    dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.GetArmorRating) });
+                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
             }
-            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
-            {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
-            }
+
             if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
             {
                 _objCharacter.RefreshEncumbrance();
