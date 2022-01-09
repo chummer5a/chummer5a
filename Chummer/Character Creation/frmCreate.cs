@@ -383,61 +383,69 @@ namespace Chummer
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
                             CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                        List<ListItem> lstTraditions = new List<ListItem>(20);
-                        if (xmlTraditionsBaseChummerNode != null)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstTraditions))
                         {
-                            foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstTraditions.Add(new ListItem(
-                                        xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                        xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                             "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                {
+                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstTraditions.Add(new ListItem(
+                                                              xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                                          ?.Value ?? strName,
+                                                              xmlTradition
+                                                                  .SelectSingleNodeAndCacheExpression("translate")
+                                                                  ?.Value ?? strName));
+                                }
                             }
-                        }
 
-                        if (lstTraditions.Count > 1)
-                        {
-                            lstTraditions.Sort(CompareListItems.CompareNames);
-                            lstTraditions.Insert(0,
-                                new ListItem("None", LanguageManager.GetString("String_None")));
-                            cboTradition.BeginUpdate();
-                            cboTradition.PopulateWithListItems(lstTraditions);
-                            cboTradition.EndUpdate();
-                        }
-                        else
-                        {
-                            cboTradition.Visible = false;
-                            lblTraditionLabel.Visible = false;
+                            if (lstTraditions.Count > 1)
+                            {
+                                lstTraditions.Sort(CompareListItems.CompareNames);
+                                lstTraditions.Insert(0,
+                                                     new ListItem("None", LanguageManager.GetString("String_None")));
+                                cboTradition.BeginUpdate();
+                                cboTradition.PopulateWithListItems(lstTraditions);
+                                cboTradition.EndUpdate();
+                            }
+                            else
+                            {
+                                cboTradition.Visible = false;
+                                lblTraditionLabel.Visible = false;
+                            }
                         }
 
                         // Populate the Magician Custom Drain Options list.
-                        List<ListItem> lstDrainAttributes = new List<ListItem>(4)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstDrainAttributes))
                         {
-                            ListItem.Blank
-                        };
-                        if (xmlTraditionsBaseChummerNode != null)
-                        {
-                            foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
-                                "drainattributes/drainattribute"))
+                            lstDrainAttributes.Add(ListItem.Blank);
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstDrainAttributes.Add(new ListItem(strName,
-                                        xmlDrain.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
+                                             "drainattributes/drainattribute"))
+                                {
+                                    string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstDrainAttributes.Add(new ListItem(strName,
+                                                                            xmlDrain.SelectSingleNodeAndCacheExpression(
+                                                                                "translate")?.Value ?? strName));
+                                }
                             }
+
+                            lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                            cboDrain.BeginUpdate();
+                            cboDrain.PopulateWithListItems(lstDrainAttributes);
+                            cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                   nameof(Tradition.DrainExpression));
+                            cboDrain.EndUpdate();
                         }
 
-                        lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                        cboDrain.BeginUpdate();
-                        cboDrain.PopulateWithListItems(lstDrainAttributes);
-                        cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.DrainExpression));
-                        cboDrain.EndUpdate();
-
                         lblDrainAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                            nameof(Tradition.DisplayDrainExpression));
+                                                               nameof(Tradition.DisplayDrainExpression));
                         lblDrainAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValue));
                         lblDrainAttributesValue.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
@@ -465,108 +473,113 @@ namespace Chummer
                         */
 
                         // Populate the Magician Custom Spirits lists - Combat.
-                        List<ListItem> lstSpirit = new List<ListItem>(10)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstSpirit))
                         {
-                            ListItem.Blank
-                        };
-                        if (xmlTraditionsBaseChummerNode != null)
-                        {
-                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
+                            lstSpirit.Add(ListItem.Blank);
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                             .SelectAndCacheExpression("spirits/spirit"))
                                 {
-                                    lstSpirit.Add(new ListItem(strSpiritName,
-                                        xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
+                                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    if (!string.IsNullOrEmpty(strSpiritName)
+                                        && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                    {
+                                        lstSpirit.Add(new ListItem(strSpiritName,
+                                                                   xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                       "translate")?.Value ?? strSpiritName));
+                                    }
                                 }
                             }
+
+                            lstSpirit.Sort(CompareListItems.CompareNames);
+
+                            cboSpiritCombat.BeginUpdate();
+                            cboSpiritCombat.PopulateWithListItems(lstSpirit);
+                            cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                          nameof(Tradition.SpiritCombat));
+                            lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                            cboSpiritCombat.EndUpdate();
+
+                            cboSpiritDetection.BeginUpdate();
+                            cboSpiritDetection.PopulateWithListItems(lstSpirit);
+                            cboSpiritDetection.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                             nameof(Tradition.SpiritDetection));
+                            lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                            cboSpiritDetection.EndUpdate();
+
+                            cboSpiritHealth.BeginUpdate();
+                            cboSpiritHealth.PopulateWithListItems(lstSpirit);
+                            cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                          nameof(Tradition.SpiritHealth));
+                            lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                            cboSpiritHealth.EndUpdate();
+
+                            cboSpiritIllusion.BeginUpdate();
+                            cboSpiritIllusion.PopulateWithListItems(lstSpirit);
+                            cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                            nameof(Tradition.SpiritIllusion));
+                            lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                            cboSpiritIllusion.EndUpdate();
+
+                            cboSpiritManipulation.BeginUpdate();
+                            cboSpiritManipulation.PopulateWithListItems(lstSpirit);
+                            cboSpiritManipulation.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                                nameof(Tradition.SpiritManipulation));
+                            lblSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                            cboSpiritManipulation.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                            cboSpiritManipulation.EndUpdate();
                         }
-
-                        lstSpirit.Sort(CompareListItems.CompareNames);
-
-                        List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
-                        cboSpiritCombat.BeginUpdate();
-                        cboSpiritCombat.PopulateWithListItems(lstCombat);
-                        cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritCombat));
-                        lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritCombat.EndUpdate();
-
-                        List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
-                        cboSpiritDetection.BeginUpdate();
-                        cboSpiritDetection.PopulateWithListItems(lstDetection);
-                        cboSpiritDetection.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritDetection));
-                        lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritDetection.EndUpdate();
-
-                        List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
-                        cboSpiritHealth.BeginUpdate();
-                        cboSpiritHealth.PopulateWithListItems(lstHealth);
-                        cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritHealth));
-                        lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritHealth.EndUpdate();
-
-                        List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
-                        cboSpiritIllusion.BeginUpdate();
-                        cboSpiritIllusion.PopulateWithListItems(lstIllusion);
-                        cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritIllusion));
-                        lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritIllusion.EndUpdate();
-
-                        List<ListItem> lstManip = new List<ListItem>(lstSpirit);
-                        cboSpiritManipulation.BeginUpdate();
-                        cboSpiritManipulation.PopulateWithListItems(lstManip);
-                        cboSpiritManipulation.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritManipulation));
-                        lblSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritManipulation.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritManipulation.EndUpdate();
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
                             CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                        List<ListItem> lstStreams = new List<ListItem>(3);
-                        if (xmlTraditionsBaseChummerNode != null)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstStreams))
                         {
-                            foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstStreams.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                        xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                             "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                {
+                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstStreams.Add(new ListItem(
+                                                           xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value
+                                                           ?? strName,
+                                                           xmlTradition.SelectSingleNodeAndCacheExpression("translate")
+                                                                       ?.Value ?? strName));
+                                }
+                            }
+
+                            if (lstStreams.Count > 1)
+                            {
+                                lstStreams.Sort(CompareListItems.CompareNames);
+                                lstStreams.Insert(0,
+                                                  new ListItem("None", LanguageManager.GetString("String_None")));
+                                cboStream.BeginUpdate();
+                                cboStream.PopulateWithListItems(lstStreams);
+                                cboStream.EndUpdate();
+                            }
+                            else
+                            {
+                                cboStream.Visible = false;
+                                lblStreamLabel.Visible = false;
                             }
                         }
 
-                        if (lstStreams.Count > 1)
-                        {
-                            lstStreams.Sort(CompareListItems.CompareNames);
-                            lstStreams.Insert(0,
-                                new ListItem("None", LanguageManager.GetString("String_None")));
-                            cboStream.BeginUpdate();
-                            cboStream.PopulateWithListItems(lstStreams);
-                            cboStream.EndUpdate();
-                        }
-                        else
-                        {
-                            cboStream.Visible = false;
-                            lblStreamLabel.Visible = false;
-                        }
-
                         nudMysticAdeptMAGMagician.DoOneWayDataBinding("Maximum", CharacterObject.MAG,
-                            nameof(CharacterAttrib.TotalValue));
+                                                                      nameof(CharacterAttrib.TotalValue));
                         nudMysticAdeptMAGMagician.DoDataBinding("Value", CharacterObject,
                             nameof(Character.MysticAdeptPowerPoints));
 
@@ -808,18 +821,21 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_frm_create_vehicle", op_load_frm_create))
                     {
                         // Populate vehicle weapon fire mode list.
-                        List<ListItem> lstFireModes = new List<ListItem>(5);
-                        foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstFireModes))
                         {
-                            if (mode == Weapon.FiringMode.NumFiringModes)
-                                continue;
-                            lstFireModes.Add(new ListItem(mode,
-                                LanguageManager.GetString("Enum_" + mode)));
-                        }
+                            foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
+                            {
+                                if (mode == Weapon.FiringMode.NumFiringModes)
+                                    continue;
+                                lstFireModes.Add(new ListItem(mode,
+                                                              LanguageManager.GetString("Enum_" + mode)));
+                            }
 
-                        cboVehicleWeaponFiringMode.BeginUpdate();
-                        cboVehicleWeaponFiringMode.PopulateWithListItems(lstFireModes);
-                        cboVehicleWeaponFiringMode.EndUpdate();
+                            cboVehicleWeaponFiringMode.BeginUpdate();
+                            cboVehicleWeaponFiringMode.PopulateWithListItems(lstFireModes);
+                            cboVehicleWeaponFiringMode.EndUpdate();
+                        }
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_finish", op_load_frm_create))
@@ -1220,35 +1236,32 @@ namespace Chummer
                     {
                         cboPrimaryArm.BeginUpdate();
 
-                        List<ListItem> lstPrimaryArm;
-                        if (CharacterObject.Ambidextrous)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstPrimaryArm))
                         {
-                            lstPrimaryArm = new List<ListItem>(1)
+                            if (CharacterObject.Ambidextrous)
                             {
-                                new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous"))
-                            };
-                            cboPrimaryArm.Enabled = false;
-                        }
-                        else
-                        {
-                            //Create the dropdown for the character's primary arm.
-                            lstPrimaryArm = new List<ListItem>(2)
+                                lstPrimaryArm.Add(new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous")));
+                                cboPrimaryArm.Enabled = false;
+                            }
+                            else
                             {
-                                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
-                                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
-                            };
-                            lstPrimaryArm.Sort(CompareListItems.CompareNames);
-                            cboPrimaryArm.Enabled = true;
+                                //Create the dropdown for the character's primary arm.
+                                lstPrimaryArm.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
+                                lstPrimaryArm.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
+                                lstPrimaryArm.Sort(CompareListItems.CompareNames);
+                                cboPrimaryArm.Enabled = true;
+                            }
+
+                            string strPrimaryArm = CharacterObject.PrimaryArm;
+
+                            cboPrimaryArm.PopulateWithListItems(lstPrimaryArm);
+                            cboPrimaryArm.SelectedValue = strPrimaryArm;
+                            if (cboPrimaryArm.SelectedIndex == -1)
+                                cboPrimaryArm.SelectedIndex = 0;
+
+                            cboPrimaryArm.EndUpdate();
                         }
-
-                        string strPrimaryArm = CharacterObject.PrimaryArm;
-
-                        cboPrimaryArm.PopulateWithListItems(lstPrimaryArm);
-                        cboPrimaryArm.SelectedValue = strPrimaryArm;
-                        if (cboPrimaryArm.SelectedIndex == -1)
-                            cboPrimaryArm.SelectedIndex = 0;
-
-                        cboPrimaryArm.EndUpdate();
                     }
                     break;
 
@@ -1616,63 +1629,74 @@ namespace Chummer
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
                                 CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                            List<ListItem> lstTraditions = new List<ListItem>(30);
-                            if (xmlTraditionsBaseChummerNode != null)
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstTraditions))
                             {
-                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                    "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strName))
-                                        lstTraditions.Add(new ListItem(
-                                            xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                            xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                    {
+                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strName))
+                                            lstTraditions.Add(new ListItem(
+                                                                  xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                                              ?.Value ?? strName,
+                                                                  xmlTradition
+                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                      ?.Value ?? strName));
+                                    }
+                                }
+
+                                if (lstTraditions.Count > 1)
+                                {
+                                    lstTraditions.Sort(CompareListItems.CompareNames);
+                                    lstTraditions.Insert(
+                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                    if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
+                                    {
+                                        cboTradition.BeginUpdate();
+                                        cboTradition.PopulateWithListItems(lstTraditions);
+                                        if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                                            cboTradition.SelectedValue
+                                                = CharacterObject.MagicTradition.SourceID.ToString();
+                                        else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                                            cboTradition.SelectedIndex = 0;
+                                        cboTradition.EndUpdate();
+                                    }
+                                }
+                                else
+                                {
+                                    cboTradition.Visible = false;
+                                    lblTraditionLabel.Visible = false;
                                 }
                             }
 
-                            if (lstTraditions.Count > 1)
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
                             {
-                                lstTraditions.Sort(CompareListItems.CompareNames);
-                                lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
-                                if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
+                                lstDrainAttributes.Add(ListItem.Blank);
+                                if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    cboTradition.BeginUpdate();
-                                    cboTradition.PopulateWithListItems(lstTraditions);
-                                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                                        cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
-                                    else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                                        cboTradition.SelectedIndex = 0;
-                                    cboTradition.EndUpdate();
+                                    foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode
+                                                 .SelectAndCacheExpression(
+                                                     "drainattributes/drainattribute"))
+                                    {
+                                        string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strName))
+                                            lstDrainAttributes.Add(new ListItem(strName,
+                                                                       xmlDrain.SelectSingleNodeAndCacheExpression(
+                                                                           "translate")?.Value ?? strName));
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                cboTradition.Visible = false;
-                                lblTraditionLabel.Visible = false;
-                            }
 
-                            List<ListItem> lstDrainAttributes = new List<ListItem>(6)
-                        {
-                            ListItem.Blank
-                        };
-                            if (xmlTraditionsBaseChummerNode != null)
-                            {
-                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.SelectAndCacheExpression(
-                                    "drainattributes/drainattribute"))
+                                lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                                if (!lstDrainAttributes.SequenceEqual(cboDrain.Items.Cast<ListItem>()))
                                 {
-                                    string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strName))
-                                        lstDrainAttributes.Add(new ListItem(strName,
-                                            xmlDrain.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    cboDrain.BeginUpdate();
+                                    cboDrain.PopulateWithListItems(lstDrainAttributes);
+                                    cboDrain.EndUpdate();
                                 }
-                            }
-
-                            lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                            if (!lstDrainAttributes.SequenceEqual(cboDrain.Items.Cast<ListItem>()))
-                            {
-                                cboDrain.BeginUpdate();
-                                cboDrain.PopulateWithListItems(lstDrainAttributes);
-                                cboDrain.EndUpdate();
                             }
 
                             HashSet<string> limit = new HashSet<string>();
@@ -1681,87 +1705,95 @@ namespace Chummer
                                 limit.Add(improvement.ImprovedName);
                             }
 
-                            List<ListItem> lstSpirit = new List<ListItem>(30)
-                        {
-                            ListItem.Blank
-                        };
-                            if (xmlTraditionsBaseChummerNode != null)
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstSpirit))
                             {
-                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
+                                lstSpirit.Add(ListItem.Blank);
+                                if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                    foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                 .SelectAndCacheExpression("spirits/spirit"))
                                     {
-                                        lstSpirit.Add(new ListItem(strSpiritName,
-                                            xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
+                                        string strSpiritName
+                                            = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strSpiritName)
+                                            && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                        {
+                                            lstSpirit.Add(new ListItem(strSpiritName,
+                                                                       xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                           "translate")?.Value ?? strSpiritName));
+                                        }
                                     }
                                 }
-                            }
 
-                            lstSpirit.Sort(CompareListItems.CompareNames);
-                            if (!lstSpirit.SequenceEqual(cboSpiritCombat.Items.Cast<ListItem>()))
-                            {
-                                List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
-                                cboSpiritCombat.BeginUpdate();
-                                cboSpiritCombat.PopulateWithListItems(lstCombat);
-                                cboSpiritCombat.EndUpdate();
+                                lstSpirit.Sort(CompareListItems.CompareNames);
+                                if (!lstSpirit.SequenceEqual(cboSpiritCombat.Items.Cast<ListItem>()))
+                                {
+                                    cboSpiritCombat.BeginUpdate();
+                                    cboSpiritCombat.PopulateWithListItems(lstSpirit);
+                                    cboSpiritCombat.EndUpdate();
 
-                                List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
-                                cboSpiritDetection.BeginUpdate();
-                                cboSpiritDetection.PopulateWithListItems(lstDetection);
-                                cboSpiritDetection.EndUpdate();
+                                    cboSpiritDetection.BeginUpdate();
+                                    cboSpiritDetection.PopulateWithListItems(lstSpirit);
+                                    cboSpiritDetection.EndUpdate();
 
-                                List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
-                                cboSpiritHealth.BeginUpdate();
-                                cboSpiritHealth.PopulateWithListItems(lstHealth);
-                                cboSpiritHealth.EndUpdate();
+                                    cboSpiritHealth.BeginUpdate();
+                                    cboSpiritHealth.PopulateWithListItems(lstSpirit);
+                                    cboSpiritHealth.EndUpdate();
 
-                                List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
-                                cboSpiritIllusion.BeginUpdate();
-                                cboSpiritIllusion.PopulateWithListItems(lstIllusion);
-                                cboSpiritIllusion.EndUpdate();
+                                    cboSpiritIllusion.BeginUpdate();
+                                    cboSpiritIllusion.PopulateWithListItems(lstSpirit);
+                                    cboSpiritIllusion.EndUpdate();
 
-                                List<ListItem> lstManip = new List<ListItem>(lstSpirit);
-                                cboSpiritManipulation.BeginUpdate();
-                                cboSpiritManipulation.PopulateWithListItems(lstManip);
-                                cboSpiritManipulation.EndUpdate();
+                                    cboSpiritManipulation.BeginUpdate();
+                                    cboSpiritManipulation.PopulateWithListItems(lstSpirit);
+                                    cboSpiritManipulation.EndUpdate();
+                                }
                             }
 
                             // Populate the Technomancer Streams list.
                             xmlTraditionsBaseChummerNode =
                                 CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                            List<ListItem> lstStreams = new List<ListItem>(5);
-                            if (xmlTraditionsBaseChummerNode != null)
+                            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStreams))
                             {
-                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                    "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strName))
-                                        lstStreams.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                            xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                    {
+                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strName))
+                                            lstStreams.Add(new ListItem(
+                                                               xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                                           ?.Value ?? strName,
+                                                               xmlTradition
+                                                                   .SelectSingleNodeAndCacheExpression("translate")
+                                                                   ?.Value ?? strName));
+                                    }
                                 }
-                            }
 
-                            if (lstStreams.Count > 1)
-                            {
-                                lstStreams.Sort(CompareListItems.CompareNames);
-                                lstStreams.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
-                                if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
+                                if (lstStreams.Count > 1)
                                 {
-                                    cboStream.BeginUpdate();
-                                    cboStream.PopulateWithListItems(lstStreams);
-                                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                                        cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
-                                    else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                                        cboStream.SelectedIndex = 0;
-                                    cboStream.EndUpdate();
+                                    lstStreams.Sort(CompareListItems.CompareNames);
+                                    lstStreams.Insert(
+                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                    if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
+                                    {
+                                        cboStream.BeginUpdate();
+                                        cboStream.PopulateWithListItems(lstStreams);
+                                        if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                                            cboStream.SelectedValue
+                                                = CharacterObject.MagicTradition.SourceID.ToString();
+                                        else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                                            cboStream.SelectedIndex = 0;
+                                        cboStream.EndUpdate();
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                cboStream.Visible = false;
-                                lblStreamLabel.Visible = false;
+                                else
+                                {
+                                    cboStream.Visible = false;
+                                    lblStreamLabel.Visible = false;
+                                }
                             }
 
                             RefreshSelectedVehicle();
@@ -13193,60 +13225,67 @@ namespace Chummer
         public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
             List<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware).ToList();
-            List<ListItem> lstCyberwareGrades = new List<ListItem>(objGradeList.Count);
-
-            foreach (Grade objWareGrade in objGradeList)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstCyberwareGrades))
             {
-                if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
-                    continue;
-                if (blnIgnoreSecondHand && objWareGrade.SecondHand)
-                    continue;
-                if (blnBioware)
+                foreach (Grade objWareGrade in objGradeList)
                 {
-                    if (objWareGrade.Adapsin)
+                    if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
                         continue;
-
-                    if (ImprovementManager
-                        .GetCachedImprovementListForValueOf(CharacterObject,
-                                                            Improvement.ImprovementType.DisableBiowareGrade).Any(
-                            x => objWareGrade.Name.Contains(x.ImprovedName)))
+                    if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                         continue;
-                }
-                else
-                {
-                    if (CharacterObject.AdapsinEnabled)
+                    if (blnBioware)
                     {
-                        if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                        if (objWareGrade.Adapsin)
+                            continue;
+
+                        if (ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                Improvement.ImprovementType.DisableBiowareGrade).Any(
+                                x => objWareGrade.Name.Contains(x.ImprovedName)))
+                            continue;
+                    }
+                    else
+                    {
+                        if (CharacterObject.AdapsinEnabled)
+                        {
+                            if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                            {
+                                continue;
+                            }
+                        }
+                        else if (objWareGrade.Adapsin)
+                            continue;
+
+                        if (ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                Improvement.ImprovementType.DisableCyberwareGrade).Any(
+                                x => objWareGrade.Name.Contains(x.ImprovedName)))
+                            continue;
+                    }
+
+                    if (CharacterObject.BurnoutEnabled)
+                    {
+                        if (!objWareGrade.Burnout
+                            && objGradeList.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
                         {
                             continue;
                         }
                     }
-                    else if (objWareGrade.Adapsin)
+                    else if (objWareGrade.Burnout)
                         continue;
 
-                    if (ImprovementManager
-                        .GetCachedImprovementListForValueOf(CharacterObject,
-                                                            Improvement.ImprovementType.DisableCyberwareGrade).Any(
-                            x => objWareGrade.Name.Contains(x.ImprovedName)))
+                    if (CharacterObjectSettings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s))
+                        && !CharacterObject.IgnoreRules)
                         continue;
-                }
-                if (CharacterObject.BurnoutEnabled)
-                {
-                    if (!objWareGrade.Burnout && objGradeList.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
-                    {
-                        continue;
-                    }
-                }
-                else if (objWareGrade.Burnout)
-                    continue;
-                if (CharacterObjectSettings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)) && !CharacterObject.IgnoreRules)
-                    continue;
 
-                lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
+                    lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
+                }
+
+                cboCyberwareGrade.BeginUpdate();
+                cboCyberwareGrade.PopulateWithListItems(lstCyberwareGrades);
+                cboCyberwareGrade.EndUpdate();
             }
-            cboCyberwareGrade.BeginUpdate();
-            cboCyberwareGrade.PopulateWithListItems(lstCyberwareGrades);
-            cboCyberwareGrade.EndUpdate();
         }
 
         /// <summary>
