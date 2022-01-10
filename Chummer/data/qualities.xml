@@ -18849,6 +18849,11 @@
               <category>ID/Credsticks</category>
               <rating>3</rating>
             </child>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
           </children>
         </addgear>
       </bonus>

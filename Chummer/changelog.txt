@@ -59,6 +59,7 @@ Data Changes:
 - Extended Clip in German Data Changes now properly scales its cost based on the accessory's rating.
 - Improved Potential can now properly be taken at multiple levels with German Data Changes.
 - Badger Mentor Spirit from SOTG now adds two levels of Perceptive quality rather than 1 level of Perceptive and +2 to Perception.
+- Dead SIN now properly gives four fake licenses instead of three. Fixes #4666.
 
 Changed/New Strings:
 - String_GameplayOption
