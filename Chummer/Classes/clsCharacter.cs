@@ -6558,6 +6558,20 @@ namespace Chummer
             return string.Empty;
         }
 
+        public void CleanUpOrphanedImprovements()
+        {
+            int intNewImprovementCount = 0;
+            int intOldImprovementCount = Improvements.Count;
+            // Loop this until we remove every single orphaned improvement (necessary because orphaned improvements can add other improvements)
+            while (intOldImprovementCount != intNewImprovementCount)
+            {
+                intOldImprovementCount = Improvements.Count;
+                // Relying on (a lack of) GetObjectName is slower than ideal, but much easier to maintain
+                Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage)));
+                intNewImprovementCount = Improvements.Count;
+            }
+        }
+
         public void FormatImprovementModifiers(StringBuilder sbdToolTip, IEnumerable<Improvement.ImprovementType> improvements, string strSpace, int intModifiers)
         {
             if (sbdToolTip == null)
