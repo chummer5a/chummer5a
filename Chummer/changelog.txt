@@ -44,6 +44,7 @@ Application Changes:
 - Underbarrel weapons that come with their parent weapon now properly automatically inherit any smartgun features that also come built into their parent weapon. Fixes #4662.
 - Added a basic implementation of search for metatypes and critters using Point Buy. This will later be extended to include Priority options. Implements #4546
 - Drain expressions now properly show their translated names.
+- Chummer can now properly find the source of any bonuses added by vehicle mods, weapons, gear, and/or cyberware inside of a vehicle's weapon mount.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

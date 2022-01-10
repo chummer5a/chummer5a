@@ -541,7 +541,7 @@ namespace Chummer
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
                                 strSpace,
                                 objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(strNodeAttributes,
-                                    null, string.Empty, false), intNodeVal);
+                                    blnShowValues: false), intNodeVal);
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);
                         return (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal;
                     }
