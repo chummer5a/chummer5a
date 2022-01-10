@@ -43,6 +43,7 @@ Application Changes:
 - The character roster's Recent Characters list no longer gets doubly populated by entries that also exist in the Favorite Characters list whenever a character from that list is opened or closed. Fixes #4565.
 - Underbarrel weapons that come with their parent weapon now properly automatically inherit any smartgun features that also come built into their parent weapon. Fixes #4662.
 - Added a basic implementation of search for metatypes and critters using Point Buy. This will later be extended to include Priority options. Implements #4546
+- Drain expressions now properly show their translated names.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

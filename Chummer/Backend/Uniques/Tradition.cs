@@ -577,9 +577,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplayDrainExpressionMethod(CultureInfo objCultureInfo, string strLanguage)
         {
-            string strDrain = DrainExpression;
-            _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(strDrain, objCultureInfo, strLanguage, false);
-            return strDrain;
+            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
         }
 
         /// <summary>
