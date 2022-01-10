@@ -457,7 +457,7 @@ namespace Chummer
                                     }
 
                                     if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex
-                                        && ExoticSkill.IsExoticSkillName(cboSkill2.SelectedValue?.ToString()))
+                                        && !ExoticSkill.IsExoticSkillName(cboSkill2.SelectedValue?.ToString()))
                                     {
                                         if (cboSkill2.SelectedIndex + 1 >= cboSkill2.Items.Count)
                                             cboSkill2.SelectedIndex = 0;
@@ -480,7 +480,7 @@ namespace Chummer
 
                                         if ((cboSkill3.SelectedIndex == cboSkill1.SelectedIndex ||
                                              cboSkill3.SelectedIndex == cboSkill2.SelectedIndex) &&
-                                            ExoticSkill.IsExoticSkillName(cboSkill3.SelectedValue?.ToString()))
+                                            !ExoticSkill.IsExoticSkillName(cboSkill3.SelectedValue?.ToString()))
                                         {
                                             int intNewIndex = cboSkill3.SelectedIndex;
                                             do
