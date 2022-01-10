@@ -219,15 +219,19 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            Skills.AddRangeWithSort(lstSkillsToAdd, CompareSkills, (objExistSkill, objNewSkill) =>
+            foreach (Skill objSkill in lstSkillsToAdd)
             {
-                if (objNewSkill.Base > objExistSkill.Base)
-                    objExistSkill.Base = objNewSkill.Base;
-                if (objNewSkill.Karma > objExistSkill.Karma)
-                    objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
-                objNewSkill.Dispose();
-            });
+                if (objSkill.SkillId != Guid.Empty)
+                {
+                    Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                    if (objExistingSkill != null)
+                    {
+                        MergeSkills(objExistingSkill, objSkill);
+                        continue;
+                    }
+                }
+                Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+            }
         }
 
         internal ExoticSkill AddExoticSkill(string strName, string strSpecific)
@@ -237,15 +241,7 @@ namespace Chummer.Backend.Skills
             {
                 Specific = strSpecific
             };
-            Skills.AddWithSort(objExoticSkill, CompareSkills, (objExistSkill, objNewSkill) =>
-            {
-                if (objNewSkill.Base > objExistSkill.Base)
-                    objExistSkill.Base = objNewSkill.Base;
-                if (objNewSkill.Karma > objExistSkill.Karma)
-                    objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
-                objNewSkill.Dispose();
-            });
+            Skills.AddWithSort(objExoticSkill, CompareSkills, MergeSkills);
             return objExoticSkill;
         }
 
@@ -321,15 +317,7 @@ namespace Chummer.Backend.Skills
                                 default:
                                     return 1;
                             }
-                        }, (objExistSkill, objNewSkill) =>
-                        {
-                            if (objNewSkill.Base > objExistSkill.Base)
-                                objExistSkill.Base = objNewSkill.Base;
-                            if (objNewSkill.Karma > objExistSkill.Karma)
-                                objExistSkill.Karma = objNewSkill.Karma;
-                            objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
-                            objNewSkill.Dispose();
-                        });
+                        }, MergeSkills);
                     }
                 }
             }
@@ -412,15 +400,16 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstLoadingSkills)
                         {
-                            Skills.AddWithSort(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+                            if (objSkill.SkillId != Guid.Empty)
                             {
-                                if (objNewSkill.Base > objExistSkill.Base)
-                                    objExistSkill.Base = objNewSkill.Base;
-                                if (objNewSkill.Karma > objExistSkill.Karma)
-                                    objExistSkill.Karma = objNewSkill.Karma;
-                                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
-                                objNewSkill.Dispose();
-                            });
+                                Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                if (objExistingSkill != null)
+                                {
+                                    MergeSkills(objExistingSkill, objSkill);
+                                    continue;
+                                }
+                            }
+                            Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
                         }
 
                         // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
@@ -534,6 +523,15 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstUnsortedSkills)
                         {
+                            if (objSkill.SkillId != Guid.Empty)
+                            {
+                                Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                if (objExistingSkill != null)
+                                {
+                                    MergeSkills(objExistingSkill, objSkill);
+                                    continue;
+                                }
+                            }
                             Skills.Add(objSkill);
                         }
 
@@ -677,15 +675,16 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill objSkill in lstUnsortedSkills)
                 {
-                    Skills.AddWithSort(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+                    if (objSkill.SkillId != Guid.Empty)
                     {
-                        if (objNewSkill.Base > objExistSkill.Base)
-                            objExistSkill.Base = objNewSkill.Base;
-                        if (objNewSkill.Karma > objExistSkill.Karma)
-                            objExistSkill.Karma = objNewSkill.Karma;
-                        objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
-                        objNewSkill.Dispose();
-                    });
+                        Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                        if (objExistingSkill != null)
+                        {
+                            MergeSkills(objExistingSkill, objSkill);
+                            continue;
+                        }
+                    }
+                    Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
                 }
 
                 //This might give subtle bugs in the future,
@@ -988,16 +987,16 @@ namespace Chummer.Backend.Skills
                                                         + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")?.Value
                                       != "active";
                                 Skill objSkill = Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
-                                _lstSkills.AddWithSort(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+                                if (objSkill.SkillId != Guid.Empty)
                                 {
-                                    if (objNewSkill.Base > objExistSkill.Base)
-                                        objExistSkill.Base = objNewSkill.Base;
-                                    if (objNewSkill.Karma > objExistSkill.Karma)
-                                        objExistSkill.Karma = objNewSkill.Karma;
-                                    objExistSkill.Specializations.AddRangeWithSort(
-                                        objNewSkill.Specializations, CompareSpecializations);
-                                    objNewSkill.Dispose();
-                                });
+                                    Skill objExistingSkill = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                    if (objExistingSkill != null)
+                                    {
+                                        MergeSkills(objExistingSkill, objSkill);
+                                        continue;
+                                    }
+                                }
+                                _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
                             }
                         }
                     }
@@ -1248,6 +1247,20 @@ namespace Chummer.Backend.Skills
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eFilter), eFilter, null);
             }
+        }
+
+        private void MergeSkills(Skill objExistingSkill, Skill objNewSkill)
+        {
+            objExistingSkill.CopyInternalId(objNewSkill);
+            if (objNewSkill.BasePoints > objExistingSkill.BasePoints)
+                objExistingSkill.BasePoints = objNewSkill.BasePoints;
+            if (objNewSkill.KarmaPoints > objExistingSkill.KarmaPoints)
+                objExistingSkill.KarmaPoints = objNewSkill.KarmaPoints;
+            objExistingSkill.BuyWithKarma = objNewSkill.BuyWithKarma;
+            objExistingSkill.Notes += objNewSkill.Notes;
+            objExistingSkill.NotesColor = objNewSkill.NotesColor;
+            objExistingSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
+            objNewSkill.Dispose();
         }
 
         private List<ListItem> _lstDefaultKnowledgeSkills;

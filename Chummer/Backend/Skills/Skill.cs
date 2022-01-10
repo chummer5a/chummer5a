@@ -1366,6 +1366,11 @@ namespace Chummer.Backend.Skills
 
         public string InternalId => _guidInternalId.ToString("D", GlobalSettings.InvariantCultureInfo);
 
+        public void CopyInternalId(Skill objOtherSkill)
+        {
+            Id = objOtherSkill.Id;
+        }
+
         private Guid _guidSkillId = Guid.Empty;
 
         /// <summary>
@@ -1378,7 +1383,8 @@ namespace Chummer.Backend.Skills
             get => _guidSkillId;
             set
             {
-                if (_guidSkillId == value) return;
+                if (_guidSkillId == value)
+                    return;
                 _guidSkillId = value;
                 _objCachedMyXmlNode = null;
                 _blnRecalculateCachedSuggestedSpecializations = true;
