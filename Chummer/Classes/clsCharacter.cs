@@ -931,22 +931,38 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            List<Metamagic> lstImprovementSourcesToProcess = new List<Metamagic>(e.NewItems.Count + e.OldItems.Count);
+            List<Metamagic> lstImprovementSourcesToProcess = new List<Metamagic>(e.NewItems?.Count ?? 0 + e.OldItems?.Count ?? 0);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (Metamagic objNewItem in e.NewItems)
-                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    if (e.NewItems?.Count > 0)
+                    {
+                        foreach (Metamagic objNewItem in e.NewItems)
+                            lstImprovementSourcesToProcess.Add(objNewItem);
+                    }
+
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (Metamagic objOldItem in e.OldItems)
-                        lstImprovementSourcesToProcess.Add(objOldItem);
+                    if (e.OldItems?.Count > 0)
+                    {
+                        foreach (Metamagic objOldItem in e.OldItems)
+                            lstImprovementSourcesToProcess.Add(objOldItem);
+                    }
+
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (Metamagic objOldItem in e.OldItems)
-                        lstImprovementSourcesToProcess.Add(objOldItem);
-                    foreach (Metamagic objNewItem in e.NewItems)
-                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    if (e.OldItems?.Count > 0)
+                    {
+                        foreach (Metamagic objOldItem in e.OldItems)
+                            lstImprovementSourcesToProcess.Add(objOldItem);
+                    }
+
+                    if (e.NewItems?.Count > 0)
+                    {
+                        foreach (Metamagic objNewItem in e.NewItems)
+                            lstImprovementSourcesToProcess.Add(objNewItem);
+                    }
+
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     break;
@@ -1333,16 +1349,16 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     blnDoRefreshPenalties =
-                        e.NewItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                        e.NewItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     blnDoRefreshPenalties =
-                        e.OldItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                        e.OldItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     blnDoRefreshPenalties =
-                        e.OldItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty) ||
-                        e.NewItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                        e.OldItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty) ||
+                        e.NewItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
                     break;
                 case NotifyCollectionChangedAction.Move:
                     break;
