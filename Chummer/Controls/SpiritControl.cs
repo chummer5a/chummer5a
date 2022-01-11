@@ -278,7 +278,7 @@ namespace Chummer
         {
             using (frmNotes frmSpritNotes = new frmNotes(_objSpirit.Notes, _objSpirit.NotesColor))
             {
-                frmSpritNotes.ShowDialog(this);
+                frmSpritNotes.ShowDialogSafe(this);
                 if (frmSpritNotes.DialogResult != DialogResult.OK)
                     return;
                 _objSpirit.Notes = frmSpritNotes.Notes;

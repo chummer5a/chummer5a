@@ -660,14 +660,14 @@ namespace Chummer
         {
             using (new CursorWait(this))
             using (frmGlobalSettings frmOptions = new frmGlobalSettings())
-                frmOptions.ShowDialog(this);
+                frmOptions.ShowDialogSafe(this);
         }
 
         private void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             using (frmCharacterSettings frmCharacterOptions = new frmCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
-                frmCharacterOptions.ShowDialog(this);
+                frmCharacterOptions.ShowDialogSafe(this);
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -699,7 +699,7 @@ namespace Chummer
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (frmAbout frmShowAbout = new frmAbout())
-                frmShowAbout.ShowDialog(this);
+                frmShowAbout.ShowDialogSafe(this);
         }
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
@@ -731,7 +731,7 @@ namespace Chummer
         private void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
         {
             using (frmHistory frmShowHistory = new frmHistory())
-                frmShowHistory.ShowDialog(this);
+                frmShowHistory.ShowDialogSafe(this);
         }
 
         private void mnuNewCritter_Click(object sender, EventArgs e)
@@ -742,7 +742,7 @@ namespace Chummer
                 {
                     using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
                     {
-                        frmPickSetting.ShowDialog(this);
+                        frmPickSetting.ShowDialogSafe(this);
                         if (frmPickSetting.DialogResult == DialogResult.Cancel)
                             return;
                     }
@@ -755,7 +755,7 @@ namespace Chummer
                     // Show the Metatype selection window.
                     using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
                     {
-                        frmSelectMetatype.ShowDialog(this);
+                        frmSelectMetatype.ShowDialogSafe(this);
 
                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                             return;
@@ -1216,7 +1216,7 @@ namespace Chummer
                     // Show the BP selection window.
                     using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
                     {
-                        frmBP.ShowDialog(this);
+                        frmBP.ShowDialogSafe(this);
                         if (frmBP.DialogResult != DialogResult.OK)
                             return;
                     }
@@ -1226,7 +1226,7 @@ namespace Chummer
                     {
                         using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialog(this);
+                            frmSelectMetatype.ShowDialogSafe(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
@@ -1236,7 +1236,7 @@ namespace Chummer
                     {
                         using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialog(this);
+                            frmSelectMetatype.ShowDialogSafe(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
@@ -1267,6 +1267,8 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
+            if (Utils.IsUnitTest)
+                return;
             using (new CursorWait(this))
             {
                 List<string> lstFilesToOpen;

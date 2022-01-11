@@ -1115,7 +1115,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(strForcedSide))
                     frmPickSide.ForceValue(strForcedSide);
                 // Make sure the dialogue window was not canceled.
-                else if (frmPickSide.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                else if (frmPickSide.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
                 {
                     _guiID = Guid.Empty;
                     return false;

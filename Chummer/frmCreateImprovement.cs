@@ -221,7 +221,7 @@ namespace Chummer
                                })
                         {
                             frmSelectAction.SetDropdownItemsMode(lstActions);
-                            frmSelectAction.ShowDialog(this);
+                            frmSelectAction.ShowDialogSafe(this);
 
                             if (frmSelectAction.DialogResult == DialogResult.OK)
                             {
@@ -255,7 +255,7 @@ namespace Chummer
                             Description = LanguageManager.GetString("Title_SelectAttribute")
                         })
                         {
-                            frmPickAttribute.ShowDialog(this);
+                            frmPickAttribute.ShowDialogSafe(this);
 
                             if (frmPickAttribute.DialogResult == DialogResult.OK)
                             {
@@ -271,7 +271,7 @@ namespace Chummer
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
                         using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                         {
-                            frmPickMetamagic.ShowDialog(this);
+                            frmPickMetamagic.ShowDialogSafe(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
                                 string strSelectedId = frmPickMetamagic.SelectedMetamagic;
@@ -306,7 +306,7 @@ namespace Chummer
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1 };
                         using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                         {
-                            frmPickMetamagic.ShowDialog(this);
+                            frmPickMetamagic.ShowDialogSafe(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
                                 string strSelectedId = frmPickMetamagic.SelectedMetamagic;
@@ -340,7 +340,7 @@ namespace Chummer
                     using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
-                        frmPickAttribute.ShowDialog(this);
+                        frmPickAttribute.ShowDialogSafe(this);
 
                         if (frmPickAttribute.DialogResult == DialogResult.OK)
                         {
@@ -354,7 +354,7 @@ namespace Chummer
                     using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
-                        frmPickAttribute.ShowDialog(this);
+                        frmPickAttribute.ShowDialogSafe(this);
 
                         if (frmPickAttribute.DialogResult == DialogResult.OK)
                         {
@@ -388,7 +388,7 @@ namespace Chummer
                             Description = LanguageManager.GetString("Title_SelectAttribute")
                         })
                         {
-                            frmPickAttribute.ShowDialog(this);
+                            frmPickAttribute.ShowDialogSafe(this);
 
                             if (frmPickAttribute.DialogResult == DialogResult.OK)
                             {
@@ -403,7 +403,7 @@ namespace Chummer
                     using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
                     {
                         frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
-                        frmPickSkill.ShowDialog(this);
+                        frmPickSkill.ShowDialogSafe(this);
 
                         if (frmPickSkill.DialogResult == DialogResult.OK)
                         {
@@ -469,7 +469,7 @@ namespace Chummer
                                })
                         {
                             frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
-                            frmPickSkill.ShowDialog(this);
+                            frmPickSkill.ShowDialogSafe(this);
 
                             if (frmPickSkill.DialogResult == DialogResult.OK)
                             {
@@ -485,7 +485,7 @@ namespace Chummer
                     using (frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory(_objCharacter))
                     {
                         frmPickSkillCategory.Description = LanguageManager.GetString("Title_SelectSkillCategory");
-                        frmPickSkillCategory.ShowDialog(this);
+                        frmPickSkillCategory.ShowDialogSafe(this);
 
                         if (frmPickSkillCategory.DialogResult == DialogResult.OK)
                         {
@@ -499,7 +499,7 @@ namespace Chummer
                     using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter))
                     {
                         frmPickSkillGroup.Description = LanguageManager.GetString("Title_SelectSkillGroup");
-                        frmPickSkillGroup.ShowDialog(this);
+                        frmPickSkillGroup.ShowDialogSafe(this);
 
                         if (frmPickSkillGroup.DialogResult == DialogResult.OK)
                         {
@@ -531,7 +531,7 @@ namespace Chummer
                                })
                         {
                             selectComplexForm.SetDropdownItemsMode(lstComplexForms);
-                            selectComplexForm.ShowDialog(this);
+                            selectComplexForm.ShowDialogSafe(this);
 
                             if (selectComplexForm.DialogResult == DialogResult.OK)
                             {
@@ -565,7 +565,7 @@ namespace Chummer
                                })
                         {
                             selectSpell.SetDropdownItemsMode(lstSpells);
-                            selectSpell.ShowDialog(this);
+                            selectSpell.ShowDialogSafe(this);
 
                             if (selectSpell.DialogResult == DialogResult.OK)
                             {
@@ -581,7 +581,7 @@ namespace Chummer
                     using (frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter))
                     {
                         frmPickWeaponCategory.Description = LanguageManager.GetString("Title_SelectWeaponCategory");
-                        frmPickWeaponCategory.ShowDialog(this);
+                        frmPickWeaponCategory.ShowDialogSafe(this);
 
                         if (frmPickWeaponCategory.DialogResult == DialogResult.OK)
                         {
@@ -595,7 +595,7 @@ namespace Chummer
                     using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter))
                     {
                         frmPickSpellCategory.Description = LanguageManager.GetString("Title_SelectSpellCategory");
-                        frmPickSpellCategory.ShowDialog(this);
+                        frmPickSpellCategory.ShowDialogSafe(this);
 
                         if (frmPickSpellCategory.DialogResult == DialogResult.OK)
                         {
@@ -609,7 +609,7 @@ namespace Chummer
                     using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
                     {
                         frmPickPower.IgnoreLimits = chkIgnoreLimits.Checked;
-                        frmPickPower.ShowDialog(this);
+                        frmPickPower.ShowDialogSafe(this);
 
                         if (frmPickPower.DialogResult == DialogResult.OK)
                         {

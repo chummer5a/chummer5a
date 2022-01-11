@@ -218,7 +218,7 @@ namespace Chummer
                 }
                 using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
-                    frmPickLimitModifier.ShowDialog(this);
+                    frmPickLimitModifier.ShowDialogSafe(this);
 
                     if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
                         return;
@@ -250,7 +250,7 @@ namespace Chummer
             using (new CursorWait(this))
             using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
             {
-                frmItemNotes.ShowDialog(this);
+                frmItemNotes.ShowDialogSafe(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 objNotes.Notes = frmItemNotes.Notes;
@@ -6803,7 +6803,7 @@ namespace Chummer
                 {
                     using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;

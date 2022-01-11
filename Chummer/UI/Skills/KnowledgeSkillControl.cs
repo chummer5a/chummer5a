@@ -417,7 +417,7 @@ namespace Chummer.UI.Skills
             {
                 using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill) {Mode = "Knowledge"})
                 {
-                    selectForm.ShowDialog(frmToUse);
+                    selectForm.ShowDialogSafe(frmToUse);
 
                     if (selectForm.DialogResult == DialogResult.OK)
                         _objSkill.AddSpecialization(selectForm.SelectedItem);

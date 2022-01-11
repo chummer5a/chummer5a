@@ -508,7 +508,7 @@ namespace Chummer
             {
                 using (frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter))
                 {
-                    frmPickMartialArt.ShowDialog(Program.MainForm);
+                    frmPickMartialArt.ShowDialogSafe(Program.GetFormForDialog(objCharacter));
 
                     if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
                         return false;

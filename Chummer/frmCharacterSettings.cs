@@ -113,7 +113,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             using (frmGlobalSettings frmOptions = new frmGlobalSettings("tabCustomDataDirectories"))
-                frmOptions.ShowDialog(this);
+                frmOptions.ShowDialogSafe(this);
         }
 
         private void cmdRename_Click(object sender, EventArgs e)
@@ -124,7 +124,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("Message_CharacterOptions_SettingRename")
             })
             {
-                frmSelectName.ShowDialog(this);
+                frmSelectName.ShowDialogSafe(this);
                 if (frmSelectName.DialogResult != DialogResult.OK)
                     return;
                 _objCharacterSettings.Name = frmSelectName.SelectedValue;
@@ -245,7 +245,7 @@ namespace Chummer
                         Description = LanguageManager.GetString("Message_CharacterOptions_SelectSettingName")
                     })
                     {
-                        frmSelectName.ShowDialog(this);
+                        frmSelectName.ShowDialogSafe(this);
                         if (frmSelectName.DialogResult != DialogResult.OK)
                             return;
                         strSelectedName = frmSelectName.SelectedValue;

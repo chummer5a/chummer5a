@@ -727,7 +727,7 @@ namespace Chummer.UI.Skills
             ExoticSkill objSkill;
             using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
             {
-                frmPickExoticSkill.ShowDialog(this);
+                frmPickExoticSkill.ShowDialogSafe(this);
 
                 if (frmPickExoticSkill.DialogResult != DialogResult.OK)
                     return;
@@ -763,7 +763,7 @@ namespace Chummer.UI.Skills
                     {
                         form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
-                        form.ShowDialog(frmToUse);
+                        form.ShowDialogSafe(frmToUse);
 
                         if (form.DialogResult == DialogResult.OK)
                             strSelectedSkill = form.SelectedItem;

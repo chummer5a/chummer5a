@@ -116,26 +116,38 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DoThreadSafeCore(this Control objControl, bool blnSync, Action funcToRun)
         {
-            if (objControl.IsNullOrDisposed() || funcToRun == null)
+            if (funcToRun == null)
                 return;
             try
             {
-                // ReSharper disable once InlineTemporaryVariable
-                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                if (myControlCopy.InvokeRequired)
+                if (objControl.IsNullOrDisposed())
                 {
                     if (blnSync)
-                    {
-                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                        // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                        objResult.AsyncWaitHandle.WaitOne();
-                        objResult.AsyncWaitHandle.Close();
-                    }
+                        funcToRun.Invoke();
                     else
-                        myControlCopy.BeginInvoke(funcToRun);
+                        Task.Run(funcToRun);
                 }
                 else
-                    funcToRun.Invoke();
+                {
+                    // ReSharper disable once InlineTemporaryVariable
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        if (blnSync)
+                        {
+                            IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                            myControlCopy.BeginInvoke(funcToRun);
+                    }
+                    else if (blnSync)
+                        funcToRun.Invoke();
+                    else
+                        Task.Run(funcToRun);
+                }
             }
             catch (ObjectDisposedException) // e)
             {
@@ -169,49 +181,82 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DoThreadSafeCore(this Control objControl, bool blnSync, Func<Task> funcToRun)
         {
-            if (objControl.IsNullOrDisposed() || funcToRun == null)
+            if (funcToRun == null)
                 return;
             try
             {
-                // ReSharper disable once InlineTemporaryVariable
-                Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                if (myControlCopy.InvokeRequired)
+                if (objControl.IsNullOrDisposed())
                 {
-                    IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                    // funcToRun actually creates a Task that performs what is being run, so we need to get that task and then work with the task instead of the IAsyncResult
-                    objResult.AsyncWaitHandle.WaitOne();
-                    object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                    if (objReturnRaw is Task tskRunning)
+                    if (blnSync)
                     {
-                        if (blnSync)
-                        {
-                            if (tskRunning.Status == TaskStatus.Created)
-                                tskRunning.RunSynchronously();
-                            while (!tskRunning.IsCompleted)
-                                Utils.SafeSleep();
-                            if (tskRunning.Exception != null)
-                                throw tskRunning.Exception;
-                        }
-                        else
-                        {
-                            Task.Run(() => tskRunning.ContinueWith(x =>
-                            {
-                                if (x.Exception != null)
-                                    throw x.Exception;
-                            }));
-                        }
+                        Task tskRunning = funcToRun.Invoke();
+                        if (tskRunning.Status == TaskStatus.Created)
+                            tskRunning.RunSynchronously();
+                        while (!tskRunning.IsCompleted)
+                            Utils.SafeSleep();
+                        if (tskRunning.Exception != null)
+                            throw tskRunning.Exception;
                     }
-                    objResult.AsyncWaitHandle.Close();
+                    else
+                    {
+                        Task.Run(() => funcToRun.Invoke().ContinueWith(x =>
+                        {
+                            if (x.Exception != null)
+                                throw x.Exception;
+                        }));
+                    }
                 }
                 else
                 {
-                    Task tskRunning = funcToRun.Invoke();
-                    if (tskRunning.Status == TaskStatus.Created)
-                        tskRunning.RunSynchronously();
-                    while (!tskRunning.IsCompleted)
-                        Utils.SafeSleep();
-                    if (tskRunning.Exception != null)
-                        throw tskRunning.Exception;
+                    // ReSharper disable once InlineTemporaryVariable
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                        // funcToRun actually creates a Task that performs what is being run, so we need to get that task and then work with the task instead of the IAsyncResult
+                        objResult.AsyncWaitHandle.WaitOne();
+                        object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                        if (objReturnRaw is Task tskRunning)
+                        {
+                            if (blnSync)
+                            {
+                                if (tskRunning.Status == TaskStatus.Created)
+                                    tskRunning.RunSynchronously();
+                                while (!tskRunning.IsCompleted)
+                                    Utils.SafeSleep();
+                                if (tskRunning.Exception != null)
+                                    throw tskRunning.Exception;
+                            }
+                            else
+                            {
+                                Task.Run(() => tskRunning.ContinueWith(x =>
+                                {
+                                    if (x.Exception != null)
+                                        throw x.Exception;
+                                }));
+                            }
+                        }
+
+                        objResult.AsyncWaitHandle.Close();
+                    }
+                    else if (blnSync)
+                    {
+                        Task tskRunning = funcToRun.Invoke();
+                        if (tskRunning.Status == TaskStatus.Created)
+                            tskRunning.RunSynchronously();
+                        while (!tskRunning.IsCompleted)
+                            Utils.SafeSleep();
+                        if (tskRunning.Exception != null)
+                            throw tskRunning.Exception;
+                    }
+                    else
+                    {
+                        Task.Run(() => funcToRun.Invoke().ContinueWith(x =>
+                        {
+                            if (x.Exception != null)
+                                throw x.Exception;
+                        }));
+                    }
                 }
             }
             catch (ObjectDisposedException) // e)
@@ -246,7 +291,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task DoThreadSafeAsync(this Control objControl, Action funcToRun)
         {
-            if (!objControl.IsNullOrDisposed() && funcToRun != null)
+            if (funcToRun == null)
+                return;
+            if (objControl.IsNullOrDisposed())
+                await Task.Run(funcToRun);
+            else
             {
                 try
                 {
@@ -257,7 +306,7 @@ namespace Chummer
                         await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
                     }
                     else
-                        funcToRun.Invoke();
+                        await Task.Run(funcToRun);
                 }
                 catch (ObjectDisposedException) // e)
                 {
@@ -292,9 +341,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task DoThreadSafeAsync(this Control objControl, Func<Task> funcToRun)
         {
-            if (!objControl.IsNullOrDisposed() && funcToRun != null)
+            if (funcToRun == null)
+                return;
+            try
             {
-                try
+                if (objControl.IsNullOrDisposed())
+                    await funcToRun.Invoke();
+                else
                 {
                     Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
@@ -305,27 +358,27 @@ namespace Chummer
                     else
                         await funcToRun.Invoke();
                 }
-                catch (ObjectDisposedException) // e)
-                {
-                    //we really don't need to care about that.
-                    //Log.Trace(e);
-                }
-                catch (InvalidAsynchronousStateException e)
-                {
-                    //we really don't need to care about that.
-                    Log.Trace(e);
-                }
-                catch (System.Threading.ThreadAbortException)
-                {
-                    //no need to do anything here - actually we can't anyway...
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
 #if DEBUG
-                    Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
 #endif
-                }
             }
         }
 
@@ -363,10 +416,14 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static async Task<T> DoThreadSafeFuncCoreAsync<T>(this Control objControl, bool blnSync, Func<T> funcToRun)
         {
-            if (!objControl.IsNullOrDisposed() && funcToRun != null)
+            if (funcToRun == null)
+                return default;
+            T objReturn = default;
+            try
             {
-                T objReturn = default;
-                try
+                if (objControl.IsNullOrDisposed())
+                    objReturn = blnSync ? funcToRun.Invoke() : await Task.Run(funcToRun);
+                else
                 {
                     Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
@@ -392,34 +449,32 @@ namespace Chummer
                         }
                     }
                     else
-                        objReturn = funcToRun.Invoke();
+                        objReturn = blnSync ? funcToRun.Invoke() : await Task.Run(funcToRun);
                 }
-                catch (ObjectDisposedException) // e)
-                {
-                    //we really don't need to care about that.
-                    //Log.Trace(e);
-                }
-                catch (InvalidAsynchronousStateException e)
-                {
-                    //we really don't need to care about that.
-                    Log.Trace(e);
-                }
-                catch (System.Threading.ThreadAbortException)
-                {
-                    //no need to do anything here - actually we can't anyway...
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
 #if DEBUG
-                    Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
 #endif
-                }
-
-                return objReturn;
             }
 
-            return default;
+            return objReturn;
         }
 
         /// <summary>

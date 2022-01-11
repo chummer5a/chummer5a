@@ -543,7 +543,7 @@ namespace Chummer
             {
                 using (frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
                 {
-                    frmSelectLifestyleQuality.ShowDialog(this);
+                    frmSelectLifestyleQuality.ShowDialogSafe(this);
 
                     // Don't do anything else if the form was canceled.
                     if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)

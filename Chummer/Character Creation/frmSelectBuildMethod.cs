@@ -120,7 +120,7 @@ namespace Chummer
             {
                 using (frmCharacterSettings frmOptions =
                     new frmCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
-                    frmOptions.ShowDialog(this);
+                    frmOptions.ShowDialogSafe(this);
 
                 SuspendLayout();
                 // Populate the Gameplay Settings list.

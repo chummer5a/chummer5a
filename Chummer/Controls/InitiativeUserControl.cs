@@ -320,7 +320,7 @@ namespace Chummer
                         Dice = objLoopCharacter.InitPasses
                     })
                     {
-                        frmHits.ShowDialog(this);
+                        frmHits.ShowDialogSafe(this);
 
                         if (frmHits.DialogResult != DialogResult.OK)
                             return; // we decided not to actually change the initiative
@@ -397,7 +397,7 @@ namespace Chummer
                     Dice = _lstCharacters[chkBoxChummer.SelectedIndex].InitPasses
                 })
                 {
-                    frmHits.ShowDialog(this);
+                    frmHits.ShowDialogSafe(this);
 
                     if (frmHits.DialogResult != DialogResult.OK)
                         return; // we decided not to actually change the initiative
@@ -433,7 +433,7 @@ namespace Chummer
                     Dice = character.InitPasses
                 })
                 {
-                    frmHits.ShowDialog(this);
+                    frmHits.ShowDialogSafe(this);
 
                     if (frmHits.DialogResult != DialogResult.OK)
                     {

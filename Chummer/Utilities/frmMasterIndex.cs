@@ -522,7 +522,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 using (frmCharacterSettings frmOptions = new frmCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
-                    frmOptions.ShowDialog(this);
+                    frmOptions.ShowDialogSafe(this);
                 // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
             }
         }

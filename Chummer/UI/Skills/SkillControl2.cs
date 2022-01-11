@@ -477,7 +477,7 @@ namespace Chummer.UI.Skills
             {
                 using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
                 {
-                    selectForm.ShowDialog(frmToUse);
+                    selectForm.ShowDialogSafe(frmToUse);
 
                     if (selectForm.DialogResult == DialogResult.OK)
                         _objSkill.AddSpecialization(selectForm.SelectedItem);
@@ -565,7 +565,7 @@ namespace Chummer.UI.Skills
         {
             using (frmNotes frmItemNotes = new frmNotes(_objSkill.Notes, _objSkill.NotesColor))
             {
-                frmItemNotes.ShowDialog(this);
+                frmItemNotes.ShowDialogSafe(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 _objSkill.Notes = frmItemNotes.Notes;

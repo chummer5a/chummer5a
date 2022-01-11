@@ -1715,7 +1715,7 @@ namespace Chummer
                             xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                     })
                     {
-                        frmPickText.ShowDialog(Program.MainForm);
+                        frmPickText.ShowDialogSafe(Program.GetFormForDialog(this));
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                             continue;
@@ -3218,7 +3218,7 @@ namespace Chummer
                                     {
                                         using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                         {
-                                            frmPickBP.ShowDialog(Program.MainForm);
+                                            frmPickBP.ShowDialogSafe(Program.GetFormForDialog(this));
                                             return frmPickBP.DialogResult;
                                         }
                                     }
@@ -3723,7 +3723,7 @@ namespace Chummer
                                                             using (frmSelectItem frmPickItem = new frmSelectItem())
                                                             {
                                                                 frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                                frmPickItem.ShowDialog(Program.MainForm);
+                                                                frmPickItem.ShowDialogSafe(Program.GetFormForDialog(this));
 
                                                                 ePickItemResult = frmPickItem.DialogResult;
                                                                 selectedContactUniqueId = frmPickItem.SelectedItem;
@@ -6806,7 +6806,7 @@ namespace Chummer
                 {
                     using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this))
                     {
-                        frmSelectMetatype.ShowDialog(Program.MainForm);
+                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                         return frmSelectMetatype.DialogResult;
                     }
                 });
@@ -6817,7 +6817,7 @@ namespace Chummer
                 {
                     using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this))
                     {
-                        frmSelectMetatype.ShowDialog(Program.MainForm);
+                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                         return frmSelectMetatype.DialogResult;
                     }
                 });
@@ -19562,7 +19562,7 @@ namespace Chummer
                                     {
                                         using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                         {
-                                            frmPickBP.ShowDialog(Program.MainForm);
+                                            frmPickBP.ShowDialogSafe(Program.GetFormForDialog(this));
                                             if (frmPickBP.DialogResult != DialogResult.OK)
                                                 return false;
                                         }
@@ -19624,7 +19624,7 @@ namespace Chummer
 
                                     using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this))
                                     {
-                                        frmSelectMetatype.ShowDialog(Program.MainForm);
+                                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                             return false;
                                     }
@@ -19633,7 +19633,7 @@ namespace Chummer
                                 {
                                     using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this))
                                     {
-                                        frmSelectMetatype.ShowDialog(Program.MainForm);
+                                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                             return false;
                                     }
@@ -21620,7 +21620,7 @@ namespace Chummer
                 Dice = WIL.TotalValue
             })
             {
-                frmWILHits.ShowDialog(Program.MainForm);
+                frmWILHits.ShowDialogSafe(Program.GetFormForDialog(this));
 
                 if (frmWILHits.DialogResult != DialogResult.OK)
                     return false;

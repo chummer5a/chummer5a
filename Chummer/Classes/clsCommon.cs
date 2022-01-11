@@ -1214,7 +1214,7 @@ namespace Chummer
                 {
                     if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                         frmOptions.DoLinkPdfReader();
-                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                    if (frmOptions.ShowDialogSafe(Program.MainForm) != DialogResult.OK)
                         return;
                     strPdfParameters = GlobalSettings.PdfParameters;
                     strPdfAppPath = GlobalSettings.PdfAppPath;
@@ -1283,7 +1283,7 @@ namespace Chummer
                 using (frmGlobalSettings frmOptions = new frmGlobalSettings())
                 {
                     frmOptions.DoLinkPdf(objBookInfo.Code);
-                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                    if (frmOptions.ShowDialogSafe(Program.MainForm) != DialogResult.OK)
                         return;
                     uriPath = null;
                     try

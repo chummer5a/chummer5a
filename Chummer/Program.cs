@@ -680,6 +680,8 @@ namespace Chummer
         /// <returns></returns>
         public static Form GetFormForDialog(Character objCharacter = null)
         {
+            if (MainForm == null)
+                return null;
             if (objCharacter == null)
                 return MainForm;
             return MainForm.OpenCharacterForms.FirstOrDefault(

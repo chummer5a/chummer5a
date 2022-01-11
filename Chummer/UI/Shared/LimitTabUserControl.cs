@@ -92,7 +92,7 @@ namespace Chummer.UI.Shared
         {
             using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social"))
             {
-                frmPickLimitModifier.ShowDialog(this);
+                frmPickLimitModifier.ShowDialogSafe(this);
 
                 if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
                     return;
@@ -143,7 +143,7 @@ namespace Chummer.UI.Shared
                         continue;
                     using (frmNotes frmItemNotes = new frmNotes(objImprovement.Notes, objImprovement.NotesColor))
                     {
-                        frmItemNotes.ShowDialog(this);
+                        frmItemNotes.ShowDialogSafe(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
                             continue;
 
@@ -175,7 +175,7 @@ namespace Chummer.UI.Shared
         {
             using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
             {
-                frmItemNotes.ShowDialog(this);
+                frmItemNotes.ShowDialogSafe(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
 
@@ -448,7 +448,7 @@ namespace Chummer.UI.Shared
 
             using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
             {
-                frmPickLimitModifier.ShowDialog(this);
+                frmPickLimitModifier.ShowDialogSafe(this);
 
                 if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
                     return;

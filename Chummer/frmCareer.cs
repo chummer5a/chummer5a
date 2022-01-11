@@ -2268,7 +2268,7 @@ namespace Chummer
         private void mnuFileExport_Click(object sender, EventArgs e)
         {
             using (frmExport frmExportCharacter = new frmExport(CharacterObject))
-                frmExportCharacter.ShowDialog(this);
+                frmExportCharacter.ShowDialogSafe(this);
         }
 
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
@@ -2304,7 +2304,7 @@ namespace Chummer
                 ShowMetatypeMaximum = true
             })
             {
-                frmPickAttribute.ShowDialog(this);
+                frmPickAttribute.ShowDialogSafe(this);
 
                 if (frmPickAttribute.DialogResult == DialogResult.Cancel)
                     return;
@@ -2334,7 +2334,7 @@ namespace Chummer
                 Minimum = 1
             })
             {
-                frmPickNumber.ShowDialog(this);
+                frmPickNumber.ShowDialogSafe(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
@@ -2926,7 +2926,7 @@ namespace Chummer
                 Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                if (openFileDialog.ShowDialogSafe(this) != DialogResult.OK)
                     return;
                 strFileName = openFileDialog.FileName;
             }
@@ -3077,7 +3077,7 @@ namespace Chummer
                         FileName = strShowFileName
                     })
                     {
-                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                        if (saveFileDialog.ShowDialogSafe(this) != DialogResult.OK)
                             return;
                         using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
@@ -3130,7 +3130,7 @@ namespace Chummer
                 using (frmSelectItem frmSelectVessel = new frmSelectItem())
                 {
                     frmSelectVessel.SetGeneralItemsMode(lstMetatype);
-                    frmSelectVessel.ShowDialog(this);
+                    frmSelectVessel.ShowDialogSafe(this);
 
                     if (frmSelectVessel.DialogResult == DialogResult.Cancel)
                         return;
@@ -3239,7 +3239,7 @@ namespace Chummer
                         FileName = strShowFileName
                     })
                     {
-                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                        if (saveFileDialog.ShowDialogSafe(this) != DialogResult.OK)
                             return;
                         using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
@@ -3450,7 +3450,7 @@ namespace Chummer
                                (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
                 })
                 {
-                    frmPickSpell.ShowDialog(this);
+                    frmPickSpell.ShowDialogSafe(this);
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSpell.DialogResult == DialogResult.Cancel)
                         break;
@@ -3652,7 +3652,7 @@ namespace Chummer
                 // Let the user select a Program.
                 using (frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(CharacterObject))
                 {
-                    frmPickComplexForm.ShowDialog(this);
+                    frmPickComplexForm.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
@@ -3729,7 +3729,7 @@ namespace Chummer
         {
             using (frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject))
             {
-                frmPickWeapon.ShowDialog(this);
+                frmPickWeapon.ShowDialogSafe(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -3845,7 +3845,7 @@ namespace Chummer
             {
                 using (frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject))
                 {
-                    frmPickLifestyle.ShowDialog(this);
+                    frmPickLifestyle.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
@@ -3891,7 +3891,7 @@ namespace Chummer
         {
             using (frmSelectVehicle frmPickVehicle = new frmSelectVehicle(CharacterObject))
             {
-                frmPickVehicle.ShowDialog(this);
+                frmPickVehicle.ShowDialogSafe(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickVehicle.DialogResult == DialogResult.Cancel)
@@ -4011,7 +4011,7 @@ namespace Chummer
                         Description = LanguageManager.GetString("String_Retrofit")
                     })
                     {
-                        frmModPercent.ShowDialog(this);
+                        frmModPercent.ShowDialogSafe(this);
 
                         if (frmModPercent.DialogResult == DialogResult.Cancel)
                             return;
@@ -4351,7 +4351,7 @@ namespace Chummer
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople")
             })
             {
-                frmNewExpense.ShowDialog(this);
+                frmNewExpense.ShowDialogSafe(this);
 
                 if (frmNewExpense.DialogResult == DialogResult.Cancel)
                     return;
@@ -4397,7 +4397,7 @@ namespace Chummer
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan")
             })
             {
-                frmNewExpense.ShowDialog(this);
+                frmNewExpense.ShowDialogSafe(this);
 
                 if (frmNewExpense.DialogResult == DialogResult.Cancel)
                     return;
@@ -4457,7 +4457,7 @@ namespace Chummer
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan")
             })
             {
-                frmNewExpense.ShowDialog(this);
+                frmNewExpense.ShowDialogSafe(this);
 
                 if (frmNewExpense.DialogResult == DialogResult.Cancel)
                     return;
@@ -4506,7 +4506,7 @@ namespace Chummer
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople")
             })
             {
-                frmNewExpense.ShowDialog(this);
+                frmNewExpense.ShowDialogSafe(this);
 
                 if (frmNewExpense.DialogResult == DialogResult.Cancel)
                     return;
@@ -4599,7 +4599,7 @@ namespace Chummer
             {
                 using (frmSelectCritterPower frmPickCritterPower = new frmSelectCritterPower(CharacterObject))
                 {
-                    frmPickCritterPower.ShowDialog(this);
+                    frmPickCritterPower.ShowDialogSafe(this);
 
                     if (frmPickCritterPower.DialogResult == DialogResult.Cancel)
                         break;
@@ -4686,7 +4686,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_ReduceGear")
             })
             {
-                frmPickNumber.ShowDialog(this);
+                frmPickNumber.ShowDialogSafe(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
@@ -4758,7 +4758,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_SplitGear")
             })
             {
-                frmPickNumber.ShowDialog(this);
+                frmPickNumber.ShowDialogSafe(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
@@ -4811,7 +4811,7 @@ namespace Chummer
             using (frmSelectItem frmPickItem = new frmSelectItem())
             {
                 frmPickItem.SetGearMode(lstGear);
-                frmPickItem.ShowDialog(this);
+                frmPickItem.ShowDialogSafe(this);
 
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                     return;
@@ -4841,7 +4841,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_MergeGear")
             })
             {
-                frmPickNumber.ShowDialog(this);
+                frmPickNumber.ShowDialogSafe(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
@@ -4883,7 +4883,7 @@ namespace Chummer
             using (frmSelectItem frmPickItem = new frmSelectItem())
             {
                 frmPickItem.SetVehiclesMode(CharacterObject.Vehicles);
-                frmPickItem.ShowDialog(this);
+                frmPickItem.ShowDialogSafe(this);
 
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                     return;
@@ -4926,7 +4926,7 @@ namespace Chummer
                     Description = LanguageManager.GetString("String_MoveGear")
                 })
                 {
-                    frmPickNumber.ShowDialog(this);
+                    frmPickNumber.ShowDialogSafe(this);
 
                     if (frmPickNumber.DialogResult == DialogResult.Cancel)
                         return;
@@ -5038,7 +5038,7 @@ namespace Chummer
                                 Description = LanguageManager.GetString("String_MoveGear")
                             })
                             {
-                                frmPickNumber.ShowDialog(this);
+                                frmPickNumber.ShowDialogSafe(this);
 
                                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                                     return;
@@ -5136,7 +5136,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_ReduceGear")
             })
             {
-                frmPickNumber.ShowDialog(this);
+                frmPickNumber.ShowDialogSafe(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
@@ -5184,7 +5184,7 @@ namespace Chummer
                 int intRatingToAdd;
                 using (frmSelectQuality frmPickQuality = new frmSelectQuality(CharacterObject))
                 {
-                    frmPickQuality.ShowDialog(this);
+                    frmPickQuality.ShowDialogSafe(this);
 
                     // Don't do anything else if the form was canceled.
                     if (frmPickQuality.DialogResult == DialogResult.Cancel)
@@ -5387,7 +5387,7 @@ namespace Chummer
                 IgnoreQuality = objQuality.Name
             })
             {
-                frmPickQuality.ShowDialog(this);
+                frmPickQuality.ShowDialogSafe(this);
 
                 // Don't do anything else if the form was canceled.
                 if (frmPickQuality.DialogResult == DialogResult.Cancel)
@@ -5752,7 +5752,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -5772,7 +5772,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -5802,7 +5802,7 @@ namespace Chummer
             {
                 using (frmSelectCalendarStart frmPickStart = new frmSelectCalendarStart())
                 {
-                    frmPickStart.ShowDialog(this);
+                    frmPickStart.ShowDialogSafe(this);
 
                     if (frmPickStart.DialogResult == DialogResult.Cancel)
                         return;
@@ -5852,7 +5852,7 @@ namespace Chummer
                 return;
             using (frmNotes frmItemNotes = new frmNotes(objWeek.Notes))
             {
-                frmItemNotes.ShowDialog(this);
+                frmItemNotes.ShowDialogSafe(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 objWeek.Notes = frmItemNotes.Notes;
@@ -5873,7 +5873,7 @@ namespace Chummer
             int intWeek;
             using (frmSelectCalendarStart frmPickStart = new frmSelectCalendarStart(objStart))
             {
-                frmPickStart.ShowDialog(this);
+                frmPickStart.ShowDialogSafe(this);
 
                 if (frmPickStart.DialogResult == DialogResult.Cancel)
                     return;
@@ -5915,7 +5915,7 @@ namespace Chummer
                 : string.Empty;
             using (frmCreateImprovement frmPickImprovement = new frmCreateImprovement(CharacterObject, location))
             {
-                frmPickImprovement.ShowDialog(this);
+                frmPickImprovement.ShowDialogSafe(this);
 
                 if (frmPickImprovement.DialogResult == DialogResult.Cancel)
                     return;
@@ -5961,7 +5961,7 @@ namespace Chummer
                 do
                 {
                     frmPickItem.SetGearMode(lstGear);
-                    frmPickItem.ShowDialog(this);
+                    frmPickItem.ShowDialogSafe(this);
 
                     if (frmPickItem.DialogResult != DialogResult.OK)
                         continue;
@@ -6049,7 +6049,7 @@ namespace Chummer
                 EditImprovementObject = objImprovement
             })
             {
-                frmPickImprovement.ShowDialog(this);
+                frmPickImprovement.ShowDialogSafe(this);
 
                 if (frmPickImprovement.DialogResult == DialogResult.Cancel)
                     return;
@@ -6127,7 +6127,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -6280,7 +6280,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -6303,7 +6303,7 @@ namespace Chummer
                 Minimum = 1
             })
             {
-                frmPickNumber.ShowDialog(this);
+                frmPickNumber.ShowDialogSafe(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
@@ -6444,7 +6444,7 @@ namespace Chummer
                     ParentWeapon = objWeapon
                 })
                 {
-                    frmPickWeaponAccessory.ShowDialog(this);
+                    frmPickWeaponAccessory.ShowDialogSafe(this);
 
                     if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                         break;
@@ -6483,7 +6483,7 @@ namespace Chummer
                                 AllowCancel = false
                             })
                             {
-                                frmPickNumber.ShowDialog(this);
+                                frmPickNumber.ShowDialogSafe(this);
                                 objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             }
                         }
@@ -6548,7 +6548,7 @@ namespace Chummer
         {
             using (frmSelectArmor frmPickArmor = new frmSelectArmor(CharacterObject))
             {
-                frmPickArmor.ShowDialog(this);
+                frmPickArmor.ShowDialogSafe(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickArmor.DialogResult == DialogResult.Cancel)
@@ -6678,7 +6678,7 @@ namespace Chummer
                         }
                     }
 
-                    frmPickArmorMod.ShowDialog(this);
+                    frmPickArmorMod.ShowDialogSafe(this);
 
                     if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
                         break;
@@ -6806,7 +6806,7 @@ namespace Chummer
             {
                 using (frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods))
                 {
-                    frmPickVehicleMod.ShowDialog(this);
+                    frmPickVehicleMod.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
@@ -7009,7 +7009,7 @@ namespace Chummer
                 LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
             })
             {
-                frmPickWeapon.ShowDialog(this);
+                frmPickWeapon.ShowDialogSafe(this);
 
                 if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                     return false;
@@ -7101,7 +7101,7 @@ namespace Chummer
                 AllowDiscounts = true
             })
             {
-                frmPickVehicleMod.ShowDialog(this);
+                frmPickVehicleMod.ShowDialogSafe(this);
 
                 if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
                     return;
@@ -7177,7 +7177,7 @@ namespace Chummer
                     ParentWeapon = objWeapon
                 })
                 {
-                    frmPickWeaponAccessory.ShowDialog(this);
+                    frmPickWeaponAccessory.ShowDialogSafe(this);
 
                     if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                         break;
@@ -7252,7 +7252,7 @@ namespace Chummer
             })
             {
                 frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                frmPickWeapon.ShowDialog(this);
+                frmPickWeapon.ShowDialogSafe(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -7373,7 +7373,7 @@ namespace Chummer
                 {
                     using (frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt))
                     {
-                        frmPickMartialArtTechnique.ShowDialog(this);
+                        frmPickMartialArtTechnique.ShowDialogSafe(this);
 
                         if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
                             return;
@@ -7476,7 +7476,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -7842,7 +7842,7 @@ namespace Chummer
                     {
                         using (frmSellItem frmSell = new frmSellItem())
                         {
-                            frmSell.ShowDialog(this);
+                            frmSell.ShowDialogSafe(this);
 
                             if (frmSell.DialogResult == DialogResult.Cancel)
                                 return;
@@ -7856,7 +7856,7 @@ namespace Chummer
                     {
                         using (frmSellItem frmSell = new frmSellItem())
                         {
-                            frmSell.ShowDialog(this);
+                            frmSell.ShowDialogSafe(this);
 
                             if (frmSell.DialogResult == DialogResult.Cancel)
                                 return;
@@ -7881,7 +7881,7 @@ namespace Chummer
             {
                 using (frmSellItem frmSell = new frmSellItem())
                 {
-                    frmSell.ShowDialog(this);
+                    frmSell.ShowDialogSafe(this);
 
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
@@ -7905,7 +7905,7 @@ namespace Chummer
             {
                 using (frmSellItem frmSell = new frmSellItem())
                 {
-                    frmSell.ShowDialog(this);
+                    frmSell.ShowDialogSafe(this);
 
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
@@ -7929,7 +7929,7 @@ namespace Chummer
             {
                 using (frmSellItem frmSell = new frmSellItem())
                 {
-                    frmSell.ShowDialog(this);
+                    frmSell.ShowDialogSafe(this);
 
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
@@ -7953,7 +7953,7 @@ namespace Chummer
             {
                 using (frmSellItem frmSell = new frmSellItem())
                 {
-                    frmSell.ShowDialog(this);
+                    frmSell.ShowDialogSafe(this);
 
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
@@ -7978,7 +7978,7 @@ namespace Chummer
                 Lifestyle objLifeStyle = new Lifestyle(CharacterObject);
                 using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, objLifeStyle))
                 {
-                    frmPickLifestyle.ShowDialog(this);
+                    frmPickLifestyle.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
@@ -8024,7 +8024,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -8052,7 +8052,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9059,7 +9059,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9234,7 +9234,7 @@ namespace Chummer
 
                     frmPickCyberware.LockGrade();
                     frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
-                    frmPickCyberware.ShowDialog(this);
+                    frmPickCyberware.ShowDialogSafe(this);
 
                     if (frmPickCyberware.DialogResult == DialogResult.Cancel)
                         break;
@@ -9279,7 +9279,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9323,7 +9323,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9348,7 +9348,7 @@ namespace Chummer
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9371,7 +9371,7 @@ namespace Chummer
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9397,7 +9397,7 @@ namespace Chummer
             // The character is still allowed to add Spells, so show the Create Spell window.
             using (frmCreateSpell frmSpell = new frmCreateSpell(CharacterObject))
             {
-                frmSpell.ShowDialog(this);
+                frmSpell.ShowDialogSafe(this);
 
                 if (frmSpell.DialogResult == DialogResult.Cancel)
                     return;
@@ -9460,7 +9460,7 @@ namespace Chummer
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9480,7 +9480,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9547,7 +9547,7 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -9669,7 +9669,7 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -9800,7 +9800,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -9917,7 +9917,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -10032,7 +10032,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -10154,7 +10154,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -10245,7 +10245,7 @@ namespace Chummer
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -10262,7 +10262,7 @@ namespace Chummer
         {
             using (frmNaturalWeapon frmCreateNaturalWeapon = new frmNaturalWeapon(CharacterObject))
             {
-                frmCreateNaturalWeapon.ShowDialog(this);
+                frmCreateNaturalWeapon.ShowDialogSafe(this);
 
                 if (frmCreateNaturalWeapon.DialogResult == DialogResult.Cancel)
                     return;
@@ -10314,7 +10314,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -10430,7 +10430,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -10734,7 +10734,7 @@ namespace Chummer
                 // Edit Advanced Lifestyle.
                 using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, newLifestyle))
                 {
-                    frmPickLifestyle.ShowDialog(this);
+                    frmPickLifestyle.ShowDialogSafe(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                     {
@@ -10753,7 +10753,7 @@ namespace Chummer
                 using (frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject))
                 {
                     frmPickLifestyle.SetLifestyle(objLifestyle);
-                    frmPickLifestyle.ShowDialog(this);
+                    frmPickLifestyle.ShowDialogSafe(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                     {
@@ -11180,7 +11180,7 @@ namespace Chummer
             using (frmSelectItem frmPickItem = new frmSelectItem())
             {
                 frmPickItem.SetVehiclesMode(lstVehicles);
-                frmPickItem.ShowDialog(this);
+                frmPickItem.ShowDialogSafe(this);
 
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                     return;
@@ -11229,7 +11229,7 @@ namespace Chummer
                     }
 
                     frmPickItem.SetGeneralItemsMode(lstItems);
-                    frmPickItem.ShowDialog(this);
+                    frmPickItem.ShowDialogSafe(this);
 
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                         return;
@@ -12610,7 +12610,7 @@ namespace Chummer
             {
                 frmEditExpense.LockFields(blnAllowEdit);
 
-                frmEditExpense.ShowDialog(this);
+                frmEditExpense.ShowDialogSafe(this);
 
                 if (frmEditExpense.DialogResult == DialogResult.Cancel)
                     return;
@@ -12662,7 +12662,7 @@ namespace Chummer
             {
                 frmEditExpense.LockFields(blnAllowEdit);
 
-                frmEditExpense.ShowDialog(this);
+                frmEditExpense.ShowDialogSafe(this);
 
                 if (frmEditExpense.DialogResult == DialogResult.Cancel)
                     return;
@@ -12892,7 +12892,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -15299,7 +15299,7 @@ namespace Chummer
                     frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
                 }
 
-                frmPickCyberware.ShowDialog(this);
+                frmPickCyberware.ShowDialogSafe(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -15404,7 +15404,7 @@ namespace Chummer
                     frmPickGear.DefaultSearchText = strForceItemValue;
                     frmPickGear.ForceItemAmmoForWeaponType = objAmmoForWeapon?.WeaponType ?? string.Empty;
 
-                    frmPickGear.ShowDialog(this);
+                    frmPickGear.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickGear.DialogResult == DialogResult.Cancel)
@@ -15644,7 +15644,7 @@ namespace Chummer
                         }
                     }
 
-                    frmPickGear.ShowDialog(this);
+                    frmPickGear.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickGear.DialogResult == DialogResult.Cancel)
@@ -17354,7 +17354,7 @@ namespace Chummer
         {
             using (frmSelectCyberwareSuite frmPickCyberwareSuite = new frmSelectCyberwareSuite(CharacterObject, objSource))
             {
-                frmPickCyberwareSuite.ShowDialog(this);
+                frmPickCyberwareSuite.ShowDialogSafe(this);
 
                 if (frmPickCyberwareSuite.DialogResult == DialogResult.Cancel)
                     return;
@@ -17524,7 +17524,7 @@ namespace Chummer
 
             using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
             {
-                frmPickMetamagic.ShowDialog(this);
+                frmPickMetamagic.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
@@ -17596,7 +17596,7 @@ namespace Chummer
 
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Art))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -17684,7 +17684,7 @@ namespace Chummer
             XmlNode objXmlArt;
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enchantment))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -17759,7 +17759,7 @@ namespace Chummer
             XmlNode objXmlArt;
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Ritual))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -17830,7 +17830,7 @@ namespace Chummer
             XmlNode objXmlArt;
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enhancement))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -17959,7 +17959,7 @@ namespace Chummer
                 // Let the user select a Program.
                 using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost))
                 {
-                    frmPickProgram.ShowDialog(this);
+                    frmPickProgram.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickProgram.DialogResult == DialogResult.Cancel)
@@ -17982,7 +17982,7 @@ namespace Chummer
                                 , objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown"))
                         })
                         {
-                            frmPickText.ShowDialog(this);
+                            frmPickText.ShowDialogSafe(this);
                             strExtra = frmPickText.SelectedValue;
                         }
                     }
@@ -18116,7 +18116,7 @@ namespace Chummer
                        })
                 {
                     frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    frmPickMount.ShowDialog(this);
+                    frmPickMount.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickMount.DialogResult == DialogResult.Cancel)
@@ -18213,7 +18213,7 @@ namespace Chummer
                        })
                 {
                     frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    frmPickMount.ShowDialog(this);
+                    frmPickMount.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickMount.DialogResult == DialogResult.Cancel)
@@ -18381,7 +18381,7 @@ namespace Chummer
         {
             using (frmCreateCustomDrug form = new frmCreateCustomDrug(CharacterObject))
             {
-                form.ShowDialog(this);
+                form.ShowDialogSafe(this);
 
                 if (form.DialogResult == DialogResult.Cancel)
                     return;
@@ -18460,7 +18460,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_ReduceGear")
             })
             {
-                frmPickNumber.ShowDialog(this);
+                frmPickNumber.ShowDialogSafe(this);
 
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
@@ -18550,7 +18550,7 @@ namespace Chummer
 
                 using (frmSellItem frmSell = new frmSellItem())
                 {
-                    frmSell.ShowDialog(this);
+                    frmSell.ShowDialogSafe(this);
 
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
@@ -18561,7 +18561,7 @@ namespace Chummer
                         Upgrading = true
                     })
                     {
-                        pickCyber.ShowDialog(this);
+                        pickCyber.ShowDialogSafe(this);
 
                         if (pickCyber.DialogResult == DialogResult.Cancel)
                             return;
@@ -18607,7 +18607,7 @@ namespace Chummer
             {
                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true))
                 {
-                    frmPickBP.ShowDialog(this);
+                    frmPickBP.ShowDialogSafe(this);
 
                     if (frmPickBP.DialogResult != DialogResult.Cancel)
                         IsCharacterUpdateRequested = true;

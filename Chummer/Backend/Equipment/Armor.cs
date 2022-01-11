@@ -394,7 +394,7 @@ namespace Chummer.Backend.Equipment
                                        ExcludeGeneralCategory = true
                                    })
                             {
-                                frmPickArmorMod.ShowDialog(Program.MainForm);
+                                frmPickArmorMod.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
 
                                 if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
                                     return DialogResult.Cancel;

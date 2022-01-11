@@ -48,7 +48,7 @@ namespace Chummer
             {
                 using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
                 {
-                    frmItemNotes.ShowDialog(frmToUse);
+                    frmItemNotes.ShowDialogSafe(frmToUse);
                     if (frmItemNotes.DialogResult != DialogResult.OK)
                         return frmItemNotes.DialogResult;
 

@@ -5520,7 +5520,7 @@ namespace Chummer.Backend.Equipment
                     Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
                 })
                 {
-                    if (frmNewAmmoCount.ShowDialog(Program.MainForm) != DialogResult.OK)
+                    if (frmNewAmmoCount.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) != DialogResult.OK)
                         return;
 
                     objInternalClip.Ammo = frmNewAmmoCount.SelectedValue.ToInt32();
@@ -5599,7 +5599,7 @@ namespace Chummer.Backend.Equipment
                 Count = lstCount
             })
             {
-                if (frmReloadWeapon.ShowDialog(Program.MainForm) != DialogResult.OK)
+                if (frmReloadWeapon.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) != DialogResult.OK)
                     return;
 
                 // Return any unspent rounds to the Ammo.
