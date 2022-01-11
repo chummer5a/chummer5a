@@ -2919,14 +2919,21 @@ namespace Chummer
             if (IsDirty && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_PossessionSave"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
+            if (Utils.IsUnitTest)
+            {
+                Utils.BreakIfDebug();
+                return;
+            }
+
             string strFileName;
             // Prompt the user to select a save file to possess.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
+                   {
+                       Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|'
+                           + LanguageManager.GetString("DialogFilter_All")
+                   })
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
-            })
-            {
-                if (openFileDialog.ShowDialogSafe(this) != DialogResult.OK)
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
                 strFileName = openFileDialog.FileName;
             }
@@ -3077,7 +3084,7 @@ namespace Chummer
                         FileName = strShowFileName
                     })
                     {
-                        if (saveFileDialog.ShowDialogSafe(this) != DialogResult.OK)
+                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
                         using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
@@ -3108,6 +3115,12 @@ namespace Chummer
             // Make sure the Spirit has been saved first.
             if (IsDirty && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_PossessionSave"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
+
+            if (Utils.IsUnitTest)
+            {
+                Utils.BreakIfDebug();
+                return;
+            }
 
             string strSelectedVessel;
             // Prompt the user to select an inanimate Vessel.
@@ -3239,7 +3252,7 @@ namespace Chummer
                         FileName = strShowFileName
                     })
                     {
-                        if (saveFileDialog.ShowDialogSafe(this) != DialogResult.OK)
+                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
                         using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
