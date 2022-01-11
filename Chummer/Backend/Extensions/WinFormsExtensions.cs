@@ -143,10 +143,8 @@ namespace Chummer
                         else
                             myControlCopy.BeginInvoke(funcToRun);
                     }
-                    else if (blnSync)
-                        funcToRun.Invoke();
                     else
-                        Task.Run(funcToRun);
+                        funcToRun.Invoke();
                 }
             }
             catch (ObjectDisposedException) // e)
@@ -239,7 +237,7 @@ namespace Chummer
 
                         objResult.AsyncWaitHandle.Close();
                     }
-                    else if (blnSync)
+                    else
                     {
                         Task tskRunning = funcToRun.Invoke();
                         if (tskRunning.Status == TaskStatus.Created)
@@ -248,14 +246,6 @@ namespace Chummer
                             Utils.SafeSleep();
                         if (tskRunning.Exception != null)
                             throw tskRunning.Exception;
-                    }
-                    else
-                    {
-                        Task.Run(() => funcToRun.Invoke().ContinueWith(x =>
-                        {
-                            if (x.Exception != null)
-                                throw x.Exception;
-                        }));
                     }
                 }
             }
@@ -306,7 +296,7 @@ namespace Chummer
                         await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
                     }
                     else
-                        await Task.Run(funcToRun);
+                        funcToRun.Invoke();
                 }
                 catch (ObjectDisposedException) // e)
                 {
@@ -449,7 +439,7 @@ namespace Chummer
                         }
                     }
                     else
-                        objReturn = blnSync ? funcToRun.Invoke() : await Task.Run(funcToRun);
+                        objReturn = funcToRun.Invoke();
                 }
             }
             catch (ObjectDisposedException) // e)
