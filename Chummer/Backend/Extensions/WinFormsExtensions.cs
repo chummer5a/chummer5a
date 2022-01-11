@@ -33,6 +33,30 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
+        #region Forms Extensions
+
+        /// <summary>
+        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// </summary>
+        /// <param name="frmForm"></param>
+        /// <param name="owner"></param>
+        /// <returns></returns>
+        public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null)
+        {
+            // Unit tests cannot use ShowDialog because that will stall them out
+            if (Utils.IsUnitTest)
+            {
+                frmForm.Show(owner);
+                Utils.SafeSleep(Utils.DefaultSleepDuration * 10);
+                frmForm.Close();
+                return frmForm.DialogResult;
+            }
+
+            return frmForm.ShowDialog(owner);
+        }
+
+        #endregion
+
         #region Controls Extensions
 
         /// <summary>

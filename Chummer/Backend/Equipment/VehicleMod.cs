@@ -223,20 +223,31 @@ namespace Chummer.Backend.Equipment
                 {
                     if (decMax > 1000000)
                         decMax = 1000000;
-                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                    Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                     {
-                        Minimum = decMin,
-                        Maximum = decMax,
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalSettings.Language)),
-                        AllowCancel = false
-                    })
-                    {
-                        if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        using (frmSelectNumber frmPickNumber
+                               = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost"),
+                                       DisplayNameShort(GlobalSettings.Language)),
+                                   AllowCancel = false
+                               })
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                                _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                            return frmPickNumber.DialogResult;
                         }
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                    });
+                    if (eResult == DialogResult.Cancel)
+                    {
+                        _guiID = Guid.Empty;
+                        return;
                     }
                 }
             }

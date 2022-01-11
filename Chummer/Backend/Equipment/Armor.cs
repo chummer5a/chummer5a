@@ -325,23 +325,32 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+
+                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            Minimum = decMin,
-                            Maximum = decMax,
-                            Description = string.Format(
-                                GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("String_SelectVariableCost"),
-                                DisplayNameShort(GlobalSettings.Language)),
-                            AllowCancel = false
-                        })
-                        {
-                            if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                            using (frmSelectNumber frmPickNumber
+                                   = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost"),
+                                           DisplayNameShort(GlobalSettings.Language)),
+                                       AllowCancel = false
+                                   })
                             {
-                                _guiID = Guid.Empty;
-                                return;
+                                if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                                return frmPickNumber.DialogResult;
                             }
-                            _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
                         }
                     }
                     else
@@ -375,51 +384,62 @@ namespace Chummer.Backend.Equipment
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
                     {
-                        using (frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter, this)
+                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            AllowedCategories = objXmlCategoryNode.InnerText,
-                            ExcludeGeneralCategory = true
-                        })
-                        {
-                            frmPickArmorMod.ShowDialog(Program.MainForm);
-
-                            if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                            using (frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter, this)
+                                   {
+                                       AllowedCategories = objXmlCategoryNode.InnerText,
+                                       ExcludeGeneralCategory = true
+                                   })
                             {
-                                _guiID = Guid.Empty;
-                                return;
-                            }
+                                frmPickArmorMod.ShowDialog(Program.MainForm);
 
-                            // Locate the selected piece.
-                            XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + "]");
+                                if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                                    return DialogResult.Cancel;
 
-                            if (objXmlMod != null)
-                            {
-                                ArmorMod objMod = new ArmorMod(_objCharacter);
+                                // Locate the selected piece.
+                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode(
+                                    "/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + "]");
 
-                                objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost);
-                                objMod.IncludedInArmor = true;
-                                objMod.ArmorCapacity = "[0]";
-                                objMod.Cost = "0";
-                                objMod.MaximumRating = objMod.Rating;
-                                _lstArmorMods.Add(objMod);
-                            }
-                            else
-                            {
-                                ArmorMod objMod = new ArmorMod(_objCharacter)
+                                if (objXmlMod != null)
                                 {
-                                    Name = _strName,
-                                    Category = "Features",
-                                    Avail = "0",
-                                    Source = _strSource,
-                                    Page = _strPage,
-                                    IncludedInArmor = true,
-                                    ArmorCapacity = "[0]",
-                                    Cost = "0",
-                                    Rating = 0,
-                                    MaximumRating = 0
-                                };
-                                _lstArmorMods.Add(objMod);
+                                    ArmorMod objMod = new ArmorMod(_objCharacter);
+
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost);
+                                    objMod.IncludedInArmor = true;
+                                    objMod.ArmorCapacity = "[0]";
+                                    objMod.Cost = "0";
+                                    objMod.MaximumRating = objMod.Rating;
+                                    _lstArmorMods.Add(objMod);
+                                }
+                                else
+                                {
+                                    ArmorMod objMod = new ArmorMod(_objCharacter)
+                                    {
+                                        Name = _strName,
+                                        Category = "Features",
+                                        Avail = "0",
+                                        Source = _strSource,
+                                        Page = _strPage,
+                                        IncludedInArmor = true,
+                                        ArmorCapacity = "[0]",
+                                        Cost = "0",
+                                        Rating = 0,
+                                        MaximumRating = 0
+                                    };
+                                    _lstArmorMods.Add(objMod);
+                                }
+
+                                return frmPickArmorMod.DialogResult;
                             }
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
                         }
                     }
                 }

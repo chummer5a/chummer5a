@@ -191,20 +191,31 @@ namespace Chummer.Backend.Equipment
                 {
                     if (decMax > 1000000)
                         decMax = 1000000;
-                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                    Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                     {
-                        Minimum = decMin,
-                        Maximum = decMax,
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalSettings.Language)),
-                        AllowCancel = false
-                    })
-                    {
-                        if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        using (frmSelectNumber frmPickNumber
+                               = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost"),
+                                       DisplayNameShort(GlobalSettings.Language)),
+                                   AllowCancel = false
+                               })
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                                _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                            return frmPickNumber.DialogResult;
                         }
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                    });
+                    if (eResult == DialogResult.Cancel)
+                    {
+                        _guiID = Guid.Empty;
+                        return;
                     }
                 }
             }
@@ -1372,33 +1383,47 @@ namespace Chummer.Backend.Equipment
             _strCost = objXmlMod["cost"]?.InnerText ?? "0";
             if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
-                int intMin;
-                int intMax = 0;
+                decimal decMin;
+                decimal decMax = decimal.MaxValue;
                 string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
-                    intMin = Convert.ToInt32(strValues[0], GlobalSettings.InvariantCultureInfo);
-                    intMax = Convert.ToInt32(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
                 }
                 else
-                    intMin = Convert.ToInt32(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
 
-                if (intMin != 0 || intMax != 0)
+                if (decMin != 0 || decMax != decimal.MaxValue)
                 {
-                    if (intMax == 0)
-                        intMax = 1000000;
-                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                    if (decMax > 1000000)
+                        decMax = 1000000;
+                    Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                     {
-                        Minimum = intMin,
-                        Maximum = intMax,
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), CurrentDisplayName),
-                        AllowCancel = false
-                    })
+                        using (frmSelectNumber frmPickNumber
+                               = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost"),
+                                       DisplayNameShort(GlobalSettings.Language)),
+                                   AllowCancel = false
+                               })
+                        {
+                            if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                                _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                            return frmPickNumber.DialogResult;
+                        }
+                    });
+                    if (eResult == DialogResult.Cancel)
                     {
-                        if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
-                            return false;
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        _guiID = Guid.Empty;
+                        return false;
                     }
                 }
             }

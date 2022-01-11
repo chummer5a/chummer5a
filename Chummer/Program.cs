@@ -674,6 +674,19 @@ namespace Chummer
         public static List<Action<frmChummerMain>> MainFormOnAssignActions { get; } = new List<Action<frmChummerMain>>();
 
         /// <summary>
+        /// Gets the form to use for creating sub-forms and displaying them as dialogs
+        /// </summary>
+        /// <param name="objCharacter">If this character's file is open, use their open form as the one we want for showing dialogs.</param>
+        /// <returns></returns>
+        public static Form GetFormForDialog(Character objCharacter = null)
+        {
+            if (objCharacter == null)
+                return MainForm;
+            return MainForm.OpenCharacterForms.FirstOrDefault(
+                x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form ?? MainForm;
+        }
+
+        /// <summary>
         /// Whether the application is running under Mono (true) or .NET (false)
         /// </summary>
         public static bool IsMono

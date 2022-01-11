@@ -471,15 +471,23 @@ namespace Chummer.UI.Skills
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
+            Form frmToUse = ParentForm ?? Program.MainForm;
+
+            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
             {
-                selectForm.ShowDialog(Program.MainForm);
+                using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
+                {
+                    selectForm.ShowDialog(frmToUse);
 
-                if (selectForm.DialogResult != DialogResult.OK)
-                    return;
+                    if (selectForm.DialogResult == DialogResult.OK)
+                        _objSkill.AddSpecialization(selectForm.SelectedItem);
 
-                _objSkill.AddSpecialization(selectForm.SelectedItem);
-            }
+                    return selectForm.DialogResult;
+                }
+            });
+
+            if (eResult != DialogResult.OK)
+                return;
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;

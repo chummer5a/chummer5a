@@ -237,7 +237,7 @@ namespace Chummer.Tests
                 {
                     WindowState = FormWindowState.Minimized,
                     ShowInTaskbar =
-                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).

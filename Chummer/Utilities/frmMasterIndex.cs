@@ -21,7 +21,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -183,7 +182,7 @@ namespace Chummer
                 CustomActivity.OperationType.RequestOperation, null))
             {
                 _dicCachedNotes.Clear();
-                foreach (MasterIndexEntry objExistingEntry in _lstItems.Select(x => (MasterIndexEntry)x.Value))
+                foreach (MasterIndexEntry objExistingEntry in _lstItems.Select(x => x.Value))
                     objExistingEntry.Dispose();
                 _lstItems.Clear();
                 _lstFileNamesWithItems.Clear();
@@ -275,16 +274,18 @@ namespace Chummer
                         {
                             foreach (ListItem objItem in lstItemsForLoading)
                             {
-                                MasterIndexEntry objEntry = (MasterIndexEntry) objItem.Value;
+                                if (!(objItem.Value is MasterIndexEntry objEntry))
+                                    continue;
                                 string strKey = objEntry.DisplayName.ToUpperInvariant();
                                 if (dicHelper.TryGetValue(strKey, out List<ListItem> lstExistingItems))
                                 {
                                     ListItem objExistingItem = lstExistingItems.Find(
-                                        x => objEntry.DisplaySource.Equals(((MasterIndexEntry) x.Value).DisplaySource));
-                                    if (objExistingItem.Value != null)
+                                        x => x.Value is MasterIndexEntry y
+                                             && objEntry.DisplaySource.Equals(y.DisplaySource));
+                                    if (objExistingItem.Value is MasterIndexEntry objLoopEntry)
                                     {
-                                        ((MasterIndexEntry) objExistingItem.Value).FileNames.UnionWith(
-                                            objEntry.FileNames);
+                                        objLoopEntry.FileNames.UnionWith(objEntry.FileNames);
+                                        objEntry.Dispose();
                                     }
                                     else
                                     {
@@ -292,8 +293,8 @@ namespace Chummer
                                                    Utils.ListItemListPool, out List<ListItem> lstItemsNeedingNameChanges))
                                         {
                                             lstItemsNeedingNameChanges.AddRange(lstExistingItems.FindAll(
-                                                x => !objEntry.FileNames.IsSubsetOf(
-                                                    ((MasterIndexEntry) x.Value).FileNames)));
+                                                x => x.Value is MasterIndexEntry y
+                                                     && !objEntry.FileNames.IsSubsetOf(y.FileNames)));
                                             if (lstItemsNeedingNameChanges.Count == 0)
                                             {
                                                 _lstItems.Add(
@@ -316,8 +317,8 @@ namespace Chummer
                                                     _lstItems.Remove(objToRename);
                                                     lstExistingItems.Remove(objToRename);
 
-                                                    MasterIndexEntry objExistingEntry
-                                                        = (MasterIndexEntry) objToRename.Value;
+                                                    if (!(objToRename.Value is MasterIndexEntry objExistingEntry))
+                                                        continue;
                                                     objItemToAdd = new ListItem(objToRename.Value, string.Format(
                                                         GlobalSettings.CultureInfo,
                                                         strFormat, objExistingEntry.DisplayName,
@@ -405,7 +406,8 @@ namespace Chummer
                         string strSearchFilter = txtSearch.Text;
                         foreach (ListItem objItem in _lstItems)
                         {
-                            MasterIndexEntry objItemEntry = (MasterIndexEntry) objItem.Value;
+                            if (!(objItem.Value is MasterIndexEntry objItemEntry))
+                                continue;
                             if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
                                 continue;
                             if (!string.IsNullOrEmpty(strSearchFilter))
@@ -428,11 +430,10 @@ namespace Chummer
                     _blnSkipRefresh = true;
                     lstItems.PopulateWithListItems(lstFilteredItems);
                     _blnSkipRefresh = false;
-                    if (objOldSelectedValue != null)
+                    if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
                     {
-                        MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry) objOldSelectedValue;
                         lstItems.SelectedIndex
-                            = lstFilteredItems.FindIndex(x => ((MasterIndexEntry) x.Value).Equals(objOldSelectedEntry));
+                            = lstFilteredItems.FindIndex(x => objOldSelectedEntry.Equals(x.Value as MasterIndexEntry));
                     }
                     else
                         lstItems.SelectedIndex = -1;
@@ -489,7 +490,7 @@ namespace Chummer
             }
         }
 
-        private readonly struct MasterIndexEntry : IDisposable
+        private class MasterIndexEntry : IDisposable
         {
             public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, SourceString objDisplaySource, string strEnglishNameOnPage, string strTranslatedNameOnPage)
             {

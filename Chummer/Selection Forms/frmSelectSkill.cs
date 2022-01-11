@@ -205,7 +205,7 @@ namespace Chummer
                         if (objSkill.Rating < _intMinimumRating || objSkill.Rating > _intMaximumRating)
                             blnAddSkill = false;
                         else if (!string.IsNullOrEmpty(_strForceSkill))
-                            blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ')';
+                            blnAddSkill = _strForceSkill == objExoticSkill.DictionaryKey;
                         else if (!string.IsNullOrEmpty(_strIncludeCategory))
                             blnAddSkill = _strIncludeCategory.Contains(objExoticSkill.SkillCategory);
                         else if (!string.IsNullOrEmpty(_strExcludeCategory))
@@ -226,9 +226,9 @@ namespace Chummer
                                 "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath()
                                                                   + " and name = " + objExoticSkill.Name.CleanXPath()
                                                                   + "]");
-                            lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ')',
+                            lstSkills.Add(new ListItem(objExoticSkill.DictionaryKey,
                                                        (objXmlSkill.SelectSingleNode("translate")?.Value
-                                                        ?? objExoticSkill.Name)
+                                                        ?? objExoticSkill.CurrentDisplayName)
                                                        + LanguageManager.GetString("String_Space") + '('
                                                        + objExoticSkill.CurrentDisplaySpecialization + ')'));
                         }

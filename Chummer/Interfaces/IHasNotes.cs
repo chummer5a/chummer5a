@@ -42,19 +42,27 @@ namespace Chummer
         {
             if (objNotes == null || treNode == null)
                 return false;
-            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
+            Form frmToUse = treNode.TreeView.FindForm() ?? Program.MainForm;
+
+            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
             {
-                frmItemNotes.ShowDialog(Program.MainForm);
-                if (frmItemNotes.DialogResult != DialogResult.OK)
-                    return false;
+                using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
+                {
+                    frmItemNotes.ShowDialog(frmToUse);
+                    if (frmItemNotes.DialogResult != DialogResult.OK)
+                        return frmItemNotes.DialogResult;
 
-                objNotes.Notes = frmItemNotes.Notes;
-                objNotes.NotesColor = frmItemNotes.NotesColor;
-            }
-            treNode.ForeColor = objNotes.PreferredColor;
-            treNode.ToolTipText = objNotes.Notes.WordWrap();
+                    objNotes.Notes = frmItemNotes.Notes;
+                    objNotes.NotesColor = frmItemNotes.NotesColor;
+                }
 
-            return true;
+                treNode.ForeColor = objNotes.PreferredColor;
+                treNode.ToolTipText = objNotes.Notes.WordWrap();
+
+                return DialogResult.OK;
+            });
+
+            return eResult == DialogResult.OK;
         }
     }
 }
