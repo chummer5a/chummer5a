@@ -4061,6 +4061,7 @@ namespace Chummer
                                     if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
                                                           GlobalSettings.InvariantCultureInfo))
                                     {
+                                        lstItems.Insert(0, ListItem.Blank);
                                         frmSelect.SetDropdownItemsMode(lstItems);
                                     }
                                     else
