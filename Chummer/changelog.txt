@@ -61,6 +61,7 @@ Data Changes:
 - Improved Potential can now properly be taken at multiple levels with German Data Changes.
 - Badger Mentor Spirit from SOTG now adds two levels of Perceptive quality rather than 1 level of Perceptive and +2 to Perception.
 - Dead SIN now properly gives four fake licenses instead of three. Fixes #4666.
+- Ram Plate uses the stats from the print version of Rigger 5.0, which, unlike the PDF version, actually has stats listed for the Ram Plate.
 
 Changed/New Strings:
 - String_GameplayOption
