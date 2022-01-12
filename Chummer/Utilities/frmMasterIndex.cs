@@ -490,7 +490,7 @@ namespace Chummer
             }
         }
 
-        private class MasterIndexEntry : IDisposable
+        private sealed class MasterIndexEntry : IDisposable
         {
             public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, SourceString objDisplaySource, string strEnglishNameOnPage, string strTranslatedNameOnPage)
             {

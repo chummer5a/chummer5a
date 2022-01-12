@@ -627,16 +627,18 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
+#if DEBUG
         private async void cmdUploadPastebin_Click(object sender, EventArgs e)
         {
-#if DEBUG
             const string strFilePath = "Insert local file here";
-            System.Collections.Specialized.NameValueCollection data = new System.Collections.Specialized.NameValueCollection();
+            System.Collections.Specialized.NameValueCollection data
+                = new System.Collections.Specialized.NameValueCollection();
             string line;
             using (StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
             {
                 line = await sr.ReadToEndAsync();
             }
+
             data["api_paste_name"] = "Chummer";
             data["api_paste_expire_date"] = "N";
             data["api_paste_format"] = "xml";
@@ -665,8 +667,12 @@ namespace Chummer
                     }
                 }
             }
-#endif
         }
+#else
+        private void cmdUploadPastebin_Click(object sender, EventArgs e)
+        {
+        }
+#endif
 
         private void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {

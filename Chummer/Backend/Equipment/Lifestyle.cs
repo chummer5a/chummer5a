@@ -49,7 +49,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable
+    public sealed class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 

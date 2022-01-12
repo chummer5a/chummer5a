@@ -30,7 +30,7 @@ using NLog;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, IDisposable
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
