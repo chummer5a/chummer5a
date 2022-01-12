@@ -45,6 +45,7 @@ Application Changes:
 - Added a basic implementation of search for metatypes and critters using Point Buy. This will later be extended to include Priority options. Implements #4546
 - Drain expressions now properly show their translated names.
 - Chummer can now properly find the source of any bonuses added by vehicle mods, weapons, gear, and/or cyberware inside of a vehicle's weapon mount.
+- Metatypes and critters with separate Swimming running speeds now properly show their separate walking and running speeds.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

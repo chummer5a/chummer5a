@@ -14283,7 +14283,7 @@ namespace Chummer
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
             return Movement == "Special"
                 ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
-                : CalculatedMovement("Ground", true, objCulture);
+                : CalculatedMovement("Ground", true, objCulture, strLanguage);
         }
 
         /// <summary>
@@ -14491,31 +14491,30 @@ namespace Chummer
         {
             decimal decTmp = decimal.MinValue;
             foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.WalkSpeed, strType))
-            {
                 decTmp = Math.Max(decTmp, objImprovement.Value);
-            }
 
             if(decTmp != decimal.MinValue)
                 return decTmp;
 
-            string[] strReturn = CurrentWalkingRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-            switch(strType)
+            int intIndexToGet = 0;
+            switch (strType)
             {
                 case "Fly":
-                    if(strReturn.Length > 2)
-                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decTmp);
+                    intIndexToGet = 2;
                     break;
                 case "Swim":
-                    if(strReturn.Length > 1)
-                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decTmp);
+                    intIndexToGet = 1;
                     break;
                 case "Ground":
-                    if(strReturn.Length > 0)
-                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decTmp);
+                default:
                     break;
             }
 
+            string strReturn = CurrentWalkingRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                                       .ElementAtOrDefault(intIndexToGet);
+            if (strReturn != null)
+                decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                 out decTmp);
             return decTmp;
         }
 
@@ -14527,31 +14526,30 @@ namespace Chummer
         {
             decimal decTmp = decimal.MinValue;
             foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.RunSpeed, strType))
-            {
                 decTmp = Math.Max(decTmp, objImprovement.Value);
-            }
 
             if(decTmp != decimal.MinValue)
                 return decTmp;
 
-            string[] strReturn = CurrentRunningRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-            switch(strType)
+            int intIndexToGet = 0;
+            switch (strType)
             {
                 case "Fly":
-                    if(strReturn.Length > 2)
-                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decTmp);
+                    intIndexToGet = 2;
                     break;
                 case "Swim":
-                    if(strReturn.Length > 1)
-                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decTmp);
+                    intIndexToGet = 1;
                     break;
                 case "Ground":
-                    if(strReturn.Length > 0)
-                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decTmp);
+                default:
                     break;
             }
 
+            string strReturn = CurrentRunningRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                                       .ElementAtOrDefault(intIndexToGet);
+            if (strReturn != null)
+                decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                 out decTmp);
             return decTmp;
         }
 
@@ -14563,39 +14561,35 @@ namespace Chummer
         {
             decimal decTmp = decimal.MinValue;
             foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SprintSpeed, strType))
-            {
                 decTmp = Math.Max(decTmp, objImprovement.Value / 100.0m);
-            }
 
             if(decTmp != decimal.MinValue)
                 return decTmp;
 
-            string[] strReturn = CurrentSprintingRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
+            int intIndexToGet = 0;
             switch(strType)
             {
                 case "Fly":
-                    if(strReturn.Length > 2)
-                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                            out decTmp);
+                    intIndexToGet = 2;
                     break;
                 case "Swim":
-                    if(strReturn.Length > 1)
-                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                            out decTmp);
+                    intIndexToGet = 1;
                     break;
                 case "Ground":
-                    if(strReturn.Length > 0)
-                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                            out decTmp);
+                    default:
                     break;
             }
 
+            string strReturn = CurrentSprintingRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                                         .ElementAtOrDefault(intIndexToGet);
+            if (strReturn != null)
+                decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                 out decTmp);
             return decTmp;
         }
 
         public string CalculatedMovement(string strMovementType, bool blnUseCyberlegs = false,
-            CultureInfo objCulture = null)
+            CultureInfo objCulture = null, string strLanguage = "")
         {
             decimal decSprint = SprintingRate(strMovementType) +
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintBonus, false,
@@ -14638,23 +14632,36 @@ namespace Chummer
                 }
             }
 
-            if(objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
-            string strSpace = LanguageManager.GetString("String_Space");
-            if(strMovementType == "Swim")
+            if (strMovementType == "Swim")
             {
                 decWalk *= (intAGI + intSTR) * 0.5m;
-                return decWalk.ToString("#,0.##", objCulture) + ',' + strSpace +
-                       decSprint.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_MetersPerHit");
+                decRun *= (intAGI + intSTR) * 0.5m;
             }
             else
             {
                 decWalk *= intAGI;
                 decRun *= intAGI;
-                return decWalk.ToString("#,0.##", objCulture) + '/' + decRun.ToString("#,0.##", objCulture) + ',' +
-                       strSpace + decSprint.ToString("#,0.##", objCulture) +
-                       LanguageManager.GetString("String_MetersPerHit");
             }
+            if (objCulture == null)
+                objCulture = GlobalSettings.CultureInfo;
+            string strReturn = string.Empty;
+            if (decWalk != 0)
+            {
+                if (decRun != 0)
+                    strReturn = decWalk.ToString("#,0.##", objCulture) + '/' + decRun.ToString("#,0.##", objCulture);
+                else
+                    strReturn = decWalk.ToString("#,0.##", objCulture);
+            }
+            else if (decRun != 0 || decSprint != 0)
+                strReturn = decRun.ToString("#,0.##", objCulture);
+            if (decSprint != 0)
+            {
+                if (!string.IsNullOrEmpty(strReturn))
+                    strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage);
+                strReturn += decSprint.ToString("#,0.##", objCulture)
+                             + LanguageManager.GetString("String_MetersPerHit", strLanguage);
+            }
+            return strReturn;
         }
 
         public string DisplaySwim => GetSwim(GlobalSettings.CultureInfo, GlobalSettings.Language);
@@ -14667,7 +14674,7 @@ namespace Chummer
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
             return Movement == "Special"
                 ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
-                : CalculatedMovement("Swim", false, objCulture);
+                : CalculatedMovement("Swim", false, objCulture, strLanguage);
         }
 
         public string DisplayFly => GetFly(GlobalSettings.CultureInfo, GlobalSettings.Language);
@@ -14680,7 +14687,7 @@ namespace Chummer
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
             return Movement == "Special"
                 ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
-                : CalculatedMovement("Fly", false, objCulture);
+                : CalculatedMovement("Fly", false, objCulture, strLanguage);
         }
 
         /// <summary>
