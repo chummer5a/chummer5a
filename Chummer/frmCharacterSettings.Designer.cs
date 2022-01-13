@@ -16,7 +16,13 @@ namespace Chummer
             if(disposing)
             {
                 components?.Dispose();
+                if (_objCharacterSettings != null)
+                {
+                    _objCharacterSettings.PropertyChanged -= SettingsChanged;
+                    _objCharacterSettings.Dispose();
+                }
                 Utils.ListItemListPool.Return(_lstSettings);
+                Utils.StringHashSetPool.Return(_setPermanentSourcebooks);
             }
             base.Dispose(disposing);
         }

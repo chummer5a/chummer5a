@@ -19,8 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -51,7 +49,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged
+    public sealed class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
@@ -90,7 +88,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnTrustFund;
         private LifestyleType _eType = LifestyleType.Standard;
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
-        private readonly ObservableCollection<LifestyleQuality> _lstFreeGrids = new ObservableCollection<LifestyleQuality>();
+        private readonly CachedBindingList<LifestyleQuality> _lstFreeGrids = new CachedBindingList<LifestyleQuality>();
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
@@ -154,7 +152,9 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            LifestyleQualities.CollectionChanged += QualitiesCollectionChanged;
+            LifestyleQualities.BeforeRemove += LifestyleQualitiesOnBeforeRemove;
+            LifestyleQualities.ListChanged += LifestyleQualitiesOnListChanged;
+            FreeGrids.BeforeRemove += FreeGridsOnBeforeRemove;
         }
 
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
@@ -400,7 +400,7 @@ namespace Chummer.Backend.Equipment
                                })
                         {
                             frmSelect.SetGeneralItemsMode(lstQualities);
-                            if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                            if (frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
                             {
                                 _guiID = Guid.Empty;
                                 return;
@@ -497,7 +497,7 @@ namespace Chummer.Backend.Equipment
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
-                        _lstFreeGrids.Add(objQuality);
+                        FreeGrids.Add(objQuality);
                     }
                 }
             }
@@ -664,7 +664,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
-        public ObservableCollection<LifestyleQuality> FreeGrids => _lstFreeGrids;
+        public CachedBindingList<LifestyleQuality> FreeGrids => _lstFreeGrids;
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -997,7 +997,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
-        public ObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new ObservableCollection<LifestyleQuality>();
+        public CachedBindingList<LifestyleQuality> LifestyleQualities { get; } = new CachedBindingList<LifestyleQuality>();
 
         /// <summary>
         /// Notes.
@@ -1370,10 +1370,31 @@ namespace Chummer.Backend.Equipment
             ++Increments;
         }
 
-        private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void LifestyleQualitiesOnListChanged(object sender, ListChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.PropertyDescriptorAdded:
+                case ListChangedType.PropertyDescriptorChanged:
+                case ListChangedType.PropertyDescriptorDeleted:
+                case ListChangedType.ItemMoved:
+                    return;
+            }
             OnPropertyChanged(nameof(LifestyleQualities));
+        }
+
+        private void LifestyleQualitiesOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            LifestyleQuality objQuality = LifestyleQualities[e.OldIndex];
+            if (!FreeGrids.Contains(objQuality))
+                objQuality.Dispose();
+        }
+
+        private void FreeGridsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            LifestyleQuality objQuality = FreeGrids[e.OldIndex];
+            if (!LifestyleQualities.Contains(objQuality))
+                objQuality.Dispose();
         }
 
         #region UI Methods
@@ -1492,6 +1513,16 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            LifestyleQualities.Clear();
+            FreeGrids.Clear();
+            LifestyleQualities.BeforeRemove -= LifestyleQualitiesOnBeforeRemove;
+            LifestyleQualities.ListChanged -= LifestyleQualitiesOnListChanged;
+            FreeGrids.BeforeRemove -= FreeGridsOnBeforeRemove;
         }
     }
 }

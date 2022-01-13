@@ -825,108 +825,160 @@ namespace Chummer.Backend.Attributes
 
                 string strSpace = LanguageManager.GetString("String_Space");
 
-                HashSet<string> lstUniqueName = new HashSet<string>();
-                List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>();
-                decimal decBaseValue = 0;
-
-                List<Improvement> lstUsedImprovements
-                    = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
-                        _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> lstUniqueName))
                 {
-                    foreach (Improvement objImprovement in lstUsedImprovements.Where(
-                                 objImprovement => !objImprovement.Custom))
+                    List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>();
+                    decimal decBaseValue = 0;
+
+                    List<Improvement> lstUsedImprovements
+                        = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
+                            _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdModifier))
                     {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
-                                                                 && objImprovement.ImproveType
-                                                                 == Improvement.ImprovementType.Attribute
-                                                                 && objImprovement.ImprovedName == Abbrev)
+                        foreach (Improvement objImprovement in lstUsedImprovements.Where(
+                                     objImprovement => !objImprovement.Custom))
                         {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
-
-                            // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, decimal, string>(
-                                                  strUniqueName, objImprovement.Augmented * objImprovement.Rating,
-                                                  _objCharacter.GetObjectName(
-                                                      objImprovement, GlobalSettings.Language)));
-                        }
-                        else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
-                        {
-                            decimal decValue = objImprovement.Augmented * objImprovement.Rating;
-                            sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                       .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
-                                       .Append(strSpace).Append('(')
-                                       .Append(decValue.ToString(GlobalSettings.CultureInfo))
-                                       .Append(')');
-                            decBaseValue += decValue;
-                        }
-                    }
-
-                    if (lstUniqueName.Contains("precedence0"))
-                    {
-                        // Retrieve only the highest precedence0 value.
-                        // Run through the list of UniqueNames and pick out the highest value for each one.
-                        decimal decHighest = decimal.MinValue;
-
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdNewModifier))
-                        {
-                            foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
+                            string strUniqueName = objImprovement.UniqueName;
+                            if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
+                                                                     && objImprovement.ImproveType
+                                                                     == Improvement.ImprovementType.Attribute
+                                                                     && objImprovement.ImprovedName == Abbrev)
                             {
-                                if (strGroupName == "precedence0" && decValue > decHighest)
-                                {
-                                    decHighest = decValue;
-                                    sbdNewModifier.Clear();
-                                    sbdNewModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                                  .Append(strSpace).Append('(')
-                                                  .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-                                }
-                            }
+                                // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                if (!lstUniqueName.Contains(strUniqueName))
+                                    lstUniqueName.Add(strUniqueName);
 
-                            if (lstUniqueName.Contains("precedence-1"))
+                                // Add the values to the UniquePair List so we can check them later.
+                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                                      strUniqueName, objImprovement.Augmented * objImprovement.Rating,
+                                                      _objCharacter.GetObjectName(
+                                                          objImprovement, GlobalSettings.Language)));
+                            }
+                            else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
+                            {
+                                decimal decValue = objImprovement.Augmented * objImprovement.Rating;
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                           .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                           .Append(strSpace).Append('(')
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo))
+                                           .Append(')');
+                                decBaseValue += decValue;
+                            }
+                        }
+
+                        if (lstUniqueName.Contains("precedence0"))
+                        {
+                            // Retrieve only the highest precedence0 value.
+                            // Run through the list of UniqueNames and pick out the highest value for each one.
+                            decimal decHighest = decimal.MinValue;
+
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdNewModifier))
                             {
                                 foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                                 {
-                                    if (strGroupName == "precedence-1")
+                                    if (strGroupName == "precedence0" && decValue > decHighest)
                                     {
-                                        decHighest += decValue;
+                                        decHighest = decValue;
+                                        sbdNewModifier.Clear();
                                         sbdNewModifier
                                             .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
                                             .Append(strSpace).Append('(')
                                             .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                                     }
                                 }
-                            }
 
-                            if (decHighest >= decBaseValue)
+                                if (lstUniqueName.Contains("precedence-1"))
+                                {
+                                    foreach ((string strGroupName, decimal decValue, string strSourceName) in
+                                             lstUniquePair)
+                                    {
+                                        if (strGroupName == "precedence-1")
+                                        {
+                                            decHighest += decValue;
+                                            sbdNewModifier
+                                                .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                                .Append(strSpace).Append('(')
+                                                .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                        }
+                                    }
+                                }
+
+                                if (decHighest >= decBaseValue)
+                                {
+                                    sbdModifier.Clear();
+                                    sbdModifier.Append(sbdNewModifier);
+                                }
+                            }
+                        }
+                        else if (lstUniqueName.Contains("precedence1"))
+                        {
+                            // Retrieve all of the items that are precedence1 and nothing else.
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdNewModifier))
                             {
+                                foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair.Where(
+                                             s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
+                                {
+                                    sbdModifier.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace,
+                                                             strSourceName, decValue);
+                                }
+
                                 sbdModifier.Clear();
                                 sbdModifier.Append(sbdNewModifier);
                             }
                         }
-                    }
-                    else if (lstUniqueName.Contains("precedence1"))
-                    {
-                        // Retrieve all of the items that are precedence1 and nothing else.
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdNewModifier))
+                        else
                         {
-                            foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair.Where(
-                                         s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
+                            // Run through the list of UniqueNames and pick out the highest value for each one.
+                            foreach (string strName in lstUniqueName)
                             {
-                                sbdModifier.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace,
-                                                         strSourceName, decValue);
+                                decimal decHighest = decimal.MinValue;
+                                foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
+                                {
+                                    if (strGroupName == strName && decValue > decHighest)
+                                    {
+                                        decHighest = decValue;
+                                        sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                                   .Append(strSpace).Append('(')
+                                                   .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    }
+                                }
                             }
-                            sbdModifier.Clear();
-                            sbdModifier.Append(sbdNewModifier);
                         }
-                    }
-                    else
-                    {
+
+                        // Factor in Custom Improvements.
+                        lstUniqueName.Clear();
+                        lstUniquePair.Clear();
+                        foreach (Improvement objImprovement in lstUsedImprovements.Where(
+                                     objImprovement => objImprovement.Custom))
+                        {
+                            string strUniqueName = objImprovement.UniqueName;
+                            if (!string.IsNullOrEmpty(strUniqueName))
+                            {
+                                // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                if (!lstUniqueName.Contains(strUniqueName))
+                                    lstUniqueName.Add(strUniqueName);
+
+                                // Add the values to the UniquePair List so we can check them later.
+                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                                      strUniqueName, objImprovement.Augmented * objImprovement.Rating,
+                                                      _objCharacter.GetObjectName(
+                                                          objImprovement, GlobalSettings.Language)));
+                            }
+                            else
+                            {
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                           .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                           .Append(strSpace).Append('(')
+                                           .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
+                                                       GlobalSettings.CultureInfo)).Append(')');
+                            }
+                        }
+
                         // Run through the list of UniqueNames and pick out the highest value for each one.
                         foreach (string strName in lstUniqueName)
                         {
@@ -942,73 +994,28 @@ namespace Chummer.Backend.Attributes
                                 }
                             }
                         }
-                    }
 
-                    // Factor in Custom Improvements.
-                    lstUniqueName.Clear();
-                    lstUniquePair.Clear();
-                    foreach (Improvement objImprovement in lstUsedImprovements.Where(
-                                 objImprovement => objImprovement.Custom))
-                    {
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
+                        //// If this is AGI or STR, factor in any Cyberlimbs.
+                        if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Settings.DontUseCyberlimbCalculation)
                         {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (!lstUniqueName.Contains(strUniqueName))
-                                lstUniqueName.Add(strUniqueName);
-
-                            // Add the values to the UniquePair List so we can check them later.
-                            lstUniquePair.Add(new Tuple<string, decimal, string>(
-                                                  strUniqueName, objImprovement.Augmented * objImprovement.Rating,
-                                                  _objCharacter.GetObjectName(
-                                                      objImprovement, GlobalSettings.Language)));
-                        }
-                        else
-                        {
-                            sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                       .Append(_objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
-                                       .Append(strSpace).Append('(')
-                                       .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
-                                                   GlobalSettings.CultureInfo)).Append(')');
-                        }
-                    }
-
-                    // Run through the list of UniqueNames and pick out the highest value for each one.
-                    foreach (string strName in lstUniqueName)
-                    {
-                        decimal decHighest = decimal.MinValue;
-                        foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
-                        {
-                            if (strGroupName == strName && decValue > decHighest)
+                            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                             {
-                                decHighest = decValue;
-                                sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                           .Append(strSpace).Append('(')
-                                           .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                if (objCyberware.Category == "Cyberlimb")
+                                {
+                                    sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName).Append(strSpace)
+                                               .Append('(').Append(Abbrev == "AGI"
+                                                                       ? objCyberware.TotalAgility.ToString(
+                                                                           GlobalSettings.CultureInfo)
+                                                                       : objCyberware.TotalStrength.ToString(
+                                                                           GlobalSettings.CultureInfo)).Append(')');
+                                }
                             }
                         }
-                    }
 
-                    //// If this is AGI or STR, factor in any Cyberlimbs.
-                    if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Settings.DontUseCyberlimbCalculation)
-                    {
-                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                        {
-                            if (objCyberware.Category == "Cyberlimb")
-                            {
-                                sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName).Append(strSpace)
-                                           .Append('(').Append(Abbrev == "AGI"
-                                                                   ? objCyberware.TotalAgility.ToString(
-                                                                       GlobalSettings.CultureInfo)
-                                                                   : objCyberware.TotalStrength.ToString(
-                                                                       GlobalSettings.CultureInfo)).Append(')');
-                            }
-                        }
+                        sbdModifier.Insert(0, '(' + Value.ToString(GlobalSettings.CultureInfo) + ')')
+                                   .Insert(0, DisplayAbbrev + strSpace);
+                        return _strCachedToolTip = sbdModifier.ToString();
                     }
-
-                    sbdModifier.Insert(0, '(' + Value.ToString(GlobalSettings.CultureInfo) + ')')
-                               .Insert(0, DisplayAbbrev + strSpace);
-                    return _strCachedToolTip = sbdModifier.ToString();
                 }
             }
         }

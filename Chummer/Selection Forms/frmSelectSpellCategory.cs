@@ -28,7 +28,7 @@ namespace Chummer
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory    = string.Empty;
-        private readonly HashSet<string> _setExcludeCategories = new HashSet<string>();
+        private readonly HashSet<string> _setExcludeCategories = Utils.StringHashSetPool.Get();
 
         private readonly XPathNavigator _objXmlDocument;
 

@@ -411,15 +411,23 @@ namespace Chummer.UI.Skills
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill) { Mode = "Knowledge" })
+            Form frmToUse = ParentForm ?? Program.MainForm;
+
+            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
             {
-                selectForm.ShowDialog(Program.MainForm);
+                using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill) {Mode = "Knowledge"})
+                {
+                    selectForm.ShowDialogSafe(frmToUse);
 
-                if (selectForm.DialogResult != DialogResult.OK)
-                    return;
+                    if (selectForm.DialogResult == DialogResult.OK)
+                        _objSkill.AddSpecialization(selectForm.SelectedItem);
 
-                _objSkill.AddSpecialization(selectForm.SelectedItem);
-            }
+                    return selectForm.DialogResult;
+                }
+            });
+
+            if (eResult != DialogResult.OK)
+                return;
 
             if (ParentForm is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
@@ -427,9 +435,10 @@ namespace Chummer.UI.Skills
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
+            if (!_objSkill.AllowDelete)
+                return;
             if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
                 return;
-            _objSkill.UnbindSkill();
             _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_objSkill);
         }
 

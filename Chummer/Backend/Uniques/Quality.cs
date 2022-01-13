@@ -1198,21 +1198,25 @@ namespace Chummer
                 if (xmlOneOfNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
-                    HashSet<string> lstRequired = new HashSet<string>();
-                    using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string>
+                                                                        lstRequired))
                     {
-                        if (xmlNodeList?.Count > 0)
+                        using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
                         {
-                            foreach (XmlNode node in xmlNodeList)
+                            if (xmlNodeList?.Count > 0)
                             {
-                                lstRequired.Add(node.InnerText);
+                                foreach (XmlNode node in xmlNodeList)
+                                {
+                                    lstRequired.Add(node.InnerText);
+                                }
                             }
                         }
-                    }
 
-                    if (!objCharacter.Qualities.Any(quality => lstRequired.Contains(quality.Name)))
-                    {
-                        reason |= QualityFailureReasons.RequiredSingle;
+                        if (!objCharacter.Qualities.Any(quality => lstRequired.Contains(quality.Name)))
+                        {
+                            reason |= QualityFailureReasons.RequiredSingle;
+                        }
                     }
 
                     reason |= QualityFailureReasons.MetatypeRequired;
@@ -1235,22 +1239,26 @@ namespace Chummer
                 if (xmlAllOfNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
-                    HashSet<string> lstRequired = new HashSet<string>();
-                    foreach (Quality objQuality in objCharacter.Qualities)
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string>
+                                                                        lstRequired))
                     {
-                        lstRequired.Add(objQuality.Name);
-                    }
-
-                    using (XmlNodeList xmlNodeList = xmlAllOfNode.SelectNodes("quality"))
-                    {
-                        if (xmlNodeList != null)
+                        foreach (Quality objQuality in objCharacter.Qualities)
                         {
-                            foreach (XmlNode node in xmlNodeList)
+                            lstRequired.Add(objQuality.Name);
+                        }
+
+                        using (XmlNodeList xmlNodeList = xmlAllOfNode.SelectNodes("quality"))
+                        {
+                            if (xmlNodeList?.Count > 0)
                             {
-                                if (!lstRequired.Contains(node.InnerText))
+                                foreach (XmlNode node in xmlNodeList)
                                 {
-                                    reason |= QualityFailureReasons.RequiredMultiple;
-                                    break;
+                                    if (!lstRequired.Contains(node.InnerText))
+                                    {
+                                        reason |= QualityFailureReasons.RequiredMultiple;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -1265,24 +1273,28 @@ namespace Chummer
                 if (xmlOneOfNode != null)
                 {
                     //Add to set for O(N log M) runtime instead of O(N * M)
-                    HashSet<string> qualityForbidden = new HashSet<string>();
-                    using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string>
+                                                                        setQualityForbidden))
                     {
-                        if (xmlNodeList != null)
+                        using (XmlNodeList xmlNodeList = xmlOneOfNode.SelectNodes("quality"))
                         {
-                            foreach (XmlNode node in xmlNodeList)
+                            if (xmlNodeList != null)
                             {
-                                qualityForbidden.Add(node.InnerText);
+                                foreach (XmlNode node in xmlNodeList)
+                                {
+                                    setQualityForbidden.Add(node.InnerText);
+                                }
                             }
                         }
-                    }
 
-                    foreach (Quality quality in objCharacter.Qualities)
-                    {
-                        if (qualityForbidden.Contains(quality.Name))
+                        foreach (Quality quality in objCharacter.Qualities)
                         {
-                            reason |= QualityFailureReasons.ForbiddenSingle;
-                            conflictingQualities.Add(quality);
+                            if (setQualityForbidden.Contains(quality.Name))
+                            {
+                                reason |= QualityFailureReasons.ForbiddenSingle;
+                                conflictingQualities.Add(quality);
+                            }
                         }
                     }
                 }

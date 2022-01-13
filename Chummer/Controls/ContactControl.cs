@@ -378,7 +378,7 @@ namespace Chummer
         {
             using (frmNotes frmContactNotes = new frmNotes(_objContact.Notes, _objContact.NotesColor))
             {
-                frmContactNotes.ShowDialog(this);
+                frmContactNotes.ShowDialogSafe(this);
                 if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
                 _objContact.Notes = frmContactNotes.Notes;

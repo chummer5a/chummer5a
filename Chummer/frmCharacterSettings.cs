@@ -51,7 +51,7 @@ namespace Chummer
         // Used to revert to old selected setting if user cancels out of selecting a different one
         private int _intOldSelectedSettingIndex = -1;
 
-        private readonly HashSet<string> _setPermanentSourcebooks = new HashSet<string>();
+        private readonly HashSet<string> _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
 
         #region Form Events
 
@@ -113,7 +113,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             using (frmGlobalSettings frmOptions = new frmGlobalSettings("tabCustomDataDirectories"))
-                frmOptions.ShowDialog(this);
+                frmOptions.ShowDialogSafe(this);
         }
 
         private void cmdRename_Click(object sender, EventArgs e)
@@ -124,7 +124,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("Message_CharacterOptions_SettingRename")
             })
             {
-                frmSelectName.ShowDialog(this);
+                frmSelectName.ShowDialogSafe(this);
                 if (frmSelectName.DialogResult != DialogResult.OK)
                     return;
                 _objCharacterSettings.Name = frmSelectName.SelectedValue;
@@ -245,7 +245,7 @@ namespace Chummer
                         Description = LanguageManager.GetString("Message_CharacterOptions_SelectSettingName")
                     })
                     {
-                        frmSelectName.ShowDialog(this);
+                        frmSelectName.ShowDialogSafe(this);
                         if (frmSelectName.DialogResult != DialogResult.OK)
                             return;
                         strSelectedName = frmSelectName.SelectedValue;
@@ -314,13 +314,19 @@ namespace Chummer
                 try
                 {
                     CharacterSettings objNewCharacterSettings = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
-                    if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryAdd(objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
+                    if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryAdd(
+                            objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
+                    {
+                        objNewCharacterSettings.Dispose();
                         return;
+                    }
+
                     if (!_objCharacterSettings.Save(strSelectedFullFileName, true))
                     {
                         // Revert addition of settings if we cannot create a file
                         SettingsManager.LoadedCharacterSettingsAsModifiable.Remove(
                             objNewCharacterSettings.DictionaryKey);
+                        objNewCharacterSettings.Dispose();
                         return;
                     }
                     // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries

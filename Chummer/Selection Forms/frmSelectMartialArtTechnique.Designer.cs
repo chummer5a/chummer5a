@@ -16,6 +16,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                Utils.StringHashSetPool.Return(_setAllowedTechniques);
             }
             base.Dispose(disposing);
         }

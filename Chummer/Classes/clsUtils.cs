@@ -833,5 +833,12 @@ namespace Chummer
         [CLSCompliant(false)]
         public static ObjectPool<List<ListItem>> ListItemListPool { get; }
             = s_ObjObjectPoolProvider.Create(new CollectionPooledObjectPolicy<List<ListItem>, ListItem>());
+
+        /// <summary>
+        /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static ObjectPool<HashSet<string>> StringHashSetPool { get; }
+            = s_ObjObjectPoolProvider.Create(new CollectionPooledObjectPolicy<HashSet<string>, string>());
     }
 }

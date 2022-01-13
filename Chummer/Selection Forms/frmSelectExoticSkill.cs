@@ -132,48 +132,70 @@ namespace Chummer
                                                                    + " or useskill = "
                                                                    + strSelectedCategory.CleanXPath() + ") and ("
                                                                    + _objCharacter.Settings.BookXPath(false) + ")]");
-            List<ListItem> lstSkillSpecializations = new List<ListItem>(xmlWeaponList.Count);
-            if (xmlWeaponList.Count > 0)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
-                foreach (XPathNavigator xmlWeapon in xmlWeaponList)
+                if (xmlWeaponList.Count > 0)
                 {
-                    string strName = xmlWeapon.SelectSingleNode("name")?.Value;
-                    if (!string.IsNullOrEmpty(strName))
+                    foreach (XPathNavigator xmlWeapon in xmlWeaponList)
                     {
-                        lstSkillSpecializations.Add(new ListItem(strName, xmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                        string strName = xmlWeapon.SelectSingleNode("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            lstSkillSpecializations.Add(
+                                new ListItem(
+                                    strName,
+                                    xmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                        }
                     }
                 }
-            }
 
-            foreach (XPathNavigator xmlSpec in _objCharacter.LoadDataXPath("skills.xml")
-                .Select("/chummer/skills/skill[name = " + strSelectedCategory.CleanXPath() + " and (" + _objCharacter.Settings.BookXPath() + ")]/specs/spec"))
-            {
-                string strName = xmlSpec.Value;
-                if (!string.IsNullOrEmpty(strName))
+                foreach (XPathNavigator xmlSpec in _objCharacter.LoadDataXPath("skills.xml")
+                                                                .Select("/chummer/skills/skill[name = "
+                                                                        + strSelectedCategory.CleanXPath() + " and ("
+                                                                        + _objCharacter.Settings.BookXPath()
+                                                                        + ")]/specs/spec"))
                 {
-                    lstSkillSpecializations.Add(new ListItem(strName, xmlSpec.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    string strName = xmlSpec.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                    {
+                        lstSkillSpecializations.Add(new ListItem(
+                                                        strName,
+                                                        xmlSpec.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                        ?? strName));
+                    }
                 }
-            }
 
-            HashSet<string> lstExistingExoticSkills = new HashSet<string>(_objCharacter.SkillsSection.Skills
-                .Where(x => x.Name == strSelectedCategory).Select(x => ((ExoticSkill)x).Specific));
-            lstSkillSpecializations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
-            lstSkillSpecializations.Sort(Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
-            string strOldText = cboSkillSpecialisations.Text;
-            string strOldSelectedValue = cboSkillSpecialisations.SelectedValue?.ToString() ?? string.Empty;
-            cboSkillSpecialisations.BeginUpdate();
-            cboSkillSpecialisations.PopulateWithListItems(lstSkillSpecializations);
-            if (!string.IsNullOrEmpty(strOldSelectedValue))
-                cboSkillSpecialisations.SelectedValue = strOldSelectedValue;
-            if (cboSkillSpecialisations.SelectedIndex == -1)
-            {
-                if (!string.IsNullOrEmpty(strOldText))
-                    cboSkillSpecialisations.Text = strOldText;
-                // Select the first Skill in the list.
-                else if (lstSkillSpecializations.Count > 0)
-                    cboSkillSpecialisations.SelectedIndex = 0;
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> lstExistingExoticSkills))
+                {
+                    lstExistingExoticSkills.AddRange(_objCharacter.SkillsSection.Skills
+                                                         .Where(
+                                                             x => x.Name
+                                                                  == strSelectedCategory)
+                                                         .Select(x => ((ExoticSkill) x)
+                                                                     .Specific));
+                    lstSkillSpecializations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
+                }
+
+                lstSkillSpecializations.Sort(
+                    Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
+                string strOldText = cboSkillSpecialisations.Text;
+                string strOldSelectedValue = cboSkillSpecialisations.SelectedValue?.ToString() ?? string.Empty;
+                cboSkillSpecialisations.BeginUpdate();
+                cboSkillSpecialisations.PopulateWithListItems(lstSkillSpecializations);
+                if (!string.IsNullOrEmpty(strOldSelectedValue))
+                    cboSkillSpecialisations.SelectedValue = strOldSelectedValue;
+                if (cboSkillSpecialisations.SelectedIndex == -1)
+                {
+                    if (!string.IsNullOrEmpty(strOldText))
+                        cboSkillSpecialisations.Text = strOldText;
+                    // Select the first Skill in the list.
+                    else if (lstSkillSpecializations.Count > 0)
+                        cboSkillSpecialisations.SelectedIndex = 0;
+                }
+
+                cboSkillSpecialisations.EndUpdate();
             }
-            cboSkillSpecialisations.EndUpdate();
         }
     }
 }

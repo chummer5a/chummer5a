@@ -1187,6 +1187,8 @@ namespace Chummer
                                             && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
                                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
                 Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
+            foreach (Image imgMugshot in _lstMugshots)
+                imgMugshot.Dispose();
         }
 
         #endregion IHasMugshots

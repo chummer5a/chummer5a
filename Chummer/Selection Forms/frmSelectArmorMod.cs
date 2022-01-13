@@ -37,7 +37,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseDataNode;
         private readonly Character _objCharacter;
         private readonly Armor _objArmor;
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
@@ -52,7 +52,9 @@ namespace Chummer
             _objArmor = objParentNode;
             _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
             if (_xmlBaseDataNode != null)
-                _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDataNode.SelectSingleNodeAndCacheExpression("modcategories"));
+                _setBlackMarketMaps.AddRange(
+                    _objCharacter.GenerateBlackMarketMappings(
+                        _xmlBaseDataNode.SelectSingleNodeAndCacheExpression("modcategories")));
         }
 
         private void frmSelectArmorMod_Load(object sender, EventArgs e)

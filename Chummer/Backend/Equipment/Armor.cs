@@ -108,78 +108,105 @@ namespace Chummer.Backend.Equipment
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                 new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             bool blnDoEncumbranceRefresh = false;
-            switch (e.Action)
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (ArmorMod objNewItem in e.NewItems)
-                    {
-                        objNewItem.Parent = this;
-                        if (objNewItem.Equipped)
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (ArmorMod objNewItem in e.NewItems)
                         {
-                            if (!blnDoEncumbranceRefresh)
-                                blnDoEncumbranceRefresh = true;
-                            if (_objCharacter?.IsLoading == false)
+                            objNewItem.Parent = this;
+                            if (objNewItem.Equipped)
                             {
-                                // Needed in order to properly process named sources where
-                                // the tooltip was built before the object was added to the character
-                                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                if (!blnDoEncumbranceRefresh)
+                                    blnDoEncumbranceRefresh = true;
+                                if (_objCharacter?.IsLoading == false)
                                 {
-                                    if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in _objCharacter.Improvements)
                                     {
-                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in objImprovement.GetRelevantPropertyChangers())
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId
+                                            && objImprovement.Enabled)
                                         {
-                                            if (dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            else
-                                                dicChangedProperties.Add(objItemToUpdate, new HashSet<string> { strPropertyToUpdate });
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                      string strPropertyToUpdate) in objImprovement
+                                                         .GetRelevantPropertyChangers())
+                                            {
+                                                if (dicChangedProperties.TryGetValue(
+                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                else
+                                                {
+                                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                                    setTemp.Add(strPropertyToUpdate);
+                                                    dicChangedProperties.Add(objItemToUpdate, setTemp);
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                    break;
 
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (ArmorMod objOldItem in e.OldItems)
-                    {
-                        objOldItem.Parent = null;
-                        if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
-                    }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Replace:
-                    foreach (ArmorMod objOldItem in e.OldItems)
-                    {
-                        objOldItem.Parent = null;
-                        if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
-                    }
-                    foreach (ArmorMod objNewItem in e.NewItems)
-                    {
-                        objNewItem.Parent = this;
-                        if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
-                    }
-                    break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (ArmorMod objOldItem in e.OldItems)
+                        {
+                            objOldItem.Parent = null;
+                            if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                                blnDoEncumbranceRefresh = true;
+                        }
 
-                case NotifyCollectionChangedAction.Reset:
-                    blnDoEncumbranceRefresh = true;
-                    break;
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (ArmorMod objOldItem in e.OldItems)
+                        {
+                            objOldItem.Parent = null;
+                            if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                                blnDoEncumbranceRefresh = true;
+                        }
+
+                        foreach (ArmorMod objNewItem in e.NewItems)
+                        {
+                            objNewItem.Parent = this;
+                            if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
+                                blnDoEncumbranceRefresh = true;
+                        }
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        blnDoEncumbranceRefresh = true;
+                        break;
+                }
+
+                if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(nameof(Character.GetArmorRating));
+                    else
+                    {
+                        HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                        setTemp.Add(nameof(Character.GetArmorRating));
+                        dicChangedProperties.Add(_objCharacter, setTemp);
+                    }
+                }
+
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                }
+
             }
-
-            if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
+            finally
             {
-                if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
-                    setChangedProperties.Add(nameof(Character.GetArmorRating));
-                else
-                    dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.GetArmorRating) });
+                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                    Utils.StringHashSetPool.Return(setToReturn);
             }
-            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
-            {
-                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
-            }
+
             if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
             {
                 _objCharacter.RefreshEncumbrance();
@@ -298,23 +325,32 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+
+                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            Minimum = decMin,
-                            Maximum = decMax,
-                            Description = string.Format(
-                                GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("String_SelectVariableCost"),
-                                DisplayNameShort(GlobalSettings.Language)),
-                            AllowCancel = false
-                        })
-                        {
-                            if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                            using (frmSelectNumber frmPickNumber
+                                   = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost"),
+                                           DisplayNameShort(GlobalSettings.Language)),
+                                       AllowCancel = false
+                                   })
                             {
-                                _guiID = Guid.Empty;
-                                return;
+                                if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                                return frmPickNumber.DialogResult;
                             }
-                            _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
                         }
                     }
                     else
@@ -348,51 +384,62 @@ namespace Chummer.Backend.Equipment
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
                     {
-                        using (frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter, this)
+                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            AllowedCategories = objXmlCategoryNode.InnerText,
-                            ExcludeGeneralCategory = true
-                        })
-                        {
-                            frmPickArmorMod.ShowDialog(Program.MainForm);
-
-                            if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                            using (frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter, this)
+                                   {
+                                       AllowedCategories = objXmlCategoryNode.InnerText,
+                                       ExcludeGeneralCategory = true
+                                   })
                             {
-                                _guiID = Guid.Empty;
-                                return;
-                            }
+                                frmPickArmorMod.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
 
-                            // Locate the selected piece.
-                            XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + "]");
+                                if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                                    return DialogResult.Cancel;
 
-                            if (objXmlMod != null)
-                            {
-                                ArmorMod objMod = new ArmorMod(_objCharacter);
+                                // Locate the selected piece.
+                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode(
+                                    "/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + "]");
 
-                                objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost);
-                                objMod.IncludedInArmor = true;
-                                objMod.ArmorCapacity = "[0]";
-                                objMod.Cost = "0";
-                                objMod.MaximumRating = objMod.Rating;
-                                _lstArmorMods.Add(objMod);
-                            }
-                            else
-                            {
-                                ArmorMod objMod = new ArmorMod(_objCharacter)
+                                if (objXmlMod != null)
                                 {
-                                    Name = _strName,
-                                    Category = "Features",
-                                    Avail = "0",
-                                    Source = _strSource,
-                                    Page = _strPage,
-                                    IncludedInArmor = true,
-                                    ArmorCapacity = "[0]",
-                                    Cost = "0",
-                                    Rating = 0,
-                                    MaximumRating = 0
-                                };
-                                _lstArmorMods.Add(objMod);
+                                    ArmorMod objMod = new ArmorMod(_objCharacter);
+
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost);
+                                    objMod.IncludedInArmor = true;
+                                    objMod.ArmorCapacity = "[0]";
+                                    objMod.Cost = "0";
+                                    objMod.MaximumRating = objMod.Rating;
+                                    _lstArmorMods.Add(objMod);
+                                }
+                                else
+                                {
+                                    ArmorMod objMod = new ArmorMod(_objCharacter)
+                                    {
+                                        Name = _strName,
+                                        Category = "Features",
+                                        Avail = "0",
+                                        Source = _strSource,
+                                        Page = _strPage,
+                                        IncludedInArmor = true,
+                                        ArmorCapacity = "[0]",
+                                        Cost = "0",
+                                        Rating = 0,
+                                        MaximumRating = 0
+                                    };
+                                    _lstArmorMods.Add(objMod);
+                                }
+
+                                return frmPickArmorMod.DialogResult;
                             }
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
                         }
                     }
                 }

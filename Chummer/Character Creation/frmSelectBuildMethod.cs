@@ -120,24 +120,33 @@ namespace Chummer
             {
                 using (frmCharacterSettings frmOptions =
                     new frmCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
-                    frmOptions.ShowDialog(this);
+                    frmOptions.ShowDialogSafe(this);
 
                 SuspendLayout();
                 // Populate the Gameplay Settings list.
                 object objOldSelected = cboCharacterSetting.SelectedValue;
-                List<ListItem> lstGameplayOptions = SettingsManager.LoadedCharacterSettings.Values.Select(objLoopOptions => new ListItem(objLoopOptions, objLoopOptions.DisplayName)).ToList();
-                lstGameplayOptions.Sort(CompareListItems.CompareNames);
-                cboCharacterSetting.BeginUpdate();
-                cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
-                cboCharacterSetting.SelectedValue = objOldSelected;
-                if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0
-                                                            && SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                                GlobalSettings.DefaultCharacterSetting,
-                                                                out CharacterSettings objSetting))
-                    cboCharacterSetting.SelectedValue = objSetting;
-                if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
-                    cboCharacterSetting.SelectedIndex = 0;
-                cboCharacterSetting.EndUpdate();
+                using (new FetchSafelyFromPool<List<ListItem>>(
+                           Utils.ListItemListPool, out List<ListItem> lstGameplayOptions))
+                {
+                    lstGameplayOptions.AddRange(SettingsManager.LoadedCharacterSettings.Values
+                                                               .Select(objLoopOptions =>
+                                                                           new ListItem(
+                                                                               objLoopOptions,
+                                                                               objLoopOptions.DisplayName)));
+                    lstGameplayOptions.Sort(CompareListItems.CompareNames);
+                    cboCharacterSetting.BeginUpdate();
+                    cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
+                    cboCharacterSetting.SelectedValue = objOldSelected;
+                    if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0
+                                                                && SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                                    GlobalSettings.DefaultCharacterSetting,
+                                                                    out CharacterSettings objSetting))
+                        cboCharacterSetting.SelectedValue = objSetting;
+                    if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                        cboCharacterSetting.SelectedIndex = 0;
+                    cboCharacterSetting.EndUpdate();
+                }
+
                 ResumeLayout();
             }
         }

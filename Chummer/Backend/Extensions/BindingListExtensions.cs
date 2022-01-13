@@ -264,5 +264,23 @@ namespace Chummer
                     lstCollection.ResetItem(i);
             }
         }
+
+        public static void Move<T>(this BindingList<T> lstCollection, int intOldIndex, int intNewIndex)
+        {
+            bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
+            try
+            {
+                lstCollection.RaiseListChangedEvents = false;
+                int intParity = intOldIndex < intNewIndex ? 1 : -1;
+                for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                {
+                    (lstCollection[intOldIndex + intParity], lstCollection[intOldIndex]) = (lstCollection[intOldIndex], lstCollection[intOldIndex + intParity]);
+                }
+            }
+            finally
+            {
+                lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+            }
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyMultiplePropertyChanged
+    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IDisposable
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -229,7 +229,7 @@ namespace Chummer
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
-        private readonly HashSet<string> _lstBooks = new HashSet<string>();
+        private readonly HashSet<string> _lstBooks = Utils.StringHashSetPool.Get();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -337,6 +337,11 @@ namespace Chummer
 
         public CharacterSettings(CharacterSettings objOther = null, bool blnCopySourceId = true, string strOverrideFileName = "")
         {
+            BannedWareGrades.Add("Betaware");
+            BannedWareGrades.Add("Deltaware");
+            BannedWareGrades.Add("Gammaware");
+            RedlinerExcludes.Add("skull");
+            RedlinerExcludes.Add("torso");
             if (objOther != null)
                 CopyValues(objOther, blnCopySourceId, strOverrideFileName);
         }
@@ -936,18 +941,22 @@ namespace Chummer
                     XPathNodeIterator lstAllowedBooksCodes = XmlManager
                         .LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
                         .SelectAndCacheExpression("/chummer/books/book[not(hide)]/code");
-                    HashSet<string> setAllowedBooks = new HashSet<string>(lstAllowedBooksCodes.Count);
-                    foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setAllowedBooks))
                     {
-                        if (_lstBooks.Contains(objAllowedBook.Value))
-                            setAllowedBooks.Add(objAllowedBook.Value);
+                        foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
+                        {
+                            if (_lstBooks.Contains(objAllowedBook.Value))
+                                setAllowedBooks.Add(objAllowedBook.Value);
+                        }
+
+                        // <books>
+                        objWriter.WriteStartElement("books");
+                        foreach (string strBook in setAllowedBooks)
+                            objWriter.WriteElementString("book", strBook);
+                        // </books>
                     }
 
-                    // <books>
-                    objWriter.WriteStartElement("books");
-                    foreach (string strBook in setAllowedBooks)
-                        objWriter.WriteElementString("book", strBook);
-                    // </books>
                     objWriter.WriteEndElement();
 
                     string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
@@ -1765,12 +1774,12 @@ namespace Chummer
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode.
         /// </summary>
-        public HashSet<string> BannedWareGrades { get; } = new HashSet<string> { "Betaware", "Deltaware", "Gammaware" };
+        public HashSet<string> BannedWareGrades { get; } = Utils.StringHashSetPool.Get();
 
         /// <summary>
         /// Limb types excluded by redliner.
         /// </summary>
-        public HashSet<string> RedlinerExcludes { get; } = new HashSet<string> { "skull", "torso" };
+        public HashSet<string> RedlinerExcludes { get; } = Utils.StringHashSetPool.Get();
 
         public bool RedlinerExcludesSkull
         {
@@ -4287,5 +4296,13 @@ namespace Chummer
         public int SpecializationBonus { get; } = 2;
 
         #endregion Constant Values
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Utils.StringHashSetPool.Return(_lstBooks);
+            Utils.StringHashSetPool.Return(BannedWareGrades);
+            Utils.StringHashSetPool.Return(RedlinerExcludes);
+        }
     }
 }

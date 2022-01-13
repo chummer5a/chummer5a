@@ -38,7 +38,7 @@ namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma} {Rating}")]
     [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
-    public class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
+    public class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes, IDisposable
     {
         private CharacterAttrib _objAttribute;
         private string _strDefaultAttribute;
@@ -352,7 +352,7 @@ namespace Chummer.Backend.Skills
 
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
             {
-                if (xmlSpecList != null)
+                if (xmlSpecList?.Count > 0)
                 {
                     foreach (XmlNode xmlSpec in xmlSpecList)
                     {
@@ -1366,6 +1366,11 @@ namespace Chummer.Backend.Skills
 
         public string InternalId => _guidInternalId.ToString("D", GlobalSettings.InvariantCultureInfo);
 
+        public void CopyInternalId(Skill objOtherSkill)
+        {
+            Id = objOtherSkill.Id;
+        }
+
         private Guid _guidSkillId = Guid.Empty;
 
         /// <summary>
@@ -1378,7 +1383,8 @@ namespace Chummer.Backend.Skills
             get => _guidSkillId;
             set
             {
-                if (_guidSkillId == value) return;
+                if (_guidSkillId == value)
+                    return;
                 _guidSkillId = value;
                 _objCachedMyXmlNode = null;
                 _blnRecalculateCachedSuggestedSpecializations = true;
@@ -1391,7 +1397,7 @@ namespace Chummer.Backend.Skills
 
         private bool _blnRecalculateCachedSuggestedSpecializations = true;
 
-        private readonly List<ListItem> _lstCachedSuggestedSpecializations = new List<ListItem>();
+        private List<ListItem> _lstCachedSuggestedSpecializations;
 
         // ReSharper disable once InconsistentNaming
         public IReadOnlyList<ListItem> CGLSpecializations
@@ -1401,7 +1407,10 @@ namespace Chummer.Backend.Skills
                 if (_blnRecalculateCachedSuggestedSpecializations)
                 {
                     _blnRecalculateCachedSuggestedSpecializations = false;
-                    _lstCachedSuggestedSpecializations.Clear();
+                    if (_lstCachedSuggestedSpecializations == null)
+                        _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
+                    else
+                        _lstCachedSuggestedSpecializations.Clear();
                     using (XmlNodeList xmlSpecList = GetNode()?.SelectNodes("specs/spec"))
                     {
                         if (xmlSpecList?.Count > 0)
@@ -2975,6 +2984,23 @@ namespace Chummer.Backend.Skills
             }
 
             return strReturn;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                UnbindSkill();
+                if (_lstCachedSuggestedSpecializations != null)
+                    Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);
+            }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

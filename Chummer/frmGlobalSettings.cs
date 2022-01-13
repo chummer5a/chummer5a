@@ -179,17 +179,20 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
+                string strSelectedLanguage = _strSelectedLanguage;
                 // Build a list of Sourcebooks that will be passed to the Verify method.
                 // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-                HashSet<string> setBooks = new HashSet<string>();
-                foreach (ListItem objItem in lstGlobalSourcebookInfos.Items)
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setBooks))
                 {
-                    string strItemValue = objItem.Value?.ToString();
-                    setBooks.Add(strItemValue);
-                }
+                    foreach (ListItem objItem in lstGlobalSourcebookInfos.Items)
+                    {
+                        string strItemValue = objItem.Value?.ToString();
+                        setBooks.Add(strItemValue);
+                    }
 
-                string strSelectedLanguage = _strSelectedLanguage;
-                XmlManager.Verify(strSelectedLanguage, setBooks);
+                    XmlManager.Verify(strSelectedLanguage, setBooks);
+                }
 
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
                 Program.MainForm.ShowMessageBox(this, string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
@@ -482,7 +485,7 @@ namespace Chummer
                     Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
                 })
                 {
-                    if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK)
+                    if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
                         return;
                     CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, dlgSelectFolder.SelectedPath);
                     if (objNewCustomDataDirectory.XmlException != default)
@@ -580,7 +583,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
             })
             {
-                if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK)
+                if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
                 if (!objNewInfo.HasManifest)
@@ -624,16 +627,18 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
+#if DEBUG
         private async void cmdUploadPastebin_Click(object sender, EventArgs e)
         {
-#if DEBUG
             const string strFilePath = "Insert local file here";
-            System.Collections.Specialized.NameValueCollection data = new System.Collections.Specialized.NameValueCollection();
+            System.Collections.Specialized.NameValueCollection data
+                = new System.Collections.Specialized.NameValueCollection();
             string line;
             using (StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
             {
                 line = await sr.ReadToEndAsync();
             }
+
             data["api_paste_name"] = "Chummer";
             data["api_paste_expire_date"] = "N";
             data["api_paste_format"] = "xml";
@@ -662,8 +667,12 @@ namespace Chummer
                     }
                 }
             }
-#endif
         }
+#else
+        private void cmdUploadPastebin_Click(object sender, EventArgs e)
+        {
+        }
+#endif
 
         private void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
@@ -1428,55 +1437,60 @@ namespace Chummer
 
         private void PopulateSheetLanguageList()
         {
-            HashSet<string> setLanguagesWithSheets = new HashSet<string>();
-
-            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            foreach (XPathNavigator xmlSheetLanguage in XmlManager.LoadXPath("sheets.xml").SelectAndCacheExpression("/chummer/sheets/@lang"))
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> setLanguagesWithSheets))
             {
-                setLanguagesWithSheets.Add(xmlSheetLanguage.Value);
-            }
-
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSheetLanguages))
-            {
-                foreach (string filePath in languageFilePaths)
+                // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+                foreach (XPathNavigator xmlSheetLanguage in XmlManager.LoadXPath("sheets.xml")
+                                                                      .SelectAndCacheExpression(
+                                                                          "/chummer/sheets/@lang"))
                 {
-                    string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
-                    if (!setLanguagesWithSheets.Contains(strLanguageName))
-                        continue;
-
-                    XPathDocument xmlDocument;
-                    try
-                    {
-                        using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader
-                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            xmlDocument = new XPathDocument(objXmlReader);
-                    }
-                    catch (IOException)
-                    {
-                        continue;
-                    }
-                    catch (XmlException)
-                    {
-                        continue;
-                    }
-
-                    XPathNavigator node = xmlDocument.CreateNavigator()
-                                                     .SelectSingleNodeAndCacheExpression("/chummer/name");
-                    if (node == null)
-                        continue;
-
-                    lstSheetLanguages.Add(new ListItem(strLanguageName, node.Value));
+                    setLanguagesWithSheets.Add(xmlSheetLanguage.Value);
                 }
 
-                lstSheetLanguages.Sort(CompareListItems.CompareNames);
+                string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+                string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
 
-                cboSheetLanguage.BeginUpdate();
-                cboSheetLanguage.PopulateWithListItems(lstSheetLanguages);
-                cboSheetLanguage.EndUpdate();
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstSheetLanguages))
+                {
+                    foreach (string filePath in languageFilePaths)
+                    {
+                        string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
+                        if (!setLanguagesWithSheets.Contains(strLanguageName))
+                            continue;
+
+                        XPathDocument xmlDocument;
+                        try
+                        {
+                            using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader
+                                   = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                                xmlDocument = new XPathDocument(objXmlReader);
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+
+                        XPathNavigator node = xmlDocument.CreateNavigator()
+                                                         .SelectSingleNodeAndCacheExpression("/chummer/name");
+                        if (node == null)
+                            continue;
+
+                        lstSheetLanguages.Add(new ListItem(strLanguageName, node.Value));
+                    }
+
+                    lstSheetLanguages.Sort(CompareListItems.CompareNames);
+
+                    cboSheetLanguage.BeginUpdate();
+                    cboSheetLanguage.PopulateWithListItems(lstSheetLanguages);
+                    cboSheetLanguage.EndUpdate();
+                }
             }
         }
 

@@ -168,16 +168,6 @@ namespace Chummer
             lstCollection.Insert(intTargetIndex, objNewItem);
         }
 
-        public static void AddRange<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd)
-        {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            if (lstToAdd == null)
-                throw new ArgumentNullException(nameof(lstToAdd));
-            foreach (T objItem in lstToAdd)
-                lstCollection.Add(objItem);
-        }
-
         public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Action<T, T> funcOverrideIfEquals = null) where T : IComparable
         {
             if (lstCollection == null)

@@ -227,7 +227,7 @@ namespace Chummer.UI.Powers
             {
                 using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
                 {
-                    frmPickPower.ShowDialog(this);
+                    frmPickPower.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickPower.DialogResult == DialogResult.Cancel)
@@ -399,7 +399,7 @@ namespace Chummer.UI.Powers
                 {
                     using (frmNotes frmPowerNotes = new frmNotes(p.Notes, p.NotesColor))
                     {
-                        frmPowerNotes.ShowDialog(this);
+                        frmPowerNotes.ShowDialogSafe(this);
                         if (frmPowerNotes.DialogResult == DialogResult.OK)
                             p.Notes = frmPowerNotes.Notes;
                     }

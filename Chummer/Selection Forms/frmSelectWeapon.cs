@@ -39,14 +39,14 @@ namespace Chummer
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
-        private readonly HashSet<string> _setLimitToCategories = new HashSet<string>();
+        private readonly HashSet<string> _setLimitToCategories = Utils.StringHashSetPool.Get();
         private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
         private Weapon _objSelectedWeapon;
 
         private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
@@ -63,7 +63,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             // Load the Weapon information.
             _objXmlDocument = _objCharacter.LoadData("weapons.xml");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer"));
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)
@@ -374,93 +374,117 @@ namespace Chummer
             }
             else
             {
-                int intOverLimit = 0;
-                List<ListItem> lstWeapons = new List<ListItem>(objNodeList.Count);
-                XmlNode xmlParentWeaponDataNode = ParentWeapon != null ? _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + ParentWeapon.SourceIDString.CleanXPath() + "]") : null;
-                foreach (XmlNode objXmlWeapon in objNodeList)
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstWeapons))
                 {
-                    if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
-                        continue;
+                    int intOverLimit = 0;
+                    XmlNode xmlParentWeaponDataNode = ParentWeapon != null
+                        ? _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = "
+                                                           + ParentWeapon.SourceIDString.CleanXPath() + "]")
+                        : null;
+                    foreach (XmlNode objXmlWeapon in objNodeList)
+                    {
+                        if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
+                            continue;
 
-                    XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
-                    if (xmlTestNode != null && xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        // Assumes topmost parent is an AND node
-                        continue;
-                    }
-                    xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
-                    if (xmlTestNode != null && !xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        // Assumes topmost parent is an AND node
-                        continue;
-                    }
-                    if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
-                        continue;
-
-                    string strMount = objXmlWeapon["mount"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strMount) && !Mounts.Contains(strMount))
-                    {
-                        continue;
-                    }
-
-                    string strExtraMount = objXmlWeapon["extramount"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strExtraMount) && !Mounts.Contains(strExtraMount))
-                    {
-                        continue;
-                    }
-
-                    if (blnForCategories)
-                        return true;
-                    else
-                    {
-                        if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                        XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
+                        if (xmlTestNode != null
+                            && xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                         {
-                            ++intOverLimit;
+                            // Assumes topmost parent is an AND node
                             continue;
                         }
-                        if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+
+                        xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
+                        if (xmlTestNode != null
+                            && !xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                         {
-                            decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                            if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
-                                decCostMultiplier *= 0.9m;
-                            if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
-                                (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
-                            {
-                                string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                                if (astrParentDoubledCostModificationSlots.Contains(strMount) || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
-                                {
-                                    decCostMultiplier *= 2;
-                                }
-                            }
-                            if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                            // Assumes topmost parent is an AND node
+                            continue;
+                        }
+
+                        if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
+                            continue;
+
+                        string strMount = objXmlWeapon["mount"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strMount) && !Mounts.Contains(strMount))
+                        {
+                            continue;
+                        }
+
+                        string strExtraMount = objXmlWeapon["extramount"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strExtraMount) && !Mounts.Contains(strExtraMount))
+                        {
+                            continue;
+                        }
+
+                        if (blnForCategories)
+                            return true;
+                        else
+                        {
+                            if (chkHideOverAvailLimit.Checked
+                                && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                             {
                                 ++intOverLimit;
                                 continue;
                             }
+
+                            if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                            {
+                                decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                                if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                                    decCostMultiplier *= 0.9m;
+                                if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
+                                    (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
+                                {
+                                    string[] astrParentDoubledCostModificationSlots
+                                        = ParentWeapon.DoubledCostModificationSlots.Split(
+                                            '/', StringSplitOptions.RemoveEmptyEntries);
+                                    if (astrParentDoubledCostModificationSlots.Contains(strMount)
+                                        || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
+                                    {
+                                        decCostMultiplier *= 2;
+                                    }
+                                }
+
+                                if (!SelectionShared.CheckNuyenRestriction(
+                                        objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                                {
+                                    ++intOverLimit;
+                                    continue;
+                                }
+                            }
                         }
+
+                        lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText,
+                                                    objXmlWeapon["translate"]?.InnerText
+                                                    ?? objXmlWeapon["name"]?.InnerText));
                     }
-                    lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
+
+                    if (blnForCategories)
+                        return false;
+                    lstWeapons.Sort(CompareListItems.CompareNames);
+                    if (intOverLimit > 0)
+                    {
+                        // Add after sort so that it's always at the end
+                        lstWeapons.Add(new ListItem(string.Empty,
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "String_RestrictedItemsHidden"),
+                                                                  intOverLimit)));
+                    }
+
+                    string strOldSelected = lstWeapon.SelectedValue?.ToString();
+                    _blnLoading = true;
+                    lstWeapon.BeginUpdate();
+                    lstWeapon.PopulateWithListItems(lstWeapons);
+                    _blnLoading = false;
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        lstWeapon.SelectedValue = strOldSelected;
+                    else
+                        lstWeapon.SelectedIndex = -1;
+                    lstWeapon.EndUpdate();
                 }
-                if (blnForCategories)
-                    return false;
-                lstWeapons.Sort(CompareListItems.CompareNames);
-                if (intOverLimit > 0)
-                {
-                    // Add after sort so that it's always at the end
-                    lstWeapons.Add(new ListItem(string.Empty,
-                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
-                            intOverLimit)));
-                }
-                string strOldSelected = lstWeapon.SelectedValue?.ToString();
-                _blnLoading = true;
-                lstWeapon.BeginUpdate();
-                lstWeapon.PopulateWithListItems(lstWeapons);
-                _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstWeapon.SelectedValue = strOldSelected;
-                else
-                    lstWeapon.SelectedIndex = -1;
-                lstWeapon.EndUpdate();
             }
             ResumeLayout();
             return true;
@@ -611,7 +635,7 @@ namespace Chummer
         }
 
         public Weapon ParentWeapon { get; set; }
-        public HashSet<string> Mounts { get; } = new HashSet<string>();
+        public HashSet<string> Mounts { get; } = Utils.StringHashSetPool.Get();
 
         #endregion Properties
 

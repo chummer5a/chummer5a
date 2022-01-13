@@ -11203,11 +11203,11 @@
       <name>Ram Plate</name>
       <page>161</page>
       <source>R5</source>
-      <avail>0</avail>
+      <avail>6R</avail>
       <category>Weapons</category>
-      <cost>0</cost>
+      <cost>Body * 250</cost>
       <rating>0</rating>
-      <slots>0</slots>
+      <slots>1</slots>
     </mod>
     <mod>
       <id>d7191615-cc21-40b2-94f2-b562f00f2c30</id>

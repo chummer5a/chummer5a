@@ -727,7 +727,7 @@ namespace Chummer.UI.Skills
             ExoticSkill objSkill;
             using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
             {
-                frmPickExoticSkill.ShowDialog(this);
+                frmPickExoticSkill.ShowDialogSafe(this);
 
                 if (frmPickExoticSkill.DialogResult != DialogResult.OK)
                     return;
@@ -750,43 +750,61 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter.Created)
             {
-                using (frmSelectItem form = new frmSelectItem
-                {
-                    Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
-                })
-                {
-                    form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
+                string strSelectedSkill = string.Empty;
 
-                    if (form.ShowDialog(Program.MainForm) != DialogResult.OK)
-                        return;
-                    KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
-                    {
-                        WritableName = form.SelectedItem
-                    };
+                Form frmToUse = ParentForm ?? Program.MainForm;
 
-                    if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
+                DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                {
+                    using (frmSelectItem form = new frmSelectItem
+                           {
+                               Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
+                           })
                     {
-                        DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
-                            string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NewNativeLanguageSkill"),
-                                1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WritableName),
-                            LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
-                        switch (eDialogResult)
+                        form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
+
+                        form.ShowDialogSafe(frmToUse);
+
+                        if (form.DialogResult == DialogResult.OK)
+                            strSelectedSkill = form.SelectedItem;
+                        return form.DialogResult;
+                    }
+                });
+
+                if (eResult != DialogResult.OK)
+                    return;
+
+                KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
+                {
+                    WritableName = strSelectedSkill
+                };
+
+                if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots
+                    && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
+                {
+                    DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
+                        string.Format(GlobalSettings.CultureInfo,
+                                      LanguageManager.GetString("Message_NewNativeLanguageSkill"),
+                                      1 + ImprovementManager.ValueOf(
+                                          _objCharacter, Improvement.ImprovementType.NativeLanguageLimit),
+                                      skill.WritableName),
+                        LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
+                    switch (eDialogResult)
+                    {
+                        case DialogResult.Cancel:
+                            return;
+
+                        case DialogResult.Yes:
                         {
-                            case DialogResult.Cancel:
-                                return;
-
-                            case DialogResult.Yes:
-                                {
-                                    if (!skill.IsLanguage)
-                                        skill.Type = "Language";
-                                    skill.IsNativeLanguage = true;
-                                    break;
-                                }
+                            if (!skill.IsLanguage)
+                                skill.Type = "Language";
+                            skill.IsNativeLanguage = true;
+                            break;
                         }
                     }
-
-                    _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
                 }
+
+                _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
             }
             else
             {

@@ -28,16 +28,20 @@ namespace Chummer
 
         protected override void RemoveItem(int index)
         {
-            BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[index], index));
+            if (RaiseListChangedEvents)
+                BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[index], index));
 
             base.RemoveItem(index);
         }
 
         protected override void ClearItems()
         {
-            for (int i = 0; i < Items.Count; ++i)
+            if (RaiseListChangedEvents)
             {
-                BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[i], i));
+                for (int i = 0; i < Items.Count; ++i)
+                {
+                    BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[i], i));
+                }
             }
 
             base.ClearItems();
@@ -45,11 +49,15 @@ namespace Chummer
 
         protected override void SetItem(int index, T item)
         {
-            T objOldItem = Items[index];
-            if (!objOldItem.Equals(item))
+            if (RaiseListChangedEvents)
             {
-                BeforeRemove?.Invoke(this, new RemovingOldEventArgs(objOldItem, index));
+                T objOldItem = Items[index];
+                if (!ReferenceEquals(objOldItem, item))
+                {
+                    BeforeRemove?.Invoke(this, new RemovingOldEventArgs(objOldItem, index));
+                }
             }
+
             base.SetItem(index, item);
         }
     }

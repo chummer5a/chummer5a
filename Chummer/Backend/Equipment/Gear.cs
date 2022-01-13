@@ -222,7 +222,7 @@ namespace Chummer.Backend.Equipment
                     })
                     {
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickText.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        if (frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -268,23 +268,31 @@ namespace Chummer.Backend.Equipment
                 {
                     if (decMax > 1000000)
                         decMax = 1000000;
-                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                    {
-                        Minimum = decMin,
-                        Maximum = decMax,
-                        Description = string.Format(GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("String_SelectVariableCost"),
-                            DisplayNameShort(GlobalSettings.Language)),
-                        AllowCancel = false
-                    })
-                    {
-                        if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
-                        {
-                            _guiID = Guid.Empty;
-                            return;
-                        }
+                    Form frmToUse = Program.GetFormForDialog(_objCharacter);
 
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                    {
+                        using (frmSelectNumber frmPickNumber
+                               = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost"),
+                                       DisplayNameShort(GlobalSettings.Language)),
+                                   AllowCancel = false
+                               })
+                        {
+                            if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                                _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                            return frmPickNumber.DialogResult;
+                        }
+                    });
+                    if (eResult == DialogResult.Cancel)
+                    {
+                        _guiID = Guid.Empty;
+                        return;
                     }
                 }
             }
@@ -305,7 +313,7 @@ namespace Chummer.Backend.Equipment
                     !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
                     frmPickWeaponCategory.OnlyCategory = _strForcedValue;
 
-                if (frmPickWeaponCategory.ShowDialog(Program.MainForm) != DialogResult.OK)
+                if (frmPickWeaponCategory.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) != DialogResult.OK)
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -547,7 +555,7 @@ namespace Chummer.Backend.Equipment
                                     frmPickItem.SetGeneralItemsMode(lstGears);
 
                                     // Make sure the dialogue window was not canceled.
-                                    if (frmPickItem.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                                    if (frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
                                     {
                                         if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                                         {

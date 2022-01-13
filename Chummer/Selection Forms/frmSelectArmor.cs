@@ -45,7 +45,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private int _intRating;
         private bool _blnBlackMarketDiscount;
 
@@ -59,7 +59,9 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
-            _setBlackMarketMaps = objCharacter.GenerateBlackMarketMappings(objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer"));
+            _setBlackMarketMaps.AddRange(objCharacter.GenerateBlackMarketMappings(
+                                             objCharacter.LoadDataXPath("armor.xml")
+                                                         .SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
         private void frmSelectArmor_Load(object sender, EventArgs e)
@@ -473,61 +475,70 @@ namespace Chummer
                     break;
 
                 default:
-                    List<ListItem> lstArmors = new List<ListItem>(objXmlArmorList.Count);
-                    int intOverLimit = 0;
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    foreach (XmlNode objXmlArmor in objXmlArmorList)
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstArmors))
                     {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                        if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
-                            decCostMultiplier *= 0.9m;
-                        if ((!chkHideOverAvailLimit.Checked
-                            || (chkHideOverAvailLimit.Checked
-                                && SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter)))
-                             && (chkFreeItem.Checked
-                                || !chkShowOnlyAffordItems.Checked
-                                || (chkShowOnlyAffordItems.Checked
-                                    && SelectionShared.CheckNuyenRestriction(objXmlArmor, _objCharacter.Nuyen, decCostMultiplier))))
+                        int intOverLimit = 0;
+                        string strSpace = LanguageManager.GetString("String_Space");
+                        foreach (XmlNode objXmlArmor in objXmlArmorList)
                         {
-                            string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
-                            if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                            decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                            if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
+                                decCostMultiplier *= 0.9m;
+                            if ((!chkHideOverAvailLimit.Checked
+                                 || (chkHideOverAvailLimit.Checked
+                                     && SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter)))
+                                && (chkFreeItem.Checked
+                                    || !chkShowOnlyAffordItems.Checked
+                                    || (chkShowOnlyAffordItems.Checked
+                                        && SelectionShared.CheckNuyenRestriction(
+                                            objXmlArmor, _objCharacter.Nuyen, decCostMultiplier))))
                             {
-                                string strCategory = objXmlArmor["category"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strCategory))
+                                string strDisplayName = objXmlArmor["translate"]?.InnerText
+                                                        ?? objXmlArmor["name"]?.InnerText;
+                                if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                                 {
-                                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
-                                    if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                    string strCategory = objXmlArmor["category"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strCategory))
                                     {
-                                        strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
+                                        ListItem objFoundItem
+                                            = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
+                                        if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                        {
+                                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
+                                        }
                                     }
                                 }
+
+                                lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
                             }
-
-                            lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
+                            else
+                                ++intOverLimit;
                         }
-                        else
-                            ++intOverLimit;
-                    }
 
-                    lstArmors.Sort(CompareListItems.CompareNames);
-                    if (intOverLimit > 0)
-                    {
-                        // Add after sort so that it's always at the end
-                        lstArmors.Add(new ListItem(string.Empty,
-                            string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
-                                intOverLimit)));
+                        lstArmors.Sort(CompareListItems.CompareNames);
+                        if (intOverLimit > 0)
+                        {
+                            // Add after sort so that it's always at the end
+                            lstArmors.Add(new ListItem(string.Empty,
+                                                       string.Format(GlobalSettings.CultureInfo,
+                                                                     LanguageManager.GetString(
+                                                                         "String_RestrictedItemsHidden"),
+                                                                     intOverLimit)));
+                        }
+
+                        _blnLoading = true;
+                        string strOldSelected = lstArmor.SelectedValue?.ToString();
+                        lstArmor.BeginUpdate();
+                        lstArmor.PopulateWithListItems(lstArmors);
+                        _blnLoading = false;
+                        if (!string.IsNullOrEmpty(strOldSelected))
+                            lstArmor.SelectedValue = strOldSelected;
+                        else
+                            lstArmor.SelectedIndex = -1;
+                        lstArmor.EndUpdate();
+                        break;
                     }
-                    _blnLoading = true;
-                    string strOldSelected = lstArmor.SelectedValue?.ToString();
-                    lstArmor.BeginUpdate();
-                    lstArmor.PopulateWithListItems(lstArmors);
-                    _blnLoading = false;
-                    if (!string.IsNullOrEmpty(strOldSelected))
-                        lstArmor.SelectedValue = strOldSelected;
-                    else
-                        lstArmor.SelectedIndex = -1;
-                    lstArmor.EndUpdate();
-                    break;
             }
         }
 

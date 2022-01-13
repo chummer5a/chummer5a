@@ -18,6 +18,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
             }
             base.Dispose(disposing);
         }

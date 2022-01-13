@@ -219,83 +219,96 @@ namespace Chummer
                             {
                                 string[] strArgs = Environment.GetCommandLineArgs();
                                 ProcessCommandLineArguments(strArgs, out blnShowTest, out HashSet<string> setFilesToLoad, opFrmChummerMain);
-
-                                if (Directory.Exists(Utils.GetAutosavesFolderPath))
+                                try
                                 {
-                                    // Always process newest autosave if all MRUs are empty
-                                    bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                               GlobalSettings.FavoriteCharacters.Count == 0;
-                                    FileInfo objMostRecentAutosave = null;
-                                    List<string> lstOldAutosaves = new List<string>();
-                                    DateTime objOldAutosaveTimeThreshold =
-                                        DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
-                                    foreach (string strAutosave in Directory.EnumerateFiles(
-                                        Utils.GetAutosavesFolderPath,
-                                        "*.chum5", SearchOption.AllDirectories))
+                                    if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                     {
-                                        FileInfo objAutosave;
-                                        try
+                                        // Always process newest autosave if all MRUs are empty
+                                        bool blnAnyAutosaveInMru
+                                            = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
+                                              GlobalSettings.FavoriteCharacters.Count == 0;
+                                        FileInfo objMostRecentAutosave = null;
+                                        List<string> lstOldAutosaves = new List<string>();
+                                        DateTime objOldAutosaveTimeThreshold =
+                                            DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
+                                        foreach (string strAutosave in Directory.EnumerateFiles(
+                                                     Utils.GetAutosavesFolderPath,
+                                                     "*.chum5", SearchOption.AllDirectories))
                                         {
-                                            objAutosave = new FileInfo(strAutosave);
-                                        }
-                                        catch (System.Security.SecurityException)
-                                        {
-                                            continue;
-                                        }
-                                        catch (UnauthorizedAccessException)
-                                        {
-                                            continue;
+                                            FileInfo objAutosave;
+                                            try
+                                            {
+                                                objAutosave = new FileInfo(strAutosave);
+                                            }
+                                            catch (System.Security.SecurityException)
+                                            {
+                                                continue;
+                                            }
+                                            catch (UnauthorizedAccessException)
+                                            {
+                                                continue;
+                                            }
+
+                                            if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
+                                                objMostRecentAutosave.LastWriteTimeUtc)
+                                                objMostRecentAutosave = objAutosave;
+                                            if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
+                                                    Path.GetFileName(x) == objAutosave.Name) ||
+                                                GlobalSettings.FavoriteCharacters.Any(x =>
+                                                    Path.GetFileName(x) == objAutosave.Name))
+                                                blnAnyAutosaveInMru = true;
+                                            else if (objAutosave != objMostRecentAutosave &&
+                                                     objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold &&
+                                                     !setFilesToLoad.Contains(strAutosave))
+                                                lstOldAutosaves.Add(strAutosave);
                                         }
 
-                                        if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
-                                            objMostRecentAutosave.LastWriteTimeUtc)
-                                            objMostRecentAutosave = objAutosave;
-                                        if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
-                                                Path.GetFileName(x) == objAutosave.Name) ||
-                                            GlobalSettings.FavoriteCharacters.Any(x =>
-                                                Path.GetFileName(x) == objAutosave.Name))
-                                            blnAnyAutosaveInMru = true;
-                                        else if (objAutosave != objMostRecentAutosave &&
-                                                 objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold &&
-                                                 !setFilesToLoad.Contains(strAutosave))
-                                            lstOldAutosaves.Add(strAutosave);
+                                        if (objMostRecentAutosave != null)
+                                        {
+                                            // Might have had a crash for an unsaved character, so prompt if we want to load them
+                                            if (blnAnyAutosaveInMru &&
+                                                !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
+                                                GlobalSettings.MostRecentlyUsedCharacters.All(x =>
+                                                    Path.GetFileName(x) != objMostRecentAutosave.Name) &&
+                                                GlobalSettings.FavoriteCharacters.All(x =>
+                                                    Path.GetFileName(x) != objMostRecentAutosave.Name)
+                                                && ShowMessageBox(
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "Message_PossibleCrashAutosaveFound"),
+                                                                  objMostRecentAutosave.Name,
+                                                                  objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
+                                                    LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                == DialogResult.Yes)
+                                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                            else if (objMostRecentAutosave.LastWriteTimeUtc
+                                                     < objOldAutosaveTimeThreshold)
+                                                lstOldAutosaves.Add(objMostRecentAutosave.FullName);
+                                        }
+
+                                        // Delete all old autosaves
+                                        foreach (string strOldAutosave in lstOldAutosaves)
+                                        {
+                                            Utils.SafeDeleteFile(strOldAutosave);
+                                        }
                                     }
 
-                                    if (objMostRecentAutosave != null)
-                                    {
-                                        // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                        if (blnAnyAutosaveInMru &&
-                                            !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
-                                            GlobalSettings.MostRecentlyUsedCharacters.All(x =>
-                                                Path.GetFileName(x) != objMostRecentAutosave.Name) &&
-                                            GlobalSettings.FavoriteCharacters.All(x =>
-                                                Path.GetFileName(x) != objMostRecentAutosave.Name) && ShowMessageBox(
-                                                string.Format(GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString("Message_PossibleCrashAutosaveFound"),
-                                                    objMostRecentAutosave.Name,
-                                                    objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
-                                                LanguageManager.GetString("MessageTitle_AutosaveFound"),
-                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                                            setFilesToLoad.Add(objMostRecentAutosave.FullName);
-                                        else if (objMostRecentAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold)
-                                            lstOldAutosaves.Add(objMostRecentAutosave.FullName);
-                                    }
-
-                                    // Delete all old autosaves
-                                    foreach (string strOldAutosave in lstOldAutosaves)
-                                    {
-                                        Utils.SafeDeleteFile(strOldAutosave);
-                                    }
+                                    if (setFilesToLoad.Count > 0)
+                                        objCharacterLoadingTask = Task.Run(() =>
+                                                                               Parallel.ForEach(setFilesToLoad, x =>
+                                                                               {
+                                                                                   Character objCharacter
+                                                                                       = LoadCharacter(x);
+                                                                                   // ReSharper disable once AccessToDisposedClosure
+                                                                                   lstCharactersToLoad
+                                                                                       .Add(objCharacter);
+                                                                               }));
                                 }
-
-                                if (setFilesToLoad.Count > 0)
-                                    objCharacterLoadingTask = Task.Run(() =>
-                                        Parallel.ForEach(setFilesToLoad, x =>
-                                        {
-                                            Character objCharacter = LoadCharacter(x);
-                                            // ReSharper disable once AccessToDisposedClosure
-                                            lstCharactersToLoad.Add(objCharacter);
-                                        }));
+                                finally
+                                {
+                                    Utils.StringHashSetPool.Return(setFilesToLoad);
+                                }
                             }
 
                             _frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
@@ -647,14 +660,14 @@ namespace Chummer
         {
             using (new CursorWait(this))
             using (frmGlobalSettings frmOptions = new frmGlobalSettings())
-                frmOptions.ShowDialog(this);
+                frmOptions.ShowDialogSafe(this);
         }
 
         private void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             using (frmCharacterSettings frmCharacterOptions = new frmCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
-                frmCharacterOptions.ShowDialog(this);
+                frmCharacterOptions.ShowDialogSafe(this);
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -686,7 +699,7 @@ namespace Chummer
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (frmAbout frmShowAbout = new frmAbout())
-                frmShowAbout.ShowDialog(this);
+                frmShowAbout.ShowDialogSafe(this);
         }
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
@@ -718,7 +731,7 @@ namespace Chummer
         private void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
         {
             using (frmHistory frmShowHistory = new frmHistory())
-                frmShowHistory.ShowDialog(this);
+                frmShowHistory.ShowDialogSafe(this);
         }
 
         private void mnuNewCritter_Click(object sender, EventArgs e)
@@ -729,7 +742,7 @@ namespace Chummer
                 {
                     using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
                     {
-                        frmPickSetting.ShowDialog(this);
+                        frmPickSetting.ShowDialogSafe(this);
                         if (frmPickSetting.DialogResult == DialogResult.Cancel)
                             return;
                     }
@@ -742,7 +755,7 @@ namespace Chummer
                     // Show the Metatype selection window.
                     using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
                     {
-                        frmSelectMetatype.ShowDialog(this);
+                        frmSelectMetatype.ShowDialogSafe(this);
 
                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                             return;
@@ -1203,7 +1216,7 @@ namespace Chummer
                     // Show the BP selection window.
                     using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
                     {
-                        frmBP.ShowDialog(this);
+                        frmBP.ShowDialogSafe(this);
                         if (frmBP.DialogResult != DialogResult.OK)
                             return;
                     }
@@ -1213,7 +1226,7 @@ namespace Chummer
                     {
                         using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialog(this);
+                            frmSelectMetatype.ShowDialogSafe(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
@@ -1223,7 +1236,7 @@ namespace Chummer
                     {
                         using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialog(this);
+                            frmSelectMetatype.ShowDialogSafe(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
@@ -1254,6 +1267,8 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
+            if (Utils.IsUnitTest)
+                return;
             using (new CursorWait(this))
             {
                 List<string> lstFilesToOpen;
@@ -1746,68 +1761,77 @@ namespace Chummer
                         string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
 
                         ProcessCommandLineArguments(strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad);
-
-                        if (Directory.Exists(Utils.GetAutosavesFolderPath))
+                        try
                         {
-                            // Always process newest autosave if all MRUs are empty
-                            bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                       GlobalSettings.FavoriteCharacters.Count == 0;
-                            FileInfo objMostRecentAutosave = null;
-                            foreach (string strAutosave in Directory.EnumerateFiles(
-                                Utils.GetAutosavesFolderPath,
-                                "*.chum5", SearchOption.AllDirectories))
+                            if (Directory.Exists(Utils.GetAutosavesFolderPath))
                             {
-                                FileInfo objAutosave;
-                                try
+                                // Always process newest autosave if all MRUs are empty
+                                bool blnAnyAutosaveInMru = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
+                                                           GlobalSettings.FavoriteCharacters.Count == 0;
+                                FileInfo objMostRecentAutosave = null;
+                                foreach (string strAutosave in Directory.EnumerateFiles(
+                                             Utils.GetAutosavesFolderPath,
+                                             "*.chum5", SearchOption.AllDirectories))
                                 {
-                                    objAutosave = new FileInfo(strAutosave);
-                                }
-                                catch (System.Security.SecurityException)
-                                {
-                                    continue;
-                                }
-                                catch (UnauthorizedAccessException)
-                                {
-                                    continue;
+                                    FileInfo objAutosave;
+                                    try
+                                    {
+                                        objAutosave = new FileInfo(strAutosave);
+                                    }
+                                    catch (System.Security.SecurityException)
+                                    {
+                                        continue;
+                                    }
+                                    catch (UnauthorizedAccessException)
+                                    {
+                                        continue;
+                                    }
+
+                                    if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
+                                        objMostRecentAutosave.LastWriteTimeUtc)
+                                        objMostRecentAutosave = objAutosave;
+                                    if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
+                                            Path.GetFileName(x) == objAutosave.Name) ||
+                                        GlobalSettings.FavoriteCharacters.Any(x =>
+                                                                                  Path.GetFileName(x)
+                                                                                  == objAutosave.Name))
+                                        blnAnyAutosaveInMru = true;
                                 }
 
-                                if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
-                                    objMostRecentAutosave.LastWriteTimeUtc)
-                                    objMostRecentAutosave = objAutosave;
-                                if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
-                                        Path.GetFileName(x) == objAutosave.Name) ||
-                                    GlobalSettings.FavoriteCharacters.Any(x =>
-                                        Path.GetFileName(x) == objAutosave.Name))
-                                    blnAnyAutosaveInMru = true;
+                                // Might have had a crash for an unsaved character, so prompt if we want to load them
+                                if (objMostRecentAutosave != null
+                                    && blnAnyAutosaveInMru
+                                    && !setFilesToLoad.Contains(objMostRecentAutosave.FullName)
+                                    && GlobalSettings.MostRecentlyUsedCharacters.All(
+                                        x => Path.GetFileName(x) != objMostRecentAutosave.Name)
+                                    && GlobalSettings.FavoriteCharacters.All(
+                                        x => Path.GetFileName(x) != objMostRecentAutosave.Name)
+                                    && ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                    LanguageManager.GetString(
+                                                                        "Message_PossibleCrashAutosaveFound"),
+                                                                    objMostRecentAutosave.Name,
+                                                                    objMostRecentAutosave.LastWriteTimeUtc
+                                                                        .ToLocalTime()),
+                                                      LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                    == DialogResult.Yes)
+                                {
+                                    setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                }
                             }
 
-                            // Might have had a crash for an unsaved character, so prompt if we want to load them
-                            if (objMostRecentAutosave != null
-                                && blnAnyAutosaveInMru
-                                && !setFilesToLoad.Contains(objMostRecentAutosave.FullName)
-                                && GlobalSettings.MostRecentlyUsedCharacters.All(
-                                    x => Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                && GlobalSettings.FavoriteCharacters.All(
-                                    x => Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                && ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                LanguageManager.GetString(
-                                                                    "Message_PossibleCrashAutosaveFound"),
-                                                                objMostRecentAutosave.Name,
-                                                                objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
-                                                  LanguageManager.GetString("MessageTitle_AutosaveFound"),
-                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            {
-                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
-                            }
+                            if (setFilesToLoad.Count > 0)
+                                objCharacterLoadingTask = Task.Run(() =>
+                                                                       Parallel.ForEach(setFilesToLoad, x =>
+                                                                       {
+                                                                           Character objCharacter = LoadCharacter(x);
+                                                                           lstCharactersToLoad.Add(objCharacter);
+                                                                       }));
                         }
-
-                        if (setFilesToLoad.Count > 0)
-                            objCharacterLoadingTask = Task.Run(() =>
-                                Parallel.ForEach(setFilesToLoad, x =>
-                                {
-                                    Character objCharacter = LoadCharacter(x);
-                                    lstCharactersToLoad.Add(objCharacter);
-                                }));
+                        finally
+                        {
+                            Utils.StringHashSetPool.Return(setFilesToLoad);
+                        }
 
                         _frmProgressBar.PerformStep();
 
@@ -1845,7 +1869,7 @@ namespace Chummer
         private static void ProcessCommandLineArguments(IReadOnlyCollection<string> strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
-            setFilesToLoad = new HashSet<string>(strArgs.Count);
+            setFilesToLoad = Utils.StringHashSetPool.Get();
             if (strArgs.Count == 0)
                 return;
             try

@@ -46,7 +46,7 @@ namespace Chummer
         private bool _blnOldGradeEnabled = true;
         private bool _blnIgnoreSecondHand;
         private string _strForceGrade = string.Empty;
-        private readonly HashSet<string> _setBlackMarketMaps;
+        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly XPathNavigator _xmlBaseDrugDataNode;
 
         private enum Mode
@@ -70,7 +70,7 @@ namespace Chummer
 
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug).ToList();
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode);
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));
         }
 
         private void frmSelectDrug_Load(object sender, EventArgs e)
@@ -863,47 +863,51 @@ namespace Chummer
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
-                List<ListItem> lstGrade = new List<ListItem>(5);
-                foreach (Grade objWareGrade in _lstGrades)
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGrade))
                 {
-                    if (objWareGrade.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
-                        continue;
-                    //if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableDrugGrade).Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
-                    //    continue;
-                    if (blnIgnoreSecondHand && objWareGrade.SecondHand)
-                        continue;
-                    /*
-                    if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
-                        continue;
-                    if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    foreach (Grade objWareGrade in _lstGrades)
                     {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), '*' + objWareGrade.CurrentDisplayName));
+                        if (objWareGrade.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == _strNoneGradeId
+                            && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
+                            continue;
+                        //if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableDrugGrade).Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
+                        //    continue;
+                        if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                            continue;
+                        /*
+                        if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
+                            continue;
+                        if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
+                        {
+                            lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), '*' + objWareGrade.CurrentDisplayName));
+                        }
+                        else
+                        {
+                            lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), objWareGrade.CurrentDisplayName));
+                        }*/
                     }
-                    else
-                    {
-                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), objWareGrade.CurrentDisplayName));
-                    }*/
+
+                    string strOldSelected = cboGrade.SelectedValue?.ToString();
+                    bool blnOldSkipListRefresh = _blnSkipListRefresh;
+                    if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId
+                                                         || lstGrade.Any(x => x.Value.ToString() == strOldSelected))
+                        _blnSkipListRefresh = true;
+                    bool blnOldLoading = _blnLoading;
+                    _blnLoading = true;
+                    cboGrade.BeginUpdate();
+                    cboGrade.PopulateWithListItems(lstGrade);
+                    _blnLoading = blnOldLoading;
+                    if (!string.IsNullOrEmpty(strForceGrade))
+                        cboGrade.SelectedValue = strForceGrade;
+                    else if (cboGrade.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
+                        cboGrade.SelectedValue = strOldSelected;
+                    if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
+                        cboGrade.SelectedIndex = 0;
+
+                    cboGrade.EndUpdate();
+
+                    _blnSkipListRefresh = blnOldSkipListRefresh;
                 }
-
-                string strOldSelected = cboGrade.SelectedValue?.ToString();
-                bool blnOldSkipListRefresh = _blnSkipListRefresh;
-                if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId || lstGrade.Any(x => x.Value.ToString() == strOldSelected))
-                    _blnSkipListRefresh = true;
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                cboGrade.BeginUpdate();
-                cboGrade.PopulateWithListItems(lstGrade);
-                _blnLoading = blnOldLoading;
-                if (!string.IsNullOrEmpty(strForceGrade))
-                    cboGrade.SelectedValue = strForceGrade;
-                else if (cboGrade.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
-                    cboGrade.SelectedValue = strOldSelected;
-                if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
-                    cboGrade.SelectedIndex = 0;
-
-                cboGrade.EndUpdate();
-
-                _blnSkipListRefresh = blnOldSkipListRefresh;
             }
             _blnPopulatingGrades = false;
         }

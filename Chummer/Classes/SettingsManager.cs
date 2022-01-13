@@ -68,7 +68,9 @@ namespace Chummer
                 s_DicLoadedCharacterSettings.Clear();
                 if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 {
-                    s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting, new CharacterSettings());
+                    CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                    if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting, objNewCharacterSettings))
+                        objNewCharacterSettings.Dispose();
                     return;
                 }
 
@@ -77,10 +79,10 @@ namespace Chummer
                 Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                 {
                     CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                    if (objNewCharacterSettings.Load(xmlBuiltInSetting) &&
-                        (!objNewCharacterSettings.BuildMethodIsLifeModule || GlobalSettings.LifeModuleEnabled))
-                        s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                            objNewCharacterSettings);
+                    if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
+                        || (objNewCharacterSettings.BuildMethodIsLifeModule && !GlobalSettings.LifeModuleEnabled)
+                        || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
+                        objNewCharacterSettings.Dispose();
                 });
                 string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
                 if (Directory.Exists(strSettingsPath))
@@ -89,10 +91,10 @@ namespace Chummer
                     {
                         string strSettingName = Path.GetFileName(strSettingsFilePath);
                         CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        if (objNewCharacterSettings.Load(strSettingName, false) &&
-                            (!objNewCharacterSettings.BuildMethodIsLifeModule || GlobalSettings.LifeModuleEnabled))
-                            s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                objNewCharacterSettings);
+                        if (!objNewCharacterSettings.Load(strSettingName, false)
+                            || (objNewCharacterSettings.BuildMethodIsLifeModule && !GlobalSettings.LifeModuleEnabled)
+                            || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
+                            objNewCharacterSettings.Dispose();
                     });
                 }
             }

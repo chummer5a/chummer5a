@@ -557,7 +557,7 @@ namespace Chummer
                 {
                     Parallel.ForEach(dicWatch, (kvpLoop, objState) =>
                     {
-                        if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
+                        if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                         {
                             objState.Stop();
                             return;

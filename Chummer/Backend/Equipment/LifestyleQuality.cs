@@ -30,7 +30,7 @@ using NLog;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -56,7 +56,7 @@ namespace Chummer.Backend.Equipment
         private int _intSecurityMaximum;
         private int _intComfortMaximum;
         private int _intComfort;
-        private readonly HashSet<string> _setAllowedFreeLifestyles = new HashSet<string>();
+        private readonly HashSet<string> _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
         private readonly Character _objCharacter;
         private bool _blnFree;
 
@@ -395,7 +395,7 @@ namespace Chummer.Backend.Equipment
                            })
                     {
                         frmSelect.SetGeneralItemsMode(lstQualities);
-                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        if (frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -866,6 +866,12 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Utils.StringHashSetPool.Return(_setAllowedFreeLifestyles);
         }
     }
 }

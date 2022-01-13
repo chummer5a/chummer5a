@@ -363,7 +363,8 @@ namespace Chummer
                         CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
                         CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
                         CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-                        CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
+                        CharacterObject.Lifestyles.ListChanged += LifestylesOnListChanged;
+                        CharacterObject.Lifestyles.BeforeRemove += LifestylesOnBeforeRemove;
                         CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
                         CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
                         CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
@@ -383,61 +384,69 @@ namespace Chummer
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
                             CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                        List<ListItem> lstTraditions = new List<ListItem>(20);
-                        if (xmlTraditionsBaseChummerNode != null)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstTraditions))
                         {
-                            foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstTraditions.Add(new ListItem(
-                                        xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                        xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                             "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                {
+                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstTraditions.Add(new ListItem(
+                                                              xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                                          ?.Value ?? strName,
+                                                              xmlTradition
+                                                                  .SelectSingleNodeAndCacheExpression("translate")
+                                                                  ?.Value ?? strName));
+                                }
                             }
-                        }
 
-                        if (lstTraditions.Count > 1)
-                        {
-                            lstTraditions.Sort(CompareListItems.CompareNames);
-                            lstTraditions.Insert(0,
-                                new ListItem("None", LanguageManager.GetString("String_None")));
-                            cboTradition.BeginUpdate();
-                            cboTradition.PopulateWithListItems(lstTraditions);
-                            cboTradition.EndUpdate();
-                        }
-                        else
-                        {
-                            cboTradition.Visible = false;
-                            lblTraditionLabel.Visible = false;
+                            if (lstTraditions.Count > 1)
+                            {
+                                lstTraditions.Sort(CompareListItems.CompareNames);
+                                lstTraditions.Insert(0,
+                                                     new ListItem("None", LanguageManager.GetString("String_None")));
+                                cboTradition.BeginUpdate();
+                                cboTradition.PopulateWithListItems(lstTraditions);
+                                cboTradition.EndUpdate();
+                            }
+                            else
+                            {
+                                cboTradition.Visible = false;
+                                lblTraditionLabel.Visible = false;
+                            }
                         }
 
                         // Populate the Magician Custom Drain Options list.
-                        List<ListItem> lstDrainAttributes = new List<ListItem>(4)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstDrainAttributes))
                         {
-                            ListItem.Blank
-                        };
-                        if (xmlTraditionsBaseChummerNode != null)
-                        {
-                            foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
-                                "drainattributes/drainattribute"))
+                            lstDrainAttributes.Add(ListItem.Blank);
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstDrainAttributes.Add(new ListItem(strName,
-                                        xmlDrain.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
+                                             "drainattributes/drainattribute"))
+                                {
+                                    string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstDrainAttributes.Add(new ListItem(strName,
+                                                                            xmlDrain.SelectSingleNodeAndCacheExpression(
+                                                                                "translate")?.Value ?? strName));
+                                }
                             }
+
+                            lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                            cboDrain.BeginUpdate();
+                            cboDrain.PopulateWithListItems(lstDrainAttributes);
+                            cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                   nameof(Tradition.DrainExpression));
+                            cboDrain.EndUpdate();
                         }
 
-                        lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                        cboDrain.BeginUpdate();
-                        cboDrain.PopulateWithListItems(lstDrainAttributes);
-                        cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.DrainExpression));
-                        cboDrain.EndUpdate();
-
                         lblDrainAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                            nameof(Tradition.DisplayDrainExpression));
+                                                               nameof(Tradition.DisplayDrainExpression));
                         lblDrainAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValue));
                         lblDrainAttributesValue.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
@@ -451,122 +460,134 @@ namespace Chummer
                         lblFadingAttributesValue.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
 
-                        HashSet<string> limit = new HashSet<string>();
-                        foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> limit))
                         {
-                            limit.Add(improvement.ImprovedName);
-                        }
-
-                        /* Populate drugs. //TODO: fix
-                        foreach (Drug objDrug in CharacterObj.Drugs)
-                        {
-                            treCustomDrugs.Add(objDrug);
-                        }
-                        */
-
-                        // Populate the Magician Custom Spirits lists - Combat.
-                        List<ListItem> lstSpirit = new List<ListItem>(10)
-                        {
-                            ListItem.Blank
-                        };
-                        if (xmlTraditionsBaseChummerNode != null)
-                        {
-                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
+                            foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                         CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                             {
-                                string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                limit.Add(improvement.ImprovedName);
+                            }
+
+                            /* Populate drugs. //TODO: fix
+                            foreach (Drug objDrug in CharacterObj.Drugs)
+                            {
+                                treCustomDrugs.Add(objDrug);
+                            }
+                            */
+
+                            // Populate the Magician Custom Spirits lists - Combat.
+                            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                           out List<ListItem> lstSpirit))
+                            {
+                                lstSpirit.Add(ListItem.Blank);
+                                if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    lstSpirit.Add(new ListItem(strSpiritName,
-                                        xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
+                                    foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                 .SelectAndCacheExpression("spirits/spirit"))
+                                    {
+                                        string strSpiritName
+                                            = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strSpiritName)
+                                            && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                        {
+                                            lstSpirit.Add(new ListItem(strSpiritName,
+                                                                       xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                           "translate")?.Value ?? strSpiritName));
+                                        }
+                                    }
                                 }
+
+                                lstSpirit.Sort(CompareListItems.CompareNames);
+
+                                cboSpiritCombat.BeginUpdate();
+                                cboSpiritCombat.PopulateWithListItems(lstSpirit);
+                                cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                              nameof(Tradition.SpiritCombat));
+                                lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritCombat.EndUpdate();
+
+                                cboSpiritDetection.BeginUpdate();
+                                cboSpiritDetection.PopulateWithListItems(lstSpirit);
+                                cboSpiritDetection.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                                 nameof(Tradition.SpiritDetection));
+                                lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritDetection.EndUpdate();
+
+                                cboSpiritHealth.BeginUpdate();
+                                cboSpiritHealth.PopulateWithListItems(lstSpirit);
+                                cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                              nameof(Tradition.SpiritHealth));
+                                lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritHealth.EndUpdate();
+
+                                cboSpiritIllusion.BeginUpdate();
+                                cboSpiritIllusion.PopulateWithListItems(lstSpirit);
+                                cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                                nameof(Tradition.SpiritIllusion));
+                                lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritIllusion.EndUpdate();
+
+                                cboSpiritManipulation.BeginUpdate();
+                                cboSpiritManipulation.PopulateWithListItems(lstSpirit);
+                                cboSpiritManipulation.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                                    nameof(Tradition.SpiritManipulation));
+                                lblSpiritManipulation.Visible
+                                    = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritManipulation.Visible
+                                    = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                cboSpiritManipulation.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                cboSpiritManipulation.EndUpdate();
                             }
                         }
-
-                        lstSpirit.Sort(CompareListItems.CompareNames);
-
-                        List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
-                        cboSpiritCombat.BeginUpdate();
-                        cboSpiritCombat.PopulateWithListItems(lstCombat);
-                        cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritCombat));
-                        lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritCombat.EndUpdate();
-
-                        List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
-                        cboSpiritDetection.BeginUpdate();
-                        cboSpiritDetection.PopulateWithListItems(lstDetection);
-                        cboSpiritDetection.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritDetection));
-                        lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritDetection.EndUpdate();
-
-                        List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
-                        cboSpiritHealth.BeginUpdate();
-                        cboSpiritHealth.PopulateWithListItems(lstHealth);
-                        cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritHealth));
-                        lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritHealth.EndUpdate();
-
-                        List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
-                        cboSpiritIllusion.BeginUpdate();
-                        cboSpiritIllusion.PopulateWithListItems(lstIllusion);
-                        cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritIllusion));
-                        lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritIllusion.EndUpdate();
-
-                        List<ListItem> lstManip = new List<ListItem>(lstSpirit);
-                        cboSpiritManipulation.BeginUpdate();
-                        cboSpiritManipulation.PopulateWithListItems(lstManip);
-                        cboSpiritManipulation.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                            nameof(Tradition.SpiritManipulation));
-                        lblSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
-                        cboSpiritManipulation.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                        cboSpiritManipulation.EndUpdate();
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
                             CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                        List<ListItem> lstStreams = new List<ListItem>(3);
-                        if (xmlTraditionsBaseChummerNode != null)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstStreams))
                         {
-                            foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstStreams.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                        xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                             "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                {
+                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        lstStreams.Add(new ListItem(
+                                                           xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value
+                                                           ?? strName,
+                                                           xmlTradition.SelectSingleNodeAndCacheExpression("translate")
+                                                                       ?.Value ?? strName));
+                                }
+                            }
+
+                            if (lstStreams.Count > 1)
+                            {
+                                lstStreams.Sort(CompareListItems.CompareNames);
+                                lstStreams.Insert(0,
+                                                  new ListItem("None", LanguageManager.GetString("String_None")));
+                                cboStream.BeginUpdate();
+                                cboStream.PopulateWithListItems(lstStreams);
+                                cboStream.EndUpdate();
+                            }
+                            else
+                            {
+                                cboStream.Visible = false;
+                                lblStreamLabel.Visible = false;
                             }
                         }
 
-                        if (lstStreams.Count > 1)
-                        {
-                            lstStreams.Sort(CompareListItems.CompareNames);
-                            lstStreams.Insert(0,
-                                new ListItem("None", LanguageManager.GetString("String_None")));
-                            cboStream.BeginUpdate();
-                            cboStream.PopulateWithListItems(lstStreams);
-                            cboStream.EndUpdate();
-                        }
-                        else
-                        {
-                            cboStream.Visible = false;
-                            lblStreamLabel.Visible = false;
-                        }
-
                         nudMysticAdeptMAGMagician.DoOneWayDataBinding("Maximum", CharacterObject.MAG,
-                            nameof(CharacterAttrib.TotalValue));
+                                                                      nameof(CharacterAttrib.TotalValue));
                         nudMysticAdeptMAGMagician.DoDataBinding("Value", CharacterObject,
                             nameof(Character.MysticAdeptPowerPoints));
 
@@ -808,18 +829,21 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_frm_create_vehicle", op_load_frm_create))
                     {
                         // Populate vehicle weapon fire mode list.
-                        List<ListItem> lstFireModes = new List<ListItem>(5);
-                        foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstFireModes))
                         {
-                            if (mode == Weapon.FiringMode.NumFiringModes)
-                                continue;
-                            lstFireModes.Add(new ListItem(mode,
-                                LanguageManager.GetString("Enum_" + mode)));
-                        }
+                            foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
+                            {
+                                if (mode == Weapon.FiringMode.NumFiringModes)
+                                    continue;
+                                lstFireModes.Add(new ListItem(mode,
+                                                              LanguageManager.GetString("Enum_" + mode)));
+                            }
 
-                        cboVehicleWeaponFiringMode.BeginUpdate();
-                        cboVehicleWeaponFiringMode.PopulateWithListItems(lstFireModes);
-                        cboVehicleWeaponFiringMode.EndUpdate();
+                            cboVehicleWeaponFiringMode.BeginUpdate();
+                            cboVehicleWeaponFiringMode.PopulateWithListItems(lstFireModes);
+                            cboVehicleWeaponFiringMode.EndUpdate();
+                        }
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_finish", op_load_frm_create))
@@ -926,7 +950,8 @@ namespace Chummer
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
-                CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
+                CharacterObject.Lifestyles.ListChanged -= LifestylesOnListChanged;
+                CharacterObject.Lifestyles.BeforeRemove -= LifestylesOnBeforeRemove;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
@@ -1220,35 +1245,32 @@ namespace Chummer
                     {
                         cboPrimaryArm.BeginUpdate();
 
-                        List<ListItem> lstPrimaryArm;
-                        if (CharacterObject.Ambidextrous)
+                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                       out List<ListItem> lstPrimaryArm))
                         {
-                            lstPrimaryArm = new List<ListItem>(1)
+                            if (CharacterObject.Ambidextrous)
                             {
-                                new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous"))
-                            };
-                            cboPrimaryArm.Enabled = false;
-                        }
-                        else
-                        {
-                            //Create the dropdown for the character's primary arm.
-                            lstPrimaryArm = new List<ListItem>(2)
+                                lstPrimaryArm.Add(new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous")));
+                                cboPrimaryArm.Enabled = false;
+                            }
+                            else
                             {
-                                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
-                                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
-                            };
-                            lstPrimaryArm.Sort(CompareListItems.CompareNames);
-                            cboPrimaryArm.Enabled = true;
+                                //Create the dropdown for the character's primary arm.
+                                lstPrimaryArm.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
+                                lstPrimaryArm.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
+                                lstPrimaryArm.Sort(CompareListItems.CompareNames);
+                                cboPrimaryArm.Enabled = true;
+                            }
+
+                            string strPrimaryArm = CharacterObject.PrimaryArm;
+
+                            cboPrimaryArm.PopulateWithListItems(lstPrimaryArm);
+                            cboPrimaryArm.SelectedValue = strPrimaryArm;
+                            if (cboPrimaryArm.SelectedIndex == -1)
+                                cboPrimaryArm.SelectedIndex = 0;
+
+                            cboPrimaryArm.EndUpdate();
                         }
-
-                        string strPrimaryArm = CharacterObject.PrimaryArm;
-
-                        cboPrimaryArm.PopulateWithListItems(lstPrimaryArm);
-                        cboPrimaryArm.SelectedValue = strPrimaryArm;
-                        if (cboPrimaryArm.SelectedIndex == -1)
-                            cboPrimaryArm.SelectedIndex = 0;
-
-                        cboPrimaryArm.EndUpdate();
                     }
                     break;
 
@@ -1600,10 +1622,11 @@ namespace Chummer
                             RefreshFociFromGear(treFoci, null);
                             RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                             RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                cmsWeaponAccessoryGear);
+                                           cmsWeaponAccessoryGear);
                             RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount,
-                                cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
+                                            cmsWeaponMount,
+                                            cmsVehicleCyberware, cmsVehicleCyberwareGear);
                             RefreshDrugs(treCustomDrugs);
                             treWeapons.SortCustomOrder();
                             treArmor.SortCustomOrder();
@@ -1615,158 +1638,188 @@ namespace Chummer
                             treCritterPowers.SortCustomOrder();
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                            List<ListItem> lstTraditions = new List<ListItem>(30);
-                            if (xmlTraditionsBaseChummerNode != null)
+                                CharacterObject.LoadDataXPath("traditions.xml")
+                                               .SelectSingleNodeAndCacheExpression("/chummer");
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstTraditions))
                             {
-                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                    "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strName))
-                                        lstTraditions.Add(new ListItem(
-                                            xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                            xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                                }
-                            }
-
-                            if (lstTraditions.Count > 1)
-                            {
-                                lstTraditions.Sort(CompareListItems.CompareNames);
-                                lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
-                                if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
-                                {
-                                    cboTradition.BeginUpdate();
-                                    cboTradition.PopulateWithListItems(lstTraditions);
-                                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                                        cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
-                                    else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                                        cboTradition.SelectedIndex = 0;
-                                    cboTradition.EndUpdate();
-                                }
-                            }
-                            else
-                            {
-                                cboTradition.Visible = false;
-                                lblTraditionLabel.Visible = false;
-                            }
-
-                            List<ListItem> lstDrainAttributes = new List<ListItem>(6)
-                        {
-                            ListItem.Blank
-                        };
-                            if (xmlTraditionsBaseChummerNode != null)
-                            {
-                                foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.SelectAndCacheExpression(
-                                    "drainattributes/drainattribute"))
-                                {
-                                    string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strName))
-                                        lstDrainAttributes.Add(new ListItem(strName,
-                                            xmlDrain.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                                }
-                            }
-
-                            lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                            if (!lstDrainAttributes.SequenceEqual(cboDrain.Items.Cast<ListItem>()))
-                            {
-                                cboDrain.BeginUpdate();
-                                cboDrain.PopulateWithListItems(lstDrainAttributes);
-                                cboDrain.EndUpdate();
-                            }
-
-                            HashSet<string> limit = new HashSet<string>();
-                            foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
-                            {
-                                limit.Add(improvement.ImprovedName);
-                            }
-
-                            List<ListItem> lstSpirit = new List<ListItem>(30)
-                        {
-                            ListItem.Blank
-                        };
-                            if (xmlTraditionsBaseChummerNode != null)
-                            {
-                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.SelectAndCacheExpression("spirits/spirit"))
-                                {
-                                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
                                     {
-                                        lstSpirit.Add(new ListItem(strSpiritName,
-                                            xmlSpirit.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strSpiritName));
+                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strName))
+                                            lstTraditions.Add(new ListItem(
+                                                                  xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                                              ?.Value ?? strName,
+                                                                  xmlTradition
+                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                      ?.Value ?? strName));
+                                    }
+                                }
+
+                                if (lstTraditions.Count > 1)
+                                {
+                                    lstTraditions.Sort(CompareListItems.CompareNames);
+                                    lstTraditions.Insert(
+                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                    if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
+                                    {
+                                        cboTradition.BeginUpdate();
+                                        cboTradition.PopulateWithListItems(lstTraditions);
+                                        if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                                            cboTradition.SelectedValue
+                                                = CharacterObject.MagicTradition.SourceID.ToString();
+                                        else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                                            cboTradition.SelectedIndex = 0;
+                                        cboTradition.EndUpdate();
+                                    }
+                                }
+                                else
+                                {
+                                    cboTradition.Visible = false;
+                                    lblTraditionLabel.Visible = false;
+                                }
+                            }
+
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
+                            {
+                                lstDrainAttributes.Add(ListItem.Blank);
+                                if (xmlTraditionsBaseChummerNode != null)
+                                {
+                                    foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode
+                                                 .SelectAndCacheExpression(
+                                                     "drainattributes/drainattribute"))
+                                    {
+                                        string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        if (!string.IsNullOrEmpty(strName))
+                                            lstDrainAttributes.Add(new ListItem(strName,
+                                                                       xmlDrain.SelectSingleNodeAndCacheExpression(
+                                                                           "translate")?.Value ?? strName));
+                                    }
+                                }
+
+                                lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                                if (!lstDrainAttributes.SequenceEqual(cboDrain.Items.Cast<ListItem>()))
+                                {
+                                    cboDrain.BeginUpdate();
+                                    cboDrain.PopulateWithListItems(lstDrainAttributes);
+                                    cboDrain.EndUpdate();
+                                }
+                            }
+
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> limit))
+                            {
+                                foreach (Improvement improvement in ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                                {
+                                    limit.Add(improvement.ImprovedName);
+                                }
+
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstSpirit))
+                                {
+                                    lstSpirit.Add(ListItem.Blank);
+                                    if (xmlTraditionsBaseChummerNode != null)
+                                    {
+                                        foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                     .SelectAndCacheExpression("spirits/spirit"))
+                                        {
+                                            string strSpiritName
+                                                = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                            if (!string.IsNullOrEmpty(strSpiritName)
+                                                && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                            {
+                                                lstSpirit.Add(new ListItem(strSpiritName,
+                                                                           xmlSpirit.SelectSingleNodeAndCacheExpression(
+                                                                               "translate")?.Value ?? strSpiritName));
+                                            }
+                                        }
+                                    }
+
+                                    lstSpirit.Sort(CompareListItems.CompareNames);
+                                    if (!lstSpirit.SequenceEqual(cboSpiritCombat.Items.Cast<ListItem>()))
+                                    {
+                                        cboSpiritCombat.BeginUpdate();
+                                        cboSpiritCombat.PopulateWithListItems(lstSpirit);
+                                        cboSpiritCombat.EndUpdate();
+
+                                        cboSpiritDetection.BeginUpdate();
+                                        cboSpiritDetection.PopulateWithListItems(lstSpirit);
+                                        cboSpiritDetection.EndUpdate();
+
+                                        cboSpiritHealth.BeginUpdate();
+                                        cboSpiritHealth.PopulateWithListItems(lstSpirit);
+                                        cboSpiritHealth.EndUpdate();
+
+                                        cboSpiritIllusion.BeginUpdate();
+                                        cboSpiritIllusion.PopulateWithListItems(lstSpirit);
+                                        cboSpiritIllusion.EndUpdate();
+
+                                        cboSpiritManipulation.BeginUpdate();
+                                        cboSpiritManipulation.PopulateWithListItems(lstSpirit);
+                                        cboSpiritManipulation.EndUpdate();
                                     }
                                 }
                             }
 
-                            lstSpirit.Sort(CompareListItems.CompareNames);
-                            if (!lstSpirit.SequenceEqual(cboSpiritCombat.Items.Cast<ListItem>()))
-                            {
-                                List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
-                                cboSpiritCombat.BeginUpdate();
-                                cboSpiritCombat.PopulateWithListItems(lstCombat);
-                                cboSpiritCombat.EndUpdate();
-
-                                List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
-                                cboSpiritDetection.BeginUpdate();
-                                cboSpiritDetection.PopulateWithListItems(lstDetection);
-                                cboSpiritDetection.EndUpdate();
-
-                                List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
-                                cboSpiritHealth.BeginUpdate();
-                                cboSpiritHealth.PopulateWithListItems(lstHealth);
-                                cboSpiritHealth.EndUpdate();
-
-                                List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
-                                cboSpiritIllusion.BeginUpdate();
-                                cboSpiritIllusion.PopulateWithListItems(lstIllusion);
-                                cboSpiritIllusion.EndUpdate();
-
-                                List<ListItem> lstManip = new List<ListItem>(lstSpirit);
-                                cboSpiritManipulation.BeginUpdate();
-                                cboSpiritManipulation.PopulateWithListItems(lstManip);
-                                cboSpiritManipulation.EndUpdate();
-                            }
-
                             // Populate the Technomancer Streams list.
                             xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                            List<ListItem> lstStreams = new List<ListItem>(5);
-                            if (xmlTraditionsBaseChummerNode != null)
+                                CharacterObject.LoadDataXPath("streams.xml")
+                                               .SelectSingleNodeAndCacheExpression("/chummer");
+                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                       Utils.ListItemListPool, out List<ListItem> lstStreams))
                             {
-                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                    "traditions/tradition[" + CharacterObjectSettings.BookXPath() + "]"))
+                                if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                    if (!string.IsNullOrEmpty(strName))
-                                        lstStreams.Add(new ListItem(xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                            xmlTradition.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                                         + "]"))
+                                    {
+                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")
+                                                                     ?.Value;
+                                        if (!string.IsNullOrEmpty(strName))
+                                            lstStreams.Add(new ListItem(
+                                                               xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                                           ?.Value ?? strName,
+                                                               xmlTradition
+                                                                   .SelectSingleNodeAndCacheExpression("translate")
+                                                                   ?.Value ?? strName));
+                                    }
                                 }
-                            }
 
-                            if (lstStreams.Count > 1)
-                            {
-                                lstStreams.Sort(CompareListItems.CompareNames);
-                                lstStreams.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
-                                if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
+                                if (lstStreams.Count > 1)
                                 {
-                                    cboStream.BeginUpdate();
-                                    cboStream.PopulateWithListItems(lstStreams);
-                                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                                        cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
-                                    else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                                        cboStream.SelectedIndex = 0;
-                                    cboStream.EndUpdate();
+                                    lstStreams.Sort(CompareListItems.CompareNames);
+                                    lstStreams.Insert(
+                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                    if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
+                                    {
+                                        cboStream.BeginUpdate();
+                                        cboStream.PopulateWithListItems(lstStreams);
+                                        if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                                            cboStream.SelectedValue
+                                                = CharacterObject.MagicTradition.SourceID.ToString();
+                                        else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                                            cboStream.SelectedIndex = 0;
+                                        cboStream.EndUpdate();
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                cboStream.Visible = false;
-                                lblStreamLabel.Visible = false;
+                                else
+                                {
+                                    cboStream.Visible = false;
+                                    lblStreamLabel.Visible = false;
+                                }
                             }
 
                             RefreshSelectedVehicle();
                             ResumeLayout();
                         }
+
                         break;
                     }
                 case nameof(CharacterSettings.AllowFreeGrids):
@@ -1900,7 +1953,7 @@ namespace Chummer
             {
                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true))
                 {
-                    frmPickBP.ShowDialog(this);
+                    frmPickBP.ShowDialogSafe(this);
 
                     if (frmPickBP.DialogResult != DialogResult.Cancel)
                         IsCharacterUpdateRequested = true;
@@ -2990,7 +3043,7 @@ namespace Chummer
                 {
                     using (frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject))
                     {
-                        frmPickSpell.ShowDialog(this);
+                        frmPickSpell.ShowDialogSafe(this);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickSpell.DialogResult == DialogResult.Cancel)
                             break;
@@ -3107,7 +3160,7 @@ namespace Chummer
                     // Let the user select a Program.
                     using (frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(CharacterObject))
                     {
-                        frmPickComplexForm.ShowDialog(this);
+                        frmPickComplexForm.ShowDialogSafe(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
@@ -3148,7 +3201,7 @@ namespace Chummer
                     // Let the user select a Program.
                     using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(CharacterObject))
                     {
-                        frmPickProgram.ShowDialog(this);
+                        frmPickProgram.ShowDialogSafe(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickProgram.DialogResult == DialogResult.Cancel)
@@ -3174,7 +3227,7 @@ namespace Chummer
                             Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText)
                         })
                         {
-                            frmPickText.ShowDialog(this);
+                            frmPickText.ShowDialogSafe(this);
                             strExtra = frmPickText.SelectedValue;
                         }
                     }
@@ -3236,7 +3289,7 @@ namespace Chummer
             {
                 using (frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject))
                 {
-                    frmPickWeapon.ShowDialog(this);
+                    frmPickWeapon.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -3295,12 +3348,13 @@ namespace Chummer
                     Lifestyle objLifestyle;
                     using (frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject))
                     {
-                        frmPickLifestyle.ShowDialog(this);
+                        frmPickLifestyle.ShowDialogSafe(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                         {
-                            break;
+                            frmPickLifestyle.SelectedLifestyle.Dispose();
+                            return;
                         }
 
                         blnAddAgain = frmPickLifestyle.AddAgain;
@@ -3359,7 +3413,7 @@ namespace Chummer
             {
                 using (frmSelectVehicle frmPickVehicle = new frmSelectVehicle(CharacterObject))
                 {
-                    frmPickVehicle.ShowDialog(this);
+                    frmPickVehicle.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickVehicle.DialogResult == DialogResult.Cancel)
@@ -3440,7 +3494,7 @@ namespace Chummer
                                 Description = LanguageManager.GetString("String_Retrofit")
                             })
                             {
-                                frmModPercent.ShowDialog(this);
+                                frmModPercent.ShowDialogSafe(this);
 
                                 if (frmModPercent.DialogResult == DialogResult.Cancel)
                                     return;
@@ -3655,7 +3709,7 @@ namespace Chummer
                 {
                     using (frmSelectCritterPower frmPickCritterPower = new frmSelectCritterPower(CharacterObject))
                     {
-                        frmPickCritterPower.ShowDialog(this);
+                        frmPickCritterPower.ShowDialogSafe(this);
 
                         if (frmPickCritterPower.DialogResult == DialogResult.Cancel)
                             break;
@@ -3744,7 +3798,7 @@ namespace Chummer
                     XmlNode objXmlLifeModule;
                     using (frmSelectLifeModule frmSelectLifeModule = new frmSelectLifeModule(CharacterObject, intStage))
                     {
-                        frmSelectLifeModule.ShowDialog(this);
+                        frmSelectLifeModule.ShowDialogSafe(this);
 
                         if (frmSelectLifeModule.DialogResult == DialogResult.Cancel)
                             break;
@@ -3793,7 +3847,7 @@ namespace Chummer
                 {
                     using (frmSelectQuality frmPickQuality = new frmSelectQuality(CharacterObject))
                     {
-                        frmPickQuality.ShowDialog(this);
+                        frmPickQuality.ShowDialogSafe(this);
 
                         // Don't do anything else if the form was canceled.
                         if (frmPickQuality.DialogResult == DialogResult.Cancel)
@@ -4118,7 +4172,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4137,7 +4191,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4181,7 +4235,7 @@ namespace Chummer
                 do
                 {
                     frmPickItem.SetGearMode(lstGear);
-                    frmPickItem.ShowDialog(this);
+                    frmPickItem.ShowDialogSafe(this);
 
                     if (frmPickItem.DialogResult != DialogResult.OK)
                         continue;
@@ -4270,7 +4324,7 @@ namespace Chummer
             {
                 using (frmSelectArmor frmPickArmor = new frmSelectArmor(CharacterObject))
                 {
-                    frmPickArmor.ShowDialog(this);
+                    frmPickArmor.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickArmor.DialogResult == DialogResult.Cancel)
@@ -4317,7 +4371,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4377,7 +4431,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4469,7 +4523,7 @@ namespace Chummer
                         ParentWeapon = objWeapon
                     })
                     {
-                        frmPickWeaponAccessory.ShowDialog(this);
+                        frmPickWeaponAccessory.ShowDialogSafe(this);
 
                         if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                             break;
@@ -4513,7 +4567,7 @@ namespace Chummer
                                     AllowCancel = false
                                 })
                                 {
-                                    frmPickNumber.ShowDialog(this);
+                                    frmPickNumber.ShowDialogSafe(this);
                                     objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                                 }
                             }
@@ -4571,7 +4625,7 @@ namespace Chummer
                             }
                         }
 
-                        frmPickArmorMod.ShowDialog(this);
+                        frmPickArmorMod.ShowDialogSafe(this);
 
                         if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
                             break;
@@ -4635,7 +4689,7 @@ namespace Chummer
             {
                 using (frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(objVehicle, CharacterObject))
                 {
-                    frmPickVehicleMod.ShowDialog(this);
+                    frmPickVehicleMod.ShowDialogSafe(this);
 
                     if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
                         return;
@@ -4672,7 +4726,7 @@ namespace Chummer
                 {
                     using (frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods))
                     {
-                        frmPickVehicleMod.ShowDialog(this);
+                        frmPickVehicleMod.ShowDialogSafe(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
@@ -4835,7 +4889,7 @@ namespace Chummer
                         LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
                     })
                     {
-                        frmPickWeapon.ShowDialog(this);
+                        frmPickWeapon.ShowDialogSafe(this);
 
                         if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                             return;
@@ -4918,7 +4972,7 @@ namespace Chummer
                         ParentWeapon = objWeapon
                     })
                     {
-                        frmPickWeaponAccessory.ShowDialog(this);
+                        frmPickWeaponAccessory.ShowDialogSafe(this);
 
                         if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                             break;
@@ -4965,7 +5019,7 @@ namespace Chummer
                 })
                 {
                     frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                    frmPickWeapon.ShowDialog(this);
+                    frmPickWeapon.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -5043,7 +5097,7 @@ namespace Chummer
                     XmlNode xmlTechnique;
                     using (frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt))
                     {
-                        frmPickMartialArtTechnique.ShowDialog(this);
+                        frmPickMartialArtTechnique.ShowDialogSafe(this);
 
                         if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
                             return;
@@ -5138,7 +5192,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -5207,7 +5261,7 @@ namespace Chummer
                     {
                         using (frmNotes frmItemNotes = new frmNotes(objGear.Notes, objGear.NotesColor))
                         {
-                            frmItemNotes.ShowDialog(this);
+                            frmItemNotes.ShowDialogSafe(this);
                             if (frmItemNotes.DialogResult != DialogResult.OK)
                                 return;
                             objGear.Notes = frmItemNotes.Notes;
@@ -5230,14 +5284,19 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Lifestyle objLifestyle;
-                    using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject)))
+                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
+                    using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, objLifestyle))
                     {
-                        frmPickLifestyle.ShowDialog(this);
+                        frmPickLifestyle.ShowDialogSafe(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                            break;
+                        {
+                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle))
+                                frmPickLifestyle.SelectedLifestyle.Dispose();
+                            return;
+                        }
+
                         blnAddAgain = frmPickLifestyle.AddAgain;
 
                         objLifestyle = frmPickLifestyle.SelectedLifestyle;
@@ -5281,7 +5340,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5316,7 +5375,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5354,7 +5413,7 @@ namespace Chummer
                 })
                 {
                     frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                    frmPickWeapon.ShowDialog(this);
+                    frmPickWeapon.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -5396,7 +5455,7 @@ namespace Chummer
             using (frmSelectText frmPickText = new frmSelectText())
             {
                 //frmPickText.Description = LanguageManager.GetString("String_AddLocation");
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5580,7 +5639,7 @@ namespace Chummer
                 DefaultString = objWeaponMount.Location
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5619,7 +5678,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5666,48 +5725,55 @@ namespace Chummer
                             //frmPickCyberware.SetGrade = "Standard";
                             frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
                             frmPickCyberware.Subsystems = objMod.Subsystems;
-                            HashSet<string> setDisallowedMounts = new HashSet<string>();
-                            HashSet<string> setHasMounts = new HashSet<string>();
-                            foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setHasMounts))
                             {
-                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                                 {
-                                    if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    }
+
+                                    string strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                        && !setHasMounts.Contains(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
                                 }
 
-                                string strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount) && !setHasMounts.Contains(strLoopHasModularMount))
-                                    setHasMounts.Add(strLoopHasModularMount);
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdDisallowedMounts))
-                            {
-                                foreach (string strLoop in setDisallowedMounts)
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdDisallowedMounts))
                                 {
-                                    if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
-                                        && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                            || setDisallowedMounts.Contains(
-                                                strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                        sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(
+                                                    strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    }
+
+                                    // Remove trailing ","
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
                                 }
 
-                                // Remove trailing ","
-                                if (sbdDisallowedMounts.Length > 0)
-                                    --sbdDisallowedMounts.Length;
-                                frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdHasMounts))
-                            {
-                                foreach (string strLoop in setHasMounts)
-                                    sbdHasMounts.Append(strLoop).Append(',');
-                                // Remove trailing ","
-                                if (sbdHasMounts.Length > 0)
-                                    --sbdHasMounts.Length;
-                                frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop).Append(',');
+                                    // Remove trailing ","
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                }
                             }
                         }
                         else
@@ -5730,59 +5796,67 @@ namespace Chummer
 
                             frmPickCyberware.CyberwareParent = objCyberwareParent;
                             frmPickCyberware.Subsystems = objCyberwareParent.AllowedSubsystems;
-                            HashSet<string> setDisallowedMounts = new HashSet<string>();
-                            HashSet<string> setHasMounts = new HashSet<string>();
-                            foreach (string strLoop in objCyberwareParent.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
-                            string strLoopHasModularMount = objCyberwareParent.HasModularMount;
-                            if (!string.IsNullOrEmpty(strLoopHasModularMount))
-                                setHasMounts.Add(strLoopHasModularMount);
-                            foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setHasMounts))
                             {
-                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                {
-                                    if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
-                                }
-
-                                strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount) && !setHasMounts.Contains(strLoopHasModularMount))
+                                foreach (string strLoop in objCyberwareParent.BlocksMounts.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
+                                    setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
+                                string strLoopHasModularMount = objCyberwareParent.HasModularMount;
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                     setHasMounts.Add(strLoopHasModularMount);
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdDisallowedMounts))
-                            {
-                                foreach (string strLoop in setDisallowedMounts)
+                                foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                                 {
-                                    if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
-                                        && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                            || setDisallowedMounts.Contains(
-                                                strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                        sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    }
+
+                                    strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                        && !setHasMounts.Contains(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
                                 }
 
-                                // Remove trailing ","
-                                if (sbdDisallowedMounts.Length > 0)
-                                    --sbdDisallowedMounts.Length;
-                                frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
-                            }
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdDisallowedMounts))
+                                {
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(
+                                                    strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    }
 
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdHasMounts))
-                            {
-                                foreach (string strLoop in setHasMounts)
-                                    sbdHasMounts.Append(strLoop).Append(',');
-                                // Remove trailing ","
-                                if (sbdHasMounts.Length > 0)
-                                    --sbdHasMounts.Length;
-                                frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                    // Remove trailing ","
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop).Append(',');
+                                    // Remove trailing ","
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                }
                             }
                         }
 
                         frmPickCyberware.LockGrade();
                         frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
-                        frmPickCyberware.ShowDialog(this);
+                        frmPickCyberware.ShowDialogSafe(this);
 
                         if (frmPickCyberware.DialogResult == DialogResult.Cancel)
                             break;
@@ -5829,7 +5903,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5871,7 +5945,7 @@ namespace Chummer
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5896,7 +5970,7 @@ namespace Chummer
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5919,7 +5993,7 @@ namespace Chummer
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5947,7 +6021,7 @@ namespace Chummer
             // The character is still allowed to add Spells, so show the Create Spell window.
             using (frmCreateSpell frmSpell = new frmCreateSpell(CharacterObject))
             {
-                frmSpell.ShowDialog(this);
+                frmSpell.ShowDialogSafe(this);
 
                 if (frmSpell.DialogResult == DialogResult.Cancel)
                     return;
@@ -5971,7 +6045,7 @@ namespace Chummer
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -6048,7 +6122,7 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6134,7 +6208,7 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6225,7 +6299,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6315,7 +6389,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6392,7 +6466,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6478,7 +6552,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6534,7 +6608,7 @@ namespace Chummer
                 Description = LanguageManager.GetString("String_AddLocation")
             })
             {
-                frmPickText.ShowDialog(this);
+                frmPickText.ShowDialogSafe(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -6551,7 +6625,7 @@ namespace Chummer
         {
             using (frmNaturalWeapon frmCreateNaturalWeapon = new frmNaturalWeapon(CharacterObject))
             {
-                frmCreateNaturalWeapon.ShowDialog(this);
+                frmCreateNaturalWeapon.ShowDialogSafe(this);
 
                 if (frmCreateNaturalWeapon.DialogResult == DialogResult.Cancel)
                     return;
@@ -6604,7 +6678,7 @@ namespace Chummer
                                                                  && (!objSensor.Capacity.Contains('[')
                                                                      || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6687,7 +6761,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialog(this);
+                        frmPickGear.ShowDialogSafe(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -7250,10 +7324,14 @@ namespace Chummer
                 // Edit Advanced Lifestyle.
                 using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, newLifestyle))
                 {
-                    frmPickLifestyle.ShowDialog(this);
+                    frmPickLifestyle.ShowDialogSafe(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    {
+                        if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle))
+                            frmPickLifestyle.SelectedLifestyle.Dispose();
                         return;
+                    }
 
                     // Update the selected Lifestyle and refresh the list.
                     objLifestyle = frmPickLifestyle.SelectedLifestyle;
@@ -7265,10 +7343,13 @@ namespace Chummer
                 using (frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject))
                 {
                     frmPickLifestyle.SetLifestyle(objLifestyle);
-                    frmPickLifestyle.ShowDialog(this);
+                    frmPickLifestyle.ShowDialogSafe(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    {
+                        frmPickLifestyle.SelectedLifestyle.Dispose();
                         return;
+                    }
 
                     // Update the selected Lifestyle and refresh the list.
                     objLifestyle = frmPickLifestyle.SelectedLifestyle;
@@ -11705,34 +11786,45 @@ namespace Chummer
                 }
                 else
                 {
-                    foreach (Cyberware objLoopCyberware in CharacterObject.Cyberware)
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setLoopDisallowedMounts))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setLoopHasModularMount))
                     {
-                        HashSet<string> setLoopDisallowedMounts = new HashSet<string>(objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
-                        HashSet<string> setLoopHasModularMount = new HashSet<string>();
-                        if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
-                            setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
-                        foreach (Cyberware objInnerLoopCyberware in objLoopCyberware.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                        foreach (Cyberware objLoopCyberware in CharacterObject.Cyberware)
                         {
-                            foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                setLoopDisallowedMounts.Add(strLoop);
-                            if (!string.IsNullOrEmpty(objInnerLoopCyberware.HasModularMount))
-                                setLoopHasModularMount.Add(objInnerLoopCyberware.HasModularMount);
-                        }
-                        foreach (string strLoop in setLoopDisallowedMounts)
-                        {
-                            string strKey = strLoop + objLoopCyberware.Location;
-                            if (!dicDisallowedMounts.ContainsKey(strKey))
-                                dicDisallowedMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
-                            else
-                                dicDisallowedMounts[strKey] += objLoopCyberware.LimbSlotCount;
-                        }
-                        foreach (string strLoop in setLoopHasModularMount)
-                        {
-                            string strKey = strLoop + objLoopCyberware.Location;
-                            if (!dicHasMounts.ContainsKey(strKey))
-                                dicHasMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
-                            else
-                                dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                            setLoopDisallowedMounts.Clear();
+                            setLoopDisallowedMounts.AddRange(objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
+                            setLoopHasModularMount.Clear();
+                            if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
+                                setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
+                            foreach (Cyberware objInnerLoopCyberware in objLoopCyberware.Children.DeepWhere(
+                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                            {
+                                foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
+                                    setLoopDisallowedMounts.Add(strLoop);
+                                if (!string.IsNullOrEmpty(objInnerLoopCyberware.HasModularMount))
+                                    setLoopHasModularMount.Add(objInnerLoopCyberware.HasModularMount);
+                            }
+
+                            foreach (string strLoop in setLoopDisallowedMounts)
+                            {
+                                string strKey = strLoop + objLoopCyberware.Location;
+                                if (!dicDisallowedMounts.ContainsKey(strKey))
+                                    dicDisallowedMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                else
+                                    dicDisallowedMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                            }
+
+                            foreach (string strLoop in setLoopHasModularMount)
+                            {
+                                string strKey = strLoop + objLoopCyberware.Location;
+                                if (!dicHasMounts.ContainsKey(strKey))
+                                    dicHasMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                                else
+                                    dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                            }
                         }
                     }
                 }
@@ -11794,7 +11886,7 @@ namespace Chummer
                     frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
                 }
 
-                frmPickCyberware.ShowDialog(this);
+                frmPickCyberware.ShowDialogSafe(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -11901,7 +11993,7 @@ namespace Chummer
                             frmPickGear.ShowNegativeCapacityOnly = true;
                     }
 
-                    frmPickGear.ShowDialog(this);
+                    frmPickGear.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickGear.DialogResult == DialogResult.Cancel)
@@ -12034,7 +12126,7 @@ namespace Chummer
                             frmPickGear.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
                     }
 
-                    frmPickGear.ShowDialog(this);
+                    frmPickGear.ShowDialogSafe(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickGear.DialogResult == DialogResult.Cancel)
@@ -13193,60 +13285,67 @@ namespace Chummer
         public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
             List<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware).ToList();
-            List<ListItem> lstCyberwareGrades = new List<ListItem>(objGradeList.Count);
-
-            foreach (Grade objWareGrade in objGradeList)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                           out List<ListItem> lstCyberwareGrades))
             {
-                if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
-                    continue;
-                if (blnIgnoreSecondHand && objWareGrade.SecondHand)
-                    continue;
-                if (blnBioware)
+                foreach (Grade objWareGrade in objGradeList)
                 {
-                    if (objWareGrade.Adapsin)
+                    if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
                         continue;
-
-                    if (ImprovementManager
-                        .GetCachedImprovementListForValueOf(CharacterObject,
-                                                            Improvement.ImprovementType.DisableBiowareGrade).Any(
-                            x => objWareGrade.Name.Contains(x.ImprovedName)))
+                    if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                         continue;
-                }
-                else
-                {
-                    if (CharacterObject.AdapsinEnabled)
+                    if (blnBioware)
                     {
-                        if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                        if (objWareGrade.Adapsin)
+                            continue;
+
+                        if (ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                Improvement.ImprovementType.DisableBiowareGrade).Any(
+                                x => objWareGrade.Name.Contains(x.ImprovedName)))
+                            continue;
+                    }
+                    else
+                    {
+                        if (CharacterObject.AdapsinEnabled)
+                        {
+                            if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                            {
+                                continue;
+                            }
+                        }
+                        else if (objWareGrade.Adapsin)
+                            continue;
+
+                        if (ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                Improvement.ImprovementType.DisableCyberwareGrade).Any(
+                                x => objWareGrade.Name.Contains(x.ImprovedName)))
+                            continue;
+                    }
+
+                    if (CharacterObject.BurnoutEnabled)
+                    {
+                        if (!objWareGrade.Burnout
+                            && objGradeList.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
                         {
                             continue;
                         }
                     }
-                    else if (objWareGrade.Adapsin)
+                    else if (objWareGrade.Burnout)
                         continue;
 
-                    if (ImprovementManager
-                        .GetCachedImprovementListForValueOf(CharacterObject,
-                                                            Improvement.ImprovementType.DisableCyberwareGrade).Any(
-                            x => objWareGrade.Name.Contains(x.ImprovedName)))
+                    if (CharacterObjectSettings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s))
+                        && !CharacterObject.IgnoreRules)
                         continue;
-                }
-                if (CharacterObject.BurnoutEnabled)
-                {
-                    if (!objWareGrade.Burnout && objGradeList.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
-                    {
-                        continue;
-                    }
-                }
-                else if (objWareGrade.Burnout)
-                    continue;
-                if (CharacterObjectSettings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)) && !CharacterObject.IgnoreRules)
-                    continue;
 
-                lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
+                    lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
+                }
+
+                cboCyberwareGrade.BeginUpdate();
+                cboCyberwareGrade.PopulateWithListItems(lstCyberwareGrades);
+                cboCyberwareGrade.EndUpdate();
             }
-            cboCyberwareGrade.BeginUpdate();
-            cboCyberwareGrade.PopulateWithListItems(lstCyberwareGrades);
-            cboCyberwareGrade.EndUpdate();
         }
 
         /// <summary>
@@ -14068,7 +14167,7 @@ namespace Chummer
                 decimal decStartingNuyen;
                 using (frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen(CharacterObject))
                 {
-                    if (frmStartingNuyen.ShowDialog(this) != DialogResult.OK)
+                    if (frmStartingNuyen.ShowDialogSafe(this) != DialogResult.OK)
                         return false;
                     decStartingNuyen = frmStartingNuyen.StartingNuyen;
                 }
@@ -14161,7 +14260,7 @@ namespace Chummer
             bool blnAddAgain;
             using (frmSelectPACKSKit frmPickPACKSKit = new frmSelectPACKSKit(CharacterObject))
             {
-                frmPickPACKSKit.ShowDialog(this);
+                frmPickPACKSKit.ShowDialogSafe(this);
 
                 // If the form was canceled, don't do anything.
                 if (frmPickPACKSKit.DialogResult == DialogResult.Cancel)
@@ -14226,7 +14325,7 @@ namespace Chummer
                     ForcedValue = strForcedValue
                 })
                 {
-                    frmPickMartialArt.ShowDialog(this);
+                    frmPickMartialArt.ShowDialogSafe(this);
 
                     if (frmPickMartialArt.DialogResult != DialogResult.Cancel)
                     {
@@ -14421,11 +14520,10 @@ namespace Chummer
                 foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
                     // Create the Lifestyle.
-                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-
                     XmlNode objXmlLifestyleNode = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + objXmlLifestyle["baselifestyle"].InnerText.CleanXPath() + "]");
                     if (objXmlLifestyleNode == null)
                         continue;
+                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                     objLifestyle.Create(objXmlLifestyleNode);
                     // This is an Advanced Lifestyle, so build it manually.
                     objLifestyle.CustomName = objXmlLifestyle["name"]?.InnerText ?? string.Empty;
@@ -14837,7 +14935,7 @@ namespace Chummer
         public void CreatePACKSKit()
         {
             using (frmCreatePACKSKit frmBuildPACKSKit = new frmCreatePACKSKit(CharacterObject))
-                frmBuildPACKSKit.ShowDialog(this);
+                frmBuildPACKSKit.ShowDialogSafe(this);
         }
 
         /// <summary>
@@ -14890,7 +14988,7 @@ namespace Chummer
             {
                 using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject))
                 {
-                    frmSelectMetatype.ShowDialog(this);
+                    frmSelectMetatype.ShowDialogSafe(this);
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                         return;
                 }
@@ -14899,7 +14997,7 @@ namespace Chummer
             {
                 using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(CharacterObject))
                 {
-                    frmSelectMetatype.ShowDialog(this);
+                    frmSelectMetatype.ShowDialogSafe(this);
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                         return;
                 }
@@ -14937,7 +15035,7 @@ namespace Chummer
             }
 
             using (frmCreateCyberwareSuite frmBuildCyberwareSuite = new frmCreateCyberwareSuite(CharacterObject, objSource))
-                frmBuildCyberwareSuite.ShowDialog(this);
+                frmBuildCyberwareSuite.ShowDialogSafe(this);
         }
 
         /// <summary>
@@ -15123,7 +15221,7 @@ namespace Chummer
         {
             using (frmSelectCyberwareSuite frmPickCyberwareSuite = new frmSelectCyberwareSuite(CharacterObject, objSource))
             {
-                frmPickCyberwareSuite.ShowDialog(this);
+                frmPickCyberwareSuite.ShowDialogSafe(this);
 
                 if (frmPickCyberwareSuite.DialogResult == DialogResult.Cancel)
                     return;
@@ -15344,7 +15442,7 @@ namespace Chummer
 
             using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
             {
-                frmPickMetamagic.ShowDialog(this);
+                frmPickMetamagic.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
@@ -15385,7 +15483,7 @@ namespace Chummer
 
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Art))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -15415,7 +15513,7 @@ namespace Chummer
 
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enchantment))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -15445,7 +15543,7 @@ namespace Chummer
 
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Ritual))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -15482,7 +15580,7 @@ namespace Chummer
 
             using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enhancement))
             {
-                frmPickArt.ShowDialog(this);
+                frmPickArt.ShowDialogSafe(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
@@ -15683,9 +15781,14 @@ namespace Chummer
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, notifyCollectionChangedEventArgs);
         }
 
-        private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void LifestylesOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
+            RefreshLifestylesBeforeRemove(treLifestyles, e);
+        }
+
+        private void LifestylesOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e);
         }
 
         private void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -15776,32 +15879,39 @@ namespace Chummer
         {
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
-            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
-            //Mounted cyberware should always be allowed to be dismounted.
-            //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
-            {
-                Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_NoValidModularMount"),
-                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
             string strSelectedParentID;
-            using (frmSelectItem frmPickMount = new frmSelectItem
+            using (new FetchSafelyFromPool<List<ListItem>>(
+                       Utils.ListItemListPool, out List<ListItem> lstModularMounts))
             {
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
-            })
-            {
-                frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                frmPickMount.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickMount.DialogResult == DialogResult.Cancel)
+                lstModularMounts.AddRange(CharacterObject.ConstructModularCyberlimbList(objModularCyberware));
+                //Mounted cyberware should always be allowed to be dismounted.
+                //Unmounted cyberware requires that a valid mount be present.
+                if (!objModularCyberware.IsModularCurrentlyEquipped
+                    && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                 {
+                    Program.MainForm.ShowMessageBox(this,
+                                                    LanguageManager.GetString("Message_NoValidModularMount"),
+                                                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                strSelectedParentID = frmPickMount.SelectedItem;
+                using (frmSelectItem frmPickMount = new frmSelectItem
+                       {
+                           Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                       })
+                {
+                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
+                    frmPickMount.ShowDialogSafe(this);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+
+                    strSelectedParentID = frmPickMount.SelectedItem;
+                }
             }
 
             Cyberware objOldParent = objModularCyberware.Parent;
@@ -15870,36 +15980,44 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
-            List<ListItem> lstModularMounts = CharacterObject.ConstructModularCyberlimbList(objModularCyberware).ToList();
-            //Mounted cyberware should always be allowed to be dismounted.
-            //Unmounted cyberware requires that a valid mount be present.
-            if (!objModularCyberware.IsModularCurrentlyEquipped && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
-            {
-                Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_NoValidModularMount"),
-                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
             string strSelectedParentID;
-            using (frmSelectItem frmPickMount = new frmSelectItem
+            using (new FetchSafelyFromPool<List<ListItem>>(
+                       Utils.ListItemListPool, out List<ListItem> lstModularMounts))
             {
-                Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
-            })
-            {
-                frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                frmPickMount.ShowDialog(this);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickMount.DialogResult == DialogResult.Cancel)
+                lstModularMounts.AddRange(CharacterObject.ConstructModularCyberlimbList(objModularCyberware));
+                //Mounted cyberware should always be allowed to be dismounted.
+                //Unmounted cyberware requires that a valid mount be present.
+                if (!objModularCyberware.IsModularCurrentlyEquipped
+                    && lstModularMounts.All(
+                        x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                 {
+                    Program.MainForm.ShowMessageBox(this,
+                                                    LanguageManager.GetString("Message_NoValidModularMount"),
+                                                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                strSelectedParentID = frmPickMount.SelectedItem;
+                using (frmSelectItem frmPickMount = new frmSelectItem
+                       {
+                           Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                       })
+                {
+                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
+                    frmPickMount.ShowDialogSafe(this);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+
+                    strSelectedParentID = frmPickMount.SelectedItem;
+                }
             }
 
             CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId,
-                out VehicleMod objOldParentVehicleMod);
+                                                          out VehicleMod objOldParentVehicleMod);
             Cyberware objOldParent = objModularCyberware.Parent;
             if (objOldParent != null)
                 objModularCyberware.ChangeModularEquip(false);
@@ -16011,7 +16129,7 @@ namespace Chummer
                 return;
             using (frmCreateWeaponMount frmCreateWeaponMount = new frmCreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount))
             {
-                frmCreateWeaponMount.ShowDialog(this);
+                frmCreateWeaponMount.ShowDialogSafe(this);
 
                 if (frmCreateWeaponMount.DialogResult == DialogResult.Cancel)
                     return;
@@ -16026,7 +16144,7 @@ namespace Chummer
         {
             using (frmCreateCustomDrug form = new frmCreateCustomDrug(CharacterObject))
             {
-                form.ShowDialog(this);
+                form.ShowDialogSafe(this);
 
                 if (form.DialogResult == DialogResult.Cancel)
                     return;
@@ -16205,7 +16323,7 @@ namespace Chummer
         private void mnuFileExport_Click(object sender, EventArgs e)
         {
             using (frmExport frmExportCharacter = new frmExport(CharacterObject))
-                frmExportCharacter.ShowDialog(this);
+                frmExportCharacter.ShowDialogSafe(this);
         }
     }
 }

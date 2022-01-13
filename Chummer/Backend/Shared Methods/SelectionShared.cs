@@ -247,45 +247,53 @@ namespace Chummer
                         XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNodeAndCacheExpression("includeinlimit");
                         if (xmlIncludeInLimit != null)
                         {
-                            HashSet<string> setNamesIncludedInLimit = new HashSet<string>(1);
-                            if (!string.IsNullOrEmpty(strNameNode))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setNamesIncludedInLimit))
                             {
-                                setNamesIncludedInLimit.Add(strNameNode);
-                            }
-                            foreach (XPathNavigator objChildXml in xmlIncludeInLimit.SelectChildren(XPathNodeType.Element))
-                            {
-                                setNamesIncludedInLimit.Add(objChildXml.Value);
-                            }
-
-                            if (blnCheckCyberwareChildren)
-                            {
-                                foreach (Cyberware objItem in objCharacter.Cyberware.GetAllDescendants(x =>
-                                    x.Children))
+                                if (!string.IsNullOrEmpty(strNameNode))
                                 {
-                                    if (!setNamesIncludedInLimit.Contains(objItem.Name))
-                                        continue;
-                                    if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
-                                        continue;
-                                    if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount) || !objItem.IsModularCurrentlyEquipped)
-                                        continue;
-                                    if (strNameNode == objItem.Name)
-                                        ++intCount;
-                                    ++intExtendedCount;
-                                    if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
-                                        return false;
+                                    setNamesIncludedInLimit.Add(strNameNode);
                                 }
-                            }
-                            else
-                            {
-                                foreach (string strItemName in objListToCheck.Select(x => x.Name))
+
+                                foreach (XPathNavigator objChildXml in xmlIncludeInLimit.SelectChildren(
+                                             XPathNodeType.Element))
                                 {
-                                    if (!setNamesIncludedInLimit.Contains(strItemName))
-                                        continue;
-                                    if (strNameNode == strItemName)
-                                        ++intCount;
-                                    ++intExtendedCount;
-                                    if (!blnShowMessage && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
-                                        return false;
+                                    setNamesIncludedInLimit.Add(objChildXml.Value);
+                                }
+
+                                if (blnCheckCyberwareChildren)
+                                {
+                                    foreach (Cyberware objItem in objCharacter.Cyberware.GetAllDescendants(x =>
+                                                 x.Children))
+                                    {
+                                        if (!setNamesIncludedInLimit.Contains(objItem.Name))
+                                            continue;
+                                        if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
+                                            continue;
+                                        if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
+                                            || !objItem.IsModularCurrentlyEquipped)
+                                            continue;
+                                        if (strNameNode == objItem.Name)
+                                            ++intCount;
+                                        ++intExtendedCount;
+                                        if (!blnShowMessage
+                                            && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
+                                            return false;
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (string strItemName in objListToCheck.Select(x => x.Name))
+                                    {
+                                        if (!setNamesIncludedInLimit.Contains(strItemName))
+                                            continue;
+                                        if (strNameNode == strItemName)
+                                            ++intCount;
+                                        ++intExtendedCount;
+                                        if (!blnShowMessage
+                                            && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
+                                            return false;
+                                    }
                                 }
                             }
                         }
@@ -533,7 +541,7 @@ namespace Chummer
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
                                 strSpace,
                                 objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(strNodeAttributes,
-                                    null, string.Empty, false), intNodeVal);
+                                    blnShowValues: false), intNodeVal);
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);
                         return (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal;
                     }
@@ -795,12 +803,22 @@ namespace Chummer
                         string strEssNodeGradeAttributeText = xmlNode.SelectSingleNodeAndCacheExpression("@grade")?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
-                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
-                            decimal decGrade =
-                                objCharacter.Cyberware.Where(
-                                        objCyberware =>
-                                            setEssNodeGradeAttributeText.Any(func => objCyberware.Grade.Name.Contains(func)))
-                                    .Sum(objCyberware => objCyberware.CalculatedESS);
+                            decimal decGrade;
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string>
+                                                                                setEssNodeGradeAttributeText))
+                            {
+                                setEssNodeGradeAttributeText.AddRange(
+                                    strEssNodeGradeAttributeText.SplitNoAlloc(
+                                        ',', StringSplitOptions.RemoveEmptyEntries));
+                                decGrade =
+                                    objCharacter.Cyberware.Where(
+                                                    objCyberware =>
+                                                        setEssNodeGradeAttributeText.Any(
+                                                            func => objCyberware.Grade.Name.Contains(func)))
+                                                .Sum(objCyberware => objCyberware.CalculatedESS);
+                            }
+
                             if (strNodeInnerText.StartsWith('-'))
                             {
                                 // Essence must be less than the value.

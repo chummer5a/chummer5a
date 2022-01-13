@@ -35,7 +35,7 @@ namespace Chummer
         private readonly MartialArt _objMartialArt;
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly Character _objCharacter;
-        private readonly HashSet<string> _setAllowedTechniques = new HashSet<string>();
+        private readonly HashSet<string> _setAllowedTechniques = Utils.StringHashSetPool.Get();
 
         #region Control Events
 

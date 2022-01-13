@@ -70,14 +70,16 @@ namespace Chummer
                     = _xmlBaseMetatypeDataNode.SelectSingleNodeAndCacheExpression("metatypes");
                 if (xmlMetatypesNode != null)
                 {
-                    HashSet<string> lstAlreadyProcessed = new HashSet<string>();
-                    foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
-                                 "categories/category"))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setAlreadyProcessed))
                     {
-                        string strInnerText = objXmlCategory.Value;
-                        if (!lstAlreadyProcessed.Contains(strInnerText))
+                        foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
+                                     "categories/category"))
                         {
-                            lstAlreadyProcessed.Add(strInnerText);
+                            string strInnerText = objXmlCategory.Value;
+                            if (setAlreadyProcessed.Contains(strInnerText))
+                                continue;
+                            setAlreadyProcessed.Add(strInnerText);
                             if (xmlMetatypesNode.SelectSingleNode("metatype[category = " + strInnerText.CleanXPath()
                                                                   + " and (" + _objCharacter.Settings.BookXPath()
                                                                   + ")]")
