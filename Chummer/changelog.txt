@@ -43,6 +43,7 @@ Application Changes:
 - The character roster's Recent Characters list no longer gets doubly populated by entries that also exist in the Favorite Characters list whenever a character from that list is opened or closed. Fixes #4565.
 - Underbarrel weapons that come with their parent weapon now properly automatically inherit any smartgun features that also come built into their parent weapon. Fixes #4662.
 - Added a basic implementation of search for metatypes and critters using Point Buy. This will later be extended to include Priority options. Implements #4546
+- Added support for the actiondicepool improvement selecting from a list of the actions provided in actions.xml. 
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
@@ -58,6 +59,7 @@ Data Changes:
 - Extended Clip in German Data Changes now properly scales its cost based on the accessory's rating.
 - Improved Potential can now properly be taken at multiple levels with German Data Changes.
 - Badger Mentor Spirit from SOTG now adds two levels of Perceptive quality rather than 1 level of Perceptive and +2 to Perception.
+- Codeslinger quality now prompts for an action from the Matrix category of actions.xml.
 
 Changed/New Strings:
 - String_GameplayOption

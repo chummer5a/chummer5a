@@ -125,7 +125,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <actiondicepool category='Matrix' />
       </bonus>
       <source>SR5</source>
       <page>72</page>

@@ -7328,7 +7328,64 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("actiondicepool");
-            CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActionDicePool,
+            if (!string.IsNullOrEmpty(ForcedValue))
+            {
+                SelectedValue = ForcedValue;
+            }
+            else if (bonusNode["name"] != null)
+            {
+                SelectedValue = bonusNode["name"].InnerText;
+            }
+            else
+            {
+                // Populate the Magician Traditions list.
+                XPathNavigator xmlActionsBaseNode =
+                    _objCharacter.LoadDataXPath("actions.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                List<ListItem> lstActions = new List<ListItem>(30);
+                StringBuilder strXpath = new StringBuilder();
+                    strXpath.Append("actions/action[" + _objCharacter.Settings.BookXPath());
+                    string strCategory = bonusNode.Attributes["category"]?.InnerText ?? null;
+                if (strCategory != null)
+                {
+                    strXpath.Append(" and category = " + strCategory.CleanXPath());
+                }
+
+                strXpath.Append("]");
+                if (xmlActionsBaseNode != null)
+                {
+                    foreach (XPathNavigator xmlAction in xmlActionsBaseNode.Select(strXpath.ToString()))
+                    {
+                        string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstActions.Add(new ListItem(xmlAction.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
+                                xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                    }
+                }
+
+                if (lstActions.Count > 1)
+                {
+                    lstActions.Sort(CompareListItems.CompareNames);
+                }
+
+                using (frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                    AllowAutoSelect = false
+                })
+                {
+                    frmPickItem.SetDropdownItemsMode(lstActions);
+                    frmPickItem.ShowDialog(Program.MainForm);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    SelectedValue = frmPickItem.SelectedName;
+                }
+            }
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.ActionDicePool,
                 _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
 
