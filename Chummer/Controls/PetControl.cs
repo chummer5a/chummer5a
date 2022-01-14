@@ -200,7 +200,7 @@ namespace Chummer
 
         private void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmContactNotes = new frmNotes(_objContact.Notes, _objContact.NotesColor))
+            using (EditNotes frmContactNotes = new EditNotes(_objContact.Notes, _objContact.NotesColor))
             {
                 frmContactNotes.ShowDialogSafe(this);
                 if (frmContactNotes.DialogResult != DialogResult.OK)

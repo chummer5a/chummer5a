@@ -52,7 +52,7 @@ namespace Chummer
         private bool _blnIsDirty;
         private bool _blnIsRefreshing;
         private bool _blnLoading = true;
-        private frmViewer _frmPrintView;
+        private CharacterSheetViewer _frmPrintView;
 
         protected CharacterShared(Character objCharacter)
         {
@@ -248,7 +248,7 @@ namespace Chummer
             if (objNotes == null)
                 return;
             using (new CursorWait(this))
-            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
+            using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
             {
                 frmItemNotes.ShowDialogSafe(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -6687,9 +6687,9 @@ namespace Chummer
 
                 using (new CursorWait(this))
                 {
-                    using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
+                    using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
                     {
-                        frmProgressBar.PerformStep(_objCharacter.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
+                        frmProgressBar.PerformStep(_objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!_objCharacter.Save())
                             return false;
                         GlobalSettings.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
@@ -6752,7 +6752,7 @@ namespace Chummer
         /// <summary>
         /// The frmViewer window being used by the character.
         /// </summary>
-        public frmViewer PrintWindow
+        public CharacterSheetViewer PrintWindow
         {
             get => _frmPrintView;
             set => _frmPrintView = value;
@@ -6766,7 +6766,7 @@ namespace Chummer
                 // If a Viewer window already exists for this character, use it instead.
                 if (_frmPrintView == null)
                 {
-                    _frmPrintView = new frmViewer();
+                    _frmPrintView = new CharacterSheetViewer();
                     _frmPrintView.SetCharacters(CharacterObject);
                     _frmPrintView.Show();
                 }

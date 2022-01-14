@@ -323,7 +323,7 @@ namespace ChummerHub.Client.Backend
             SinnersClient client = null;
             try
             {
-                Assembly assembly = Assembly.GetAssembly(typeof(frmChummerMain));
+                Assembly assembly = Assembly.GetAssembly(typeof(ChummerMainForm));
                 Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0
                     ? "https://chummer-stable.azurewebsites.net"
                     : "https://chummer-beta.azurewebsites.net";
@@ -523,7 +523,7 @@ namespace ChummerHub.Client.Backend
                         Tag = new Action(() =>
                         {
                             using (new CursorWait(Program.MainForm))
-                                using (frmGlobalSettings frmOptions = new frmGlobalSettings("tabPlugins"))
+                                using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabPlugins"))
                                     frmOptions.ShowDialog(Program.MainForm);
                         })
                     };
@@ -952,7 +952,7 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(fileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(fileName), Character.NumLoadingSections))
                 {
                     if (!await objCharacter.LoadAsync(frmLoadingForm, false))
                         return null;

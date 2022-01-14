@@ -563,7 +563,7 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmItemNotes = new frmNotes(_objSkill.Notes, _objSkill.NotesColor))
+            using (EditNotes frmItemNotes = new EditNotes(_objSkill.Notes, _objSkill.NotesColor))
             {
                 frmItemNotes.ShowDialogSafe(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)

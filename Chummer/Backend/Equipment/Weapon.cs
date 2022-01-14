@@ -5593,7 +5593,7 @@ namespace Chummer.Backend.Equipment
                 lstAmmo.Add(objExternalSource);
 
             // Show the Ammunition Selection window.
-            using (frmReload frmReloadWeapon = new frmReload(this)
+            using (ReloadWeapon frmReloadWeapon = new ReloadWeapon(this)
             {
                 Ammo = lstAmmo,
                 Count = lstCount

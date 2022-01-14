@@ -276,7 +276,7 @@ namespace Chummer
 
         private void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmSpritNotes = new frmNotes(_objSpirit.Notes, _objSpirit.NotesColor))
+            using (EditNotes frmSpritNotes = new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor))
             {
                 frmSpritNotes.ShowDialogSafe(this);
                 if (frmSpritNotes.DialogResult != DialogResult.OK)
@@ -563,9 +563,9 @@ namespace Chummer
 
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-                    using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
+                    using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
                     {
-                        frmProgressBar.PerformStep(objCharacter.CharacterName, frmLoading.ProgressBarTextPatterns.Saving);
+                        frmProgressBar.PerformStep(objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!objCharacter.Save())
                             return;
                     }

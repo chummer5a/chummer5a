@@ -20,7 +20,7 @@ namespace SamplePlugin
             return "Sample Plugin";
         }
 
-        public void CustomInitialize(frmChummerMain mainControl)
+        public void CustomInitialize(ChummerMainForm mainControl)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace SamplePlugin
             return true;
         }
 
-        public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
+        public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
         {
             //here you can add nodes to the character roster.
             return null;
@@ -105,7 +105,7 @@ namespace SamplePlugin
             return null;
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCareer input)
+        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCareer input)
         {
             //here you can add (or remove!) tabs from frmCareer
             //as well as manipulate every single tab

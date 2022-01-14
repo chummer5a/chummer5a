@@ -46,7 +46,7 @@ namespace Chummer
 
             DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
             {
-                using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
+                using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
                 {
                     frmItemNotes.ShowDialogSafe(frmToUse);
                     if (frmItemNotes.DialogResult != DialogResult.OK)

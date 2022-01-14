@@ -65,7 +65,7 @@ namespace Chummer
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            frmAddToken frmAdd = new frmAddToken(this);
+            AddToken frmAdd = new AddToken(this);
             frmAdd.Show();
         }
 

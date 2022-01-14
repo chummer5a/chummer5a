@@ -413,7 +413,7 @@ namespace Chummer
                     // Restore Chummer's language to en-US if we failed to load the default one.
                     if (blnRestoreDefaultLanguage)
                         GlobalSettings.Language = GlobalSettings.DefaultLanguage;
-                    MainForm = new frmChummerMain();
+                    MainForm = new ChummerMainForm();
                     try
                     {
                         PluginLoader.LoadPlugins();
@@ -651,18 +651,18 @@ namespace Chummer
             Utils.BreakOnErrorIfDebug();
         }
 
-        private static frmChummerMain _frmMainForm;
+        private static ChummerMainForm _frmMainForm;
 
         /// <summary>
         /// Main application form.
         /// </summary>
-        public static frmChummerMain MainForm
+        public static ChummerMainForm MainForm
         {
             get => _frmMainForm;
             set
             {
                 _frmMainForm = value;
-                foreach (Action<frmChummerMain> funcToRun in MainFormOnAssignActions)
+                foreach (Action<ChummerMainForm> funcToRun in MainFormOnAssignActions)
                     funcToRun(_frmMainForm);
                 MainFormOnAssignActions.Clear();
             }
@@ -671,7 +671,7 @@ namespace Chummer
         /// <summary>
         /// Queue of Actions to run after MainForm is assigned
         /// </summary>
-        public static List<Action<frmChummerMain>> MainFormOnAssignActions { get; } = new List<Action<frmChummerMain>>();
+        public static List<Action<ChummerMainForm>> MainFormOnAssignActions { get; } = new List<Action<ChummerMainForm>>();
 
         /// <summary>
         /// Gets the form to use for creating sub-forms and displaying them as dialogs

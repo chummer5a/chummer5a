@@ -141,7 +141,7 @@ namespace Chummer.UI.Shared
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                         objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
                         continue;
-                    using (frmNotes frmItemNotes = new frmNotes(objImprovement.Notes, objImprovement.NotesColor))
+                    using (EditNotes frmItemNotes = new EditNotes(objImprovement.Notes, objImprovement.NotesColor))
                     {
                         frmItemNotes.ShowDialogSafe(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -173,7 +173,7 @@ namespace Chummer.UI.Shared
         /// <param name="treNode"></param>
         private void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
-            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
+            using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
             {
                 frmItemNotes.ShowDialogSafe(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)

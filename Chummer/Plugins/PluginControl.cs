@@ -38,9 +38,9 @@ namespace Chummer.Plugins
     public interface IPlugin : IDisposable
     {
         //only very rudimentary initialization should take place here. Make it QUICK.
-        void CustomInitialize(frmChummerMain mainControl);
+        void CustomInitialize(ChummerMainForm mainControl);
 
-        IEnumerable<TabPage> GetTabPages(frmCareer input);
+        IEnumerable<TabPage> GetTabPages(CharacterCareer input);
 
         IEnumerable<TabPage> GetTabPages(frmCreate input);
 
@@ -53,7 +53,7 @@ namespace Chummer.Plugins
 
         bool ProcessCommandLine(string parameter);
 
-        Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
+        Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate);
 
         UserControl GetOptionsControl();
 
@@ -431,7 +431,7 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(frmCareer frmCareer, CustomActivity parentActivity)
+        internal void CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
