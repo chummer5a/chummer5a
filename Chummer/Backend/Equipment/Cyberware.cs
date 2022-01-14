@@ -211,274 +211,290 @@ namespace Chummer.Backend.Equipment
             bool blnDoCyberlimbSTRRefresh = false;
             bool blnDoEssenceImprovementsRefresh = false;
             bool blnDoRedlinerRefresh = false;
-            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            try
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
             {
-                switch (e.Action)
+                try
                 {
-                    case NotifyCollectionChangedAction.Add:
-                        foreach (Cyberware objNewItem in e.NewItems)
-                        {
-                            objNewItem.Parent = this;
-                            if (_objCharacter?.IsLoading == false)
+                    switch (e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            foreach (Cyberware objNewItem in e.NewItems)
                             {
-                                // Needed in order to properly process named sources where
-                                // the tooltip was built before the object was added to the character
-                                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                objNewItem.Parent = this;
+                                if (_objCharacter?.IsLoading == false)
                                 {
-                                    if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless")
-                                        == objNewItem.InternalId && objImprovement.Enabled)
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in _objCharacter.Improvements)
                                     {
-                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                  string strPropertyToUpdate) in objImprovement
-                                                     .GetRelevantPropertyChangers())
+                                        if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId && objImprovement.Enabled)
                                         {
-                                            if (dicChangedProperties.TryGetValue(
-                                                    objItemToUpdate, out HashSet<string> setChangedProperties))
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            else
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                      string strPropertyToUpdate) in objImprovement
+                                                         .GetRelevantPropertyChangers())
                                             {
-                                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                                setTemp.Add(strPropertyToUpdate);
-                                                dicChangedProperties.Add(objItemToUpdate, setTemp);
+                                                if (dicChangedProperties.TryGetValue(
+                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                    setChangedProperties.Add(strPropertyToUpdate);
+                                                else
+                                                {
+                                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                                    setTemp.Add(strPropertyToUpdate);
+                                                    dicChangedProperties.Add(objItemToUpdate, setTemp);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
 
-                            if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
-                                Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null
-                                &&
-                                _objCharacter?.Settings.DontUseCyberlimbCalculation != true &&
-                                !string.IsNullOrWhiteSpace(LimbSlot) &&
-                                _objCharacter?.Settings.ExcludeLimbSlot.Contains(LimbSlot) != true)
-                            {
-                                if (InheritAttributes)
+                                if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
+                                    && ParentVehicle == null
+                                    &&
+                                    _objCharacter?.Settings.DontUseCyberlimbCalculation != true &&
+                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
+                                    _objCharacter?.Settings.ExcludeLimbSlot.Contains(LimbSlot) != true)
                                 {
-                                    blnDoCyberlimbAGIRefresh = true;
-                                    blnDoCyberlimbSTRRefresh = true;
-                                }
-                                else
-                                {
-                                    if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objNewItem.Name))
+                                    if (InheritAttributes)
                                     {
                                         blnDoCyberlimbAGIRefresh = true;
-                                    }
-
-                                    if (!blnDoCyberlimbSTRRefresh
-                                        && s_StrengthCombinedStrings.Contains(objNewItem.Name))
-                                    {
                                         blnDoCyberlimbSTRRefresh = true;
                                     }
+                                    else
+                                    {
+                                        if (!blnDoCyberlimbAGIRefresh
+                                            && s_AgilityCombinedStrings.Contains(objNewItem.Name))
+                                        {
+                                            blnDoCyberlimbAGIRefresh = true;
+                                        }
+
+                                        if (!blnDoCyberlimbSTRRefresh
+                                            && s_StrengthCombinedStrings.Contains(objNewItem.Name))
+                                        {
+                                            blnDoCyberlimbSTRRefresh = true;
+                                        }
+                                    }
                                 }
+
+                                if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
+                                    string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                                    blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
-                                string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                                blnDoEssenceImprovementsRefresh = true;
-                        }
+                            this.RefreshMatrixAttributeArray();
+                            blnDoRedlinerRefresh = true;
+                            break;
 
-                        this.RefreshMatrixAttributeArray();
-                        blnDoRedlinerRefresh = true;
-                        break;
+                        case NotifyCollectionChangedAction.Remove:
+                            foreach (Cyberware objOldItem in e.OldItems)
+                            {
+                                objOldItem.Parent = null;
+                                if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
+                                    && ParentVehicle == null
+                                    &&
+                                    !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
+                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                                {
+                                    if (InheritAttributes)
+                                    {
+                                        blnDoCyberlimbAGIRefresh = true;
+                                        blnDoCyberlimbSTRRefresh = true;
+                                    }
+                                    else
+                                    {
+                                        if (!blnDoCyberlimbAGIRefresh
+                                            && s_AgilityCombinedStrings.Contains(objOldItem.Name))
+                                        {
+                                            blnDoCyberlimbAGIRefresh = true;
+                                        }
 
-                    case NotifyCollectionChangedAction.Remove:
-                        foreach (Cyberware objOldItem in e.OldItems)
-                        {
-                            objOldItem.Parent = null;
-                            if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
-                                Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null
+                                        if (!blnDoCyberlimbSTRRefresh
+                                            && s_StrengthCombinedStrings.Contains(objOldItem.Name))
+                                        {
+                                            blnDoCyberlimbSTRRefresh = true;
+                                        }
+                                    }
+                                }
+
+                                if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
+                                    string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                                    blnDoEssenceImprovementsRefresh = true;
+                            }
+
+                            this.RefreshMatrixAttributeArray();
+                            blnDoRedlinerRefresh = true;
+                            break;
+
+                        case NotifyCollectionChangedAction.Replace:
+                            foreach (Cyberware objOldItem in e.OldItems)
+                            {
+                                objOldItem.Parent = null;
+                                if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
+                                    && ParentVehicle == null
+                                    &&
+                                    !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
+                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                                {
+                                    if (InheritAttributes)
+                                    {
+                                        blnDoCyberlimbAGIRefresh = true;
+                                        blnDoCyberlimbSTRRefresh = true;
+                                    }
+                                    else
+                                    {
+                                        if (!blnDoCyberlimbAGIRefresh
+                                            && s_AgilityCombinedStrings.Contains(objOldItem.Name))
+                                        {
+                                            blnDoCyberlimbAGIRefresh = true;
+                                        }
+
+                                        if (!blnDoCyberlimbSTRRefresh
+                                            && s_StrengthCombinedStrings.Contains(objOldItem.Name))
+                                        {
+                                            blnDoCyberlimbSTRRefresh = true;
+                                        }
+                                    }
+                                }
+
+                                if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
+                                    string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                                    blnDoEssenceImprovementsRefresh = true;
+                            }
+
+                            foreach (Cyberware objNewItem in e.NewItems)
+                            {
+                                objNewItem.Parent = this;
+                                if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
+                                    Category == "Cyberlimb" && Parent?.InheritAttributes != false
+                                    && ParentVehicle == null
+                                    &&
+                                    !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                    !string.IsNullOrWhiteSpace(LimbSlot) &&
+                                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                                {
+                                    if (InheritAttributes)
+                                    {
+                                        blnDoCyberlimbAGIRefresh = true;
+                                        blnDoCyberlimbSTRRefresh = true;
+                                    }
+                                    else
+                                    {
+                                        if (!blnDoCyberlimbAGIRefresh
+                                            && s_AgilityCombinedStrings.Contains(objNewItem.Name))
+                                        {
+                                            blnDoCyberlimbAGIRefresh = true;
+                                        }
+
+                                        if (!blnDoCyberlimbSTRRefresh
+                                            && s_StrengthCombinedStrings.Contains(objNewItem.Name))
+                                        {
+                                            blnDoCyberlimbSTRRefresh = true;
+                                        }
+                                    }
+                                }
+
+                                if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
+                                    string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                                    blnDoEssenceImprovementsRefresh = true;
+                            }
+
+                            this.RefreshMatrixAttributeArray();
+                            blnDoRedlinerRefresh = true;
+                            break;
+
+                        case NotifyCollectionChangedAction.Reset:
+                            blnDoEssenceImprovementsRefresh = true;
+                            if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null
                                 &&
                                 !_objCharacter.Settings.DontUseCyberlimbCalculation &&
                                 !string.IsNullOrWhiteSpace(LimbSlot) &&
                                 !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                             {
-                                if (InheritAttributes)
-                                {
-                                    blnDoCyberlimbAGIRefresh = true;
-                                    blnDoCyberlimbSTRRefresh = true;
-                                }
-                                else
-                                {
-                                    if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objOldItem.Name))
-                                    {
-                                        blnDoCyberlimbAGIRefresh = true;
-                                    }
-
-                                    if (!blnDoCyberlimbSTRRefresh
-                                        && s_StrengthCombinedStrings.Contains(objOldItem.Name))
-                                    {
-                                        blnDoCyberlimbSTRRefresh = true;
-                                    }
-                                }
+                                blnDoCyberlimbAGIRefresh = true;
+                                blnDoCyberlimbSTRRefresh = true;
                             }
 
-                            if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
-                                string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                                blnDoEssenceImprovementsRefresh = true;
-                        }
+                            this.RefreshMatrixAttributeArray();
+                            blnDoRedlinerRefresh = true;
+                            break;
+                    }
 
-                        this.RefreshMatrixAttributeArray();
-                        blnDoRedlinerRefresh = true;
-                        break;
-
-                    case NotifyCollectionChangedAction.Replace:
-                        foreach (Cyberware objOldItem in e.OldItems)
+                    bool blnDoMovementUpdate = false;
+                    if (blnDoCyberlimbAGIRefresh || blnDoCyberlimbSTRRefresh)
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                                     .Concat(
+                                         _objCharacter.AttributeSection.SpecialAttributeList))
                         {
-                            objOldItem.Parent = null;
-                            if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
-                                Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null
-                                &&
-                                !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                !string.IsNullOrWhiteSpace(LimbSlot) &&
-                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                            if ((blnDoCyberlimbAGIRefresh && objCharacterAttrib.Abbrev == "AGI") ||
+                                (blnDoCyberlimbSTRRefresh && objCharacterAttrib.Abbrev == "STR"))
                             {
-                                if (InheritAttributes)
-                                {
-                                    blnDoCyberlimbAGIRefresh = true;
-                                    blnDoCyberlimbSTRRefresh = true;
-                                }
-                                else
-                                {
-                                    if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objOldItem.Name))
-                                    {
-                                        blnDoCyberlimbAGIRefresh = true;
-                                    }
-
-                                    if (!blnDoCyberlimbSTRRefresh
-                                        && s_StrengthCombinedStrings.Contains(objOldItem.Name))
-                                    {
-                                        blnDoCyberlimbSTRRefresh = true;
-                                    }
-                                }
+                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                             }
-
-                            if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
-                                string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                                blnDoEssenceImprovementsRefresh = true;
                         }
 
-                        foreach (Cyberware objNewItem in e.NewItems)
+                        blnDoMovementUpdate = _objCharacter.Settings.CyberlegMovement && LimbSlot == "leg";
+                    }
+
+                    if (_objCharacter != null)
+                    {
+                        if (blnDoRedlinerRefresh)
                         {
-                            objNewItem.Parent = this;
-                            if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
-                                Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null
-                                &&
-                                !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                !string.IsNullOrWhiteSpace(LimbSlot) &&
-                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                            if (dicChangedProperties.TryGetValue(_objCharacter,
+                                                                 out HashSet<string> setChangedProperties))
+                                setChangedProperties.Add(nameof(Character.RedlinerBonus));
+                            else
                             {
-                                if (InheritAttributes)
-                                {
-                                    blnDoCyberlimbAGIRefresh = true;
-                                    blnDoCyberlimbSTRRefresh = true;
-                                }
-                                else
-                                {
-                                    if (!blnDoCyberlimbAGIRefresh && s_AgilityCombinedStrings.Contains(objNewItem.Name))
-                                    {
-                                        blnDoCyberlimbAGIRefresh = true;
-                                    }
-
-                                    if (!blnDoCyberlimbSTRRefresh
-                                        && s_StrengthCombinedStrings.Contains(objNewItem.Name))
-                                    {
-                                        blnDoCyberlimbSTRRefresh = true;
-                                    }
-                                }
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(nameof(Character.RedlinerBonus));
+                                dicChangedProperties.Add(_objCharacter, setTemp);
                             }
-
-                            if (!blnDoEssenceImprovementsRefresh && (Parent == null || AddToParentESS) &&
-                                string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                                blnDoEssenceImprovementsRefresh = true;
                         }
 
-                        this.RefreshMatrixAttributeArray();
-                        blnDoRedlinerRefresh = true;
-                        break;
-
-                    case NotifyCollectionChangedAction.Reset:
-                        blnDoEssenceImprovementsRefresh = true;
-                        if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                            !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                            !string.IsNullOrWhiteSpace(LimbSlot) &&
-                            !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                        if (blnDoEssenceImprovementsRefresh)
                         {
-                            blnDoCyberlimbAGIRefresh = true;
-                            blnDoCyberlimbSTRRefresh = true;
+                            if (dicChangedProperties.TryGetValue(_objCharacter,
+                                                                 out HashSet<string> setChangedProperties))
+                                setChangedProperties.Add(EssencePropertyName);
+                            else
+                            {
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(EssencePropertyName);
+                                dicChangedProperties.Add(_objCharacter, setTemp);
+                            }
                         }
 
-                        this.RefreshMatrixAttributeArray();
-                        blnDoRedlinerRefresh = true;
-                        break;
-                }
+                        if (blnDoMovementUpdate)
+                        {
+                            if (dicChangedProperties.TryGetValue(_objCharacter,
+                                                                 out HashSet<string> setChangedProperties))
+                                setChangedProperties.Add(nameof(Character.GetMovement));
+                            else
+                            {
+                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                setTemp.Add(nameof(Character.GetMovement));
+                                dicChangedProperties.Add(_objCharacter, setTemp);
+                            }
+                        }
+                    }
 
-                bool blnDoMovementUpdate = false;
-                if (blnDoCyberlimbAGIRefresh || blnDoCyberlimbSTRRefresh)
+                    foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                    {
+                        objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                    }
+                }
+                finally
                 {
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
-                    {
-                        if ((blnDoCyberlimbAGIRefresh && objCharacterAttrib.Abbrev == "AGI") ||
-                            (blnDoCyberlimbSTRRefresh && objCharacterAttrib.Abbrev == "STR"))
-                        {
-                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                        }
-                    }
-
-                    blnDoMovementUpdate = _objCharacter.Settings.CyberlegMovement && LimbSlot == "leg";
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
                 }
-
-                if (_objCharacter != null)
-                {
-                    if (blnDoRedlinerRefresh)
-                    {
-                        if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
-                            setChangedProperties.Add(nameof(Character.RedlinerBonus));
-                        else
-                        {
-                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                            setTemp.Add(nameof(Character.RedlinerBonus));
-                            dicChangedProperties.Add(_objCharacter, setTemp);
-                        }
-                    }
-
-                    if (blnDoEssenceImprovementsRefresh)
-                    {
-                        if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
-                            setChangedProperties.Add(EssencePropertyName);
-                        else
-                        {
-                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                            setTemp.Add(EssencePropertyName);
-                            dicChangedProperties.Add(_objCharacter, setTemp);
-                        }
-                    }
-
-                    if (blnDoMovementUpdate)
-                    {
-                        if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
-                            setChangedProperties.Add(nameof(Character.GetMovement));
-                        else
-                        {
-                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                            setTemp.Add(nameof(Character.GetMovement));
-                            dicChangedProperties.Add(_objCharacter, setTemp);
-                        }
-                    }
-                }
-
-                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
-                {
-                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
-                }
-            }
-            finally
-            {
-                foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                    Utils.StringHashSetPool.Return(setToReturn);
             }
         }
 

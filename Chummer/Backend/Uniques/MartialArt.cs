@@ -99,43 +99,46 @@ namespace Chummer
             }
             if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
             {
-                Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                    new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-                try
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                           Utils.DictionaryForMultiplePropertyChangedPool,
+                           out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
                 {
-                    foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
+                    try
                     {
-                        // Needed in order to properly process named sources where
-                        // the tooltip was built before the object was added to the character
-                        foreach (Improvement objImprovement in _objCharacter.Improvements)
+                        foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
                         {
-                            if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                continue;
-                            foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
-                                     objImprovement.GetRelevantPropertyChangers())
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            foreach (Improvement objImprovement in _objCharacter.Improvements)
                             {
-                                if (!dicChangedProperties.TryGetValue(objToUpdate,
-                                                                      out HashSet<string> setChangedProperties))
+                                if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                    continue;
+                                foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
+                                         objImprovement.GetRelevantPropertyChangers())
                                 {
-                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                    dicChangedProperties.Add(objToUpdate, setChangedProperties);
-                                }
+                                    if (!dicChangedProperties.TryGetValue(objToUpdate,
+                                                                          out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objToUpdate, setChangedProperties);
+                                    }
 
-                                setChangedProperties.Add(strPropertyName);
+                                    setChangedProperties.Add(strPropertyName);
+                                }
                             }
                         }
-                    }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
-                             dicChangedProperties)
-                    {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                                 dicChangedProperties)
+                        {
+                            kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        }
                     }
-                }
-                finally
-                {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    finally
+                    {
+                        foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                            Utils.StringHashSetPool.Return(setToReturn);
+                    }
                 }
             }
         }
