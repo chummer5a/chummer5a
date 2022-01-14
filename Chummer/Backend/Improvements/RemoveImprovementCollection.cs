@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-namespace Chummer.Classes
+namespace Chummer
 {
     //Might in the future be used as part of ImprovementManager (clsImprovement.cs at time of writing)
     public static class RemoveImprovementCollection

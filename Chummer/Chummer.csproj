@@ -321,29 +321,29 @@
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
-    <Compile Include="Backend\Extensions\BoolArrayExtensions.cs" />
-    <Compile Include="Backend\Extensions\CollectionExtensions.cs" />
-    <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
-    <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
-    <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Backend\Extensions\EnumeratorExtensions.cs" />
-    <Compile Include="Backend\Extensions\FloatExtensions.cs" />
-    <Compile Include="Backend\Extensions\IntegerExtensions.cs" />
-    <Compile Include="Backend\Extensions\ListExtensions.cs" />
-    <Compile Include="Backend\Extensions\ImageExtensions.cs" />
-    <Compile Include="Backend\Extensions\LinqExtensions.cs" />
-    <Compile Include="Backend\Extensions\MathExtensions.cs" />
-    <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
-    <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
-    <Compile Include="Backend\Extensions\RandomExtensions.cs" />
-    <Compile Include="Backend\Extensions\ReadOnlyDictionaryExtensions.cs" />
-    <Compile Include="Backend\Extensions\ReadOnlyListExtensions.cs" />
-    <Compile Include="Backend\Extensions\StringBuilderExtensions.cs" />
-    <Compile Include="Backend\Extensions\StringExtensions.cs" />
-    <Compile Include="Backend\Extensions\VersionExtensions.cs" />
-    <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
-    <Compile Include="Backend\Extensions\XmlDocumentExtensions.cs" />
-    <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\BoolArrayExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\CollectionExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\DecimalExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\DoubleExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\EnumeratorExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\FloatExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\IntegerExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\ListExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\ImageExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\LinqExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\MathExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\ProcessExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\RandomExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\ReadOnlyDictionaryExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\StringExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\VersionExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\WinFormsExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\XmlDocumentExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -367,11 +367,11 @@
     <Compile Include="Backend\Equipment\VehicleMod.cs" />
     <Compile Include="Backend\Equipment\Weapon.cs" />
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
-    <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
-    <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
-    <Compile Include="Backend\Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\BindingListExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\BitArrayExtensions.cs" />
+    <Compile Include="Static Classes\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
-    <Compile Include="Backend\Shared Methods\SelectionShared.cs" />
+    <Compile Include="Static Classes\SelectionShared.cs" />
     <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
@@ -409,33 +409,33 @@
     <Compile Include="Forms\Character Creation Forms\SelectLifeModule.Designer.cs">
       <DependentUpon>SelectLifeModule.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\AddImprovementCollection.cs">
+    <Compile Include="Backend\Improvements\AddImprovementCollection.cs">
       <DependentUpon>Improvement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\CharacterCache.cs" />
     <Compile Include="Classes\CharacterSettings.cs" />
     <Compile Include="Classes\CustomDataDirectoryInfo.cs" />
-    <Compile Include="Classes\CommonFunctions.cs" />
-    <Compile Include="Classes\CrashReportData.cs" />
+    <Compile Include="Static Classes\CommonFunctions.cs" />
+    <Compile Include="Helper Classes\CrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
     <Compile Include="Classes\Character.cs" />
-    <Compile Include="Classes\HoverDisplayCoordinator.cs" />
-    <Compile Include="Classes\Improvement.cs" />
-    <Compile Include="Classes\Expenses.cs" />
-    <Compile Include="Classes\LanguageManager.cs" />
-    <Compile Include="Classes\ListItem.cs" />
-    <Compile Include="Classes\Log.cs" />
-    <Compile Include="Classes\GlobalSettings.cs" />
-    <Compile Include="Classes\ParameterAttribute.cs" />
-    <Compile Include="Classes\StoryBuilder.cs" />
-    <Compile Include="Classes\Timekeeper.cs" />
-    <Compile Include="Classes\Utils.cs" />
-    <Compile Include="Backend\Extensions\XmlNodeExtensions.cs" />
-    <Compile Include="Classes\XmlManager.cs" />
+    <Compile Include="Helper Classes\HoverDisplayCoordinator.cs" />
+    <Compile Include="Backend\Improvements\Improvement.cs" />
+    <Compile Include="Backend\Uniques\Expenses.cs" />
+    <Compile Include="Static Classes\Managers\LanguageManager.cs" />
+    <Compile Include="Backend\Datastructures\ListItem.cs" />
+    <Compile Include="Static Classes\Log.cs" />
+    <Compile Include="Static Classes\GlobalSettings.cs" />
+    <Compile Include="Helper Classes\ParameterAttribute.cs" />
+    <Compile Include="Backend\Stories\StoryBuilder.cs" />
+    <Compile Include="Helper Classes\Timekeeper.cs" />
+    <Compile Include="Static Classes\Utils.cs" />
+    <Compile Include="Static Classes\Extensions\XmlNodeExtensions.cs" />
+    <Compile Include="Static Classes\Managers\XmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
-    <Compile Include="Classes\ColorManager.cs" />
-    <Compile Include="Classes\XslManager.cs" />
+    <Compile Include="Static Classes\Managers\ColorManager.cs" />
+    <Compile Include="Static Classes\Managers\XslManager.cs" />
     <Compile Include="Helper Classes\CollectionPooledObjectPolicy.cs" />
     <Compile Include="UI Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
@@ -455,12 +455,12 @@
     <Compile Include="Helper Classes\FetchSafelyFromPool.cs" />
     <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Interfaces\ITranslatable.cs" />
-    <Compile Include="Classes\NativeMethods.cs" />
-    <Compile Include="Classes\SettingsManager.cs" />
-    <Compile Include="Classes\RemoveImprovementCollection.cs">
+    <Compile Include="Static Classes\NativeMethods.cs" />
+    <Compile Include="Static Classes\Managers\SettingsManager.cs" />
+    <Compile Include="Backend\Improvements\RemoveImprovementCollection.cs">
       <DependentUpon>Improvement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\TooltipFactory.cs" />
+    <Compile Include="Helper Classes\TooltipFactory.cs" />
     <Compile Include="Controls\SustainedObjectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -473,10 +473,10 @@
     <Compile Include="Forms\Utility Forms\CharacterRoster.Designer.cs">
       <DependentUpon>CharacterRoster.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateWeaponMount.cs">
+    <Compile Include="Forms\Creation Forms\CreateWeaponMount.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateWeaponMount.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreateWeaponMount.Designer.cs">
       <DependentUpon>CreateWeaponMount.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Utility Forms\LoadingBar.cs">
@@ -584,10 +584,10 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
-    <Compile Include="Forms\AddToken.cs">
+    <Compile Include="Forms\Dashboard Forms\AddToken.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AddToken.Designer.cs">
+    <Compile Include="Forms\Dashboard Forms\AddToken.Designer.cs">
       <DependentUpon>AddToken.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Character Forms\CharacterCareer.cs">
@@ -602,34 +602,34 @@
     <Compile Include="Forms\Utility Forms\About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateCustomDrug.cs">
+    <Compile Include="Forms\Creation Forms\CreateCustomDrug.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateCustomDrug.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreateCustomDrug.Designer.cs">
       <DependentUpon>CreateCustomDrug.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateCyberwareSuite.cs">
+    <Compile Include="Forms\Creation Forms\CreateCyberwareSuite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateCyberwareSuite.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreateCyberwareSuite.Designer.cs">
       <DependentUpon>CreateCyberwareSuite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateImprovement.cs">
+    <Compile Include="Forms\Creation Forms\CreateImprovement.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateImprovement.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreateImprovement.Designer.cs">
       <DependentUpon>CreateImprovement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreatePACKSKit.cs">
+    <Compile Include="Forms\Creation Forms\CreatePACKSKit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreatePACKSKit.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreatePACKSKit.Designer.cs">
       <DependentUpon>CreatePACKSKit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateSpell.cs">
+    <Compile Include="Forms\Creation Forms\CreateSpell.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateSpell.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreateSpell.Designer.cs">
       <DependentUpon>CreateSpell.cs</DependentUpon>
     </Compile>
     <None Include="customdata\manifest.xsd">
@@ -646,10 +646,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Forms\GameMasterDashboard.cs">
+    <None Include="Forms\Dashboard Forms\GameMasterDashboard.cs">
       <SubType>Form</SubType>
     </None>
-    <None Include="Forms\GameMasterDashboard.Designer.cs">
+    <None Include="Forms\Dashboard Forms\GameMasterDashboard.Designer.cs">
       <DependentUpon>GameMasterDashboard.cs</DependentUpon>
     </None>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -1231,10 +1231,10 @@
     <Compile Include="Forms\Utility Forms\DiceRoller.Designer.cs">
       <DependentUpon>DiceRoller.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateExpense.cs">
+    <Compile Include="Forms\Creation Forms\CreateExpense.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateExpense.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreateExpense.Designer.cs">
       <DependentUpon>CreateExpense.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Utility Forms\ExportCharacter.cs">
@@ -1273,10 +1273,10 @@
     <Compile Include="Forms\Selection Forms\SelectLifestyleStartingNuyen.Designer.cs">
       <DependentUpon>SelectLifestyleStartingNuyen.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\CreateNaturalWeapon.cs">
+    <Compile Include="Forms\Creation Forms\CreateNaturalWeapon.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CreateNaturalWeapon.Designer.cs">
+    <Compile Include="Forms\Creation Forms\CreateNaturalWeapon.Designer.cs">
       <DependentUpon>CreateNaturalWeapon.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\EditNotes.cs">
@@ -1285,16 +1285,16 @@
     <Compile Include="Forms\EditNotes.Designer.cs">
       <DependentUpon>EditNotes.cs</DependentUpon>
     </Compile>
-    <None Include="Forms\PlayerDashboard.cs">
+    <None Include="Forms\Dashboard Forms\PlayerDashboard.cs">
       <SubType>Form</SubType>
     </None>
-    <None Include="Forms\PlayerDashboard.Designer.cs">
+    <None Include="Forms\Dashboard Forms\PlayerDashboard.Designer.cs">
       <DependentUpon>PlayerDashboard.cs</DependentUpon>
     </None>
-    <Compile Include="Forms\PrintMultipleCharacters.cs">
+    <Compile Include="Forms\Utility Forms\PrintMultipleCharacters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\PrintMultipleCharacters.Designer.cs">
+    <Compile Include="Forms\Utility Forms\PrintMultipleCharacters.Designer.cs">
       <DependentUpon>PrintMultipleCharacters.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Character Creation Forms\SelectMetatypePriority.cs">
@@ -1642,7 +1642,7 @@
     <EmbeddedResource Include="Forms\Utility Forms\CharacterRoster.resx">
       <DependentUpon>CharacterRoster.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AddToken.resx">
+    <EmbeddedResource Include="Forms\Dashboard Forms\AddToken.resx">
       <DependentUpon>AddToken.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1654,25 +1654,25 @@
       <DependentUpon>About.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateCustomDrug.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreateCustomDrug.resx">
       <DependentUpon>CreateCustomDrug.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateCyberwareSuite.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreateCyberwareSuite.resx">
       <DependentUpon>CreateCyberwareSuite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateImprovement.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreateImprovement.resx">
       <DependentUpon>CreateImprovement.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreatePACKSKit.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreatePACKSKit.resx">
       <DependentUpon>CreatePACKSKit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateSpell.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreateSpell.resx">
       <DependentUpon>CreateSpell.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateWeaponMount.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreateWeaponMount.resx">
       <DependentUpon>CreateWeaponMount.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\GameMasterDashboard.resx">
+    <EmbeddedResource Include="Forms\Dashboard Forms\GameMasterDashboard.resx">
       <DependentUpon>GameMasterDashboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\LoadingBar.resx">
@@ -1748,7 +1748,7 @@
       <DependentUpon>DiceRoller.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateExpense.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreateExpense.resx">
       <DependentUpon>CreateExpense.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\ExportCharacter.resx">
@@ -1769,16 +1769,16 @@
     <EmbeddedResource Include="Forms\Selection Forms\SelectLifestyleStartingNuyen.resx">
       <DependentUpon>SelectLifestyleStartingNuyen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CreateNaturalWeapon.resx">
+    <EmbeddedResource Include="Forms\Creation Forms\CreateNaturalWeapon.resx">
       <DependentUpon>CreateNaturalWeapon.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EditNotes.resx">
       <DependentUpon>EditNotes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PlayerDashboard.resx">
+    <EmbeddedResource Include="Forms\Dashboard Forms\PlayerDashboard.resx">
       <DependentUpon>PlayerDashboard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PrintMultipleCharacters.resx">
+    <EmbeddedResource Include="Forms\Utility Forms\PrintMultipleCharacters.resx">
       <DependentUpon>PrintMultipleCharacters.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Character Creation Forms\SelectMetatypePriority.resx">

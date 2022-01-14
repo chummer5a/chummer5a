@@ -32,7 +32,6 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
-using Chummer.Classes;
 using NLog;
 using static Chummer.Backend.Skills.SkillsSection;
 

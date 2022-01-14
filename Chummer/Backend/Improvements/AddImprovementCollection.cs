@@ -31,7 +31,7 @@ using NLog;
 
 // ReSharper disable InconsistentNaming
 
-namespace Chummer.Classes
+namespace Chummer
 {
     public class AddImprovementCollection
     {
