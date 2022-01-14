@@ -1210,6 +1210,11 @@ namespace Chummer.Backend.Equipment
 
             if (blnUseRating)
             {
+                if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
                 decimal decTotalCost;
                 // If the cost is determined by the Rating, evaluate the expression.
                 if (strReturn.Contains("Rating"))
@@ -1231,6 +1236,12 @@ namespace Chummer.Backend.Equipment
                 decItemCost = decTotalCost;
 
                 return decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+            }
+
+            if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strReturn = strValues[0] + '-' + strValues[Math.Max(Math.Min(MaxRating, strValues.Length) - 1, 0)];
             }
 
             return strReturn.CheapReplace("Rating", () => LanguageManager.GetString(RatingLabel)) + '¥';
