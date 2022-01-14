@@ -14894,11 +14894,17 @@ namespace Chummer
             }
         }
 
-        public bool AddCyberwareEnabled => !CyberwareDisabled
-                                           && ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.DisableCyberware).Count == 0;
+        public bool AddCyberwareEnabled => !CyberwareDisabled && !IsAI
+                                                              && ImprovementManager
+                                                                 .GetCachedImprovementListForValueOf(
+                                                                     this, Improvement.ImprovementType.DisableCyberware)
+                                                                 .Count == 0;
 
-        public bool AddBiowareEnabled => !CyberwareDisabled
-                                         && ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.DisableBioware).Count == 0;
+        public bool AddBiowareEnabled => !CyberwareDisabled && !IsAI
+                                                            && ImprovementManager
+                                                               .GetCachedImprovementListForValueOf(
+                                                                   this, Improvement.ImprovementType.DisableBioware)
+                                                               .Count == 0;
 
         private int _intCachedInitiationEnabled = int.MinValue;
 
@@ -18619,10 +18625,12 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(TotalPublicAwareness))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(AddBiowareEnabled),
-                        new DependencyGraphNode<string, Character>(nameof(CyberwareDisabled))
+                        new DependencyGraphNode<string, Character>(nameof(CyberwareDisabled)),
+                        new DependencyGraphNode<string, Character>(nameof(IsAI))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(AddCyberwareEnabled),
-                        new DependencyGraphNode<string, Character>(nameof(CyberwareDisabled))
+                        new DependencyGraphNode<string, Character>(nameof(CyberwareDisabled)),
+                        new DependencyGraphNode<string, Character>(nameof(IsAI))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(HasMentorSpirit),
                         new DependencyGraphNode<string, Character>(nameof(MentorSpirits))

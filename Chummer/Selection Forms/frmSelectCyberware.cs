@@ -963,12 +963,12 @@ namespace Chummer
                         sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
 
-                if (ParentVehicle == null && _objCharacter.IsAI)
+                if (_objParentNode != null)
+                    sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
+                else if (ParentVehicle == null && ((!_objCharacter.AddCyberwareEnabled && _objMode == Mode.Cyberware) || (!_objCharacter.AddBiowareEnabled && _objMode == Mode.Bioware)))
                     sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
                              .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
                              .Append(" or mountsto)");
-                else if (_objParentNode != null)
-                    sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
                 else
                     sbdFilter.Append(" and not(requireparent)");
                 if (objCurrentGrade != null)
@@ -1027,13 +1027,15 @@ namespace Chummer
                         }
 
                         if (blnCyberwareDisabled
-                            && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/cyberware") != null)
+                            && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/cyberware") != null
+                            && xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto") == null)
                         {
                             continue;
                         }
 
-                        if (blnBiowareDisabled && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/bioware")
-                            != null)
+                        if (blnBiowareDisabled
+                            && xmlCyberware.SelectSingleNodeAndCacheExpression("subsystems/bioware") != null
+                            && xmlCyberware.SelectSingleNodeAndCacheExpression("mountsto") == null)
                         {
                             continue;
                         }

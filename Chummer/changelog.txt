@@ -46,7 +46,9 @@ Application Changes:
 - Drain expressions now properly show their translated names.
 - Chummer can now properly find the source of any bonuses added by vehicle mods, weapons, gear, and/or cyberware inside of a vehicle's weapon mount.
 - Metatypes and critters with separate Swimming running speeds now properly show their separate walking and running speeds.
-- Added support for the actiondicepool improvement selecting from a list of the actions provided in actions.xml. 
+- Added support for the actiondicepool improvement selecting from a list of the actions provided in actions.xml.
+- Improvements and other types of bonuses that disable cyberware and/or bioware no longer prevent characters from buying Essence Holes, Essence Antiholes, unequipped modular cyberlimbs, and plugins for unequipped modular cyberlimbs.
+- When adding bonuses or improvements that disable cyberware and/or bioware, characters no longer get their Essence Holes, Antiholes, and modular cyberlimbs deleted.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

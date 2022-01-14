@@ -869,10 +869,7 @@ namespace Chummer
                         lblRiggingINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.InitiativeToolTip));
                         lblRiggingINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
-
-                        cmdAddCyberware.DoOneWayDataBinding("Enabled", CharacterObject,
-                            nameof(Character.AddCyberwareEnabled));
-                        cmdAddBioware.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
+                        
                         cmdBurnStreetCred.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.CanBurnStreetCred));
 
@@ -1659,24 +1656,35 @@ namespace Chummer
 
                             bool blnDoRefresh = false;
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
-                                x => x.SourceType == Improvement.ImprovementSource.Bioware &&
-                                     x.CanRemoveThroughImprovements).ToList())
+                                x => x.SourceType == Improvement.ImprovementSource.Bioware).ToList())
                             {
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    objCyberware.ChangeModularEquip(false);
-                                    objCyberware.Parent?.Children.Remove(objCyberware);
-                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    else
+                                        continue;
                                 }
-                                else
+                                else if (objCyberware.CanRemoveThroughImprovements)
                                 {
                                     objCyberware.DeleteCyberware();
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware");
                                     objExpense.Create(0,
-                                        strEntry + strBiowareDisabledSource +
-                                        objCyberware.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
-                                        DateTime.Now);
+                                                      strEntry + strBiowareDisabledSource +
+                                                      objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                                      ExpenseType.Nuyen,
+                                                      DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                     Cyberware objParent = objCyberware.Parent;
                                     if (objParent != null)
@@ -1685,6 +1693,8 @@ namespace Chummer
                                         CharacterObject.Cyberware.Remove(objCyberware);
                                     CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                                 }
+                                else
+                                    continue;
 
                                 blnDoRefresh = true;
                             }
@@ -1718,24 +1728,35 @@ namespace Chummer
 
                             bool blnDoRefresh = false;
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
-                                x => x.SourceType == Improvement.ImprovementSource.Cyberware &&
-                                     x.CanRemoveThroughImprovements).ToList())
+                                x => x.SourceType == Improvement.ImprovementSource.Cyberware).ToList())
                             {
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    objCyberware.ChangeModularEquip(false);
-                                    objCyberware.Parent?.Children.Remove(objCyberware);
-                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    else
+                                        continue;
                                 }
-                                else
+                                else if (objCyberware.CanRemoveThroughImprovements)
                                 {
                                     objCyberware.DeleteCyberware();
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware");
                                     objExpense.Create(0,
-                                        strEntry + strCyberwareDisabledSource +
-                                        objCyberware.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
-                                        DateTime.Now);
+                                                      strEntry + strCyberwareDisabledSource +
+                                                      objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                                      ExpenseType.Nuyen,
+                                                      DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                     Cyberware objParent = objCyberware.Parent;
                                     if (objParent != null)
@@ -1744,6 +1765,8 @@ namespace Chummer
                                         CharacterObject.Cyberware.Remove(objCyberware);
                                     CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                                 }
+                                else
+                                    continue;
 
                                 blnDoRefresh = true;
                             }
@@ -1777,24 +1800,47 @@ namespace Chummer
                             }
 
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children).ToList())
                             {
-                                objCyberware.DeleteCyberware();
-                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                string strEntry = LanguageManager.GetString(
-                                    objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
-                                        ? "String_ExpenseSoldCyberware"
-                                        : "String_ExpenseSoldBioware");
-                                objExpense.Create(0,
-                                    strEntry + strDisabledSource + objCyberware.DisplayNameShort(GlobalSettings.Language),
-                                    ExpenseType.Nuyen, DateTime.Now);
-                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                                Cyberware objParent = objCyberware.Parent;
-                                if (objParent != null)
-                                    objParent.Children.Remove(objCyberware);
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    else
+                                        continue;
+                                }
+                                else if (objCyberware.CanRemoveThroughImprovements)
+                                {
+                                    objCyberware.DeleteCyberware();
+                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                    string strEntry = LanguageManager.GetString(
+                                        objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
+                                            ? "String_ExpenseSoldCyberware"
+                                            : "String_ExpenseSoldBioware");
+                                    objExpense.Create(0,
+                                                      strEntry + strDisabledSource
+                                                               + objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                                      ExpenseType.Nuyen, DateTime.Now);
+                                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                                    Cyberware objParent = objCyberware.Parent;
+                                    if (objParent != null)
+                                        objParent.Children.Remove(objCyberware);
+                                    else
+                                        CharacterObject.Cyberware.Remove(objCyberware);
+                                    CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
+                                }
                                 else
-                                    CharacterObject.Cyberware.Remove(objCyberware);
-                                CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
+                                    continue;
                                 blnDoRefresh = true;
                             }
 
@@ -1827,10 +1873,29 @@ namespace Chummer
                             }
 
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
-                                x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements).ToList())
+                                x => x.Grade.Name != "None").ToList())
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
-                                if (chrAvail == 'R' || chrAvail == 'F')
+                                if (chrAvail != 'R' && chrAvail != 'F')
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    else
+                                        continue;
+                                }
+                                else if (objCyberware.CanRemoveThroughImprovements)
                                 {
                                     objCyberware.DeleteCyberware();
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -1839,8 +1904,9 @@ namespace Chummer
                                             ? "String_ExpenseSoldCyberware"
                                             : "String_ExpenseSoldBioware");
                                     objExpense.Create(0,
-                                        strEntry + strExConString + objCyberware.DisplayNameShort(GlobalSettings.Language),
-                                        ExpenseType.Nuyen, DateTime.Now);
+                                                      strEntry + strExConString
+                                                               + objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                                      ExpenseType.Nuyen, DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                     Cyberware objParent = objCyberware.Parent;
                                     if (objParent != null)
@@ -1848,8 +1914,11 @@ namespace Chummer
                                     else
                                         CharacterObject.Cyberware.Remove(objCyberware);
                                     CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
-                                    blnDoRefresh = true;
                                 }
+                                else
+                                    continue;
+
+                                blnDoRefresh = true;
                             }
 
                             if (blnDoRefresh)

@@ -820,10 +820,6 @@ namespace Chummer
                         lblRiggingINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.InitiativeToolTip));
                         lblRiggingINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
-
-                        cmdAddCyberware.DoOneWayDataBinding("Enabled", CharacterObject,
-                            nameof(Character.AddCyberwareEnabled));
-                        cmdAddBioware.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddBiowareEnabled));
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_vehicle", op_load_frm_create))
@@ -1406,8 +1402,26 @@ namespace Chummer
                         if (!CharacterObject.AddBiowareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Bioware && x.CanRemoveThroughImprovements).ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Bioware).ToList())
                             {
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    continue;
+                                }
+                                if (!objCyberware.CanRemoveThroughImprovements)
+                                    continue;
                                 objCyberware.DeleteCyberware();
                                 Cyberware objParent = objCyberware.Parent;
                                 if (objParent != null)
@@ -1430,8 +1444,26 @@ namespace Chummer
                         if (!CharacterObject.AddCyberwareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Cyberware && x.CanRemoveThroughImprovements).ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Cyberware).ToList())
                             {
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    continue;
+                                }
+                                if (!objCyberware.CanRemoveThroughImprovements)
+                                    continue;
                                 objCyberware.DeleteCyberware();
                                 Cyberware objParent = objCyberware.Parent;
                                 if (objParent != null)
@@ -1454,8 +1486,26 @@ namespace Chummer
                         if (CharacterObject.CyberwareDisabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.Where(x => x.CanRemoveThroughImprovements).ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children).ToList())
                             {
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    continue;
+                                }
+                                if (!objCyberware.CanRemoveThroughImprovements)
+                                    continue;
                                 objCyberware.DeleteCyberware();
                                 Cyberware objParent = objCyberware.Parent;
                                 if (objParent != null)
@@ -1478,10 +1528,28 @@ namespace Chummer
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.CanRemoveThroughImprovements).ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children).ToList())
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                                 if (chrAvail != 'R' && chrAvail != 'F')
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    continue;
+                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    continue;
+                                if (!objCyberware.IsModularCurrentlyEquipped)
+                                    continue;
+                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                                {
+                                    if (objCyberware.CanRemoveThroughImprovements)
+                                    {
+                                        objCyberware.ChangeModularEquip(false);
+                                        objCyberware.Parent?.Children.Remove(objCyberware);
+                                        CharacterObject.Cyberware.Add(objCyberware);
+                                    }
+                                    continue;
+                                }
+                                if (!objCyberware.CanRemoveThroughImprovements)
                                     continue;
                                 objCyberware.DeleteCyberware();
                                 Cyberware objParent = objCyberware.Parent;
