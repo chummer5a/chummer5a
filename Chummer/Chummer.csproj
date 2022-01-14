@@ -321,29 +321,29 @@
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
-    <Compile Include="Static Classes\Extensions\BoolArrayExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\CollectionExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\DecimalExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\DoubleExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\EnumeratorExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\FloatExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\IntegerExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\ListExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\ImageExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\LinqExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\MathExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\ObservableCollectionExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\ProcessExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\RandomExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\ReadOnlyDictionaryExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\ReadOnlyListExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\StringBuilderExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\StringExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\VersionExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\WinFormsExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\XmlDocumentExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\BoolArrayExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\CollectionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\DecimalExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\DoubleExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\EnumeratorExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\FloatExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\IntegerExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ImageExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\LinqExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\MathExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ProcessExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReadOnlyDictionaryExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\StringExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\WinFormsExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XmlDocumentExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -367,11 +367,11 @@
     <Compile Include="Backend\Equipment\VehicleMod.cs" />
     <Compile Include="Backend\Equipment\Weapon.cs" />
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
-    <Compile Include="Static Classes\Extensions\BindingListExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\BitArrayExtensions.cs" />
-    <Compile Include="Static Classes\Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\BindingListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\BitArrayExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
-    <Compile Include="Static Classes\SelectionShared.cs" />
+    <Compile Include="Backend\Static\SelectionShared.cs" />
     <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
@@ -386,7 +386,7 @@
     <Compile Include="Backend\Uniques\Art.cs" />
     <Compile Include="Backend\Uniques\CalendarWeek.cs" />
     <Compile Include="Backend\Uniques\ComplexForm.cs" />
-    <Compile Include="Backend\Uniques\Contact.cs" />
+    <Compile Include="Backend\Characters\Contact.cs" />
     <Compile Include="Backend\Uniques\CritterPower.cs" />
     <Compile Include="Backend\Uniques\Enhancement.cs" />
     <Compile Include="Backend\Uniques\Focus.cs" />
@@ -399,7 +399,7 @@
     <Compile Include="Backend\Uniques\Metamagic.cs" />
     <Compile Include="Backend\Uniques\Quality.cs" />
     <Compile Include="Backend\Uniques\Spell.cs" />
-    <Compile Include="Backend\Uniques\Spirit.cs" />
+    <Compile Include="Backend\Characters\Spirit.cs" />
     <Compile Include="Backend\Uniques\StackedFocus.cs" />
     <Compile Include="Backend\Uniques\SustainedObject.cs" />
     <Compile Include="Backend\Uniques\Tradition.cs" />
@@ -409,62 +409,58 @@
     <Compile Include="Forms\Character Creation Forms\SelectLifeModule.Designer.cs">
       <DependentUpon>SelectLifeModule.cs</DependentUpon>
     </Compile>
-    <Compile Include="Backend\Improvements\AddImprovementCollection.cs">
-      <DependentUpon>Improvement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Classes\CharacterCache.cs" />
-    <Compile Include="Classes\CharacterSettings.cs" />
-    <Compile Include="Classes\CustomDataDirectoryInfo.cs" />
-    <Compile Include="Static Classes\CommonFunctions.cs" />
-    <Compile Include="Helper Classes\CrashReportData.cs" />
+    <Compile Include="Backend\Improvements\AddImprovementCollection.cs" />
+    <Compile Include="Backend\Characters\CharacterCache.cs" />
+    <Compile Include="Backend\Character Settings\CharacterSettings.cs" />
+    <Compile Include="Backend\Character Settings\CustomDataDirectoryInfo.cs" />
+    <Compile Include="Backend\Static\CommonFunctions.cs" />
+    <Compile Include="Backend\Helpers\CrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
-    <Compile Include="Classes\Character.cs" />
-    <Compile Include="Helper Classes\HoverDisplayCoordinator.cs" />
+    <Compile Include="Backend\Characters\Character.cs" />
+    <Compile Include="Backend\Helpers\HoverDisplayCoordinator.cs" />
     <Compile Include="Backend\Improvements\Improvement.cs" />
     <Compile Include="Backend\Uniques\Expenses.cs" />
-    <Compile Include="Static Classes\Managers\LanguageManager.cs" />
+    <Compile Include="Backend\Static\Managers\LanguageManager.cs" />
     <Compile Include="Backend\Datastructures\ListItem.cs" />
-    <Compile Include="Static Classes\Log.cs" />
-    <Compile Include="Static Classes\GlobalSettings.cs" />
-    <Compile Include="Helper Classes\ParameterAttribute.cs" />
+    <Compile Include="Backend\Static\Log.cs" />
+    <Compile Include="Backend\Static\GlobalSettings.cs" />
+    <Compile Include="Backend\Helpers\ParameterAttribute.cs" />
     <Compile Include="Backend\Stories\StoryBuilder.cs" />
-    <Compile Include="Helper Classes\Timekeeper.cs" />
-    <Compile Include="Static Classes\Utils.cs" />
-    <Compile Include="Static Classes\Extensions\XmlNodeExtensions.cs" />
-    <Compile Include="Static Classes\Managers\XmlManager.cs" />
+    <Compile Include="Backend\Helpers\Timekeeper.cs" />
+    <Compile Include="Backend\Static\Utils.cs" />
+    <Compile Include="Backend\Static\Extensions\XmlNodeExtensions.cs" />
+    <Compile Include="Backend\Static\Managers\XmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
-    <Compile Include="Static Classes\Managers\ColorManager.cs" />
-    <Compile Include="Static Classes\Managers\XslManager.cs" />
-    <Compile Include="Helper Classes\CollectionPooledObjectPolicy.cs" />
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.cs">
+    <Compile Include="Backend\Static\Managers\ColorManager.cs" />
+    <Compile Include="Backend\Static\Managers\XslManager.cs" />
+    <Compile Include="Backend\Helpers\CollectionPooledObjectPolicy.cs" />
+    <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
       <DependentUpon>DpiFriendlyCheckBoxDisguisedAsButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyImagedButton.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyImagedButton.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.Designer.cs">
       <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helper Classes\EnterReadLock.cs" />
-    <Compile Include="Helper Classes\EnterUpgradeableReadLock.cs" />
-    <Compile Include="Helper Classes\EnterWriteLock.cs" />
-    <Compile Include="Helper Classes\FetchSafelyFromPool.cs" />
-    <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
-    <Compile Include="Interfaces\ITranslatable.cs" />
-    <Compile Include="Static Classes\NativeMethods.cs" />
-    <Compile Include="Static Classes\Managers\SettingsManager.cs" />
-    <Compile Include="Backend\Improvements\RemoveImprovementCollection.cs">
-      <DependentUpon>Improvement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Helper Classes\TooltipFactory.cs" />
-    <Compile Include="Controls\SustainedObjectControl.cs">
+    <Compile Include="Backend\Helpers\EnterReadLock.cs" />
+    <Compile Include="Backend\Helpers\EnterUpgradeableReadLock.cs" />
+    <Compile Include="Backend\Helpers\EnterWriteLock.cs" />
+    <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
+    <Compile Include="Backend\Interfaces\ICanBlackMarketDiscount.cs" />
+    <Compile Include="Backend\Interfaces\ITranslatable.cs" />
+    <Compile Include="Backend\Static\NativeMethods.cs" />
+    <Compile Include="Backend\Static\Managers\SettingsManager.cs" />
+    <Compile Include="Backend\Improvements\RemoveImprovementCollection.cs" />
+    <Compile Include="Backend\Helpers\TooltipFactory.cs" />
+    <Compile Include="Controls\Shared\SustainedObjectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SustainedObjectControl.Designer.cs">
+    <Compile Include="Controls\Shared\SustainedObjectControl.Designer.cs">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Utility Forms\CharacterRoster.cs">
@@ -491,76 +487,76 @@
     <Compile Include="Forms\EditCharacterSettings.Designer.cs">
       <DependentUpon>EditCharacterSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helper Classes\Application Insights\CustomActivity.cs" />
-    <Compile Include="Helper Classes\Application Insights\CustomTelemetryInitializer.cs" />
-    <Compile Include="Helper Classes\Application Insights\DropUserdataTelemetryProcessor.cs" />
-    <Compile Include="Helper Classes\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
-    <Compile Include="Helper Classes\Application Insights\UploadObjectAsMetric.cs" />
-    <Compile Include="UI Controls\Shared\Components\BufferedTableLayoutPanel.cs">
+    <Compile Include="Backend\Helpers\Application Insights\CustomActivity.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\CustomTelemetryInitializer.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\UploadObjectAsMetric.cs" />
+    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\BufferedTableLayoutPanel.Designer.cs">
+    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.Designer.cs">
       <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helper Classes\CenterableMessageBox.cs" />
-    <Compile Include="UI Controls\Shared\Components\ColorableCheckBox.cs">
+    <Compile Include="Backend\Helpers\CenterableMessageBox.cs" />
+    <Compile Include="Controls\Shared\Components\ColorableCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\ColorableCheckBox.Designer.cs">
+    <Compile Include="Controls\Shared\Components\ColorableCheckBox.Designer.cs">
       <DependentUpon>ColorableCheckBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helper Classes\CursorWait.cs" />
-    <Compile Include="Helper Classes\DataGridViewTextBoxColumnTranslated.cs" />
-    <Compile Include="Helper Classes\DiceRollerListViewItem.cs" />
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyToolStripButton.cs">
+    <Compile Include="Backend\Helpers\CursorWait.cs" />
+    <Compile Include="Backend\Helpers\DataGridViewTextBoxColumnTranslated.cs" />
+    <Compile Include="Backend\Helpers\DiceRollerListViewItem.cs" />
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyToolStripButton.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.Designer.cs">
       <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyToolStripMenuItem.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DpiFriendlyToolStripMenuItem.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.Designer.cs">
       <DependentUpon>DpiFriendlyToolStripMenuItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\ElasticComboBox.cs">
+    <Compile Include="Controls\Shared\Components\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\ButtonWithToolTip.cs">
+    <Compile Include="Controls\Shared\Components\ButtonWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helper Classes\FlagImageGetter.cs" />
-    <Compile Include="Helper Classes\HubTagAttribute.cs" />
-    <Compile Include="UI Controls\Shared\Components\LabelWithToolTip.cs">
+    <Compile Include="Backend\Helpers\FlagImageGetter.cs" />
+    <Compile Include="Backend\Helpers\HubTagAttribute.cs" />
+    <Compile Include="Controls\Shared\Components\LabelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helper Classes\Application Insights\LiveStreamProvider.cs" />
-    <Compile Include="Helper Classes\NegateBinding.cs" />
-    <Compile Include="UI Controls\Shared\Components\NumericUpDownEx.cs">
+    <Compile Include="Backend\Helpers\Application Insights\LiveStreamProvider.cs" />
+    <Compile Include="Backend\Helpers\NegateBinding.cs" />
+    <Compile Include="Controls\Shared\Components\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interfaces\ICanPaste.cs" />
-    <Compile Include="Interfaces\ICanEquip.cs" />
-    <Compile Include="Interfaces\ICanRemove.cs" />
-    <Compile Include="Interfaces\ICanSort.cs" />
-    <Compile Include="Interfaces\IHasConditionMonitor.cs" />
-    <Compile Include="Interfaces\IHasCustomName.cs" />
-    <Compile Include="Interfaces\ICanSell.cs" />
-    <Compile Include="Interfaces\IHasChildren.cs" />
-    <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
-    <Compile Include="Interfaces\IHasGear.cs" />
-    <Compile Include="Interfaces\IHasLocation.cs" />
-    <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
-    <Compile Include="Interfaces\IHasMugshots.cs" />
-    <Compile Include="Interfaces\IHasInternalId.cs" />
-    <Compile Include="Interfaces\IHasName.cs" />
-    <Compile Include="Interfaces\IHasNotes.cs" />
-    <Compile Include="Interfaces\IHasStolenProperty.cs" />
-    <Compile Include="Interfaces\IHasRating.cs" />
-    <Compile Include="Interfaces\IHasSource.cs" />
-    <Compile Include="Interfaces\IHasWirelessBonus.cs" />
-    <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
+    <Compile Include="Backend\Interfaces\ICanPaste.cs" />
+    <Compile Include="Backend\Interfaces\ICanEquip.cs" />
+    <Compile Include="Backend\Interfaces\ICanRemove.cs" />
+    <Compile Include="Backend\Interfaces\ICanSort.cs" />
+    <Compile Include="Backend\Interfaces\IHasConditionMonitor.cs" />
+    <Compile Include="Backend\Interfaces\IHasCustomName.cs" />
+    <Compile Include="Backend\Interfaces\ICanSell.cs" />
+    <Compile Include="Backend\Interfaces\IHasChildren.cs" />
+    <Compile Include="Backend\Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Backend\Interfaces\IHasGear.cs" />
+    <Compile Include="Backend\Interfaces\IHasLocation.cs" />
+    <Compile Include="Backend\Interfaces\IHasMatrixAttributes.cs" />
+    <Compile Include="Backend\Interfaces\IHasMugshots.cs" />
+    <Compile Include="Backend\Interfaces\IHasInternalId.cs" />
+    <Compile Include="Backend\Interfaces\IHasName.cs" />
+    <Compile Include="Backend\Interfaces\IHasNotes.cs" />
+    <Compile Include="Backend\Interfaces\IHasStolenProperty.cs" />
+    <Compile Include="Backend\Interfaces\IHasRating.cs" />
+    <Compile Include="Backend\Interfaces\IHasSource.cs" />
+    <Compile Include="Backend\Interfaces\IHasWirelessBonus.cs" />
+    <Compile Include="Backend\Interfaces\INotifyMultiplePropertyChanged.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -571,16 +567,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Contributors.tt</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ConditionMonitorUserControl.cs">
+    <Compile Include="Controls\Dashboards\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ConditionMonitorUserControl.Designer.cs">
+    <Compile Include="Controls\Dashboards\ConditionMonitorUserControl.Designer.cs">
       <DependentUpon>ConditionMonitorUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ContactControl.cs">
+    <Compile Include="Controls\Characters\ContactControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ContactControl.Designer.cs">
+    <Compile Include="Controls\Characters\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
@@ -700,28 +696,28 @@
     <Compile Include="Forms\Selection Forms\SelectSkillSpec.Designer.cs">
       <DependentUpon>SelectSkillSpec.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Attributes\AttributeControl.cs">
+    <Compile Include="Controls\Attributes\AttributeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Attributes\AttributeControl.Designer.cs">
+    <Compile Include="Controls\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Charts\ExpenseChart.cs">
+    <Compile Include="Controls\Charts\ExpenseChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Charts\ExpenseChart.Designer.cs">
+    <Compile Include="Controls\Charts\ExpenseChart.Designer.cs">
       <DependentUpon>ExpenseChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Editors\RtfEditor.cs">
+    <Compile Include="Controls\Editors\RtfEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Editors\RtfEditor.Designer.cs">
+    <Compile Include="Controls\Editors\RtfEditor.Designer.cs">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DicePoolControl.cs">
+    <Compile Include="Controls\Shared\Components\DicePoolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\DicePoolControl.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DicePoolControl.Designer.cs">
       <DependentUpon>DicePoolControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Chummy.cs">
@@ -730,10 +726,10 @@
     <Compile Include="Forms\Chummy.Designer.cs">
       <DependentUpon>Chummy.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Shared\LimitTabUserControl.cs">
+    <Compile Include="Controls\Shared\LimitTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\LimitTabUserControl.Designer.cs">
+    <Compile Include="Controls\Shared\LimitTabUserControl.Designer.cs">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </Compile>
     <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\manifest.xml">
@@ -1132,91 +1128,91 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="UI Controls\Skills\KnowledgeSkillControl.cs">
+    <Compile Include="Controls\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Skills\KnowledgeSkillControl.Designer.cs">
+    <Compile Include="Controls\Skills\KnowledgeSkillControl.Designer.cs">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Skills\SkillControl2.cs">
+    <Compile Include="Controls\Skills\SkillControl2.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Skills\SkillControl2.Designer.cs">
+    <Compile Include="Controls\Skills\SkillControl2.Designer.cs">
       <DependentUpon>SkillControl2.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Skills\SkillGroupControl.cs">
+    <Compile Include="Controls\Skills\SkillGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Skills\SkillGroupControl.Designer.cs">
+    <Compile Include="Controls\Skills\SkillGroupControl.Designer.cs">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Shared\BindingListDisplay.cs">
+    <Compile Include="Controls\Shared\BindingListDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Shared\BindingListDisplay.Designer.cs">
+    <Compile Include="Controls\Shared\BindingListDisplay.Designer.cs">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Powers\PowersTabUserControl.cs">
+    <Compile Include="Controls\Powers\PowersTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Powers\PowersTabUserControl.Designer.cs">
+    <Compile Include="Controls\Powers\PowersTabUserControl.Designer.cs">
       <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Skills\SkillsTabUserControl.cs">
+    <Compile Include="Controls\Skills\SkillsTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Skills\SkillsTabUserControl.Designer.cs">
+    <Compile Include="Controls\Skills\SkillsTabUserControl.Designer.cs">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\Alignment.cs" />
-    <Compile Include="UI Controls\Table\ButtonTableCell.cs">
+    <Compile Include="Controls\Table\Alignment.cs" />
+    <Compile Include="Controls\Table\ButtonTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\ButtonTableCell.Designer.cs">
+    <Compile Include="Controls\Table\ButtonTableCell.Designer.cs">
       <DependentUpon>ButtonTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\CheckBoxTableCell.cs">
+    <Compile Include="Controls\Table\CheckBoxTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\CheckBoxTableCell.Designer.cs">
+    <Compile Include="Controls\Table\CheckBoxTableCell.Designer.cs">
       <DependentUpon>CheckBoxTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\HeaderCell.cs">
+    <Compile Include="Controls\Table\HeaderCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\HeaderCell.Designer.cs">
+    <Compile Include="Controls\Table\HeaderCell.Designer.cs">
       <DependentUpon>HeaderCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\SpinnerTableCell.cs">
+    <Compile Include="Controls\Table\SpinnerTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\SpinnerTableCell.Designer.cs">
+    <Compile Include="Controls\Table\SpinnerTableCell.Designer.cs">
       <DependentUpon>SpinnerTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\TableCell.cs">
+    <Compile Include="Controls\Table\TableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\TableCell.Designer.cs">
+    <Compile Include="Controls\Table\TableCell.Designer.cs">
       <DependentUpon>TableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\TableColumn.cs" />
-    <Compile Include="UI Controls\Table\TableColumnCollection.cs" />
-    <Compile Include="UI Controls\Table\TableRow.cs">
+    <Compile Include="Controls\Table\TableColumn.cs" />
+    <Compile Include="Controls\Table\TableColumnCollection.cs" />
+    <Compile Include="Controls\Table\TableRow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\TableRow.Designer.cs">
+    <Compile Include="Controls\Table\TableRow.Designer.cs">
       <DependentUpon>TableRow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\TableView.cs">
+    <Compile Include="Controls\Table\TableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\TableView.Designer.cs">
+    <Compile Include="Controls\Table\TableView.Designer.cs">
       <DependentUpon>TableView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Table\TextTableCell.cs">
+    <Compile Include="Controls\Table\TextTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI Controls\Table\TextTableCell.Designer.cs">
+    <Compile Include="Controls\Table\TextTableCell.Designer.cs">
       <DependentUpon>TextTableCell.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Utility Forms\DiceHitsTracker.cs">
@@ -1578,16 +1574,16 @@
     <Compile Include="Forms\Utility Forms\CharacterSheetViewer.Designer.cs">
       <DependentUpon>CharacterSheetViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\InitiativeUserControl.cs">
+    <Compile Include="Controls\Dashboards\InitiativeUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\InitiativeUserControl.Designer.cs">
+    <Compile Include="Controls\Dashboards\InitiativeUserControl.Designer.cs">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PetControl.cs">
+    <Compile Include="Controls\Characters\PetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PetControl.Designer.cs">
+    <Compile Include="Controls\Characters\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
@@ -1617,26 +1613,26 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\SpiritControl.cs">
+    <Compile Include="Controls\Characters\SpiritControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SpiritControl.Designer.cs">
+    <Compile Include="Controls\Characters\SpiritControl.Designer.cs">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI Controls\Shared\Components\SplitButton.cs">
+    <Compile Include="Controls\Shared\Components\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <EmbeddedResource Include="Forms\Character Creation Forms\SelectLifeModule.resx">
       <DependentUpon>SelectLifeModule.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ConditionMonitorUserControl.resx">
+    <EmbeddedResource Include="Controls\Dashboards\ConditionMonitorUserControl.resx">
       <DependentUpon>ConditionMonitorUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ContactControl.resx">
+    <EmbeddedResource Include="Controls\Characters\ContactControl.resx">
       <DependentUpon>ContactControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SustainedObjectControl.resx">
+    <EmbeddedResource Include="Controls\Shared\SustainedObjectControl.resx">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\CharacterRoster.resx">
@@ -1699,46 +1695,46 @@
     <EmbeddedResource Include="Forms\Selection Forms\SelectSkillSpec.resx">
       <DependentUpon>SelectSkillSpec.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Attributes\AttributeControl.resx">
+    <EmbeddedResource Include="Controls\Attributes\AttributeControl.resx">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Charts\ExpenseChart.resx">
+    <EmbeddedResource Include="Controls\Charts\ExpenseChart.resx">
       <DependentUpon>ExpenseChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Editors\RtfEditor.resx">
+    <EmbeddedResource Include="Controls\Editors\RtfEditor.resx">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Shared\Components\DicePoolControl.resx">
+    <EmbeddedResource Include="Controls\Shared\Components\DicePoolControl.resx">
       <DependentUpon>DicePoolControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Shared\LimitTabUserControl.resx">
+    <EmbeddedResource Include="Controls\Shared\LimitTabUserControl.resx">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Skills\KnowledgeSkillControl.resx">
+    <EmbeddedResource Include="Controls\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Skills\SkillControl2.resx">
+    <EmbeddedResource Include="Controls\Skills\SkillControl2.resx">
       <DependentUpon>SkillControl2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Skills\SkillGroupControl.resx">
+    <EmbeddedResource Include="Controls\Skills\SkillGroupControl.resx">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Shared\BindingListDisplay.resx">
+    <EmbeddedResource Include="Controls\Shared\BindingListDisplay.resx">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Powers\PowersTabUserControl.resx">
+    <EmbeddedResource Include="Controls\Powers\PowersTabUserControl.resx">
       <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Skills\SkillsTabUserControl.resx">
+    <EmbeddedResource Include="Controls\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Table\HeaderCell.resx">
+    <EmbeddedResource Include="Controls\Table\HeaderCell.resx">
       <DependentUpon>HeaderCell.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI Controls\Table\TableRow.resx">
+    <EmbeddedResource Include="Controls\Table\TableRow.resx">
       <DependentUpon>TableRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\DiceHitsTracker.resx">
@@ -1920,10 +1916,10 @@
     <EmbeddedResource Include="Forms\Utility Forms\CharacterSheetViewer.resx">
       <DependentUpon>CharacterSheetViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\InitiativeUserControl.resx">
+    <EmbeddedResource Include="Controls\Dashboards\InitiativeUserControl.resx">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PetControl.resx">
+    <EmbeddedResource Include="Controls\Characters\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Character Forms\CharacterCreate.resx">
@@ -1944,7 +1940,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SpiritControl.resx">
+    <EmbeddedResource Include="Controls\Characters\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
