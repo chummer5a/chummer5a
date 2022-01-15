@@ -3611,7 +3611,28 @@ namespace Chummer
                                             objXmlImprovement["sourcename"]?.InnerText);
                                     }
                                 }
-
+                                //Legacy sweeper, ensures all AI in modern version have the disablecyberware and disablebioware improvements
+                                if (IsAI && LastSavedVersion <= new Version(5, 216, 0))
+                                {
+                                    if (!Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableCyberware))
+                                    {
+                                        ImprovementManager.CreateImprovement(this,
+                                            MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo),
+                                            Improvement.ImprovementSource.Metatype,
+                                            string.Empty,
+                                            Improvement.ImprovementType.DisableCyberware,
+                                            string.Empty);
+                                    }
+                                    if(!Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableBioware))
+                                    {
+                                        ImprovementManager.CreateImprovement(this,
+                                            MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo),
+                                            Improvement.ImprovementSource.Metatype,
+                                            string.Empty,
+                                            Improvement.ImprovementType.DisableBioware,
+                                            string.Empty);
+                                    }
+                                }
                                 //Timekeeper.Finish("load_char_imp");
                             }
 
