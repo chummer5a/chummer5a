@@ -823,10 +823,20 @@ namespace Chummer.Backend.Skills
             {
                 if (SkillGroupObject != null && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization).Count > 0)
                 {
-                    HashSet<string> setSkillNames = SkillGroupObject.SkillList.Select(x => x.DictionaryKey).ToHashSet();
-                    if (CharacterObject.Cyberware.Any(x => x.SourceID == s_GuiReflexRecorderId && setSkillNames.Contains(x.Extra)))
+                    List<Cyberware> lstReflexRecorders = CharacterObject.Cyberware
+                                                                        .Where(x => x.SourceID == s_GuiReflexRecorderId)
+                                                                        .ToList();
+                    if (lstReflexRecorders.Count > 0)
                     {
-                        return 0;
+                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                   Utils.StringHashSetPool, out HashSet<string> setSkillNames))
+                        {
+                            setSkillNames.AddRange(SkillGroupObject.SkillList.Select(x => x.DictionaryKey));
+                            if (lstReflexRecorders.Any(x => setSkillNames.Contains(x.Extra)))
+                            {
+                                return 0;
+                            }
+                        }
                     }
                 }
                 return -1;

@@ -3108,12 +3108,17 @@ namespace Chummer
 
                                         int intBookBaselineScore =
                                             (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
-                                        HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
-                                        setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                        intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(4)
-                                                      + (objOptionsToCheck.Books.Count - setDummyBooks.Count)
-                                                      .RaiseToPower(2))
-                                                     * intBookBaselineScore;
+                                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                                   Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
+                                        {
+                                            setDummyBooks.AddRange(setSavedBooks);
+                                            setDummyBooks.IntersectWith(objOptionsToCheck.Books);
+                                            intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(4)
+                                                          + (objOptionsToCheck.Books.Count - setDummyBooks.Count)
+                                                          .RaiseToPower(2))
+                                                         * intBookBaselineScore;
+                                        }
+
                                         return intReturn;
                                     }
 

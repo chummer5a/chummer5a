@@ -1064,32 +1064,36 @@ namespace Chummer.Backend.Equipment
                             }
                             if (string.IsNullOrEmpty(BlocksMounts))
                                 return;
-                            HashSet<string> setBlocksMounts = BlocksMounts
-                                                              .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                              .ToHashSet();
-                            foreach (Cyberware x in lstCyberwareToCheck)
+                            using (new FetchSafelyFromPool<HashSet<string>>(
+                                       Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
                             {
-                                if (string.IsNullOrEmpty(x.HasModularMount))
-                                    continue;
-                                if (x.Location != "Left")
-                                    continue;
-                                if (!setBlocksMounts.Contains(x.HasModularMount))
-                                    continue;
-                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
-                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                setBlocksMounts.AddRange(BlocksMounts
+                                                             .SplitNoAlloc(
+                                                                 ',', StringSplitOptions.RemoveEmptyEntries));
+                                foreach (Cyberware x in lstCyberwareToCheck)
                                 {
-                                    blnAllowLeft = false;
-                                    return;
-                                }
+                                    if (string.IsNullOrEmpty(x.HasModularMount))
+                                        continue;
+                                    if (x.Location != "Left")
+                                        continue;
+                                    if (!setBlocksMounts.Contains(x.HasModularMount))
+                                        continue;
+                                    string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                    if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                    {
+                                        blnAllowLeft = false;
+                                        return;
+                                    }
 
-                                int intLimbSlotCount = LimbSlotCount;
-                                if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
-                                    intLimbSlotCount += intNumBlockers;
+                                    int intLimbSlotCount = LimbSlotCount;
+                                    if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                        intLimbSlotCount += intNumBlockers;
 
-                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
-                                {
-                                    blnAllowLeft = false;
-                                    return;
+                                    if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                    {
+                                        blnAllowLeft = false;
+                                        return;
+                                    }
                                 }
                             }
                         },
@@ -1110,32 +1114,36 @@ namespace Chummer.Backend.Equipment
                             }
                             if (string.IsNullOrEmpty(BlocksMounts))
                                 return;
-                            HashSet<string> setBlocksMounts = BlocksMounts
-                                                              .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                              .ToHashSet();
-                            foreach (Cyberware x in lstCyberwareToCheck)
+                            using (new FetchSafelyFromPool<HashSet<string>>(
+                                       Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
                             {
-                                if (string.IsNullOrEmpty(x.HasModularMount))
-                                    continue;
-                                if (x.Location != "Right")
-                                    continue;
-                                if (!setBlocksMounts.Contains(x.HasModularMount))
-                                    continue;
-                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
-                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                setBlocksMounts.AddRange(BlocksMounts
+                                                             .SplitNoAlloc(
+                                                                 ',', StringSplitOptions.RemoveEmptyEntries));
+                                foreach (Cyberware x in lstCyberwareToCheck)
                                 {
-                                    blnAllowRight = false;
-                                    return;
-                                }
+                                    if (string.IsNullOrEmpty(x.HasModularMount))
+                                        continue;
+                                    if (x.Location != "Right")
+                                        continue;
+                                    if (!setBlocksMounts.Contains(x.HasModularMount))
+                                        continue;
+                                    string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                    if (string.IsNullOrEmpty(strLimbTypeOfMount))
+                                    {
+                                        blnAllowRight = false;
+                                        return;
+                                    }
 
-                                int intLimbSlotCount = LimbSlotCount;
-                                if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
-                                    intLimbSlotCount += intNumBlockers;
+                                    int intLimbSlotCount = LimbSlotCount;
+                                    if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                        intLimbSlotCount += intNumBlockers;
 
-                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
-                                {
-                                    blnAllowRight = false;
-                                    return;
+                                    if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                    {
+                                        blnAllowRight = false;
+                                        return;
+                                    }
                                 }
                             }
                         });
