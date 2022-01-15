@@ -355,7 +355,7 @@ namespace Chummer
             float fltNewValue = fltNewLightness + objColor.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
             float fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Lighten dark colors a little by increasing value so that we don't warp colors that are highly saturated to begin with.
-            fltNewValue += 0.2f * (1.0f - Convert.ToSingle(Math.Sqrt(fltNewValue)));
+            fltNewValue += 0.14f * (1.0f - Convert.ToSingle(Math.Sqrt(fltNewValue)));
             fltNewValue = Math.Min(fltNewValue, 1.0f);
             Color objColorIntermediate = FromHsv(fltHue, fltSaturationHsv, fltNewValue);
             fltNewLightness = objColorIntermediate.GetBrightness();
@@ -392,16 +392,19 @@ namespace Chummer
                 fltLightness = objColorIntermediate.GetBrightness(); // It's called Brightness, but it's actually Lightness
                 fltValue = fltLightness + objColorIntermediate.GetSaturation() * Math.Min(fltLightness, 1 - fltLightness);
             }
-            // y + 0.2(1 - sqrt(y)) = m is the regular transform where y is the Dark Mode Value pre-adjustment and m is the Dark Mode Value post-adjustment
+            // y + 0.14(1 - sqrt(y)) = m is the regular transform where y is the Dark Mode Value pre-adjustment and m is the Dark Mode Value post-adjustment
             // To get it back, we need to solve for y knowing only m:
-            // 1 - sqrt(y) + 5y - 5m = 0
-            // 1 + 5y - 5m = sqrt(y)
-            // 1 + 25y^2 + 25m^2 + 10y - 10m - 50my = y
-            // 25y^2 + (9 - 50m)y + 25m^2 - 10m + 1 = 0
-            // y = (50m - 9 +/- sqrt((9 - 50m)^2 - 100(25m^2 - 10m + 1)))/50 = (50m - 9 +/- sqrt(2500m^2 - 900m + 81 - 2500m^2 + 1000m - 100))/50
-            // y = (50m - 9 +/- sqrt(100m - 19))/50 = m - 18/100 +/- sqrt(m - 19/100)/5
-            // Because expression for y must be the same across all m, only positive result is valid, therefore: y = m - 18/100 + sqrt(m - 19/100)/5
-            float fltNewValue = Math.Min((float)((50 * fltValue + Math.Sqrt(100 * fltValue - 19) - 9) / 50.0f), 1.0f);
+            // 1 - sqrt(y) + 50/7*y - 50/7*m = 0
+            // 1 + 50/7*y - 50/7*m = sqrt(y)
+            // 1 + 2500/49*y^2 + 2500/49*m^2 + 100/7*y - 100/7*m - 5000/49*my = y
+            // 2500/49*y^2 + (93/7 - 5000/49*m)y + 2500/49*m^2 - 100/7*m + 1 = 0
+            // 2500/7*y^2 + (93 - 5000m/7)y + 2500/7*m^2 - 100m + 7 = 0
+            // y = (5000m/7 - 93 +/- sqrt((93 - 5000m/7)^2 - 10000/7*(2500/7*m^2 - 100m + 7)))/5000*7
+            // y = (5000m - 651 +/- 7*sqrt(25000000m^2/49 - 930000m/7 + 8649 - 25000000m^2/49 + 1000000m/7 - 10000))/5000
+            // y = (5000m - 651 +/- 7*sqrt(10000m - 1351))/5000
+            // y = m - 0.1302 +/- 0.14*sqrt(m - 0.1351)
+            // Because expression for y must be the same across all m, only positive result is valid, therefore: y = m - 0.1302 + 0.14*sqrt(m - 0.1351)
+            float fltNewValue = Math.Min((float)(fltValue - 0.1302 + 0.14*Math.Sqrt(fltValue - 0.1351)), 1.0f);
             // Now convert to Lightness so we can flip it
             float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
             float fltNewSaturationHsl = fltNewLightness == 0
