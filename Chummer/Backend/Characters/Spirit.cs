@@ -855,28 +855,38 @@ namespace Chummer
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in
+                                 s_SpiritDependencyGraph.GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
-        private static readonly DependencyGraph<string, Spirit> s_SpiritDependencyGraph =
-            new DependencyGraph<string, Spirit>(
+        private static readonly PropertyDependencyGraph<Spirit> s_SpiritDependencyGraph =
+            new PropertyDependencyGraph<Spirit>(
                 new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                 ),

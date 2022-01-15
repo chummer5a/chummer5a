@@ -244,41 +244,51 @@ namespace Chummer
             if (_blnDoingCopy)
                 return;
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_CharacterSettingsDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
+                    _intCachedMaxNuyenDecimals = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
+                    _intCachedMinNuyenDecimals = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
+                    _intCachedEssenceDecimals = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                    RecalculateEnabledCustomDataDirectories();
+                if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                    RecalculateBookXPath();
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
-                _intCachedMaxNuyenDecimals = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
-                _intCachedMinNuyenDecimals = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
-                _intCachedEssenceDecimals = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
-                RecalculateEnabledCustomDataDirectories();
-            if (setNamesOfChangedProperties.Contains(nameof(Books)))
-                RecalculateBookXPath();
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, CharacterSettings> s_CharacterSettingsDependencyGraph =
-            new DependencyGraph<string, CharacterSettings>(
+        private static readonly PropertyDependencyGraph<CharacterSettings> s_CharacterSettingsDependencyGraph =
+            new PropertyDependencyGraph<CharacterSettings>(
                 new DependencyGraphNode<string, CharacterSettings>(nameof(EnabledCustomDataDirectoryPaths),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(CustomDataDirectoryKeys))
                 ),

@@ -431,8 +431,8 @@ namespace Chummer.Backend.Skills
                 _intSkillFromKarma = intTemp;
         }
 
-        private static readonly DependencyGraph<string, SkillGroup> s_SkillGroupDependencyGraph =
-            new DependencyGraph<string, SkillGroup>(
+        private static readonly PropertyDependencyGraph<SkillGroup> s_SkillGroupDependencyGraph =
+            new PropertyDependencyGraph<SkillGroup>(
                 new DependencyGraphNode<string, SkillGroup>(nameof(DisplayRating),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
                     new DependencyGraphNode<string, SkillGroup>(nameof(CareerIncrease),
@@ -719,38 +719,48 @@ namespace Chummer.Backend.Skills
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_SkillGroupDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
+                    _intCachedFreeBase = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+                    _intCachedFreeLevels = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
+                    _intCachedIsDisabled = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CareerIncrease)))
+                    _intCachedCareerIncrease = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
+                    _intCachedKarmaUnbroken = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
+                    _intCachedBaseUnbroken = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
+                    _strToolTip = string.Empty;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
-                _intCachedFreeBase = int.MinValue;
-            if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
-                _intCachedFreeLevels = int.MinValue;
-            if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
-                _intCachedIsDisabled = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(CareerIncrease)))
-                _intCachedCareerIncrease = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
-                _intCachedKarmaUnbroken = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
-                _intCachedBaseUnbroken = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
-                _strToolTip = string.Empty;
-
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 

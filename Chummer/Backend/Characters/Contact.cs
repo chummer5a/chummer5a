@@ -97,54 +97,67 @@ namespace Chummer
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_ContactDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
+                {
+                    _intCachedForcedLoyalty = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(GroupEnabled)))
+                {
+                    _intCachedGroupEnabled = -1;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(Free)))
+                {
+                    _intCachedFreeFromImprovement = -1;
+                }
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+
+                if (!Free
+                    || setNamesOfChangedProperties.Contains(nameof(Free))
+                    || setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+                {
+                    if (IsEnemy || setNamesOfChangedProperties.Contains(nameof(IsEnemy)))
+                    {
+                        _objCharacter.OnPropertyChanged(nameof(Character.EnemyKarma));
+                    }
+
+                    if ((!IsEnemy || setNamesOfChangedProperties.Contains(nameof(IsEnemy)))
+                        && (IsGroup || setNamesOfChangedProperties.Contains(nameof(IsGroup))))
+                        _objCharacter.OnPropertyChanged(nameof(Character.PositiveQualityKarmaTotal));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (setNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
+            finally
             {
-                _intCachedForcedLoyalty = int.MinValue;
-            }
-            if (setNamesOfChangedProperties.Contains(nameof(GroupEnabled)))
-            {
-                _intCachedGroupEnabled = -1;
-            }
-            if (setNamesOfChangedProperties.Contains(nameof(Free)))
-            {
-                _intCachedFreeFromImprovement = -1;
-            }
-
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-            }
-
-            if (!Free
-                || setNamesOfChangedProperties.Contains(nameof(Free))
-                || setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
-            {
-                if (IsEnemy || setNamesOfChangedProperties.Contains(nameof(IsEnemy)))
-                {
-                    _objCharacter.OnPropertyChanged(nameof(Character.EnemyKarma));
-                }
-                if ((!IsEnemy || setNamesOfChangedProperties.Contains(nameof(IsEnemy)))
-                    && (IsGroup || setNamesOfChangedProperties.Contains(nameof(IsGroup))))
-                    _objCharacter.OnPropertyChanged(nameof(Character.PositiveQualityKarmaTotal));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
-        private static readonly DependencyGraph<string, Contact> s_ContactDependencyGraph =
-            new DependencyGraph<string, Contact>(
+        private static readonly PropertyDependencyGraph<Contact> s_ContactDependencyGraph =
+            new PropertyDependencyGraph<Contact>(
                 new DependencyGraphNode<string, Contact>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                 ),

@@ -18142,8 +18142,8 @@ namespace Chummer
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, Character> s_CharacterDependencyGraph =
-            new DependencyGraph<string, Character>(
+        private static readonly PropertyDependencyGraph<Character> s_CharacterDependencyGraph =
+            new PropertyDependencyGraph<Character>(
                     new DependencyGraphNode<string, Character>(nameof(CharacterName),
                         new DependencyGraphNode<string, Character>(nameof(Alias)),
                         new DependencyGraphNode<string, Character>(nameof(Name), x => string.IsNullOrWhiteSpace(x.Alias))
@@ -18794,245 +18794,255 @@ namespace Chummer
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach(string strPropertyName in lstPropertyNames)
+            try
             {
-                if(setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_CharacterDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach(string strLoopChangedProperty in s_CharacterDependencyGraph.GetWithAllDependents(
-                        this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
-                }
-            }
-
-            if(setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            if(setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
-            {
-                _strCachedCharacterGrammaticGender = string.Empty;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
-            {
-                _decCachedTotalStartingNuyen = decimal.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
-            {
-                _intCachedContactPoints = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))
-            {
-                _intCachedTotalArmorRating = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalFireArmorRating)))
-            {
-                _intCachedTotalFireArmorRating = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalColdArmorRating)))
-            {
-                _intCachedTotalColdArmorRating = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalElectricityArmorRating)))
-            {
-                _intCachedTotalElectricityArmorRating = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalAcidArmorRating)))
-            {
-                _intCachedTotalAcidArmorRating = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalFallingArmorRating)))
-            {
-                _intCachedTotalFallingArmorRating = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TrustFund)))
-            {
-                _intCachedTrustFund = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(RestrictedGear)))
-            {
-                _intCachedRestrictedGear = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(FriendsInHighPlaces)))
-            {
-                _intCachedFriendsInHighPlaces = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(ExCon)))
-            {
-                _intCachedExCon = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(MadeMan)))
-            {
-                _intCachedMadeMan = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(Fame)))
-            {
-                _intCachedFame = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(Erased)))
-            {
-                _intCachedErased = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(AllowSpriteFettering)))
-            {
-                _intCachedAllowSpriteFettering = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(Overclocker)))
-            {
-                _intCachedOverclocker = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
-            {
-                _intCachedAmbidextrous = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
-            {
-                _intCachedDealerConnectionDiscount = int.MinValue;
-                RefreshDealerConnectionDiscounts();
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
-            {
-                _intCachedBlackMarketDiscount = int.MinValue;
-                RefreshBlackMarketDiscounts();
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
-            {
-                _decCachedPowerPointsUsed = decimal.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(CyberwareEssence)))
-            {
-                _decCachedCyberwareEssence = decimal.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(BiowareEssence)))
-            {
-                _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
-                _decCachedBiowareEssence = decimal.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(EssenceHole)))
-            {
-                _decCachedEssenceHole = decimal.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
-            {
-                _decCachedBiowareEssence = decimal.MinValue;
-                _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(CareerNuyen)))
-            {
-                _decCachedCareerNuyen = decimal.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(CareerKarma)))
-            {
-                _intCachedCareerKarma = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
-            {
-                _intCachedInitiationEnabled = int.MinValue;
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
-            {
-                _intCachedRedlinerBonus = int.MinValue;
-                RefreshRedlinerImprovements();
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(Essence)))
-            {
-                ResetCachedEssence();
-                RefreshEssenceLossImprovements();
-            }
-
-            if(setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
-            {
-                RefreshWoundPenalties();
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(SustainingPenalty)))
-            {
-                RefreshSustainingPenalties();
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
-            {
-                _intCachedEnemyKarma = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(Qualities)))
-            {
-                _intCachedNegativeQualities = int.MinValue;
-                _intCachedNegativeQualityLimitKarma = int.MinValue;
-                _intCachedPositiveQualities = int.MinValue;
-                _intCachedPositiveQualitiesTotal = int.MinValue;
-                _intCachedMetagenicNegativeQualities = int.MinValue;
-                _intCachedMetagenicPositiveQualities = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(MetagenicLimit)))
-            {
-                _intCachedMetagenicNegativeQualities = int.MinValue;
-                _intCachedMetagenicPositiveQualities = int.MinValue;
-            }
-
-            if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
-                RefreshAstralReputationImprovements();
-
-            if (setNamesOfChangedProperties.Contains(nameof(Settings)))
-                foreach (string strProperty in Settings.GetType().GetProperties().Select(x => x.Name))
-                    OptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
-
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-            }
-
-            if (!Created)
-            {
-                // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
-                if (setNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
-                {
-                    foreach (Spirit objSpirit in Spirits)
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_CharacterDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
                     {
-                        if(objSpirit.EntityType != SpiritType.Spirit)
-                            objSpirit.Force = MaxSpriteLevel;
+                        foreach (string strLoopChangedProperty in s_CharacterDependencyGraph
+                                     .GetWithAllDependentsEnumerable(
+                                         this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
                     }
                 }
 
-                if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
                 {
-                    foreach (Spirit objSpirit in Spirits)
+                    _strCachedCharacterGrammaticGender = string.Empty;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
+                {
+                    _decCachedTotalStartingNuyen = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+                {
+                    _intCachedContactPoints = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))
+                {
+                    _intCachedTotalArmorRating = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalFireArmorRating)))
+                {
+                    _intCachedTotalFireArmorRating = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalColdArmorRating)))
+                {
+                    _intCachedTotalColdArmorRating = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalElectricityArmorRating)))
+                {
+                    _intCachedTotalElectricityArmorRating = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalAcidArmorRating)))
+                {
+                    _intCachedTotalAcidArmorRating = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalFallingArmorRating)))
+                {
+                    _intCachedTotalFallingArmorRating = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TrustFund)))
+                {
+                    _intCachedTrustFund = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(RestrictedGear)))
+                {
+                    _intCachedRestrictedGear = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(FriendsInHighPlaces)))
+                {
+                    _intCachedFriendsInHighPlaces = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(ExCon)))
+                {
+                    _intCachedExCon = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(MadeMan)))
+                {
+                    _intCachedMadeMan = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(Fame)))
+                {
+                    _intCachedFame = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(Erased)))
+                {
+                    _intCachedErased = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(AllowSpriteFettering)))
+                {
+                    _intCachedAllowSpriteFettering = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(Overclocker)))
+                {
+                    _intCachedOverclocker = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
+                {
+                    _intCachedAmbidextrous = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
+                {
+                    _intCachedDealerConnectionDiscount = int.MinValue;
+                    RefreshDealerConnectionDiscounts();
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
+                {
+                    _intCachedBlackMarketDiscount = int.MinValue;
+                    RefreshBlackMarketDiscounts();
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
+                {
+                    _decCachedPowerPointsUsed = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(CyberwareEssence)))
+                {
+                    _decCachedCyberwareEssence = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(BiowareEssence)))
+                {
+                    _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
+                    _decCachedBiowareEssence = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(EssenceHole)))
+                {
+                    _decCachedEssenceHole = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
+                {
+                    _decCachedBiowareEssence = decimal.MinValue;
+                    _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(CareerNuyen)))
+                {
+                    _decCachedCareerNuyen = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(CareerKarma)))
+                {
+                    _intCachedCareerKarma = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
+                {
+                    _intCachedInitiationEnabled = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
+                {
+                    _intCachedRedlinerBonus = int.MinValue;
+                    RefreshRedlinerImprovements();
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                {
+                    ResetCachedEssence();
+                    RefreshEssenceLossImprovements();
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
+                {
+                    RefreshWoundPenalties();
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(SustainingPenalty)))
+                {
+                    RefreshSustainingPenalties();
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
+                {
+                    _intCachedEnemyKarma = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(Qualities)))
+                {
+                    _intCachedNegativeQualities = int.MinValue;
+                    _intCachedNegativeQualityLimitKarma = int.MinValue;
+                    _intCachedPositiveQualities = int.MinValue;
+                    _intCachedPositiveQualitiesTotal = int.MinValue;
+                    _intCachedMetagenicNegativeQualities = int.MinValue;
+                    _intCachedMetagenicPositiveQualities = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(MetagenicLimit)))
+                {
+                    _intCachedMetagenicNegativeQualities = int.MinValue;
+                    _intCachedMetagenicPositiveQualities = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
+                    RefreshAstralReputationImprovements();
+
+                if (setNamesOfChangedProperties.Contains(nameof(Settings)))
+                    foreach (string strProperty in Settings.GetType().GetProperties().Select(x => x.Name))
+                        OptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+
+                if (!Created)
+                {
+                    // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
+                    if (setNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
                     {
-                        if(objSpirit.EntityType == SpiritType.Spirit)
-                            objSpirit.Force = MaxSpiritForce;
+                        foreach (Spirit objSpirit in Spirits)
+                        {
+                            if (objSpirit.EntityType != SpiritType.Spirit)
+                                objSpirit.Force = MaxSpriteLevel;
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
+                    {
+                        foreach (Spirit objSpirit in Spirits)
+                        {
+                            if (objSpirit.EntityType == SpiritType.Spirit)
+                                objSpirit.Force = MaxSpiritForce;
+                        }
                     }
                 }
+            }
+            finally
+            {
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
 
             if (Program.MainForm == null || IsLoading)

@@ -2054,8 +2054,8 @@ namespace Chummer.Backend.Skills
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, Skill> s_SkillDependencyGraph =
-            new DependencyGraph<string, Skill>(
+        private static readonly PropertyDependencyGraph<Skill> s_SkillDependencyGraph =
+            new PropertyDependencyGraph<Skill>(
                 new DependencyGraphNode<string, Skill>(nameof(PoolToolTip),
                     new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
                     new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers),
@@ -2261,47 +2261,58 @@ namespace Chummer.Backend.Skills
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_SkillDependencyGraph.GetWithAllDependentsEnumerable(
+                                     this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
                 }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
+                    _intCachedFreeBase = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(FreeKarma)))
+                    _intCachedFreeKarma = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+                    _intCachedCanUpgradeCareer = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
+                    _intCachedCanAffordSpecialization = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
+                    _intCachedEnabled = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
+                    _intCachedCanHaveSpecs = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
+                    _intCachedForcedBuyWithKarma = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
+                    _intCachedForcedNotBuyWithKarma = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
+                    ResetCachedCyberwareRating();
+                if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
+                    _blnRecalculateCachedSuggestedSpecializations = true;
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+
+                // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
+                if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
+                    RecacheAttribute();
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
-                _intCachedFreeBase = int.MinValue;
-            if (setNamesOfChangedProperties.Contains(nameof(FreeKarma)))
-                _intCachedFreeKarma = int.MinValue;
-            if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
-                _intCachedCanUpgradeCareer = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
-                _intCachedCanAffordSpecialization = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
-                _intCachedEnabled = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
-                _intCachedCanHaveSpecs = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
-                _intCachedForcedBuyWithKarma = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
-                _intCachedForcedNotBuyWithKarma = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
-                ResetCachedCyberwareRating();
-            if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
-                _blnRecalculateCachedSuggestedSpecializations = true;
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
-            // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
-            if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
-                RecacheAttribute();
         }
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)

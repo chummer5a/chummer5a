@@ -3878,8 +3878,8 @@ namespace Chummer.Backend.Equipment
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, Gear> s_GearDependencyGraph =
-            new DependencyGraph<string, Gear>(
+        private static readonly PropertyDependencyGraph<Gear> s_GearDependencyGraph =
+            new PropertyDependencyGraph<Gear>(
                 new DependencyGraphNode<string, Gear>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, Gear>(nameof(DisplayName),
                         new DependencyGraphNode<string, Gear>(nameof(DisplayNameShort),
@@ -3994,24 +3994,33 @@ namespace Chummer.Backend.Equipment
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_GearDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_GearDependencyGraph.GetWithAllDependents(this,
-                        strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties = s_GearDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_GearDependencyGraph.GetWithAllDependentsEnumerable(
+                                     this,
+                                     strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 

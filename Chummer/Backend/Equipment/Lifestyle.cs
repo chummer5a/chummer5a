@@ -1425,8 +1425,8 @@ namespace Chummer.Backend.Equipment
 
         #endregion Methods
 
-        private static readonly DependencyGraph<string, Lifestyle> s_LifestyleDependencyGraph =
-            new DependencyGraph<string, Lifestyle>(
+        private static readonly PropertyDependencyGraph<Lifestyle> s_LifestyleDependencyGraph =
+            new PropertyDependencyGraph<Lifestyle>(
                 new DependencyGraphNode<string, Lifestyle>(nameof(DisplayTotalMonthlyCost),
                     new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
                         new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost),
@@ -1481,23 +1481,33 @@ namespace Chummer.Backend.Equipment
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_LifestyleDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 

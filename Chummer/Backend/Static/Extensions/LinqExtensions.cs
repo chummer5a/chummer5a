@@ -110,17 +110,17 @@ namespace Chummer
                 return objParentList == null && objTargetList == null;
             if (objParentList.Count != objTargetList.Count)
                 return false;
-            HashSet<T> lstExclude = new HashSet<T>();
+            HashSet<T> setExclude = new HashSet<T>();
             foreach (T objLoopChild in objParentList)
             {
                 bool blnFoundItem = false;
                 foreach (T objTargetChild in objTargetList)
                 {
-                    if (!lstExclude.Contains(objTargetChild)
+                    if (!setExclude.Contains(objTargetChild)
                         && predicate(objLoopChild, objTargetChild)
                         && funcGetChildrenMethod(objLoopChild).DeepMatch(funcGetChildrenMethod(objTargetChild), funcGetChildrenMethod, predicate))
                     {
-                        lstExclude.Add(objTargetChild);
+                        setExclude.Add(objTargetChild);
                         blnFoundItem = true;
                         break;
                     }
@@ -129,6 +129,46 @@ namespace Chummer
                 if (!blnFoundItem)
                     return false;
             }
+            return true;
+        }
+
+        /// <summary>
+        /// Deep searches two collections to make sure matching elements between the two fulfill some predicate. Each item in the target list can only be matched once.
+        /// </summary>
+        /// <param name="objParentList">Base list to check.</param>
+        /// <param name="objTargetList">Target list against which we're checking</param>
+        /// <param name="funcGetChildrenMethod">Method used to get children of both the base list and the target list against which we're checking.</param>
+        /// <param name="predicate">Two-argument function that takes its first argument from the base list and the second from the target list. If it does not return true on any available pair, the method returns false.</param>
+        public static bool DeepMatch(this IReadOnlyCollection<string> objParentList, IReadOnlyCollection<string> objTargetList, Func<string, IReadOnlyCollection<string>> funcGetChildrenMethod, Func<string, string, bool> predicate)
+        {
+            if (objParentList == null || objTargetList == null)
+                return objParentList == null && objTargetList == null;
+            if (objParentList.Count != objTargetList.Count)
+                return false;
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setExclude))
+            {
+                foreach (string objLoopChild in objParentList)
+                {
+                    bool blnFoundItem = false;
+                    foreach (string objTargetChild in objTargetList)
+                    {
+                        if (!setExclude.Contains(objTargetChild)
+                            && predicate(objLoopChild, objTargetChild)
+                            && funcGetChildrenMethod(objLoopChild)
+                                .DeepMatch(funcGetChildrenMethod(objTargetChild), funcGetChildrenMethod, predicate))
+                        {
+                            setExclude.Add(objTargetChild);
+                            blnFoundItem = true;
+                            break;
+                        }
+                    }
+
+                    // No matching item was found, return false
+                    if (!blnFoundItem)
+                        return false;
+                }
+            }
+
             return true;
         }
 

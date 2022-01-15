@@ -163,25 +163,35 @@ namespace Chummer.Backend.Skills
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+                if (setNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
+                    _intCachedKnowledgePoints = int.MinValue;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-            if (setNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
-                _intCachedKnowledgePoints = int.MinValue;
-
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
@@ -1311,8 +1321,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static readonly DependencyGraph<string, SkillsSection> s_SkillSectionDependencyGraph =
-            new DependencyGraph<string, SkillsSection>(
+        private static readonly PropertyDependencyGraph<SkillsSection> s_SkillSectionDependencyGraph =
+            new PropertyDependencyGraph<SkillsSection>(
                 new DependencyGraphNode<string, SkillsSection>(nameof(HasKnowledgePoints),
                     new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints))
                 ),

@@ -1274,33 +1274,43 @@ namespace Chummer.Backend.Attributes
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_AttributeDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+                    _intCachedCanUpgradeCareer = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(Value)))
+                    _intCachedValue = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))
+                    _intCachedTotalValue = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
+                    _intCachedUpgradeKarmaCost = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
+                    _strCachedToolTip = string.Empty;
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
-                _intCachedCanUpgradeCareer = -1;
-            if (setNamesOfChangedProperties.Contains(nameof(Value)))
-                _intCachedValue = int.MinValue;
-            if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))
-                _intCachedTotalValue = int.MinValue;
-            if (setNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
-                _intCachedUpgradeKarmaCost = int.MinValue;
-            if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
-                _strCachedToolTip = string.Empty;
-            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
@@ -1349,8 +1359,8 @@ namespace Chummer.Backend.Attributes
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, CharacterAttrib> s_AttributeDependencyGraph =
-            new DependencyGraph<string, CharacterAttrib>(
+        private static readonly PropertyDependencyGraph<CharacterAttrib> s_AttributeDependencyGraph =
+            new PropertyDependencyGraph<CharacterAttrib>(
                 new DependencyGraphNode<string, CharacterAttrib>(nameof(ToolTip),
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(DisplayValue),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers)),

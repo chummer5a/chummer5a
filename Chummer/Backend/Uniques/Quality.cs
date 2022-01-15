@@ -1353,8 +1353,8 @@ namespace Chummer
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, Quality> s_QualityDependencyGraph =
-            new DependencyGraph<string, Quality>(
+        private static readonly PropertyDependencyGraph<Quality> s_QualityDependencyGraph =
+            new PropertyDependencyGraph<Quality>(
                 new DependencyGraphNode<string, Quality>(nameof(Notes),
                     new DependencyGraphNode<string, Quality>(nameof(Suppressed))
                 ),
@@ -1504,29 +1504,39 @@ namespace Chummer
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             HashSet<string> setNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            try
             {
-                if (setNamesOfChangedProperties == null)
-                    setNamesOfChangedProperties = s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_QualityDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (lstPropertyNames.Contains(nameof(Suppressed)))
+                {
+                    _intCachedSuppressed = -1;
+                    RefreshSuppressed();
+                }
+
+                foreach (string strPropertyToChange in lstPropertyNames)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (lstPropertyNames.Contains(nameof(Suppressed)))
+            finally
             {
-                _intCachedSuppressed = -1;
-                RefreshSuppressed();
-            }
-
-            foreach (string strPropertyToChange in lstPropertyNames)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 

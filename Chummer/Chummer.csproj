@@ -300,12 +300,14 @@
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
+    <Compile Include="Backend\Datastructures\ConcurrentStringHashSet.cs" />
     <Compile Include="Backend\Datastructures\KeyArray.cs" />
     <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionaryEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingHashSet.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
+    <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
