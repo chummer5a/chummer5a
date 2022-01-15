@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -344,8 +343,7 @@ namespace Chummer
                         CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
                         CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
                         CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-                        CharacterObject.Lifestyles.ListChanged += LifestylesOnListChanged;
-                        CharacterObject.Lifestyles.BeforeRemove += LifestylesOnBeforeRemove;
+                        CharacterObject.Lifestyles.CollectionChanged += LifestylesCollectionChanged;
                         CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
                         CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
                         CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
@@ -1019,12 +1017,7 @@ namespace Chummer
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, notifyCollectionChangedEventArgs);
         }
 
-        private void LifestylesOnBeforeRemove(object sender, RemovingOldEventArgs e)
-        {
-            RefreshLifestylesBeforeRemove(treLifestyles, e);
-        }
-
-        private void LifestylesOnListChanged(object sender, ListChangedEventArgs e)
+        private void LifestylesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e);
         }
@@ -1164,8 +1157,7 @@ namespace Chummer
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
-                CharacterObject.Lifestyles.ListChanged -= LifestylesOnListChanged;
-                CharacterObject.Lifestyles.BeforeRemove -= LifestylesOnBeforeRemove;
+                CharacterObject.Lifestyles.CollectionChanged -= LifestylesCollectionChanged;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
                 CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;

@@ -362,8 +362,7 @@ namespace Chummer
                         CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
                         CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
                         CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-                        CharacterObject.Lifestyles.ListChanged += LifestylesOnListChanged;
-                        CharacterObject.Lifestyles.BeforeRemove += LifestylesOnBeforeRemove;
+                        CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
                         CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
                         CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
                         CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
@@ -945,8 +944,7 @@ namespace Chummer
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
-                CharacterObject.Lifestyles.ListChanged -= LifestylesOnListChanged;
-                CharacterObject.Lifestyles.BeforeRemove -= LifestylesOnBeforeRemove;
+                CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
@@ -15866,12 +15864,7 @@ namespace Chummer
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, notifyCollectionChangedEventArgs);
         }
 
-        private void LifestylesOnBeforeRemove(object sender, RemovingOldEventArgs e)
-        {
-            RefreshLifestylesBeforeRemove(treLifestyles, e);
-        }
-
-        private void LifestylesOnListChanged(object sender, ListChangedEventArgs e)
+        private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e);
         }

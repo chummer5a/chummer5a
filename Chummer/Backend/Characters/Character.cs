@@ -215,7 +215,7 @@ namespace Chummer
 
         private readonly EnhancedObservableCollection<Weapon> _lstWeapons = new EnhancedObservableCollection<Weapon>();
         private readonly EnhancedObservableCollection<Quality> _lstQualities = new EnhancedObservableCollection<Quality>();
-        private readonly CachedBindingList<Lifestyle> _lstLifestyles = new CachedBindingList<Lifestyle>();
+        private readonly EnhancedObservableCollection<Lifestyle> _lstLifestyles = new EnhancedObservableCollection<Lifestyle>();
         private readonly EnhancedObservableCollection<Gear> _lstGear = new EnhancedObservableCollection<Gear>();
         private readonly EnhancedObservableCollection<Vehicle> _lstVehicles = new EnhancedObservableCollection<Vehicle>();
         private readonly EnhancedObservableCollection<Metamagic> _lstMetamagics = new EnhancedObservableCollection<Metamagic>();
@@ -296,8 +296,38 @@ namespace Chummer
             _lstCritterPowers.CollectionChanged += SustainableOnCollectionChanged;
             _lstSustainedObjects.CollectionChanged += SustainedObjectsOnCollectionChanged;
             _lstInitiationGrades.CollectionChanged += InitiationGradesOnCollectionChanged;
-            _lstLifestyles.BeforeRemove += LstLifestylesOnBeforeRemove;
+            _lstLifestyles.CollectionChanged += LifestylesOnCollectionChanged;
+            _lstLifestyles.BeforeClearCollectionChanged += LifestylesOnBeforeClearCollectionChanged;
             _objTradition = new Tradition(this);
+        }
+
+        private void LifestylesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (IsLoading)
+                return;
+            foreach (Lifestyle objLifestyle in e.NewItems)
+                objLifestyle.Dispose();
+        }
+
+        private void LifestylesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (IsLoading)
+                return;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Lifestyle objLifestyle in e.OldItems)
+                        objLifestyle.Dispose();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    List<Lifestyle> lstNewLifestyles = e.NewItems.OfType<Lifestyle>().ToList();
+                    foreach (Lifestyle objLifestyle in e.OldItems)
+                    {
+                        if (!lstNewLifestyles.Contains(objLifestyle))
+                            objLifestyle.Dispose();
+                    }
+                    break;
+            }
         }
 
         private void SpellsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -327,13 +357,6 @@ namespace Chummer
                     }
                     break;
             }
-        }
-
-        private void LstLifestylesOnBeforeRemove(object sender, RemovingOldEventArgs e)
-        {
-            if (IsLoading)
-                return;
-            Lifestyles[e.OldIndex].Dispose();
         }
 
         private bool _blnClearingInitiations;
@@ -12005,7 +12028,7 @@ namespace Chummer
         /// <summary>
         /// Lifestyles.
         /// </summary>
-        public CachedBindingList<Lifestyle> Lifestyles => _lstLifestyles;
+        public EnhancedObservableCollection<Lifestyle> Lifestyles => _lstLifestyles;
 
         /// <summary>
         /// Gear.
