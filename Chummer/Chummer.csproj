@@ -1049,6 +1049,7 @@
     <Content Include="customdata\Shadowrun Missions Rules\custom_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Shadowrun Missions Rules\custom_weapons.xml" />
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

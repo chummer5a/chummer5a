@@ -58,5 +58,12 @@
       <!--Krime Tingler-->
       <damage>11S(e)</damage>
     </weapon>
+    <weapon>
+      <id>754f701a-4363-480d-8008-7ba6be5226aa</id>
+      <!--Krime Vester-->
+      <underbarrels>
+        <underbarrel amendoperation="addnode">Krime Vester (Blade)</underbarrel>
+      </underbarrels>
+    </weapon>
   </weapons>
 </chummer>
