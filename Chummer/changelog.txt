@@ -68,6 +68,7 @@ Data Changes:
 - Dead SIN now properly gives four fake licenses instead of three. Fixes #4666.
 - Ram Plate uses the stats from the print version of Rigger 5.0, which, unlike the PDF version, actually has stats listed for the Ram Plate.
 - Codeslinger quality now prompts for an action from the Matrix category of actions.xml.
+- Shadowrun Missions Rules has been updated to include the rules and additional authors added by the 1.4 supplemental FAQ.
 
 Changed/New Strings:
 - String_GameplayOption
