@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -88,7 +89,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnTrustFund;
         private LifestyleType _eType = LifestyleType.Standard;
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
-        private readonly CachedBindingList<LifestyleQuality> _lstFreeGrids = new CachedBindingList<LifestyleQuality>();
+        private readonly EnhancedObservableCollection<LifestyleQuality> _lstFreeGrids = new EnhancedObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
@@ -152,9 +153,10 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            LifestyleQualities.BeforeRemove += LifestyleQualitiesOnBeforeRemove;
-            LifestyleQualities.ListChanged += LifestyleQualitiesOnListChanged;
-            FreeGrids.BeforeRemove += FreeGridsOnBeforeRemove;
+            LifestyleQualities.CollectionChanged += LifestyleQualitiesCollectionChanged;
+            LifestyleQualities.BeforeClearCollectionChanged += LifestyleQualitiesOnBeforeClearCollectionChanged;
+            FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
+            FreeGrids.BeforeClearCollectionChanged += FreeGridsOnBeforeClearCollectionChanged;
         }
 
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
@@ -664,7 +666,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
-        public CachedBindingList<LifestyleQuality> FreeGrids => _lstFreeGrids;
+        public EnhancedObservableCollection<LifestyleQuality> FreeGrids => _lstFreeGrids;
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -985,19 +987,22 @@ namespace Chummer.Backend.Equipment
             set => _intSecurityMaximum = value;
         }
 
-        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Where(x =>
-            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.ComfortMaximum);
+        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities
+                                                             .Where(x => x.OriginSource != QualitySource.BuiltIn)
+                                                             .Sum(lq => lq.ComfortMaximum);
 
-        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Where(x =>
-            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.SecurityMaximum);
+        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities
+                                                             .Where(x => x.OriginSource != QualitySource.BuiltIn)
+                                                             .Sum(lq => lq.SecurityMaximum);
 
-        public int TotalAreaMaximum => AreaMaximum + LifestyleQualities.Where(x =>
-    x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.AreaMaximum);
+        public int TotalAreaMaximum => AreaMaximum + LifestyleQualities
+                                                     .Where(x => x.OriginSource != QualitySource.BuiltIn)
+                                                     .Sum(lq => lq.AreaMaximum);
 
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
-        public CachedBindingList<LifestyleQuality> LifestyleQualities { get; } = new CachedBindingList<LifestyleQuality>();
+        public EnhancedObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new EnhancedObservableCollection<LifestyleQuality>();
 
         /// <summary>
         /// Notes.
@@ -1370,31 +1375,72 @@ namespace Chummer.Backend.Equipment
             ++Increments;
         }
 
-        private void LifestyleQualitiesOnListChanged(object sender, ListChangedEventArgs e)
+        private void FreeGridsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            foreach (LifestyleQuality objQuality in e.NewItems)
             {
-                case ListChangedType.PropertyDescriptorAdded:
-                case ListChangedType.PropertyDescriptorChanged:
-                case ListChangedType.PropertyDescriptorDeleted:
-                case ListChangedType.ItemMoved:
+                if (!LifestyleQualities.Contains(objQuality))
+                    objQuality.Dispose();
+            }
+        }
+
+        private void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!LifestyleQualities.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    List<LifestyleQuality> lstNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToList();
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!lstNewLifestyleQualities.Contains(objQuality) && !LifestyleQualities.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    return;
+            }
+            OnPropertyChanged(nameof(FreeGrids));
+        }
+
+        private void LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (LifestyleQuality objQuality in e.NewItems)
+            {
+                if (!FreeGrids.Contains(objQuality))
+                    objQuality.Dispose();
+            }
+        }
+
+        private void LifestyleQualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!FreeGrids.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    List<LifestyleQuality> lstNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToList();
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!lstNewLifestyleQualities.Contains(objQuality) && !FreeGrids.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
                     return;
             }
             OnPropertyChanged(nameof(LifestyleQualities));
-        }
-
-        private void LifestyleQualitiesOnBeforeRemove(object sender, RemovingOldEventArgs e)
-        {
-            LifestyleQuality objQuality = LifestyleQualities[e.OldIndex];
-            if (!FreeGrids.Contains(objQuality))
-                objQuality.Dispose();
-        }
-
-        private void FreeGridsOnBeforeRemove(object sender, RemovingOldEventArgs e)
-        {
-            LifestyleQuality objQuality = FreeGrids[e.OldIndex];
-            if (!LifestyleQualities.Contains(objQuality))
-                objQuality.Dispose();
         }
 
         #region UI Methods
@@ -1530,9 +1576,10 @@ namespace Chummer.Backend.Equipment
         {
             LifestyleQualities.Clear();
             FreeGrids.Clear();
-            LifestyleQualities.BeforeRemove -= LifestyleQualitiesOnBeforeRemove;
-            LifestyleQualities.ListChanged -= LifestyleQualitiesOnListChanged;
-            FreeGrids.BeforeRemove -= FreeGridsOnBeforeRemove;
+            LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
+            LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+            FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
+            FreeGrids.BeforeClearCollectionChanged -= FreeGridsOnBeforeClearCollectionChanged;
         }
     }
 }
