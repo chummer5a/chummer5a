@@ -716,10 +716,10 @@
     <Compile Include="Controls\Editors\RtfEditor.Designer.cs">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Shared\Components\DicePoolControl.cs">
+    <Compile Include="Controls\Shared\DicePoolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\DicePoolControl.Designer.cs">
+    <Compile Include="Controls\Shared\DicePoolControl.Designer.cs">
       <DependentUpon>DicePoolControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Chummy.cs">
@@ -1709,7 +1709,7 @@
     <EmbeddedResource Include="Controls\Editors\RtfEditor.resx">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Shared\Components\DicePoolControl.resx">
+    <EmbeddedResource Include="Controls\Shared\DicePoolControl.resx">
       <DependentUpon>DicePoolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Shared\LimitTabUserControl.resx">
