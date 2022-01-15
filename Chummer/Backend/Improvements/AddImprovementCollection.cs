@@ -1553,7 +1553,6 @@ namespace Chummer
 
             SelectedValue = node["name"]?.InnerText;
 
-            Spell spell = new Spell(_objCharacter);
             // Check for SelectText.
             string strExtra = string.Empty;
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
@@ -1567,16 +1566,19 @@ namespace Chummer
                     frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult == DialogResult.Cancel)
-                    {
                         throw new AbortedException();
-                    }
 
                     strExtra = frmPickText.SelectedValue;
                 }
             }
+
+            Spell spell = new Spell(_objCharacter);
             spell.Create(node, strExtra);
             if (spell.InternalId.IsEmptyGuid())
+            {
+                spell.Dispose();
                 throw new AbortedException();
+            }
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
 
@@ -1631,7 +1633,10 @@ namespace Chummer
             Spell spell = new Spell(_objCharacter);
             spell.Create(node, strExtra);
             if (spell.InternalId.IsEmptyGuid())
+            {
+                spell.Dispose();
                 throw new AbortedException();
+            }
             spell.Alchemical  = bonusNode.Attributes?["alchemical" ]?.InnerText == bool.TrueString;
             spell.Extended    = bonusNode.Attributes?["extended"   ]?.InnerText == bool.TrueString;
             spell.Limited     = bonusNode.Attributes?["limited"    ]?.InnerText == bool.TrueString;
@@ -7364,7 +7369,10 @@ namespace Chummer
             objCyberware.Create(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, ForcedValue);
 
             if (objCyberware.InternalId.IsEmptyGuid())
+            {
+                objCyberware.Dispose();
                 throw new AbortedException();
+            }
 
             objCyberware.Cost = "0";
             // Create any Weapons that came with this ware.
@@ -7485,48 +7493,54 @@ namespace Chummer
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlActionsBaseNode =
                     _objCharacter.LoadDataXPath("actions.xml").SelectSingleNodeAndCacheExpression("/chummer");
-                List<ListItem> lstActions = new List<ListItem>(30);
-                StringBuilder strXpath = new StringBuilder();
-                    strXpath.Append("actions/action[" + _objCharacter.Settings.BookXPath());
-                    string strCategory = bonusNode.Attributes?["category"]?.InnerText ?? string.Empty;
-                if (!string.IsNullOrEmpty(strCategory))
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstActions))
                 {
-                    strXpath.Append(" and category = " + strCategory.CleanXPath());
-                }
-
-                strXpath.Append(']');
-                if (xmlActionsBaseNode != null)
-                {
-                    foreach (XPathNavigator xmlAction in xmlActionsBaseNode.Select(strXpath.ToString()))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdXPath))
                     {
-                        string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstActions.Add(new ListItem(xmlAction.SelectSingleNodeAndCacheExpression("id")?.Value ?? strName,
-                                xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
-                    }
-                }
-
-                if (lstActions.Count > 1)
-                {
-                    lstActions.Sort(CompareListItems.CompareNames);
-                }
-
-                using (frmSelectItem frmPickItem = new frmSelectItem
-                {
-                    SelectedItem = _objCharacter.MagicTradition.SourceIDString,
-                    AllowAutoSelect = false
-                })
-                {
-                    frmPickItem.SetDropdownItemsMode(lstActions);
-                    frmPickItem.ShowDialog(Program.MainForm);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
-                    {
-                        throw new AbortedException();
+                        sbdXPath.Append("actions/action[").Append(_objCharacter.Settings.BookXPath());
+                        string strCategory = bonusNode.Attributes?["category"]?.InnerText ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strCategory))
+                        {
+                            sbdXPath.Append(" and category = ").Append(strCategory.CleanXPath());
+                        }
+                        sbdXPath.Append(']');
+                        if (xmlActionsBaseNode != null)
+                        {
+                            foreach (XPathNavigator xmlAction in xmlActionsBaseNode.Select(sbdXPath.ToString()))
+                            {
+                                string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                if (!string.IsNullOrEmpty(strName))
+                                    lstActions.Add(new ListItem(
+                                                       xmlAction.SelectSingleNodeAndCacheExpression("id")?.Value
+                                                       ?? strName,
+                                                       xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                       ?? strName));
+                            }
+                        }
                     }
 
-                    SelectedValue = frmPickItem.SelectedName;
+                    if (lstActions.Count > 1)
+                    {
+                        lstActions.Sort(CompareListItems.CompareNames);
+                    }
+
+                    using (frmSelectItem frmPickItem = new frmSelectItem
+                           {
+                               SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                               AllowAutoSelect = false
+                           })
+                    {
+                        frmPickItem.SetDropdownItemsMode(lstActions);
+                        frmPickItem.ShowDialog(Program.MainForm);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        SelectedValue = frmPickItem.SelectedName;
+                    }
                 }
             }
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.ActionDicePool,

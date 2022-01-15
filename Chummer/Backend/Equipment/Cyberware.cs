@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
@@ -42,7 +41,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
     public class Cyberware : ICanPaste, IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
-        IHasWirelessBonus, ICanBlackMarketDiscount
+        IHasWirelessBonus, ICanBlackMarketDiscount, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -83,8 +82,8 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWirelessPairBonus;
-        private readonly HashSet<string> _lstIncludeInPairBonus = new HashSet<string>();
-        private readonly HashSet<string> _lstIncludeInWirelessPairBonus = new HashSet<string>();
+        private readonly HashSet<string> _lstIncludeInPairBonus = Utils.StringHashSetPool.Get();
+        private readonly HashSet<string> _lstIncludeInWirelessPairBonus = Utils.StringHashSetPool.Get();
         private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
@@ -1011,7 +1010,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                 {
                     XPathNavigator xpnCyberware = objXmlCyberware.CreateNavigator();
-                    ObservableCollection<Cyberware> lstCyberwareToCheck =
+                    IList<Cyberware> lstCyberwareToCheck =
                         Parent == null ? _objCharacter.Cyberware : Parent.Children;
                     Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
                     Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
@@ -4769,6 +4768,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            Dispose();
+
             return decReturn;
         }
 
@@ -5203,6 +5204,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
+                        objPlugin.Dispose();
                         Gear objPluginGear = new Gear(_objCharacter);
                         if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
                         {
@@ -5625,6 +5627,15 @@ namespace Chummer.Backend.Equipment
             }
 
             return true;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstChildren.Dispose();
+            _lstGear.Dispose();
+            Utils.StringHashSetPool.Return(_lstIncludeInPairBonus);
+            Utils.StringHashSetPool.Return(_lstIncludeInWirelessPairBonus);
         }
     }
 }

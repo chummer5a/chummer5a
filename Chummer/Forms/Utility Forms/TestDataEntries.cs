@@ -477,25 +477,30 @@ namespace Chummer
                         Application.DoEvents();
                         try
                         {
-                            Cyberware objTemp = new Cyberware(_objCharacter);
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            List<Vehicle> objVehicles = new List<Vehicle>(1);
-                            objTemp.Create(objXmlGear, objTestGrade, objSource, 1, lstWeapons, objVehicles, false);
-
-                            Type objType = objTemp.GetType();
-
-                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            using (Cyberware objTemp = new Cyberware(_objCharacter))
                             {
-                                try
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+                                List<Vehicle> objVehicles = new List<Vehicle>(1);
+                                objTemp.Create(objXmlGear, objTestGrade, objSource, 1, lstWeapons, objVehicles, false);
+
+                                Type objType = objTemp.GetType();
+
+                                foreach (PropertyInfo objProperty in objType.GetProperties())
                                 {
-                                    objProperty.GetValue(objTemp, null);
-                                }
-                                catch (Exception e)
-                                {
-                                    if (_blnAddExceptionInfoToErrors)
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
-                                    else
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
+                                    try
+                                    {
+                                        objProperty.GetValue(objTemp, null);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        if (_blnAddExceptionInfoToErrors)
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                             .Append(objProperty.Name).Append(". Exception: ")
+                                                             .AppendLine(e.ToString());
+                                        else
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                             .AppendLine(objProperty.Name);
+                                    }
                                 }
                             }
                         }

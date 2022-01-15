@@ -188,59 +188,59 @@ namespace Chummer
         private readonly List<string> _lstPrioritySkills = new List<string>(3);
 
         // Lists.
-        private readonly ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
+        private readonly EnhancedObservableCollection<Improvement> _lstImprovements = new EnhancedObservableCollection<Improvement>();
 
-        private readonly ObservableCollection<MentorSpirit>
-            _lstMentorSpirits = new ObservableCollection<MentorSpirit>();
+        private readonly EnhancedObservableCollection<MentorSpirit>
+            _lstMentorSpirits = new EnhancedObservableCollection<MentorSpirit>();
 
-        private readonly ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
-        private readonly ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
-        private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
+        private readonly EnhancedObservableCollection<Contact> _lstContacts = new EnhancedObservableCollection<Contact>();
+        private readonly EnhancedObservableCollection<Spirit> _lstSpirits = new EnhancedObservableCollection<Spirit>();
+        private readonly EnhancedObservableCollection<Spell> _lstSpells = new EnhancedObservableCollection<Spell>();
 
-        private readonly ObservableCollection<SustainedObject> _lstSustainedObjects = new ObservableCollection<SustainedObject>();
+        private readonly EnhancedObservableCollection<SustainedObject> _lstSustainedObjects = new EnhancedObservableCollection<SustainedObject>();
 
         private readonly List<Focus> _lstFoci = new List<Focus>(5);
         private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>(5);
         private readonly CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
-        private readonly ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
-        private readonly ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
-        private readonly ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
+        private readonly EnhancedObservableCollection<ComplexForm> _lstComplexForms = new EnhancedObservableCollection<ComplexForm>();
+        private readonly EnhancedObservableCollection<AIProgram> _lstAIPrograms = new EnhancedObservableCollection<AIProgram>();
+        private readonly EnhancedObservableCollection<MartialArt> _lstMartialArts = new EnhancedObservableCollection<MartialArt>();
 
-        private readonly ObservableCollection<LimitModifier> _lstLimitModifiers =
-            new ObservableCollection<LimitModifier>();
+        private readonly EnhancedObservableCollection<LimitModifier> _lstLimitModifiers =
+            new EnhancedObservableCollection<LimitModifier>();
 
-        private readonly ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
+        private readonly EnhancedObservableCollection<Armor> _lstArmor = new EnhancedObservableCollection<Armor>();
 
-        private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
+        private readonly EnhancedObservableCollection<Cyberware> _lstCyberware = new EnhancedObservableCollection<Cyberware>();
 
-        private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
-        private readonly ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
+        private readonly EnhancedObservableCollection<Weapon> _lstWeapons = new EnhancedObservableCollection<Weapon>();
+        private readonly EnhancedObservableCollection<Quality> _lstQualities = new EnhancedObservableCollection<Quality>();
         private readonly CachedBindingList<Lifestyle> _lstLifestyles = new CachedBindingList<Lifestyle>();
-        private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
-        private readonly ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
-        private readonly ObservableCollection<Metamagic> _lstMetamagics = new ObservableCollection<Metamagic>();
-        private readonly ObservableCollection<Art> _lstArts = new ObservableCollection<Art>();
-        private readonly ObservableCollection<Enhancement> _lstEnhancements = new ObservableCollection<Enhancement>();
+        private readonly EnhancedObservableCollection<Gear> _lstGear = new EnhancedObservableCollection<Gear>();
+        private readonly EnhancedObservableCollection<Vehicle> _lstVehicles = new EnhancedObservableCollection<Vehicle>();
+        private readonly EnhancedObservableCollection<Metamagic> _lstMetamagics = new EnhancedObservableCollection<Metamagic>();
+        private readonly EnhancedObservableCollection<Art> _lstArts = new EnhancedObservableCollection<Art>();
+        private readonly EnhancedObservableCollection<Enhancement> _lstEnhancements = new EnhancedObservableCollection<Enhancement>();
 
-        private readonly ObservableCollection<ExpenseLogEntry> _lstExpenseLog =
-            new ObservableCollection<ExpenseLogEntry>();
+        private readonly EnhancedObservableCollection<ExpenseLogEntry> _lstExpenseLog =
+            new EnhancedObservableCollection<ExpenseLogEntry>();
 
-        private readonly ObservableCollection<CritterPower>
-            _lstCritterPowers = new ObservableCollection<CritterPower>();
+        private readonly EnhancedObservableCollection<CritterPower>
+            _lstCritterPowers = new EnhancedObservableCollection<CritterPower>();
 
-        private readonly ObservableCollection<InitiationGrade> _lstInitiationGrades =
-            new ObservableCollection<InitiationGrade>();
+        private readonly EnhancedObservableCollection<InitiationGrade> _lstInitiationGrades =
+            new EnhancedObservableCollection<InitiationGrade>();
 
-        private readonly ObservableCollection<Location> _lstGearLocations = new ObservableCollection<Location>();
-        private readonly ObservableCollection<Location> _lstArmorLocations = new ObservableCollection<Location>();
+        private readonly EnhancedObservableCollection<Location> _lstGearLocations = new EnhancedObservableCollection<Location>();
+        private readonly EnhancedObservableCollection<Location> _lstArmorLocations = new EnhancedObservableCollection<Location>();
 
-        private readonly ObservableCollection<Location> _lstVehicleLocations = new ObservableCollection<Location>();
+        private readonly EnhancedObservableCollection<Location> _lstVehicleLocations = new EnhancedObservableCollection<Location>();
 
-        private readonly ObservableCollection<Location> _lstWeaponLocations = new ObservableCollection<Location>();
-        private readonly ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
+        private readonly EnhancedObservableCollection<Location> _lstWeaponLocations = new EnhancedObservableCollection<Location>();
+        private readonly EnhancedObservableCollection<string> _lstImprovementGroups = new EnhancedObservableCollection<string>();
         private readonly BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
 
-        private readonly ObservableCollection<Drug> _lstDrugs = new ObservableCollection<Drug>();
+        private readonly EnhancedObservableCollection<Drug> _lstDrugs = new EnhancedObservableCollection<Drug>();
 
         //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>(1);
@@ -289,6 +289,8 @@ namespace Chummer
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
             _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
             _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
+            _lstSpells.CollectionChanged += SpellsOnCollectionChanged;
+            _lstSpells.BeforeClearCollectionChanged += SpellsOnBeforeClearCollectionChanged;
             _lstSpells.CollectionChanged += SustainableOnCollectionChanged;
             _lstComplexForms.CollectionChanged += SustainableOnCollectionChanged;
             _lstCritterPowers.CollectionChanged += SustainableOnCollectionChanged;
@@ -296,6 +298,35 @@ namespace Chummer
             _lstInitiationGrades.CollectionChanged += InitiationGradesOnCollectionChanged;
             _lstLifestyles.BeforeRemove += LstLifestylesOnBeforeRemove;
             _objTradition = new Tradition(this);
+        }
+
+        private void SpellsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (IsLoading)
+                return;
+            foreach (Spell objSpell in e.NewItems)
+                objSpell.Dispose();
+        }
+
+        private void SpellsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (IsLoading)
+                return;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Spell objSpell in e.OldItems)
+                        objSpell.Dispose();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    List<Spell> lstNewSpells = e.NewItems.OfType<Spell>().ToList();
+                    foreach (Spell objSpell in e.OldItems)
+                    {
+                        if (!lstNewSpells.Contains(objSpell))
+                            objSpell.Dispose();
+                    }
+                    break;
+            }
         }
 
         private void LstLifestylesOnBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -1683,7 +1714,7 @@ namespace Chummer
                 XmlNode objXmlCyberwareNode =
                     xmlCyberwareDocument.SelectSingleNode("chummer/cyberwares/cyberware[name = " +
                                                           node.InnerText.CleanXPath() + "]");
-                var objWare = new Cyberware(this);
+                Cyberware objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
@@ -1704,7 +1735,7 @@ namespace Chummer
                 XmlNode objXmlCyberwareNode =
                     xmlBiowareDocument.SelectSingleNode("chummer/biowares/bioware[name = " +
                                                         node.InnerText.CleanXPath() + "]");
-                var objWare = new Cyberware(this);
+                Cyberware objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
@@ -11886,34 +11917,34 @@ namespace Chummer
         /// <summary>
         /// Improvements.
         /// </summary>
-        public ObservableCollection<Improvement> Improvements => _lstImprovements;
+        public EnhancedObservableCollection<Improvement> Improvements => _lstImprovements;
 
         /// <summary>
         /// Mentor spirits.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<MentorSpirit> MentorSpirits => _lstMentorSpirits;
+        public EnhancedObservableCollection<MentorSpirit> MentorSpirits => _lstMentorSpirits;
 
         /// <summary>
         /// Contacts and Enemies.
         /// </summary>
-        public ObservableCollection<Contact> Contacts => _lstContacts;
+        public EnhancedObservableCollection<Contact> Contacts => _lstContacts;
 
         /// <summary>
         /// Spirits and Sprites.
         /// </summary>
-        public ObservableCollection<Spirit> Spirits => _lstSpirits;
+        public EnhancedObservableCollection<Spirit> Spirits => _lstSpirits;
 
         /// <summary>
         /// Magician Spells.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Spell> Spells => _lstSpells;
+        public EnhancedObservableCollection<Spell> Spells => _lstSpells;
 
         /// <summary>
         /// Sustained Spells
         /// </summary>
-        public ObservableCollection<SustainedObject> SustainedCollection => _lstSustainedObjects;
+        public EnhancedObservableCollection<SustainedObject> SustainedCollection => _lstSustainedObjects;
 
         /// <summary>
         /// Foci.
@@ -11935,41 +11966,41 @@ namespace Chummer
         /// Technomancer Complex Forms.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<ComplexForm> ComplexForms => _lstComplexForms;
+        public EnhancedObservableCollection<ComplexForm> ComplexForms => _lstComplexForms;
 
         /// <summary>
         /// AI Programs and Advanced Programs
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<AIProgram> AIPrograms => _lstAIPrograms;
+        public EnhancedObservableCollection<AIProgram> AIPrograms => _lstAIPrograms;
 
         /// <summary>
         /// Martial Arts.
         /// </summary>
-        public ObservableCollection<MartialArt> MartialArts => _lstMartialArts;
+        public EnhancedObservableCollection<MartialArt> MartialArts => _lstMartialArts;
 
         /// <summary>
         /// Limit Modifiers.
         /// </summary>
-        public ObservableCollection<LimitModifier> LimitModifiers => _lstLimitModifiers;
+        public EnhancedObservableCollection<LimitModifier> LimitModifiers => _lstLimitModifiers;
 
         /// <summary>
         /// Armor.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Armor> Armor => _lstArmor;
+        public EnhancedObservableCollection<Armor> Armor => _lstArmor;
 
         /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Cyberware> Cyberware => _lstCyberware;
+        public EnhancedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         /// <summary>
         /// Weapons.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Weapon> Weapons => _lstWeapons;
+        public EnhancedObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
         /// Lifestyles.
@@ -11980,51 +12011,51 @@ namespace Chummer
         /// Gear.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Gear> Gear => _lstGear;
+        public EnhancedObservableCollection<Gear> Gear => _lstGear;
 
         /// <summary>
         /// Vehicles.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Vehicle> Vehicles => _lstVehicles;
+        public EnhancedObservableCollection<Vehicle> Vehicles => _lstVehicles;
 
         /// <summary>
         /// Metamagics and Echoes.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Metamagic> Metamagics => _lstMetamagics;
+        public EnhancedObservableCollection<Metamagic> Metamagics => _lstMetamagics;
 
         /// <summary>
         /// Enhancements.
         /// </summary>
-        public ObservableCollection<Enhancement> Enhancements => _lstEnhancements;
+        public EnhancedObservableCollection<Enhancement> Enhancements => _lstEnhancements;
 
         /// <summary>
         /// Arts.
         /// </summary>
-        public ObservableCollection<Art> Arts => _lstArts;
+        public EnhancedObservableCollection<Art> Arts => _lstArts;
 
         /// <summary>
         /// Critter Powers.
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<CritterPower> CritterPowers => _lstCritterPowers;
+        public EnhancedObservableCollection<CritterPower> CritterPowers => _lstCritterPowers;
 
         /// <summary>
         /// Initiation and Submersion Grades.
         /// </summary>
-        public ObservableCollection<InitiationGrade> InitiationGrades => _lstInitiationGrades;
+        public EnhancedObservableCollection<InitiationGrade> InitiationGrades => _lstInitiationGrades;
 
         /// <summary>
         /// Expenses (Karma and Nuyen).
         /// </summary>
-        public ObservableCollection<ExpenseLogEntry> ExpenseEntries => _lstExpenseLog;
+        public EnhancedObservableCollection<ExpenseLogEntry> ExpenseEntries => _lstExpenseLog;
 
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
         [HubTag(true)]
-        public ObservableCollection<Quality> Qualities => _lstQualities;
+        public EnhancedObservableCollection<Quality> Qualities => _lstQualities;
 
         /*
         /// <summary>
@@ -12039,27 +12070,27 @@ namespace Chummer
         /// <summary>
         /// Locations.
         /// </summary>
-        public ObservableCollection<Location> GearLocations => _lstGearLocations;
+        public EnhancedObservableCollection<Location> GearLocations => _lstGearLocations;
 
         /// <summary>
         /// Armor Bundles.
         /// </summary>
-        public ObservableCollection<Location> ArmorLocations => _lstArmorLocations;
+        public EnhancedObservableCollection<Location> ArmorLocations => _lstArmorLocations;
 
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public ObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
+        public EnhancedObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
 
         /// <summary>
         /// Weapon Locations.
         /// </summary>
-        public ObservableCollection<Location> WeaponLocations => _lstWeaponLocations;
+        public EnhancedObservableCollection<Location> WeaponLocations => _lstWeaponLocations;
 
         /// <summary>
         /// Improvement Groups.
         /// </summary>
-        public ObservableCollection<string> ImprovementGroups => _lstImprovementGroups;
+        public EnhancedObservableCollection<string> ImprovementGroups => _lstImprovementGroups;
 
         /// <summary>
         /// Calendar.
@@ -13492,7 +13523,7 @@ namespace Chummer
         /// <summary>
         /// Custom Drugs created by the character.
         /// </summary>
-        public ObservableCollection<Drug> Drugs => _lstDrugs;
+        public EnhancedObservableCollection<Drug> Drugs => _lstDrugs;
 
         #region Condition Monitors
 
@@ -20404,6 +20435,8 @@ namespace Chummer
                                     if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
                                         lstVehicles))
                                         _lstCyberware.Add(objCyberware);
+                                    else
+                                        objCyberware.Dispose();
                                 }
 
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
@@ -20432,6 +20465,8 @@ namespace Chummer
                                     if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
                                         lstVehicles))
                                         _lstCyberware.Add(objCyberware);
+                                    else
+                                        objCyberware.Dispose();
                                 }
 
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(

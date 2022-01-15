@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -1061,7 +1060,7 @@ namespace Chummer
                                 = xmlCyberware.SelectSingleNodeAndCacheExpression("blocksmounts")?.Value;
                             if (!string.IsNullOrEmpty(strBlocksMounts))
                             {
-                                ObservableCollection<Cyberware> lstWareListToCheck = null;
+                                ICollection<Cyberware> lstWareListToCheck = null;
                                 if (CyberwareParent != null)
                                     lstWareListToCheck = CyberwareParent.Children;
                                 else if (ParentVehicle == null)

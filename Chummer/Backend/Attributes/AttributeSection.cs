@@ -79,9 +79,9 @@ namespace Chummer.Backend.Attributes
             new PropertyDependencyGraph<AttributeSection>(
             );
 
-        private ObservableCollection<CharacterAttrib> _colAttributes;
+        private EnhancedObservableCollection<CharacterAttrib> _colAttributes;
 
-        public ObservableCollection<CharacterAttrib> Attributes
+        public EnhancedObservableCollection<CharacterAttrib> Attributes
         {
             get
             {
@@ -90,7 +90,7 @@ namespace Chummer.Backend.Attributes
                     return _colAttributes;
                 }
 
-                _colAttributes = new ObservableCollection<CharacterAttrib>
+                _colAttributes = new EnhancedObservableCollection<CharacterAttrib>
                 {
                     _objCharacter.BOD,
                     _objCharacter.AGI,
@@ -367,7 +367,7 @@ namespace Chummer.Backend.Attributes
 
                 if (Attributes == null)
                 {
-                    Attributes = new ObservableCollection<CharacterAttrib>
+                    Attributes = new EnhancedObservableCollection<CharacterAttrib>
                     {
                         _objCharacter.BOD,
                         _objCharacter.AGI,

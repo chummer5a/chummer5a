@@ -18,12 +18,11 @@
  */
 
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace Chummer
 {
-    public class ObservableCollectionWithMaxSize<T> : ObservableCollection<T>
+    public class ObservableCollectionWithMaxSize<T> : EnhancedObservableCollection<T>
     {
         private readonly int _intMaxSize;
 

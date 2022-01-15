@@ -20,14 +20,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : ObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>
+    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>
     {
         protected ReaderWriterLockSlim LockerObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 

@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace Chummer
     {
         private readonly LockingDictionary<string, StoryModule> _dicPersistentModules = new LockingDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
-        private readonly ObservableCollection<StoryModule> _lstStoryModules = new ObservableCollection<StoryModule>();
+        private readonly EnhancedObservableCollection<StoryModule> _lstStoryModules = new EnhancedObservableCollection<StoryModule>();
         private bool _blnNeedToRegeneratePersistents = true;
 
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
@@ -80,7 +79,7 @@ namespace Chummer
             }
         }
 
-        public ObservableCollection<StoryModule> Modules => _lstStoryModules;
+        public EnhancedObservableCollection<StoryModule> Modules => _lstStoryModules;
 
         public LockingDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
 

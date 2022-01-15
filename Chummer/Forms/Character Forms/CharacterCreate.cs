@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -3123,7 +3122,10 @@ namespace Chummer
                         Spell objSpell = new Spell(CharacterObject);
                         objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
                         if (objSpell.InternalId.IsEmptyGuid())
+                        {
+                            objSpell.Dispose();
                             continue;
+                        }
 
                         objSpell.FreeBonus = frmPickSpell.FreeBonus;
                         // Barehanded Adept
@@ -4478,7 +4480,7 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            ObservableCollection<Location> destCollection;
+            ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
@@ -5932,13 +5934,19 @@ namespace Chummer
 
                         XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + "]");
                         Cyberware objCyberware = new Cyberware(CharacterObject);
-                        if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, objVehicle, objMod.Cyberware, CharacterObject.Vehicles,
-                            objMod.Weapons,
-                            frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount, true, "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
+                        if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
+                                                  frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating,
+                                                  objVehicle, objMod.Cyberware, CharacterObject.Vehicles,
+                                                  objMod.Weapons,
+                                                  frmPickCyberware.Markup, frmPickCyberware.FreeCost,
+                                                  frmPickCyberware.BlackMarketDiscount, true,
+                                                  "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
                         {
                             IsCharacterUpdateRequested = true;
                             IsDirty = true;
                         }
+                        else
+                            objCyberware.DeleteCyberware();
                     }
                 }
             }
@@ -11972,7 +11980,10 @@ namespace Chummer
                 List<Vehicle> lstVehicles = new List<Vehicle>(1);
                 objCyberware.Create(objXmlCyberware, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
                 if (objCyberware.InternalId.IsEmptyGuid())
+                {
+                    objCyberware.Dispose();
                     return false;
+                }
 
                 if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
                 {
@@ -12103,7 +12114,7 @@ namespace Chummer
                         CharacterObject.Weapons.Add(objWeapon);
                     }
 
-                    ObservableCollection<Gear> destinationGear =
+                    ICollection<Gear> destinationGear =
                         blnNullParent ? CharacterObject.Gear : objSelectedGear.Children;
                     bool blnMatchFound = false;
                     foreach (Gear objExistingGear in destinationGear)
@@ -15594,7 +15605,10 @@ namespace Chummer
                 objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
                 objNewSpell.Grade = objGrade.Grade;
                 if (objNewSpell.InternalId.IsEmptyGuid())
+                {
+                    objNewSpell.Dispose();
                     return;
+                }
 
                 CharacterObject.Spells.Add(objNewSpell);
             }
@@ -15624,7 +15638,10 @@ namespace Chummer
                 objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
                 objNewSpell.Grade = objGrade.Grade;
                 if (objNewSpell.InternalId.IsEmptyGuid())
+                {
+                    objNewSpell.Dispose();
                     return;
+                }
 
                 CharacterObject.Spells.Add(objNewSpell);
             }

@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -1639,9 +1638,9 @@ namespace Chummer
             MruChanged?.Invoke(null, new TextEventArgs("mru"));
         }
 
-        public static ObservableCollection<string> FavoriteCharacters => s_LstFavoriteCharacters;
+        public static MostRecentlyUsedCollection<string> FavoriteCharacters => s_LstFavoriteCharacters;
 
-        public static ObservableCollection<string> MostRecentlyUsedCharacters => s_LstMostRecentlyUsedCharacters;
+        public static MostRecentlyUsedCollection<string> MostRecentlyUsedCharacters => s_LstMostRecentlyUsedCharacters;
 
         public static bool CustomDateTimeFormats
         {

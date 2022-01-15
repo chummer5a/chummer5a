@@ -299,6 +299,7 @@
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
+    <Compile Include="Backend\Datastructures\EnhancedObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentStringHashSet.cs" />
     <Compile Include="Backend\Datastructures\KeyArray.cs" />

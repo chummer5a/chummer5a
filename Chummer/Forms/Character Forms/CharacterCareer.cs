@@ -3552,13 +3552,17 @@ namespace Chummer
                     }
 
                     if (objSpell.InternalId.IsEmptyGuid())
+                    {
+                        objSpell.Dispose();
                         continue;
+                    }
 
                     objSpell.FreeBonus = frmPickSpell.FreeBonus;
                     if (!objSpell.FreeBonus)
                     {
                         if (CharacterObject.Karma < intSpellKarmaCost)
                         {
+                            objSpell.Dispose();
                             Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             break;
                         }
@@ -3566,6 +3570,7 @@ namespace Chummer
                             , objSpell.CurrentDisplayName
                             , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                         {
+                            objSpell.Dispose();
                             continue;
                         }
                     }
@@ -6341,7 +6346,7 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            ObservableCollection<Location> destCollection;
+            ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {
@@ -9482,7 +9487,10 @@ namespace Chummer
                 frmSpell.ShowDialogSafe(this);
 
                 if (frmSpell.DialogResult == DialogResult.Cancel)
+                {
+                    frmSpell.SelectedSpell.Dispose();
                     return;
+                }
 
                 Spell objSpell = frmSpell.SelectedSpell;
                 if (objSpell.Alchemical)
@@ -9496,6 +9504,7 @@ namespace Chummer
 
                 if (CharacterObject.Karma < intSpellKarmaCost)
                 {
+                    objSpell.Dispose();
                     Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -9503,7 +9512,10 @@ namespace Chummer
                 if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                     , objSpell.CurrentDisplayName
                     , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                {
+                    objSpell.Dispose();
                     return;
+                }
 
                 CharacterObject.Spells.Add(objSpell);
 
@@ -17779,7 +17791,10 @@ namespace Chummer
             objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
             objNewSpell.Grade = intGrade;
             if (objNewSpell.InternalId.IsEmptyGuid())
+            {
+                objNewSpell.Dispose();
                 return;
+            }
 
             CharacterObject.Spells.Add(objNewSpell);
 
@@ -17854,7 +17869,10 @@ namespace Chummer
             objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
             objNewSpell.Grade = intGrade;
             if (objNewSpell.InternalId.IsEmptyGuid())
+            {
+                objNewSpell.Dispose();
                 return;
+            }
 
             CharacterObject.Spells.Add(objNewSpell);
 
