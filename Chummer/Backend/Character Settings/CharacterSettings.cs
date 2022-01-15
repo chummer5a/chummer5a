@@ -243,32 +243,32 @@ namespace Chummer
         {
             if (_blnDoingCopy)
                 return;
-            HashSet<string> lstNamesOfChangedProperties = null;
+            HashSet<string> setNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                if (setNamesOfChangedProperties == null)
+                    setNamesOfChangedProperties = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
                     foreach (string strLoopChangedProperty in s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                 return;
 
-            if (lstNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
+            if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
                 _intCachedMaxNuyenDecimals = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
+            if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
                 _intCachedMinNuyenDecimals = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
+            if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
                 _intCachedEssenceDecimals = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+            if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
                 RecalculateEnabledCustomDataDirectories();
-            if (lstNamesOfChangedProperties.Contains(nameof(Books)))
+            if (setNamesOfChangedProperties.Contains(nameof(Books)))
                 RecalculateBookXPath();
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in setNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }

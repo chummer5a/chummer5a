@@ -96,49 +96,49 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
+            HashSet<string> setNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                if (setNamesOfChangedProperties == null)
+                    setNamesOfChangedProperties = s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
                     foreach (string strLoopChangedProperty in s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                 return;
 
-            if (lstNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
+            if (setNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
             {
                 _intCachedForcedLoyalty = int.MinValue;
             }
-            if (lstNamesOfChangedProperties.Contains(nameof(GroupEnabled)))
+            if (setNamesOfChangedProperties.Contains(nameof(GroupEnabled)))
             {
                 _intCachedGroupEnabled = -1;
             }
-            if (lstNamesOfChangedProperties.Contains(nameof(Free)))
+            if (setNamesOfChangedProperties.Contains(nameof(Free)))
             {
                 _intCachedFreeFromImprovement = -1;
             }
 
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in setNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
 
             if (!Free
-                || lstNamesOfChangedProperties.Contains(nameof(Free))
-                || lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+                || setNamesOfChangedProperties.Contains(nameof(Free))
+                || setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
             {
-                if (IsEnemy || lstNamesOfChangedProperties.Contains(nameof(IsEnemy)))
+                if (IsEnemy || setNamesOfChangedProperties.Contains(nameof(IsEnemy)))
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.EnemyKarma));
                 }
-                if ((!IsEnemy || lstNamesOfChangedProperties.Contains(nameof(IsEnemy)))
-                    && (IsGroup || lstNamesOfChangedProperties.Contains(nameof(IsGroup))))
+                if ((!IsEnemy || setNamesOfChangedProperties.Contains(nameof(IsEnemy)))
+                    && (IsGroup || setNamesOfChangedProperties.Contains(nameof(IsGroup))))
                     _objCharacter.OnPropertyChanged(nameof(Character.PositiveQualityKarmaTotal));
             }
         }

@@ -327,12 +327,12 @@ namespace Chummer
                     : "streams.xml");
 
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                            out HashSet<string> lstLimitCategories))
+                                                            out HashSet<string> setLimitCategories))
             {
                 foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
                              _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                 {
-                    lstLimitCategories.Add(objImprovement.ImprovedName);
+                    setLimitCategories.Add(objImprovement.ImprovedName);
                 }
 
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
@@ -345,7 +345,7 @@ namespace Chummer
                         string strSpiritIllusion = objTradition.SpiritIllusion;
                         string strSpiritManipulation = objTradition.SpiritManipulation;
 
-                        if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritCombat))
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritCombat))
                             && !string.IsNullOrWhiteSpace(strSpiritCombat))
                         {
                             XPathNavigator objXmlCritterNode
@@ -357,7 +357,7 @@ namespace Chummer
                                                              ?.Value ?? strSpiritCombat));
                         }
 
-                        if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritDetection))
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritDetection))
                             && !string.IsNullOrWhiteSpace(strSpiritDetection))
                         {
                             XPathNavigator objXmlCritterNode
@@ -369,7 +369,7 @@ namespace Chummer
                                                              ?.Value ?? strSpiritDetection));
                         }
 
-                        if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritHealth))
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritHealth))
                             && !string.IsNullOrWhiteSpace(strSpiritHealth))
                         {
                             XPathNavigator objXmlCritterNode
@@ -381,7 +381,7 @@ namespace Chummer
                                                              ?.Value ?? strSpiritHealth));
                         }
 
-                        if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritIllusion))
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritIllusion))
                             && !string.IsNullOrWhiteSpace(strSpiritIllusion))
                         {
                             XPathNavigator objXmlCritterNode
@@ -393,7 +393,7 @@ namespace Chummer
                                                              ?.Value ?? strSpiritIllusion));
                         }
 
-                        if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritManipulation))
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritManipulation))
                             && !string.IsNullOrWhiteSpace(strSpiritManipulation))
                         {
                             XPathNavigator objXmlCritterNode
@@ -409,7 +409,7 @@ namespace Chummer
                     {
                         if (objTradition.GetNode()?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
                         {
-                            if (lstLimitCategories.Count == 0)
+                            if (setLimitCategories.Count == 0)
                             {
                                 foreach (XPathNavigator objXmlCritterNode in objXmlDocument.SelectAndCacheExpression(
                                              "/chummer/spirits/spirit"))
@@ -425,7 +425,7 @@ namespace Chummer
                             }
                             else
                             {
-                                foreach (string strSpiritName in lstLimitCategories)
+                                foreach (string strSpiritName in setLimitCategories)
                                 {
                                     XPathNavigator objXmlCritterNode
                                         = objXmlDocument.SelectSingleNode(
@@ -447,7 +447,7 @@ namespace Chummer
                                     foreach (XmlNode objXmlSpirit in xmlSpiritList)
                                     {
                                         string strSpiritName = objXmlSpirit.InnerText;
-                                        if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritName))
+                                        if (setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritName))
                                         {
                                             XPathNavigator objXmlCritterNode
                                                 = objXmlDocument.SelectSingleNode(

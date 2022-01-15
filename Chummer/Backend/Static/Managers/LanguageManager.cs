@@ -515,9 +515,9 @@ namespace Chummer
         {
             string strMessage;
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                            out HashSet<string> lstEnglish))
+                                                            out HashSet<string> setEnglishKeys))
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                            out HashSet<string> lstLanguage))
+                                                            out HashSet<string> setLanguageKeys))
             {
                 // Potentially expensive checks that can (and therefore should) be parallelized.
                 await Task.WhenAll(
@@ -538,7 +538,7 @@ namespace Chummer
                             {
                                 string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
-                                    lstEnglish.Add(strKey);
+                                    setEnglishKeys.Add(strKey);
                             }
                         }
                         catch (IOException)
@@ -566,7 +566,7 @@ namespace Chummer
                             {
                                 string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
-                                    lstLanguage.Add(strKey);
+                                    setLanguageKeys.Add(strKey);
                             }
                         }
                         catch (IOException)
@@ -590,18 +590,18 @@ namespace Chummer
                         Task.Run(() =>
                         {
                             // Check for strings that are in the English file but not in the selected language file.
-                            foreach (string strKey in lstEnglish)
+                            foreach (string strKey in setEnglishKeys)
                             {
-                                if (!lstLanguage.Contains(strKey))
+                                if (!setLanguageKeys.Contains(strKey))
                                     sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
                             }
                         }),
                         Task.Run(() =>
                         {
                             // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
-                            foreach (string strKey in lstLanguage)
+                            foreach (string strKey in setLanguageKeys)
                             {
-                                if (!lstEnglish.Contains(strKey))
+                                if (!setEnglishKeys.Contains(strKey))
                                     sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
                             }
                         }));

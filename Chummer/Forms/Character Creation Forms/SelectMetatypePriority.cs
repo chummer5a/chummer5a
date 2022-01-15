@@ -2053,7 +2053,7 @@ namespace Chummer
         {
             // Create a list of any Categories that should not be in the list.
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                            out HashSet<string> lstRemoveCategory))
+                                                            out HashSet<string> setRemoveCategories))
             {
                 foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
                              "categories/category"))
@@ -2089,7 +2089,7 @@ namespace Chummer
 
                     // Remove metatypes not covered by heritage
                     if (blnRemoveCategory)
-                        lstRemoveCategory.Add(objXmlCategory.Value);
+                        setRemoveCategories.Add(objXmlCategory.Value);
                 }
 
                 // Populate the Metatype Category list.
@@ -2101,7 +2101,7 @@ namespace Chummer
                         string strInnerText = objXmlCategory.Value;
 
                         // Make sure the Category isn't in the exclusion list.
-                        if (!lstRemoveCategory.Contains(strInnerText) &&
+                        if (!setRemoveCategories.Contains(strInnerText) &&
                             // Also make sure it is not already in the Category list.
                             lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                         {

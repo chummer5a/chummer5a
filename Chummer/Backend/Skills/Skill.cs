@@ -2260,47 +2260,47 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
+            HashSet<string> setNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                if (setNamesOfChangedProperties == null)
+                    setNamesOfChangedProperties = s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
                     foreach (string strLoopChangedProperty in s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                 return;
 
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
+            if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
                 _intCachedFreeBase = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeKarma)))
+            if (setNamesOfChangedProperties.Contains(nameof(FreeKarma)))
                 _intCachedFreeKarma = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+            if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
                 _intCachedCanUpgradeCareer = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
+            if (setNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
                 _intCachedCanAffordSpecialization = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(Enabled)))
+            if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
                 _intCachedEnabled = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
+            if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
                 _intCachedCanHaveSpecs = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
+            if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
                 _intCachedForcedBuyWithKarma = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
+            if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
                 _intCachedForcedNotBuyWithKarma = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
+            if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
                 ResetCachedCyberwareRating();
-            if (lstNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
+            if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                 _blnRecalculateCachedSuggestedSpecializations = true;
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in setNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
             // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
-            if (lstNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
+            if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
                 RecacheAttribute();
         }
 

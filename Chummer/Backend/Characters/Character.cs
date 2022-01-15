@@ -18793,199 +18793,199 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
+            HashSet<string> setNamesOfChangedProperties = null;
             foreach(string strPropertyName in lstPropertyNames)
             {
-                if(lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_CharacterDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                if(setNamesOfChangedProperties == null)
+                    setNamesOfChangedProperties = s_CharacterDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
                     foreach(string strLoopChangedProperty in s_CharacterDependencyGraph.GetWithAllDependents(
                         this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if(lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if(setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                 return;
 
-            if(lstNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
+            if(setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
             {
                 _strCachedCharacterGrammaticGender = string.Empty;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
             {
                 _decCachedTotalStartingNuyen = decimal.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+            if (setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
             {
                 _intCachedContactPoints = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))
             {
                 _intCachedTotalArmorRating = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalFireArmorRating)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalFireArmorRating)))
             {
                 _intCachedTotalFireArmorRating = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalColdArmorRating)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalColdArmorRating)))
             {
                 _intCachedTotalColdArmorRating = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalElectricityArmorRating)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalElectricityArmorRating)))
             {
                 _intCachedTotalElectricityArmorRating = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalAcidArmorRating)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalAcidArmorRating)))
             {
                 _intCachedTotalAcidArmorRating = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalFallingArmorRating)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalFallingArmorRating)))
             {
                 _intCachedTotalFallingArmorRating = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TrustFund)))
+            if (setNamesOfChangedProperties.Contains(nameof(TrustFund)))
             {
                 _intCachedTrustFund = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(RestrictedGear)))
+            if(setNamesOfChangedProperties.Contains(nameof(RestrictedGear)))
             {
                 _intCachedRestrictedGear = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(FriendsInHighPlaces)))
+            if(setNamesOfChangedProperties.Contains(nameof(FriendsInHighPlaces)))
             {
                 _intCachedFriendsInHighPlaces = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(ExCon)))
+            if(setNamesOfChangedProperties.Contains(nameof(ExCon)))
             {
                 _intCachedExCon = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(MadeMan)))
+            if(setNamesOfChangedProperties.Contains(nameof(MadeMan)))
             {
                 _intCachedMadeMan = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Fame)))
+            if(setNamesOfChangedProperties.Contains(nameof(Fame)))
             {
                 _intCachedFame = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Erased)))
+            if(setNamesOfChangedProperties.Contains(nameof(Erased)))
             {
                 _intCachedErased = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(AllowSpriteFettering)))
+            if (setNamesOfChangedProperties.Contains(nameof(AllowSpriteFettering)))
             {
                 _intCachedAllowSpriteFettering = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(Overclocker)))
+            if (setNamesOfChangedProperties.Contains(nameof(Overclocker)))
             {
                 _intCachedOverclocker = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
+            if(setNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
             {
                 _intCachedAmbidextrous = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
+            if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
             {
                 _intCachedDealerConnectionDiscount = int.MinValue;
                 RefreshDealerConnectionDiscounts();
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
+            if (setNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
             {
                 _intCachedBlackMarketDiscount = int.MinValue;
                 RefreshBlackMarketDiscounts();
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
+            if(setNamesOfChangedProperties.Contains(nameof(PowerPointsUsed)))
             {
                 _decCachedPowerPointsUsed = decimal.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(CyberwareEssence)))
+            if(setNamesOfChangedProperties.Contains(nameof(CyberwareEssence)))
             {
                 _decCachedCyberwareEssence = decimal.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(BiowareEssence)))
+            if(setNamesOfChangedProperties.Contains(nameof(BiowareEssence)))
             {
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
                 _decCachedBiowareEssence = decimal.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(EssenceHole)))
+            if(setNamesOfChangedProperties.Contains(nameof(EssenceHole)))
             {
                 _decCachedEssenceHole = decimal.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
+            if(setNamesOfChangedProperties.Contains(nameof(PrototypeTranshumanEssenceUsed)))
             {
                 _decCachedBiowareEssence = decimal.MinValue;
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(CareerNuyen)))
+            if(setNamesOfChangedProperties.Contains(nameof(CareerNuyen)))
             {
                 _decCachedCareerNuyen = decimal.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(CareerKarma)))
+            if(setNamesOfChangedProperties.Contains(nameof(CareerKarma)))
             {
                 _intCachedCareerKarma = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
+            if(setNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
             {
                 _intCachedInitiationEnabled = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
+            if(setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
             {
                 _intCachedRedlinerBonus = int.MinValue;
                 RefreshRedlinerImprovements();
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Essence)))
+            if(setNamesOfChangedProperties.Contains(nameof(Essence)))
             {
                 ResetCachedEssence();
                 RefreshEssenceLossImprovements();
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(WoundModifier)))
+            if(setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
             {
                 RefreshWoundPenalties();
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(SustainingPenalty)))
+            if (setNamesOfChangedProperties.Contains(nameof(SustainingPenalty)))
             {
                 RefreshSustainingPenalties();
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
+            if (setNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
             {
                 _intCachedEnemyKarma = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(Qualities)))
+            if (setNamesOfChangedProperties.Contains(nameof(Qualities)))
             {
                 _intCachedNegativeQualities = int.MinValue;
                 _intCachedNegativeQualityLimitKarma = int.MinValue;
@@ -18995,20 +18995,20 @@ namespace Chummer
                 _intCachedMetagenicPositiveQualities = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(MetagenicLimit)))
+            if (setNamesOfChangedProperties.Contains(nameof(MetagenicLimit)))
             {
                 _intCachedMetagenicNegativeQualities = int.MinValue;
                 _intCachedMetagenicPositiveQualities = int.MinValue;
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                 RefreshAstralReputationImprovements();
 
-            if (lstNamesOfChangedProperties.Contains(nameof(Settings)))
+            if (setNamesOfChangedProperties.Contains(nameof(Settings)))
                 foreach (string strProperty in Settings.GetType().GetProperties().Select(x => x.Name))
                     OptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
 
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in setNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
@@ -19016,7 +19016,7 @@ namespace Chummer
             if (!Created)
             {
                 // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
-                if (lstNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
+                if (setNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
                 {
                     foreach (Spirit objSpirit in Spirits)
                     {
@@ -19025,7 +19025,7 @@ namespace Chummer
                     }
                 }
 
-                if (lstNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
+                if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
                 {
                     foreach (Spirit objSpirit in Spirits)
                     {

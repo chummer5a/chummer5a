@@ -826,7 +826,7 @@ namespace Chummer.Backend.Attributes
                 string strSpace = LanguageManager.GetString("String_Space");
 
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                out HashSet<string> lstUniqueName))
+                                                                out HashSet<string> setUniqueNames))
                 {
                     List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>();
                     decimal decBaseValue = 0;
@@ -848,8 +848,8 @@ namespace Chummer.Backend.Attributes
                                                                      && objImprovement.ImprovedName == Abbrev)
                             {
                                 // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                                if (!lstUniqueName.Contains(strUniqueName))
-                                    lstUniqueName.Add(strUniqueName);
+                                if (!setUniqueNames.Contains(strUniqueName))
+                                    setUniqueNames.Add(strUniqueName);
 
                                 // Add the values to the UniquePair List so we can check them later.
                                 lstUniquePair.Add(new Tuple<string, decimal, string>(
@@ -869,7 +869,7 @@ namespace Chummer.Backend.Attributes
                             }
                         }
 
-                        if (lstUniqueName.Contains("precedence0"))
+                        if (setUniqueNames.Contains("precedence0"))
                         {
                             // Retrieve only the highest precedence0 value.
                             // Run through the list of UniqueNames and pick out the highest value for each one.
@@ -891,7 +891,7 @@ namespace Chummer.Backend.Attributes
                                     }
                                 }
 
-                                if (lstUniqueName.Contains("precedence-1"))
+                                if (setUniqueNames.Contains("precedence-1"))
                                 {
                                     foreach ((string strGroupName, decimal decValue, string strSourceName) in
                                              lstUniquePair)
@@ -914,7 +914,7 @@ namespace Chummer.Backend.Attributes
                                 }
                             }
                         }
-                        else if (lstUniqueName.Contains("precedence1"))
+                        else if (setUniqueNames.Contains("precedence1"))
                         {
                             // Retrieve all of the items that are precedence1 and nothing else.
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -934,7 +934,7 @@ namespace Chummer.Backend.Attributes
                         else
                         {
                             // Run through the list of UniqueNames and pick out the highest value for each one.
-                            foreach (string strName in lstUniqueName)
+                            foreach (string strName in setUniqueNames)
                             {
                                 decimal decHighest = decimal.MinValue;
                                 foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
@@ -951,7 +951,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         // Factor in Custom Improvements.
-                        lstUniqueName.Clear();
+                        setUniqueNames.Clear();
                         lstUniquePair.Clear();
                         foreach (Improvement objImprovement in lstUsedImprovements.Where(
                                      objImprovement => objImprovement.Custom))
@@ -960,8 +960,8 @@ namespace Chummer.Backend.Attributes
                             if (!string.IsNullOrEmpty(strUniqueName))
                             {
                                 // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                                if (!lstUniqueName.Contains(strUniqueName))
-                                    lstUniqueName.Add(strUniqueName);
+                                if (!setUniqueNames.Contains(strUniqueName))
+                                    setUniqueNames.Add(strUniqueName);
 
                                 // Add the values to the UniquePair List so we can check them later.
                                 lstUniquePair.Add(new Tuple<string, decimal, string>(
@@ -980,7 +980,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         // Run through the list of UniqueNames and pick out the highest value for each one.
-                        foreach (string strName in lstUniqueName)
+                        foreach (string strName in setUniqueNames)
                         {
                             decimal decHighest = decimal.MinValue;
                             foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
@@ -1273,32 +1273,32 @@ namespace Chummer.Backend.Attributes
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
+            HashSet<string> setNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                if (setNamesOfChangedProperties == null)
+                    setNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
                     foreach (string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                 return;
 
-            if (lstNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+            if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
                 _intCachedCanUpgradeCareer = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(Value)))
+            if (setNamesOfChangedProperties.Contains(nameof(Value)))
                 _intCachedValue = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalValue)))
+            if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))
                 _intCachedTotalValue = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
+            if (setNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
                 _intCachedUpgradeKarmaCost = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(ToolTip)))
+            if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
                 _strCachedToolTip = string.Empty;
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in setNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }

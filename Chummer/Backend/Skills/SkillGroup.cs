@@ -718,37 +718,37 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
+            HashSet<string> setNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                if (setNamesOfChangedProperties == null)
+                    setNamesOfChangedProperties = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
                     foreach (string strLoopChangedProperty in s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                 return;
 
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
+            if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
                 _intCachedFreeBase = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+            if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
                 _intCachedFreeLevels = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(IsDisabled)))
+            if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
                 _intCachedIsDisabled = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CareerIncrease)))
+            if (setNamesOfChangedProperties.Contains(nameof(CareerIncrease)))
                 _intCachedCareerIncrease = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
+            if (setNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
                 _intCachedKarmaUnbroken = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
+            if (setNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
                 _intCachedBaseUnbroken = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(ToolTip)))
+            if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
                 _strToolTip = string.Empty;
 
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in setNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }

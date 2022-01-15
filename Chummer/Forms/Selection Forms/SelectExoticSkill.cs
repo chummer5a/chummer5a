@@ -166,15 +166,15 @@ namespace Chummer
                 }
 
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                out HashSet<string> lstExistingExoticSkills))
+                                                                out HashSet<string> setExistingExoticSkills))
                 {
-                    lstExistingExoticSkills.AddRange(_objCharacter.SkillsSection.Skills
+                    setExistingExoticSkills.AddRange(_objCharacter.SkillsSection.Skills
                                                          .Where(
                                                              x => x.Name
                                                                   == strSelectedCategory)
                                                          .Select(x => ((ExoticSkill) x)
                                                                      .Specific));
-                    lstSkillSpecializations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
+                    lstSkillSpecializations.RemoveAll(x => setExistingExoticSkills.Contains(x.Value));
                 }
 
                 lstSkillSpecializations.Sort(

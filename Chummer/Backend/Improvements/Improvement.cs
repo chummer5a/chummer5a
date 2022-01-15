@@ -3153,10 +3153,10 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
                             {
-                                if (!lstUniqueNames.Contains(strUniqueName))
-                                    lstUniqueNames.Add(strUniqueName);
+                                if (!setUniqueNames.Contains(strUniqueName))
+                                    setUniqueNames.Add(strUniqueName);
                             }
                             else
                             {
@@ -3210,9 +3210,9 @@ namespace Chummer
                         if (dicUniquePairs.TryGetValue(strLoopImprovedName,
                                                        out List<Tuple<string, Improvement>> lstUniquePairs))
                         {
-                            HashSet<string> lstUniqueNames = objLoopValuePair.Value;
+                            HashSet<string> setUniqueNames = objLoopValuePair.Value;
                             lstInnerLoopImprovements.Clear();
-                            if (lstUniqueNames.Contains("precedence0"))
+                            if (setUniqueNames.Contains("precedence0"))
                             {
                                 // Retrieve only the highest precedence0 value.
                                 // Run through the list of UniqueNames and pick out the highest value for each one.
@@ -3233,7 +3233,7 @@ namespace Chummer
                                 if (objHighestImprovement != null)
                                     lstInnerLoopImprovements.Add(objHighestImprovement);
 
-                                if (lstUniqueNames.Contains("precedence-1"))
+                                if (setUniqueNames.Contains("precedence-1"))
                                 {
                                     foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                                     {
@@ -3251,7 +3251,7 @@ namespace Chummer
                                     lstLoopImprovements.AddRange(lstInnerLoopImprovements);
                                 }
                             }
-                            else if (lstUniqueNames.Contains("precedence1"))
+                            else if (setUniqueNames.Contains("precedence1"))
                             {
                                 // Retrieve all of the items that are precedence1 and nothing else.
                                 decimal decHighest = 0;
@@ -3273,7 +3273,7 @@ namespace Chummer
                             else
                             {
                                 // Run through the list of UniqueNames and pick out the highest value for each one.
-                                foreach (string strUniqueName in lstUniqueNames)
+                                foreach (string strUniqueName in setUniqueNames)
                                 {
                                     Improvement objHighestImprovement = null;
                                     decimal decHighest = decimal.MinValue;
@@ -3330,10 +3330,10 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strUniqueName))
                         {
                             // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
+                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
                             {
-                                if (!lstUniqueNames.Contains(strUniqueName))
-                                    lstUniqueNames.Add(strUniqueName);
+                                if (!setUniqueNames.Contains(strUniqueName))
+                                    setUniqueNames.Add(strUniqueName);
                             }
                             else
                             {

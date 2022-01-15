@@ -1035,30 +1035,30 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
+            HashSet<string> setNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                if (setNamesOfChangedProperties == null)
+                    setNamesOfChangedProperties = s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
                     foreach (string strLoopChangedProperty in s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        setNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                 return;
 
-            if (lstNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
+            if (setNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
                 _strCachedPowerPoints = string.Empty;
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+            if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
                 _intCachedFreeLevels = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(PowerPoints)))
+            if (setNamesOfChangedProperties.Contains(nameof(PowerPoints)))
                 _decCachedPowerPoints = decimal.MinValue;
 
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)) && Bonus?.InnerXml.Contains("Rating") == true)
+            if (setNamesOfChangedProperties.Contains(nameof(TotalRating)) && Bonus?.InnerXml.Contains("Rating") == true)
             {
                 // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
                 // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
@@ -1072,12 +1072,12 @@ namespace Chummer
                 }
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
+            if (setNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
             {
                 RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
             }
 
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in setNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
