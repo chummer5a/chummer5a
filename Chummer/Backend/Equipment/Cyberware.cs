@@ -659,24 +659,46 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objXmlCyberware.SelectSingleNode("pairinclude/@includeself")?.Value !=
-                bool.FalseString)
+            XmlNode xmlPairInclude = objXmlCyberware.SelectSingleNode("pairinclude");
+            if (xmlPairInclude != null)
             {
-                _lstIncludeInPairBonus.Add(Name);
-            }
-            foreach (XmlNode objPairNameNode in objXmlCyberware.SelectNodes("pairinclude/name"))
-            {
-                _lstIncludeInPairBonus.Add(objPairNameNode.InnerText);
+                if (xmlPairInclude.SelectSingleNode("@includeself")?.Value !=
+                    bool.FalseString)
+                {
+                    _lstIncludeInPairBonus.Add(Name);
+                }
+
+                using (XmlNodeList xmlPairIncludeNames = xmlPairInclude.SelectNodes("name"))
+                {
+                    if (xmlPairIncludeNames?.Count > 0)
+                    {
+                        foreach (XmlNode objPairNameNode in xmlPairIncludeNames)
+                        {
+                            _lstIncludeInPairBonus.Add(objPairNameNode.InnerText);
+                        }
+                    }
+                }
             }
 
-            if (objXmlCyberware.SelectSingleNode("wirelesspairinclude/@includeself")?.Value !=
-                bool.FalseString)
+            xmlPairInclude = objXmlCyberware.SelectSingleNode("wirelesspairinclude");
+            if (xmlPairInclude != null)
             {
-                _lstIncludeInWirelessPairBonus.Add(Name);
-            }
-            foreach (XmlNode objPairNameNode in objXmlCyberware.SelectNodes("wirelesspairinclude/name"))
-            {
-                _lstIncludeInWirelessPairBonus.Add(objPairNameNode.InnerText);
+                if (xmlPairInclude.SelectSingleNode("@includeself")?.Value !=
+                    bool.FalseString)
+                {
+                    _lstIncludeInWirelessPairBonus.Add(Name);
+                }
+
+                using (XmlNodeList xmlPairIncludeNames = xmlPairInclude.SelectNodes("name"))
+                {
+                    if (xmlPairIncludeNames?.Count > 0)
+                    {
+                        foreach (XmlNode objPairNameNode in xmlPairIncludeNames)
+                        {
+                            _lstIncludeInWirelessPairBonus.Add(objPairNameNode.InnerText);
+                        }
+                    }
+                }
             }
 
             _strCost = objXmlCyberware["cost"]?.InnerText ?? "0";

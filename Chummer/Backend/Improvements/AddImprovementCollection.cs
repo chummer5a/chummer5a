@@ -7488,13 +7488,13 @@ namespace Chummer
                 List<ListItem> lstActions = new List<ListItem>(30);
                 StringBuilder strXpath = new StringBuilder();
                     strXpath.Append("actions/action[" + _objCharacter.Settings.BookXPath());
-                    string strCategory = bonusNode.Attributes["category"]?.InnerText ?? null;
-                if (strCategory != null)
+                    string strCategory = bonusNode.Attributes?["category"]?.InnerText ?? string.Empty;
+                if (!string.IsNullOrEmpty(strCategory))
                 {
                     strXpath.Append(" and category = " + strCategory.CleanXPath());
                 }
 
-                strXpath.Append("]");
+                strXpath.Append(']');
                 if (xmlActionsBaseNode != null)
                 {
                     foreach (XPathNavigator xmlAction in xmlActionsBaseNode.Select(strXpath.ToString()))
