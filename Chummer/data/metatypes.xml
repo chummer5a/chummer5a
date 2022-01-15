@@ -1678,6 +1678,10 @@
       <category>Metasapient</category>
       <karma>180</karma>
       <halveattributepoints />
+      <bonus>
+        <disablecyberware />
+        <disablebioware />
+      </bonus>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>

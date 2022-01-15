@@ -14949,14 +14949,12 @@ namespace Chummer
             }
         }
 
-        public bool AddCyberwareEnabled => !CyberwareDisabled && !IsAI
-                                                              && ImprovementManager
+        public bool AddCyberwareEnabled => !CyberwareDisabled && ImprovementManager
                                                                  .GetCachedImprovementListForValueOf(
                                                                      this, Improvement.ImprovementType.DisableCyberware)
                                                                  .Count == 0;
 
-        public bool AddBiowareEnabled => !CyberwareDisabled && !IsAI
-                                                            && ImprovementManager
+        public bool AddBiowareEnabled => !CyberwareDisabled && ImprovementManager
                                                                .GetCachedImprovementListForValueOf(
                                                                    this, Improvement.ImprovementType.DisableBioware)
                                                                .Count == 0;
