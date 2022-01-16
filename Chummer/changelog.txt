@@ -70,6 +70,7 @@ Data Changes:
 - Ram Plate uses the stats from the print version of Rigger 5.0, which, unlike the PDF version, actually has stats listed for the Ram Plate.
 - Codeslinger quality now prompts for an action from the Matrix category of actions.xml.
 - Shadowrun Missions Rules has been updated to include the rules and additional authors added by the 1.4 supplemental FAQ.
+- The GMC Armadillo now comes with Off-Road Suspension included.
 
 Changed/New Strings:
 - String_GameplayOption
