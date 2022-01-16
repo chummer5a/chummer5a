@@ -203,6 +203,22 @@ namespace Chummer
             {
                 try
                 {
+                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
+                        if (blnShowUnauthorizedAccess)
+                        {
+                            if (Program.MainForm.ShowMessageBox(
+                                    LanguageManager.GetString("Message_Prompt_Delete_Existing_File"),
+                                    buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
+                                return false;
+                        }
+                        else
+                        {
+                            BreakIfDebug();
+                            return false;
+                        }
+                    }
                     File.Delete(strPath);
                 }
                 catch (PathTooLongException)

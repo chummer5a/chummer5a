@@ -75,7 +75,10 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.MainForm.ShowMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strFile));
                 return null;
             }
 
@@ -137,16 +140,16 @@ namespace Chummer
                 {
                     Program.MainForm.ShowMessageBox(
                         this,
-                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine
-                        + Environment.NewLine + strFile);
+                        string.Format(GlobalSettings.CultureInfo,
+                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strFile));
                     return null;
                 }
                 catch (NotSupportedException)
                 {
                     Program.MainForm.ShowMessageBox(
                         this,
-                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine
-                        + Environment.NewLine + strFile);
+                        string.Format(GlobalSettings.CultureInfo,
+                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strFile));
                     return null;
                 }
                 catch (UnauthorizedAccessException)
@@ -157,7 +160,7 @@ namespace Chummer
                 }
 
                 string strFileText
-                    = strFile.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">");
+                    = strFile.CheapReplace(Utils.GetStartupPath, () => "<" + Application.ProductName + ">");
                 TreeNode nodRootNode = new TreeNode
                 {
                     Text = strFileText,
@@ -258,7 +261,7 @@ namespace Chummer
                         TreeNode objNode = new TreeNode
                         {
                             Text = CalculatedName(objCache),
-                            ToolTipText = strFile.CheapReplace(Application.StartupPath,
+                            ToolTipText = strFile.CheapReplace(Utils.GetStartupPath,
                                                                () => "<" + Application.ProductName + ">")
                         };
                         nodRootNode.Nodes.Add(objNode);

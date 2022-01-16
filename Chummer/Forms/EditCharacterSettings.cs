@@ -187,7 +187,7 @@ namespace Chummer
                     _objReferenceCharacterSettings.DictionaryKey, out CharacterSettings objDeletedSettings))
                     return;
                 if (!Utils.SafeDeleteFile(
-                    Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
+                    Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
                 {
                     // Revert removal of setting if we cannot delete the file
                     SettingsManager.LoadedCharacterSettingsAsModifiable.Add(objDeletedSettings.DictionaryKey, objDeletedSettings);
@@ -273,11 +273,11 @@ namespace Chummer
                 string strBaseFileName = strSelectedName.FastEscape(Path.GetInvalidFileNameChars()).TrimEndOnce(".xml");
                 // Make sure our file name isn't too long, otherwise we run into problems on Windows
                 // We can assume that Chummer's startup path plus 16 is within the limit, otherwise the user would have had problems installing Chummer with its data files in the first place
-                int intStartupPathLimit = Application.StartupPath.Length + 16;
+                int intStartupPathLimit = Utils.GetStartupPath.Length + 16;
                 if (strBaseFileName.Length > intStartupPathLimit)
                     strBaseFileName = strBaseFileName.Substring(0, intStartupPathLimit);
                 strSelectedFullFileName = strBaseFileName + ".xml";
-                int intMaxNameLength = char.MaxValue - Application.StartupPath.Length - "settings".Length - 6;
+                int intMaxNameLength = char.MaxValue - Utils.GetStartupPath.Length - "settings".Length - 6;
                 uint uintAccumulator = 1;
                 string strSeparator = "_";
                 while (SettingsManager.LoadedCharacterSettings.Any(x => x.Value.FileName == strSelectedFullFileName))

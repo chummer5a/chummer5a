@@ -477,13 +477,13 @@ namespace Chummer
             catch (IOException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + Path.GetFileName(strBackupZipPath));
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             catch (NotSupportedException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + Path.GetFileName(strBackupZipPath));
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             return true;
@@ -633,14 +633,14 @@ namespace Chummer
                         catch (IOException)
                         {
                             if (!SilentMode)
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + Path.GetFileName(strLoopPath));
+                                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strLoopPath)));
                             blnDoRestart = false;
                             break;
                         }
                         catch (NotSupportedException)
                         {
                             if (!SilentMode)
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + Path.GetFileName(strLoopPath));
+                                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strLoopPath)));
                             blnDoRestart = false;
                             break;
                         }
@@ -659,13 +659,13 @@ namespace Chummer
             catch (IOException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strZipPath);
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
                 blnDoRestart = false;
             }
             catch (NotSupportedException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strZipPath);
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
                 blnDoRestart = false;
             }
             catch (UnauthorizedAccessException)

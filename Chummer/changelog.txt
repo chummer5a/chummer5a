@@ -77,6 +77,9 @@ Changed/New Strings:
 - String_Lossy_Manual_Compression_Option
 - Message_Options_FileIsNotPDF
 - MessageTitle_Options_FileIsNotPDF
+- Message_Prompt_Delete_Existing_File
+- Message_File_Cannot_Be_Accessed
+- Message_File_Cannot_Be_Read_Accessed
 
 Deleted Strings:
 - String_Lossy_Compression_Option

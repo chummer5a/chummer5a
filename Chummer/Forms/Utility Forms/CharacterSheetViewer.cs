@@ -290,14 +290,18 @@ namespace Chummer
                 if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
                 {
                     Program.MainForm.ShowMessageBox(this,
-                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "Message_File_Cannot_Be_Accessed"), strSaveFile));
                     return;
                 }
 
                 if (!Utils.SafeDeleteFile(strSaveFile, true))
                 {
                     Program.MainForm.ShowMessageBox(this,
-                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  LanguageManager.GetString(
+                                                                      "Message_File_Cannot_Be_Accessed"), strSaveFile));
                     return;
                 }
 
