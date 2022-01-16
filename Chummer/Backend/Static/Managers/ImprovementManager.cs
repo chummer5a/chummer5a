@@ -1879,7 +1879,13 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.Weapon:
-                        // TODO: Re-equip Weapons;
+                        Weapon objWeapon
+                            = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                                                      x => x.InternalId == objImprovement.ImprovedName)
+                              ??
+                              objCharacter.Vehicles.FindVehicleWeapon(objImprovement.ImprovedName, out _, out _, out _);
+                        if (objWeapon != null)
+                            objWeapon.Equipped = true;
                         break;
 
                     case Improvement.ImprovementType.Spell:
@@ -2263,7 +2269,13 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.Weapon:
-                        // TODO: Unequip Weapons;
+                        Weapon objWeapon
+                            = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                                                      x => x.InternalId == objImprovement.ImprovedName)
+                              ??
+                              objCharacter.Vehicles.FindVehicleWeapon(objImprovement.ImprovedName, out _, out _, out _);
+                        if (objWeapon != null)
+                            objWeapon.Equipped = false;
                         break;
 
                     case Improvement.ImprovementType.Spell:
