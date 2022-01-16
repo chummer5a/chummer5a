@@ -1037,6 +1037,36 @@ namespace Chummer
                     }
                     break;
 
+                case ImprovementType.AttributeMaxClamp:
+                    {
+                        string strTargetAttribute = ImprovedName;
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
+                        {
+                            if (objCharacterAttrib.Abbrev != strTargetAttribute)
+                                continue;
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.AttributeModifiers));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.TotalAugmentedMaximum));
+                        }
+
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                        {
+                            if (objCharacterAttrib.Abbrev != strTargetAttribute)
+                                continue;
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.AttributeModifiers));
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.TotalAugmentedMaximum));
+                        }
+                    }
+                    break;
+
                 case ImprovementType.Armor:
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,

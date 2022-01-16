@@ -422,7 +422,22 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
         /// </summary>
-        public int AttributeModifiers => ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev).StandardRound();
+        public int AttributeModifiers
+        {
+            get
+            {
+                int intReturn = ImprovementManager
+                                .AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev)
+                                .StandardRound();
+                //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
+                int intModifiersClamp = MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers;
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp,
+                                                        Abbrev).Count > 0)
+                    intModifiersClamp = Math.Min(intModifiersClamp, TotalMaximum - Value);
+                return Math.Min(intReturn, intModifiersClamp);
+            }
+        }
 
         /// <summary>
         /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
@@ -550,17 +565,7 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            int intMeat = Value;
-            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
-            //TODO: Should probably be in AttributeModifiers property directly?
-            if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp, Abbrev).Count > 0)
-            {
-                intMeat += Math.Min(AttributeModifiers, Math.Min(MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers, TotalMaximum - intMeat));
-            }
-            else
-            {
-                intMeat += Math.Min(AttributeModifiers, MetatypeAugmentedMaximum - MetatypeMaximum + AugmentedMaximumModifiers);
-            }
+            int intMeat = Value + AttributeModifiers;
             int intReturn = intMeat;
 
             int intPureCyberValue = 0;
@@ -1363,9 +1368,13 @@ namespace Chummer.Backend.Attributes
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(DisplayValue),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers)),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue),
-                            new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeModifiers)),
-                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
-                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeModifiers),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(AugmentedMaximumModifiers)),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum)),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(Value))
+                            ),
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalAugmentedMaximum),
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(AugmentedMaximumModifiers)),
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
