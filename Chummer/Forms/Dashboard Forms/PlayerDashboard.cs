@@ -21,19 +21,19 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmPlayerDashboard : Form
+    public partial class PlayerDashboard : Form
     {
         private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice }
 
         #region Singleton
 
-        private static frmPlayerDashboard _instance;
+        private static PlayerDashboard _instance;
         /// <summary>
         /// The singleton instance of this object.
         /// </summary>
-        public static frmPlayerDashboard Instance => _instance ?? (_instance = new frmPlayerDashboard());
+        public static PlayerDashboard Instance => _instance ?? (_instance = new PlayerDashboard());
 
-        protected frmPlayerDashboard()
+        protected PlayerDashboard()
         {
             InitializeComponent();
             this.TranslateWinForm();

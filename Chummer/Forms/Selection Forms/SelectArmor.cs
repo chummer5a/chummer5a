@@ -30,7 +30,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectArmor : Form
+    public partial class SelectArmor : Form
     {
         private string _strSelectedArmor = string.Empty;
 
@@ -51,7 +51,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectArmor(Character objCharacter)
+        public SelectArmor(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -64,7 +64,7 @@ namespace Chummer
                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
-        private void frmSelectArmor_Load(object sender, EventArgs e)
+        private void SelectArmor_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

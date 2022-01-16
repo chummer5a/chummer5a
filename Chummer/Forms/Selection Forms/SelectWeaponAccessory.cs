@@ -28,7 +28,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectWeaponAccessory : Form
+    public partial class SelectWeaponAccessory : Form
     {
         private string _strSelectedAccessory;
         private decimal _decMarkup;
@@ -47,7 +47,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectWeaponAccessory(Character objCharacter)
+        public SelectWeaponAccessory(Character objCharacter)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));

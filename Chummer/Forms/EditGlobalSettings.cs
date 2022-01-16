@@ -77,7 +77,7 @@ namespace Chummer
             }
         }
 
-        private void frmOptions_Load(object sender, EventArgs e)
+        private void EditGlobalSettings_Load(object sender, EventArgs e)
         {
             PopulateDefaultCharacterSettingLists();
             PopulateMugshotCompressionOptions();

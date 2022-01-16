@@ -30,12 +30,12 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmHeroLabImporter : Form
+    public partial class HeroLabImporter : Form
     {
         private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(1);
         private readonly LockingDictionary<string, Bitmap> _dicImages = new LockingDictionary<string, Bitmap>();
 
-        public frmHeroLabImporter()
+        public HeroLabImporter()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();

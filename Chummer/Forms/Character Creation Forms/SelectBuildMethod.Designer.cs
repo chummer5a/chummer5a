@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    public sealed partial class frmSelectBuildMethod
+    public sealed partial class SelectBuildMethod
     {
         /// <summary>
         /// Required designer variable.
@@ -534,13 +534,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectBuildMethod";
+            this.Name = "SelectBuildMethod";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectBP";
             this.Text = "Select Build Method";
-            this.Load += new System.EventHandler(this.frmSelectBuildMethod_Load);
+            this.Load += new System.EventHandler(this.SelectBuildMethod_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpSummary.ResumeLayout(false);

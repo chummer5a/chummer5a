@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class frmPlayerDashboard
+    partial class PlayerDashboard
     {
         /// <summary>
         /// Required designer variable.
@@ -40,14 +40,14 @@
             this.tabControl.Size = new System.Drawing.Size(284, 261);
             this.tabControl.TabIndex = 0;
             // 
-            // frmPlayerDashboard
+            // PlayerDashboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.tabControl);
-            this.Name = "frmPlayerDashboard";
-            this.Text = "frmPlayerDashboard";
+            this.Name = "PlayerDashboard";
+            this.Text = "PlayerDashboard";
             this.ResumeLayout(false);
 
         }

@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmDiceRoller
+    partial class DiceRoller
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDiceRoller));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DiceRoller));
             this.lblRoll = new System.Windows.Forms.Label();
             this.nudDice = new Chummer.NumericUpDownEx();
             this.lblD6 = new System.Windows.Forms.Label();
@@ -451,12 +451,12 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmDiceRoller";
+            this.Name = "DiceRoller";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_DiceRoller";
             this.Text = "Dice Roller";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmDiceRoller_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DiceRoller_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

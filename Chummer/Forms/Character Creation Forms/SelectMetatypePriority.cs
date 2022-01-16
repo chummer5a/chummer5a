@@ -32,7 +32,7 @@ using Chummer.Backend.Skills;
 namespace Chummer
 {
     // ReSharper disable once InconsistentNaming
-    public partial class frmPriorityMetatype : Form
+    public partial class SelectMetatypePriority : Form
     {
         private readonly Character _objCharacter;
         private string _strCurrentPossessionMethod;
@@ -52,7 +52,7 @@ namespace Chummer
 
         #region Form Events
 
-        public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
+        public SelectMetatypePriority(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             if (string.IsNullOrEmpty(_objCharacter.SettingsKey))
@@ -105,7 +105,7 @@ namespace Chummer
                     _dicSumtoTenValues.Add(strPriority, 0);
         }
 
-        private void frmPriorityMetatype_Load(object sender, EventArgs e)
+        private void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {

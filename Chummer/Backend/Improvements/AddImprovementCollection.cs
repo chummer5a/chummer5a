@@ -1952,7 +1952,7 @@ namespace Chummer
             if (xmlProgram == null)
             {
                 // Display the Select Program window.
-                using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter))
+                using (SelectAIProgram frmPickProgram = new SelectAIProgram(_objCharacter))
                 {
                     frmPickProgram.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
 
@@ -2030,7 +2030,7 @@ namespace Chummer
             if (xmlProgram == null)
             {
                 // Display the Select Spell window.
-                using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter, false, true))
+                using (SelectAIProgram frmPickProgram = new SelectAIProgram(_objCharacter, false, true))
                 {
                     frmPickProgram.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
 
@@ -4571,7 +4571,7 @@ namespace Chummer
                 else
                 {
                     InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
-                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                    using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                     {
                         frmPickMetamagic.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
                         // Don't do anything else if the form was canceled.
@@ -4692,7 +4692,7 @@ namespace Chummer
                 else
                 {
                     InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1, Technomancer = true};
-                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                    using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                     {
                         frmPickMetamagic.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
                         // Don't do anything else if the form was canceled.

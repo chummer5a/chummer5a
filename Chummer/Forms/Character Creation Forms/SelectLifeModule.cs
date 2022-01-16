@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public partial class frmSelectLifeModule : Form
+    public partial class SelectLifeModule : Form
     {
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
@@ -37,7 +37,7 @@ namespace Chummer
 
         private string _strWorkStage;
 
-        public frmSelectLifeModule(Character objCharacter, int intStage)
+        public SelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -47,7 +47,7 @@ namespace Chummer
             _xmlDocument = _objCharacter.LoadData("lifemodules.xml");
         }
 
-        private void frmSelectLifeModule_Load(object sender, EventArgs e)
+        private void SelectLifeModule_Load(object sender, EventArgs e)
         {
             string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + "]";
 

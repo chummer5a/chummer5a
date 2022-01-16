@@ -38,7 +38,7 @@ namespace Chummer
     /// Caches a subset of a full character's properties for loading purposes.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public class CharacterCache : IDisposable
+    public sealed class CharacterCache : IDisposable
     {
         public string FilePath { get; set; }
         public string FileName { get; set; }

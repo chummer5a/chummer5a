@@ -78,7 +78,7 @@ namespace Chummer
             RebuildCustomDataDirectoryInfos();
         }
 
-        private void frmCharacterSettings_Load(object sender, EventArgs e)
+        private void EditCharacterSettings_Load(object sender, EventArgs e)
         {
             SetToolTips();
             PopulateSettingsList();

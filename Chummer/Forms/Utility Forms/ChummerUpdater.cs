@@ -34,7 +34,7 @@ using Application = System.Windows.Forms.Application;
 
 namespace Chummer
 {
-    public partial class frmUpdate : Form
+    public partial class ChummerUpdater : Form
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private bool _blnSilentMode;
@@ -53,9 +53,9 @@ namespace Chummer
         private readonly WebClient _clientChangelogDownloader;
         private string _strExceptionString;
 
-        public frmUpdate()
+        public ChummerUpdater()
         {
-            Log.Info("frmUpdate");
+            Log.Info("ChummerUpdater");
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -70,9 +70,9 @@ namespace Chummer
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
         }
 
-        private async void frmUpdate_Load(object sender, EventArgs e)
+        private async void ChummerUpdater_Load(object sender, EventArgs e)
         {
-            Log.Info("frmUpdate_Load enter");
+            Log.Info("ChummerUpdater_Load enter");
             Log.Info("Check Global Mutex for duplicate");
             bool blnHasDuplicate;
             try
@@ -92,7 +92,7 @@ namespace Chummer
                 Log.Info("More than one instance, exiting");
                 if (!SilentMode)
                     Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Update_MultipleInstances"), LanguageManager.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Log.Info("frmUpdate_Load exit");
+                Log.Info("ChummerUpdater_Load exit");
                 Close();
             }
             if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
@@ -100,12 +100,12 @@ namespace Chummer
             {
                 await DownloadChangelog();
             }
-            Log.Info("frmUpdate_Load exit");
+            Log.Info("ChummerUpdater_Load exit");
         }
 
         private bool _blnFormClosing;
 
-        private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
+        private void ChummerUpdater_FormClosing(object sender, FormClosingEventArgs e)
         {
             // If we have automatic updates on, make sure we don't close the updater, just hide it
             if (e.CloseReason == CloseReason.UserClosing && GlobalSettings.AutomaticUpdate)

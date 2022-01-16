@@ -6518,7 +6518,7 @@ namespace Chummer
                     break;
                 }
 
-                using (frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                using (SelectWeaponAccessory frmPickWeaponAccessory = new SelectWeaponAccessory(CharacterObject)
                 {
                     ParentWeapon = objWeapon
                 })
@@ -6625,7 +6625,7 @@ namespace Chummer
 
         private bool PickArmor(Location objLocation = null)
         {
-            using (frmSelectArmor frmPickArmor = new frmSelectArmor(CharacterObject))
+            using (SelectArmor frmPickArmor = new SelectArmor(CharacterObject))
             {
                 frmPickArmor.ShowDialogSafe(this);
 
@@ -6734,7 +6734,7 @@ namespace Chummer
             {
                 XmlNode objXmlArmor = objArmor.GetNode();
 
-                using (frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject, objArmor)
+                using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
                 {
                     ArmorCost = objArmor.OwnCost,
                     ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo),
@@ -7251,7 +7251,7 @@ namespace Chummer
                     return;
                 }
 
-                using (frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                using (SelectWeaponAccessory frmPickWeaponAccessory = new SelectWeaponAccessory(CharacterObject)
                 {
                     ParentWeapon = objWeapon
                 })
@@ -7450,7 +7450,7 @@ namespace Chummer
                 bool blnAddAgain = false;
                 do
                 {
-                    using (frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt))
+                    using (SelectMartialArtTechnique frmPickMartialArtTechnique = new SelectMartialArtTechnique(CharacterObject, objMartialArt))
                     {
                         frmPickMartialArtTechnique.ShowDialogSafe(this);
 
@@ -17608,7 +17608,7 @@ namespace Chummer
                 , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
                 return;
 
-            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
+            using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(CharacterObject, objGrade))
             {
                 frmPickMetamagic.ShowDialogSafe(this);
 
@@ -18049,7 +18049,7 @@ namespace Chummer
                     break;
                 }
                 // Let the user select a Program.
-                using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost))
+                using (SelectAIProgram frmPickProgram = new SelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost))
                 {
                     frmPickProgram.ShowDialogSafe(this);
 
@@ -18697,7 +18697,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true))
+                using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
                 {
                     frmPickBP.ShowDialogSafe(this);
 

@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectMetamagic
+    partial class SelectMetamagic
     {
         /// <summary>
         /// Required designer variable.
@@ -244,13 +244,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectMetamagic";
+            this.Name = "SelectMetamagic";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectGeneric";
             this.Text = "Select a Metamagic";
-            this.Load += new System.EventHandler(this.frmSelectMetamagic_Load);
+            this.Load += new System.EventHandler(this.SelectMetamagic_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

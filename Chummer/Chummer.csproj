@@ -1219,11 +1219,11 @@
     <Compile Include="Controls\Table\TextTableCell.Designer.cs">
       <DependentUpon>TextTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Utility Forms\DiceHitsTracker.cs">
+    <Compile Include="Forms\Selection Forms\SelectDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Utility Forms\DiceHitsTracker.Designer.cs">
-      <DependentUpon>DiceHitsTracker.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectDiceHits.Designer.cs">
+      <DependentUpon>SelectDiceHits.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Utility Forms\DiceRoller.cs">
       <SubType>Form</SubType>
@@ -1741,8 +1741,8 @@
     <EmbeddedResource Include="Controls\Table\TableRow.resx">
       <DependentUpon>TableRow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Utility Forms\DiceHitsTracker.resx">
-      <DependentUpon>DiceHitsTracker.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectDiceHits.resx">
+      <DependentUpon>SelectDiceHits.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\DiceRoller.resx">
       <DependentUpon>DiceRoller.cs</DependentUpon>

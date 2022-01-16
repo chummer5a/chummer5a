@@ -46,7 +46,7 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private frmDiceRoller _frmRoller;
         private LoadingBar _frmProgressBar;
-        private frmUpdate _frmUpdate;
+        private ChummerUpdater _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ThreadSafeObservableCollection<CharacterShared> _lstOpenCharacterForms = new ThreadSafeObservableCollection<CharacterShared>();
         private readonly string _strCurrentVersion;
@@ -137,7 +137,7 @@ namespace Chummer
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
-        private async void frmChummerMain_Load(object sender, EventArgs e)
+        private async void ChummerMainForm_Load(object sender, EventArgs e)
         {
             using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
@@ -608,8 +608,8 @@ namespace Chummer
                 {
                     if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                     {
-                        _frmUpdate = new frmUpdate();
-                        _frmUpdate.FormClosed += ResetFrmUpdate;
+                        _frmUpdate = new ChummerUpdater();
+                        _frmUpdate.FormClosed += ResetChummerUpdater;
                         _frmUpdate.SilentMode = true;
                     }
                     Text = strNewText;
@@ -675,8 +675,8 @@ namespace Chummer
             // Only a single instance of the updater can be open, so either find the current instance and focus on it, or create a new one.
             if (_frmUpdate == null)
             {
-                _frmUpdate = new frmUpdate();
-                _frmUpdate.FormClosed += ResetFrmUpdate;
+                _frmUpdate = new ChummerUpdater();
+                _frmUpdate.FormClosed += ResetChummerUpdater;
                 _frmUpdate.Show();
             }
             // Silent updater is running, so make it visible
@@ -691,7 +691,7 @@ namespace Chummer
             }
         }
 
-        private void ResetFrmUpdate(object sender, EventArgs e)
+        private void ResetChummerUpdater(object sender, EventArgs e)
         {
             _frmUpdate = null;
         }
@@ -740,7 +740,7 @@ namespace Chummer
             {
                 using (Character objCharacter = new Character()) // Using is fine here because Dispose() code is skipped if the character is open in a form
                 {
-                    using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
+                    using (SelectBuildMethod frmPickSetting = new SelectBuildMethod(objCharacter))
                     {
                         frmPickSetting.ShowDialogSafe(this);
                         if (frmPickSetting.DialogResult == DialogResult.Cancel)
@@ -753,7 +753,7 @@ namespace Chummer
                     objCharacter.Created = true;
 
                     // Show the Metatype selection window.
-                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
+                    using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(objCharacter, "critters.xml"))
                     {
                         frmSelectMetatype.ShowDialogSafe(this);
 
@@ -796,7 +796,7 @@ namespace Chummer
             }
         }
 
-        private void frmChummerMain_MdiChildActivate(object sender, EventArgs e)
+        private void ChummerMainForm_MdiChildActivate(object sender, EventArgs e)
         {
             // If there are no child forms, hide the tab control.
             if (ActiveMdiChild != null)
@@ -982,7 +982,7 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(objMyRectangle));
         }
 
-        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
         {
             using (new CursorWait(this))
             {
@@ -1004,7 +1004,7 @@ namespace Chummer
             }
         }
 
-        private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
+        private void ChummerMainForm_DragEnter(object sender, DragEventArgs e)
         {
             // Only use a drop effect if a file is being dragged into the window.
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
@@ -1017,7 +1017,7 @@ namespace Chummer
                 Process.Start(strTranslator);
         }
 
-        private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
+        private void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
         {
             _lstCharacters.CollectionChanged -= LstCharactersOnCollectionChanged;
             foreach (Character objCharacter in _lstCharacters)
@@ -1106,7 +1106,7 @@ namespace Chummer
             }
         }
 
-        private void frmChummerMain_DpiChanged(object sender, DpiChangedEventArgs e)
+        private void ChummerMainForm_DpiChanged(object sender, DpiChangedEventArgs e)
         {
             tabForms.ItemSize = new Size(
                 tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
@@ -1214,7 +1214,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     // Show the BP selection window.
-                    using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
+                    using (SelectBuildMethod frmBP = new SelectBuildMethod(objCharacter))
                     {
                         frmBP.ShowDialogSafe(this);
                         if (frmBP.DialogResult != DialogResult.OK)
@@ -1224,7 +1224,7 @@ namespace Chummer
                     // Show the Metatype selection window.
                     if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
+                        using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(objCharacter))
                         {
                             frmSelectMetatype.ShowDialogSafe(this);
 
@@ -1234,7 +1234,7 @@ namespace Chummer
                     }
                     else
                     {
-                        using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
+                        using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(objCharacter))
                         {
                             frmSelectMetatype.ShowDialogSafe(this);
 
@@ -1248,7 +1248,7 @@ namespace Chummer
 
                 using (new CursorWait(this))
                 {
-                    frmCreate frmNewCharacter = new frmCreate(objCharacter)
+                    CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
                     {
                         MdiParent = this
                     };
@@ -1367,7 +1367,7 @@ namespace Chummer
                     {
                         CharacterShared frmNewCharacter = objCharacter.Created
                             ? (CharacterShared)new CharacterCareer(objCharacter)
-                            : new frmCreate(objCharacter);
+                            : new CharacterCreate(objCharacter);
                         frmNewCharacter.MdiParent = this;
                         frmNewCharacter.Show();
                         lstNewFormsToProcess.Add(frmNewCharacter);

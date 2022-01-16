@@ -1073,12 +1073,12 @@ namespace Chummer
             this.Name = "frmChummerMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer5";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmChummerMain_Closing);
-            this.Load += new System.EventHandler(this.frmChummerMain_Load);
-            this.MdiChildActivate += new System.EventHandler(this.frmChummerMain_MdiChildActivate);
-            this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.frmChummerMain_DpiChanged);
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmChummerMain_DragDrop);
-            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.frmChummerMain_DragEnter);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChummerMainForm_Closing);
+            this.Load += new System.EventHandler(this.ChummerMainForm_Load);
+            this.MdiChildActivate += new System.EventHandler(this.ChummerMainForm_MdiChildActivate);
+            this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.ChummerMainForm_DpiChanged);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ChummerMainForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ChummerMainForm_DragEnter);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);

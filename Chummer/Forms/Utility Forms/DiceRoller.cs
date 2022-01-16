@@ -25,14 +25,14 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmDiceRoller : Form
+    public partial class DiceRoller : Form
     {
         private readonly ChummerMainForm _frmMain;
         private readonly List<DiceRollerListViewItem> _lstResults = new List<DiceRollerListViewItem>(40);
 
         #region Control Events
 
-        public frmDiceRoller(ChummerMainForm frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
+        public DiceRoller(ChummerMainForm frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -198,7 +198,7 @@ namespace Chummer
             }
         }
 
-        private void frmDiceRoller_FormClosing(object sender, FormClosingEventArgs e)
+        private void DiceRoller_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Remove the Main window's reference to this form.
             _frmMain.RollerWindow = null;

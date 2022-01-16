@@ -363,7 +363,7 @@ namespace Chummer.Plugins
                 yield return tabPage;
         }
 
-        public IEnumerable<TabPage> GetTabPages(frmCreate input)
+        public IEnumerable<TabPage> GetTabPages(CharacterCreate input)
         {
             foreach (TabPage tabPage in GetTabPagesCommon(input))
                 yield return tabPage;
@@ -456,7 +456,7 @@ namespace Chummer.Plugins
                                 CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
                                 switch (found)
                                 {
-                                    case frmCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                    case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                     {
                                         int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
                                         tabPage = frm.TabCharacterTabs.TabPages[index];
@@ -523,7 +523,7 @@ namespace Chummer.Plugins
                 TabControl.TabPageCollection myCollection = null;
                 switch (found)
                 {
-                    case frmCreate foundcreate:
+                    case CharacterCreate foundcreate:
                         myCollection = foundcreate.TabCharacterTabs.TabPages;
                         break;
                     case CharacterCareer foundcareer:

@@ -25,7 +25,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectMartialArtTechnique : Form
+    public partial class SelectMartialArtTechnique : Form
     {
         private string _strSelectedTechnique = string.Empty;
 
@@ -39,7 +39,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
+        public SelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -65,22 +65,21 @@ namespace Chummer
                 }
                 else if (_objMartialArt.Techniques.Count == 0)
                 {
-                    //TODO: Support for allowing all techniques  > 0.
-                    string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
-                    XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");
-
-                    foreach (XPathNavigator xmlTechnique in objTechniquesList)
+                    //TODO: Support for allowing all techniques > 0.
+                    foreach (XPathNavigator xmlTechnique in _xmlBaseChummerNode.Select("techniques/technique[(" + _objCharacter.Settings.BookXPath() + ")]"))
                     {
-                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value)
-                            || xmlTechnique.SelectSingleNodeAndCacheExpression("name") == null)
+                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value))
                             continue;
-                        _setAllowedTechniques.Add(xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value);
+                        string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        if (string.IsNullOrEmpty(strTechniqueName))
+                            continue;
+                        _setAllowedTechniques.Add(strTechniqueName);
                     }
                 }
             }
         }
 
-        private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)
+        private void SelectMartialArtTechnique_Load(object sender, EventArgs e)
         {
             _blnLoading = false;
             RefreshTechniquesList();

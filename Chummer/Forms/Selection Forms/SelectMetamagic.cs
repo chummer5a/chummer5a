@@ -26,9 +26,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    // TODO: Review naming schema
-    // ReSharper disable once InconsistentNaming
-    public partial class frmSelectMetamagic : Form
+    public partial class SelectMetamagic : Form
     {
         private bool _blnLoading = true;
         private string _strSelectedMetamagic = string.Empty;
@@ -44,7 +42,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectMetamagic(Character objCharacter, InitiationGrade objGrade)
+        public SelectMetamagic(Character objCharacter, InitiationGrade objGrade)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             if (objGrade == null)
@@ -77,7 +75,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectMetamagic_Load(object sender, EventArgs e)
+        private void SelectMetamagic_Load(object sender, EventArgs e)
         {
             Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strType);
             chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strType);

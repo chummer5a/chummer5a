@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmPriorityMetatype
+    partial class SelectMetatypePriority
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPriorityMetatype));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectMetatypePriority));
             this.cboCategory = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lblMetavariantQualities = new System.Windows.Forms.Label();
@@ -930,12 +930,12 @@ namespace Chummer
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmPriorityMetatype";
+            this.Name = "SelectMetatypePriority";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_ChooseCharacterPriorities";
             this.Text = "Choose Character Priorities";
-            this.Load += new System.EventHandler(this.frmPriorityMetatype_Load);
+            this.Load += new System.EventHandler(this.SelectMetatypePriority_Load);
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.tlpTopHalf.ResumeLayout(false);

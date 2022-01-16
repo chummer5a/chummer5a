@@ -1,6 +1,6 @@
 ﻿namespace Chummer
 {
-    partial class frmDiceHits
+    partial class SelectDiceHits
     {
         /// <summary>
         /// Required designer variable.
@@ -179,13 +179,13 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmDiceHits";
+            this.Name = "SelectDiceHits";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_DiceHits";
             this.Text = "Dice Hits";
-            this.Load += new System.EventHandler(this.frmDiceHits_Load);
+            this.Load += new System.EventHandler(this.SelectDiceHits_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

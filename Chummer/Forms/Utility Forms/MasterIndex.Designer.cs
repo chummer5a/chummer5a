@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmMasterIndex
+    partial class MasterIndex
     {
         /// <summary>
         /// Required designer variable.
@@ -34,7 +34,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMasterIndex));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MasterIndex));
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -310,12 +310,12 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmMasterIndex";
+            this.Name = "MasterIndex";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "Title_MasterIndex";
             this.Text = "Master Index";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMasterIndex_FormClosing);
-            this.Load += new System.EventHandler(this.frmMasterIndex_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MasterIndex_FormClosing);
+            this.Load += new System.EventHandler(this.MasterIndex_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpRight.ResumeLayout(false);

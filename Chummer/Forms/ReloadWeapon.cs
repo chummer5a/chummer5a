@@ -42,7 +42,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmReload_Load(object sender, EventArgs e)
+        private void ReloadWeapon_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstAmmo))

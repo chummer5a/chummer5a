@@ -253,7 +253,7 @@ namespace Chummer.Tests
                         {
                             using (CharacterShared frmCharacterForm = objCharacter.Created
                                 ? (CharacterShared)new CharacterCareer(objCharacter)
-                                : new frmCreate(objCharacter))
+                                : new CharacterCreate(objCharacter))
                             {
                                 frmCharacterForm.MdiParent = frmTestForm;
                                 frmCharacterForm.ShowInTaskbar = false;

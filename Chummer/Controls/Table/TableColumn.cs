@@ -46,6 +46,21 @@ namespace Chummer.UI.Table
             _cellFactory = cellFactory ?? throw new ArgumentNullException(nameof(cellFactory));
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Utils.StringHashSetPool.Return(_setDependencies);
+            }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>
         /// Add an additional dependency to the dependencies
         /// of this column.
@@ -203,11 +218,5 @@ namespace Chummer.UI.Table
         }
 
         #endregion Properties
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Utils.StringHashSetPool.Return(_setDependencies);
-        }
     }
 }

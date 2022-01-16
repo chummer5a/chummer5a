@@ -180,7 +180,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Reload";
             this.Text = "Reload Weapon";
-            this.Load += new System.EventHandler(this.frmReload_Load);
+            this.Load += new System.EventHandler(this.ReloadWeapon_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

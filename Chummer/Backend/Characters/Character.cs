@@ -3299,7 +3299,7 @@ namespace Chummer
                                         ePickBPResult = await Program.MainForm.DoThreadSafeFuncAsync(ShowBP);
                                     DialogResult ShowBP()
                                     {
-                                        using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
+                                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                         {
                                             frmPickBP.ShowDialogSafe(Program.GetFormForDialog(this));
                                             return frmPickBP.DialogResult;
@@ -6887,7 +6887,7 @@ namespace Chummer
             {
                 eResult = Program.MainForm.DoThreadSafeFunc(() =>
                 {
-                    using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this))
+                    using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
                     {
                         frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                         return frmSelectMetatype.DialogResult;
@@ -6898,7 +6898,7 @@ namespace Chummer
             {
                 eResult = Program.MainForm.DoThreadSafeFunc(() =>
                 {
-                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this))
+                    using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
                     {
                         frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                         return frmSelectMetatype.DialogResult;
@@ -19668,7 +19668,7 @@ namespace Chummer
                                         LanguageManager.GetString("Message_MissingGameplayOption_Title"),
                                         MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                                     {
-                                        using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
+                                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                         {
                                             frmPickBP.ShowDialogSafe(Program.GetFormForDialog(this));
                                             if (frmPickBP.DialogResult != DialogResult.OK)
@@ -19730,7 +19730,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this))
+                                    using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
                                     {
                                         frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -19739,7 +19739,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this))
+                                    using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
                                     {
                                         frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -21725,7 +21725,7 @@ namespace Chummer
 
             int intWILResult;
             // Get the player to roll Dice to make a WIL Test and record the result.
-            using (frmDiceHits frmWILHits = new frmDiceHits
+            using (SelectDiceHits frmWILHits = new SelectDiceHits
             {
                 Text = LanguageManager.GetString("String_CyberzombieWILText"),
                 Description = LanguageManager.GetString("String_CyberzombieWILDescription"),

@@ -22,18 +22,18 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmInitRoller : Form
+    public partial class InitiativeRoller : Form
     {
         #region Control Events
 
-        public frmInitRoller()
+        public InitiativeRoller()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        private void frmInitRoller_Load(object sender, EventArgs e)
+        private void InitiativeRoller_Load(object sender, EventArgs e)
         {
             lblDice.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice);
             nudDiceResult.Maximum = Dice * 6;

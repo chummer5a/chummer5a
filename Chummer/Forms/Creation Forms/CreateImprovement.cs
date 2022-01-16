@@ -269,7 +269,7 @@ namespace Chummer
                 case "SelectEcho":
                     {
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
-                        using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                        using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                         {
                             frmPickMetamagic.ShowDialogSafe(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
@@ -304,7 +304,7 @@ namespace Chummer
                 case "SelectMetamagic":
                     {
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1 };
-                        using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
+                        using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                         {
                             frmPickMetamagic.ShowDialogSafe(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)

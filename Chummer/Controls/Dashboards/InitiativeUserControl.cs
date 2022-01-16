@@ -315,7 +315,7 @@ namespace Chummer
                 if (chkBoxChummer.GetItemCheckState(j) == CheckState.Unchecked)
                 {
                     Character objLoopCharacter = _lstCharacters[j];
-                    using (frmInitRoller frmHits = new frmInitRoller
+                    using (InitiativeRoller frmHits = new InitiativeRoller
                     {
                         Dice = objLoopCharacter.InitPasses
                     })
@@ -392,7 +392,7 @@ namespace Chummer
                 if (chkBoxChummer.SelectedItem == null)
                     Program.MainForm.ShowMessageBox("Please select a chummer before right-clicking");
 
-                using (frmInitRoller frmHits = new frmInitRoller
+                using (InitiativeRoller frmHits = new InitiativeRoller
                 {
                     Dice = _lstCharacters[chkBoxChummer.SelectedIndex].InitPasses
                 })
@@ -428,7 +428,7 @@ namespace Chummer
                 return;
             if (character.InitRoll == int.MinValue)
             {
-                using (frmInitRoller frmHits = new frmInitRoller
+                using (InitiativeRoller frmHits = new InitiativeRoller
                 {
                     Dice = character.InitPasses
                 })

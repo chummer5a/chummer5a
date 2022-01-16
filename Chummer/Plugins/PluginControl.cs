@@ -42,7 +42,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> GetTabPages(CharacterCareer input);
 
-        IEnumerable<TabPage> GetTabPages(frmCreate input);
+        IEnumerable<TabPage> GetTabPages(CharacterCreate input);
 
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
@@ -452,7 +452,7 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(frmCreate frmCreate, CustomActivity parentActivity)
+        internal void CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {

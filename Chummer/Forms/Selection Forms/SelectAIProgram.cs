@@ -26,7 +26,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectAIProgram : Form
+    public partial class SelectAIProgram : Form
     {
         private string _strSelectedAIProgram = string.Empty;
         private static string _strSelectedCategory = string.Empty;
@@ -43,7 +43,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
+        public SelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -57,7 +57,7 @@ namespace Chummer
             _xmlOptionalAIProgramsNode = _objCharacter.GetNode().SelectSingleNodeAndCacheExpression("optionalaiprograms");
         }
 
-        private void frmSelectProgram_Load(object sender, EventArgs e)
+        private void SelectAIProgram_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category"))

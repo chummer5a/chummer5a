@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectLifeModule
+    partial class SelectLifeModule
     {
         /// <summary>
         /// Required designer variable.
@@ -302,12 +302,12 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectLifeModule";
+            this.Name = "SelectLifeModule";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Select Life Module";
-            this.Load += new System.EventHandler(this.frmSelectLifeModule_Load);
+            this.Load += new System.EventHandler(this.SelectLifeModule_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.flpStage.ResumeLayout(false);

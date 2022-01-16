@@ -22,18 +22,18 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmDiceHits : Form
+    public partial class SelectDiceHits : Form
     {
         #region Control Events
 
-        public frmDiceHits()
+        public SelectDiceHits()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        private void frmDiceHits_Load(object sender, EventArgs e)
+        private void SelectDiceHits_Load(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
             lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalSettings.CultureInfo)

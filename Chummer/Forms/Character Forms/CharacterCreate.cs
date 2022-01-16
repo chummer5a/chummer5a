@@ -41,7 +41,7 @@ using NLog;
 namespace Chummer
 {
     [DesignerCategory("Form")]
-    public partial class frmCreate : CharacterShared
+    public partial class CharacterCreate : CharacterShared
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
@@ -66,12 +66,12 @@ namespace Chummer
         #region Form Events
 
         [Obsolete("This constructor is for use by form designers only.", true)]
-        public frmCreate()
+        public CharacterCreate()
         {
             InitializeComponent();
         }
 
-        public frmCreate(Character objCharacter) : base(objCharacter)
+        public CharacterCreate(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
 
@@ -182,7 +182,7 @@ namespace Chummer
             }
         }
 
-        private void frmCreate_Load(object sender, EventArgs e)
+        private void CharacterCreate_Load(object sender, EventArgs e)
         {
             using (var op_load_frm_create = Timekeeper.StartSyncron("load_frm_create", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
@@ -894,7 +894,7 @@ namespace Chummer
             }
         }
 
-        private void frmCreate_FormClosing(object sender, FormClosingEventArgs e)
+        private void CharacterCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
             // If there are unsaved changes to the character, as the user if they would like to save their changes.
             if (IsDirty)
@@ -1019,7 +1019,7 @@ namespace Chummer
             }
         }
 
-        private void frmCreate_Activated(object sender, EventArgs e)
+        private void CharacterCreate_Activated(object sender, EventArgs e)
         {
             // Merge the ToolStrips.
             ToolStripManager.RevertMerge("toolStrip");
@@ -2016,7 +2016,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true))
+                using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
                 {
                     frmPickBP.ShowDialogSafe(this);
 
@@ -3267,7 +3267,7 @@ namespace Chummer
                 {
                     XmlNode objXmlProgram;
                     // Let the user select a Program.
-                    using (frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(CharacterObject))
+                    using (SelectAIProgram frmPickProgram = new SelectAIProgram(CharacterObject))
                     {
                         frmPickProgram.ShowDialogSafe(this);
 
@@ -3864,7 +3864,7 @@ namespace Chummer
 
                     //i--; //Counter last increment
                     XmlNode objXmlLifeModule;
-                    using (frmSelectLifeModule frmSelectLifeModule = new frmSelectLifeModule(CharacterObject, intStage))
+                    using (SelectLifeModule frmSelectLifeModule = new SelectLifeModule(CharacterObject, intStage))
                     {
                         frmSelectLifeModule.ShowDialogSafe(this);
 
@@ -4390,7 +4390,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                using (frmSelectArmor frmPickArmor = new frmSelectArmor(CharacterObject))
+                using (SelectArmor frmPickArmor = new SelectArmor(CharacterObject))
                 {
                     frmPickArmor.ShowDialogSafe(this);
 
@@ -4586,7 +4586,7 @@ namespace Chummer
                         break;
                     }
 
-                    using (frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                    using (SelectWeaponAccessory frmPickWeaponAccessory = new SelectWeaponAccessory(CharacterObject)
                     {
                         ParentWeapon = objWeapon
                     })
@@ -4670,7 +4670,7 @@ namespace Chummer
                 {
                     XmlNode objXmlArmor = objArmor.GetNode();
 
-                    using (frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject, objArmor)
+                    using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
                     {
                         ArmorCost = objArmor.OwnCost,
                         ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo),
@@ -5035,7 +5035,7 @@ namespace Chummer
                         return;
                     }
 
-                    using (frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(CharacterObject)
+                    using (SelectWeaponAccessory frmPickWeaponAccessory = new SelectWeaponAccessory(CharacterObject)
                     {
                         ParentWeapon = objWeapon
                     })
@@ -5163,7 +5163,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     XmlNode xmlTechnique;
-                    using (frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt))
+                    using (SelectMartialArtTechnique frmPickMartialArtTechnique = new SelectMartialArtTechnique(CharacterObject, objMartialArt))
                     {
                         frmPickMartialArtTechnique.ShowDialogSafe(this);
 
@@ -10368,7 +10368,7 @@ namespace Chummer
                                         : "bioware.xml").SelectSingleNodeAndCacheExpression("/chummer"))
                                 .Contains(objCyberware.Category);
                             chkCyberwareBlackMarketDiscount.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
-                                ? (objCyberware.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                ? objCyberware.Parent?.DiscountCost == true
                                 : objCyberware.DiscountCost;
                         }
                         else
@@ -13082,16 +13082,14 @@ namespace Chummer
                         chkVehicleWeaponAccessoryInstalled.Visible = false;
                         chkVehicleIncludedInWeapon.Visible = false;
 
-                        if (CharacterObject.BlackMarketDiscount)
+                        if (CharacterObject.BlackMarketDiscount && string.IsNullOrEmpty(objCyberware.ParentID))
                         {
                             chkCyberwareBlackMarketDiscount.Enabled = CharacterObject.GenerateBlackMarketMappings(CharacterObject
                                     .LoadDataXPath(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
-                                        ? "cyberware.xml"
-                                        : "bioware.xml").SelectSingleNodeAndCacheExpression("/chummer"))
+                                                       ? "cyberware.xml"
+                                                       : "bioware.xml").SelectSingleNodeAndCacheExpression("/chummer"))
                                 .Contains(objCyberware.Category);
-                            chkCyberwareBlackMarketDiscount.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
-                                ? (objCyberware.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                                : objCyberware.DiscountCost;
+                            chkCyberwareBlackMarketDiscount.Checked = objCyberware.DiscountCost;
                         }
                         else
                         {
@@ -15063,7 +15061,7 @@ namespace Chummer
         {
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
-                using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject))
+                using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(CharacterObject))
                 {
                     frmSelectMetatype.ShowDialogSafe(this);
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -15072,7 +15070,7 @@ namespace Chummer
             }
             else
             {
-                using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(CharacterObject))
+                using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(CharacterObject))
                 {
                     frmSelectMetatype.ShowDialogSafe(this);
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -15517,7 +15515,7 @@ namespace Chummer
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
-            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
+            using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(CharacterObject, objGrade))
             {
                 frmPickMetamagic.ShowDialogSafe(this);
 

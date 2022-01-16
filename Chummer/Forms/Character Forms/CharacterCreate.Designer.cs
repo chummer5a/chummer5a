@@ -5,7 +5,7 @@ using Chummer.UI.Shared;
 
 namespace Chummer
 {
-    partial class frmCreate
+    partial class CharacterCreate
     {
         /// <summary>
         /// Required designer variable.
@@ -59,7 +59,7 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Drugs");
             System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterCreate));
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.tslKarmaLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslKarma = new System.Windows.Forms.ToolStripStatusLabel();
@@ -15359,12 +15359,12 @@ namespace Chummer
             this.Controls.Add(this.mnuCreateMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuCreateMenu;
-            this.Name = "frmCreate";
+            this.Name = "CharacterCreate";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Chummer - Create New Character";
-            this.Activated += new System.EventHandler(this.frmCreate_Activated);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCreate_FormClosing);
-            this.Load += new System.EventHandler(this.frmCreate_Load);
+            this.Activated += new System.EventHandler(this.CharacterCreate_Activated);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterCreate_FormClosing);
+            this.Load += new System.EventHandler(this.CharacterCreate_Load);
             this.StatusStrip.ResumeLayout(false);
             this.StatusStrip.PerformLayout();
             this.cmsMartialArts.ResumeLayout(false);

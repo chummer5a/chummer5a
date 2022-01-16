@@ -91,7 +91,7 @@ namespace Chummer
             }
         }
 
-        private void frmNotes_Resize(object sender, EventArgs e)
+        private void EditNotes_Resize(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -100,7 +100,7 @@ namespace Chummer
             _intHeight = Height;
         }
 
-        private void frmNotes_Shown(object sender, EventArgs e)
+        private void EditNotes_Shown(object sender, EventArgs e)
         {
             txtNotes.Focus();
             txtNotes.SelectionLength = 0;

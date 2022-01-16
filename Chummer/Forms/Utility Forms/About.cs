@@ -93,7 +93,7 @@ namespace Chummer
 
         #region Controls Methods
 
-        private void frmAbout_Load(object sender, EventArgs e)
+        private void About_Load(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strReturn = LanguageManager.GetString("Label_About", false);

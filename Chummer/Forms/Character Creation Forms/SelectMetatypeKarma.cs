@@ -29,7 +29,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmKarmaMetatype : Form
+    public partial class SelectMetatypeKarma : Form
     {
         private bool _blnLoading = true;
 
@@ -45,7 +45,7 @@ namespace Chummer
 
         #region Form Events
 
-        public frmKarmaMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
+        public SelectMetatypeKarma(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
             _objCharacter = objCharacter;
             InitializeComponent();
@@ -612,7 +612,7 @@ namespace Chummer
                 cmdOK.Enabled = false;
             }
 
-            if (objXmlMetatype.SelectSingleNode("category").InnerXml.EndsWith("Spirits", StringComparison.Ordinal))
+            if (objXmlMetatype?.SelectSingleNode("category").InnerXml.EndsWith("Spirits", StringComparison.Ordinal) == true)
             {
                 if (!chkPossessionBased.Visible && !string.IsNullOrEmpty(_strCurrentPossessionMethod))
                 {
@@ -630,9 +630,9 @@ namespace Chummer
             }
 
             // If the Metatype has Force enabled, show the Force NUD.
-            string strEssMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax")?.Value ?? string.Empty;
+            string strEssMax = objXmlMetatype?.SelectSingleNodeAndCacheExpression("essmax")?.Value ?? string.Empty;
             int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
-            if (objXmlMetatype.SelectSingleNodeAndCacheExpression("forcecreature") != null || intPos != -1)
+            if (objXmlMetatype?.SelectSingleNodeAndCacheExpression("forcecreature") != null || intPos != -1)
             {
                 if (intPos != -1)
                 {

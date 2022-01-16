@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    partial class frmKarmaMetatype
+    partial class SelectMetatypeKarma
     {
         /// <summary>
         /// Required designer variable.
@@ -33,7 +33,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmKarmaMetatype));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectMetatypeKarma));
             this.tlpMetatypes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lstMetatypes = new System.Windows.Forms.ListBox();
             this.cboCategory = new Chummer.ElasticComboBox();
@@ -656,7 +656,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmKarmaMetatype";
+            this.Name = "SelectMetatypeKarma";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

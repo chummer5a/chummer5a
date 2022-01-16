@@ -28,7 +28,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmMasterIndex : Form
+    public partial class MasterIndex : Form
     {
         private bool _blnSkipRefresh = true;
         private CharacterSettings _objSelectedSetting = GetInitialSetting();
@@ -78,7 +78,7 @@ namespace Chummer
             "weapons.xml"
         };
 
-        public frmMasterIndex()
+        public MasterIndex()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -129,13 +129,13 @@ namespace Chummer
             }
         }
 
-        private async void frmMasterIndex_Load(object sender, EventArgs e)
+        private async void MasterIndex_Load(object sender, EventArgs e)
         {
             await LoadContent();
             _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
         }
 
-        private void frmMasterIndex_FormClosing(object sender, FormClosingEventArgs e)
+        private void MasterIndex_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
         }
@@ -178,7 +178,7 @@ namespace Chummer
 
         private async Task LoadContent()
         {
-            using (CustomActivity opLoadFrmMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
+            using (CustomActivity opLoadMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
                 CustomActivity.OperationType.RequestOperation, null))
             {
                 _dicCachedNotes.Clear();
@@ -205,10 +205,10 @@ namespace Chummer
                 }
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_andpopulate_entries",
-                                                   opLoadFrmMasterindex))
+                                                   opLoadMasterindex))
                 {
                     ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
-                    using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", opLoadFrmMasterindex))
+                    using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", opLoadMasterindex))
                     {
                         ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                         // Prevents locking the UI thread while still benefitting from static scheduling of Parallel.ForEach
@@ -264,7 +264,7 @@ namespace Chummer
                         _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadFrmMasterindex))
+                    using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadMasterindex))
                     {
                         string strSpace = LanguageManager.GetString("String_Space");
                         string strFormat = "{0}" + strSpace + "[{1}]";
@@ -350,13 +350,13 @@ namespace Chummer
                     }
                 }
 
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", opLoadFrmMasterindex))
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", opLoadMasterindex))
                 {
                     _lstItems.Sort(CompareListItems.CompareNames);
                     _lstFileNamesWithItems.Sort(CompareListItems.CompareNames);
                 }
 
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadFrmMasterindex))
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadMasterindex))
                 {
                     _lstFileNamesWithItems.Insert(0, new ListItem(string.Empty, LanguageManager.GetString("String_All")));
 

@@ -27,7 +27,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectArmorMod : Form
+    public partial class SelectArmorMod : Form
     {
         private bool _blnLoading = true;
         private decimal _decArmorCapacity;
@@ -41,7 +41,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectArmorMod(Character objCharacter, Armor objParentNode = null)
+        public SelectArmorMod(Character objCharacter, Armor objParentNode = null)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -57,7 +57,7 @@ namespace Chummer
                         _xmlBaseDataNode.SelectSingleNodeAndCacheExpression("modcategories")));
         }
 
-        private void frmSelectArmorMod_Load(object sender, EventArgs e)
+        private void SelectArmorMod_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

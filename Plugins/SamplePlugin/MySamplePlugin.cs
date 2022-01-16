@@ -112,7 +112,7 @@ namespace SamplePlugin
             return null;
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCreate input)
+        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCreate input)
         {
             //the same goes for the frmCreate
             return null;

@@ -392,7 +392,7 @@ namespace Chummer.Backend.Equipment
 
                         DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            using (frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter, this)
+                            using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(_objCharacter, this)
                                    {
                                        AllowedCategories = objXmlCategoryNode.InnerText,
                                        ExcludeGeneralCategory = true

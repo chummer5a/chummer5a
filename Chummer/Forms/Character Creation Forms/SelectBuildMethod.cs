@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed partial class frmSelectBuildMethod : Form
+    public sealed partial class SelectBuildMethod : Form
     {
         private readonly Character _objCharacter;
         private readonly CharacterBuildMethod _eStartingBuildMethod;
@@ -34,7 +34,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
+        public SelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _eStartingBuildMethod = _objCharacter.Settings.BuildMethod;
@@ -151,7 +151,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectBuildMethod_Load(object sender, EventArgs e)
+        private void SelectBuildMethod_Load(object sender, EventArgs e)
         {
             cboGamePlay_SelectedIndexChanged(this, e);
             _blnLoading = false;
