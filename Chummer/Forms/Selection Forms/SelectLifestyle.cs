@@ -27,7 +27,7 @@ using NLog;
 
 namespace Chummer
 {
-    public partial class frmSelectLifestyle : Form
+    public partial class SelectLifestyle : Form
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private bool _blnAddAgain;
@@ -41,7 +41,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectLifestyle(Character objCharacter)
+        public SelectLifestyle(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -52,7 +52,7 @@ namespace Chummer
             _objXmlDocument = objCharacter.LoadData("lifestyles.xml");
         }
 
-        private void frmSelectLifestyle_Load(object sender, EventArgs e)
+        private void SelectLifestyle_Load(object sender, EventArgs e)
         {
             string strSelectedId = string.Empty;
             // Populate the Lifestyle ComboBoxes.

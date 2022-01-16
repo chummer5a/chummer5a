@@ -3803,7 +3803,7 @@ namespace Chummer
 
                                     DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                                     {
-                                        using (frmSelectItem frmPickSkill = new frmSelectItem
+                                        using (SelectItem frmPickSkill = new SelectItem
                                                {
                                                    Description = LanguageManager.GetString("Title_SelectSkill"),
                                                    AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
@@ -3838,7 +3838,7 @@ namespace Chummer
                 DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                 {
                     // Display the Select Skill window and record which Skill was selected.
-                    using (frmSelectSkill frmPickSkill = new frmSelectSkill(objCharacter, strFriendlyName)
+                    using (SelectSkill frmPickSkill = new SelectSkill(objCharacter, strFriendlyName)
                            {
                                Description = !string.IsNullOrEmpty(strFriendlyName)
                                    ? string.Format(GlobalSettings.CultureInfo,
@@ -3978,7 +3978,7 @@ namespace Chummer
                         DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
                             // Display the Select Text window and record the value that was entered.
-                            using (frmSelectText frmPickText = new frmSelectText
+                            using (SelectText frmPickText = new SelectText
                                    {
                                        Description =
                                            string.Format(GlobalSettings.CultureInfo,
@@ -4011,7 +4011,7 @@ namespace Chummer
                         Form frmToUse = Program.GetFormForDialog(objCharacter);
                         DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            using (frmSelectItem frmSelect = new frmSelectItem
+                            using (SelectItem frmSelect = new SelectItem
                                    {
                                        Description = string.Format(GlobalSettings.CultureInfo,
                                                                    LanguageManager.GetString(

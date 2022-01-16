@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectComplexForm
+    partial class SelectComplexForm
     {
         /// <summary>
         /// Required designer variable.
@@ -324,13 +324,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectComplexForm";
+            this.Name = "SelectComplexForm";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectComplexForm";
             this.Text = "Select a Complex Form";
-            this.Load += new System.EventHandler(this.frmSelectComplexForm_Load);
+            this.Load += new System.EventHandler(this.SelectComplexForm_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

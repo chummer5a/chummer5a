@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectContactConnection : Form
+    public partial class SelectContactConnection : Form
     {
         private int _intMembership;
         private int _intAreaOfInfluence;
@@ -36,7 +36,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectContactConnection()
+        public SelectContactConnection()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -83,7 +83,7 @@ namespace Chummer
             ValuesChanged();
         }
 
-        private void frmSelectContactConnection_Load(object sender, EventArgs e)
+        private void SelectContactConnection_Load(object sender, EventArgs e)
         {
             // Populate the fields with their data.
             // Membership.

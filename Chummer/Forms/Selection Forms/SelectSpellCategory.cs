@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectSpellCategory : Form
+    public partial class SelectSpellCategory : Form
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory    = string.Empty;
@@ -34,7 +34,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSpellCategory(Character objCharacter)
+        public SelectSpellCategory(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -42,7 +42,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("spells.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void frmSelectSpellCategory_Load(object sender, EventArgs e)
+        private void SelectSpellCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Spell Categories from the Spells file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))

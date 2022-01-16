@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectPACKSKit
+    partial class SelectPACKSKit
     {
         /// <summary>
         /// Required designer variable.
@@ -257,13 +257,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectPACKSKit";
+            this.Name = "SelectPACKSKit";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectPACKSKit";
             this.Text = "Select a PACKS Kit";
-            this.Load += new System.EventHandler(this.frmSelectPACKSKit_Load);
+            this.Load += new System.EventHandler(this.SelectPACKSKit_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpLeft.ResumeLayout(false);

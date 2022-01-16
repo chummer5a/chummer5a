@@ -215,7 +215,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (string.IsNullOrEmpty(_strForcedValue))
                 {
-                    using (frmSelectText frmPickText = new frmSelectText
+                    using (SelectText frmPickText = new SelectText
                     {
                         PreventXPathErrors = true,
                         Description = LanguageManager.GetString("String_CustomItem_SelectText")
@@ -272,8 +272,8 @@ namespace Chummer.Backend.Equipment
 
                     DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                     {
-                        using (frmSelectNumber frmPickNumber
-                               = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                        using (SelectNumber frmPickNumber
+                               = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                {
                                    Minimum = decMin,
                                    Maximum = decMax,
@@ -304,7 +304,7 @@ namespace Chummer.Backend.Equipment
                 blnDoExtra = objXmlGear.SelectSingleNode("ammoforweapontype/@noextra")?.Value != bool.TrueString;
             if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
             {
-                frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter)
+                SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
                     WeaponType = strAmmoWeaponType
@@ -544,7 +544,7 @@ namespace Chummer.Backend.Equipment
                                 string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                                 if (string.IsNullOrEmpty(strFriendlyName))
                                     strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
-                                using (frmSelectItem frmPickItem = new frmSelectItem
+                                using (SelectItem frmPickItem = new SelectItem
                                        {
                                            Description = string.Format(GlobalSettings.CultureInfo,
                                                                        LanguageManager.GetString(

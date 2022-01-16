@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectWeaponCategory : Form
+    public partial class SelectWeaponCategory : Form
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory = string.Empty;
@@ -35,7 +35,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectWeaponCategory(Character objCharacter)
+        public SelectWeaponCategory(Character objCharacter)
         {
             _objXmlDocument =
                 XmlManager.LoadXPath("weapons.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
@@ -44,7 +44,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
+        private void SelectWeaponCategory_Load(object sender, EventArgs e)
         {
             // Build a list of Weapon Categories found in the Weapons file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))

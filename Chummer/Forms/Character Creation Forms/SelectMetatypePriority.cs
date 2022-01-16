@@ -730,7 +730,7 @@ namespace Chummer
 
             if (ExoticSkill.IsExoticSkillName(strSkill1))
             {
-                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill1);
                     if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
@@ -740,7 +740,7 @@ namespace Chummer
             }
             if (ExoticSkill.IsExoticSkillName(strSkill2))
             {
-                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill2);
                     if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
@@ -750,7 +750,7 @@ namespace Chummer
             }
             if (ExoticSkill.IsExoticSkillName(strSkill3))
             {
-                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill3);
                     if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)

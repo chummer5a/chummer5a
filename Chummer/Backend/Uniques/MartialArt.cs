@@ -509,7 +509,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter))
+                using (SelectMartialArt frmPickMartialArt = new SelectMartialArt(objCharacter))
                 {
                     frmPickMartialArt.ShowDialogSafe(Program.GetFormForDialog(objCharacter));
 

@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectMartialArt
+    partial class SelectMartialArt
     {
         /// <summary>
         /// Required designer variable.
@@ -307,13 +307,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectMartialArt";
+            this.Name = "SelectMartialArt";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectMartialArt";
             this.Text = "Select a Martial Art";
-            this.Load += new System.EventHandler(this.frmSelectMartialArt_Load);
+            this.Load += new System.EventHandler(this.SelectMartialArt_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

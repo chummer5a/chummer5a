@@ -27,7 +27,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public sealed partial class frmSelectCyberwareSuite : Form
+    public sealed partial class SelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
         private readonly Improvement.ImprovementSource _eSource;
@@ -39,7 +39,7 @@ namespace Chummer
 
         #region Control events
 
-        public frmSelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
+        public SelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
             _eSource = eSource;
@@ -72,7 +72,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
+        private void SelectCyberwareSuite_Load(object sender, EventArgs e)
         {
             if (_objCharacter.IsAI)
                 return;

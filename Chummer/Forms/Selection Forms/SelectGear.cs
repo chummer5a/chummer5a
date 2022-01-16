@@ -29,7 +29,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectGear : Form
+    public partial class SelectGear : Form
     {
         private bool _blnLoading = true;
         private string _strSelectedGear = string.Empty;
@@ -59,7 +59,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "", string strAllowedNames = "")
+        public SelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "", string strAllowedNames = "")
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
@@ -97,7 +97,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectGear_Load(object sender, EventArgs e)
+        private void SelectGear_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

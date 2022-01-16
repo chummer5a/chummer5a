@@ -118,7 +118,7 @@ namespace Chummer
 
         private void cmdRename_Click(object sender, EventArgs e)
         {
-            using (frmSelectText frmSelectName = new frmSelectText
+            using (SelectText frmSelectName = new SelectText
             {
                 DefaultString = _objCharacterSettings.Name,
                 Description = LanguageManager.GetString("Message_CharacterOptions_SettingRename")
@@ -237,7 +237,7 @@ namespace Chummer
             {
                 do
                 {
-                    using (frmSelectText frmSelectName = new frmSelectText
+                    using (SelectText frmSelectName = new SelectText
                     {
                         DefaultString = _objCharacterSettings.BuiltInOption
                             ? string.Empty

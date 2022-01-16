@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectVehicle
+    partial class SelectVehicle
     {
         /// <summary>
         /// Required designer variable.
@@ -842,13 +842,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectVehicle";
+            this.Name = "SelectVehicle";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Tag = "Title_SelectVehicle";
             this.Text = "Select a Vehicle";
-            this.Load += new System.EventHandler(this.frmSelectVehicle_Load);
+            this.Load += new System.EventHandler(this.SelectVehicle_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudUsedVehicleDiscount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.tlpMain.ResumeLayout(false);

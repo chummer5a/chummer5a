@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectText
+    partial class SelectText
     {
         /// <summary>
         /// Required designer variable.
@@ -140,13 +140,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectText";
+            this.Name = "SelectText";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectText";
             this.Text = "Enter a Value";
-            this.Shown += new System.EventHandler(this.frmSelectText_Shown);
+            this.Shown += new System.EventHandler(this.SelectText_Shown);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

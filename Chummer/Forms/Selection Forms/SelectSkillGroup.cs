@@ -25,7 +25,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectSkillGroup : Form
+    public partial class SelectSkillGroup : Form
     {
         private string _strReturnValue = string.Empty;
         private string _strForceValue = string.Empty;
@@ -35,7 +35,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSkillGroup(Character objCharacter)
+        public SelectSkillGroup(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -43,7 +43,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void frmSelectSkillGroup_Load(object sender, EventArgs e)
+        private void SelectSkillGroup_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGroups))
             {

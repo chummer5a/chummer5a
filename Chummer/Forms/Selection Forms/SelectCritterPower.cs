@@ -26,7 +26,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectCritterPower : Form
+    public partial class SelectCritterPower : Form
     {
         private string _strSelectedPower = string.Empty;
         private int _intSelectedRating;
@@ -42,7 +42,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectCritterPower(Character objCharacter)
+        public SelectCritterPower(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -59,7 +59,7 @@ namespace Chummer
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }
 
-        private void frmSelectCritterPower_Load(object sender, EventArgs e)
+        private void SelectCritterPower_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.SelectAndCacheExpression("categories/category"))

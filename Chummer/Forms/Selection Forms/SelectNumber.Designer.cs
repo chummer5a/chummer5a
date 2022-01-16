@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectNumber
+    partial class SelectNumber
     {
         /// <summary>
         /// Required designer variable.
@@ -149,13 +149,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectNumber";
+            this.Name = "SelectNumber";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectNumber";
             this.Text = "Select a Number";
-            this.Shown += new System.EventHandler(this.frmSelectNumber_Shown);
+            this.Shown += new System.EventHandler(this.SelectNumber_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.nudNumber)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

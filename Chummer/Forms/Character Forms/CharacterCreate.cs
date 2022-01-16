@@ -3106,7 +3106,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject))
+                    using (SelectSpell frmPickSpell = new SelectSpell(CharacterObject))
                     {
                         frmPickSpell.ShowDialogSafe(this);
                         // Make sure the dialogue window was not canceled.
@@ -3226,7 +3226,7 @@ namespace Chummer
 
                     XmlNode objXmlComplexForm;
                     // Let the user select a Program.
-                    using (frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(CharacterObject))
+                    using (SelectComplexForm frmPickComplexForm = new SelectComplexForm(CharacterObject))
                     {
                         frmPickComplexForm.ShowDialogSafe(this);
 
@@ -3290,7 +3290,7 @@ namespace Chummer
                     XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
                     if (xmlSelectText != null)
                     {
-                        using (frmSelectText frmPickText = new frmSelectText
+                        using (SelectText frmPickText = new SelectText
                         {
                             Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText)
                         })
@@ -3355,7 +3355,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                using (frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject))
+                using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject))
                 {
                     frmPickWeapon.ShowDialogSafe(this);
 
@@ -3414,7 +3414,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     Lifestyle objLifestyle;
-                    using (frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject))
+                    using (SelectLifestyle frmPickLifestyle = new SelectLifestyle(CharacterObject))
                     {
                         frmPickLifestyle.ShowDialogSafe(this);
 
@@ -3479,7 +3479,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                using (frmSelectVehicle frmPickVehicle = new frmSelectVehicle(CharacterObject))
+                using (SelectVehicle frmPickVehicle = new SelectVehicle(CharacterObject))
                 {
                     frmPickVehicle.ShowDialogSafe(this);
 
@@ -3555,7 +3555,7 @@ namespace Chummer
                             objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade)
                         {
                             decimal decPercentage;
-                            using (frmSelectNumber frmModPercent = new frmSelectNumber
+                            using (SelectNumber frmModPercent = new SelectNumber
                             {
                                 Minimum = 0,
                                 Maximum = 1000000,
@@ -3775,7 +3775,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectCritterPower frmPickCritterPower = new frmSelectCritterPower(CharacterObject))
+                    using (SelectCritterPower frmPickCritterPower = new SelectCritterPower(CharacterObject))
                     {
                         frmPickCritterPower.ShowDialogSafe(this);
 
@@ -3913,7 +3913,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectQuality frmPickQuality = new frmSelectQuality(CharacterObject))
+                    using (SelectQuality frmPickQuality = new SelectQuality(CharacterObject))
                     {
                         frmPickQuality.ShowDialogSafe(this);
 
@@ -4235,7 +4235,7 @@ namespace Chummer
         private void cmdAddLocation_Click(object sender, EventArgs e)
         {
             // Add a new location to the Armor Tree.
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation")
             })
@@ -4254,7 +4254,7 @@ namespace Chummer
         private void cmdAddWeaponLocation_Click(object sender, EventArgs e)
         {
             // Add a new location to the Armor Tree.
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation")
             })
@@ -4293,7 +4293,7 @@ namespace Chummer
                 return;
             }
 
-            using (frmSelectItem frmPickItem = new frmSelectItem
+            using (SelectItem frmPickItem = new SelectItem
             {
                 Description = LanguageManager.GetString("String_SelectItemFocus"),
                 AllowAutoSelect = false
@@ -4434,7 +4434,7 @@ namespace Chummer
         private void cmdAddArmorBundle_Click(object sender, EventArgs e)
         {
             // Add a new location to the Armor Tree.
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation")
             })
@@ -4494,7 +4494,7 @@ namespace Chummer
                 return;
             }
 
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation")
             })
@@ -4627,7 +4627,7 @@ namespace Chummer
                             {
                                 if (decMax > 1000000)
                                     decMax = 1000000;
-                                using (frmSelectNumber frmPickNumber = new frmSelectNumber(CharacterObjectSettings.MaxNuyenDecimals)
+                                using (SelectNumber frmPickNumber = new SelectNumber(CharacterObjectSettings.MaxNuyenDecimals)
                                 {
                                     Minimum = decMin,
                                     Maximum = decMax,
@@ -4792,7 +4792,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods))
+                    using (SelectVehicleMod frmPickVehicleMod = new SelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods))
                     {
                         frmPickVehicleMod.ShowDialogSafe(this);
 
@@ -4952,7 +4952,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
+                    using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
                     {
                         LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
                     })
@@ -5080,7 +5080,7 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                using (frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
+                using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
                 {
                     LimitToCategories = "Underbarrel Weapons",
                     ParentWeapon = objSelectedWeapon
@@ -5256,7 +5256,7 @@ namespace Chummer
                 {
                     Gear objGear;
                     lstWeapons.Clear();
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
@@ -5353,7 +5353,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                    using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, objLifestyle))
+                    using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, objLifestyle))
                     {
                         frmPickLifestyle.ShowDialogSafe(this);
 
@@ -5401,7 +5401,7 @@ namespace Chummer
                 return;
             }
 
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_WeaponName"),
                 DefaultString = objWeapon.CustomName,
@@ -5436,7 +5436,7 @@ namespace Chummer
                 return;
             }
 
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_GearName"),
                 DefaultString = objGear.GearName,
@@ -5474,7 +5474,7 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                using (frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
+                using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
                 {
                     LimitToCategories = "Underbarrel Weapons",
                     ParentWeapon = objSelectedWeapon
@@ -5520,7 +5520,7 @@ namespace Chummer
 
         private void tsGearRename_Click(object sender, EventArgs e)
         {
-            using (frmSelectText frmPickText = new frmSelectText())
+            using (SelectText frmPickText = new SelectText())
             {
                 //frmPickText.Description = LanguageManager.GetString("String_AddLocation");
                 frmPickText.ShowDialogSafe(this);
@@ -5701,7 +5701,7 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
                 return;
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_VehicleName"),
                 DefaultString = objWeaponMount.Location
@@ -5739,7 +5739,7 @@ namespace Chummer
                 return;
             }
 
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_VehicleName"),
                 DefaultString = objVehicle.CustomName,
@@ -5786,7 +5786,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent ?? (object)objMod))
+                    using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent ?? (object)objMod))
                     {
                         if (objCyberwareParent == null)
                         {
@@ -5970,7 +5970,7 @@ namespace Chummer
                 return;
             }
 
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_ArmorName"),
                 DefaultString = objArmor.CustomName,
@@ -6012,7 +6012,7 @@ namespace Chummer
                 return;
             }
 
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_LifestyleName"),
                 DefaultString = objCustomName.CustomName,
@@ -6038,7 +6038,7 @@ namespace Chummer
         {
             if (!(treGear.SelectedNode?.Tag is Location objLocation))
                 return;
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation"),
                 DefaultString = objLocation.Name
@@ -6061,7 +6061,7 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Location objLocation))
                 return;
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation"),
                 DefaultString = objLocation.Name
@@ -6113,7 +6113,7 @@ namespace Chummer
         {
             if (!(treArmor.SelectedNode?.Tag is Location objLocation))
                 return;
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation"),
                 DefaultString = objLocation.Name
@@ -6190,7 +6190,7 @@ namespace Chummer
                         }
                     }
 
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, strCategories, strGearNames))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories, strGearNames))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
@@ -6276,7 +6276,7 @@ namespace Chummer
                         strCategories = sbdCategories.ToString();
                     }
 
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
@@ -6369,7 +6369,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
@@ -6459,7 +6459,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
@@ -6536,7 +6536,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
@@ -6622,7 +6622,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
@@ -6677,7 +6677,7 @@ namespace Chummer
             if (!(treVehicles.SelectedNode?.Tag is Location objLocation))
                 return;
 
-            using (frmSelectText frmPickText = new frmSelectText
+            using (SelectText frmPickText = new SelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation")
             })
@@ -6746,7 +6746,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
@@ -6831,7 +6831,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
@@ -7396,7 +7396,7 @@ namespace Chummer
             {
                 Lifestyle newLifestyle = objLifestyle;
                 // Edit Advanced Lifestyle.
-                using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, newLifestyle))
+                using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, newLifestyle))
                 {
                     frmPickLifestyle.ShowDialogSafe(this);
 
@@ -7414,7 +7414,7 @@ namespace Chummer
             else
             {
                 // Edit Basic Lifestyle.
-                using (frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject))
+                using (SelectLifestyle frmPickLifestyle = new SelectLifestyle(CharacterObject))
                 {
                     frmPickLifestyle.SetLifestyle(objLifestyle);
                     frmPickLifestyle.ShowDialogSafe(this);
@@ -11646,7 +11646,7 @@ namespace Chummer
         /// </summary>
         private bool PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
-            using (frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware))
+            using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, objSource, objSelectedCyberware))
             {
                 List<Improvement> lstImprovements;
                 decimal decMultiplier = 1.0m;
@@ -12060,7 +12060,7 @@ namespace Chummer
                     }
                 }
 
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories))
+                using (SelectGear frmPickGear = new SelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories))
                 {
                     if (!blnNullParent && (!string.IsNullOrEmpty(objSelectedGear.Capacity) && !objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/[")))
                     {
@@ -12188,7 +12188,7 @@ namespace Chummer
                     }
                 }
 
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objParent, strCategories)
+                using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objParent, strCategories)
                        {
                            ShowArmorCapacityOnly = blnShowArmorCapacityOnly,
                            CapacityDisplayStyle = objSelectedMod != null ? CapacityStyle.Standard : objSelectedArmor.CapacityDisplayStyle
@@ -14333,7 +14333,7 @@ namespace Chummer
         {
             XmlNode objXmlKit;
             bool blnAddAgain;
-            using (frmSelectPACKSKit frmPickPACKSKit = new frmSelectPACKSKit(CharacterObject))
+            using (SelectPACKSKit frmPickPACKSKit = new SelectPACKSKit(CharacterObject))
             {
                 frmPickPACKSKit.ShowDialogSafe(this);
 
@@ -14345,7 +14345,7 @@ namespace Chummer
                 //if (frmPickPACKSKit.SelectedCategory == "Custom")
                 //blnCreateChildren = false;
 
-                objXmlKit = CharacterObject.LoadData("packs.xml").SelectSingleNode("/chummer/packs/pack[name = " + frmPickPACKSKit.SelectedKit.CleanXPath() + " and category = " + frmSelectPACKSKit.SelectedCategory.CleanXPath() + "]");
+                objXmlKit = CharacterObject.LoadData("packs.xml").SelectSingleNode("/chummer/packs/pack[name = " + frmPickPACKSKit.SelectedKit.CleanXPath() + " and category = " + SelectPACKSKit.SelectedCategory.CleanXPath() + "]");
                 blnAddAgain = frmPickPACKSKit.AddAgain;
             }
 
@@ -14395,7 +14395,7 @@ namespace Chummer
             {
                 string strForcedValue = xmlSelectMartialArt.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                using (frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(CharacterObject)
+                using (SelectMartialArt frmPickMartialArt = new SelectMartialArt(CharacterObject)
                 {
                     ForcedValue = strForcedValue
                 })
@@ -15294,7 +15294,7 @@ namespace Chummer
 
         private void AddCyberwareSuite(Improvement.ImprovementSource objSource)
         {
-            using (frmSelectCyberwareSuite frmPickCyberwareSuite = new frmSelectCyberwareSuite(CharacterObject, objSource))
+            using (SelectCyberwareSuite frmPickCyberwareSuite = new SelectCyberwareSuite(CharacterObject, objSource))
             {
                 frmPickCyberwareSuite.ShowDialogSafe(this);
 
@@ -15556,7 +15556,7 @@ namespace Chummer
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
-            using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Art))
+            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Art))
             {
                 frmPickArt.ShowDialogSafe(this);
 
@@ -15586,7 +15586,7 @@ namespace Chummer
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
-            using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enchantment))
+            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Enchantment))
             {
                 frmPickArt.ShowDialogSafe(this);
 
@@ -15619,7 +15619,7 @@ namespace Chummer
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
-            using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Ritual))
+            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Ritual))
             {
                 frmPickArt.ShowDialogSafe(this);
 
@@ -15659,7 +15659,7 @@ namespace Chummer
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
-            using (frmSelectArt frmPickArt = new frmSelectArt(CharacterObject, frmSelectArt.Mode.Enhancement))
+            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Enhancement))
             {
                 frmPickArt.ShowDialogSafe(this);
 
@@ -15972,7 +15972,7 @@ namespace Chummer
                     return;
                 }
 
-                using (frmSelectItem frmPickMount = new frmSelectItem
+                using (SelectItem frmPickMount = new SelectItem
                        {
                            Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
                        })
@@ -16074,7 +16074,7 @@ namespace Chummer
                     return;
                 }
 
-                using (frmSelectItem frmPickMount = new frmSelectItem
+                using (SelectItem frmPickMount = new SelectItem
                        {
                            Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
                        })

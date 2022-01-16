@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectArt : Form
+    public partial class SelectArt : Form
     {
         private string _strSelectedItem = string.Empty;
 
@@ -44,7 +44,7 @@ namespace Chummer
             Ritual,
         }
 
-        public frmSelectArt(Character objCharacter, Mode objWindowMode)
+        public SelectArt(Character objCharacter, Mode objWindowMode)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -84,7 +84,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectArt_Load(object sender, EventArgs e)
+        private void SelectArt_Load(object sender, EventArgs e)
         {
             Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strLocalName);
             chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strLocalName);

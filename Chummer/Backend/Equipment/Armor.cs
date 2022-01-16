@@ -334,8 +334,8 @@ namespace Chummer.Backend.Equipment
 
                         DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            using (frmSelectNumber frmPickNumber
-                                   = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                            using (SelectNumber frmPickNumber
+                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                    {
                                        Minimum = decMin,
                                        Maximum = decMax,

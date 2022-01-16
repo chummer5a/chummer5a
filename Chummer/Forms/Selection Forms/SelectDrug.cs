@@ -27,7 +27,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectDrug : Form
+    public partial class SelectDrug : Form
     {
         private readonly Character _objCharacter;
         private readonly List<Grade> _lstGrades;
@@ -49,15 +49,9 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly XPathNavigator _xmlBaseDrugDataNode;
 
-        private enum Mode
-        {
-            Drug = 0,
-            Bioware,
-        }
-
         #region Control Events
 
-        public frmSelectDrug(Character objCharacter)
+        public SelectDrug(Character objCharacter)
         {
             InitializeComponent();
 
@@ -73,7 +67,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));
         }
 
-        private void frmSelectDrug_Load(object sender, EventArgs e)
+        private void SelectDrug_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

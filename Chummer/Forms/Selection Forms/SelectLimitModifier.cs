@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed partial class frmSelectLimitModifier : Form
+    public sealed partial class SelectLimitModifier : Form
     {
         private string _strReturnName = string.Empty;
         private int _intBonus = 1;
@@ -32,7 +32,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
+        public SelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();

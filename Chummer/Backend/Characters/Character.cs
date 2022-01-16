@@ -1786,7 +1786,7 @@ namespace Chummer
                 XmlNode xmlSelectText = xmlAIProgramData.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
                 {
-                    using (frmSelectText frmPickText = new frmSelectText
+                    using (SelectText frmPickText = new SelectText
                     {
                         Description = string.Format(GlobalSettings.CultureInfo,
                             LanguageManager.GetString("String_Improvement_SelectText"),
@@ -3803,7 +3803,7 @@ namespace Chummer
 
                                                         void DoSelectItem()
                                                         {
-                                                            using (frmSelectItem frmPickItem = new frmSelectItem())
+                                                            using (SelectItem frmPickItem = new SelectItem())
                                                             {
                                                                 frmPickItem.SetDropdownItemsMode(lstContacts);
                                                                 frmPickItem.ShowDialogSafe(Program.GetFormForDialog(this));

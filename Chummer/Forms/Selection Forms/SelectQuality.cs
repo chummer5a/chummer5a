@@ -27,7 +27,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectQuality : Form
+    public partial class SelectQuality : Form
     {
         private string _strSelectedQuality = string.Empty;
         private bool _blnAddAgain;
@@ -43,7 +43,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectQuality(Character objCharacter)
+        public SelectQuality(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -55,7 +55,7 @@ namespace Chummer
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
         }
 
-        private void frmSelectQuality_Load(object sender, EventArgs e)
+        private void SelectQuality_Load(object sender, EventArgs e)
         {
             // Populate the Quality Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseQualityDataNode.SelectAndCacheExpression("categories/category"))

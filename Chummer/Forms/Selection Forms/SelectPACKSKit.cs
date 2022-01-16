@@ -28,7 +28,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectPACKSKit : Form
+    public partial class SelectPACKSKit : Form
     {
         private string _strSelectedKit = string.Empty;
         private bool _blnAddAgain;
@@ -55,7 +55,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectPACKSKit(Character objCharacter)
+        public SelectPACKSKit(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -77,7 +77,7 @@ namespace Chummer
             _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void frmSelectPACKSKit_Load(object sender, EventArgs e)
+        private void SelectPACKSKit_Load(object sender, EventArgs e)
         {
             // Populate the PACKS Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category[not(hide)]"))

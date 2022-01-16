@@ -387,7 +387,7 @@ namespace Chummer.Backend.Equipment
                                                       ?? xmlNode.SelectSingleNode("name")?.Value));
                     }
 
-                    using (frmSelectItem frmSelect = new frmSelectItem
+                    using (SelectItem frmSelect = new SelectItem
                            {
                                Description = string.Format(GlobalSettings.CultureInfo,
                                                            LanguageManager.GetString(

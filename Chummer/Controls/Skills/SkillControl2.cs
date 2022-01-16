@@ -475,7 +475,7 @@ namespace Chummer.UI.Skills
 
             DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
             {
-                using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
+                using (SelectSpec selectForm = new SelectSpec(_objSkill))
                 {
                     selectForm.ShowDialogSafe(frmToUse);
 

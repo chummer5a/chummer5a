@@ -25,7 +25,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectMartialArt : Form
+    public partial class SelectMartialArt : Form
     {
         private bool _blnLoading = true;
         private string _strSelectedMartialArt = string.Empty;
@@ -39,7 +39,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectMartialArt(Character objCharacter)
+        public SelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -52,7 +52,7 @@ namespace Chummer
             _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/techniques");
         }
 
-        private void frmSelectMartialArt_Load(object sender, EventArgs e)
+        private void SelectMartialArt_Load(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(_strForcedValue))
             {

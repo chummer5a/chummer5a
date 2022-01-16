@@ -28,7 +28,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectVehicle : Form
+    public partial class SelectVehicle : Form
     {
         private string _strSelectedVehicle = string.Empty;
         private bool _blnUsedVehicle;
@@ -50,7 +50,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectVehicle(Character objCharacter)
+        public SelectVehicle(Character objCharacter)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
@@ -74,7 +74,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectVehicle_Load(object sender, EventArgs e)
+        private void SelectVehicle_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

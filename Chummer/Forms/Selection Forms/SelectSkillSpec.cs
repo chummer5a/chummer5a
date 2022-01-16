@@ -25,7 +25,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmSelectSpec : Form
+    public partial class SelectSpec : Form
     {
         private readonly Skill _objSkill;
         private readonly Character _objCharacter;
@@ -34,7 +34,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSpec(Skill skill)
+        public SelectSpec(Skill skill)
         {
             _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
             _objCharacter = skill.CharacterObject;
@@ -44,7 +44,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void frmSelectSpec_Load(object sender, EventArgs e)
+        private void SelectSpec_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {

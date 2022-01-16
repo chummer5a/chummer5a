@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectAttribute : Form
+    public partial class SelectAttribute : Form
     {
         private string _strReturnValue = string.Empty;
 
@@ -31,7 +31,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectAttribute(params string[] lstAttributeAbbrevs)
+        public SelectAttribute(params string[] lstAttributeAbbrevs)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -61,7 +61,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void frmSelectAttribute_Load(object sender, EventArgs e)
+        private void SelectAttribute_Load(object sender, EventArgs e)
         {
             if (_lstAttributes.Count == 1)
             {

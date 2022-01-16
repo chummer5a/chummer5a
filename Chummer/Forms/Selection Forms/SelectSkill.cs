@@ -27,7 +27,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmSelectSkill : Form
+    public partial class SelectSkill : Form
     {
         private string _strReturnValue = string.Empty;
         private string _strIncludeCategory = string.Empty;
@@ -49,7 +49,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSkill(Character objCharacter, string strSource = "")
+        public SelectSkill(Character objCharacter, string strSource = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _strSourceName = strSource;
@@ -59,7 +59,7 @@ namespace Chummer
             _objXmlDocument = _objCharacter.LoadDataXPath("skills.xml");
         }
 
-        private void frmSelectSkill_Load(object sender, EventArgs e)
+        private void SelectSkill_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {

@@ -26,7 +26,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectSpell : Form
+    public partial class SelectSpell : Form
     {
         private string _strSelectedSpell = string.Empty;
 
@@ -46,7 +46,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSpell(Character objCharacter)
+        public SelectSpell(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -59,7 +59,7 @@ namespace Chummer
             _xmlBaseSpellDataNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void frmSelectSpell_Load(object sender, EventArgs e)
+        private void SelectSpell_Load(object sender, EventArgs e)
         {
             // If a value is forced, set the name of the spell and accept the form.
             if (!string.IsNullOrEmpty(_strForceSpell))

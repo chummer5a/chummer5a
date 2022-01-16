@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectMentorSpirit : Form
+    public partial class SelectMentorSpirit : Form
     {
         private bool _blnSkipRefresh = true;
         private string _strForceMentor = string.Empty;
@@ -34,7 +34,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
+        public SelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
         {
             InitializeComponent();
 

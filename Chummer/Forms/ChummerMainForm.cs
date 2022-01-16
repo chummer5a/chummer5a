@@ -44,7 +44,7 @@ namespace Chummer
     {
         private bool _blnAbleToReceiveData;
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        private frmDiceRoller _frmRoller;
+        private DiceRoller _frmRoller;
         private LoadingBar _frmProgressBar;
         private ChummerUpdater _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
@@ -80,7 +80,7 @@ namespace Chummer
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || isUnitTest)
             {
-                MasterIndex = new frmMasterIndex
+                MasterIndex = new MasterIndex
                 {
                     MdiParent = this
                 };
@@ -472,9 +472,9 @@ namespace Chummer
 
         public CharacterRoster CharacterRoster { get; }
 
-        public frmMasterIndex MasterIndex { get; }
+        public MasterIndex MasterIndex { get; }
 
-#if !DEBUG
+#if DEBUG
         private Uri UpdateLocation { get; } = new Uri(GlobalSettings.PreferNightlyBuilds
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
@@ -924,7 +924,7 @@ namespace Chummer
                 // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
                 if (_frmRoller == null)
                 {
-                    _frmRoller = new frmDiceRoller(this);
+                    _frmRoller = new DiceRoller(this);
                     _frmRoller.Show();
                 }
                 else
@@ -935,7 +935,7 @@ namespace Chummer
             else
             {
                 // No limit on the number of Dice Roller windows, so just create a new one.
-                frmDiceRoller frmRoller = new frmDiceRoller(this);
+                DiceRoller frmRoller = new DiceRoller(this);
                 frmRoller.Show();
             }
         }
@@ -1053,7 +1053,7 @@ namespace Chummer
                     LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            frmHeroLabImporter frmImporter = new frmHeroLabImporter();
+            HeroLabImporter frmImporter = new HeroLabImporter();
             frmImporter.Show();
         }
 
@@ -1714,7 +1714,7 @@ namespace Chummer
             {
                 if (_frmRoller == null)
                 {
-                    _frmRoller = new frmDiceRoller(this, objCharacter?.Qualities, intDice);
+                    _frmRoller = new DiceRoller(this, objCharacter?.Qualities, intDice);
                     _frmRoller.Show();
                 }
                 else
@@ -1726,7 +1726,7 @@ namespace Chummer
             }
             else
             {
-                frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter?.Qualities, intDice);
+                DiceRoller frmRoller = new DiceRoller(this, objCharacter?.Qualities, intDice);
                 frmRoller.Show();
             }
         }
@@ -1949,7 +1949,7 @@ namespace Chummer
         /// <summary>
         /// The frmDiceRoller window being used by the application.
         /// </summary>
-        public frmDiceRoller RollerWindow
+        public DiceRoller RollerWindow
         {
             get => _frmRoller;
             set => _frmRoller = value;

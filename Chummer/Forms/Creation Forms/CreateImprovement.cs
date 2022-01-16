@@ -215,7 +215,7 @@ namespace Chummer
                                                    ?? strName));
                         }
 
-                        using (frmSelectItem frmSelectAction = new frmSelectItem
+                        using (SelectItem frmSelectAction = new SelectItem
                                {
                                    Description = LanguageManager.GetString("Title_SelectAction")
                                })
@@ -250,7 +250,7 @@ namespace Chummer
                             lstAbbrevs.Remove("RES");
                         if (!_objCharacter.DEPEnabled)
                             lstAbbrevs.Remove("DEP");
-                        using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                        using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute")
                         })
@@ -337,7 +337,7 @@ namespace Chummer
                     break;
 
                 case "SelectMentalAttribute":
-                    using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
+                    using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
                         frmPickAttribute.ShowDialogSafe(this);
@@ -351,7 +351,7 @@ namespace Chummer
                     break;
 
                 case "SelectPhysicalAttribute":
-                    using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray()))
+                    using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = LanguageManager.GetString("Title_SelectAttribute");
                         frmPickAttribute.ShowDialogSafe(this);
@@ -383,7 +383,7 @@ namespace Chummer
                         if (!_objCharacter.DEPEnabled)
                             lstAbbrevs.Remove("DEP");
                             */
-                        using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                        using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute")
                         })
@@ -400,7 +400,7 @@ namespace Chummer
                     break;
 
                 case "SelectSkill":
-                    using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
+                    using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
                     {
                         frmPickSkill.Description = LanguageManager.GetString("Title_SelectSkill");
                         frmPickSkill.ShowDialogSafe(this);
@@ -463,7 +463,7 @@ namespace Chummer
 
                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
-                        using (frmSelectItem frmPickSkill = new frmSelectItem
+                        using (SelectItem frmPickSkill = new SelectItem
                                {
                                    Description = LanguageManager.GetString("Title_SelectSkill")
                                })
@@ -482,7 +482,7 @@ namespace Chummer
                     break;
 
                 case "SelectSkillCategory":
-                    using (frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory(_objCharacter))
+                    using (SelectSkillCategory frmPickSkillCategory = new SelectSkillCategory(_objCharacter))
                     {
                         frmPickSkillCategory.Description = LanguageManager.GetString("Title_SelectSkillCategory");
                         frmPickSkillCategory.ShowDialogSafe(this);
@@ -496,7 +496,7 @@ namespace Chummer
                     break;
 
                 case "SelectSkillGroup":
-                    using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter))
+                    using (SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter))
                     {
                         frmPickSkillGroup.Description = LanguageManager.GetString("Title_SelectSkillGroup");
                         frmPickSkillGroup.ShowDialogSafe(this);
@@ -525,7 +525,7 @@ namespace Chummer
                                                         ?? strName));
                         }
 
-                        using (frmSelectItem selectComplexForm = new frmSelectItem
+                        using (SelectItem selectComplexForm = new SelectItem
                                {
                                    Description = LanguageManager.GetString("Title_SelectComplexForm")
                                })
@@ -559,7 +559,7 @@ namespace Chummer
                                                   ?? strName));
                         }
 
-                        using (frmSelectItem selectSpell = new frmSelectItem
+                        using (SelectItem selectSpell = new SelectItem
                                {
                                    Description = LanguageManager.GetString("Title_SelectSpell")
                                })
@@ -578,7 +578,7 @@ namespace Chummer
                     break;
 
                 case "SelectWeaponCategory":
-                    using (frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter))
+                    using (SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter))
                     {
                         frmPickWeaponCategory.Description = LanguageManager.GetString("Title_SelectWeaponCategory");
                         frmPickWeaponCategory.ShowDialogSafe(this);
@@ -592,7 +592,7 @@ namespace Chummer
                     break;
 
                 case "SelectSpellCategory":
-                    using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter))
+                    using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter))
                     {
                         frmPickSpellCategory.Description = LanguageManager.GetString("Title_SelectSpellCategory");
                         frmPickSpellCategory.ShowDialogSafe(this);
@@ -606,7 +606,7 @@ namespace Chummer
                     break;
 
                 case "SelectAdeptPower":
-                    using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
+                    using (SelectPower frmPickPower = new SelectPower(_objCharacter))
                     {
                         frmPickPower.IgnoreLimits = chkIgnoreLimits.Checked;
                         frmPickPower.ShowDialogSafe(this);

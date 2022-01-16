@@ -90,7 +90,7 @@ namespace Chummer.UI.Shared
 
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
-            using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social"))
+            using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(null, "Physical", "Mental", "Social"))
             {
                 frmPickLimitModifier.ShowDialogSafe(this);
 
@@ -446,7 +446,7 @@ namespace Chummer.UI.Shared
                 return;
             }
 
-            using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
+            using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
             {
                 frmPickLimitModifier.ShowDialogSafe(this);
 

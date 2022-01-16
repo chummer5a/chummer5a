@@ -27,7 +27,7 @@ using Chummer.Backend.Equipment;
 namespace Chummer
 {
     // ReSharper disable once InconsistentNaming
-    public partial class frmSelectLifestyleAdvanced : Form
+    public partial class SelectLifestyleAdvanced : Form
     {
         private readonly Character _objCharacter;
         private readonly Lifestyle _objLifestyle;
@@ -36,7 +36,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle)
+        public SelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -47,7 +47,7 @@ namespace Chummer
             _xmlDocument = _objCharacter.LoadData("lifestyles.xml");
         }
 
-        private void frmSelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
+        private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objLifestyle.LifestyleQualities.CollectionChanged -= LifestyleQualitiesOnCollectionChanged;
             _objLifestyle.FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
@@ -580,7 +580,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
+                using (SelectLifestyleQuality frmSelectLifestyleQuality = new SelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
                 {
                     frmSelectLifestyleQuality.ShowDialogSafe(this);
 

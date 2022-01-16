@@ -480,7 +480,7 @@ namespace Chummer
             {
                 if (dlgSelectFolder.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (frmSelectText frmSelectCustomDirectoryName = new frmSelectText
+                using (SelectText frmSelectCustomDirectoryName = new SelectText
                 {
                     Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
                 })
@@ -578,7 +578,7 @@ namespace Chummer
                 return;
             ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
             CustomDataDirectoryInfo objInfoToRename = (CustomDataDirectoryInfo)objSelected.Value;
-            using (frmSelectText frmSelectCustomDirectoryName = new frmSelectText
+            using (SelectText frmSelectCustomDirectoryName = new SelectText
             {
                 Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
             })

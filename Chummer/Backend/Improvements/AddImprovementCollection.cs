@@ -439,7 +439,7 @@ namespace Chummer
             }
             else
             {
-                using (frmSelectItem frmPickItem = new frmSelectItem())
+                using (SelectItem frmPickItem = new SelectItem())
                 {
                     frmPickItem.SetRestrictedMode(_objCharacter);
                     if (!string.IsNullOrEmpty(ForcedValue))
@@ -504,7 +504,7 @@ namespace Chummer
                         lstTraditions.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (frmSelectItem frmPickItem = new frmSelectItem
+                    using (SelectItem frmPickItem = new SelectItem
                            {
                                SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                                AllowAutoSelect = false
@@ -558,7 +558,7 @@ namespace Chummer
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
-            using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter)
+            using (SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter)
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
                     ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
@@ -799,7 +799,7 @@ namespace Chummer
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
-            frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter)
+            SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter)
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
                     ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
@@ -911,7 +911,7 @@ namespace Chummer
                         }
 
                         // Display the Select Attribute window and record which Skill was selected.
-                        using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                        using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = !string.IsNullOrEmpty(_strFriendlyName)
                                 ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
@@ -1047,7 +1047,7 @@ namespace Chummer
             }
 
             // Display the Select Attribute window and record which Skill was selected.
-            using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+            using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
                     ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
@@ -1150,7 +1150,7 @@ namespace Chummer
             }
 
             // Display the Select Limit window and record which Limit was selected.
-            using (frmSelectLimit frmPickLimit = new frmSelectLimit(strLimits.ToArray())
+            using (SelectLimit frmPickLimit = new SelectLimit(strLimits.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
                     ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectLimitNamed"), _strFriendlyName)
@@ -1284,7 +1284,7 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
                         ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
@@ -1311,7 +1311,7 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
+                using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
                 {
                     frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
                         ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
@@ -1423,7 +1423,7 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
                         ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
@@ -1450,7 +1450,7 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
+                using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
                 {
                     frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
                         ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
@@ -1515,7 +1515,7 @@ namespace Chummer
             Log.Info("selectspell");
             XmlNode node;
             // Display the Select Spell window.
-            using (frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter))
+            using (SelectSpell frmPickSpell = new SelectSpell(_objCharacter))
             {
                 string strCategory = bonusNode.Attributes?["category"]?.InnerText;
                 if (!string.IsNullOrEmpty(strCategory))
@@ -1558,7 +1558,7 @@ namespace Chummer
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
             if (xmlSelectText != null)
             {
-                using (frmSelectText frmPickText = new frmSelectText
+                using (SelectText frmPickText = new SelectText
                 {
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
@@ -1614,7 +1614,7 @@ namespace Chummer
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
             if (xmlSelectText != null)
             {
-                using (frmSelectText frmPickText = new frmSelectText
+                using (SelectText frmPickText = new SelectText
                 {
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
@@ -1666,7 +1666,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedComplexForm))
             {
                 // Display the Select ComplexForm window.
-                using (frmSelectComplexForm frmPickComplexForm = new frmSelectComplexForm(_objCharacter))
+                using (SelectComplexForm frmPickComplexForm = new SelectComplexForm(_objCharacter))
                 {
                     frmPickComplexForm.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
 
@@ -1973,7 +1973,7 @@ namespace Chummer
                 XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
-                    using (frmSelectText frmPickText = new frmSelectText
+                    using (SelectText frmPickText = new SelectText
                     {
                         Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
@@ -2051,7 +2051,7 @@ namespace Chummer
                 XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
-                    using (frmSelectText frmPickText = new frmSelectText
+                    using (SelectText frmPickText = new SelectText
                     {
                         Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
@@ -2095,7 +2095,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectcontact");
 
-            using (frmSelectItem frmSelect = new frmSelectItem())
+            using (SelectItem frmSelect = new SelectItem())
             {
                 string strMode = bonusNode["type"]?.InnerText ?? "all";
 
@@ -2301,7 +2301,7 @@ namespace Chummer
                     lstAbbrevs.RemoveAll(x => x != LimitSelection);
                 }
 
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
+                SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
                         ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
@@ -3762,7 +3762,7 @@ namespace Chummer
                                 }
                             }
 
-                            using (frmSelectItem frmPickCategory = new frmSelectItem
+                            using (SelectItem frmPickCategory = new SelectItem
                                    {
                                        Description = !string.IsNullOrEmpty(_strFriendlyName)
                                            ? string.Format(GlobalSettings.CultureInfo,
@@ -3854,7 +3854,7 @@ namespace Chummer
                 }
 
                 Weapon objSelectedWeapon;
-                using (frmSelectItem frmPickWeapon = new frmSelectItem
+                using (SelectItem frmPickWeapon = new SelectItem
                        {
                            Description = !string.IsNullOrEmpty(_strFriendlyName)
                                ? string.Format(GlobalSettings.CultureInfo,
@@ -3903,7 +3903,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectmentorspirit");
             Log.Info("selectmentorspirit = " + bonusNode.OuterXml);
-            using (frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter)
+            using (SelectMentorSpirit frmPickMentorSpirit = new SelectMentorSpirit(_objCharacter)
             {
                 ForcedMentor = ForcedValue
             })
@@ -3948,7 +3948,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectparagon");
             Log.Info("selectparagon = " + bonusNode.OuterXml);
-            using (frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter, "paragons.xml")
+            using (SelectMentorSpirit frmPickMentorSpirit = new SelectMentorSpirit(_objCharacter, "paragons.xml")
             {
                 ForcedMentor = ForcedValue
             })
@@ -4168,7 +4168,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectside");
             Log.Info("selectside = " + bonusNode.OuterXml);
-            using (frmSelectSide frmPickSide = new frmSelectSide
+            using (SelectSide frmPickSide = new SelectSide
             {
                 Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectSide"), _strFriendlyName)
             })
@@ -4297,7 +4297,7 @@ namespace Chummer
                             int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                             // Display the Select Power window and record which Power was selected.
-                            using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
+                            using (SelectPower frmPickPower = new SelectPower(_objCharacter))
                             {
                                 Log.Info("selectpower = " + objNode.OuterXml);
 
@@ -4406,7 +4406,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstArts))
                     {
-                        using (frmSelectItem frmPickItem = new frmSelectItem())
+                        using (SelectItem frmPickItem = new SelectItem())
                         {
                             foreach (XmlNode objXmlAddArt in xmlArtList)
                             {
@@ -4452,7 +4452,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (frmSelectArt frmPickArt = new frmSelectArt(_objCharacter, frmSelectArt.Mode.Art))
+                    using (SelectArt frmPickArt = new SelectArt(_objCharacter, SelectArt.Mode.Art))
                     {
                         frmPickArt.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
                         // Don't do anything else if the form was canceled.
@@ -4517,7 +4517,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMetamagics))
                     {
-                        using (frmSelectItem frmPickItem = new frmSelectItem())
+                        using (SelectItem frmPickItem = new SelectItem())
                         {
                             foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
                             {
@@ -4638,7 +4638,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstEchoes))
                     {
-                        using (frmSelectItem frmPickItem = new frmSelectItem())
+                        using (SelectItem frmPickItem = new SelectItem())
                         {
                             foreach (XmlNode objXmlAddEcho in xmlEchoList)
                             {
@@ -5574,7 +5574,7 @@ namespace Chummer
                     }
                 }
 
-                using (frmSelectItem frmPickItem = new frmSelectItem())
+                using (SelectItem frmPickItem = new SelectItem())
                 {
                     frmPickItem.SetGeneralItemsMode(lstCritters);
                     frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
@@ -5605,7 +5605,7 @@ namespace Chummer
             SelectedValue = string.Empty;
             if (nodeList.Count > 0)
             {
-                using (frmSelectItem frmPickItem = new frmSelectItem
+                using (SelectItem frmPickItem = new SelectItem
                 {
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 })
@@ -5687,7 +5687,7 @@ namespace Chummer
 
                 if (lstArmors.Count > 0)
                 {
-                    using (frmSelectItem frmPickItem = new frmSelectItem
+                    using (SelectItem frmPickItem = new SelectItem
                            {
                                Description = string.Format(GlobalSettings.CultureInfo,
                                                            LanguageManager.GetString("String_Improvement_SelectText"),
@@ -5754,7 +5754,7 @@ namespace Chummer
 
                 if (list.Count == 0)
                     throw new AbortedException();
-                using (frmSelectItem frmPickItem = new frmSelectItem
+                using (SelectItem frmPickItem = new SelectItem
                        {
                            Description = string.Format(GlobalSettings.CultureInfo,
                                                        LanguageManager.GetString("String_Improvement_SelectText"),
@@ -5803,7 +5803,7 @@ namespace Chummer
             {
                 // If the character is null (this is a Vehicle), the user must enter their own string.
                 // Display the Select Item window and record the value that was entered.
-                using (frmSelectText frmPickText = new frmSelectText
+                using (SelectText frmPickText = new SelectText
                 {
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 })
@@ -5850,7 +5850,7 @@ namespace Chummer
                     if (string.IsNullOrWhiteSpace(LimitSelection)
                         || lstWeapons.Any(item => item.Name == LimitSelection))
                     {
-                        using (frmSelectItem frmPickItem = new frmSelectItem
+                        using (SelectItem frmPickItem = new SelectItem
                                {
                                    Description = string.Format(GlobalSettings.CultureInfo,
                                                                LanguageManager.GetString(
@@ -5943,7 +5943,7 @@ namespace Chummer
                 }
 
                 // Display the Select Critter Power window and record which power was selected.
-                using (frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(_objCharacter, lstPowerExtraPairs.ToArray())
+                using (SelectOptionalPower frmPickPower = new SelectOptionalPower(_objCharacter, lstPowerExtraPairs.ToArray())
                 {
                     Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower",
                         GlobalSettings.Language)
@@ -6070,7 +6070,7 @@ namespace Chummer
                     throw new AbortedException();
                 }
 
-                using (frmSelectItem frmPickItem = new frmSelectItem
+                using (SelectItem frmPickItem = new SelectItem
                        {
                            AllowAutoSelect = false
                        })
@@ -6112,7 +6112,7 @@ namespace Chummer
                     break;
                 default:
                 {
-                    using (frmSelectItem frmSelect = new frmSelectItem
+                    using (SelectItem frmSelect = new SelectItem
                     {
                         AllowAutoSelect = true
                     })
@@ -6245,7 +6245,7 @@ namespace Chummer
 
                 XmlNode objXmlSelectedQuality;
                 XmlNode objXmlBonusQuality;
-                using (frmSelectItem frmPickItem = new frmSelectItem())
+                using (SelectItem frmPickItem = new SelectItem())
                 {
                     frmPickItem.SetGeneralItemsMode(lstQualities);
                     frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
@@ -6307,7 +6307,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    using (frmSelectItem frmPickItem = new frmSelectItem())
+                    using (SelectItem frmPickItem = new SelectItem())
                     {
                         frmPickItem.SetGeneralItemsMode(lstQualities);
                         frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
@@ -6429,7 +6429,7 @@ namespace Chummer
             else
             {
                 // Display the Select Spell window.
-                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
+                using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
@@ -6467,7 +6467,7 @@ namespace Chummer
             else
             {
                 // Display the Select Spell window.
-                using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter)
+                using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
@@ -6499,7 +6499,7 @@ namespace Chummer
             }
             else
             {
-                using (frmSelectItem frmPickItem = new frmSelectItem
+                using (SelectItem frmPickItem = new SelectItem
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
@@ -6531,7 +6531,7 @@ namespace Chummer
             }
             else
             {
-                using (frmSelectItem frmPickItem = new frmSelectItem
+                using (SelectItem frmPickItem = new SelectItem
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
@@ -6646,7 +6646,7 @@ namespace Chummer
                         }
                     }
 
-                    using (frmSelectItem frmSelect = new frmSelectItem())
+                    using (SelectItem frmSelect = new SelectItem())
                     {
                         frmSelect.SetGeneralItemsMode(lstSpirits);
                         frmSelect.ForceItem(ForcedValue);
@@ -6848,7 +6848,7 @@ namespace Chummer
                         lstSkills.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (frmSelectItem frmPickItem = new frmSelectItem
+                    using (SelectItem frmPickItem = new SelectItem
                            {
                                SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                                Description = LanguageManager.GetString("String_DisableSkillGroupPrompt"),
@@ -7524,7 +7524,7 @@ namespace Chummer
                         lstActions.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (frmSelectItem frmPickItem = new frmSelectItem
+                    using (SelectItem frmPickItem = new SelectItem
                            {
                                SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                                AllowAutoSelect = false
@@ -7669,7 +7669,7 @@ namespace Chummer
             if (objSkill == null)
                 throw new AbortedException();
             // Select the actual specialization to add as an expertise
-            using (frmSelectItem frmPickItem = new frmSelectItem())
+            using (SelectItem frmPickItem = new SelectItem())
             {
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))

@@ -216,7 +216,7 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Warning_NoLimitFound"));
                     return;
                 }
-                using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
+                using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
                     frmPickLimitModifier.ShowDialogSafe(this);
 
@@ -6812,7 +6812,7 @@ namespace Chummer
 
                 do
                 {
-                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle))
+                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
                         frmPickGear.ShowDialogSafe(this);
 

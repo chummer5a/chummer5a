@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectProgramOption
+    partial class SelectProgramOption
     {
         /// <summary>
         /// Required designer variable.
@@ -123,7 +123,7 @@ namespace Chummer
             this.lstOptions.SelectedIndexChanged += new System.EventHandler(this.lstOptions_SelectedIndexChanged);
             this.lstOptions.DoubleClick += new System.EventHandler(this.lstOptions_DoubleClick);
             // 
-            // frmSelectProgramOption
+            // SelectProgramOption
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -141,12 +141,12 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectProgramOption";
+            this.Name = "SelectProgramOption";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectProgramOption";
             this.Text = "Select a Program Option";
-            this.Load += new System.EventHandler(this.frmSelectProgramOption_Load);
+            this.Load += new System.EventHandler(this.SelectProgramOption_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

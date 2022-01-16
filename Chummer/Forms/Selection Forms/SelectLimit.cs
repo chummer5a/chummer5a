@@ -23,14 +23,14 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectLimit : Form
+    public partial class SelectLimit : Form
     {
         private string _strReturnValue = string.Empty;
         private string _strSelectedDisplayLimit = string.Empty;
 
         #region Control Events
 
-        public frmSelectLimit(params string[] lstLimits)
+        public SelectLimit(params string[] lstLimits)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -66,7 +66,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectLimit_Load(object sender, EventArgs e)
+        private void SelectLimit_Load(object sender, EventArgs e)
         {
             if (cboLimit.Items.Count == 1)
             {

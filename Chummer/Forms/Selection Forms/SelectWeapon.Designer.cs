@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectWeapon
+    partial class SelectWeapon
     {
         /// <summary>
         /// Required designer variable.
@@ -1109,14 +1109,14 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectWeapon";
+            this.Name = "SelectWeapon";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeapon";
             this.Text = "Select Weapon";
-            this.Load += new System.EventHandler(this.frmSelectWeapon_Load);
+            this.Load += new System.EventHandler(this.SelectWeapon_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabListView.ResumeLayout(false);

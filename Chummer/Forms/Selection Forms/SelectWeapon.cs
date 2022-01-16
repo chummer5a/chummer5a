@@ -30,7 +30,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectWeapon : Form
+    public partial class SelectWeapon : Form
     {
         private string _strSelectedWeapon = string.Empty;
         private decimal _decMarkup;
@@ -50,7 +50,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectWeapon(Character objCharacter)
+        public SelectWeapon(Character objCharacter)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
@@ -66,7 +66,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
-        private void frmSelectWeapon_Load(object sender, EventArgs e)
+        private void SelectWeapon_Load(object sender, EventArgs e)
         {
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {

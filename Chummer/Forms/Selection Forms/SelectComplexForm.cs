@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectComplexForm : Form
+    public partial class SelectComplexForm : Form
     {
         private string _strSelectedComplexForm = string.Empty;
 
@@ -39,7 +39,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectComplexForm(Character objCharacter)
+        public SelectComplexForm(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -62,7 +62,7 @@ namespace Chummer
             _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNode("optionalcomplexforms");
         }
 
-        private void frmSelectComplexForm_Load(object sender, EventArgs e)
+        private void SelectComplexForm_Load(object sender, EventArgs e)
         {
             _blnLoading = false;
             BuildComplexFormList();

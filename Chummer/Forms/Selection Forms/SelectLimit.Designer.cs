@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectLimit
+    partial class SelectLimit
     {
         /// <summary>
         /// Required designer variable.
@@ -136,11 +136,11 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(344, 101);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "frmSelectLimit";
+            this.Name = "SelectLimit";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Choose a Limit";
-            this.Load += new System.EventHandler(this.frmSelectLimit_Load);
+            this.Load += new System.EventHandler(this.SelectLimit_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

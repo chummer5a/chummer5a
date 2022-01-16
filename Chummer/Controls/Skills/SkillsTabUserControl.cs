@@ -725,7 +725,7 @@ namespace Chummer.UI.Skills
         private void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
+            using (SelectExoticSkill frmPickExoticSkill = new SelectExoticSkill(_objCharacter))
             {
                 frmPickExoticSkill.ShowDialogSafe(this);
 
@@ -756,7 +756,7 @@ namespace Chummer.UI.Skills
 
                 DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                 {
-                    using (frmSelectItem form = new frmSelectItem
+                    using (SelectItem form = new SelectItem
                            {
                                Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
                            })

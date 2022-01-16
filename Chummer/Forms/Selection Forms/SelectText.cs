@@ -23,13 +23,13 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectText : Form
+    public partial class SelectText : Form
     {
         private string _strReturnValue = string.Empty;
 
         #region Control Events
 
-        public frmSelectText()
+        public SelectText()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -55,7 +55,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void frmSelectText_Shown(object sender, EventArgs e)
+        private void SelectText_Shown(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(DefaultString))
             {

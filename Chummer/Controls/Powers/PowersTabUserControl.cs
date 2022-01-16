@@ -225,7 +225,7 @@ namespace Chummer.UI.Powers
 
             do
             {
-                using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
+                using (SelectPower frmPickPower = new SelectPower(_objCharacter))
                 {
                     frmPickPower.ShowDialogSafe(this);
 

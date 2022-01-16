@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectArt
+    partial class SelectArt
     {
         /// <summary>
         /// Required designer variable.
@@ -240,12 +240,12 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "frmSelectArt";
+            this.Name = "SelectArt";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectArt";
             this.Text = "Select an Art";
-            this.Load += new System.EventHandler(this.frmSelectArt_Load);
+            this.Load += new System.EventHandler(this.SelectArt_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

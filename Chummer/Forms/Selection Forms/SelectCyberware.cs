@@ -29,7 +29,7 @@ using NLog;
 
 namespace Chummer
 {
-    public partial class frmSelectCyberware : Form
+    public partial class SelectCyberware : Form
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
@@ -70,7 +70,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, object objParentNode = null)
+        public SelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, object objParentNode = null)
         {
             InitializeComponent();
 
@@ -103,7 +103,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode));
         }
 
-        private void frmSelectCyberware_Load(object sender, EventArgs e)
+        private void SelectCyberware_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

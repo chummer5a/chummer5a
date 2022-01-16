@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectExoticSkill
+    partial class SelectExoticSkill
     {
         /// <summary>
         /// Required designer variable.
@@ -158,13 +158,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectExoticSkill";
+            this.Name = "SelectExoticSkill";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectExoticSkill";
             this.Text = "Select an Exotic Active Skill";
-            this.Load += new System.EventHandler(this.frmSelectExoticSkill_Load);
+            this.Load += new System.EventHandler(this.SelectExoticSkill_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectCritterPower
+    partial class SelectCritterPower
     {
         /// <summary>
         /// Required designer variable.
@@ -563,13 +563,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectCritterPower";
+            this.Name = "SelectCritterPower";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectCritterPower";
             this.Text = "Select a Critter Power";
-            this.Load += new System.EventHandler(this.frmSelectCritterPower_Load);
+            this.Load += new System.EventHandler(this.SelectCritterPower_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudCritterPowerRating)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

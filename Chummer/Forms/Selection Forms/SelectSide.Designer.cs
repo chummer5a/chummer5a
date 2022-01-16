@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectSide
+    partial class SelectSide
     {
         /// <summary>
         /// Required designer variable.
@@ -143,13 +143,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectSide";
+            this.Name = "SelectSide";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectSide";
             this.Text = "Select a Side";
-            this.Load += new System.EventHandler(this.frmSelectSide_Load);
+            this.Load += new System.EventHandler(this.SelectSide_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectSkillCategory : Form
+    public partial class SelectSkillCategory : Form
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory = string.Empty;
@@ -33,7 +33,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSkillCategory(Character objCharacter)
+        public SelectSkillCategory(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -41,7 +41,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void frmSelectSkillCategory_Load(object sender, EventArgs e)
+        private void SelectSkillCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Skill Categories found in the Skills file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))

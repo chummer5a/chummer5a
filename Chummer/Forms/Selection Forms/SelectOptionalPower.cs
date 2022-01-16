@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectOptionalPower : Form
+    public partial class SelectOptionalPower : Form
     {
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
@@ -31,7 +31,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
+        public SelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -65,7 +65,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectOptionalPower_Load(object sender, EventArgs e)
+        private void SelectOptionalPower_Load(object sender, EventArgs e)
         {
             if (_lstPowerItems.Count == 1)
                 cmdOK_Click(sender, e);

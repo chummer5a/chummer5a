@@ -23,13 +23,13 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectSide : Form
+    public partial class SelectSide : Form
     {
         private string _strSelectedSide = string.Empty;
 
         #region Control Events
 
-        public frmSelectSide()
+        public SelectSide()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -53,7 +53,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void frmSelectSide_Load(object sender, EventArgs e)
+        private void SelectSide_Load(object sender, EventArgs e)
         {
             // Select the first item in the list.
             cboSide.SelectedIndex = 0;

@@ -394,7 +394,7 @@ namespace Chummer.Backend.Equipment
                                 new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));
                         }
 
-                        using (frmSelectItem frmSelect = new frmSelectItem
+                        using (SelectItem frmSelect = new SelectItem
                                {
                                    Description = string.Format(GlobalSettings.CultureInfo,
                                                                LanguageManager.GetString("String_CannotFindLifestyle"),

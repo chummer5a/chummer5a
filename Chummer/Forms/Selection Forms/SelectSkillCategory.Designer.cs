@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectSkillCategory
+    partial class SelectSkillCategory
     {
         /// <summary>
         /// Required designer variable.
@@ -139,13 +139,13 @@ namespace Chummer
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "frmSelectSkillCategory";
+            this.Name = "SelectSkillCategory";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Tag = "Title_SelectSkillCategory";
             this.Text = "Select a Skill Category";
-            this.Load += new System.EventHandler(this.frmSelectSkillCategory_Load);
+            this.Load += new System.EventHandler(this.SelectSkillCategory_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

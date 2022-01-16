@@ -30,7 +30,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmSelectLifestyleQuality : Form
+    public partial class SelectLifestyleQuality : Form
     {
         private bool _blnLoading = true;
         private string _strSelectedQuality = string.Empty;
@@ -53,7 +53,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
+        public SelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -68,7 +68,7 @@ namespace Chummer
             _objCritterDocument = _objCharacter.LoadData("critters.xml");
         }
 
-        private void frmSelectLifestyleQuality_Load(object sender, EventArgs e)
+        private void SelectLifestyleQuality_Load(object sender, EventArgs e)
         {
             // Populate the Quality Category list.
             using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))

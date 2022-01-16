@@ -724,8 +724,8 @@ namespace Chummer.Backend.Equipment
 
                     DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                     {
-                        using (frmSelectNumber frmPickNumber
-                               = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                        using (SelectNumber frmPickNumber
+                               = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                {
                                    Minimum = decMin,
                                    Maximum = decMax,
@@ -997,7 +997,7 @@ namespace Chummer.Backend.Equipment
 
         public bool GetValidLimbSlot(XmlNode objXmlCyberware)
         {
-            using (frmSelectSide frmPickSide = new frmSelectSide
+            using (SelectSide frmPickSide = new SelectSide
             {
                 Description =
                     string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectSide"),

@@ -28,7 +28,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectVehicleMod : Form
+    public partial class SelectVehicleMod : Form
     {
         private readonly Vehicle _objVehicle;
         private int _intWeaponMountSlots;
@@ -49,7 +49,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
+        public SelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -66,7 +66,7 @@ namespace Chummer
                 _lstMods.AddRange(lstExistingMods);
         }
 
-        private void frmSelectVehicleMod_Load(object sender, EventArgs e)
+        private void SelectVehicleMod_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

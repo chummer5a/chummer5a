@@ -22,21 +22,21 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectCalendarStart : Form
+    public partial class SelectCalendarStart : Form
     {
         private int _intSelectedYear = DateTime.UtcNow.Year + 62;
         private int _intSelectedWeek = 1;
 
         #region Control Events
 
-        public frmSelectCalendarStart()
+        public SelectCalendarStart()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        public frmSelectCalendarStart(CalendarWeek objWeek)
+        public SelectCalendarStart(CalendarWeek objWeek)
         {
             if (objWeek == null)
                 throw new ArgumentNullException(nameof(objWeek));

@@ -372,8 +372,8 @@ namespace Chummer.Backend.Equipment
 
                         DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            using (frmSelectNumber frmPickNumber
-                                   = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                            using (SelectNumber frmPickNumber
+                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                    {
                                        Minimum = decMin,
                                        Maximum = decMax,
@@ -5512,7 +5512,7 @@ namespace Chummer.Backend.Equipment
                 if (intMaxAmmoCount <= intCurrentAmmoCount)
                     return;
 
-                using (frmSelectNumber frmNewAmmoCount = new frmSelectNumber(0)
+                using (SelectNumber frmNewAmmoCount = new SelectNumber(0)
                 {
                     AllowCancel = true,
                     Maximum = intMaxAmmoCount,

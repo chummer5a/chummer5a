@@ -26,7 +26,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectPower : Form
+    public partial class SelectPower : Form
     {
         private bool _blnLoading = true;
         private string _strLimitToPowers;
@@ -38,7 +38,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectPower(Character objCharacter)
+        public SelectPower(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -48,7 +48,7 @@ namespace Chummer
             _xmlBasePowerDataNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void frmSelectPower_Load(object sender, EventArgs e)
+        private void SelectPower_Load(object sender, EventArgs e)
         {
             _blnLoading = false;
 

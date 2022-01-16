@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectLifestyle
+    partial class SelectLifestyle
     {
         /// <summary>
         /// Required designer variable.
@@ -497,13 +497,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectLifestyle";
+            this.Name = "SelectLifestyle";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectAdvancedLifestyle";
             this.Text = "Build Lifestyle";
-            this.Load += new System.EventHandler(this.frmSelectLifestyle_Load);
+            this.Load += new System.EventHandler(this.SelectLifestyle_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).EndInit();
             this.tlpMain.ResumeLayout(false);

@@ -2,7 +2,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    partial class frmSelectLifestyleAdvanced
+    partial class SelectLifestyleAdvanced
     {
         /// <summary>
         /// Required designer variable.
@@ -1017,13 +1017,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectLifestyleAdvanced";
+            this.Name = "SelectLifestyleAdvanced";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectAdvancedLifestyle";
             this.Text = "Build Advanced Lifestyle";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmSelectLifestyleAdvanced_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectLifestyleAdvanced_FormClosing);
             this.Load += new System.EventHandler(this.frmSelectAdvancedLifestyle_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).EndInit();

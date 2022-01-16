@@ -27,14 +27,14 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmSelectExoticSkill : Form
+    public partial class SelectExoticSkill : Form
     {
         private readonly Character _objCharacter;
         private string _strForceSkill;
 
         #region Control Events
 
-        public frmSelectExoticSkill(Character objCharacter)
+        public SelectExoticSkill(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -52,7 +52,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void frmSelectExoticSkill_Load(object sender, EventArgs e)
+        private void SelectExoticSkill_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
