@@ -352,6 +352,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
+    <Compile Include="Backend\Static\Managers\ImprovementManager.cs" />
     <Compile Include="Forms\Character Forms\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
