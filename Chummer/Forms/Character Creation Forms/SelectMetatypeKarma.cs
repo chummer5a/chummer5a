@@ -612,7 +612,7 @@ namespace Chummer
                 cmdOK.Enabled = false;
             }
 
-            if (objXmlMetatype?.SelectSingleNode("category").InnerXml.EndsWith("Spirits", StringComparison.Ordinal) == true)
+            if (objXmlMetatype?.SelectSingleNode("category")?.InnerXml.EndsWith("Spirits", StringComparison.Ordinal) == true)
             {
                 if (!chkPossessionBased.Visible && !string.IsNullOrEmpty(_strCurrentPossessionMethod))
                 {

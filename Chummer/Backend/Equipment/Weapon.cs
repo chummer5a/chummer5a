@@ -3739,7 +3739,6 @@ namespace Chummer.Backend.Equipment
 
         /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
-        /// TODO: Databindable?
         /// </summary>
         public string GetAccuracy(CultureInfo objCulture, string strLanguage)
         {
