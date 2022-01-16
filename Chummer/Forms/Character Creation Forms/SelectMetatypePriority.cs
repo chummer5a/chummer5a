@@ -1918,7 +1918,6 @@ namespace Chummer
                             }
                             else
                             {
-                                // TODO: Unhardcode whether Force is called "Force" or "Level"
                                 lblForceLabel.Text = LanguageManager.GetString(
                                     objXmlMetatype.SelectSingleNodeAndCacheExpression("forceislevels") != null
                                         ? "String_Level"

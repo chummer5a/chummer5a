@@ -294,10 +294,11 @@ namespace Chummer
                     }
                     if (uintAccumulator == uint.MaxValue)
                     {
-                        uintAccumulator = 0;
+                        uintAccumulator = uint.MinValue;
                         strSeparator += '_';
                     }
-                    ++uintAccumulator;
+                    else
+                        ++uintAccumulator;
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
