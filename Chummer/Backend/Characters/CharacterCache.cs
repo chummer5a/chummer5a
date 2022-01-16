@@ -38,7 +38,7 @@ namespace Chummer
     /// Caches a subset of a full character's properties for loading purposes.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public class CharacterCache
+    public class CharacterCache : IDisposable
     {
         public string FilePath { get; set; }
         public string FileName { get; set; }
@@ -65,9 +65,7 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public Image Mugshot => MugshotBase64.ToImage();
-
-        public string MugshotBase64 { get; set; } = string.Empty;
+        public Image Mugshot { get; private set; }
 
         public bool Created { get; set; }
         public string SettingsFile { get; set; }
@@ -84,6 +82,11 @@ namespace Chummer
             SetDefaultEventHandlers();
         }
 
+        public CharacterCache(CharacterCache objExistingCache) : this()
+        {
+            CopyFrom(objExistingCache);
+        }
+
         /// <summary>
         /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
         /// </summary>
@@ -91,6 +94,30 @@ namespace Chummer
         public CharacterCache(string strFile) : this()
         {
             LoadFromFile(strFile);
+        }
+
+        public void CopyFrom(CharacterCache objExistingCache)
+        {
+            Background = objExistingCache.Background;
+            BuildMethod = objExistingCache.BuildMethod;
+            CharacterAlias = objExistingCache.CharacterAlias;
+            CharacterName = objExistingCache.CharacterName;
+            CharacterNotes = objExistingCache.CharacterNotes;
+            Concept = objExistingCache.Concept;
+            Created = objExistingCache.Created;
+            Description = objExistingCache.Description;
+            Essence = objExistingCache.Essence;
+            GameNotes = objExistingCache.GameNotes;
+            Karma = objExistingCache.Karma;
+            FileName = objExistingCache.FileName;
+            Metatype = objExistingCache.Metatype;
+            Metavariant = objExistingCache.Metavariant;
+            PlayerName = objExistingCache.PlayerName;
+            SettingsFile = objExistingCache.SettingsFile;
+
+            Image imgNewMugshot = objExistingCache.Mugshot.Clone() as Image;
+            Mugshot?.Dispose();
+            Mugshot = imgNewMugshot;
         }
 
         private void SetDefaultEventHandlers()
@@ -261,10 +288,20 @@ namespace Chummer
                     }
 
                     if (!string.IsNullOrEmpty(strMugshotBase64))
-                        MugshotBase64 = blnSync
+                    {
+                        if (blnSync)
+                        {
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? strMugshotBase64.CompressBase64String()
-                            : await strMugshotBase64.CompressBase64StringAsync();
+                            using (Image imgMugshot = strMugshotBase64.ToImage())
+                                // ReSharper disable once MethodHasAsyncOverload
+                                Mugshot = imgMugshot.GetCompressedImage();
+                        }
+                        else
+                        {
+                            using (Image imgMugshot = await strMugshotBase64.ToImageAsync())
+                                Mugshot = await imgMugshot.GetCompressedImageAsync();
+                        }
+                    }
                 }
                 else
                 {
@@ -335,6 +372,13 @@ namespace Chummer
                         break;
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Mugshot?.Dispose();
+            DownLoadRunning?.Dispose();
         }
     }
 }

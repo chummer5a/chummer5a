@@ -133,7 +133,7 @@ namespace Chummer
             {
                 //swallow this
             }
-            UpdateCharacter(null);
+            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
@@ -142,6 +142,21 @@ namespace Chummer
             _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
 
             SetMyEventHandlers(true);
+
+            foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
+                objCache.Dispose();
+
+            DisposeTagNodes(treCharacterList.Nodes);
+
+            void DisposeTagNodes(TreeNodeCollection lstNodes)
+            {
+                foreach (TreeNode nodNode in lstNodes)
+                {
+                    if (nodNode.Tag is CharacterCache objCache)
+                        objCache.Dispose();
+                    DisposeTagNodes(nodNode.Nodes);
+                }
+            }
         }
 
         private async void RefreshWatchList(object sender, EventArgs e)
@@ -182,6 +197,7 @@ namespace Chummer
             ResumeLayout();
             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
+            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
             PurgeUnusedCharacterCaches();
         }
 
@@ -228,6 +244,7 @@ namespace Chummer
             ResumeLayout();
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
+            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
             PurgeUnusedCharacterCaches();
         }
 
@@ -500,11 +517,6 @@ namespace Chummer
                 }
                 treCharacterList.ResumeLayout();
             });
-
-            if (objCancellationToken.IsCancellationRequested)
-                return;
-
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
         }
 
         private async Task LoadWatchFolderCharacters()
@@ -648,11 +660,6 @@ namespace Chummer
                 }
                 treCharacterList.ResumeLayout();
             });
-
-            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
-
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
         }
 
         public Task RefreshPluginNodes(IPlugin objPluginToRefresh)
@@ -753,7 +760,10 @@ namespace Chummer
             foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values.ToList())
             {
                 if (treCharacterList.FindNodeByTag(objCache) == null)
+                {
                     _dicSavedCharacterCaches.Remove(objCache.FilePath);
+                    objCache.Dispose();
+                }
             }
         }
 
@@ -831,7 +841,6 @@ namespace Chummer
                 if (string.IsNullOrEmpty(lblSettings.Text))
                     lblSettings.Text = strUnknown;
                 lblFilePath.SetToolTip(objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'));
-                picMugshot.Image?.Dispose();
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
