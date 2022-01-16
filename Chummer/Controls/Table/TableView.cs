@@ -330,7 +330,7 @@ namespace Chummer.UI.Table
             }
             else
             {
-                cells = new List<TableCell>();
+                cells = new List<TableCell>(1);
             }
             HeaderCell header = new HeaderCell
             {
@@ -395,7 +395,7 @@ namespace Chummer.UI.Table
             {
                 if (!_dicObservedProperties.TryGetValue(dependency, out List<int> lstDependencies))
                 {
-                    lstDependencies = new List<int>();
+                    lstDependencies = new List<int>(1);
                     _dicObservedProperties[dependency] = lstDependencies;
                 }
                 lstDependencies.Add(index);

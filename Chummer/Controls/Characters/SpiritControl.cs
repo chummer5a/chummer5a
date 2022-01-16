@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -163,7 +162,9 @@ namespace Chummer
         {
             if (_objSpirit.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objSpirit.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.Contains(_objSpirit.LinkedCharacter)
+                    ? _objSpirit.LinkedCharacter
+                    : null;
                 using (new CursorWait(this))
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))

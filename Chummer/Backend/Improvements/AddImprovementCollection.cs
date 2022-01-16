@@ -3839,8 +3839,7 @@ namespace Chummer
                 string strType = bonusNode.Attributes?["type"]?.InnerText;
                 if (!string.IsNullOrEmpty(strType))
                 {
-                    foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
-                                                                                 weapon.RangeType == strType))
+                    foreach (Weapon objWeapon in _objCharacter.Weapons.Where(x => x.RangeType == strType))
                     {
                         lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
                     }
@@ -3879,9 +3878,9 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    objSelectedWeapon
-                        = _objCharacter.Weapons.FirstOrDefault(
-                            weapon => weapon.InternalId == frmPickWeapon.SelectedItem);
+                    string strSelected = frmPickWeapon.SelectedItem;
+
+                    objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(x => x.InternalId == strSelected);
                     if (objSelectedWeapon == null)
                     {
                         throw new AbortedException();
@@ -6048,14 +6047,15 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in objXmlList)
                         {
+                            string strText = objNode.InnerText;
                             if (ImprovementManager
                                 .GetCachedImprovementListForValueOf(_objCharacter,
                                                                     Improvement.ImprovementType.DealerConnection)
-                                .All(x => x.UniqueName != objNode.InnerText))
+                                .All(x => x.UniqueName != strText))
                             {
-                                lstItems.Add(new ListItem(objNode.InnerText,
+                                lstItems.Add(new ListItem(strText,
                                                           LanguageManager.GetString(
-                                                              "String_DealerConnection_" + objNode.InnerText)));
+                                                              "String_DealerConnection_" + strText)));
                             }
                         }
                     }

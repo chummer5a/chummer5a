@@ -197,7 +197,7 @@ namespace Chummer.Backend.Skills
 
         internal void AddSkills(FilterOption skills, string strName = "")
         {
-            List<Skill> lstSkillsToAdd = new List<Skill>();
+            List<Skill> lstSkillsToAdd;
             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (XmlNodeList xmlSkillList = xmlSkillsDocument
                        .SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')'
@@ -205,6 +205,7 @@ namespace Chummer.Backend.Skills
             {
                 if (xmlSkillList?.Count > 0)
                 {
+                    lstSkillsToAdd = new List<Skill>(xmlSkillList.Count);
                     foreach (XmlNode xmlSkill in xmlSkillList)
                     {
                         if (_dicSkillBackups.Count > 0
@@ -227,6 +228,8 @@ namespace Chummer.Backend.Skills
                         }
                     }
                 }
+                else
+                    return;
             }
 
             foreach (Skill objSkill in lstSkillsToAdd)
@@ -634,7 +637,7 @@ namespace Chummer.Backend.Skills
 
             using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
-                List<Skill> lstTempSkillList = new List<Skill>();
+                List<Skill> lstTempSkillList = new List<Skill>(Skills.Count);
                 foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);

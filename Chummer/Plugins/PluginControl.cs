@@ -336,7 +336,7 @@ namespace Chummer.Plugins
         {
             get
             {
-                List<IPlugin> result = new List<IPlugin>();
+                List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                 if (!GlobalSettings.PluginsEnabled)
                     return result;
                 foreach (IPlugin plugin in MyPlugins)

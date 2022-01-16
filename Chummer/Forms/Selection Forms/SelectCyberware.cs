@@ -1401,9 +1401,7 @@ namespace Chummer
 
                             if (_objCharacter.BurnoutEnabled)
                             {
-                                if (!objWareGrade.Burnout && _lstGrades.Any(x =>
-                                                                                objWareGrade.Burnout
-                                                                                && objWareGrade.Name.Contains(x.Name)))
+                                if (!objWareGrade.Burnout && _lstGrades.Any(x => x.Burnout && objWareGrade.Name.Contains(x.Name)))
                                 {
                                     continue;
                                 }

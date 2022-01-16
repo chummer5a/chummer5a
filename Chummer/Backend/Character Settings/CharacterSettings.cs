@@ -361,9 +361,11 @@ namespace Chummer
             if (objOther == null)
                 return;
             _blnDoingCopy = true;
-            List<string> lstPropertiesToUpdate = new List<string>();
+            List<string> lstPropertiesToUpdate;
             try
             {
+                PropertyInfo[] aobjProperties = GetType().GetProperties();
+                lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
                 if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                 {
                     lstPropertiesToUpdate.Add(nameof(SourceId));
@@ -385,20 +387,20 @@ namespace Chummer
                 }
 
                 // Copy over via properties in order to trigger OnPropertyChanged as appropriate
-                PropertyInfo[] aobjProperties = GetType().GetProperties();
                 PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
                 foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead && x.CanWrite))
                 {
+                    string strPropertyName = objOtherProperty.Name;
+                    Type ePropertyType = objOtherProperty.PropertyType;
                     foreach (PropertyInfo objProperty in Array.FindAll(aobjProperties,
-                                                                       x => x.Name == objOtherProperty.Name
-                                                                            && x.PropertyType
-                                                                            == objOtherProperty.PropertyType))
+                                                                       x => x.Name == strPropertyName
+                                                                            && x.PropertyType == ePropertyType))
                     {
                         object objMyValue = objProperty.GetValue(this);
                         object objOtherValue = objOtherProperty.GetValue(objOther);
                         if (objMyValue.Equals(objOtherValue))
                             continue;
-                        lstPropertiesToUpdate.Add(objProperty.Name);
+                        lstPropertiesToUpdate.Add(strPropertyName);
                         objProperty.SetValue(this, objOtherValue);
                     }
                 }
@@ -469,9 +471,11 @@ namespace Chummer
             for (int i = lstPropertyInfos.Count - 1; i >= 0; --i)
             {
                 PropertyInfo objPropertyInfo = lstPropertyInfos[i];
+                string strPropertyName = objPropertyInfo.Name;
+                Type ePropertyType = objPropertyInfo.PropertyType;
                 int intOtherIndex
-                    = lstOtherPropertyInfos.FindIndex(x => x.Name == objPropertyInfo.Name
-                                                           && x.PropertyType == objPropertyInfo.PropertyType);
+                    = lstOtherPropertyInfos.FindIndex(x => x.Name == strPropertyName
+                                                           && x.PropertyType == ePropertyType);
                 if (intOtherIndex < 0)
                     return false;
                 PropertyInfo objOtherPropertyInfo = lstOtherPropertyInfos[intOtherIndex];
@@ -1445,7 +1449,7 @@ namespace Chummer
             int intTopMostOrder = 0;
             int intBottomMostOrder = 0;
             Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
-                new Dictionary<int, Tuple<string, bool>>();
+                new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
             bool blnNeedToProcessInfosWithoutLoadOrder = false;
             foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/customdatadirectoryname"))
             {

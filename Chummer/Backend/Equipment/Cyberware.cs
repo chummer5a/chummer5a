@@ -4767,7 +4767,8 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (XmlNode objNode in xmlOldAddQualitiesList)
                 {
-                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
+                    string strText = objNode.InnerText;
+                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == strText);
                     if (objQuality == null)
                         continue;
                     decReturn += objQuality.DeleteQuality(); // We need to add in the return cost of deleting the quality, so call this manually
@@ -5557,12 +5558,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                 {
-                    if (objCyberware.PlugsIntoModularMount != HasModularMount ||
-                        Children.Any(x =>
-                            x.PlugsIntoModularMount == objCyberware.HasModularMount))
-                    {
+                    if (objCyberware.PlugsIntoModularMount != HasModularMount)
                         return false;
-                    }
+                    string strInputHasModularMount = objCyberware.HasModularMount;
+                    if (Children.Any(x => x.PlugsIntoModularMount == strInputHasModularMount))
+                        return false;
 
                     objCyberware.Location = Location;
                 }
@@ -5572,12 +5572,13 @@ namespace Chummer.Backend.Equipment
                 string strAllowedSubsystems = AllowedSubsystems;
                 if (!string.IsNullOrEmpty(strAllowedSubsystems))
                 {
-                    return strAllowedSubsystems.SplitNoAlloc(',')
-                        .All(strSubsystem => objCyberware.Category != strSubsystem);
+                    string strCategory = objCyberware.Category;
+                    return strAllowedSubsystems.SplitNoAlloc(',').All(strSubsystem => strCategory != strSubsystem);
                 }
 
                 if (string.IsNullOrEmpty(objCyberware.HasModularMount) &&
-                    string.IsNullOrEmpty(objCyberware.BlocksMounts)) return true;
+                    string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                    return true;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setDisallowedMounts))
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,

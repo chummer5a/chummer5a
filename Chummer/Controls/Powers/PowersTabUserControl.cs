@@ -432,12 +432,17 @@ namespace Chummer.UI.Powers
                     Form frmParent = ParentForm;
                     if (p.FreeLevels > 0)
                     {
-                        string strImprovementSourceName = p.CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && x.ImprovedName == p.Name && x.UniqueName == p.Extra)?.SourceName;
-                        Gear objGear = p.CharacterObject.Gear.FirstOrDefault(x => x.Bonded && x.InternalId == strImprovementSourceName);
-                        if (objGear != null)
+                        string strExtra = p.Extra;
+                        string strImprovementSourceName = ImprovementManager.GetCachedImprovementListForValueOf(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name)
+                                                           .FirstOrDefault(x => x.UniqueName == strExtra)?.SourceName;
+                        if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
                         {
-                            objGear.Equipped = false;
-                            objGear.Extra = string.Empty;
+                            Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
+                            if (objGear != null && objGear.Bonded)
+                            {
+                                objGear.Equipped = false;
+                                objGear.Extra = string.Empty;
+                            }
                         }
                     }
                     p.DeletePower();

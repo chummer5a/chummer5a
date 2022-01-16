@@ -1671,6 +1671,8 @@ namespace Chummer
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
+                string strImprovedName = objImprovement.ImprovedName;
+                string strUniqueName = objImprovement.UniqueName;
                 switch (objImprovement.ImproveType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
@@ -1682,14 +1684,14 @@ namespace Chummer
                         //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
                         //    {
                         //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == objImprovement.ImprovedName)
+                        //        if (fold.Id.ToString() == strImprovedName)
                         //        {
                         //            skill.Free(fold);
                         //            _objCharacter.SkillsSection.Skills.Remove(fold);
                         //        }
                         //    }
 
-                        //    if (skill.Id.ToString() == objImprovement.ImprovedName)
+                        //    if (skill.Id.ToString() == strImprovedName)
                         //    {
                         //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
                         //        //empty list, can't call clear as exposed list is RO
@@ -1711,7 +1713,7 @@ namespace Chummer
                     case Improvement.ImprovementType.Skillsoft:
                     {
                         foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(
-                                     x => x.InternalId == objImprovement.ImprovedName))
+                                     x => x.InternalId == strImprovedName))
                         {
                             if (blnCharacterHasSkillsoftAccess
                                 && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
@@ -1722,9 +1724,9 @@ namespace Chummer
 
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
-                        if (objImprovement.UniqueName == "enableattribute")
+                        if (strUniqueName == "enableattribute")
                         {
-                            switch (objImprovement.ImprovedName)
+                            switch (strImprovedName)
                             {
                                 case "MAG":
                                     objCharacter.MAGEnabled = true;
@@ -1743,11 +1745,11 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.SpecialTab:
-                        switch (objImprovement.UniqueName)
+                        switch (strUniqueName)
                         {
                             // Determine if access to any special tabs have been lost.
                             case "enabletab":
-                                switch (objImprovement.ImprovedName)
+                                switch (strImprovedName)
                                 {
                                     case "Magician":
                                         objCharacter.MagicianEnabled = true;
@@ -1773,7 +1775,7 @@ namespace Chummer
                                 break;
                             // Determine if access to any special tabs has been regained
                             case "disabletab":
-                                switch (objImprovement.ImprovedName)
+                                switch (strImprovedName)
                                 {
                                     case "Cyberware":
                                         objCharacter.CyberwareDisabled = true;
@@ -1790,7 +1792,6 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.PrototypeTranshuman:
-                        string strImprovedName = objImprovement.ImprovedName;
                         // Legacy compatibility
                         if (string.IsNullOrEmpty(strImprovedName))
                             objCharacter.PrototypeTranshuman = 1;
@@ -1804,7 +1805,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.AddContact:
                         Contact objNewContact
-                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
+                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
                         if (objNewContact != null)
                         {
                             // TODO: Add code to enable disabled contact
@@ -1813,14 +1814,15 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.Art:
-                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objArt != null)
                         {
-                            Art art = objArt;
+                            Improvement.ImprovementSource eSource
+                                = objArt.SourceType;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == art.SourceType
-                                                        && x.SourceName == art.InternalId && x.Enabled));
+                                                   x => x.ImproveSource == eSource
+                                                        && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
@@ -1828,33 +1830,32 @@ namespace Chummer
                     case Improvement.ImprovementType.Metamagic:
                     case Improvement.ImprovementType.Echo:
                         Metamagic objMetamagic
-                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objMetamagic != null)
                         {
                             Improvement.ImprovementSource eSource
                                 = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
                                     ? Improvement.ImprovementSource.Metamagic
                                     : Improvement.ImprovementSource.Echo;
-                            Metamagic metamagic = objMetamagic;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
                                                    x => x.ImproveSource == eSource
-                                                        && x.SourceName == metamagic.InternalId && x.Enabled));
+                                                        && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
 
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                            x => x.InternalId == objImprovement.ImprovedName || (x.Name == objImprovement.ImprovedName
-                                && x.Extra == objImprovement.UniqueName));
+                            x => x.InternalId == strImprovedName || (x.Name == strImprovedName
+                                && x.Extra == strUniqueName));
                         if (objCritterPower != null)
                         {
-                            CritterPower power = objCritterPower;
+                            string strPowerId = objCritterPower.InternalId;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
                                                    x => x.ImproveSource == Improvement.ImprovementSource.CritterPower
-                                                        && x.SourceName == power.InternalId && x.Enabled));
+                                                        && x.SourceName == strPowerId && x.Enabled));
                         }
 
                         break;
@@ -1863,44 +1864,42 @@ namespace Chummer
                     case Improvement.ImprovementType.Paragon:
                         MentorSpirit objMentor
                             = objCharacter.MentorSpirits.FirstOrDefault(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         if (objMentor != null)
                         {
-                            MentorSpirit mentor = objMentor;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
                                                    x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit
-                                                        && x.SourceName == mentor.InternalId && x.Enabled));
+                                                        && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
 
                     case Improvement.ImprovementType.Gear:
                         Gear objGear
-                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
                         objGear?.ChangeEquippedStatus(true);
                         break;
 
                     case Improvement.ImprovementType.Weapon:
                         Weapon objWeapon
                             = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                      x => x.InternalId == objImprovement.ImprovedName)
+                                                                      x => x.InternalId == strImprovedName)
                               ??
-                              objCharacter.Vehicles.FindVehicleWeapon(objImprovement.ImprovedName, out _, out _, out _);
+                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
                         if (objWeapon != null)
                             objWeapon.Equipped = true;
                         break;
 
                     case Improvement.ImprovementType.Spell:
                         Spell objSpell
-                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objSpell != null)
                         {
-                            Spell spell = objSpell;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
                                                    x => x.ImproveSource == Improvement.ImprovementSource.Spell
-                                                        && x.SourceName == spell.InternalId && x.Enabled));
+                                                        && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
@@ -1908,36 +1907,35 @@ namespace Chummer
                     case Improvement.ImprovementType.ComplexForm:
                         ComplexForm objComplexForm
                             = objCharacter.ComplexForms.FirstOrDefault(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         if (objComplexForm != null)
                         {
-                            ComplexForm form = objComplexForm;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
                                                    x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm
-                                                        && x.SourceName == form.InternalId && x.Enabled));
+                                                        && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
 
                     case Improvement.ImprovementType.MartialArt:
                         MartialArt objMartialArt
-                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objMartialArt != null)
                         {
-                            MartialArt art = objMartialArt;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
                                                    x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
-                                                        && x.SourceName == art.InternalId && x.Enabled));
+                                                        && x.SourceName == strImprovedName && x.Enabled));
                             // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
+                                string strTechniqueId = objTechnique.InternalId;
                                 EnableImprovements(objCharacter,
                                                    objCharacter.Improvements.Where(
                                                        x => x.ImproveSource == Improvement.ImprovementSource
                                                                 .MartialArtTechnique
-                                                            && x.SourceName == objTechnique.InternalId && x.Enabled));
+                                                            && x.SourceName == strTechniqueId && x.Enabled));
                             }
                         }
 
@@ -1947,7 +1945,7 @@ namespace Chummer
                     {
                         string strCategory;
                         switch ((SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                                                        objImprovement.ImprovedName))
+                                                                        strImprovedName))
                         {
                             case SkillsSection.FilterOption.Magician:
                             case SkillsSection.FilterOption.Sorcery:
@@ -1975,22 +1973,21 @@ namespace Chummer
 
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                            objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
+                            objLoopQuality => objLoopQuality.InternalId == strImprovedName);
                         if (objQuality != null)
                         {
-                            Quality quality = objQuality;
                             EnableImprovements(objCharacter,
                                                objCharacter.Improvements.Where(
                                                    x => x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                        && x.SourceName == quality.InternalId && x.Enabled));
+                                                        && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
                     /*
                     case Improvement.ImprovementType.SkillSpecialization:
                         {
-                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
-                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
                             //if (objSkillSpec != null)
                             // TODO: Add temporarily remove skill specialization
                         }
@@ -1998,14 +1995,13 @@ namespace Chummer
                         */
                     case Improvement.ImprovementType.AIProgram:
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                            objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
+                            objLoopProgram => objLoopProgram.InternalId == strImprovedName);
                         if (objProgram != null)
                         {
-                            AIProgram program = objProgram;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
-                                                         && x.SourceName == program.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
@@ -2013,7 +2009,7 @@ namespace Chummer
                     case Improvement.ImprovementType.FreeWare:
                     {
                         Cyberware objCyberware
-                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
                         objCyberware?.ChangeModularEquip(true);
                     }
                         break;
@@ -2049,13 +2045,17 @@ namespace Chummer
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
+                string strImprovedName = objImprovement.ImprovedName;
+                string strUniqueName = objImprovement.UniqueName;
+                Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
+                string strSourceName = objImprovement.SourceName;
                 bool blnHasDuplicate = objCharacter.Improvements.Any(
-                    x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName
-                                                                   && x.ImproveType == objImprovement.ImproveType
-                                                                   && x.SourceName != objImprovement.SourceName
-                                                                   && x.Enabled);
+                    x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                       && x.ImproveType == eImprovementType
+                                                       && x.SourceName != strSourceName
+                                                       && x.Enabled);
 
-                switch (objImprovement.ImproveType)
+                switch (eImprovementType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
                         //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
@@ -2066,14 +2066,14 @@ namespace Chummer
                         //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
                         //    {
                         //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == objImprovement.ImprovedName)
+                        //        if (fold.Id.ToString() == strImprovedName)
                         //        {
                         //            skill.Free(fold);
                         //            _objCharacter.SkillsSection.Skills.Remove(fold);
                         //        }
                         //    }
 
-                        //    if (skill.Id.ToString() == objImprovement.ImprovedName)
+                        //    if (skill.Id.ToString() == strImprovedName)
                         //    {
                         //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
                         //        //empty list, can't call clear as exposed list is RO
@@ -2098,16 +2098,16 @@ namespace Chummer
                         if (!blnHasDuplicate)
                         {
                             objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         }
 
                         break;
 
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
-                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate)
+                        if (strUniqueName == "enableattribute" && !blnHasDuplicate)
                         {
-                            switch (objImprovement.ImprovedName)
+                            switch (strImprovedName)
                             {
                                 case "MAG":
                                     objCharacter.MAGEnabled = false;
@@ -2129,10 +2129,10 @@ namespace Chummer
                         // Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate)
                         {
-                            switch (objImprovement.UniqueName)
+                            switch (strUniqueName)
                             {
                                 case "enabletab":
-                                    switch (objImprovement.ImprovedName)
+                                    switch (strImprovedName)
                                     {
                                         case "Magician":
                                             objCharacter.MagicianEnabled = false;
@@ -2158,7 +2158,7 @@ namespace Chummer
                                     break;
                                 // Determine if access to any special tabs has been regained
                                 case "disabletab":
-                                    switch (objImprovement.ImprovedName)
+                                    switch (strImprovedName)
                                     {
                                         case "Cyberware":
                                             objCharacter.CyberwareDisabled = false;
@@ -2176,7 +2176,6 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.PrototypeTranshuman:
-                        string strImprovedName = objImprovement.ImprovedName;
                         // Legacy compatibility
                         if (string.IsNullOrEmpty(strImprovedName))
                         {
@@ -2194,7 +2193,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.AddContact:
                         Contact objNewContact
-                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
+                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
                         if (objNewContact != null)
                         {
                             // TODO: Add code to disable contact
@@ -2203,14 +2202,14 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.Art:
-                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objArt != null)
                         {
-                            Art art = objArt;
+                            Improvement.ImprovementSource eSource = objArt.SourceType;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == art.SourceType
-                                                         && x.SourceName == art.InternalId && x.Enabled));
+                                                    x => x.ImproveSource == eSource
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
@@ -2218,33 +2217,32 @@ namespace Chummer
                     case Improvement.ImprovementType.Metamagic:
                     case Improvement.ImprovementType.Echo:
                         Metamagic objMetamagic
-                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objMetamagic != null)
                         {
                             Improvement.ImprovementSource eSource
                                 = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
                                     ? Improvement.ImprovementSource.Metamagic
                                     : Improvement.ImprovementSource.Echo;
-                            Metamagic metamagic = objMetamagic;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == eSource
-                                                         && x.SourceName == metamagic.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
 
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                            x => x.InternalId == objImprovement.ImprovedName || (x.Name == objImprovement.ImprovedName
-                                && x.Extra == objImprovement.UniqueName));
+                            x => x.InternalId == strImprovedName || (x.Name == strImprovedName
+                                && x.Extra == strUniqueName));
                         if (objCritterPower != null)
                         {
-                            CritterPower power = objCritterPower;
+                            string strPowerId = objCritterPower.InternalId;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.CritterPower
-                                                         && x.SourceName == power.InternalId && x.Enabled));
+                                                         && x.SourceName == strPowerId && x.Enabled));
                         }
 
                         break;
@@ -2253,44 +2251,42 @@ namespace Chummer
                     case Improvement.ImprovementType.Paragon:
                         MentorSpirit objMentor
                             = objCharacter.MentorSpirits.FirstOrDefault(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         if (objMentor != null)
                         {
-                            MentorSpirit mentor = objMentor;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit
-                                                         && x.SourceName == mentor.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
 
                     case Improvement.ImprovementType.Gear:
                         Gear objGear
-                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
                         objGear?.ChangeEquippedStatus(false);
                         break;
 
                     case Improvement.ImprovementType.Weapon:
                         Weapon objWeapon
                             = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                      x => x.InternalId == objImprovement.ImprovedName)
+                                                                      x => x.InternalId == strImprovedName)
                               ??
-                              objCharacter.Vehicles.FindVehicleWeapon(objImprovement.ImprovedName, out _, out _, out _);
+                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
                         if (objWeapon != null)
                             objWeapon.Equipped = false;
                         break;
 
                     case Improvement.ImprovementType.Spell:
                         Spell objSpell
-                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objSpell != null)
                         {
-                            Spell spell = objSpell;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.Spell
-                                                         && x.SourceName == spell.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
@@ -2298,36 +2294,35 @@ namespace Chummer
                     case Improvement.ImprovementType.ComplexForm:
                         ComplexForm objComplexForm
                             = objCharacter.ComplexForms.FirstOrDefault(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         if (objComplexForm != null)
                         {
-                            ComplexForm form = objComplexForm;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm
-                                                         && x.SourceName == form.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
 
                     case Improvement.ImprovementType.MartialArt:
                         MartialArt objMartialArt
-                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objMartialArt != null)
                         {
-                            MartialArt art = objMartialArt;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
-                                                         && x.SourceName == art.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                             // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
+                                string strTechniqueId = objTechnique.InternalId;
                                 DisableImprovements(objCharacter,
                                                     objCharacter.Improvements.Where(
                                                         x => x.ImproveSource == Improvement.ImprovementSource
                                                                  .MartialArtTechnique
-                                                             && x.SourceName == objTechnique.InternalId && x.Enabled));
+                                                             && x.SourceName == strTechniqueId && x.Enabled));
                             }
                         }
 
@@ -2338,7 +2333,7 @@ namespace Chummer
                         {
                             string strCategory;
                             switch ((SkillsSection.FilterOption) Enum.Parse(
-                                        typeof(SkillsSection.FilterOption), objImprovement.ImprovedName))
+                                        typeof(SkillsSection.FilterOption), strImprovedName))
                             {
                                 case SkillsSection.FilterOption.Magician:
                                 case SkillsSection.FilterOption.Sorcery:
@@ -2396,22 +2391,21 @@ namespace Chummer
 
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                            objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
+                            objLoopQuality => objLoopQuality.InternalId == strImprovedName);
                         if (objQuality != null)
                         {
-                            Quality quality = objQuality;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                         && x.SourceName == quality.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
                     /*
                     case Improvement.ImprovementType.SkillSpecialization:
                         {
-                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
-                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
                             //if (objSkillSpec != null)
                                 // TODO: Temporarily remove skill specialization
                         }
@@ -2419,14 +2413,13 @@ namespace Chummer
                         */
                     case Improvement.ImprovementType.AIProgram:
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                            objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
+                            objLoopProgram => objLoopProgram.InternalId == strImprovedName);
                         if (objProgram != null)
                         {
-                            AIProgram program = objProgram;
                             DisableImprovements(objCharacter,
                                                 objCharacter.Improvements.Where(
                                                     x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
-                                                         && x.SourceName == program.InternalId && x.Enabled));
+                                                         && x.SourceName == strImprovedName && x.Enabled));
                         }
 
                         break;
@@ -2434,7 +2427,7 @@ namespace Chummer
                     case Improvement.ImprovementType.FreeWare:
                     {
                         Cyberware objCyberware
-                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
                         objCyberware?.ChangeModularEquip(false);
                     }
                         break;
@@ -2520,14 +2513,25 @@ namespace Chummer
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
+                string strImprovedName = objImprovement.ImprovedName;
+                string strUniqueName = objImprovement.UniqueName;
+                Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
                 // See if the character has anything else that is granting them the same bonus as this improvement
-                bool blnHasDuplicate = objCharacter.Improvements.Any(
-                    x => x.UniqueName == objImprovement.UniqueName && x.ImprovedName == objImprovement.ImprovedName
-                                                                   && x.ImproveType == objImprovement.ImproveType
-                                                                   && (blnAllowDuplicatesFromSameSource
-                                                                       || x.SourceName != objImprovement.SourceName));
+                bool blnHasDuplicate;
+                if (blnAllowDuplicatesFromSameSource)
+                    blnHasDuplicate = objCharacter.Improvements.Any(
+                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                           && x.ImproveType == eImprovementType);
+                else
+                {
+                    string strSourceName = objImprovement.SourceName;
+                    blnHasDuplicate = objCharacter.Improvements.Any(
+                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                           && x.ImproveType == eImprovementType
+                                                           && x.SourceName != strSourceName);
+                }
 
-                switch (objImprovement.ImproveType)
+                switch (eImprovementType)
                 {
                     case Improvement.ImprovementType.SkillLevel:
                         //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
@@ -2538,14 +2542,14 @@ namespace Chummer
                         //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
                         //    {
                         //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == objImprovement.ImprovedName)
+                        //        if (fold.Id.ToString() == strImprovedName)
                         //        {
                         //            skill.Free(fold);
                         //            _objCharacter.SkillsSection.Skills.Remove(fold);
                         //        }
                         //    }
 
-                        //    if (skill.Id.ToString() == objImprovement.ImprovedName)
+                        //    if (skill.Id.ToString() == strImprovedName)
                         //    {
                         //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
                         //        //empty list, can't call clear as exposed list is RO
@@ -2570,11 +2574,11 @@ namespace Chummer
                         if (!blnHasDuplicate)
                         {
                             objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                             for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
                             {
                                 KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
-                                if (objSkill.InternalId == objImprovement.ImprovedName)
+                                if (objSkill.InternalId == strImprovedName)
                                 {
                                     objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
                                     objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
@@ -2586,10 +2590,10 @@ namespace Chummer
 
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
-                        if (objImprovement.UniqueName == "enableattribute" && !blnHasDuplicate
-                                                                           && !blnReapplyImprovements)
+                        if (strUniqueName == "enableattribute" && !blnHasDuplicate
+                                                               && !blnReapplyImprovements)
                         {
-                            switch (objImprovement.ImprovedName)
+                            switch (strImprovedName)
                             {
                                 case "MAG":
                                     objCharacter.MAGEnabled = false;
@@ -2611,10 +2615,10 @@ namespace Chummer
                         // Determine if access to any special tabs have been lost.
                         if (!blnHasDuplicate && !blnReapplyImprovements)
                         {
-                            switch (objImprovement.UniqueName)
+                            switch (strUniqueName)
                             {
                                 case "enabletab":
-                                    switch (objImprovement.ImprovedName)
+                                    switch (strImprovedName)
                                     {
                                         case "Magician":
                                             objCharacter.MagicianEnabled = false;
@@ -2640,7 +2644,7 @@ namespace Chummer
                                     break;
                                 // Determine if access to any special tabs has been regained
                                 case "disabletab":
-                                    switch (objImprovement.ImprovedName)
+                                    switch (strImprovedName)
                                     {
                                         case "Cyberware":
                                             objCharacter.CyberwareDisabled = false;
@@ -2658,7 +2662,6 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.PrototypeTranshuman:
-                        string strImprovedName = objImprovement.ImprovedName;
                         // Legacy compatibility
                         if (string.IsNullOrEmpty(strImprovedName))
                         {
@@ -2691,13 +2694,13 @@ namespace Chummer
 
                     case Improvement.ImprovementType.AddContact:
                         Contact objNewContact
-                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
+                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
                         if (objNewContact != null)
                             objCharacter.Contacts.Remove(objNewContact);
                         break;
 
                     case Improvement.ImprovementType.Art:
-                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objArt != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId);
@@ -2709,7 +2712,7 @@ namespace Chummer
                     case Improvement.ImprovementType.Metamagic:
                     case Improvement.ImprovementType.Echo:
                         Metamagic objMetamagic
-                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objMetamagic != null)
                         {
                             decReturn += RemoveImprovements(objCharacter,
@@ -2726,7 +2729,7 @@ namespace Chummer
                     case Improvement.ImprovementType.LimitModifier:
                         LimitModifier limitMod
                             = objCharacter.LimitModifiers.FirstOrDefault(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         if (limitMod != null)
                         {
                             objCharacter.LimitModifiers.Remove(limitMod);
@@ -2736,8 +2739,8 @@ namespace Chummer
 
                     case Improvement.ImprovementType.CritterPower:
                         CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                            x => x.InternalId == objImprovement.ImprovedName || (x.Name == objImprovement.ImprovedName
-                                && x.Extra == objImprovement.UniqueName));
+                            x => x.InternalId == strImprovedName || (x.Name == strImprovedName
+                                && x.Extra == strUniqueName));
                         if (objCritterPower != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower,
@@ -2751,7 +2754,7 @@ namespace Chummer
                     case Improvement.ImprovementType.Paragon:
                         MentorSpirit objMentor
                             = objCharacter.MentorSpirits.FirstOrDefault(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         if (objMentor != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit,
@@ -2763,7 +2766,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.Gear:
                         Gear objGear
-                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objGear != null)
                         {
                             decReturn += objGear.DeleteGear();
@@ -2780,9 +2783,9 @@ namespace Chummer
                         VehicleMod objVehicleMod = null;
                         Weapon objWeapon
                             = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                      x => x.InternalId == objImprovement.ImprovedName)
+                                                                      x => x.InternalId == strImprovedName)
                               ??
-                              objCharacter.Vehicles.FindVehicleWeapon(objImprovement.ImprovedName, out objVehicle,
+                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out objVehicle,
                                                                       out objWeaponMount, out objVehicleMod);
                         if (objWeapon != null)
                         {
@@ -2805,7 +2808,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.Spell:
                         Spell objSpell
-                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objSpell != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell,
@@ -2818,7 +2821,7 @@ namespace Chummer
                     case Improvement.ImprovementType.ComplexForm:
                         ComplexForm objComplexForm
                             = objCharacter.ComplexForms.FirstOrDefault(
-                                x => x.InternalId == objImprovement.ImprovedName);
+                                x => x.InternalId == strImprovedName);
                         if (objComplexForm != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm,
@@ -2830,7 +2833,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.MartialArt:
                         MartialArt objMartialArt
-                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objMartialArt != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt,
@@ -2852,13 +2855,13 @@ namespace Chummer
                         if (!blnHasDuplicate)
                             objCharacter.SkillsSection.RemoveSkills(
                                 (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                                                        objImprovement.ImprovedName),
+                                                                        strImprovedName),
                                 !blnReapplyImprovements);
                         break;
 
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                            objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
+                            objLoopQuality => objLoopQuality.InternalId == strImprovedName);
                         if (objQuality != null)
                         {
                             decReturn += objQuality
@@ -2871,11 +2874,11 @@ namespace Chummer
                     case Improvement.ImprovementType.SkillSpecialization:
                     case Improvement.ImprovementType.SkillExpertise:
                     {
-                        Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
-                        SkillSpecialization objSkillSpec = objImprovement.UniqueName.IsGuid()
-                            ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == objImprovement.UniqueName)
+                        Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                        SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
+                            ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
                             // Kept for legacy reasons
-                            : objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            : objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
                         if (objSkillSpec != null)
                             objSkill.Specializations.Remove(objSkillSpec);
                     }
@@ -2883,7 +2886,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.AIProgram:
                         AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                            objLoopProgram => objLoopProgram.InternalId == objImprovement.ImprovedName);
+                            objLoopProgram => objLoopProgram.InternalId == strImprovedName);
                         if (objProgram != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram,
@@ -2897,8 +2900,8 @@ namespace Chummer
                     case Improvement.ImprovementType.AdeptPowerFreePoints:
                         // Get the power improved by this improvement
                         Power objImprovedPower = objCharacter.Powers.FirstOrDefault(
-                            objPower => objPower.Name == objImprovement.ImprovedName &&
-                                        objPower.Extra == objImprovement.UniqueName);
+                            objPower => objPower.Name == strImprovedName &&
+                                        objPower.Extra == strUniqueName);
                         if (objImprovedPower != null)
                         {
                             if (objImprovedPower.TotalRating <= 0)
@@ -2919,7 +2922,7 @@ namespace Chummer
                     case Improvement.ImprovementType.FreeWare:
                     {
                         Cyberware objCyberware
-                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == objImprovement.ImprovedName);
+                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
                         if (objCyberware != null)
                         {
                             decReturn += objCyberware.DeleteCyberware();
@@ -3019,7 +3022,7 @@ namespace Chummer
                 objImprovement.SetupComplete = true;
                 // Add the Improvement to the list.
                 objCharacter.Improvements.Add(objImprovement);
-                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                ClearCachedValue(objCharacter, objImprovementType, strImprovedName);
 
                 // Add the Improvement to the Transaction List.
                 List<Improvement> lstTransactions;

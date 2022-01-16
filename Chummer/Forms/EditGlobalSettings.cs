@@ -499,7 +499,9 @@ namespace Chummer
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == objNewCustomDataDirectory.DirectoryPath))
+
+                    string strDirectoryPath = objNewCustomDataDirectory.DirectoryPath;
+                    if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strDirectoryPath))
                     {
                         Program.MainForm.ShowMessageBox(this,
                             string.Format(
@@ -509,6 +511,7 @@ namespace Chummer
                                 _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+
                     if (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory))
                     {
                         CustomDataDirectoryInfo objExistingInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objNewCustomDataDirectory));

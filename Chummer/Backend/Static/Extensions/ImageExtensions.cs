@@ -501,7 +501,8 @@ namespace Chummer
         /// <returns>The encoder of <paramref name="eFormat"/> if one is found, otherwise null.</returns>
         public static ImageCodecInfo GetEncoder(this ImageFormat eFormat)
         {
-            return Array.Find(ImageCodecInfo.GetImageDecoders(), objCodec => objCodec.FormatID == eFormat.Guid);
+            Guid objTargetGuid = eFormat.Guid;
+            return Array.Find(ImageCodecInfo.GetImageDecoders(), objCodec => objCodec.FormatID == objTargetGuid);
         }
 
         /// <summary>

@@ -68,7 +68,8 @@ namespace Chummer
                     //TODO: Support for allowing all techniques > 0.
                     foreach (XPathNavigator xmlTechnique in _xmlBaseChummerNode.Select("techniques/technique[(" + _objCharacter.Settings.BookXPath() + ")]"))
                     {
-                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value))
+                        string strTechnique = xmlTechnique.Value;
+                        if (_objMartialArt.Techniques.Any(x => x.Name == strTechnique))
                             continue;
                         string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value;
                         if (string.IsNullOrEmpty(strTechniqueName))

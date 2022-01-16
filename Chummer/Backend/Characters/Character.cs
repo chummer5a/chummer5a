@@ -6145,46 +6145,52 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            string strImprovedGuid = objImprovement.SourceName.TrimEndOnce("Pair");
-            bool wireless = false;
+            string strImprovedSourceName = objImprovement.SourceName.TrimEndOnce("Pair");
+            bool blnWireless = false;
 
-            if (strImprovedGuid.EndsWith("Wireless", StringComparison.Ordinal))
+            if (strImprovedSourceName.EndsWith("Wireless", StringComparison.Ordinal))
             {
-                wireless = true;
-                strImprovedGuid = strImprovedGuid.TrimEndOnce("Wireless", true);
+                blnWireless = true;
+                strImprovedSourceName = strImprovedSourceName.TrimEndOnce("Wireless", true);
             }
 
-            switch (objImprovement.ImproveSource)
+            Improvement.ImprovementSource eSource = objImprovement.ImproveSource;
+            switch (eSource)
             {
                 case Improvement.ImprovementSource.Bioware:
                 case Improvement.ImprovementSource.Cyberware:
-                    Cyberware objReturnCyberware = Cyberware.DeepFirstOrDefault(x => x.Children,
-                        x => x.InternalId == strImprovedGuid && x.SourceType == objImprovement.ImproveSource);
-                    if (objReturnCyberware != null)
+                {
+                    Cyberware objCyberware = Cyberware.DeepFirstOrDefault(x => x.Children,
+                                                                          x => x.InternalId == strImprovedSourceName
+                                                                               && x.SourceType == eSource);
+                    if (objCyberware != null)
                     {
-                        string strWareReturn = objReturnCyberware.DisplayNameShort(strLanguage);
-                        if (objReturnCyberware.Parent != null)
-                            strWareReturn += strSpace + '(' + objReturnCyberware.Parent.DisplayNameShort(strLanguage) + ')';
-                        if (wireless)
+                        string strWareReturn = objCyberware.DisplayNameShort(strLanguage);
+                        if (objCyberware.Parent != null)
+                            strWareReturn += strSpace + '(' + objCyberware.Parent.DisplayNameShort(strLanguage) + ')';
+                        if (blnWireless)
                             strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                         return strWareReturn;
                     }
 
-                    foreach(Vehicle objVehicle in Vehicles)
+                    foreach (Vehicle objVehicle in Vehicles)
                     {
-                        foreach(VehicleMod objVehicleMod in objVehicle.Mods)
+                        foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                         {
-                            objReturnCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
-                                x => x.InternalId == objImprovement.SourceName);
-                            if(objReturnCyberware != null)
+                            objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
+                                x => x.InternalId == strImprovedSourceName);
+                            if (objCyberware != null)
                             {
-                                string strWareReturn = objReturnCyberware.DisplayNameShort(strLanguage) + strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
-                                if (objReturnCyberware.Parent != null)
-                                    strWareReturn += ',' + strSpace + objReturnCyberware.Parent.DisplayNameShort(strLanguage);
+                                string strWareReturn
+                                    = objCyberware.DisplayNameShort(strLanguage) + strSpace + '('
+                                      + objVehicle.DisplayNameShort(strLanguage) + ','
+                                      + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
+                                if (objCyberware.Parent != null)
+                                    strWareReturn += ',' + strSpace + objCyberware.Parent.DisplayNameShort(strLanguage);
                                 strWareReturn += ')';
-                                if (wireless)
-                                    strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                if (blnWireless)
+                                    strWareReturn
+                                        += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                                 return strWareReturn;
                             }
                         }
@@ -6193,20 +6199,22 @@ namespace Chummer
                         {
                             foreach (VehicleMod objVehicleMod in objMount.Mods)
                             {
-                                objReturnCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
-                                    x => x.InternalId == objImprovement.SourceName);
-                                if (objReturnCyberware != null)
+                                objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
+                                    x => x.InternalId == strImprovedSourceName);
+                                if (objCyberware != null)
                                 {
                                     string strWareReturn
-                                        = objReturnCyberware.DisplayNameShort(strLanguage) + strSpace + '('
+                                        = objCyberware.DisplayNameShort(strLanguage) + strSpace + '('
                                           + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
                                           + objMount.DisplayNameShort(strLanguage) + ','
                                           + strSpace + objVehicleMod.DisplayNameShort(strLanguage);
-                                    if (objReturnCyberware.Parent != null)
-                                        strWareReturn += ',' + strSpace + objReturnCyberware.Parent.DisplayNameShort(strLanguage);
+                                    if (objCyberware.Parent != null)
+                                        strWareReturn += ',' + strSpace
+                                                             + objCyberware.Parent.DisplayNameShort(strLanguage);
                                     strWareReturn += ')';
-                                    if (wireless)
-                                        strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                    if (blnWireless)
+                                        strWareReturn += strSpace
+                                                         + LanguageManager.GetString("String_Wireless", strLanguage);
                                     return strWareReturn;
                                 }
                             }
@@ -6214,160 +6222,189 @@ namespace Chummer
                     }
 
                     break;
+                }
                 case Improvement.ImprovementSource.Gear:
+                {
                     Gear objReturnGear =
-                        Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
-                    if(objReturnGear != null)
+                        Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strImprovedSourceName);
+                    if (objReturnGear != null)
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                        if(objReturnGear.Parent is Gear parent)
+                        if (objReturnGear.Parent is Gear parent)
                             strGearReturn += strSpace + '(' + parent.DisplayNameShort(strLanguage) + ')';
-                        if (wireless)
+                        if (blnWireless)
                             strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                         return strGearReturn;
                     }
 
-                    foreach(Weapon objWeapon in Weapons.DeepWhere(x => x.Children,
-                        x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                     {
-                        foreach(WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                        {
-                            objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                x => x.InternalId == objImprovement.SourceName);
-                            if(objReturnGear != null)
-                            {
-                                string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                                if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                     + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpace + parent.DisplayNameShort(strLanguage) + ')';
-                                else
-                                    strGearReturn += strSpace + '(' + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
-                                if (wireless)
-                                    strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
-                                return strGearReturn;
-                            }
-                        }
-                    }
+                        objReturnGear = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objAccessory);
 
-                    foreach(Armor objArmor in Armor)
-                    {
-                        objReturnGear = objArmor.GearChildren.DeepFirstOrDefault(x => x.Children,
-                            x => x.InternalId == objImprovement.SourceName);
-                        if(objReturnGear != null)
+                        if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                 + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                strGearReturn += strSpace + '(' + objAccessory.Parent.DisplayNameShort(strLanguage)
+                                                 + ','
+                                                 + strSpace
+                                                 + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpace
+                                                 + parent.DisplayNameShort(strLanguage) + ')';
                             else
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
-                            if (wireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                strGearReturn += strSpace + '(' + objAccessory.Parent.DisplayNameShort(strLanguage)
+                                                 + ','
+                                                 + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
+                            if (blnWireless)
+                                strGearReturn
+                                    += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                             return strGearReturn;
                         }
                     }
 
-                    foreach(Cyberware objCyberware in Cyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
+                    objReturnGear
+                        = Armor.FindArmorGear(strImprovedSourceName, out Armor objArmor, out ArmorMod objArmorMod);
+                    if (objReturnGear != null)
                     {
-                        objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
-                            x => x.InternalId == objImprovement.SourceName);
-                        if(objReturnGear != null)
+                        string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                        if (objReturnGear.Parent is Gear objParent)
+                        {
+                            strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ',' + strSpace
+                                             + objArmorMod.DisplayNameShort(strLanguage) + ',' + strSpace
+                                             + objParent.DisplayNameShort(strLanguage) + ')';
+                        }
+                        else if (objArmorMod != null)
+                            strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ',' + strSpace
+                                             + objArmorMod.DisplayNameShort(strLanguage) + ')';
+                        else
+                            strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
+
+                        if (blnWireless)
+                            strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                        return strGearReturn;
+                    }
+
+                    {
+                        objReturnGear = Cyberware.FindCyberwareGear(strImprovedSourceName, out Cyberware objCyberware);
+
+                        if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpace
+                                strGearReturn += strSpace + '(' + objCyberware.DisplayNameShort(strLanguage) + ','
+                                                 + strSpace
                                                  + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpace + '(' + objCyberware.DisplayNameShort(strLanguage) + ')';
-                            if (wireless)
+                            if (blnWireless)
                                 strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                             return strGearReturn;
                         }
                     }
 
-                    foreach(Vehicle objVehicle in Vehicles)
+                    foreach (Vehicle objVehicle in Vehicles)
                     {
                         objReturnGear = objVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
-                            x => x.InternalId == objImprovement.SourceName);
-                        if(objReturnGear != null)
+                            x => x.InternalId == strImprovedSourceName);
+                        if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
+                                strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                 + strSpace
                                                  + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                             else
                                 strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
-                            if (wireless)
+                            if (blnWireless)
                                 strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                             return strGearReturn;
                         }
 
-                        foreach(Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
-                            x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                        foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
+                                     x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                         {
-                            foreach(WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
                                 objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                    x => x.InternalId == objImprovement.SourceName);
-                                if(objReturnGear != null)
+                                    x => x.InternalId == strImprovedSourceName);
+                                if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent is Gear parent)
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                         + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace + objAccessory.DisplayNameShort(strLanguage) + ','
-                                                         + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                        strGearReturn
+                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                               + strSpace
+                                               + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
+                                               + objAccessory.DisplayNameShort(strLanguage) + ','
+                                               + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                                     else
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                         + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
-                                    if (wireless)
-                                        strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                        strGearReturn
+                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                               + strSpace
+                                               + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace
+                                               + objAccessory.DisplayNameShort(strLanguage) + ')';
+                                    if (blnWireless)
+                                        strGearReturn += strSpace
+                                                         + LanguageManager.GetString("String_Wireless", strLanguage);
                                     return strGearReturn;
                                 }
                             }
                         }
 
-                        foreach(VehicleMod objVehicleMod in objVehicle.Mods)
+                        foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                         {
-                            foreach(Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
-                                x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                            foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
+                                         x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                             {
-                                foreach(WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
                                     objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                        x => x.InternalId == objImprovement.SourceName);
-                                    if(objReturnGear != null)
+                                        x => x.InternalId == strImprovedSourceName);
+                                    if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                         if (objReturnGear.Parent is Gear parent)
-                                            strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                             + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace + objAccessory.DisplayNameShort(strLanguage)
-                                                             + ',' + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                            strGearReturn
+                                                += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                   + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                                   + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
+                                                   + strSpace + objAccessory.DisplayNameShort(strLanguage)
+                                                   + ',' + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                                         else
-                                            strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                             + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ',' + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
-                                        if (wireless)
-                                            strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                            strGearReturn
+                                                += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                   + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                                   + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
+                                                   + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
+                                        if (blnWireless)
+                                            strGearReturn += strSpace
+                                                             + LanguageManager.GetString(
+                                                                 "String_Wireless", strLanguage);
                                         return strGearReturn;
                                     }
                                 }
                             }
 
-                            foreach(Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children,
-                                x => x.GearChildren.Count > 0))
+                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children,
+                                         x => x.GearChildren.Count > 0))
                             {
                                 objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                    x => x.InternalId == objImprovement.SourceName);
-                                if(objReturnGear != null)
+                                    x => x.InternalId == strImprovedSourceName);
+                                if (objReturnGear != null)
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent is Gear parent)
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                         + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ',' + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                                        strGearReturn
+                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                               + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                               + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ','
+                                               + strSpace + parent.DisplayNameShort(strLanguage) + ')';
                                     else
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
-                                                         + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ')';
-                                    if (wireless)
-                                        strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                        strGearReturn
+                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                               + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
+                                               + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ')';
+                                    if (blnWireless)
+                                        strGearReturn += strSpace
+                                                         + LanguageManager.GetString("String_Wireless", strLanguage);
                                     return strGearReturn;
                                 }
                             }
@@ -6378,12 +6415,12 @@ namespace Chummer
                             foreach (VehicleMod objVehicleMod in objMount.Mods)
                             {
                                 foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
-                                x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                                             x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                                 {
                                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                     {
                                         objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                            x => x.InternalId == objImprovement.SourceName);
+                                            x => x.InternalId == strImprovedSourceName);
                                         if (objReturnGear != null)
                                         {
                                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -6402,18 +6439,20 @@ namespace Chummer
                                                        + strSpace + objVehicleMod.DisplayNameShort(strLanguage)
                                                        + ',' + strSpace + objWeapon.DisplayNameShort(strLanguage) + ','
                                                        + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
-                                            if (wireless)
-                                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                            if (blnWireless)
+                                                strGearReturn += strSpace
+                                                                 + LanguageManager.GetString(
+                                                                     "String_Wireless", strLanguage);
                                             return strGearReturn;
                                         }
                                     }
                                 }
 
                                 foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children,
-                                    x => x.GearChildren.Count > 0))
+                                             x => x.GearChildren.Count > 0))
                                 {
                                     objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                        x => x.InternalId == objImprovement.SourceName);
+                                        x => x.InternalId == strImprovedSourceName);
                                     if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -6430,8 +6469,10 @@ namespace Chummer
                                                    + strSpace + objMount.DisplayNameShort(strLanguage) + ',' + strSpace
                                                    + objVehicleMod.DisplayNameShort(strLanguage)
                                                    + ',' + strSpace + objCyberware.DisplayNameShort(strLanguage) + ')';
-                                        if (wireless)
-                                            strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                        if (blnWireless)
+                                            strGearReturn += strSpace
+                                                             + LanguageManager.GetString(
+                                                                 "String_Wireless", strLanguage);
                                         return strGearReturn;
                                     }
                                 }
@@ -6440,10 +6481,11 @@ namespace Chummer
                     }
 
                     break;
+                }
                 case Improvement.ImprovementSource.Spell:
                     foreach(Spell objSpell in Spells)
                     {
-                        if(objSpell.InternalId == objImprovement.SourceName)
+                        if(objSpell.InternalId == strImprovedSourceName)
                         {
                             return objSpell.DisplayNameShort(strLanguage);
                         }
@@ -6453,7 +6495,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.Power:
                     foreach(Power objPower in Powers)
                     {
-                        if(objPower.InternalId == objImprovement.SourceName)
+                        if(objPower.InternalId == strImprovedSourceName)
                         {
                             return objPower.DisplayNameShort(strLanguage);
                         }
@@ -6463,7 +6505,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.CritterPower:
                     foreach(CritterPower objPower in CritterPowers)
                     {
-                        if(objPower.InternalId == objImprovement.SourceName)
+                        if(objPower.InternalId == strImprovedSourceName)
                         {
                             return objPower.DisplayNameShort(strLanguage);
                         }
@@ -6473,7 +6515,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.Metamagic:
                     foreach (Metamagic objMetamagic in Metamagics)
                     {
-                        if (objMetamagic.InternalId == objImprovement.SourceName && objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic)
+                        if (objMetamagic.InternalId == strImprovedSourceName && objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic)
                         {
                             return objMetamagic.DisplayNameShort(strLanguage);
                         }
@@ -6483,7 +6525,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.Echo:
                     foreach(Metamagic objMetamagic in Metamagics)
                     {
-                        if(objMetamagic.InternalId == objImprovement.SourceName && objMetamagic.SourceType == Improvement.ImprovementSource.Echo)
+                        if(objMetamagic.InternalId == strImprovedSourceName && objMetamagic.SourceType == Improvement.ImprovementSource.Echo)
                         {
                             return objMetamagic.DisplayNameShort(strLanguage);
                         }
@@ -6493,7 +6535,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.Art:
                     foreach(Art objArt in Arts)
                     {
-                        if(objArt.InternalId == objImprovement.SourceName)
+                        if(objArt.InternalId == strImprovedSourceName)
                         {
                             return objArt.DisplayNameShort(strLanguage);
                         }
@@ -6503,7 +6545,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.Enhancement:
                     foreach(Enhancement objEnhancement in Enhancements)
                     {
-                        if(objEnhancement.InternalId == objImprovement.SourceName)
+                        if(objEnhancement.InternalId == strImprovedSourceName)
                         {
                             return objEnhancement.DisplayNameShort(strLanguage);
                         }
@@ -6511,38 +6553,44 @@ namespace Chummer
 
                     break;
                 case Improvement.ImprovementSource.Armor:
-                    foreach(Armor objArmor in Armor)
+                {
+                    foreach (Armor objArmor in Armor)
                     {
-                        if(objArmor.InternalId == objImprovement.SourceName)
+                        if (objArmor.InternalId == strImprovedSourceName)
                         {
                             string strReturnArmor = objArmor.DisplayNameShort(strLanguage);
-                            if (wireless)
+                            if (blnWireless)
                                 strReturnArmor += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                             return strReturnArmor;
                         }
                     }
 
                     break;
+                }
                 case Improvement.ImprovementSource.ArmorMod:
-                    foreach(Armor objArmor in Armor)
+                {
+                    foreach (Armor objArmor in Armor)
                     {
-                        foreach(ArmorMod objMod in objArmor.ArmorMods)
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
-                            if(objMod.InternalId == objImprovement.SourceName)
+                            if (objMod.InternalId == strImprovedSourceName)
                             {
-                                string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
-                                if (wireless)
-                                    strReturnArmorMod += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + '('
+                                                           + objArmor.DisplayNameShort(strLanguage) + ')';
+                                if (blnWireless)
+                                    strReturnArmorMod
+                                        += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
                                 return strReturnArmorMod;
                             }
                         }
                     }
 
                     break;
+                }
                 case Improvement.ImprovementSource.ComplexForm:
                     foreach(ComplexForm objComplexForm in ComplexForms)
                     {
-                        if(objComplexForm.InternalId == objImprovement.SourceName)
+                        if(objComplexForm.InternalId == strImprovedSourceName)
                         {
                             return objComplexForm.DisplayNameShort(strLanguage);
                         }
@@ -6552,7 +6600,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.AIProgram:
                     foreach(AIProgram objProgram in AIPrograms)
                     {
-                        if(objProgram.InternalId == objImprovement.SourceName)
+                        if(objProgram.InternalId == strImprovedSourceName)
                         {
                             return objProgram.DisplayNameShort(strLanguage);
                         }
@@ -6560,23 +6608,22 @@ namespace Chummer
 
                     break;
                 case Improvement.ImprovementSource.Quality:
-                    if(objImprovement.SourceName == "SEEKER_WIL")
+                    if(strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                     {
-                        return LoadDataXPath("qualities.xml")
+                        if (strImprovedSourceName == "SEEKER_WIL")
+                            return LoadDataXPath("qualities.xml")
                                    .SelectSingleNode(
                                        "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
                                    ?.Value ?? "Cyber-Singularity Seeker";
-                    }
-                    else if(objImprovement.SourceName.StartsWith("SEEKER", StringComparison.Ordinal))
-                    {
-                        return LoadDataXPath("qualities.xml")
+                        else
+                            return LoadDataXPath("qualities.xml")
                                    .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
                                    ?.Value ?? "Redliner";
                     }
 
                     foreach(Quality objQuality in Qualities)
                     {
-                        if(objQuality.InternalId == objImprovement.SourceName)
+                        if(objQuality.InternalId == strImprovedSourceName)
                         {
                             return objQuality.DisplayNameShort(strLanguage);
                         }
@@ -6586,7 +6633,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.MartialArtTechnique:
                     foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
                     {
-                        if (objTechnique.InternalId == objImprovement.SourceName)
+                        if (objTechnique.InternalId == strImprovedSourceName)
                         {
                             return objTechnique.DisplayName(strLanguage);
                         }
@@ -6596,7 +6643,7 @@ namespace Chummer
                 case Improvement.ImprovementSource.MentorSpirit:
                     foreach(MentorSpirit objMentorSpirit in MentorSpirits)
                     {
-                        if(objMentorSpirit.InternalId == objImprovement.SourceName)
+                        if(objMentorSpirit.InternalId == strImprovedSourceName)
                         {
                             return objMentorSpirit.DisplayNameShort(strLanguage);
                         }
@@ -6626,7 +6673,7 @@ namespace Chummer
                     // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                     if(!string.IsNullOrEmpty(objImprovement.CustomName))
                         return objImprovement.CustomName;
-                    string strReturn = objImprovement.SourceName;
+                    string strReturn = strImprovedSourceName;
                     if(string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                     {
                         string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource,
@@ -9947,13 +9994,14 @@ namespace Chummer
                     // Update any Metamagic Improvements the character might have.
                     foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Metamagic && x.Bonus?.InnerXml.Contains("Rating") == true))
                     {
+                        string strMetamagicId = objMetamagic.InternalId;
                         // If the Bonus contains "Rating", refresh ratings of existing Improvements.
                         if (Improvements.All(x =>
                             x.ImproveSource != Improvement.ImprovementSource.Metamagic ||
-                            x.SourceName != objMetamagic.InternalId))
+                            x.SourceName != strMetamagicId))
                         {
                             ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
-                                objMetamagic.InternalId, objMetamagic.Bonus, value,
+                                                                  strMetamagicId, objMetamagic.Bonus, value,
                                 objMetamagic.DisplayNameShort(GlobalSettings.Language));
                         }
                         else
@@ -9962,7 +10010,7 @@ namespace Chummer
                             for (int i = 0; i < Improvements.Count; ++i)
                             {
                                 Improvement objImprovement = Improvements[i];
-                                if (objImprovement.SourceName == objMetamagic.InternalId &&
+                                if (objImprovement.SourceName == strMetamagicId &&
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metamagic)
                                     objImprovement.Rating = value;
                             }
@@ -10442,13 +10490,14 @@ namespace Chummer
                     // Update any Echo Improvements the character might have.
                     foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Echo && x.Bonus?.InnerXml.Contains("Rating") == true))
                     {
+                        string strMetamagicId = objMetamagic.InternalId;
                         // If the Bonus contains "Rating", refresh ratings of existing Improvements.
                         if (Improvements.All(x =>
                             x.ImproveSource != Improvement.ImprovementSource.Echo ||
-                            x.SourceName != objMetamagic.InternalId))
+                            x.SourceName != strMetamagicId))
                         {
                             ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
-                                objMetamagic.InternalId, objMetamagic.Bonus, value,
+                                                                  strMetamagicId, objMetamagic.Bonus, value,
                                 objMetamagic.DisplayNameShort(GlobalSettings.Language));
                         }
                         else
@@ -10457,7 +10506,7 @@ namespace Chummer
                             for (int i = 0; i < Improvements.Count; ++i)
                             {
                                 Improvement objImprovement = Improvements[i];
-                                if (objImprovement.SourceName == objMetamagic.InternalId &&
+                                if (objImprovement.SourceName == strMetamagicId &&
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Echo)
                                     objImprovement.Rating = value;
                             }

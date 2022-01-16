@@ -230,37 +230,58 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
+                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
                 foreach (DirectoryDependency dependency in DependenciesList)
                 {
                     lstEnabledCustomData.Clear();
+                    Guid objDependencyGuid = dependency.UniqueIdentifier;
                     if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
                         lstEnabledCustomData.AddRange(
                             objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(
-                                x => x.Guid.Equals(dependency.UniqueIdentifier)));
+                                x => x.Guid.Equals(objDependencyGuid)));
                     if (lstEnabledCustomData.Count > 0)
                     {
                         // First check if we have any data whose version matches
-                        if (dependency.MinimumVersion != default || dependency.MaximumVersion != default)
+                        Version objMinVersion = dependency.MinimumVersion;
+                        Version objMaxVersion = dependency.MaximumVersion;
+                        if (objMinVersion != default || objMaxVersion != default)
                         {
-                            if (lstEnabledCustomData.All(x =>
-                                                             (dependency.MinimumVersion != default
-                                                              && x.MyVersion < dependency.MinimumVersion)
-                                                             || (dependency.MaximumVersion != default
-                                                                 && x.MyVersion > dependency.MaximumVersion)))
+                            bool blnMismatch;
+                            if (objMinVersion != default && objMaxVersion != default)
+                            {
+                                blnMismatch = lstEnabledCustomData.All(
+                                    x => x.MyVersion < objMinVersion
+                                         || x.MyVersion > objMaxVersion);
+                            }
+                            else if (objMinVersion != default)
+                            {
+                                blnMismatch = lstEnabledCustomData.All(x => x.MyVersion < objMinVersion);
+                            }
+                            else
+                            {
+                                blnMismatch = lstEnabledCustomData.All(x => x.MyVersion > objMaxVersion);
+                            }
+                            if (blnMismatch)
                             {
                                 sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
                                                        lstEnabledCustomData[0].DisplayName, dependency.DisplayName)
                                          .AppendLine();
                                 continue;
                             }
-
                             // Remove all from the list where version does not match before moving on to load orders
-                            lstEnabledCustomData.RemoveAll(x =>
-                                                               (dependency.MinimumVersion != default
-                                                                && x.MyVersion < dependency.MinimumVersion)
-                                                               || (dependency.MaximumVersion != default
-                                                                   && x.MyVersion > dependency.MaximumVersion));
+                            if (objMinVersion != default && objMaxVersion != default)
+                            {
+                                lstEnabledCustomData.RemoveAll(x => x.MyVersion < objMinVersion
+                                                                    || x.MyVersion > objMaxVersion);
+                            }
+                            else if (objMinVersion != default)
+                            {
+                                lstEnabledCustomData.RemoveAll(x => x.MyVersion < objMinVersion);
+                            }
+                            else
+                            {
+                                lstEnabledCustomData.RemoveAll(x => x.MyVersion > objMaxVersion);
+                            }
                         }
 
                         if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition
@@ -292,30 +313,39 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
+                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
                 foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
                 {
+                    Guid objIncompatibilityGuid = incompatibility.UniqueIdentifier;
                     //Use the fast HasSet.Contains to determine if any dependency is present
                     if (!objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(
-                            incompatibility.UniqueIdentifier))
+                            objIncompatibilityGuid))
                         continue;
                     //We still need to filter out all the matching incompatibilities from objCharacterSettings.EnabledCustomDataDirectoryInfos to check their versions
                     lstEnabledCustomData.Clear();
                     if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(
-                            incompatibility.UniqueIdentifier))
+                            objIncompatibilityGuid))
                         lstEnabledCustomData.AddRange(
                             objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(
-                                x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
+                                x => x.Guid.Equals(objIncompatibilityGuid)));
                     if (lstEnabledCustomData.Count == 0)
                         continue;
                     CustomDataDirectoryInfo objInfoToDisplay;
-                    if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
+                    Version objMinVersion = incompatibility.MinimumVersion;
+                    Version objMaxVersion = incompatibility.MaximumVersion;
+                    if (objMinVersion != default)
                     {
-                        objInfoToDisplay = lstEnabledCustomData.Find(
-                            x => (incompatibility.MinimumVersion != default
-                                  && x.MyVersion >= incompatibility.MinimumVersion)
-                                 || (incompatibility.MaximumVersion != default
-                                     && x.MyVersion <= incompatibility.MaximumVersion));
+                        if (incompatibility.MaximumVersion != default)
+                            objInfoToDisplay = lstEnabledCustomData.Find(
+                                x => x.MyVersion >= objMinVersion || x.MyVersion <= objMaxVersion);
+                        else
+                            objInfoToDisplay
+                                = lstEnabledCustomData.Find(x => x.MyVersion >= objMinVersion);
+                    }
+                    else if (incompatibility.MaximumVersion != default)
+                    {
+                        objInfoToDisplay
+                            = lstEnabledCustomData.Find(x => x.MyVersion <= objMaxVersion);
                     }
                     else
                         objInfoToDisplay = lstEnabledCustomData[0];

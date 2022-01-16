@@ -2740,7 +2740,7 @@ namespace Chummer
                     }
 
                     // Refresh Cyberware and Bioware.
-                    Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
+                    Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>(CharacterObject.Cyberware.Count);
                     foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
                     {
                         // We're only re-apply improvements a list of items, not all of them
@@ -15236,8 +15236,8 @@ namespace Chummer
                         }
                 }
 
-                Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>();
-                Dictionary<string, int> dicHasMounts = new Dictionary<string, int>();
+                Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>(6);
+                Dictionary<string, int> dicHasMounts = new Dictionary<string, int>(6);
                 if (objSelectedCyberware != null)
                 {
                     frmPickCyberware.ForcedGrade = objSelectedCyberware.Grade;

@@ -117,7 +117,9 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.Contains(_objContact.LinkedCharacter)
+                    ? _objContact.LinkedCharacter
+                    : null;
                 using (new CursorWait(this))
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
