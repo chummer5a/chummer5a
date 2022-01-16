@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -30,9 +29,9 @@ namespace Chummer.UI.Shared
     {
         private Character _objCharacter;
 
-        public event PropertyChangedEventHandler MakeDirty;
+        public event EventHandler MakeDirty;
 
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
+        public event EventHandler MakeDirtyWithCharacterUpdate;
 
         public LimitTabUserControl()
         {

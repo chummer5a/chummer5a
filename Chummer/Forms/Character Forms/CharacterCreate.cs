@@ -86,9 +86,8 @@ namespace Chummer
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
             CharacterObjectSettings.PropertyChanged += OnCharacterSettingsPropertyChanged;
-
-            tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
-            tabSkillUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            
+            tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
 
@@ -633,7 +632,7 @@ namespace Chummer
                     ToolStripManager.Merge(tsMain, "toolStrip");
                     using (_ = Timekeeper.StartSyncron("load_frm_create_skills", op_load_frm_create))
                     {
-                        tabSkillUc.RealLoad();
+                        tabSkillsUc.RealLoad();
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_powers", op_load_frm_create))

@@ -311,7 +311,7 @@ namespace Chummer
             this.nudNuyen = new Chummer.NumericUpDownEx();
             this.lblNuyenTotal = new System.Windows.Forms.Label();
             this.tabSkills = new System.Windows.Forms.TabPage();
-            this.tabSkillUc = new Chummer.UI.Skills.SkillsTabUserControl();
+            this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
             this.tabLimits = new System.Windows.Forms.TabPage();
             this.tabMartialArts = new System.Windows.Forms.TabPage();
             this.tlpMartialArts = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -4650,7 +4650,7 @@ namespace Chummer
             // 
             // tabSkills
             // 
-            this.tabSkills.Controls.Add(this.tabSkillUc);
+            this.tabSkills.Controls.Add(this.tabSkillsUc);
             this.tabSkills.Location = new System.Drawing.Point(4, 22);
             this.tabSkills.Name = "tabSkills";
             this.tabSkills.Size = new System.Drawing.Size(977, 631);
@@ -4659,17 +4659,17 @@ namespace Chummer
             this.tabSkills.Text = "Skills";
             this.tabSkills.UseVisualStyleBackColor = true;
             // 
-            // tabSkillUc
+            // tabSkillsUc
             // 
-            this.tabSkillUc.BackColor = System.Drawing.SystemColors.Control;
-            this.tabSkillUc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabSkillUc.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.tabSkillUc.Location = new System.Drawing.Point(0, 0);
-            this.tabSkillUc.Name = "tabSkillUc";
-            this.tabSkillUc.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.tabSkillUc.Size = new System.Drawing.Size(977, 631);
-            this.tabSkillUc.TabIndex = 0;
-            this.tabSkillUc.Tag = "";
+            this.tabSkillsUc.BackColor = System.Drawing.SystemColors.Control;
+            this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabSkillsUc.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
+            this.tabSkillsUc.Name = "tabSkillsUc";
+            this.tabSkillsUc.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.tabSkillsUc.Size = new System.Drawing.Size(977, 631);
+            this.tabSkillsUc.TabIndex = 0;
+            this.tabSkillsUc.Tag = "";
             // 
             // tabLimits
             // 
@@ -16273,7 +16273,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberlimbSTRLabel;
         private System.Windows.Forms.Label lblCyberlimbAGILabel;
         private System.Windows.Forms.TabPage tabSkills;
-        private UI.Skills.SkillsTabUserControl tabSkillUc;
+        private UI.Skills.SkillsTabUserControl tabSkillsUc;
         private System.Windows.Forms.Button cmdCreateStackedFocus;
         private System.Windows.Forms.TreeView treFoci;
         private System.Windows.Forms.Label lblAINormalProgramsBP;

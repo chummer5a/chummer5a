@@ -235,7 +235,7 @@ namespace Chummer
                 {
                     lstEnabledCustomData.Clear();
                     Guid objDependencyGuid = dependency.UniqueIdentifier;
-                    if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
+                    if (objCharacterSettings.EnabledCustomDataDirectoryInfoGuids.Contains(objDependencyGuid))
                         lstEnabledCustomData.AddRange(
                             objCharacterSettings.EnabledCustomDataDirectoryInfos.Where(
                                 x => x.Guid.Equals(objDependencyGuid)));

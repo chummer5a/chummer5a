@@ -36,9 +36,6 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        // TODO: check, if this can be removed???
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
-
         private TableView<Power> _table;
 
         public PowersTabUserControl()
@@ -241,8 +238,6 @@ namespace Chummer.UI.Powers
                     if (objPower.Create(objXmlPower))
                     {
                         _objCharacter.Powers.Add(objPower);
-
-                        MakeDirtyWithCharacterUpdate?.Invoke(null, null);
                     }
                 }
             }

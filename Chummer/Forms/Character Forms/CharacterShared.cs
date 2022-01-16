@@ -1446,6 +1446,14 @@ namespace Chummer
                         }
                         break;
 
+                    case ListChangedType.ItemDeleted:
+                    case ListChangedType.ItemChanged:
+                        break;
+                    case ListChangedType.ItemMoved:
+                    case ListChangedType.PropertyDescriptorAdded:
+                    case ListChangedType.PropertyDescriptorDeleted:
+                    case ListChangedType.PropertyDescriptorChanged:
+                        return;
                     case null:
                         {
                             foreach (Power objPower in CharacterObject.Powers)
@@ -1458,6 +1466,8 @@ namespace Chummer
                         break;
                 }
             }
+
+            MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
         }
 
         protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)

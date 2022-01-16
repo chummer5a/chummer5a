@@ -6237,27 +6237,25 @@ namespace Chummer
                         return strGearReturn;
                     }
 
-                    {
-                        objReturnGear = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objAccessory);
+                    objReturnGear = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory);
 
-                        if (objReturnGear != null)
-                        {
-                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + objAccessory.Parent.DisplayNameShort(strLanguage)
-                                                 + ','
-                                                 + strSpace
-                                                 + objAccessory.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                 + parent.DisplayNameShort(strLanguage) + ')';
-                            else
-                                strGearReturn += strSpace + '(' + objAccessory.Parent.DisplayNameShort(strLanguage)
-                                                 + ','
-                                                 + strSpace + objAccessory.DisplayNameShort(strLanguage) + ')';
-                            if (blnWireless)
-                                strGearReturn
-                                    += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
-                            return strGearReturn;
-                        }
+                    if (objReturnGear != null)
+                    {
+                        string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                        if (objReturnGear.Parent is Gear parent)
+                            strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
+                                             + ','
+                                             + strSpace
+                                             + objGearAccessory.DisplayNameShort(strLanguage) + ',' + strSpace
+                                             + parent.DisplayNameShort(strLanguage) + ')';
+                        else
+                            strGearReturn += strSpace + '(' + objGearAccessory.Parent.DisplayNameShort(strLanguage)
+                                             + ','
+                                             + strSpace + objGearAccessory.DisplayNameShort(strLanguage) + ')';
+                        if (blnWireless)
+                            strGearReturn
+                                += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                        return strGearReturn;
                     }
 
                     objReturnGear
@@ -6282,22 +6280,20 @@ namespace Chummer
                         return strGearReturn;
                     }
 
-                    {
-                        objReturnGear = Cyberware.FindCyberwareGear(strImprovedSourceName, out Cyberware objCyberware);
+                    objReturnGear = Cyberware.FindCyberwareGear(strImprovedSourceName, out Cyberware objGearCyberware);
 
-                        if (objReturnGear != null)
-                        {
-                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
-                            if (objReturnGear.Parent is Gear parent)
-                                strGearReturn += strSpace + '(' + objCyberware.DisplayNameShort(strLanguage) + ','
-                                                 + strSpace
-                                                 + strSpace + parent.DisplayNameShort(strLanguage) + ')';
-                            else
-                                strGearReturn += strSpace + '(' + objCyberware.DisplayNameShort(strLanguage) + ')';
-                            if (blnWireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
-                            return strGearReturn;
-                        }
+                    if (objReturnGear != null)
+                    {
+                        string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
+                        if (objReturnGear.Parent is Gear parent)
+                            strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ','
+                                             + strSpace
+                                             + strSpace + parent.DisplayNameShort(strLanguage) + ')';
+                        else
+                            strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ')';
+                        if (blnWireless)
+                            strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                        return strGearReturn;
                     }
 
                     foreach (Vehicle objVehicle in Vehicles)

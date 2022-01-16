@@ -674,6 +674,7 @@ namespace Chummer
 #else
         private void cmdUploadPastebin_Click(object sender, EventArgs e)
         {
+            // Method intentionally left empty.
         }
 #endif
 
