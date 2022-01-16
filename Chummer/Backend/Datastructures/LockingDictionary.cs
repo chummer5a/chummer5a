@@ -433,7 +433,10 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
+            IsDisposed = true;
             _rwlThis.Dispose();
         }
+
+        public bool IsDisposed { get; private set; }
     }
 }

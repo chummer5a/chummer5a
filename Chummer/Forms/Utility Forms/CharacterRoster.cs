@@ -775,12 +775,17 @@ namespace Chummer
         private TreeNode CacheCharacter(string strFile)
         {
             CharacterCache objCache;
-            while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
+            if (!_dicSavedCharacterCaches.IsDisposed)
             {
-                objCache = new CharacterCache(strFile);
-                if (_dicSavedCharacterCaches.TryAdd(strFile, objCache))
-                    break;
+                while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
+                {
+                    objCache = new CharacterCache(strFile);
+                    if (_dicSavedCharacterCaches.TryAdd(strFile, objCache))
+                        break;
+                }
             }
+            else
+                objCache = new CharacterCache(strFile);
 
             TreeNode objNode = new TreeNode
             {
