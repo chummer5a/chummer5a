@@ -858,13 +858,13 @@ namespace Chummer
 
                 decimal decReturn = 0;
 
-                // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
-                if (blnFetchAndCacheResults)
+                foreach (KeyValuePair<string, decimal> objLoopValuePair in dicValues)
                 {
-                    foreach (KeyValuePair<string, decimal> objLoopValuePair in dicValues)
+                    string strLoopImprovedName = objLoopValuePair.Key;
+                    decimal decLoopValue = objLoopValuePair.Value;
+                    // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
+                    if (blnFetchAndCacheResults)
                     {
-                        string strLoopImprovedName = objLoopValuePair.Key;
-                        decimal decLoopValue = objLoopValuePair.Value;
                         Tuple<decimal, List<Improvement>> tupNewValue =
                             new Tuple<decimal, List<Improvement>>(decLoopValue,
                                                                   dicImprovementsForValues[strLoopImprovedName]);
@@ -886,9 +886,11 @@ namespace Chummer
                             }
                         }
 
-                        decReturn += decLoopValue;
                         lstUsedImprovements.AddRange(tupNewValue.Item2);
                     }
+                    else
+                        lstUsedImprovements.AddRange(dicImprovementsForValues[strLoopImprovedName]);
+                    decReturn += decLoopValue;
                 }
 
                 return decReturn;
