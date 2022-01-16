@@ -219,6 +219,7 @@
                     <xs:element name="essmin" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="essmax" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="essaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="forceislevels" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="movement" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="walk" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="run" type="xs:string" minOccurs="0" maxOccurs="1" />

@@ -1920,12 +1920,7 @@ namespace Chummer
                             {
                                 // TODO: Unhardcode whether Force is called "Force" or "Level"
                                 lblForceLabel.Text = LanguageManager.GetString(
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("magmin")?.Value.Contains('F')
-                                    != true
+                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("forceislevels") != null
                                         ? "String_Level"
                                         : "String_Force");
                                 nudForce.Maximum = 100;
