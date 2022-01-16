@@ -100,7 +100,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(e.OldItems.Count);
                             foreach (LifestyleQuality objQuality in e.OldItems)
                             {
                                 TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
@@ -270,7 +270,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Replace:
                             {
-                                List<TreeNode> lstOldParents = new List<TreeNode>();
+                                List<TreeNode> lstOldParents = new List<TreeNode>(e.OldItems.Count);
                                 foreach (LifestyleQuality objFreeGrid in e.OldItems)
                                 {
                                     TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);

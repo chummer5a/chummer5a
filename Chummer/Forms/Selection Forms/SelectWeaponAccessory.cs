@@ -393,7 +393,7 @@ namespace Chummer
             if (blnUpdateMountComboBoxes)
             {
                 string strDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value;
-                List<string> strMounts = new List<string>();
+                List<string> strMounts = new List<string>(1);
                 if (!string.IsNullOrEmpty(strDataMounts))
                 {
                     strMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
@@ -422,7 +422,7 @@ namespace Chummer
                 cboMount.SelectedIndex = 0;
                 lblMountLabel.Visible = true;
 
-                List<string> strExtraMounts = new List<string>();
+                List<string> strExtraMounts = new List<string>(1);
                 string strExtraMount = xmlAccessory.SelectSingleNode("extramount")?.Value;
                 if (!string.IsNullOrEmpty(strExtraMount))
                 {

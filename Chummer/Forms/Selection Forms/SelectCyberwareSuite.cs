@@ -142,7 +142,7 @@ namespace Chummer
             decimal decTotalESS = 0.0m;
             decimal decTotalCost = 0;
 
-            List<Cyberware> lstSuiteCyberwares = new List<Cyberware>();
+            List<Cyberware> lstSuiteCyberwares = new List<Cyberware>(5);
             ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdCyberwareLabelString))
@@ -266,8 +266,8 @@ namespace Chummer
                         // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
                         XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = " + strName.CleanXPath() + "]");
 
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        List<Vehicle> lstVehicles = new List<Vehicle>();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                        List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         Cyberware objCyberware = new Cyberware(_objCharacter);
                         objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
                         objCyberware.Suite = true;

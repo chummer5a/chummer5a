@@ -312,7 +312,7 @@ namespace Chummer
                     PdfDocument objPdfDocument = new PdfDocument
                     {
                         Html = webViewer.DocumentText,
-                        ExtraParams = new Dictionary<string, string>
+                        ExtraParams = new Dictionary<string, string>(8)
                         {
                             {"encoding", "UTF-8"},
                             {"dpi", "300"},

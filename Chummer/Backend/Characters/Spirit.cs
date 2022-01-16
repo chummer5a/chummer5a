@@ -200,7 +200,7 @@ namespace Chummer
             {
                 //Attributes for spirits, named differently as to not confuse <attribute>
 
-                Dictionary<string, int> dicAttributes = new Dictionary<string, int>();
+                Dictionary<string, int> dicAttributes = new Dictionary<string, int>(s_PrintAttributeLabels.Count);
                 objWriter.WriteStartElement("spiritattributes");
                 foreach (string strAttribute in s_PrintAttributeLabels)
                 {

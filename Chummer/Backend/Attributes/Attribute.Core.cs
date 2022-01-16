@@ -831,12 +831,13 @@ namespace Chummer.Backend.Attributes
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setUniqueNames))
                 {
-                    List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>();
                     decimal decBaseValue = 0;
 
                     List<Improvement> lstUsedImprovements
                         = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+
+                    List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
 
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdModifier))

@@ -61,10 +61,13 @@ namespace Chummer
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>();
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0 + e.OldItems?.Count ?? 0);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
@@ -72,6 +75,7 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
                         if (objOldItem.Parent != this)
@@ -81,6 +85,7 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
                         if (objOldItem.Parent != this)
@@ -88,6 +93,7 @@ namespace Chummer
                         objOldItem.Parent = null;
                         lstImprovementSourcesToProcess.Add(objOldItem);
                     }
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;

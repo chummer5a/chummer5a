@@ -4212,10 +4212,10 @@ namespace Chummer
 
                             using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
                             {
-                                // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
-                                Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
                                 // Cyberware/Bioware.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
+                                // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
+                                Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>(objXmlNodeList.Count);
                                 foreach (XmlNode objXmlCyberware in objXmlNodeList)
                                 {
                                     Cyberware objCyberware = new Cyberware(this);
@@ -9608,7 +9608,7 @@ namespace Chummer
                                 }
                             }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
-                                new Dictionary<string, decimal>();
+                                new Dictionary<string, decimal>(Improvements.Count);
                             foreach(Improvement objImprovement in Improvements)
                             {
                                 if (!objImprovement.Enabled)
@@ -10060,7 +10060,7 @@ namespace Chummer
                                 }
                             }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
-                                new Dictionary<string, decimal>();
+                                new Dictionary<string, decimal>(Improvements.Count);
                             foreach (Improvement objImprovement in Improvements)
                             {
                                 if (!objImprovement.Enabled)
@@ -10285,7 +10285,7 @@ namespace Chummer
                                 }
                             }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
-                                new Dictionary<string, decimal>();
+                                new Dictionary<string, decimal>(Improvements.Count);
                             foreach (Improvement objImprovement in Improvements)
                             {
                                 if (!objImprovement.Enabled)
@@ -19157,7 +19157,7 @@ namespace Chummer
             IsLoadMethodRunning = true;
             try
             {
-                Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>();
+                Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);
                 XPathNavigator xmlStatBlockDocument = null;
                 XPathNavigator xmlLeadsDocument = null;
                 List<string> lstTextStatBlockLines = null;

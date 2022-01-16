@@ -228,7 +228,7 @@ namespace Chummer
                                             = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
                                               GlobalSettings.FavoriteCharacters.Count == 0;
                                         FileInfo objMostRecentAutosave = null;
-                                        List<string> lstOldAutosaves = new List<string>();
+                                        List<string> lstOldAutosaves = new List<string>(10);
                                         DateTime objOldAutosaveTimeThreshold =
                                             DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
                                         foreach (string strAutosave in Directory.EnumerateFiles(
@@ -1342,7 +1342,7 @@ namespace Chummer
                                            || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
                 ? FormWindowState.Maximized
                 : FormWindowState.Normal;
-            List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
+            List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>(lstNewCharacters.Count);
             string strUI = LanguageManager.GetString("String_UI");
             string strSpace = LanguageManager.GetString("String_Space");
             using (_frmProgressBar = CreateAndShowProgressBar(strUI, lstNewCharacters.Count))

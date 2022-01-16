@@ -6578,7 +6578,7 @@ namespace Chummer.Backend.Equipment
                               ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR)
                             : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR))
                         .StandardRound();
-                dicAttributeOverrides = new Dictionary<string, int>
+                dicAttributeOverrides = new Dictionary<string, int>(6)
                 {
                     {"STR", intUseSTR},
                     {"STRUnaug", intUseSTRUnaug},

@@ -517,11 +517,6 @@ namespace Chummer
 
             try
             {
-                Dictionary<string, List<Tuple<string, Improvement>>> dicUniquePairs
-                    = new Dictionary<string, List<Tuple<string, Improvement>>>();
-                Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
-                Dictionary<string, List<Improvement>> dicImprovementsForValues
-                    = new Dictionary<string, List<Improvement>>();
                 List<Improvement> lstImprovementsToConsider = new List<Improvement>(objCharacter.Improvements.Count);
                 foreach (Improvement objImprovement in objCharacter.Improvements)
                 {
@@ -553,7 +548,13 @@ namespace Chummer
                 }
 
                 List<Improvement> lstLoopImprovements;
-                Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
+                Dictionary<string, List<Tuple<string, Improvement>>> dicUniquePairs
+                    = new Dictionary<string, List<Tuple<string, Improvement>>>(lstImprovementsToConsider.Count);
+                Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>(lstImprovementsToConsider.Count);
+                Dictionary<string, List<Improvement>> dicImprovementsForValues
+                    = new Dictionary<string, List<Improvement>>(lstImprovementsToConsider.Count);
+                Dictionary<string, HashSet<string>> dicUniqueNames
+                    = new Dictionary<string, HashSet<string>>(lstImprovementsToConsider.Count);
                 try
                 {
                     foreach (Improvement objImprovement in lstImprovementsToConsider)
@@ -610,7 +611,7 @@ namespace Chummer
                         }
                     }
 
-                    List<Improvement> lstInnerLoopImprovements = new List<Improvement>();
+                    List<Improvement> lstInnerLoopImprovements = new List<Improvement>(1);
                     foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
                     {
                         string strLoopImprovedName = objLoopValuePair.Key;
@@ -619,7 +620,7 @@ namespace Chummer
                         if (blnValuesDictionaryContains)
                             dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
                         else
-                            lstLoopImprovements = new List<Improvement>();
+                            lstLoopImprovements = new List<Improvement>(dicUniqueNames.Count);
                         if (dicUniquePairs.TryGetValue(strLoopImprovedName,
                                                        out List<Tuple<string, Improvement>> lstUniquePairs))
                         {
@@ -729,9 +730,9 @@ namespace Chummer
                 // Factor in Custom Improvements.
                 dicUniqueNames.Clear();
                 dicUniquePairs.Clear();
-                Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
+                Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>(lstImprovementsToConsider.Count);
                 Dictionary<string, List<Improvement>> dicCustomImprovementsForValues
-                    = new Dictionary<string, List<Improvement>>();
+                    = new Dictionary<string, List<Improvement>>(lstImprovementsToConsider.Count);
                 try
                 {
                     foreach (Improvement objImprovement in lstImprovementsToConsider)
@@ -795,7 +796,7 @@ namespace Chummer
                         if (blnValuesDictionaryContains)
                             dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
                         else
-                            lstLoopImprovements = new List<Improvement>();
+                            lstLoopImprovements = new List<Improvement>(dicUniqueNames.Count);
                         if (dicUniquePairs.TryGetValue(strLoopImprovedName,
                                                        out List<Tuple<string, Improvement>> lstUniquePairs))
                         {

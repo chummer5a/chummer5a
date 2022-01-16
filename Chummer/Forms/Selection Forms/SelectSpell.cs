@@ -72,7 +72,7 @@ namespace Chummer
             _blnCanGenericSpellBeFree = blnCanGenericSpellBeFree;
             txtSearch.Text = string.Empty;
             // Populate the Category list.
-            List<Improvement> lstUsedImprovements = new List<Improvement>();
+            List<Improvement> lstUsedImprovements = null;
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> limit))
             {
                 if (!_blnIgnoreRequirements)
@@ -96,14 +96,17 @@ namespace Chummer
                     string strCategory = objXmlCategory.Value;
                     if (!_blnIgnoreRequirements)
                     {
-                        foreach (Improvement improvement in lstUsedImprovements)
+                        if (lstUsedImprovements != null)
                         {
-                            if (_xmlBaseSpellDataNode.SelectSingleNode(
-                                    strFilterPrefix + strCategory.CleanXPath() + " and range = "
-                                    + improvement.ImprovedName.CleanXPath() + "]")
-                                != null)
+                            foreach (Improvement improvement in lstUsedImprovements)
                             {
-                                limit.Add(strCategory);
+                                if (_xmlBaseSpellDataNode.SelectSingleNode(
+                                        strFilterPrefix + strCategory.CleanXPath() + " and range = "
+                                        + improvement.ImprovedName.CleanXPath() + "]")
+                                    != null)
+                                {
+                                    limit.Add(strCategory);
+                                }
                             }
                         }
 

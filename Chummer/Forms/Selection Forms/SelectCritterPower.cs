@@ -260,7 +260,7 @@ namespace Chummer
 
             string strCategory = cboCategory.SelectedValue?.ToString();
 
-            List<string> lstPowerWhitelist = new List<string>();
+            List<string> lstPowerWhitelist = new List<string>(10);
 
             // If the Critter is only allowed certain Powers, display only those.
             XPathNavigator xmlOptionalPowers = _xmlMetatypeDataNode.SelectSingleNodeAndCacheExpression("optionalpowers");
@@ -378,7 +378,8 @@ namespace Chummer
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))
             {
                 string strPowerName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
+                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
+                    continue;
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
                 TreeNode objNode = new TreeNode
                 {

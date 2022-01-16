@@ -422,8 +422,7 @@ namespace Chummer.Backend.Skills
             }
 
             objSkill.SkillId = suid;
-
-            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
+            
             foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization"))
             {
                 string strSpecializationName = xmlSpecializationNode.SelectSingleNode("@bonustext")?.Value;
@@ -432,11 +431,7 @@ namespace Chummer.Backend.Skills
                 int intLastPlus = strSpecializationName.LastIndexOf('+');
                 if (intLastPlus > strSpecializationName.Length)
                     strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
-                lstSpecializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
-            }
-            if (lstSpecializations.Count > 0)
-            {
-                objSkill.Specializations.AddRange(lstSpecializations);
+                objSkill.Specializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
             }
 
             return objSkill;
