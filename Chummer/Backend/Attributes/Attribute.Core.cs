@@ -569,36 +569,34 @@ namespace Chummer.Backend.Attributes
             if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Settings.DontUseCyberlimbCalculation && blnIncludeCyberlimbs)
             {
                 int intLimbTotal = 0;
-                foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
-                {
-                    intLimbCount += objCyberware.LimbSlotCount;
-                    switch (Abbrev)
-                    {
-                        case "STR":
-                            intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
-                            break;
+                ProcessCyberlimbs(_objCharacter.Cyberware);
 
-                        case "AGI":
-                            intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
-                            break;
-                    }
-                }
-                //TODO: TEST THIS. There's probably some stupid combination of cybersuites that will cause a weird conflict with this and regular limbs. Something something extra limbs, idk.
-                foreach (Cyberware objCyberSuite in _objCharacter.Cyberware.Where(objCyberware =>
-                    objCyberware.Category == "Cybersuite"))
+                void ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
                 {
-                    foreach (Cyberware objCyberware in objCyberSuite.Children.Where(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    foreach (Cyberware objCyberware in lstToCheck)
                     {
-                        intLimbCount += objCyberware.LimbSlotCount;
-                        switch (Abbrev)
+                        if (objCyberware.Category == "Cyberlimb")
                         {
-                            case "STR":
-                                intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
-                                break;
+                            if (!string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                && !_objCharacter.Settings.ExcludeLimbSlot
+                                                 .Contains(objCyberware.LimbSlot))
+                            {
+                                intLimbCount += objCyberware.LimbSlotCount;
+                                switch (Abbrev)
+                                {
+                                    case "STR":
+                                        intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
+                                        break;
 
-                            case "AGI":
-                                intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
-                                break;
+                                    case "AGI":
+                                        intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ProcessCyberlimbs(objCyberware.Children);
                         }
                     }
                 }
