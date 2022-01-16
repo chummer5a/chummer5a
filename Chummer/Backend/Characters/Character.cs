@@ -305,7 +305,7 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            foreach (Lifestyle objLifestyle in e.NewItems)
+            foreach (Lifestyle objLifestyle in e.OldItems)
                 objLifestyle.Dispose();
         }
 
@@ -334,7 +334,7 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            foreach (Spell objSpell in e.NewItems)
+            foreach (Spell objSpell in e.OldItems)
                 objSpell.Dispose();
         }
 

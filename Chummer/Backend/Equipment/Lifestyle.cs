@@ -1377,7 +1377,7 @@ namespace Chummer.Backend.Equipment
 
         private void FreeGridsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            foreach (LifestyleQuality objQuality in e.NewItems)
+            foreach (LifestyleQuality objQuality in e.OldItems)
             {
                 if (!LifestyleQualities.Contains(objQuality))
                     objQuality.Dispose();
@@ -1411,7 +1411,7 @@ namespace Chummer.Backend.Equipment
 
         private void LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            foreach (LifestyleQuality objQuality in e.NewItems)
+            foreach (LifestyleQuality objQuality in e.OldItems)
             {
                 if (!FreeGrids.Contains(objQuality))
                     objQuality.Dispose();
