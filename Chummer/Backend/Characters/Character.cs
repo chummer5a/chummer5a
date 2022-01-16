@@ -14588,9 +14588,6 @@ namespace Chummer
                 case "Swim":
                     intIndexToGet = 1;
                     break;
-                case "Ground":
-                default:
-                    break;
             }
 
             string strReturn = CurrentWalkingRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
@@ -14623,9 +14620,6 @@ namespace Chummer
                 case "Swim":
                     intIndexToGet = 1;
                     break;
-                case "Ground":
-                default:
-                    break;
             }
 
             string strReturn = CurrentRunningRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
@@ -14657,9 +14651,6 @@ namespace Chummer
                     break;
                 case "Swim":
                     intIndexToGet = 1;
-                    break;
-                case "Ground":
-                    default:
                     break;
             }
 

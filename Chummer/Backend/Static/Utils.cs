@@ -24,7 +24,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+#if DEBUG
 using System.Runtime.InteropServices;
+#endif
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
@@ -46,6 +48,8 @@ namespace Chummer
 #if DEBUG
             if (Debugger.IsAttached && !IsUnitTest)
                 Debugger.Break();
+#else
+            // Method intentionally left empty.
 #endif
         }
 
@@ -59,6 +63,8 @@ namespace Chummer
                 if (intErrorCode != 0)
                     Debugger.Break();
             }
+#else
+            // Method intentionally left empty.
 #endif
         }
 

@@ -4887,9 +4887,10 @@ namespace Chummer
             // Compatibility fix for when blnConcatSelectedValue was around
             if (strSourceName.IsGuid())
             {
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSourceNameSpaced = strSourceName + LanguageManager.GetString("String_Space");
+                string strSourceNameSpacedInvariant = strSourceName + ' ';
                 objImprovementList.AddRange(objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource &&
-                    (objImprovement.SourceName.StartsWith(strSourceName + strSpace, StringComparison.Ordinal) || objImprovement.SourceName.StartsWith(strSourceName + " ", StringComparison.Ordinal))));
+                    (objImprovement.SourceName.StartsWith(strSourceNameSpaced, StringComparison.Ordinal) || objImprovement.SourceName.StartsWith(strSourceNameSpacedInvariant, StringComparison.Ordinal))));
             }
             return RemoveImprovements(objCharacter, objImprovementList);
         }
