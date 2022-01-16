@@ -474,7 +474,7 @@ namespace Chummer
 
         public MasterIndex MasterIndex { get; }
 
-#if DEBUG
+#if !DEBUG
         private Uri UpdateLocation { get; } = new Uri(GlobalSettings.PreferNightlyBuilds
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
