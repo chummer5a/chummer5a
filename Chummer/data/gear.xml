@@ -7011,6 +7011,7 @@
       <cost>5</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>4f5b4fbc-78c4-4aa4-a5c2-7739f12e9b39</id>
@@ -7024,6 +7025,7 @@
       <cost>20</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>697ef5f4-8cde-434d-aca6-1bddd4d526d3</id>
@@ -7037,6 +7039,7 @@
       <cost>100</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>a19055f0-02ab-4bc2-ab43-0ef82e1b9100</id>
@@ -7050,6 +7053,7 @@
       <cost>500</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>fd2c8afe-7c0f-4b98-ae93-a6108531b236</id>
@@ -7063,6 +7067,7 @@
       <cost>1000</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>8a16bbb2-8028-4c74-b22b-7aad9d001073</id>
@@ -18943,6 +18948,7 @@
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>d363dda7-4b9f-4323-b652-77a9ee037356</id>
@@ -18960,6 +18966,7 @@
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>104549ed-d60b-4d57-bde4-8b8a92cc7408</id>
@@ -18977,6 +18984,7 @@
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>58b5730c-b8e4-4152-a1b3-31329d8a52fb</id>
