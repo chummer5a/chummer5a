@@ -162,32 +162,42 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+                if (setNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
+                    _intCachedKnowledgePoints = int.MinValue;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
-                return;
-            if (lstNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
-                _intCachedKnowledgePoints = int.MinValue;
-
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
         internal void AddSkills(FilterOption skills, string strName = "")
         {
-            List<Skill> lstSkillsToAdd = new List<Skill>();
+            List<Skill> lstSkillsToAdd;
             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (XmlNodeList xmlSkillList = xmlSkillsDocument
                        .SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')'
@@ -195,6 +205,7 @@ namespace Chummer.Backend.Skills
             {
                 if (xmlSkillList?.Count > 0)
                 {
+                    lstSkillsToAdd = new List<Skill>(xmlSkillList.Count);
                     foreach (XmlNode xmlSkill in xmlSkillList)
                     {
                         if (_dicSkillBackups.Count > 0
@@ -217,6 +228,8 @@ namespace Chummer.Backend.Skills
                         }
                     }
                 }
+                else
+                    return;
             }
 
             foreach (Skill objSkill in lstSkillsToAdd)
@@ -624,7 +637,7 @@ namespace Chummer.Backend.Skills
 
             using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
-                List<Skill> lstTempSkillList = new List<Skill>();
+                List<Skill> lstTempSkillList = new List<Skill>(Skills.Count);
                 foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill"))
                 {
                     Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
@@ -1311,8 +1324,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static readonly DependencyGraph<string, SkillsSection> s_SkillSectionDependencyGraph =
-            new DependencyGraph<string, SkillsSection>(
+        private static readonly PropertyDependencyGraph<SkillsSection> s_SkillSectionDependencyGraph =
+            new PropertyDependencyGraph<SkillsSection>(
                 new DependencyGraphNode<string, SkillsSection>(nameof(HasKnowledgePoints),
                     new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints))
                 ),

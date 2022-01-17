@@ -46,7 +46,11 @@ Application Changes:
 - Drain expressions now properly show their translated names.
 - Chummer can now properly find the source of any bonuses added by vehicle mods, weapons, gear, and/or cyberware inside of a vehicle's weapon mount.
 - Metatypes and critters with separate Swimming running speeds now properly show their separate walking and running speeds.
-- Added support for the actiondicepool improvement selecting from a list of the actions provided in actions.xml. 
+- Added support for the actiondicepool improvement selecting from a list of the actions provided in actions.xml.
+- Improvements and other types of bonuses that disable cyberware and/or bioware no longer prevent characters from buying Essence Holes, Essence Antiholes, unequipped modular cyberlimbs, and plugins for unequipped modular cyberlimbs.
+- When adding bonuses or improvements that disable cyberware and/or bioware, characters no longer get their Essence Holes, Antiholes, and modular cyberlimbs deleted.
+- Armor costs now properly support "FixedValues()" entries.
+- Cybersuites that add cyberlimbs now properly incorporate those cyberlimbs' attributes into the character's overall attributes.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
@@ -65,6 +69,8 @@ Data Changes:
 - Dead SIN now properly gives four fake licenses instead of three. Fixes #4666.
 - Ram Plate uses the stats from the print version of Rigger 5.0, which, unlike the PDF version, actually has stats listed for the Ram Plate.
 - Codeslinger quality now prompts for an action from the Matrix category of actions.xml.
+- Shadowrun Missions Rules has been updated to include the rules and additional authors added by the 1.4 supplemental FAQ.
+- The GMC Armadillo now comes with Off-Road Suspension included.
 - Fixed incorrect skill prompts for the Mystic Guardian and Doberman mentor spirits. Closes #4672
 
 Changed/New Strings:
@@ -73,6 +79,9 @@ Changed/New Strings:
 - String_Lossy_Manual_Compression_Option
 - Message_Options_FileIsNotPDF
 - MessageTitle_Options_FileIsNotPDF
+- Message_Prompt_Delete_Existing_File
+- Message_File_Cannot_Be_Accessed
+- Message_File_Cannot_Be_Read_Accessed
 
 Deleted Strings:
 - String_Lossy_Compression_Option

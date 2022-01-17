@@ -977,8 +977,8 @@ namespace Chummer
                 DiscountedAdeptWay = false;
         }
 
-        private static readonly DependencyGraph<string, Power> s_PowerDependencyGraph =
-            new DependencyGraph<string, Power>(
+        private static readonly PropertyDependencyGraph<Power> s_PowerDependencyGraph =
+            new PropertyDependencyGraph<Power>(
                 new DependencyGraphNode<string, Power>(nameof(DisplayPoints),
                     new DependencyGraphNode<string, Power>(nameof(PowerPoints),
                         new DependencyGraphNode<string, Power>(nameof(TotalRating),
@@ -1035,51 +1035,65 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_PowerDependencyGraph.GetWithAllDependentsEnumerable(
+                                     this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
+                    _strCachedPowerPoints = string.Empty;
+                if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+                    _intCachedFreeLevels = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(PowerPoints)))
+                    _decCachedPowerPoints = decimal.MinValue;
+
+                // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+                if (setNamesOfChangedProperties.Contains(nameof(TotalRating))
+                    && Bonus?.InnerXml.Contains("Rating") == true)
+                {
+                    // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
+                    // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
+                    // TODO: Solve this bad code
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power,
+                                                          InternalId);
+                    int intTotalRating = TotalRating;
+                    if (intTotalRating > 0)
+                    {
+                        ImprovementManager.ForcedValue = Extra;
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power,
+                                                              InternalId, Bonus, intTotalRating,
+                                                              DisplayNameShort(GlobalSettings.Language));
+                    }
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
+                {
+                    RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
+                }
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (lstNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
-                _strCachedPowerPoints = string.Empty;
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
-                _intCachedFreeLevels = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(PowerPoints)))
-                _decCachedPowerPoints = decimal.MinValue;
-
-            // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)) && Bonus?.InnerXml.Contains("Rating") == true)
+            finally
             {
-                // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
-                // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
-                // TODO: Solve this bad code
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
-                int intTotalRating = TotalRating;
-                if (intTotalRating > 0)
-                {
-                    ImprovementManager.ForcedValue = Extra;
-                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, intTotalRating, DisplayNameShort(GlobalSettings.Language));
-                }
-            }
-
-            if (lstNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
-            {
-                RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
-            }
-
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 

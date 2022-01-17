@@ -215,7 +215,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (string.IsNullOrEmpty(_strForcedValue))
                 {
-                    using (frmSelectText frmPickText = new frmSelectText
+                    using (SelectText frmPickText = new SelectText
                     {
                         PreventXPathErrors = true,
                         Description = LanguageManager.GetString("String_CustomItem_SelectText")
@@ -272,8 +272,8 @@ namespace Chummer.Backend.Equipment
 
                     DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                     {
-                        using (frmSelectNumber frmPickNumber
-                               = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                        using (SelectNumber frmPickNumber
+                               = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                {
                                    Minimum = decMin,
                                    Maximum = decMax,
@@ -304,7 +304,7 @@ namespace Chummer.Backend.Equipment
                 blnDoExtra = objXmlGear.SelectSingleNode("ammoforweapontype/@noextra")?.Value != bool.TrueString;
             if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
             {
-                frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter)
+                SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
                     WeaponType = strAmmoWeaponType
@@ -544,7 +544,7 @@ namespace Chummer.Backend.Equipment
                                 string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                                 if (string.IsNullOrEmpty(strFriendlyName))
                                     strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
-                                using (frmSelectItem frmPickItem = new frmSelectItem
+                                using (SelectItem frmPickItem = new SelectItem
                                        {
                                            Description = string.Format(GlobalSettings.CultureInfo,
                                                                        LanguageManager.GetString(
@@ -3878,8 +3878,8 @@ namespace Chummer.Backend.Equipment
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, Gear> s_GearDependencyGraph =
-            new DependencyGraph<string, Gear>(
+        private static readonly PropertyDependencyGraph<Gear> s_GearDependencyGraph =
+            new PropertyDependencyGraph<Gear>(
                 new DependencyGraphNode<string, Gear>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, Gear>(nameof(DisplayName),
                         new DependencyGraphNode<string, Gear>(nameof(DisplayNameShort),
@@ -3993,25 +3993,34 @@ namespace Chummer.Backend.Equipment
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_GearDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_GearDependencyGraph.GetWithAllDependents(this,
-                        strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties = s_GearDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_GearDependencyGraph.GetWithAllDependentsEnumerable(
+                                     this,
+                                     strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
-                return;
-
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 

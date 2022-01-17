@@ -26,7 +26,7 @@ namespace Chummer
     /// This class is for managing directed graphs where each node is an object and each directed edge points from a given object to another object on which the first depends.
     /// When changing an object, this allows for any and all objects that depend on the first in some way to be fetched.
     /// </summary>
-    public sealed class DependencyGraph<T, T2>
+    public class DependencyGraph<T, T2>
     {
         /// <summary>
         /// Initializes a directed graph of dependent items based on a blueprint specified in the constructor.
@@ -46,7 +46,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        public HashSet<T> GetWithAllDependents(T2 objParentInstance, T objKey)
+        public virtual HashSet<T> GetWithAllDependents(T2 objParentInstance, T objKey)
         {
             HashSet<T> objReturn = new HashSet<T>();
             if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
@@ -74,7 +74,7 @@ namespace Chummer
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
         /// <param name="objReturn">Collection containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
-        private void CollectDependents(T2 objParentInstance, T objKey, ICollection<T> objReturn)
+        protected void CollectDependents(T2 objParentInstance, T objKey, ICollection<T> objReturn)
         {
             if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode) && !objReturn.Contains(objLoopNode.MyObject))
             {

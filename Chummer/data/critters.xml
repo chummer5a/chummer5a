@@ -43520,6 +43520,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43602,6 +43603,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43684,6 +43686,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43763,6 +43766,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43844,6 +43848,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43910,6 +43915,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43976,6 +43982,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44042,6 +44049,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44108,6 +44116,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44176,6 +44185,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44254,6 +44264,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44333,6 +44344,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44415,6 +44427,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44495,6 +44508,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -44572,6 +44586,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -50159,6 +50174,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -50225,6 +50241,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>

@@ -37,7 +37,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
+    public sealed class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -362,7 +362,7 @@ namespace Chummer
                 HashDescriptors.Add(strDescriptor);
         }
 
-        public HashSet<string> HashDescriptors { get; } = new HashSet<string>();
+        public HashSet<string> HashDescriptors { get; } = Utils.StringHashSetPool.Get();
 
         /// <summary>
         /// Translated Descriptors.
@@ -1224,6 +1224,12 @@ namespace Chummer
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Utils.StringHashSetPool.Return(HashDescriptors);
         }
     }
 }

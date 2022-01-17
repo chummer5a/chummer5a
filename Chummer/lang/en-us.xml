@@ -47,12 +47,16 @@
       <text>Chummer5 encountered an error while saving the character.</text>
     </string>
     <string>
+      <key>Message_Prompt_Delete_Existing_File</key>
+      <text>Chummer5 has detected that the following file already exists at this location that is outside of the Chummer base directory:\n{0}\n\nAre you sure you wish to remove the old file?</text>
+    </string>
+    <string>
       <key>Message_File_Cannot_Be_Accessed</key>
-      <text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
+      <text>Chummer5 cannot access the following file for writing:\n{0}\n\nPlease make sure it has permission to write to the location and that the file is not currently in use.</text>
     </string>
     <string>
       <key>Message_File_Cannot_Be_Read_Accessed</key>
-      <text>Chummer5 cannot access the file {0}. Please make sure that the file exists and that Chummer5 has permission to read from the location.</text>
+      <text>Chummer5 cannot access the following file:\n{0}\n\nPlease make sure that the file exists and that Chummer5 has permission to read from the location.</text>
     </string>
     <string>
       <key>Message_Files_Cannot_Be_Removed</key>

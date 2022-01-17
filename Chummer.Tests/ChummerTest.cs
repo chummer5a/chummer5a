@@ -96,12 +96,12 @@ namespace Chummer.Tests
         public void Test01_BasicStartup()
         {
             Debug.WriteLine("Unit test initialized for: Test01_BasicStartup()");
-            frmChummerMain frmOldMainForm = Program.MainForm;
-            frmChummerMain frmTestForm = null;
+            ChummerMainForm frmOldMainForm = Program.MainForm;
+            ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new frmChummerMain(true)
+                frmTestForm = new ChummerMainForm(true)
                 {
                     WindowState = FormWindowState.Minimized,
                     ShowInTaskbar =
@@ -228,12 +228,12 @@ namespace Chummer.Tests
         public void Test05_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
-            frmChummerMain frmOldMainForm = Program.MainForm;
-            frmChummerMain frmTestForm = null;
+            ChummerMainForm frmOldMainForm = Program.MainForm;
+            ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new frmChummerMain(true)
+                frmTestForm = new ChummerMainForm(true)
                 {
                     WindowState = FormWindowState.Minimized,
                     ShowInTaskbar =
@@ -252,8 +252,8 @@ namespace Chummer.Tests
                         try
                         {
                             using (CharacterShared frmCharacterForm = objCharacter.Created
-                                ? (CharacterShared)new frmCareer(objCharacter)
-                                : new frmCreate(objCharacter))
+                                ? (CharacterShared)new CharacterCareer(objCharacter)
+                                : new CharacterCreate(objCharacter))
                             {
                                 frmCharacterForm.MdiParent = frmTestForm;
                                 frmCharacterForm.ShowInTaskbar = false;

@@ -44,34 +44,44 @@ namespace Chummer.Backend.Attributes
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_AttributeSectionDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_AttributeSectionDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_AttributeSectionDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_AttributeSectionDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
-                return;
-
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
-        private static readonly DependencyGraph<string, AttributeSection> s_AttributeSectionDependencyGraph =
-            new DependencyGraph<string, AttributeSection>(
+        private static readonly PropertyDependencyGraph<AttributeSection> s_AttributeSectionDependencyGraph =
+            new PropertyDependencyGraph<AttributeSection>(
             );
 
-        private ObservableCollection<CharacterAttrib> _colAttributes;
+        private EnhancedObservableCollection<CharacterAttrib> _colAttributes;
 
-        public ObservableCollection<CharacterAttrib> Attributes
+        public EnhancedObservableCollection<CharacterAttrib> Attributes
         {
             get
             {
@@ -80,7 +90,7 @@ namespace Chummer.Backend.Attributes
                     return _colAttributes;
                 }
 
-                _colAttributes = new ObservableCollection<CharacterAttrib>
+                _colAttributes = new EnhancedObservableCollection<CharacterAttrib>
                 {
                     _objCharacter.BOD,
                     _objCharacter.AGI,
@@ -357,7 +367,7 @@ namespace Chummer.Backend.Attributes
 
                 if (Attributes == null)
                 {
-                    Attributes = new ObservableCollection<CharacterAttrib>
+                    Attributes = new EnhancedObservableCollection<CharacterAttrib>
                     {
                         _objCharacter.BOD,
                         _objCharacter.AGI,
@@ -887,8 +897,7 @@ namespace Chummer.Backend.Attributes
                             .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
-                            int intAttributeValue = 0;
-                            if (dicValueOverrides?.TryGetValue(strCharAttributeName, out intAttributeValue) != true)
+                            if (dicValueOverrides == null || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
                                 intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalValue;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
@@ -900,8 +909,7 @@ namespace Chummer.Backend.Attributes
                             .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
-                            int intAttributeValue = 0;
-                            if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Unaug", out intAttributeValue) != true)
+                            if (dicValueOverrides == null || !dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intAttributeValue))
                                 intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).Value;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
@@ -915,8 +923,7 @@ namespace Chummer.Backend.Attributes
                             .DisplayNameShort(strLanguage);
                         if (blnShowValues)
                         {
-                            int intAttributeValue = 0;
-                            if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Base", out intAttributeValue) != true)
+                            if (dicValueOverrides == null || !dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intAttributeValue))
                                 intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalBase;
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
@@ -947,8 +954,7 @@ namespace Chummer.Backend.Attributes
                         .DisplayNameShort(strLanguage);
                     if (blnShowValues)
                     {
-                        int intAttributeValue = 0;
-                        if (dicValueOverrides?.TryGetValue(strCharAttributeName, out intAttributeValue) != true)
+                        if (dicValueOverrides == null || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
                             intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalValue;
                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                     }
@@ -960,8 +966,7 @@ namespace Chummer.Backend.Attributes
                         .DisplayNameShort(strLanguage);
                     if (blnShowValues)
                     {
-                        int intAttributeValue = 0;
-                        if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Unaug", out intAttributeValue) != true)
+                        if (dicValueOverrides == null || !dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intAttributeValue))
                             intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).Value;
                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                     }
@@ -975,8 +980,7 @@ namespace Chummer.Backend.Attributes
                         .DisplayNameShort(strLanguage);
                     if (blnShowValues)
                     {
-                        int intAttributeValue = 0;
-                        if (dicValueOverrides?.TryGetValue(strCharAttributeName + "Base", out intAttributeValue) != true)
+                        if (dicValueOverrides == null || !dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intAttributeValue))
                             intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalBase;
                         strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                     }

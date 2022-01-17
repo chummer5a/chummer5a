@@ -221,14 +221,14 @@ namespace Codaxy.WkHtmlToPdf
 
                 if (document.ExtraParams != null)
                 {
-                    foreach (var extraParam in document.ExtraParams)
+                    foreach (KeyValuePair<string, string> extraParam in document.ExtraParams)
                         sbdParams.Append("--").Append(extraParam.Key).Append(' ').Append(extraParam.Value)
                                  .Append(' ');
                 }
 
                 if (document.Cookies != null)
                 {
-                    foreach (var cookie in document.Cookies)
+                    foreach (KeyValuePair<string, string> cookie in document.Cookies)
                         sbdParams.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value)
                                  .Append(' ');
                 }
@@ -284,16 +284,18 @@ namespace Codaxy.WkHtmlToPdf
                         process.OutputDataReceived += OutputHandler;
                         process.ErrorDataReceived += ErrorHandler;
 
+                        Task<int> tskAsyncProcess = null;
                         try
                         {
                             CancellationTokenSource objCancellationTokenSource = null;
-                            Task<int> tskAsyncProcess = null;
                             if (blnSync)
                                 process.Start();
                             else
                             {
                                 objCancellationTokenSource = new CancellationTokenSource(environment.Timeout);
+#pragma warning disable AsyncFixer04 // Fire-and-forget async call inside a using block
                                 tskAsyncProcess = process.StartAsync(objCancellationTokenSource.Token);
+#pragma warning restore AsyncFixer04 // Fire-and-forget async call inside a using block
                             }
 
                             process.BeginOutputReadLine();
@@ -301,7 +303,7 @@ namespace Codaxy.WkHtmlToPdf
 
                             if (document.Html != null)
                             {
-                                using (var stream = process.StandardInput)
+                                using (StreamWriter stream = process.StandardInput)
                                 {
                                     byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
                                     if (blnSync)
@@ -371,6 +373,7 @@ namespace Codaxy.WkHtmlToPdf
                         {
                             process.OutputDataReceived -= OutputHandler;
                             process.ErrorDataReceived -= ErrorHandler;
+                            tskAsyncProcess?.Dispose();
                         }
                     }
                 }

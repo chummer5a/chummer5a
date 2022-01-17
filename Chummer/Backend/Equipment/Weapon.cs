@@ -372,8 +372,8 @@ namespace Chummer.Backend.Equipment
 
                         DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
                         {
-                            using (frmSelectNumber frmPickNumber
-                                   = new frmSelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                            using (SelectNumber frmPickNumber
+                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                    {
                                        Minimum = decMin,
                                        Maximum = decMax,
@@ -2858,11 +2858,11 @@ namespace Chummer.Backend.Equipment
         {
             // Move the contents of the array to a list so it's easier to work with.
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                            out HashSet<string> lstModes))
+                                                            out HashSet<string> setModes))
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                            out HashSet<string> lstNewModes))
+                                                            out HashSet<string> setNewModes))
             {
-                lstModes.AddRange(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
+                setModes.AddRange(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
 
                 // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
                 if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2882,28 +2882,28 @@ namespace Chummer.Backend.Equipment
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strFireMode.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        lstNewModes.Add(strMode);
+                                        setNewModes.Add(strMode);
                                 }
                                 else
                                 {
-                                    lstNewModes.Add(strFireMode);
+                                    setNewModes.Add(strFireMode);
                                 }
                             }
 
                             strFireMode = objGear.FlechetteWeaponBonus["modereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strFireMode))
                             {
-                                lstModes.Clear();
+                                setModes.Clear();
                                 if (strFireMode.Contains('/'))
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strFireMode.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        lstModes.Add(strMode);
+                                        setModes.Add(strMode);
                                 }
                                 else
                                 {
-                                    lstModes.Add(strFireMode);
+                                    setModes.Add(strFireMode);
                                 }
                             }
                         }
@@ -2917,28 +2917,28 @@ namespace Chummer.Backend.Equipment
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strFireMode.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        lstNewModes.Add(strMode);
+                                        setNewModes.Add(strMode);
                                 }
                                 else
                                 {
-                                    lstNewModes.Add(strFireMode);
+                                    setNewModes.Add(strFireMode);
                                 }
                             }
 
                             strFireMode = objGear.WeaponBonus["modereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strFireMode))
                             {
-                                lstModes.Clear();
+                                setModes.Clear();
                                 if (strFireMode.Contains('/'))
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strFireMode.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        lstModes.Add(strMode);
+                                        setModes.Add(strMode);
                                 }
                                 else
                                 {
-                                    lstModes.Add(strFireMode);
+                                    setModes.Add(strFireMode);
                                 }
                             }
                         }
@@ -2957,28 +2957,28 @@ namespace Chummer.Backend.Equipment
                                         // Move the contents of the array to a list so it's easier to work with.
                                         foreach (string strMode in strFireMode.SplitNoAlloc(
                                                      '/', StringSplitOptions.RemoveEmptyEntries))
-                                            lstNewModes.Add(strMode);
+                                            setNewModes.Add(strMode);
                                     }
                                     else
                                     {
-                                        lstNewModes.Add(strFireMode);
+                                        setNewModes.Add(strFireMode);
                                     }
                                 }
 
                                 strFireMode = objChild.FlechetteWeaponBonus["modereplace"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strFireMode))
                                 {
-                                    lstModes.Clear();
+                                    setModes.Clear();
                                     if (strFireMode.Contains('/'))
                                     {
                                         // Move the contents of the array to a list so it's easier to work with.
                                         foreach (string strMode in strFireMode.SplitNoAlloc(
                                                      '/', StringSplitOptions.RemoveEmptyEntries))
-                                            lstModes.Add(strMode);
+                                            setModes.Add(strMode);
                                     }
                                     else
                                     {
-                                        lstModes.Add(strFireMode);
+                                        setModes.Add(strFireMode);
                                     }
                                 }
                             }
@@ -2992,28 +2992,28 @@ namespace Chummer.Backend.Equipment
                                         // Move the contents of the array to a list so it's easier to work with.
                                         foreach (string strMode in strFireMode.SplitNoAlloc(
                                                      '/', StringSplitOptions.RemoveEmptyEntries))
-                                            lstNewModes.Add(strMode);
+                                            setNewModes.Add(strMode);
                                     }
                                     else
                                     {
-                                        lstNewModes.Add(strFireMode);
+                                        setNewModes.Add(strFireMode);
                                     }
                                 }
 
                                 strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strFireMode))
                                 {
-                                    lstModes.Clear();
+                                    setModes.Clear();
                                     if (strFireMode.Contains('/'))
                                     {
                                         // Move the contents of the array to a list so it's easier to work with.
                                         foreach (string strMode in strFireMode.SplitNoAlloc(
                                                      '/', StringSplitOptions.RemoveEmptyEntries))
-                                            lstModes.Add(strMode);
+                                            setModes.Add(strMode);
                                     }
                                     else
                                     {
-                                        lstModes.Add(strFireMode);
+                                        setModes.Add(strFireMode);
                                     }
                                 }
                             }
@@ -3033,46 +3033,46 @@ namespace Chummer.Backend.Equipment
                             // Move the contents of the array to a list so it's easier to work with.
                             foreach (string strMode in objAccessory.FireMode.SplitNoAlloc(
                                          '/', StringSplitOptions.RemoveEmptyEntries))
-                                lstNewModes.Add(strMode);
+                                setNewModes.Add(strMode);
                         }
                         else
                         {
-                            lstNewModes.Add(objAccessory.FireMode);
+                            setNewModes.Add(objAccessory.FireMode);
                         }
                     }
 
                     if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
                     {
-                        lstModes.Clear();
+                        setModes.Clear();
                         if (objAccessory.FireModeReplacement.Contains('/'))
                         {
                             // Move the contents of the array to a list so it's easier to work with.
                             foreach (string strMode in objAccessory.FireModeReplacement.SplitNoAlloc(
                                          '/', StringSplitOptions.RemoveEmptyEntries))
-                                lstModes.Add(strMode);
+                                setModes.Add(strMode);
                         }
                         else
                         {
-                            lstModes.Add(objAccessory.FireModeReplacement);
+                            setModes.Add(objAccessory.FireModeReplacement);
                         }
                     }
                 }
 
-                lstModes.UnionWith(lstNewModes);
+                setModes.UnionWith(setNewModes);
 
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    if (lstModes.Contains("SS"))
+                    if (setModes.Contains("SS"))
                         sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage)).Append('/');
-                    if (lstModes.Contains("SA"))
+                    if (setModes.Contains("SA"))
                         sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage))
                                  .Append('/');
-                    if (lstModes.Contains("BF"))
+                    if (setModes.Contains("BF"))
                         sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage)).Append('/');
-                    if (lstModes.Contains("FA"))
+                    if (setModes.Contains("FA"))
                         sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage))
                                  .Append('/');
-                    if (lstModes.Contains("Special"))
+                    if (setModes.Contains("Special"))
                         sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage)).Append('/');
 
                     // Remove the trailing "/".
@@ -3739,7 +3739,6 @@ namespace Chummer.Backend.Equipment
 
         /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
-        /// TODO: Databindable?
         /// </summary>
         public string GetAccuracy(CultureInfo objCulture, string strLanguage)
         {
@@ -5512,7 +5511,7 @@ namespace Chummer.Backend.Equipment
                 if (intMaxAmmoCount <= intCurrentAmmoCount)
                     return;
 
-                using (frmSelectNumber frmNewAmmoCount = new frmSelectNumber(0)
+                using (SelectNumber frmNewAmmoCount = new SelectNumber(0)
                 {
                     AllowCancel = true,
                     Maximum = intMaxAmmoCount,
@@ -5593,7 +5592,7 @@ namespace Chummer.Backend.Equipment
                 lstAmmo.Add(objExternalSource);
 
             // Show the Ammunition Selection window.
-            using (frmReload frmReloadWeapon = new frmReload(this)
+            using (ReloadWeapon frmReloadWeapon = new ReloadWeapon(this)
             {
                 Ammo = lstAmmo,
                 Count = lstCount
@@ -6579,7 +6578,7 @@ namespace Chummer.Backend.Equipment
                               ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR)
                             : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR))
                         .StandardRound();
-                dicAttributeOverrides = new Dictionary<string, int>
+                dicAttributeOverrides = new Dictionary<string, int>(6)
                 {
                     {"STR", intUseSTR},
                     {"STRUnaug", intUseSTRUnaug},

@@ -648,8 +648,7 @@ namespace ChummerHub.Client.Sinners
                 if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
                     File.Delete(file);
             }
-
-            CharacterCache summary = new CharacterCache(MyCharacter.FileName);
+            
             if (string.IsNullOrEmpty(MyCharacter.FileName))
                 return null;
             string tempfile = Path.Combine(tempDir, MyCharacter.FileName);
@@ -817,6 +816,7 @@ namespace ChummerHub.Client.Sinners
             // if the character is open in any forms or is linked to a character that is open.
             // So this will only dispose characters who are only temporarily opened purely to interact with this class
             MyCharacter?.Dispose();
+            MyCharacterCache?.Dispose();
         }
     }
 }

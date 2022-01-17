@@ -735,6 +735,9 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Off-Road Suspension</name>
+      </mods>
       <seats>6</seats>
     </vehicle>
     <vehicle>

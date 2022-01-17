@@ -61,10 +61,13 @@ namespace Chummer
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>();
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0 + e.OldItems?.Count ?? 0);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
@@ -72,6 +75,7 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
                         if (objOldItem.Parent != this)
@@ -81,6 +85,7 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
                         if (objOldItem.Parent != this)
@@ -88,6 +93,7 @@ namespace Chummer
                         objOldItem.Parent = null;
                         lstImprovementSourcesToProcess.Add(objOldItem);
                     }
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
@@ -99,43 +105,46 @@ namespace Chummer
             }
             if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
             {
-                Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                    new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-                try
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                           Utils.DictionaryForMultiplePropertyChangedPool,
+                           out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
                 {
-                    foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
+                    try
                     {
-                        // Needed in order to properly process named sources where
-                        // the tooltip was built before the object was added to the character
-                        foreach (Improvement objImprovement in _objCharacter.Improvements)
+                        foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
                         {
-                            if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                continue;
-                            foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
-                                     objImprovement.GetRelevantPropertyChangers())
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            foreach (Improvement objImprovement in _objCharacter.Improvements)
                             {
-                                if (!dicChangedProperties.TryGetValue(objToUpdate,
-                                                                      out HashSet<string> setChangedProperties))
+                                if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                    continue;
+                                foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
+                                         objImprovement.GetRelevantPropertyChangers())
                                 {
-                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                    dicChangedProperties.Add(objToUpdate, setChangedProperties);
-                                }
+                                    if (!dicChangedProperties.TryGetValue(objToUpdate,
+                                                                          out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objToUpdate, setChangedProperties);
+                                    }
 
-                                setChangedProperties.Add(strPropertyName);
+                                    setChangedProperties.Add(strPropertyName);
+                                }
                             }
                         }
-                    }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
-                             dicChangedProperties)
-                    {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                                 dicChangedProperties)
+                        {
+                            kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        }
                     }
-                }
-                finally
-                {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    finally
+                    {
+                        foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                            Utils.StringHashSetPool.Return(setToReturn);
+                    }
                 }
             }
         }
@@ -506,7 +515,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(objCharacter))
+                using (SelectMartialArt frmPickMartialArt = new SelectMartialArt(objCharacter))
                 {
                     frmPickMartialArt.ShowDialogSafe(Program.GetFormForDialog(objCharacter));
 

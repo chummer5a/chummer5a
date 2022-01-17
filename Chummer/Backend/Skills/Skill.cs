@@ -352,7 +352,7 @@ namespace Chummer.Backend.Skills
 
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
             {
-                if (xmlSpecList?.Count > 0)
+                if (xmlSpecList != null && xmlSpecList.Count > 0)
                 {
                     foreach (XmlNode xmlSpec in xmlSpecList)
                     {
@@ -376,8 +376,7 @@ namespace Chummer.Backend.Skills
                 .SelectSingleNode((blnIsKnowledgeSkill
                     ? "/chummer/knowledgeskills/skill[name = "
                     : "/chummer/skills/skill[name = ") + strName.CleanXPath() + ']');
-            Guid suid = Guid.Empty;
-            if (xmlSkillDataNode?.TryGetField("id", Guid.TryParse, out suid) != true)
+            if (xmlSkillDataNode == null || !xmlSkillDataNode.TryGetField("id", Guid.TryParse, out Guid suid))
                 suid = Guid.NewGuid();
 
             bool blnIsNativeLanguage = false;
@@ -423,8 +422,7 @@ namespace Chummer.Backend.Skills
             }
 
             objSkill.SkillId = suid;
-
-            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
+            
             foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization"))
             {
                 string strSpecializationName = xmlSpecializationNode.SelectSingleNode("@bonustext")?.Value;
@@ -433,11 +431,7 @@ namespace Chummer.Backend.Skills
                 int intLastPlus = strSpecializationName.LastIndexOf('+');
                 if (intLastPlus > strSpecializationName.Length)
                     strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
-                lstSpecializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
-            }
-            if (lstSpecializations.Count > 0)
-            {
-                objSkill.Specializations.AddRange(lstSpecializations);
+                objSkill.Specializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
             }
 
             return objSkill;
@@ -823,10 +817,20 @@ namespace Chummer.Backend.Skills
             {
                 if (SkillGroupObject != null && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization).Count > 0)
                 {
-                    HashSet<string> setSkillNames = SkillGroupObject.SkillList.Select(x => x.DictionaryKey).ToHashSet();
-                    if (CharacterObject.Cyberware.Any(x => x.SourceID == s_GuiReflexRecorderId && setSkillNames.Contains(x.Extra)))
+                    List<Cyberware> lstReflexRecorders = CharacterObject.Cyberware
+                                                                        .Where(x => x.SourceID == s_GuiReflexRecorderId)
+                                                                        .ToList();
+                    if (lstReflexRecorders.Count > 0)
                     {
-                        return 0;
+                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                   Utils.StringHashSetPool, out HashSet<string> setSkillNames))
+                        {
+                            setSkillNames.AddRange(SkillGroupObject.SkillList.Select(x => x.DictionaryKey));
+                            if (lstReflexRecorders.Any(x => setSkillNames.Contains(x.Extra)))
+                            {
+                                return 0;
+                            }
+                        }
                     }
                 }
                 return -1;
@@ -2054,8 +2058,8 @@ namespace Chummer.Backend.Skills
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, Skill> s_SkillDependencyGraph =
-            new DependencyGraph<string, Skill>(
+        private static readonly PropertyDependencyGraph<Skill> s_SkillDependencyGraph =
+            new PropertyDependencyGraph<Skill>(
                 new DependencyGraphNode<string, Skill>(nameof(PoolToolTip),
                     new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
                     new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers),
@@ -2260,48 +2264,59 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_SkillDependencyGraph.GetWithAllDependentsEnumerable(
+                                     this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
                 }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
+                    _intCachedFreeBase = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(FreeKarma)))
+                    _intCachedFreeKarma = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+                    _intCachedCanUpgradeCareer = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
+                    _intCachedCanAffordSpecialization = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
+                    _intCachedEnabled = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
+                    _intCachedCanHaveSpecs = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
+                    _intCachedForcedBuyWithKarma = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
+                    _intCachedForcedNotBuyWithKarma = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
+                    ResetCachedCyberwareRating();
+                if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
+                    _blnRecalculateCachedSuggestedSpecializations = true;
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                }
+
+                // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
+                if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
+                    RecacheAttribute();
             }
-
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
-                _intCachedFreeBase = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeKarma)))
-                _intCachedFreeKarma = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
-                _intCachedCanUpgradeCareer = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
-                _intCachedCanAffordSpecialization = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(Enabled)))
-                _intCachedEnabled = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
-                _intCachedCanHaveSpecs = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
-                _intCachedForcedBuyWithKarma = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
-                _intCachedForcedNotBuyWithKarma = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
-                ResetCachedCyberwareRating();
-            if (lstNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
-                _blnRecalculateCachedSuggestedSpecializations = true;
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
-            // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
-            if (lstNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
-                RecacheAttribute();
         }
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)

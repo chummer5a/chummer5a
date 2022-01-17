@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Drawing;
 using System.Globalization;
@@ -29,7 +28,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
-using Chummer.Classes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -317,7 +315,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Components of the Drug.
         /// </summary>
-        public ObservableCollection<DrugComponent> Components { get; } = new ObservableCollection<DrugComponent>();
+        public EnhancedObservableCollection<DrugComponent> Components { get; } = new EnhancedObservableCollection<DrugComponent>();
 
         /// <summary>
         /// Name of the Drug.
