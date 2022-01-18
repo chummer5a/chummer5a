@@ -51,7 +51,7 @@ Application Changes:
 - When adding bonuses or improvements that disable cyberware and/or bioware, characters no longer get their Essence Holes, Antiholes, and modular cyberlimbs deleted.
 - Armor costs now properly support "FixedValues()" entries.
 - Cybersuites that add cyberlimbs now properly incorporate those cyberlimbs' attributes into the character's overall attributes.
-
+- Added a browser view for vehicles to show content in a grid view, similar to the weapons browser. Currently a bit slow.
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
 - Fixed missing availability for the BMW Luxus.
@@ -73,6 +73,7 @@ Data Changes:
 - The GMC Armadillo now comes with Off-Road Suspension included.
 - Fixed incorrect skill prompts for the Mystic Guardian and Doberman mentor spirits. Closes #4672
 - Credsticks now all properly have a device rating of 5.
+- Fixed incorrect gear (Olfactory Sensor > Scanner) for the Saab-Thyssen Bloodhound and Telestrian Shamus.
 
 Changed/New Strings:
 - String_GameplayOption

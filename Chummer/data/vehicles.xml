@@ -4217,7 +4217,7 @@
           <maxrating>4</maxrating>
           <gears>
             <gear rating="6">Geiger Counter</gear>
-            <gear rating="8">Olfactory Sensor</gear>
+            <gear rating="8">Olfactory Scanner</gear>
           </gears>
         </gear>
       </gears>
@@ -4352,7 +4352,7 @@
             <gear rating="8">Camera</gear>
             <gear rating="8">Geiger Counter</gear>
             <gear rating="8">MAD Scanner</gear>
-            <gear rating="8">Olfactory Sensor</gear>
+            <gear rating="8">Olfactory Scanner</gear>
             <gear rating="8">Radio Signal Scanner</gear>
             <gear rating="8">Ultrasound</gear>
             <gear rating="8">X-Ray</gear>

@@ -137,7 +137,8 @@ namespace Chummer.Backend.Equipment
         /// Create a Vehicle from an XmlNode.
         /// <param name="objXmlVehicle">XmlNode of the Vehicle to create.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        public void Create(XmlNode objXmlVehicle, bool blnCreateChildren = true)
+        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
+        public void Create(XmlNode objXmlVehicle, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
             if (!objXmlVehicle.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -335,7 +336,7 @@ namespace Chummer.Backend.Equipment
                                         intRating = 0;
 
                                     objMod.Extra = strForcedValue;
-                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
+                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue,blnCreateImprovements);
 
                                     _lstVehicleMods.Add(objMod);
                                 }
@@ -436,7 +437,7 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons))
+                                if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons,blnCreateImprovements))
                                 {
                                     objGear.Parent = this;
                                     objGear.ParentID = InternalId;
@@ -469,7 +470,7 @@ namespace Chummer.Backend.Equipment
                         List<Weapon> objSubWeapons = new List<Weapon>(1);
                         XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strWeaponName.CleanXPath() + "]");
                         objWeapon.ParentVehicle = this;
-                        objWeapon.Create(objXmlWeaponNode, objSubWeapons);
+                        objWeapon.Create(objXmlWeaponNode, objSubWeapons,blnCreateChildren,blnCreateImprovements);
                         objWeapon.ParentID = InternalId;
                         objWeapon.Cost = "0";
 
@@ -532,7 +533,7 @@ namespace Chummer.Backend.Equipment
                                 objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
                                 string strExtraMount = "None";
                                 objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
-                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
+                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren,blnCreateImprovements);
 
                                 objMod.Cost = "0";
 
