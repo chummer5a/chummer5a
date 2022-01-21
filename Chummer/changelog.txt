@@ -75,6 +75,7 @@ Data Changes:
 - Fixed incorrect skill prompts for the Mystic Guardian and Doberman mentor spirits. Closes #4672
 - Credsticks now all properly have a device rating of 5.
 - Fixed incorrect gear (Olfactory Sensor > Scanner) for the Saab-Thyssen Bloodhound and Telestrian Shamus.
+- Fixed the damage codes for natural weapons added by some Infected qualities, Dracoform qualities, and crystal limb qualities. Fixes #4673.
 
 Changed/New Strings:
 - String_GameplayOption
