@@ -52,6 +52,7 @@ Application Changes:
 - Armor costs now properly support "FixedValues()" entries.
 - Cybersuites that add cyberlimbs now properly incorporate those cyberlimbs' attributes into the character's overall attributes.
 - Added a browser view for vehicles to show content in a grid view, similar to the weapons browser. Currently a bit slow.
+
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
 - Fixed missing availability for the BMW Luxus.
@@ -61,7 +62,7 @@ Data Changes:
 - Initiative-boosting powers and 'ware now properly disable the defense test bonus given by Lightning Reflexes.
 - Synaptic Acceleration now properly adds +1 to defense tests. Known issue: this defense test increase is not disabled if the character buys any initiative-boosting 'ware the way its initiative boost is.
 - Two of the Sea Ray Cottonmouth's built-in weapon mounts now properly have Flexible flexibility. Fixes #4656.
-- Enabling Delnar Skills Remake no longer causes Chummer to crash.
+- Enabling Delnar Skills Remake no longer causes Chummer to crash, and Delnar Skills Remake has been updated with new changes to Acrobatic Defender and Perceptive Defender.
 - Metamagics and echoes acquired outside of initiation and submersion now show up on character sheets that have no initiations or submersions.
 - Extended Clip in German Data Changes now properly scales its cost based on the accessory's rating.
 - Improved Potential can now properly be taken at multiple levels with German Data Changes.
