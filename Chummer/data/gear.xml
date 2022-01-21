@@ -162,7 +162,7 @@
       <cost>250</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <ap>+2</ap>
+        <ap>2</ap>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -177,7 +177,7 @@
       <cost>10</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <ap>+4</ap>
+        <ap>4</ap>
         <damage>-4</damage>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
@@ -504,7 +504,7 @@
       <cost>20</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <ap>+2</ap>
+        <ap>2</ap>
         <damage>-2</damage>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
@@ -1823,7 +1823,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(S)</damagetype>
-        <ap>+1</ap>
+        <ap>1</ap>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>

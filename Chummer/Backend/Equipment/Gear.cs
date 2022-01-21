@@ -2874,7 +2874,7 @@ namespace Chummer.Backend.Equipment
                 strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-'))
+                if (!strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
             }
 
@@ -2903,7 +2903,7 @@ namespace Chummer.Backend.Equipment
                 string strReturn = _nodWeaponBonus["apreplace"]?.InnerText ?? _nodWeaponBonus["ap"]?.InnerText ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-'))
+                if (!strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
 
                 return strReturn;
@@ -2924,7 +2924,7 @@ namespace Chummer.Backend.Equipment
                 string strReturn = _nodWeaponBonus["accuracy"]?.InnerText ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
-                if (!strReturn.StartsWith('-'))
+                if (!strReturn.StartsWith('-', '+'))
                     strReturn = '+' + strReturn;
 
                 return strReturn;
