@@ -5356,8 +5356,10 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    chkPsycheActiveMagician.Visible = false;
-                    chkPsycheActiveTechnomancer.Visible = false;
+                    if (chkPsycheActiveMagician != null)
+                        chkPsycheActiveMagician.Visible = false;
+                    if (chkPsycheActiveTechnomancer != null)
+                        chkPsycheActiveTechnomancer.Visible = false;
                     if (pnlSustainedSpells != null)
                     {
                         pnlSustainedSpells.Controls.Clear();
@@ -5385,11 +5387,13 @@ namespace Chummer
                         switch (objSustained.LinkedObjectType)
                         {
                             case Improvement.ImprovementSource.Spell:
-                                chkPsycheActiveMagician.Visible = true;
+                                if (chkPsycheActiveMagician != null)
+                                    chkPsycheActiveMagician.Visible = true;
                                 break;
 
                             case Improvement.ImprovementSource.ComplexForm:
-                                chkPsycheActiveTechnomancer.Visible = true;
+                                if (chkPsycheActiveTechnomancer != null)
+                                    chkPsycheActiveTechnomancer.Visible = true;
                                 break;
                         }
 
@@ -5423,11 +5427,13 @@ namespace Chummer
                                     switch (objSustained.LinkedObjectType)
                                     {
                                         case Improvement.ImprovementSource.Spell:
-                                            chkPsycheActiveMagician.Visible = true;
+                                            if (chkPsycheActiveMagician != null)
+                                                chkPsycheActiveMagician.Visible = true;
                                             break;
 
                                         case Improvement.ImprovementSource.ComplexForm:
-                                            chkPsycheActiveTechnomancer.Visible = true;
+                                            if (chkPsycheActiveTechnomancer != null)
+                                                chkPsycheActiveTechnomancer.Visible = true;
                                             break;
                                     }
 
@@ -5486,9 +5492,15 @@ namespace Chummer
                                     {
                                         refreshingPanel.Visible = false;
                                         if (refreshingPanel == pnlSustainedSpells)
-                                            chkPsycheActiveMagician.Visible = false;
+                                        {
+                                            if (chkPsycheActiveMagician != null)
+                                                chkPsycheActiveMagician.Visible = false;
+                                        }
                                         else if (refreshingPanel == pnlSustainedComplexForms)
-                                            chkPsycheActiveTechnomancer.Visible = false;
+                                        {
+                                            if (chkPsycheActiveTechnomancer != null)
+                                                chkPsycheActiveTechnomancer.Visible = false;
+                                        }
                                     }
                                 }
                             }
@@ -5534,9 +5546,15 @@ namespace Chummer
                                     {
                                         refreshingPanel.Visible = false;
                                         if (refreshingPanel == pnlSustainedSpells)
-                                            chkPsycheActiveMagician.Visible = false;
+                                        {
+                                            if (chkPsycheActiveMagician != null)
+                                                chkPsycheActiveMagician.Visible = false;
+                                        }
                                         else if (refreshingPanel == pnlSustainedComplexForms)
-                                            chkPsycheActiveTechnomancer.Visible = false;
+                                        {
+                                            if (chkPsycheActiveTechnomancer != null)
+                                                chkPsycheActiveTechnomancer.Visible = false;
+                                        }
                                     }
                                 }
 
@@ -5552,11 +5570,13 @@ namespace Chummer
                                     switch (objSustained.LinkedObjectType)
                                     {
                                         case Improvement.ImprovementSource.Spell:
-                                            chkPsycheActiveMagician.Visible = true;
+                                            if (chkPsycheActiveMagician != null)
+                                                chkPsycheActiveMagician.Visible = true;
                                             break;
 
                                         case Improvement.ImprovementSource.ComplexForm:
-                                            chkPsycheActiveTechnomancer.Visible = true;
+                                            if (chkPsycheActiveTechnomancer != null)
+                                                chkPsycheActiveTechnomancer.Visible = true;
                                             break;
                                     }
 
