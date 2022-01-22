@@ -19,6 +19,8 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -34,6 +36,73 @@ namespace Chummer
         public CharacterReadOnly(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
+
+            if (objCharacter.Created)
+            {
+                tabInfo.TabPages.Remove(tabBPSummary);
+                mnuCreateSpecial.DropDownItems.Remove(mnuSpecialConfirmValidity);
+                mnuCreateSpecial.DropDownItems.Remove(mnuSpecialKarmaValue);
+                lblNuyen.Parent.Controls.Remove(lblNuyen);
+                lblNuyenTotal.Parent.Controls.Remove(lblNuyenTotal);
+                lblStolenNuyenLabel.Parent.Controls.Remove(lblStolenNuyenLabel);
+                lblStolenNuyen.Parent.Controls.Remove(lblStolenNuyen);
+            }
+            else
+            {
+                tabCharacterTabs.TabPages.Remove(tabKarma);
+                tabCharacterTabs.TabPages.Remove(tabCalendar);
+                tabCharacterTabs.TabPages.Remove(tabNotes);
+                tabCharacterTabs.TabPages.Remove(tabImprovements);
+                tabInfo.TabPages.Remove(tabConditionMonitor);
+                mnuCreateFile.DropDownItems.Remove(mnuFileExport);
+                mnuCreateSpecial.DropDownItems.Remove(mnuSpecialCloningMachine);
+                tabCyberwareCM.Parent.Controls.Remove(tabCyberwareCM);
+                panVehicleCM.Parent.Controls.Remove(panVehicleCM);
+                lblPossessed.Parent.Controls.Remove(lblPossessed);
+                cboAttributeCategory.Parent.Controls.Remove(cboAttributeCategory);
+            }
+
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
+
+            // Update the text in the Menus so they can be merged with frmMain properly.
+            foreach (ToolStripMenuItem tssItem in mnuCreateMenu.Items.OfType<ToolStripMenuItem>())
+            {
+                tssItem.UpdateLightDarkMode();
+                tssItem.TranslateToolStripItemsRecursively();
+            }
+
+            tabStreetGearTabs.MouseWheel += ShiftTabsOnMouseScroll;
+            tabPeople.MouseWheel += ShiftTabsOnMouseScroll;
+            tabInfo.MouseWheel += ShiftTabsOnMouseScroll;
+            tabCharacterTabs.MouseWheel += ShiftTabsOnMouseScroll;
+
+            Program.MainForm.OpenCharacterForms.Add(this);
         }
+
+        #region Menu Events
+
+        private void tsbPrint_Click(object sender, EventArgs e)
+        {
+            DoPrint();
+        }
+
+        private void mnuFilePrint_Click(object sender, EventArgs e)
+        {
+            DoPrint();
+        }
+
+        private void mnuFileClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void mnuFileExport_Click(object sender, EventArgs e)
+        {
+            using (ExportCharacter frmExportCharacter = new ExportCharacter(CharacterObject))
+                frmExportCharacter.ShowDialogSafe(this);
+        }
+
+        #endregion
     }
 }

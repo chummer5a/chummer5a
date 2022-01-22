@@ -781,6 +781,18 @@ namespace Chummer
             this.lblVehicleFirewall = new System.Windows.Forms.Label();
             this.lblVehicleDataProcessing = new System.Windows.Forms.Label();
             this.lblVehicleSleaze = new System.Windows.Forms.Label();
+            this.tsMain = new System.Windows.Forms.ToolStrip();
+            this.tsbPrint = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.mnuCreateMenu = new System.Windows.Forms.MenuStrip();
+            this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFileClose = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tssFileMenu2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuFilePrint = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuFileExport = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuCreateSpecial = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSpecialConfirmValidity = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuSpecialKarmaValue = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuSpecialCloningMachine = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
@@ -920,6 +932,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
             this.StatusStrip.SuspendLayout();
             this.flpMugshots.SuspendLayout();
+            this.tsMain.SuspendLayout();
+            this.mnuCreateMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitMain
@@ -12056,12 +12070,179 @@ namespace Chummer
             this.lblVehicleSleaze.TabIndex = 248;
             this.lblVehicleSleaze.Text = "[0]";
             // 
+            // tsMain
+            // 
+            this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbPrint});
+            this.tsMain.Location = new System.Drawing.Point(0, 0);
+            this.tsMain.Name = "tsMain";
+            this.tsMain.Size = new System.Drawing.Size(1264, 25);
+            this.tsMain.TabIndex = 54;
+            this.tsMain.Text = "ToolStrip";
+            this.tsMain.Visible = false;
+            // 
+            // tsbPrint
+            // 
+            this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
+            this.tsbPrint.ImageDpi120 = null;
+            this.tsbPrint.ImageDpi144 = null;
+            this.tsbPrint.ImageDpi192 = global::Chummer.Properties.Resources.printer1;
+            this.tsbPrint.ImageDpi288 = null;
+            this.tsbPrint.ImageDpi384 = null;
+            this.tsbPrint.ImageDpi96 = global::Chummer.Properties.Resources.printer;
+            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPrint.Name = "tsbPrint";
+            this.tsbPrint.Size = new System.Drawing.Size(23, 22);
+            this.tsbPrint.Tag = "Menu_FilePrint";
+            this.tsbPrint.Text = "Print Character";
+            this.tsbPrint.Click += new System.EventHandler(this.tsbPrint_Click);
+            // 
+            // mnuCreateMenu
+            // 
+            this.mnuCreateMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuCreateFile,
+            this.mnuCreateSpecial});
+            this.mnuCreateMenu.Location = new System.Drawing.Point(0, 0);
+            this.mnuCreateMenu.Name = "mnuCreateMenu";
+            this.mnuCreateMenu.Size = new System.Drawing.Size(1264, 24);
+            this.mnuCreateMenu.TabIndex = 55;
+            this.mnuCreateMenu.Text = "Top Level Menu";
+            this.mnuCreateMenu.Visible = false;
+            // 
+            // mnuCreateFile
+            // 
+            this.mnuCreateFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuFileClose,
+            this.tssFileMenu2,
+            this.mnuFilePrint,
+            this.mnuFileExport});
+            this.mnuCreateFile.MergeAction = System.Windows.Forms.MergeAction.MatchOnly;
+            this.mnuCreateFile.Name = "mnuCreateFile";
+            this.mnuCreateFile.Size = new System.Drawing.Size(37, 20);
+            this.mnuCreateFile.Tag = "Menu_Main_File";
+            this.mnuCreateFile.Text = "&File";
+            // 
+            // mnuFileClose
+            // 
+            this.mnuFileClose.Image = global::Chummer.Properties.Resources.cancel;
+            this.mnuFileClose.ImageDpi120 = null;
+            this.mnuFileClose.ImageDpi144 = null;
+            this.mnuFileClose.ImageDpi192 = global::Chummer.Properties.Resources.cancel1;
+            this.mnuFileClose.ImageDpi288 = null;
+            this.mnuFileClose.ImageDpi384 = null;
+            this.mnuFileClose.ImageDpi96 = global::Chummer.Properties.Resources.cancel;
+            this.mnuFileClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.mnuFileClose.MergeIndex = 7;
+            this.mnuFileClose.Name = "mnuFileClose";
+            this.mnuFileClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.mnuFileClose.Size = new System.Drawing.Size(180, 22);
+            this.mnuFileClose.Tag = "Menu_FileClose";
+            this.mnuFileClose.Text = "&Close";
+            this.mnuFileClose.Click += new System.EventHandler(this.mnuFileClose_Click);
+            // 
+            // tssFileMenu2
+            // 
+            this.tssFileMenu2.MergeIndex = 8;
+            this.tssFileMenu2.Name = "tssFileMenu2";
+            this.tssFileMenu2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // mnuFilePrint
+            // 
+            this.mnuFilePrint.Image = global::Chummer.Properties.Resources.printer;
+            this.mnuFilePrint.ImageDpi120 = null;
+            this.mnuFilePrint.ImageDpi144 = null;
+            this.mnuFilePrint.ImageDpi192 = global::Chummer.Properties.Resources.printer1;
+            this.mnuFilePrint.ImageDpi288 = null;
+            this.mnuFilePrint.ImageDpi384 = null;
+            this.mnuFilePrint.ImageDpi96 = global::Chummer.Properties.Resources.printer;
+            this.mnuFilePrint.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.mnuFilePrint.MergeIndex = 9;
+            this.mnuFilePrint.Name = "mnuFilePrint";
+            this.mnuFilePrint.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.mnuFilePrint.Size = new System.Drawing.Size(180, 22);
+            this.mnuFilePrint.Tag = "Menu_FilePrint";
+            this.mnuFilePrint.Text = "&Print";
+            this.mnuFilePrint.Click += new System.EventHandler(this.mnuFilePrint_Click);
+            // 
+            // mnuFileExport
+            // 
+            this.mnuFileExport.Image = global::Chummer.Properties.Resources.script_go;
+            this.mnuFileExport.ImageDpi120 = null;
+            this.mnuFileExport.ImageDpi144 = null;
+            this.mnuFileExport.ImageDpi192 = global::Chummer.Properties.Resources.script_go1;
+            this.mnuFileExport.ImageDpi288 = null;
+            this.mnuFileExport.ImageDpi384 = null;
+            this.mnuFileExport.ImageDpi96 = global::Chummer.Properties.Resources.script_go;
+            this.mnuFileExport.Name = "mnuFileExport";
+            this.mnuFileExport.Size = new System.Drawing.Size(180, 22);
+            this.mnuFileExport.Tag = "Menu_FileExport";
+            this.mnuFileExport.Text = "&Export";
+            this.mnuFileExport.Click += new System.EventHandler(this.mnuFileExport_Click);
+            // 
+            // mnuCreateSpecial
+            // 
+            this.mnuCreateSpecial.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuSpecialConfirmValidity,
+            this.mnuSpecialKarmaValue,
+            this.mnuSpecialCloningMachine});
+            this.mnuCreateSpecial.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.mnuCreateSpecial.MergeIndex = 3;
+            this.mnuCreateSpecial.Name = "mnuCreateSpecial";
+            this.mnuCreateSpecial.Size = new System.Drawing.Size(56, 20);
+            this.mnuCreateSpecial.Tag = "Menu_Special";
+            this.mnuCreateSpecial.Text = "&Special";
+            // 
+            // mnuSpecialConfirmValidity
+            // 
+            this.mnuSpecialConfirmValidity.Image = global::Chummer.Properties.Resources.accept;
+            this.mnuSpecialConfirmValidity.ImageDpi120 = null;
+            this.mnuSpecialConfirmValidity.ImageDpi144 = null;
+            this.mnuSpecialConfirmValidity.ImageDpi192 = global::Chummer.Properties.Resources.accept1;
+            this.mnuSpecialConfirmValidity.ImageDpi288 = null;
+            this.mnuSpecialConfirmValidity.ImageDpi384 = null;
+            this.mnuSpecialConfirmValidity.ImageDpi96 = global::Chummer.Properties.Resources.accept;
+            this.mnuSpecialConfirmValidity.Name = "mnuSpecialConfirmValidity";
+            this.mnuSpecialConfirmValidity.Size = new System.Drawing.Size(213, 22);
+            this.mnuSpecialConfirmValidity.Tag = "Menu_ValidCharacter";
+            this.mnuSpecialConfirmValidity.Text = "Confirm Character Validity";
+            // 
+            // mnuSpecialKarmaValue
+            // 
+            this.mnuSpecialKarmaValue.Image = global::Chummer.Properties.Resources.calculator;
+            this.mnuSpecialKarmaValue.ImageDpi120 = null;
+            this.mnuSpecialKarmaValue.ImageDpi144 = null;
+            this.mnuSpecialKarmaValue.ImageDpi192 = global::Chummer.Properties.Resources.calculator1;
+            this.mnuSpecialKarmaValue.ImageDpi288 = null;
+            this.mnuSpecialKarmaValue.ImageDpi384 = null;
+            this.mnuSpecialKarmaValue.ImageDpi96 = global::Chummer.Properties.Resources.calculator;
+            this.mnuSpecialKarmaValue.Name = "mnuSpecialKarmaValue";
+            this.mnuSpecialKarmaValue.Size = new System.Drawing.Size(213, 22);
+            this.mnuSpecialKarmaValue.Tag = "Menu_KarmaValue";
+            this.mnuSpecialKarmaValue.Text = "Calculate Karma Value";
+            // 
+            // mnuSpecialCloningMachine
+            // 
+            this.mnuSpecialCloningMachine.Image = global::Chummer.Properties.Resources.group;
+            this.mnuSpecialCloningMachine.ImageDpi120 = null;
+            this.mnuSpecialCloningMachine.ImageDpi144 = null;
+            this.mnuSpecialCloningMachine.ImageDpi192 = global::Chummer.Properties.Resources.group1;
+            this.mnuSpecialCloningMachine.ImageDpi288 = null;
+            this.mnuSpecialCloningMachine.ImageDpi384 = null;
+            this.mnuSpecialCloningMachine.ImageDpi96 = global::Chummer.Properties.Resources.group;
+            this.mnuSpecialCloningMachine.Name = "mnuSpecialCloningMachine";
+            this.mnuSpecialCloningMachine.Size = new System.Drawing.Size(213, 22);
+            this.mnuSpecialCloningMachine.Tag = "Menu_SpecialCloningMachine";
+            this.mnuSpecialCloningMachine.Text = "Cloning Machine";
+            // 
             // CharacterReadOnly
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.mnuCreateMenu);
+            this.Controls.Add(this.tsMain);
             this.Controls.Add(this.splitMain);
             this.Controls.Add(this.StatusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -12309,6 +12490,10 @@ namespace Chummer
             this.StatusStrip.PerformLayout();
             this.flpMugshots.ResumeLayout(false);
             this.flpMugshots.PerformLayout();
+            this.tsMain.ResumeLayout(false);
+            this.tsMain.PerformLayout();
+            this.mnuCreateMenu.ResumeLayout(false);
+            this.mnuCreateMenu.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -13047,5 +13232,17 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleFirewall;
         private System.Windows.Forms.Label lblVehicleDataProcessing;
         private System.Windows.Forms.Label lblVehicleSleaze;
+        private System.Windows.Forms.ToolStrip tsMain;
+        private DpiFriendlyToolStripButton tsbPrint;
+        private System.Windows.Forms.MenuStrip mnuCreateMenu;
+        private System.Windows.Forms.ToolStripMenuItem mnuCreateFile;
+        private DpiFriendlyToolStripMenuItem mnuFileClose;
+        private System.Windows.Forms.ToolStripSeparator tssFileMenu2;
+        private DpiFriendlyToolStripMenuItem mnuFilePrint;
+        private DpiFriendlyToolStripMenuItem mnuFileExport;
+        private System.Windows.Forms.ToolStripMenuItem mnuCreateSpecial;
+        private DpiFriendlyToolStripMenuItem mnuSpecialConfirmValidity;
+        private DpiFriendlyToolStripMenuItem mnuSpecialKarmaValue;
+        private DpiFriendlyToolStripMenuItem mnuSpecialCloningMachine;
     }
 }
