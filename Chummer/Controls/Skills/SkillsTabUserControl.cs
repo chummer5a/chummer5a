@@ -118,7 +118,7 @@ namespace Chummer.UI.Skills
             };
             Control MakeActiveSkill(Skill arg)
             {
-                SkillControl2 objSkillControl = new SkillControl2(arg);
+                SkillControl objSkillControl = new SkillControl(arg);
                 objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
                 return objSkillControl;
             }
@@ -286,7 +286,7 @@ namespace Chummer.UI.Skills
             {
                 int intNameLabelWidth = lblActiveSkills.PreferredWidth;
                 int intRatingLabelWidth = lblActiveSp.PreferredWidth;
-                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+                foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
                 {
                     intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
                     intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
@@ -297,7 +297,7 @@ namespace Chummer.UI.Skills
                     lblActiveKarma.Margin.Top,
                     lblActiveKarma.Margin.Right,
                     lblActiveKarma.Margin.Bottom);
-                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+                foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
                 {
                     objSkillControl.MoveControls(intNameLabelWidth);
                 }
@@ -659,7 +659,7 @@ namespace Chummer.UI.Skills
         private void Control_CustomAttributeChanged(object sender, EventArgs e)
         {
             bool blnVisible = false;
-            foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
             {
                 if (objSkillControl.CustomAttributeSet)
                 {
@@ -815,7 +815,7 @@ namespace Chummer.UI.Skills
         private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
         {
             _lstActiveSkills.SuspendLayout();
-            foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
             {
                 if (objSkillControl.CustomAttributeSet)
                     objSkillControl.ResetSelectAttribute(sender, e);

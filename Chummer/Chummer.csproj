@@ -1187,11 +1187,11 @@
     <Compile Include="Controls\Skills\KnowledgeSkillControl.Designer.cs">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Skills\SkillControl2.cs">
+    <Compile Include="Controls\Skills\SkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Skills\SkillControl2.Designer.cs">
-      <DependentUpon>SkillControl2.cs</DependentUpon>
+    <Compile Include="Controls\Skills\SkillControl.Designer.cs">
+      <DependentUpon>SkillControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Skills\SkillGroupControl.cs">
       <SubType>UserControl</SubType>
@@ -1793,8 +1793,8 @@
     <EmbeddedResource Include="Controls\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Skills\SkillControl2.resx">
-      <DependentUpon>SkillControl2.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Skills\SkillControl.resx">
+      <DependentUpon>SkillControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Skills\SkillGroupControl.resx">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>

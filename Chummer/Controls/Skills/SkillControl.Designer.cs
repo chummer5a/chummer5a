@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Chummer.UI.Skills
 {
-    public sealed partial class SkillControl2
+    public sealed partial class SkillControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -170,7 +170,7 @@ namespace Chummer.UI.Skills
             this.tlpRight.Size = new System.Drawing.Size(1, 25);
             this.tlpRight.TabIndex = 34;
             // 
-            // SkillControl2
+            // SkillControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoSize = true;
@@ -178,7 +178,7 @@ namespace Chummer.UI.Skills
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
-            this.Name = "SkillControl2";
+            this.Name = "SkillControl";
             this.Size = new System.Drawing.Size(143, 25);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.SkillControl2_DpiChangedAfterParent);
