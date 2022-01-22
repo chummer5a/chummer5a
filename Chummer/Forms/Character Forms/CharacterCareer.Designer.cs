@@ -22015,7 +22015,7 @@ namespace Chummer
             this.Name = "CharacterCareer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Chummer - Career Mode";
-            this.Activated += new System.EventHandler(this.frmCareer_Activated);
+            this.Activated += new System.EventHandler(this.CharacterCareer_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCareer_FormClosing);
             this.Load += new System.EventHandler(this.frmCareer_Load);
             this.StatusStrip.ResumeLayout(false);

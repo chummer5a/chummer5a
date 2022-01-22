@@ -1213,6 +1213,7 @@ namespace Chummer
                 {
                     objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                     objContactControl.DeleteContact -= DeleteEnemy;
+                    objContactControl.MouseDown -= DragContactControl;
                 }
 
                 foreach (PetControl objContactControl in panPets.Controls.OfType<PetControl>())
@@ -1245,7 +1246,7 @@ namespace Chummer
             }
         }
 
-        private void frmCareer_Activated(object sender, EventArgs e)
+        private void CharacterCareer_Activated(object sender, EventArgs e)
         {
             // Merge the ToolStrips.
             ToolStripManager.RevertMerge("toolStrip");
