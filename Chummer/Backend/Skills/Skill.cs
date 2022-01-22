@@ -1450,7 +1450,8 @@ namespace Chummer.Backend.Skills
 
         public virtual string DisplaySpecialization(string strLanguage)
         {
-            if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn)) return strReturn;
+            if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn))
+                return strReturn;
             strReturn = string.Join(", ", Specializations.Select(x => x.DisplayName(strLanguage)));
 
             _cachedStringSpec.Add(strLanguage, strReturn);
@@ -1852,9 +1853,9 @@ namespace Chummer.Backend.Skills
                     ? SkillGroupObject.CurrentDisplayName + strSpace +
                       LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
                     : string.Empty;
-                strReturn += DisplayCategory(GlobalSettings.Language) + Environment.NewLine + strMiddle +
+                strReturn += CurrentDisplayCategory + Environment.NewLine + strMiddle +
                              new SourceString(Source, Page, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                 CharacterObject).LanguageBookTooltip;
+                                              CharacterObject).LanguageBookTooltip;
                 return strReturn;
             }
         }
@@ -1921,12 +1922,17 @@ namespace Chummer.Backend.Skills
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
+        public string CurrentDisplayCategory => DisplayCategory(GlobalSettings.Language);
+
         public string DisplayCategory(string strLanguage)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return SkillCategory;
 
-            string strReturn = CharacterObject.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + SkillCategory.CleanXPath() + "]/@translate")?.Value;
+            string strReturn = CharacterObject.LoadDataXPath("skills.xml", strLanguage)
+                                              .SelectSingleNode(
+                                                  "/chummer/categories/category[. = " + SkillCategory.CleanXPath()
+                                                  + "]/@translate")?.Value;
 
             return strReturn ?? SkillCategory;
         }
@@ -2173,9 +2179,11 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, Skill>(nameof(HtmlSkillToolTip),
                     new DependencyGraphNode<string, Skill>(nameof(SkillToolTip),
                         new DependencyGraphNode<string, Skill>(nameof(Notes)),
-                        new DependencyGraphNode<string, Skill>(nameof(DisplayCategory),
-                            new DependencyGraphNode<string, Skill>(nameof(SkillCategory),
-                                new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type), x => x.IsKnowledgeSkill)
+                        new DependencyGraphNode<string, Skill>(nameof(CurrentDisplayCategory),
+                            new DependencyGraphNode<string, Skill>(nameof(DisplayCategory),
+                                new DependencyGraphNode<string, Skill>(nameof(SkillCategory),
+                                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type), x => x.IsKnowledgeSkill)
+                                )
                             )
                         )
                     )),
@@ -2216,7 +2224,8 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(DisplaySpecialization),
                         new DependencyGraphNode<string, Skill>(nameof(TopMostDisplaySpecialization),
                             new DependencyGraphNode<string, Skill>(nameof(Specializations))
-                        )
+                        ),
+                        new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage), x => x.IsKnowledgeSkill)
                     )
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CanAffordSpecialization),

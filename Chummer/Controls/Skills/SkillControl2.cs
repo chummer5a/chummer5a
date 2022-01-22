@@ -105,15 +105,11 @@ namespace Chummer.UI.Skills
 
                 if (objSkill.CharacterObject.Created)
                 {
-                    int intMinimumSize;
-                    using (Graphics g = CreateGraphics())
-                        intMinimumSize = (int)(25 * g.DpiX / 96.0f);
                     lblCareerRating = new Label
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         Margin = new Padding(3, 6, 3, 6),
-                        MinimumSize = new Size(intMinimumSize, 0),
                         Name = "lblCareerRating",
                         Text = "00",
                         TextAlign = ContentAlignment.MiddleRight
@@ -305,7 +301,7 @@ namespace Chummer.UI.Skills
                 this.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.Enabled));
                 this.DoOneWayDataBinding("BackColor", objSkill, nameof(Skill.PreferredControlColor));
 
-                SkillControl2_DpiChangedAfterParent(null, EventArgs.Empty);
+                AdjustForDpi();
                 this.UpdateLightDarkMode();
                 this.TranslateWinForm(string.Empty, false);
 
@@ -587,7 +583,8 @@ namespace Chummer.UI.Skills
         {
             _tmrSpecChangeTimer?.Dispose();
             _objSkill.PropertyChanged -= Skill_PropertyChanged;
-            AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+            if (AttributeActive != null)
+                AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
 
             foreach (Control objControl in Controls)
             {
@@ -637,6 +634,11 @@ namespace Chummer.UI.Skills
         #endregion ButtonWithToolTip Visibility workaround
 
         private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            AdjustForDpi();
+        }
+
+        private void AdjustForDpi()
         {
             using (Graphics g = CreateGraphics())
             {
