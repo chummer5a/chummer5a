@@ -104,5 +104,7 @@ namespace Chummer
         }
 
         #endregion
+
+        protected override bool IsReadOnly => true;
     }
 }

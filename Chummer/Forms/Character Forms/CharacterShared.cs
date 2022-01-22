@@ -5036,6 +5036,13 @@ namespace Chummer
                                 {
                                     if (panContacts == null)
                                         break;
+                                    if (IsReadOnly)
+                                    {
+                                        ContactControlReadOnly objContactReadOnlyControl = new ContactControlReadOnly(objContact);
+                                        objContactReadOnlyControl.MouseDown += DragContactControl;
+                                        panContacts.Controls.Add(objContactReadOnlyControl);
+                                        break;
+                                    }
                                     ContactControl objContactControl = new ContactControl(objContact);
                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                     objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -5050,6 +5057,13 @@ namespace Chummer
                                 {
                                     if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                         break;
+                                    if (IsReadOnly)
+                                    {
+                                        ContactControlReadOnly objContactReadOnlyControl = new ContactControlReadOnly(objContact);
+                                        objContactReadOnlyControl.MouseDown += DragContactControl;
+                                        panEnemies.Controls.Add(objContactReadOnlyControl);
+                                        break;
+                                    }
                                     ContactControl objContactControl = new ContactControl(objContact);
                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                     objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -5094,6 +5108,13 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
+                                                if (IsReadOnly)
+                                                {
+                                                    ContactControlReadOnly objContactReadOnlyControl = new ContactControlReadOnly(objLoopContact);
+                                                    objContactReadOnlyControl.MouseDown += DragContactControl;
+                                                    panContacts.Controls.Add(objContactReadOnlyControl);
+                                                    break;
+                                                }
                                                 ContactControl objContactControl = new ContactControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -5108,11 +5129,18 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
+                                                if (IsReadOnly)
+                                                {
+                                                    ContactControlReadOnly objContactReadOnlyControl = new ContactControlReadOnly(objLoopContact);
+                                                    objContactReadOnlyControl.MouseDown += DragContactControl;
+                                                    panEnemies.Controls.Add(objContactReadOnlyControl);
+                                                    break;
+                                                }
                                                 ContactControl objContactControl = new ContactControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteEnemy;
-                                                //objContactControl.MouseDown += DragContactControl;
+                                                objContactControl.MouseDown += DragContactControl;
 
                                                 panEnemies.Controls.Add(objContactControl);
                                             }
@@ -5148,14 +5176,20 @@ namespace Chummer
                                                     break;
                                                 for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
                                                 {
-                                                    if (panContacts.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    switch (panContacts.Controls[i])
                                                     {
-                                                        panContacts.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteContact;
-                                                        objContactControl.MouseDown -= DragContactControl;
-                                                        objContactControl.Dispose();
+                                                        case ContactControl objContactControl when objContactControl.ContactObject == objLoopContact:
+                                                            panContacts.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteContact;
+                                                            objContactControl.MouseDown -= DragContactControl;
+                                                            objContactControl.Dispose();
+                                                            break;
+                                                        case ContactControlReadOnly objContactReadOnlyControl when objContactReadOnlyControl.ContactObject == objLoopContact:
+                                                            panContacts.Controls.RemoveAt(i);
+                                                            objContactReadOnlyControl.MouseDown -= DragContactControl;
+                                                            objContactReadOnlyControl.Dispose();
+                                                            break;
                                                     }
                                                 }
                                             }
@@ -5167,13 +5201,19 @@ namespace Chummer
                                                     break;
                                                 for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
                                                 {
-                                                    if (panEnemies.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    switch (panEnemies.Controls[i])
                                                     {
-                                                        panEnemies.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteEnemy;
-                                                        objContactControl.Dispose();
+                                                        case ContactControl objContactControl when objContactControl.ContactObject == objLoopContact:
+                                                            panEnemies.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteEnemy;
+                                                            objContactControl.Dispose();
+                                                            break;
+                                                        case ContactControlReadOnly objContactReadOnlyControl when objContactReadOnlyControl.ContactObject == objLoopContact:
+                                                            panEnemies.Controls.RemoveAt(i);
+                                                            objContactReadOnlyControl.MouseDown -= DragContactControl;
+                                                            objContactReadOnlyControl.Dispose();
+                                                            break;
                                                     }
                                                 }
                                             }
@@ -5213,14 +5253,20 @@ namespace Chummer
                                                     break;
                                                 for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
                                                 {
-                                                    if (panContacts.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    switch (panContacts.Controls[i])
                                                     {
-                                                        panContacts.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteContact;
-                                                        objContactControl.MouseDown -= DragContactControl;
-                                                        objContactControl.Dispose();
+                                                        case ContactControl objContactControl when objContactControl.ContactObject == objLoopContact:
+                                                            panContacts.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteContact;
+                                                            objContactControl.MouseDown -= DragContactControl;
+                                                            objContactControl.Dispose();
+                                                            break;
+                                                        case ContactControlReadOnly objContactReadOnlyControl when objContactReadOnlyControl.ContactObject == objLoopContact:
+                                                            panContacts.Controls.RemoveAt(i);
+                                                            objContactReadOnlyControl.MouseDown -= DragContactControl;
+                                                            objContactReadOnlyControl.Dispose();
+                                                            break;
                                                     }
                                                 }
                                             }
@@ -5232,13 +5278,19 @@ namespace Chummer
                                                     break;
                                                 for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
                                                 {
-                                                    if (panEnemies.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    switch (panEnemies.Controls[i])
                                                     {
-                                                        panEnemies.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteEnemy;
-                                                        objContactControl.Dispose();
+                                                        case ContactControl objContactControl when objContactControl.ContactObject == objLoopContact:
+                                                            panEnemies.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteEnemy;
+                                                            objContactControl.Dispose();
+                                                            break;
+                                                        case ContactControlReadOnly objContactReadOnlyControl when objContactReadOnlyControl.ContactObject == objLoopContact:
+                                                            panEnemies.Controls.RemoveAt(i);
+                                                            objContactReadOnlyControl.MouseDown -= DragContactControl;
+                                                            objContactReadOnlyControl.Dispose();
+                                                            break;
                                                     }
                                                 }
                                             }
@@ -5272,6 +5324,13 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
+                                                if (IsReadOnly)
+                                                {
+                                                    ContactControlReadOnly objContactReadOnlyControl = new ContactControlReadOnly(objLoopContact);
+                                                    objContactReadOnlyControl.MouseDown += DragContactControl;
+                                                    panContacts.Controls.Add(objContactReadOnlyControl);
+                                                    break;
+                                                }
                                                 ContactControl objContactControl = new ContactControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -5286,11 +5345,18 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
+                                                if (IsReadOnly)
+                                                {
+                                                    ContactControlReadOnly objContactReadOnlyControl = new ContactControlReadOnly(objLoopContact);
+                                                    objContactReadOnlyControl.MouseDown += DragContactControl;
+                                                    panEnemies.Controls.Add(objContactReadOnlyControl);
+                                                    break;
+                                                }
                                                 ContactControl objContactControl = new ContactControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteEnemy;
-                                                //objContactControl.MouseDown += DragContactControl;
+                                                objContactControl.MouseDown += DragContactControl;
 
                                                 panEnemies.Controls.Add(objContactControl);
                                             }
@@ -6722,6 +6788,8 @@ namespace Chummer
         protected CharacterSettings CharacterObjectSettings => _objSettings;
 
         protected virtual string FormMode => string.Empty;
+
+        protected virtual bool IsReadOnly => false;
 
         protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
         {
