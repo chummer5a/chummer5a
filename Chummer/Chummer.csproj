@@ -377,6 +377,24 @@
     <Compile Include="Controls\Characters\SpiritControlReadOnly.Designer.cs">
       <DependentUpon>SpiritControlReadOnly.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Skills\KnowledgeSkillControlReadOnly.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Skills\KnowledgeSkillControlReadOnly.Designer.cs">
+      <DependentUpon>KnowledgeSkillControlReadOnly.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Skills\SkillControlReadOnly.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Skills\SkillControlReadOnly.Designer.cs">
+      <DependentUpon>SkillControlReadOnly.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Skills\SkillGroupControlReadOnly.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Skills\SkillGroupControlReadOnly.Designer.cs">
+      <DependentUpon>SkillGroupControlReadOnly.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Character Forms\CharacterReadOnly.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1668,6 +1686,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Characters\SpiritControlReadOnly.resx">
       <DependentUpon>SpiritControlReadOnly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Skills\KnowledgeSkillControlReadOnly.resx">
+      <DependentUpon>KnowledgeSkillControlReadOnly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Skills\SkillControlReadOnly.resx">
+      <DependentUpon>SkillControlReadOnly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Skills\SkillGroupControlReadOnly.resx">
+      <DependentUpon>SkillGroupControlReadOnly.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Character Creation Forms\SelectLifeModule.resx">
       <DependentUpon>SelectLifeModule.cs</DependentUpon>
