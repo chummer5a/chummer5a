@@ -32,6 +32,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
+using Chummer.Controls.Attributes;
 using Chummer.UI.Attributes;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -281,23 +282,43 @@ namespace Chummer
                     {
                         int intNameWidth = lblName?.PreferredWidth ?? 0;
                         Control[] aobjControls = new Control[CharacterObject.AttributeSection.Attributes.Count];
-                        for (int i = 0; i < CharacterObject.AttributeSection.Attributes.Count; ++i)
+                        if (IsReadOnly)
                         {
-                            AttributeControl objControl =
-                                new AttributeControl(CharacterObject.AttributeSection.Attributes[i]);
-                            objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
-                                objControl.MinimumSize.Height);
-                            objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
-                                objControl.MaximumSize.Height);
-                            objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                            intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
-                            aobjControls[i] = objControl;
+                            for (int i = 0; i < CharacterObject.AttributeSection.Attributes.Count; ++i)
+                            {
+                                AttributeControlReadOnly objControl =
+                                    new AttributeControlReadOnly(CharacterObject.AttributeSection.Attributes[i]);
+                                objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                  objControl.MinimumSize.Height);
+                                objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                  objControl.MaximumSize.Height);
+                                intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
+                                aobjControls[i] = objControl;
+                            }
+                            if (lblName != null)
+                                lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+                            foreach (AttributeControlReadOnly objControl in aobjControls.OfType<AttributeControlReadOnly>())
+                                objControl.UpdateWidths(intNameWidth, intValueWidth, intLimitsWidth);
                         }
-
-                        if (lblName != null)
-                            lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-                        foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                            objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                        else
+                        {
+                            for (int i = 0; i < CharacterObject.AttributeSection.Attributes.Count; ++i)
+                            {
+                                AttributeControl objControl =
+                                    new AttributeControl(CharacterObject.AttributeSection.Attributes[i]);
+                                objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                  objControl.MinimumSize.Height);
+                                objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                  objControl.MaximumSize.Height);
+                                objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
+                                aobjControls[i] = objControl;
+                            }
+                            if (lblName != null)
+                                lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+                            foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                        }
                         pnlAttributes.Controls.AddRange(aobjControls);
                     }
 
@@ -312,32 +333,77 @@ namespace Chummer
                                 bool blnVaryingAddedWidths = false;
                                 int intNewNameWidth = -1;
                                 Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
-                                for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
+                                if (IsReadOnly)
                                 {
-                                    AttributeControl objControl =
-                                        new AttributeControl(
-                                            notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
-                                    objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MinimumSize.Height);
-                                    objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MaximumSize.Height);
-                                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                    if (intNewNameWidth < 0)
-                                        intNewNameWidth = objControl.NameWidth;
-                                    else if (intNewNameWidth < objControl.NameWidth)
+                                    for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
                                     {
-                                        intNewNameWidth = objControl.NameWidth;
-                                        blnVaryingAddedWidths = true;
-                                    }
+                                        AttributeControlReadOnly objControl =
+                                            new AttributeControlReadOnly(
+                                                notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                        objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MinimumSize.Height);
+                                        objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MaximumSize.Height);
+                                        if (intNewNameWidth < 0)
+                                            intNewNameWidth = objControl.NameWidth;
+                                        else if (intNewNameWidth < objControl.NameWidth)
+                                        {
+                                            intNewNameWidth = objControl.NameWidth;
+                                            blnVaryingAddedWidths = true;
+                                        }
 
-                                    aobjControls[i] = objControl;
+                                        aobjControls[i] = objControl;
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
+                                    {
+                                        AttributeControl objControl =
+                                            new AttributeControl(
+                                                notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                        objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MinimumSize.Height);
+                                        objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MaximumSize.Height);
+                                        objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                        if (intNewNameWidth < 0)
+                                            intNewNameWidth = objControl.NameWidth;
+                                        else if (intNewNameWidth < objControl.NameWidth)
+                                        {
+                                            intNewNameWidth = objControl.NameWidth;
+                                            blnVaryingAddedWidths = true;
+                                        }
+
+                                        aobjControls[i] = objControl;
+                                    }
                                 }
 
                                 int intOldNameWidth = lblName?.Width ??
                                                       (pnlAttributes.Controls.Count > 0
                                                           ? pnlAttributes.Controls[0].Width
                                                           : 0);
-                                if (intNewNameWidth > intOldNameWidth)
+                                if (IsReadOnly)
+                                {
+                                    if (intNewNameWidth > intOldNameWidth)
+                                    {
+                                        if (lblName != null)
+                                            lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                        foreach (AttributeControlReadOnly objControl in pnlAttributes.Controls)
+                                            objControl.UpdateWidths(intNewNameWidth, intValueWidth, intLimitsWidth);
+                                        if (blnVaryingAddedWidths)
+                                            foreach (AttributeControlReadOnly objControl in aobjControls.OfType<AttributeControlReadOnly>())
+                                                objControl.UpdateWidths(intNewNameWidth, intValueWidth,
+                                                                        intLimitsWidth);
+                                    }
+                                    else
+                                    {
+                                        foreach (AttributeControlReadOnly objControl in aobjControls.OfType<AttributeControlReadOnly>())
+                                            objControl.UpdateWidths(intOldNameWidth, intValueWidth,
+                                                                    intLimitsWidth);
+                                    }
+                                }
+                                else if (intNewNameWidth > intOldNameWidth)
                                 {
                                     if (lblName != null)
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
@@ -364,13 +430,30 @@ namespace Chummer
                             {
                                 foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    if (IsReadOnly)
                                     {
-                                        if (objControl.AttributeName == objAttrib.Abbrev)
+                                        for (int i = 0; i < pnlAttributes.Controls.Count; ++i)
                                         {
-                                            objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                                            pnlAttributes.Controls.Remove(objControl);
-                                            objControl.Dispose();
+                                            AttributeControlReadOnly objControl
+                                                = (AttributeControlReadOnly) pnlAttributes.Controls[i];
+                                            if (objControl.AttributeName == objAttrib.Abbrev)
+                                            {
+                                                pnlAttributes.Controls.RemoveAt(i);
+                                                objControl.Dispose();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int i = 0; i < pnlAttributes.Controls.Count; ++i)
+                                        {
+                                            AttributeControl objControl = (AttributeControl) pnlAttributes.Controls[i];
+                                            if (objControl.AttributeName == objAttrib.Abbrev)
+                                            {
+                                                objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
+                                                pnlAttributes.Controls.RemoveAt(i);
+                                                objControl.Dispose();
+                                            }
                                         }
                                     }
 
@@ -387,12 +470,13 @@ namespace Chummer
                             {
                                 foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    for (int i = 0; i < pnlAttributes.Controls.Count; i++)
                                     {
+                                        AttributeControl objControl = (AttributeControl) pnlAttributes.Controls[i];
                                         if (objControl.AttributeName == objAttrib.Abbrev)
                                         {
                                             objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                                            pnlAttributes.Controls.Remove(objControl);
+                                            pnlAttributes.Controls.RemoveAt(i);
                                             objControl.Dispose();
                                         }
                                     }
@@ -407,32 +491,77 @@ namespace Chummer
                                 bool blnVaryingAddedWidths = false;
                                 int intNewNameWidth = -1;
                                 Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
-                                for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
+                                if (IsReadOnly)
                                 {
-                                    AttributeControl objControl =
-                                        new AttributeControl(
-                                            notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
-                                    objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MinimumSize.Height);
-                                    objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MaximumSize.Height);
-                                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                    if (intNewNameWidth < 0)
-                                        intNewNameWidth = objControl.NameWidth;
-                                    else if (intNewNameWidth < objControl.NameWidth)
+                                    for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
                                     {
-                                        intNewNameWidth = objControl.NameWidth;
-                                        blnVaryingAddedWidths = true;
-                                    }
+                                        AttributeControlReadOnly objControl =
+                                            new AttributeControlReadOnly(
+                                                notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                        objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MinimumSize.Height);
+                                        objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MaximumSize.Height);
+                                        if (intNewNameWidth < 0)
+                                            intNewNameWidth = objControl.NameWidth;
+                                        else if (intNewNameWidth < objControl.NameWidth)
+                                        {
+                                            intNewNameWidth = objControl.NameWidth;
+                                            blnVaryingAddedWidths = true;
+                                        }
 
-                                    aobjControls[i] = objControl;
+                                        aobjControls[i] = objControl;
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
+                                    {
+                                        AttributeControl objControl =
+                                            new AttributeControl(
+                                                notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                        objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MinimumSize.Height);
+                                        objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
+                                                                          objControl.MaximumSize.Height);
+                                        objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                        if (intNewNameWidth < 0)
+                                            intNewNameWidth = objControl.NameWidth;
+                                        else if (intNewNameWidth < objControl.NameWidth)
+                                        {
+                                            intNewNameWidth = objControl.NameWidth;
+                                            blnVaryingAddedWidths = true;
+                                        }
+
+                                        aobjControls[i] = objControl;
+                                    }
                                 }
 
                                 int intOldNameWidth = lblName?.Width ??
                                                       (pnlAttributes.Controls.Count > 0
                                                           ? pnlAttributes.Controls[0].Width
                                                           : 0);
-                                if (intNewNameWidth > intOldNameWidth)
+                                if (IsReadOnly)
+                                {
+                                    if (intNewNameWidth > intOldNameWidth)
+                                    {
+                                        if (lblName != null)
+                                            lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                        foreach (AttributeControlReadOnly objControl in pnlAttributes.Controls)
+                                            objControl.UpdateWidths(intNewNameWidth, intValueWidth, intLimitsWidth);
+                                        if (blnVaryingAddedWidths)
+                                            foreach (AttributeControlReadOnly objControl in aobjControls.OfType<AttributeControlReadOnly>())
+                                                objControl.UpdateWidths(intNewNameWidth, intValueWidth,
+                                                                        intLimitsWidth);
+                                    }
+                                    else
+                                    {
+                                        foreach (AttributeControlReadOnly objControl in aobjControls.OfType<AttributeControlReadOnly>())
+                                            objControl.UpdateWidths(intOldNameWidth, intValueWidth,
+                                                                    intLimitsWidth);
+                                    }
+                                }
+                                else if (intNewNameWidth > intOldNameWidth)
                                 {
                                     if (lblName != null)
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);

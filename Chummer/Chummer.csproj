@@ -353,6 +353,12 @@
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
     <Compile Include="Backend\Static\Managers\ImprovementManager.cs" />
+    <Compile Include="Controls\Attributes\AttributeControlReadOnly.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Attributes\AttributeControlReadOnly.Designer.cs">
+      <DependentUpon>AttributeControlReadOnly.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Characters\ContactControlReadOnly.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1651,6 +1657,9 @@
     <Compile Include="Controls\Shared\Components\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="Controls\Attributes\AttributeControlReadOnly.resx">
+      <DependentUpon>AttributeControlReadOnly.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Characters\ContactControlReadOnly.resx">
       <DependentUpon>ContactControlReadOnly.cs</DependentUpon>
     </EmbeddedResource>
