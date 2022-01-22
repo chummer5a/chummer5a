@@ -1366,6 +1366,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.flpMysticAdeptMAGAdept = new System.Windows.Forms.FlowLayoutPanel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1654,6 +1655,7 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
+            this.flpMysticAdeptMAGAdept.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -6840,20 +6842,18 @@ namespace Chummer
             // 
             this.tlpCommonRightSide.AutoSize = true;
             this.tlpCommonRightSide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpCommonRightSide.ColumnCount = 3;
-            this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpCommonRightSide.ColumnCount = 2;
+            this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
+            this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCommonRightSide.Controls.Add(this.lblMysticAdeptMAGAdept, 1, 5);
             this.tlpCommonRightSide.Controls.Add(this.cboAttributeCategory, 0, 3);
             this.tlpCommonRightSide.Controls.Add(this.lblMetatypeLabel, 0, 0);
             this.tlpCommonRightSide.Controls.Add(this.lblMetatypeSourceLabel, 0, 1);
             this.tlpCommonRightSide.Controls.Add(this.lblPossessed, 0, 2);
             this.tlpCommonRightSide.Controls.Add(this.lblMysticAdeptAssignment, 0, 5);
-            this.tlpCommonRightSide.Controls.Add(this.cmdIncreasePowerPoints, 2, 5);
             this.tlpCommonRightSide.Controls.Add(this.lblMetatypeSource, 1, 1);
             this.tlpCommonRightSide.Controls.Add(this.lblMetatype, 1, 0);
+            this.tlpCommonRightSide.Controls.Add(this.flpMysticAdeptMAGAdept, 1, 5);
             this.tlpCommonRightSide.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCommonRightSide.Location = new System.Drawing.Point(640, 0);
             this.tlpCommonRightSide.Margin = new System.Windows.Forms.Padding(0);
@@ -6874,7 +6874,7 @@ namespace Chummer
             // 
             this.lblMysticAdeptMAGAdept.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMysticAdeptMAGAdept.AutoSize = true;
-            this.lblMysticAdeptMAGAdept.Location = new System.Drawing.Point(156, 210);
+            this.lblMysticAdeptMAGAdept.Location = new System.Drawing.Point(3, 8);
             this.lblMysticAdeptMAGAdept.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMysticAdeptMAGAdept.Name = "lblMysticAdeptMAGAdept";
             this.lblMysticAdeptMAGAdept.Size = new System.Drawing.Size(19, 13);
@@ -6884,7 +6884,7 @@ namespace Chummer
             // 
             // cboAttributeCategory
             // 
-            this.tlpCommonRightSide.SetColumnSpan(this.cboAttributeCategory, 3);
+            this.tlpCommonRightSide.SetColumnSpan(this.cboAttributeCategory, 2);
             this.cboAttributeCategory.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboAttributeCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAttributeCategory.FormattingEnabled = true;
@@ -6899,7 +6899,7 @@ namespace Chummer
             // 
             this.lblMetatypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetatypeLabel.AutoSize = true;
-            this.lblMetatypeLabel.Location = new System.Drawing.Point(96, 6);
+            this.lblMetatypeLabel.Location = new System.Drawing.Point(91, 6);
             this.lblMetatypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatypeLabel.Name = "lblMetatypeLabel";
             this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
@@ -6912,7 +6912,7 @@ namespace Chummer
             // 
             this.lblMetatypeSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetatypeSourceLabel.AutoSize = true;
-            this.lblMetatypeSourceLabel.Location = new System.Drawing.Point(106, 31);
+            this.lblMetatypeSourceLabel.Location = new System.Drawing.Point(101, 31);
             this.lblMetatypeSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatypeSourceLabel.Name = "lblMetatypeSourceLabel";
             this.lblMetatypeSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -6925,7 +6925,7 @@ namespace Chummer
             // 
             this.lblPossessed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblPossessed.AutoSize = true;
-            this.tlpCommonRightSide.SetColumnSpan(this.lblPossessed, 3);
+            this.tlpCommonRightSide.SetColumnSpan(this.lblPossessed, 2);
             this.lblPossessed.Location = new System.Drawing.Point(3, 56);
             this.lblPossessed.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPossessed.Name = "lblPossessed";
@@ -6939,7 +6939,7 @@ namespace Chummer
             // 
             this.lblMysticAdeptAssignment.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMysticAdeptAssignment.AutoSize = true;
-            this.lblMysticAdeptAssignment.Location = new System.Drawing.Point(17, 210);
+            this.lblMysticAdeptAssignment.Location = new System.Drawing.Point(12, 210);
             this.lblMysticAdeptAssignment.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMysticAdeptAssignment.Name = "lblMysticAdeptAssignment";
             this.lblMysticAdeptAssignment.Size = new System.Drawing.Size(133, 13);
@@ -6960,7 +6960,7 @@ namespace Chummer
             this.cmdIncreasePowerPoints.ImageDpi288 = null;
             this.cmdIncreasePowerPoints.ImageDpi384 = null;
             this.cmdIncreasePowerPoints.ImageDpi96 = global::Chummer.Properties.Resources.add;
-            this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(181, 205);
+            this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(28, 3);
             this.cmdIncreasePowerPoints.MinimumSize = new System.Drawing.Size(24, 24);
             this.cmdIncreasePowerPoints.Name = "cmdIncreasePowerPoints";
             this.cmdIncreasePowerPoints.Padding = new System.Windows.Forms.Padding(1);
@@ -6974,9 +6974,8 @@ namespace Chummer
             // 
             this.lblMetatypeSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMetatypeSource.AutoSize = true;
-            this.tlpCommonRightSide.SetColumnSpan(this.lblMetatypeSource, 2);
             this.lblMetatypeSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblMetatypeSource.Location = new System.Drawing.Point(156, 31);
+            this.lblMetatypeSource.Location = new System.Drawing.Point(151, 31);
             this.lblMetatypeSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatypeSource.Name = "lblMetatypeSource";
             this.lblMetatypeSource.Size = new System.Drawing.Size(47, 13);
@@ -6989,8 +6988,7 @@ namespace Chummer
             // 
             this.lblMetatype.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMetatype.AutoSize = true;
-            this.tlpCommonRightSide.SetColumnSpan(this.lblMetatype, 2);
-            this.lblMetatype.Location = new System.Drawing.Point(156, 6);
+            this.lblMetatype.Location = new System.Drawing.Point(151, 6);
             this.lblMetatype.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatype.Name = "lblMetatype";
             this.lblMetatype.Size = new System.Drawing.Size(39, 13);
@@ -8225,8 +8223,7 @@ namespace Chummer
             this.tlpTechnomancerTop.Name = "tlpTechnomancerTop";
             this.tlpTechnomancerTop.RowCount = 2;
             this.tlpTechnomancerTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTechnomancerTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTechnomancerTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpTechnomancerTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpTechnomancerTop.Size = new System.Drawing.Size(971, 420);
             this.tlpTechnomancerTop.TabIndex = 182;
             // 
@@ -8242,7 +8239,7 @@ namespace Chummer
             this.flpTechnomancer.Margin = new System.Windows.Forms.Padding(0);
             this.flpTechnomancer.Name = "flpTechnomancer";
             this.flpTechnomancer.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.flpTechnomancer.Size = new System.Drawing.Size(661, 392);
+            this.flpTechnomancer.Size = new System.Drawing.Size(661, 391);
             this.flpTechnomancer.TabIndex = 185;
             this.flpTechnomancer.WrapContents = false;
             // 
@@ -8718,7 +8715,7 @@ namespace Chummer
             this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
             this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpComplexForms.Size = new System.Drawing.Size(310, 392);
+            this.tlpComplexForms.Size = new System.Drawing.Size(310, 391);
             this.tlpComplexForms.TabIndex = 183;
             // 
             // treComplexForms
@@ -21988,6 +21985,20 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
+            // flpMysticAdeptMAGAdept
+            // 
+            this.flpMysticAdeptMAGAdept.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpMysticAdeptMAGAdept.AutoSize = true;
+            this.flpMysticAdeptMAGAdept.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpMysticAdeptMAGAdept.Controls.Add(this.lblMysticAdeptMAGAdept);
+            this.flpMysticAdeptMAGAdept.Controls.Add(this.cmdIncreasePowerPoints);
+            this.flpMysticAdeptMAGAdept.Location = new System.Drawing.Point(148, 202);
+            this.flpMysticAdeptMAGAdept.Margin = new System.Windows.Forms.Padding(0);
+            this.flpMysticAdeptMAGAdept.Name = "flpMysticAdeptMAGAdept";
+            this.flpMysticAdeptMAGAdept.Size = new System.Drawing.Size(55, 30);
+            this.flpMysticAdeptMAGAdept.TabIndex = 108;
+            this.flpMysticAdeptMAGAdept.WrapContents = false;
+            // 
             // CharacterCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -22494,6 +22505,8 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
+            this.flpMysticAdeptMAGAdept.ResumeLayout(false);
+            this.flpMysticAdeptMAGAdept.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -23809,5 +23822,6 @@ namespace Chummer
         private TabPage tabBackground;
         private TabPage tabConcept;
         private TabPage tabCharacterNotes;
+        private FlowLayoutPanel flpMysticAdeptMAGAdept;
     }
 }

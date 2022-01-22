@@ -4893,7 +4893,7 @@ namespace Chummer
             this.tlpMagicianTop.Name = "tlpMagicianTop";
             this.tlpMagicianTop.RowCount = 2;
             this.tlpMagicianTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMagicianTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMagicianTop.Size = new System.Drawing.Size(971, 420);
             this.tlpMagicianTop.TabIndex = 157;
             // 
@@ -5808,7 +5808,7 @@ namespace Chummer
             this.tlpTechnomancerTop.Name = "tlpTechnomancerTop";
             this.tlpTechnomancerTop.RowCount = 2;
             this.tlpTechnomancerTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTechnomancerTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTechnomancerTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpTechnomancerTop.Size = new System.Drawing.Size(971, 420);
             this.tlpTechnomancerTop.TabIndex = 155;
             // 

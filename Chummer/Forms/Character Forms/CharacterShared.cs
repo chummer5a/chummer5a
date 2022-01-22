@@ -5334,20 +5334,8 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                if (CharacterObject.SustainedCollection.Count > 0)
-                {
-                    //Sets up the Psyche Active Checkbox
-                    chkPsycheActiveMagician.Visible = true;
-                    chkPsycheActiveTechnomancer.Visible = true;
-                }
-                else
-                {
-                    chkPsycheActiveMagician.Visible = false;
-                    chkPsycheActiveTechnomancer.Visible = false;
-                }
-
                 Panel DetermineRefreshingPanel(SustainedObject objSustained, Panel flpSustainedSpellsParam,
-                    Panel flpSustainedComplexFormsParam, Panel flpSustainedCritterPowersParam)
+                                               Panel flpSustainedComplexFormsParam, Panel flpSustainedCritterPowersParam)
                 {
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                     switch (objSustained.LinkedObjectType)
@@ -5368,9 +5356,23 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    pnlSustainedSpells?.Controls.Clear();
-                    pnlSustainedComplexForms?.Controls.Clear();
-                    pnlSustainedCritterPowers?.Controls.Clear();
+                    chkPsycheActiveMagician.Visible = false;
+                    chkPsycheActiveTechnomancer.Visible = false;
+                    if (pnlSustainedSpells != null)
+                    {
+                        pnlSustainedSpells.Controls.Clear();
+                        pnlSustainedSpells.Visible = false;
+                    }
+                    if (pnlSustainedComplexForms != null)
+                    {
+                        pnlSustainedComplexForms.Controls.Clear();
+                        pnlSustainedComplexForms.Visible = false;
+                    }
+                    if (pnlSustainedCritterPowers != null)
+                    {
+                        pnlSustainedCritterPowers.Controls.Clear();
+                        pnlSustainedCritterPowers.Visible = false;
+                    }
                     foreach (SustainedObject objSustained in CharacterObject.SustainedCollection)
                     {
                         Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
@@ -5378,6 +5380,18 @@ namespace Chummer
 
                         if (refreshingPanel == null)
                             continue;
+
+                        refreshingPanel.Visible = true;
+                        switch (objSustained.LinkedObjectType)
+                        {
+                            case Improvement.ImprovementSource.Spell:
+                                chkPsycheActiveMagician.Visible = true;
+                                break;
+
+                            case Improvement.ImprovementSource.ComplexForm:
+                                chkPsycheActiveTechnomancer.Visible = true;
+                                break;
+                        }
 
                         int intSustainedObjects = refreshingPanel.Controls.Count;
 
@@ -5404,6 +5418,18 @@ namespace Chummer
 
                                     if (refreshingPanel == null)
                                         continue;
+
+                                    refreshingPanel.Visible = true;
+                                    switch (objSustained.LinkedObjectType)
+                                    {
+                                        case Improvement.ImprovementSource.Spell:
+                                            chkPsycheActiveMagician.Visible = true;
+                                            break;
+
+                                        case Improvement.ImprovementSource.ComplexForm:
+                                            chkPsycheActiveTechnomancer.Visible = true;
+                                            break;
+                                    }
 
                                     int intSustainedObjects = refreshingPanel.Controls.Count;
 
@@ -5455,6 +5481,15 @@ namespace Chummer
                                             objLoopControl.Top -= intMoveUpAmount;
                                         }
                                     }
+
+                                    if (intSustainedObjects == 0)
+                                    {
+                                        refreshingPanel.Visible = false;
+                                        if (refreshingPanel == pnlSustainedSpells)
+                                            chkPsycheActiveMagician.Visible = false;
+                                        else if (refreshingPanel == pnlSustainedComplexForms)
+                                            chkPsycheActiveTechnomancer.Visible = false;
+                                    }
                                 }
                             }
                             break;
@@ -5494,6 +5529,15 @@ namespace Chummer
                                             objLoopControl.Top -= intMoveUpAmount;
                                         }
                                     }
+
+                                    if (intSustainedObjects == 0)
+                                    {
+                                        refreshingPanel.Visible = false;
+                                        if (refreshingPanel == pnlSustainedSpells)
+                                            chkPsycheActiveMagician.Visible = false;
+                                        else if (refreshingPanel == pnlSustainedComplexForms)
+                                            chkPsycheActiveTechnomancer.Visible = false;
+                                    }
                                 }
 
                                 foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
@@ -5503,6 +5547,18 @@ namespace Chummer
 
                                     if (refreshingPanel == null)
                                         continue;
+
+                                    refreshingPanel.Visible = true;
+                                    switch (objSustained.LinkedObjectType)
+                                    {
+                                        case Improvement.ImprovementSource.Spell:
+                                            chkPsycheActiveMagician.Visible = true;
+                                            break;
+
+                                        case Improvement.ImprovementSource.ComplexForm:
+                                            chkPsycheActiveTechnomancer.Visible = true;
+                                            break;
+                                    }
 
                                     intSustainedObjects = refreshingPanel.Controls.Count;
 
