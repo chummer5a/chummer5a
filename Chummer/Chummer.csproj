@@ -353,6 +353,12 @@
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
     <Compile Include="Backend\Static\Managers\ImprovementManager.cs" />
+    <Compile Include="Forms\Character Forms\CharacterReadOnly.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Character Forms\CharacterReadOnly.Designer.cs">
+      <DependentUpon>CharacterReadOnly.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Character Forms\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
@@ -1639,6 +1645,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Shared\SustainedObjectControl.resx">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Character Forms\CharacterReadOnly.resx">
+      <DependentUpon>CharacterReadOnly.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\CharacterRoster.resx">
       <DependentUpon>CharacterRoster.cs</DependentUpon>
