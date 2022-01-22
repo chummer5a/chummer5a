@@ -6339,6 +6339,24 @@ namespace Chummer
                         else if (panSprites == null)
                             continue;
 
+                        if (IsReadOnly)
+                        {
+                            SpiritControlReadOnly objSpiritReadOnlyControl = new SpiritControlReadOnly(objSpirit);
+                            if (blnIsSpirit)
+                            {
+                                objSpiritReadOnlyControl.Top = intSpirits * objSpiritReadOnlyControl.Height;
+                                panSpirits.Controls.Add(objSpiritReadOnlyControl);
+                                ++intSpirits;
+                            }
+                            else
+                            {
+                                objSpiritReadOnlyControl.Top = intSprites * objSpiritReadOnlyControl.Height;
+                                panSprites.Controls.Add(objSpiritReadOnlyControl);
+                                ++intSprites;
+                            }
+                            continue;
+                        }
+
                         SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                         // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -6349,15 +6367,15 @@ namespace Chummer
 
                         if (blnIsSpirit)
                         {
-                            ++intSpirits;
                             objSpiritControl.Top = intSpirits * objSpiritControl.Height;
                             panSpirits.Controls.Add(objSpiritControl);
+                            ++intSpirits;
                         }
                         else
                         {
-                            ++intSprites;
                             objSpiritControl.Top = intSprites * objSpiritControl.Height;
                             panSprites.Controls.Add(objSpiritControl);
+                            ++intSprites;
                         }
                     }
 
@@ -6382,6 +6400,24 @@ namespace Chummer
                                     }
                                     else if (panSprites == null)
                                         continue;
+
+                                    if (IsReadOnly)
+                                    {
+                                        SpiritControlReadOnly objSpiritReadOnlyControl = new SpiritControlReadOnly(objSpirit);
+                                        if (blnIsSpirit)
+                                        {
+                                            objSpiritReadOnlyControl.Top = intSpirits * objSpiritReadOnlyControl.Height;
+                                            panSpirits.Controls.Add(objSpiritReadOnlyControl);
+                                            ++intSpirits;
+                                        }
+                                        else
+                                        {
+                                            objSpiritReadOnlyControl.Top = intSprites * objSpiritReadOnlyControl.Height;
+                                            panSprites.Controls.Add(objSpiritReadOnlyControl);
+                                            ++intSprites;
+                                        }
+                                        continue;
+                                    }
 
                                     SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
@@ -6420,20 +6456,31 @@ namespace Chummer
                                         for (int i = 0; i < intSpirits; ++i)
                                         {
                                             Control objLoopControl = panSpirits.Controls[i];
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            switch (objLoopControl)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSpirits.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
-                                                --i;
-                                                --intSpirits;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                case SpiritControl objSpiritControl when objSpiritControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritControl.Height;
+                                                    panSpirits.Controls.RemoveAt(i);
+                                                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                                    objSpiritControl.Dispose();
+                                                    --i;
+                                                    --intSpirits;
+                                                    break;
+                                                case SpiritControlReadOnly objSpiritReadOnlyControl when objSpiritReadOnlyControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritReadOnlyControl.Height;
+                                                    panSpirits.Controls.RemoveAt(i);
+                                                    objSpiritReadOnlyControl.Dispose();
+                                                    --i;
+                                                    --intSpirits;
+                                                    break;
+                                                default:
+                                                {
+                                                    if (intMoveUpAmount != 0)
+                                                        objLoopControl.Top -= intMoveUpAmount;
+
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -6443,20 +6490,31 @@ namespace Chummer
                                         for (int i = 0; i < intSprites; ++i)
                                         {
                                             Control objLoopControl = panSprites.Controls[i];
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            switch (objLoopControl)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSprites.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
-                                                --i;
-                                                --intSprites;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                case SpiritControl objSpiritControl when objSpiritControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritControl.Height;
+                                                    panSprites.Controls.RemoveAt(i);
+                                                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                                    objSpiritControl.Dispose();
+                                                    --i;
+                                                    --intSprites;
+                                                    break;
+                                                case SpiritControlReadOnly objSpiritReadOnlyControl when objSpiritReadOnlyControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritReadOnlyControl.Height;
+                                                    panSprites.Controls.RemoveAt(i);
+                                                    objSpiritReadOnlyControl.Dispose();
+                                                    --i;
+                                                    --intSprites;
+                                                    break;
+                                                default:
+                                                {
+                                                    if (intMoveUpAmount != 0)
+                                                        objLoopControl.Top -= intMoveUpAmount;
+
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -6478,20 +6536,31 @@ namespace Chummer
                                         for (int i = 0; i < intSpirits; ++i)
                                         {
                                             Control objLoopControl = panSpirits.Controls[i];
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            switch (objLoopControl)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSpirits.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
-                                                --i;
-                                                --intSpirits;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                case SpiritControl objSpiritControl when objSpiritControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritControl.Height;
+                                                    panSpirits.Controls.RemoveAt(i);
+                                                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                                    objSpiritControl.Dispose();
+                                                    --i;
+                                                    --intSpirits;
+                                                    break;
+                                                case SpiritControlReadOnly objSpiritReadOnlyControl when objSpiritReadOnlyControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritReadOnlyControl.Height;
+                                                    panSpirits.Controls.RemoveAt(i);
+                                                    objSpiritReadOnlyControl.Dispose();
+                                                    --i;
+                                                    --intSpirits;
+                                                    break;
+                                                default:
+                                                {
+                                                    if (intMoveUpAmount != 0)
+                                                        objLoopControl.Top -= intMoveUpAmount;
+
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -6500,20 +6569,31 @@ namespace Chummer
                                         for (int i = 0; i < intSprites; ++i)
                                         {
                                             Control objLoopControl = panSprites.Controls[i];
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            switch (objLoopControl)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSprites.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
-                                                --i;
-                                                --intSprites;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                case SpiritControl objSpiritControl when objSpiritControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritControl.Height;
+                                                    panSprites.Controls.RemoveAt(i);
+                                                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                                                    objSpiritControl.Dispose();
+                                                    --i;
+                                                    --intSprites;
+                                                    break;
+                                                case SpiritControlReadOnly objSpiritReadOnlyControl when objSpiritReadOnlyControl.SpiritObject == objSpirit:
+                                                    intMoveUpAmount += objSpiritReadOnlyControl.Height;
+                                                    panSprites.Controls.RemoveAt(i);
+                                                    objSpiritReadOnlyControl.Dispose();
+                                                    --i;
+                                                    --intSprites;
+                                                    break;
+                                                default:
+                                                {
+                                                    if (intMoveUpAmount != 0)
+                                                        objLoopControl.Top -= intMoveUpAmount;
+
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -6529,6 +6609,24 @@ namespace Chummer
                                     }
                                     else if (panSprites == null)
                                         continue;
+
+                                    if (IsReadOnly)
+                                    {
+                                        SpiritControlReadOnly objSpiritReadOnlyControl = new SpiritControlReadOnly(objSpirit);
+                                        if (blnIsSpirit)
+                                        {
+                                            objSpiritReadOnlyControl.Top = intSpirits * objSpiritReadOnlyControl.Height;
+                                            panSpirits.Controls.Add(objSpiritReadOnlyControl);
+                                            ++intSpirits;
+                                        }
+                                        else
+                                        {
+                                            objSpiritReadOnlyControl.Top = intSprites * objSpiritReadOnlyControl.Height;
+                                            panSprites.Controls.Add(objSpiritReadOnlyControl);
+                                            ++intSprites;
+                                        }
+                                        continue;
+                                    }
 
                                     SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 

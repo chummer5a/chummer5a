@@ -365,6 +365,12 @@
     <Compile Include="Controls\Characters\PetControlReadOnly.Designer.cs">
       <DependentUpon>PetControlReadOnly.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Characters\SpiritControlReadOnly.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Characters\SpiritControlReadOnly.Designer.cs">
+      <DependentUpon>SpiritControlReadOnly.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Character Forms\CharacterReadOnly.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1650,6 +1656,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Characters\PetControlReadOnly.resx">
       <DependentUpon>PetControlReadOnly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Characters\SpiritControlReadOnly.resx">
+      <DependentUpon>SpiritControlReadOnly.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Character Creation Forms\SelectLifeModule.resx">
       <DependentUpon>SelectLifeModule.cs</DependentUpon>
