@@ -992,6 +992,7 @@ namespace Chummer
                 {
                     objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                     objContactControl.DeleteContact -= DeleteEnemy;
+                    objContactControl.MouseDown -= DragContactControl;
                 }
 
                 foreach (PetControl objPetControl in panPets.Controls.OfType<PetControl>())
