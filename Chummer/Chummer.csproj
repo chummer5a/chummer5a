@@ -359,6 +359,12 @@
     <Compile Include="Controls\Characters\ContactControlReadOnly.Designer.cs">
       <DependentUpon>ContactControlReadOnly.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Characters\PetControlReadOnly.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Characters\PetControlReadOnly.Designer.cs">
+      <DependentUpon>PetControlReadOnly.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Character Forms\CharacterReadOnly.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1641,6 +1647,9 @@
     </Compile>
     <EmbeddedResource Include="Controls\Characters\ContactControlReadOnly.resx">
       <DependentUpon>ContactControlReadOnly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Characters\PetControlReadOnly.resx">
+      <DependentUpon>PetControlReadOnly.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Character Creation Forms\SelectLifeModule.resx">
       <DependentUpon>SelectLifeModule.cs</DependentUpon>

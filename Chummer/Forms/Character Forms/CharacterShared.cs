@@ -5078,6 +5078,13 @@ namespace Chummer
                                 {
                                     if (panPets == null)
                                         break;
+                                    if (IsReadOnly)
+                                    {
+                                        PetControlReadOnly objContactReadOnlyControl = new PetControlReadOnly(objContact);
+                                        objContactReadOnlyControl.MouseDown += DragContactControl;
+                                        panPets.Controls.Add(objContactReadOnlyControl);
+                                        break;
+                                    }
                                     PetControl objContactControl = new PetControl(objContact);
                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                     objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -5150,6 +5157,13 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
+                                                if (IsReadOnly)
+                                                {
+                                                    PetControlReadOnly objPetReadOnlyControl = new PetControlReadOnly(objLoopContact);
+                                                    objPetReadOnlyControl.MouseDown += DragContactControl;
+                                                    panPets.Controls.Add(objPetReadOnlyControl);
+                                                    break;
+                                                }
                                                 PetControl objPetControl = new PetControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -5225,13 +5239,18 @@ namespace Chummer
                                                     break;
                                                 for (int i = panPets.Controls.Count - 1; i >= 0; i--)
                                                 {
-                                                    if (panPets.Controls[i] is PetControl objPetControl &&
-                                                        objPetControl.ContactObject == objLoopContact)
+                                                    switch (panPets.Controls[i])
                                                     {
-                                                        panPets.Controls.RemoveAt(i);
-                                                        objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objPetControl.DeleteContact -= DeletePet;
-                                                        objPetControl.Dispose();
+                                                        case PetControl objPetControl when objPetControl.ContactObject == objLoopContact:
+                                                            panPets.Controls.RemoveAt(i);
+                                                            objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objPetControl.DeleteContact -= DeletePet;
+                                                            objPetControl.Dispose();
+                                                            break;
+                                                        case PetControlReadOnly objPetReadOnlyControl when objPetReadOnlyControl.ContactObject == objLoopContact:
+                                                            panPets.Controls.RemoveAt(i);
+                                                            objPetReadOnlyControl.Dispose();
+                                                            break;
                                                     }
                                                 }
                                             }
@@ -5302,13 +5321,18 @@ namespace Chummer
                                                     break;
                                                 for (int i = panPets.Controls.Count - 1; i >= 0; i--)
                                                 {
-                                                    if (panPets.Controls[i] is PetControl objPetControl &&
-                                                        objPetControl.ContactObject == objLoopContact)
+                                                    switch (panPets.Controls[i])
                                                     {
-                                                        panPets.Controls.RemoveAt(i);
-                                                        objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objPetControl.DeleteContact -= DeletePet;
-                                                        objPetControl.Dispose();
+                                                        case PetControl objPetControl when objPetControl.ContactObject == objLoopContact:
+                                                            panPets.Controls.RemoveAt(i);
+                                                            objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objPetControl.DeleteContact -= DeletePet;
+                                                            objPetControl.Dispose();
+                                                            break;
+                                                        case PetControlReadOnly objPetReadOnlyControl when objPetReadOnlyControl.ContactObject == objLoopContact:
+                                                            panPets.Controls.RemoveAt(i);
+                                                            objPetReadOnlyControl.Dispose();
+                                                            break;
                                                     }
                                                 }
                                             }
@@ -5366,6 +5390,13 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
+                                                if (IsReadOnly)
+                                                {
+                                                    PetControlReadOnly objPetReadOnlyControl = new PetControlReadOnly(objLoopContact);
+                                                    objPetReadOnlyControl.MouseDown += DragContactControl;
+                                                    panPets.Controls.Add(objPetReadOnlyControl);
+                                                    break;
+                                                }
                                                 PetControl objPetControl = new PetControl(objLoopContact);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
