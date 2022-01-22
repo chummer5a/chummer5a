@@ -1856,7 +1856,7 @@
     </string>
     <string>
       <key>Tab_Magician</key>
-      <text>Spells and Spirits</text>
+      <text>Spells &amp;&amp; Spirits</text>
     </string>
     <string>
       <key>Tab_Adept</key>
@@ -1864,7 +1864,7 @@
     </string>
     <string>
       <key>Tab_Technomancer</key>
-      <text>Complex Forms and Sprites</text>
+      <text>Complex Forms &amp;&amp; Sprites</text>
     </string>
     <string>
       <key>Tab_Critter</key>
@@ -1880,7 +1880,7 @@
     </string>
     <string>
       <key>Tab_Cyberware</key>
-      <text>Cyberware and Bioware</text>
+      <text>Cyberware &amp;&amp; Bioware</text>
     </string>
     <string>
       <key>Tab_StreetGear</key>
@@ -1896,7 +1896,7 @@
     </string>
     <string>
       <key>Tab_Karma</key>
-      <text>Karma and Nuyen</text>
+      <text>Karma &amp;&amp; Nuyen</text>
     </string>
     <string>
       <key>Tab_Improvements</key>
@@ -1924,11 +1924,11 @@
     </string>
     <string>
       <key>Tab_Lifestyle</key>
-      <text>Lifestyle</text>
+      <text>Lifestyles</text>
     </string>
     <string>
       <key>Tab_Armor</key>
-      <text>Clothing and Armor</text>
+      <text>Clothing &amp;&amp; Armor</text>
     </string>
     <string>
       <key>Tab_Weapons</key>
@@ -1940,7 +1940,7 @@
     </string>
     <string>
       <key>Tab_Pets</key>
-      <text>Pets and Cohorts</text>
+      <text>Pets &amp;&amp; Cohorts</text>
     </string>
     <string>
       <key>Tab_ConditionMonitor</key>

@@ -14520,11 +14520,11 @@ namespace Chummer
 
             if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
             {
-                tabWeaponMatrixCM.Visible = true;
+                tabWeaponCM.Visible = true;
                 ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
             }
             else
-                tabWeaponMatrixCM.Visible = false;
+                tabWeaponCM.Visible = false;
 
             gpbWeaponsMatrix.Visible = treWeapons.SelectedNode.Tag is IHasMatrixAttributes ||
                                        treWeapons.SelectedNode.Tag is IHasWirelessBonus;
@@ -14840,7 +14840,7 @@ namespace Chummer
                     lblArmorOverclockerLabel.Visible = false;
                 }
 
-                tabArmorMatrixCM.Visible = true;
+                tabArmorCM.Visible = true;
                 ProcessEquipmentConditionMonitorBoxDisplays(panArmorMatrixCM, objHasMatrixAttributes.MatrixCM, objHasMatrixAttributes.MatrixCMFilled);
                 lblArmorDeviceRatingLabel.Visible = true;
                 lblArmorDeviceRating.Visible = true;
@@ -14857,7 +14857,7 @@ namespace Chummer
             }
             else
             {
-                tabArmorMatrixCM.Visible = false;
+                tabArmorCM.Visible = false;
                 if (treArmor.SelectedNode.Tag is IHasWirelessBonus)
                 {
                     cboArmorOverclocker.Visible = false;
@@ -14896,7 +14896,7 @@ namespace Chummer
             {
                 gpbGearCommon.Visible = false;
                 gpbGearMatrix.Visible = false;
-                tabGearMatrixCM.Visible = false;
+                tabGearCM.Visible = false;
 
                 // Buttons
                 cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
@@ -14936,7 +14936,7 @@ namespace Chummer
             {
                 gpbGearCommon.Visible = true;
                 gpbGearMatrix.Visible = true;
-                tabGearMatrixCM.Visible = true;
+                tabGearCM.Visible = true;
 
                 // Buttons
                 cmdDeleteGear.Enabled = !objGear.IncludedInParent;
@@ -15042,7 +15042,7 @@ namespace Chummer
             {
                 gpbGearCommon.Visible = false;
                 gpbGearMatrix.Visible = false;
-                tabGearMatrixCM.Visible = false;
+                tabGearCM.Visible = false;
 
                 // Buttons
                 cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
