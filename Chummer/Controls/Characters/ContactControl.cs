@@ -83,8 +83,8 @@ namespace Chummer
             {
                 if (cmdLink != null)
                     cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
-                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
+                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
+                        : LanguageManager.GetString("Tip_Contact_LinkContact");
 
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
