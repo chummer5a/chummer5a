@@ -534,7 +534,7 @@ namespace Chummer
 
                 case ContactControl _:
                 case PetControl _:
-                case SkillControl2 _:
+                case SkillControl _:
                 case KnowledgeSkillControl _:
                     // These controls have colors that are always data-bound
                     break;

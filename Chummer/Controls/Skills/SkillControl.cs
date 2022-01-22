@@ -32,7 +32,7 @@ using Chummer.Properties;
 namespace Chummer.UI.Skills
 {
     [DebuggerDisplay("{_objSkill.Name} {Visible} {btnAddSpec.Visible}")]
-    public sealed partial class SkillControl2 : UserControl
+    public sealed partial class SkillControl : UserControl
     {
         private readonly bool _blnLoading = true;
         private bool _blnUpdatingSpec = true;
@@ -54,7 +54,7 @@ namespace Chummer.UI.Skills
         private readonly ColorableCheckBox chkKarma;
         private readonly ElasticComboBox cboSelectAttribute;
 
-        public SkillControl2(Skill objSkill)
+        public SkillControl(Skill objSkill)
         {
             if (objSkill == null)
                 return;
