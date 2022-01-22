@@ -206,6 +206,13 @@ namespace Chummer.Backend.Skills
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
             }
         }
+        
+        public override string DisplaySpecialization(string strLanguage)
+        {
+            if (IsNativeLanguage)
+                return string.Empty;
+            return base.DisplaySpecialization(strLanguage);
+        }
 
         public string Type
         {

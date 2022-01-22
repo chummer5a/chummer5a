@@ -84,15 +84,11 @@ namespace Chummer.UI.Skills
 
                 if (objSkill.CharacterObject.Created)
                 {
-                    int intMinimumSize;
-                    using (Graphics g = CreateGraphics())
-                        intMinimumSize = (int)(25 * g.DpiX / 96.0f);
                     lblRating = new Label
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         Margin = new Padding(3, 6, 3, 6),
-                        MinimumSize = new Size(intMinimumSize, 0),
                         Name = "lblRating",
                         Text = "00",
                         TextAlign = ContentAlignment.MiddleCenter
@@ -143,8 +139,7 @@ namespace Chummer.UI.Skills
                         UseVisualStyleBackColor = true
                     };
                     btnAddSpec.Click += btnAddSpec_Click;
-
-                    lblSpec.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(KnowledgeSkill.IsNativeLanguage));
+                    
                     lblSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
 
                     btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
@@ -251,7 +246,7 @@ namespace Chummer.UI.Skills
                     this.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.Enabled));
                 }
 
-                KnowledgeSkillControl_DpiChangedAfterParent(null, EventArgs.Empty);
+                AdjustForDpi();
                 this.UpdateLightDarkMode();
                 this.TranslateWinForm(string.Empty, false);
             }
@@ -493,6 +488,11 @@ namespace Chummer.UI.Skills
         #endregion ButtonWithToolTip Visibility workaround
 
         private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            AdjustForDpi();
+        }
+
+        private void AdjustForDpi()
         {
             using (Graphics g = CreateGraphics())
             {
