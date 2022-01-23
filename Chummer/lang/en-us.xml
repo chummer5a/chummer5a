@@ -1623,6 +1623,10 @@
       <text>Save As C&amp;reated</text>
     </string>
     <string>
+      <key>Menu_OpenForEditing</key>
+      <text>&amp;Open for Editing</text>
+    </string>
+    <string>
       <key>Menu_FileExport</key>
       <text>&amp;Export</text>
     </string>
