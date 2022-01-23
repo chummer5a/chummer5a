@@ -53,6 +53,7 @@ Application Changes:
 - Cybersuites that add cyberlimbs now properly incorporate those cyberlimbs' attributes into the character's overall attributes.
 - Added a browser view for vehicles to show content in a grid view, similar to the weapons browser. Currently a bit slow.
 - Fixed the tooltips on buttons to open characters linked to contacts.
+- Fixed various issues caused by interactions between bonuses/improvements that add special skills and custom rulesets that can alter special skills lists.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

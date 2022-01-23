@@ -201,12 +201,15 @@ namespace Chummer.Backend.Skills
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
                 if (xmlSkillNode["forced"] != null)
-                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty, !Convert.ToBoolean(xmlSkillNode["disableupgrades"]?.InnerText, GlobalSettings.InvariantCultureInfo));
+                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                                                         !Convert.ToBoolean(
+                                                             xmlSkillNode["disableupgrades"]?.InnerText,
+                                                             GlobalSettings.InvariantCultureInfo));
                 else
                 {
-                    KnowledgeSkill knoSkill = new KnowledgeSkill(objCharacter);
-                    knoSkill.Load(xmlSkillNode);
-                    objLoadingSkill = knoSkill;
+                    KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter);
+                    objKnowledgeSkill.Load(xmlSkillNode);
+                    objLoadingSkill = objKnowledgeSkill;
                 }
             }
             else if (suid != Guid.Empty)
@@ -247,12 +250,15 @@ namespace Chummer.Backend.Skills
             if (objLoadingSkill == null)
             {
                 if (xmlSkillNode["forced"] != null)
-                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty, !Convert.ToBoolean(xmlSkillNode["disableupgrades"]?.InnerText, GlobalSettings.InvariantCultureInfo));
+                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                                                         !Convert.ToBoolean(
+                                                             xmlSkillNode["disableupgrades"]?.InnerText,
+                                                             GlobalSettings.InvariantCultureInfo));
                 else
                 {
-                    KnowledgeSkill knoSkill = new KnowledgeSkill(objCharacter);
-                    knoSkill.Load(xmlSkillNode);
-                    objLoadingSkill = knoSkill;
+                    KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter);
+                    objKnowledgeSkill.Load(xmlSkillNode);
+                    objLoadingSkill = objKnowledgeSkill;
                 }
             }
             if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
@@ -443,17 +449,17 @@ namespace Chummer.Backend.Skills
         /// Load a skill from a data file describing said skill
         /// </summary>
         /// <param name="xmlNode">The XML node describing the skill</param>
-        /// <param name="character">The character the skill belongs to</param>
+        /// <param name="objCharacter">The character the skill belongs to</param>
         /// <param name="blnIsKnowledgeSkill">Whether or not this skill is a knowledge skill.</param>
         /// <returns></returns>
-        public static Skill FromData(XmlNode xmlNode, Character character, bool blnIsKnowledgeSkill)
+        public static Skill FromData(XmlNode xmlNode, Character objCharacter, bool blnIsKnowledgeSkill)
         {
             if (xmlNode == null)
                 return null;
             if (xmlNode["exotic"]?.InnerText == bool.TrueString)
             {
                 //load exotic skill
-                return new ExoticSkill(character, xmlNode);
+                return new ExoticSkill(objCharacter, xmlNode);
             }
 
             if (blnIsKnowledgeSkill)
@@ -461,12 +467,12 @@ namespace Chummer.Backend.Skills
                 //TODO INIT SKILL
                 Utils.BreakIfDebug();
 
-                return new KnowledgeSkill(character);
+                return new KnowledgeSkill(objCharacter);
             }
 
             //TODO INIT SKILL
 
-            return new Skill(character, xmlNode);
+            return new Skill(objCharacter, xmlNode);
         }
 
         protected Skill(Character character)

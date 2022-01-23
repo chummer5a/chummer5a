@@ -195,17 +195,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void AddSkills(FilterOption skills, string strName = "")
+        internal IEnumerable<Skill> GetActiveSkillsFromData(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "")
         {
-            List<Skill> lstSkillsToAdd;
             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (XmlNodeList xmlSkillList = xmlSkillsDocument
                        .SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')'
-                                    + SkillFilter(skills, strName) + ']'))
+                                    + SkillFilter(eFilterOption, strName) + ']'))
             {
                 if (xmlSkillList?.Count > 0)
                 {
-                    lstSkillsToAdd = new List<Skill>(xmlSkillList.Count);
                     foreach (XmlNode xmlSkill in xmlSkillList)
                     {
                         if (_dicSkillBackups.Count > 0
@@ -213,8 +211,9 @@ namespace Chummer.Backend.Skills
                             && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill)
                             && objSkill != null)
                         {
-                            _dicSkillBackups.Remove(guiSkillId);
-                            lstSkillsToAdd.Add(objSkill);
+                            if (blnDeleteSkillsFromBackupIfFound)
+                                _dicSkillBackups.Remove(guiSkillId);
+                            yield return objSkill;
                         }
                         else
                         {
@@ -224,19 +223,22 @@ namespace Chummer.Backend.Skills
                                                     + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")
                                   ?.Value
                                   != "active";
-                            lstSkillsToAdd.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
+                            yield return Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
                         }
                     }
                 }
-                else
-                    return;
             }
+        }
 
+        internal void AddSkills(FilterOption eFilterOption, string strName = "")
+        {
+            List<Skill> lstSkillsToAdd = new List<Skill>(GetActiveSkillsFromData(eFilterOption, true, strName));
             foreach (Skill objSkill in lstSkillsToAdd)
             {
-                if (objSkill.SkillId != Guid.Empty)
+                Guid guidLoop = objSkill.SkillId;
+                if (guidLoop != Guid.Empty)
                 {
-                    Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                    Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == guidLoop);
                     if (objExistingSkill != null)
                     {
                         MergeSkills(objExistingSkill, objSkill);
@@ -258,85 +260,68 @@ namespace Chummer.Backend.Skills
             return objExoticSkill;
         }
 
-        internal void RemoveSkills(FilterOption skills, bool createKnowledge = true)
+        internal void RemoveSkills(FilterOption eSkillsToRemove, string strName = "", bool blnCreateKnowledge = true)
         {
-            string strCategory;
-            switch (skills)
+            HashSet<Skill> setSkillsToRemove = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName));
+            // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
             {
-                case FilterOption.Magician:
-                case FilterOption.Sorcery:
-                case FilterOption.Conjuring:
-                case FilterOption.Enchanting:
-                case FilterOption.Adept:
-                    strCategory = "Magical Active";
-                    break;
-
-                case FilterOption.Technomancer:
-                    strCategory = "Resonance Active";
-                    break;
-
-                default:
-                    return;
+                FilterOption eFilterOption
+                    = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                setSkillsToRemove.ExceptWith(GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target));
             }
-            // Check for duplicates (we'd normally want to make sure it's enabled, but SpecialSkills doesn't process the Enabled property properly)
-            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.SpecialSkills))
-            {
-                FilterOption eLoopFilter = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
-                string strLoopCategory = string.Empty;
-                switch (eLoopFilter)
-                {
-                    case FilterOption.Magician:
-                    case FilterOption.Sorcery:
-                    case FilterOption.Conjuring:
-                    case FilterOption.Enchanting:
-                    case FilterOption.Adept:
-                        strLoopCategory = "Magical Active";
-                        break;
 
-                    case FilterOption.Technomancer:
-                        strLoopCategory = "Resonance Active";
-                        break;
-                }
-                if (strLoopCategory == strCategory)
-                    return;
+            if (setSkillsToRemove.Count == 0)
+                return;
+
+            Lazy<string> strKnowledgeSkillTypeToUse = null;
+            if (blnCreateKnowledge)
+            {
+                strKnowledgeSkillTypeToUse = new Lazy<string>(() =>
+                {
+                    XPathNavigator xmlCategories = _objCharacter.LoadDataXPath("skills.xml")
+                                                                   .SelectSingleNodeAndCacheExpression("/chummer/categories");
+                    if (xmlCategories.SelectSingleNode("category[@type = \"knowledge\" and . = \"Professional\"]") != null)
+                        return "Professional";
+                    return xmlCategories.SelectSingleNode("category[@type = \"knowledge\"]")?.Value ?? "Professional";
+                });
             }
 
             for (int i = Skills.Count - 1; i >= 0; --i)
             {
-                if (Skills[i].SkillCategory == strCategory)
-                {
-                    Skill skill = Skills[i];
-                    _dicSkillBackups.Add(skill.SkillId, skill);
-                    Skills.RemoveAt(i);
+                Skill objSkill = Skills[i];
+                if (!setSkillsToRemove.Contains(objSkill))
+                    continue;
+                _dicSkillBackups.Add(objSkill.SkillId, objSkill);
+                Skills.RemoveAt(i);
 
-                    if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
+                if (blnCreateKnowledge && objSkill.TotalBaseRating > 0)
+                {
+                    KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter)
                     {
-                        KnowledgeSkill kno = new KnowledgeSkill(_objCharacter)
+                        Type = strKnowledgeSkillTypeToUse.Value,
+                        WritableName = objSkill.Name,
+                        Base = objSkill.Base,
+                        Karma = objSkill.Karma
+                    };
+                    objNewKnowledgeSkill.Specializations.AddRange(objSkill.Specializations);
+                    KnowledgeSkills.AddWithSort(objNewKnowledgeSkill, (x, y) =>
+                    {
+                        switch (string.CompareOrdinal(x.Type, y.Type))
                         {
-                            Type = skill.Name == "Arcana" ? "Academic" : "Professional",
-                            WritableName = skill.Name,
-                            Base = skill.Base,
-                            Karma = skill.Karma
-                        };
-                        kno.Specializations.AddRange(skill.Specializations);
-                        KnowledgeSkills.AddWithSort(kno, (x, y) =>
-                        {
-                            switch (string.CompareOrdinal(x.Type, y.Type))
-                            {
-                                case 0:
-                                    return CompareSkills(x, y);
-                                case -1:
-                                    return -1;
-                                default:
-                                    return 1;
-                            }
-                        }, MergeSkills);
-                    }
+                            case 0:
+                                return CompareSkills(x, y);
+                            case -1:
+                                return -1;
+                            default:
+                                return 1;
+                        }
+                    }, MergeSkills);
                 }
             }
             if (!_objCharacter.Created)
             {
-                // zero out any skillgroups whose skills did not make the final cut
+                // zero out any skill groups whose skills did not make the final cut
                 foreach (SkillGroup objSkillGroup in SkillGroups)
                 {
                     if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
@@ -1252,7 +1237,7 @@ namespace Chummer.Backend.Skills
                     return " and category = 'Resonance Active'";
 
                 case FilterOption.Name:
-                    return " and name = '" + strName + "'";
+                    return " and name = " + strName.CleanXPath();
 
                 case FilterOption.XPath:
                     return " and (" + strName + ')';

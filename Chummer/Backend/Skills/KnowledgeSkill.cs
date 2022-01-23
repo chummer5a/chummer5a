@@ -72,11 +72,11 @@ namespace Chummer.Backend.Skills
             DefaultAttribute = "LOG";
         }
 
-        public KnowledgeSkill(Character objCharacter, string strForcedName, bool allowUpgrade) : this(objCharacter)
+        public KnowledgeSkill(Character objCharacter, string strForcedName, bool blnAllowUpgrade) : this(objCharacter)
         {
             WritableName = strForcedName;
             ForcedName = true;
-            _blnAllowUpgrade = allowUpgrade;
+            _blnAllowUpgrade = blnAllowUpgrade;
         }
 
         private bool _blnAllowUpgrade = true;

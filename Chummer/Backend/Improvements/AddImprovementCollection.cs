@@ -675,13 +675,13 @@ namespace Chummer
                 else
                 {
                     bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
-                    KnowledgeSkill k = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
-                    _objCharacter.SkillsSection.KnowledgeSkills.Add(k);
+                    KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
+                    _objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement(k.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
                             _strUnique,
                             ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
@@ -691,7 +691,7 @@ namespace Chummer
                     if (blnDisableSpec)
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement(k.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.DisableSpecializationEffects,
                             _strUnique);
                     }
@@ -699,7 +699,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strMax))
                     {
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement(k.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
                             _strUnique,
                             0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
@@ -6138,12 +6138,9 @@ namespace Chummer
 
             if (Enum.TryParse(final, out SkillsSection.FilterOption skills))
             {
-                string strName = bonusNode.Attributes?["name"]?.InnerText;
-                if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.HasActiveSkill(strName))
-                {
-                    _objCharacter.SkillsSection.AddSkills(skills, strName);
-                    CreateImprovement(skills.ToString(), _objImprovementSource, SourceName,  Improvement.ImprovementType.SpecialSkills, _strUnique);
-                }
+                string strName = bonusNode.Attributes?["name"]?.InnerText ?? string.Empty;
+                _objCharacter.SkillsSection.AddSkills(skills, strName);
+                CreateImprovement(skills.ToString(), _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialSkills, _strUnique, strTarget: strName);
             }
             else
             {

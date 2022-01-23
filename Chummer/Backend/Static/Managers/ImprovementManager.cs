@@ -1943,28 +1943,10 @@ namespace Chummer
 
                     case Improvement.ImprovementType.SpecialSkills:
                     {
-                        string strCategory;
-                        switch ((SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                                                        strImprovedName))
-                        {
-                            case SkillsSection.FilterOption.Magician:
-                            case SkillsSection.FilterOption.Sorcery:
-                            case SkillsSection.FilterOption.Conjuring:
-                            case SkillsSection.FilterOption.Enchanting:
-                            case SkillsSection.FilterOption.Adept:
-                                strCategory = "Magical Active";
-                                break;
-
-                            case SkillsSection.FilterOption.Technomancer:
-                                strCategory = "Resonance Active";
-                                break;
-
-                            default:
-                                continue;
-                        }
-
-                        foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(
-                                     x => x.SkillCategory == strCategory))
+                        SkillsSection.FilterOption eFilterOption
+                            = (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption), strImprovedName);
+                        foreach (Skill objSkill in objCharacter.SkillsSection.GetActiveSkillsFromData(
+                                     eFilterOption, false, objImprovement.Target))
                         {
                             objSkill.ForceDisabled = false;
                         }
@@ -2331,57 +2313,28 @@ namespace Chummer
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
                         {
-                            string strCategory;
-                            switch ((SkillsSection.FilterOption) Enum.Parse(
-                                        typeof(SkillsSection.FilterOption), strImprovedName))
-                            {
-                                case SkillsSection.FilterOption.Magician:
-                                case SkillsSection.FilterOption.Sorcery:
-                                case SkillsSection.FilterOption.Conjuring:
-                                case SkillsSection.FilterOption.Enchanting:
-                                case SkillsSection.FilterOption.Adept:
-                                    strCategory = "Magical Active";
-                                    break;
-
-                                case SkillsSection.FilterOption.Technomancer:
-                                    strCategory = "Resonance Active";
-                                    break;
-
-                                default:
-                                    continue;
-                            }
-
-                            string strLoopCategory = string.Empty;
+                            SkillsSection.FilterOption eFilterOption
+                                = (SkillsSection.FilterOption) Enum.Parse(
+                                    typeof(SkillsSection.FilterOption), strImprovedName);
+                            HashSet<Skill> setSkillsToDisable
+                                = new HashSet<Skill>(objCharacter.SkillsSection.GetActiveSkillsFromData(
+                                                         eFilterOption, false, objImprovement.Target));
                             foreach (Improvement objLoopImprovement in GetCachedImprovementListForValueOf(
                                          objCharacter, Improvement.ImprovementType.SpecialSkills))
                             {
-                                SkillsSection.FilterOption eLoopFilter
+                                if (objLoopImprovement == objImprovement)
+                                    continue;
+                                eFilterOption
                                     = (SkillsSection.FilterOption) Enum.Parse(
                                         typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
-                                switch (eLoopFilter)
-                                {
-                                    case SkillsSection.FilterOption.Magician:
-                                    case SkillsSection.FilterOption.Sorcery:
-                                    case SkillsSection.FilterOption.Conjuring:
-                                    case SkillsSection.FilterOption.Enchanting:
-                                    case SkillsSection.FilterOption.Adept:
-                                        strLoopCategory = "Magical Active";
-                                        break;
-
-                                    case SkillsSection.FilterOption.Technomancer:
-                                        strLoopCategory = "Resonance Active";
-                                        break;
-                                }
-
-                                if (strLoopCategory == strCategory)
-                                    break;
+                                setSkillsToDisable.ExceptWith(
+                                    objCharacter.SkillsSection.GetActiveSkillsFromData(
+                                        eFilterOption, false, objLoopImprovement.Target));
+                                if (setSkillsToDisable.Count == 0)
+                                    return;
                             }
 
-                            if (strLoopCategory == strCategory)
-                                continue;
-
-                            foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(
-                                         x => x.SkillCategory == strCategory))
+                            foreach (Skill objSkill in setSkillsToDisable)
                             {
                                 objSkill.ForceDisabled = true;
                             }
@@ -2853,10 +2806,13 @@ namespace Chummer
 
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
+                        {
                             objCharacter.SkillsSection.RemoveSkills(
                                 (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                                                        strImprovedName),
-                                !blnReapplyImprovements);
+                                                                        strImprovedName), objImprovement.Target,
+                                !blnReapplyImprovements && objCharacter.Created);
+                        }
+
                         break;
 
                     case Improvement.ImprovementType.SpecificQuality:
