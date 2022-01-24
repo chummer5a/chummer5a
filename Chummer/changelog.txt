@@ -80,6 +80,7 @@ Data Changes:
 - Fixed the damage codes for natural weapons added by some Infected qualities, Dracoform qualities, and crystal limb qualities. Fixes #4673.
 - Ammo: Silver, Ammo: Wood Pulp, Ammo: Flare Rounds, and Ammo: Krime Splash Self-Defense Ammunition no longer export their AP adjustments with two plus signs.
 - Fixed the category entry of the Horizon-Flynn Defense-Com Commlink Holdout weapon.
+- Custom Items can now be added to cyberlimbs.
 
 Changed/New Strings:
 - String_GameplayOption
