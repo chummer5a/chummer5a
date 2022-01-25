@@ -81,6 +81,7 @@ Data Changes:
 - Ammo: Silver, Ammo: Wood Pulp, Ammo: Flare Rounds, and Ammo: Krime Splash Self-Defense Ammunition no longer export their AP adjustments with two plus signs.
 - Fixed the category entry of the Horizon-Flynn Defense-Com Commlink Holdout weapon.
 - Custom Items can now be added to cyberlimbs.
+- Fixed Trollbow not using the Bow specialisation. Closes #4676
 
 Changed/New Strings:
 - String_GameplayOption
