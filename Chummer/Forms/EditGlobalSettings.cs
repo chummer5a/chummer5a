@@ -1522,8 +1522,16 @@ namespace Chummer
                                          : strFile,
                                      xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
                 }
-
-                string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                string strOldSelected;
+                try
+                {
+                    strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                }
+                catch(IndexOutOfRangeException)
+                { 
+                    strOldSelected = string.Empty;
+                }
+                 
                 // Strip away the language prefix
                 int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
                 if (intPos != -1)

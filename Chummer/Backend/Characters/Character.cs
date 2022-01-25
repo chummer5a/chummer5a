@@ -2697,7 +2697,7 @@ namespace Chummer
 
             if (callOnSaveCallBack)
             {
-                blnErrorFree = DoOnSaveCompleted.Aggregate(blnErrorFree, (current, funcToRun) => funcToRun(this) && current);
+                blnErrorFree = DoOnSaveCompleted.ToArray().Aggregate(blnErrorFree, (current, funcToRun) => funcToRun(this) && current);
             }
             return blnErrorFree;
         }
