@@ -347,9 +347,8 @@ namespace Chummer
             {
                 using (new EnterUpgradeableReadLock(_rwlThis))
                 {
-                    if (_dicData.ContainsKey(key))
-                        if (_dicData[key].Equals(value))
-                            return;
+                    if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
+                        return;
                     using (new EnterWriteLock(_rwlThis))
                         _dicData[key] = value;
                 }
