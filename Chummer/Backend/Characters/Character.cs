@@ -256,7 +256,7 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingHashSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new LockingHashSet<Func<Character, bool>>();
+        public LockingOrderedSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new LockingOrderedSet<Func<Character, bool>>();
 
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -2697,7 +2697,14 @@ namespace Chummer
 
             if (callOnSaveCallBack)
             {
-                blnErrorFree = DoOnSaveCompleted.ToArray().Aggregate(blnErrorFree, (current, funcToRun) => funcToRun(this) && current);
+                // Cannot use foreach or LINQ because we need to be able to allow queued functions to add onto the queue
+                // ReSharper disable once ForCanBeConvertedToForeach
+                for (int i = 0; i < DoOnSaveCompleted.Count; ++i)
+                {
+                    Func<Character, bool> funcLoopToRun = DoOnSaveCompleted[i];
+                    if (funcLoopToRun?.Invoke(this) != true)
+                        blnErrorFree = false;
+                }
             }
             return blnErrorFree;
         }

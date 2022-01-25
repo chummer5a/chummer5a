@@ -1,0 +1,358 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+
+namespace Chummer
+{
+    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IDisposable, IProducerConsumerCollection<T>
+    {
+        private readonly HashSet<T> _setData;
+        private readonly List<T> _lstOrderedData;
+        private readonly ReaderWriterLockSlim
+            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
+        public LockingOrderedSet()
+        {
+            _setData = new HashSet<T>();
+            _lstOrderedData = new List<T>();
+        }
+
+        public LockingOrderedSet(int capacity)
+        {
+            _setData = new HashSet<T>(capacity);
+            _lstOrderedData = new List<T>(capacity);
+        }
+
+        public LockingOrderedSet(IEnumerable<T> collection)
+        {
+            _setData = new HashSet<T>(collection);
+            _lstOrderedData = new List<T>(_setData);
+        }
+
+        public LockingOrderedSet(IEnumerable<T> collection, IEqualityComparer<T> comparer)
+        {
+            _setData = new HashSet<T>(collection, comparer);
+            _lstOrderedData = new List<T>(_setData);
+        }
+
+        public LockingOrderedSet(IEqualityComparer<T> comparer)
+        {
+            _setData = new HashSet<T>(comparer);
+            _lstOrderedData = new List<T>();
+        }
+
+        /// <inheritdoc />
+        public IEnumerator<T> GetEnumerator()
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _lstOrderedData.GetEnumerator().GetLockingType(_rwlThis);
+        }
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _lstOrderedData.GetEnumerator().GetLockingType(_rwlThis);
+        }
+
+        /// <inheritdoc />
+        public bool Add(T item)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                if (!_setData.Add(item))
+                    return false;
+                _lstOrderedData.Add(item);
+                return true;
+            }
+        }
+
+        /// <inheritdoc />
+        public void UnionWith(IEnumerable<T> other)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                List<T> lstOther = other.ToList();
+                _lstOrderedData.AddRange(lstOther.Where(objItem => !_setData.Contains(objItem)));
+                _setData.UnionWith(lstOther);
+            }
+        }
+
+        /// <inheritdoc />
+        public void IntersectWith(IEnumerable<T> other)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                HashSet<T> setOther = other.ToHashSet();
+                _lstOrderedData.RemoveAll(objItem => !setOther.Contains(objItem));
+                _setData.IntersectWith(setOther);
+            }
+        }
+
+        /// <inheritdoc />
+        public void ExceptWith(IEnumerable<T> other)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                HashSet<T> setOther = other.ToHashSet();
+                _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
+                _setData.ExceptWith(setOther);
+            }
+        }
+
+        /// <inheritdoc />
+        public void SymmetricExceptWith(IEnumerable<T> other)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                HashSet<T> setOther = other.ToHashSet();
+                _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
+                _lstOrderedData.AddRange(setOther.Where(objItem => !_setData.Contains(objItem)));
+                _setData.SymmetricExceptWith(setOther);
+            }
+        }
+
+        /// <inheritdoc />
+        public bool IsSubsetOf(IEnumerable<T> other)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _setData.IsSubsetOf(other);
+        }
+
+        /// <inheritdoc />
+        public bool IsSupersetOf(IEnumerable<T> other)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _setData.IsSupersetOf(other);
+        }
+
+        /// <inheritdoc />
+        public bool IsProperSupersetOf(IEnumerable<T> other)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _setData.IsProperSupersetOf(other);
+        }
+
+        /// <inheritdoc />
+        public bool IsProperSubsetOf(IEnumerable<T> other)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _setData.IsProperSubsetOf(other);
+        }
+
+        /// <inheritdoc />
+        public bool Overlaps(IEnumerable<T> other)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _setData.Overlaps(other);
+        }
+
+        /// <inheritdoc />
+        public bool SetEquals(IEnumerable<T> other)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _setData.SetEquals(other);
+        }
+
+        /// <inheritdoc />
+        void ICollection<T>.Add(T item)
+        {
+            if (item != null)
+                Add(item);
+        }
+
+        /// <inheritdoc />
+        public void Clear()
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                _setData.Clear();
+                _lstOrderedData.Clear();
+            }
+        }
+
+        /// <inheritdoc />
+        public bool Contains(T item)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _setData.Contains(item);
+        }
+
+        /// <inheritdoc cref="ICollection.CopyTo" />
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            using (new EnterReadLock(_rwlThis))
+                _lstOrderedData.CopyTo(array, arrayIndex);
+        }
+
+        /// <inheritdoc />
+        public bool TryAdd(T item)
+        {
+            return Add(item);
+        }
+
+        /// <inheritdoc />
+        public bool TryTake(out T item)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (new EnterWriteLock(_rwlThis))
+            {
+                if (Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    item = _lstOrderedData[0];
+                    if (_setData.Remove(item))
+                    {
+                        _lstOrderedData.RemoveAt(0);
+                        return true;
+                    }
+                }
+            }
+            item = default;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public T[] ToArray()
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _lstOrderedData.ToArray();
+        }
+
+        /// <inheritdoc />
+        public bool Remove(T item)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                if (!_setData.Remove(item))
+                    return false;
+                _lstOrderedData.Remove(item);
+                return true;
+            }
+        }
+
+        /// <inheritdoc />
+        public void CopyTo(Array array, int index)
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                foreach (T objItem in _lstOrderedData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc cref="ICollection{T}.Count" />
+        public int Count
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return _lstOrderedData.Count;
+            }
+        }
+
+        /// <inheritdoc />
+        public object SyncRoot => _rwlThis;
+
+        /// <inheritdoc />
+        public bool IsSynchronized => true;
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _rwlThis?.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
+        public int IndexOf(T item)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _lstOrderedData.IndexOf(item);
+        }
+
+        /// <inheritdoc />
+        public void Insert(int index, T item)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                if (!_setData.Add(item))
+                    return;
+                _lstOrderedData.Insert(index, item);
+            }
+        }
+
+        /// <inheritdoc />
+        public void RemoveAt(int index)
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                T objToRemove = _lstOrderedData[index];
+                if (_setData.Remove(objToRemove))
+                    _lstOrderedData.RemoveAt(index);
+            }
+        }
+
+        // ReSharper disable once InheritdocInvalidUsage
+        /// <inheritdoc />
+        public T this[int index]
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return _lstOrderedData[index];
+            }
+            set
+            {
+                using (new EnterUpgradeableReadLock(_rwlThis))
+                {
+                    T objOldItem = _lstOrderedData[index];
+                    if (objOldItem.Equals(value))
+                        return;
+                    using (new EnterWriteLock(_rwlThis))
+                    {
+                        _setData.Remove(objOldItem);
+                        _setData.Add(value);
+                        _lstOrderedData[index] = value;
+                    }
+                }
+            }
+        }
+    }
+}
