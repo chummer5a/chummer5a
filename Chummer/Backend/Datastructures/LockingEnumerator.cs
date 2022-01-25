@@ -86,16 +86,19 @@ namespace Chummer
             return Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             return obj != null && Equals((LockingEnumerator<T>)obj);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return (_rwlThis, _objInternalEnumerator).GetHashCode();
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return _objInternalEnumerator.ToString() + ' ' + _rwlThis;

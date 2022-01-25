@@ -22,11 +22,12 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IDisposable, IProducerConsumerCollection<T>
+    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IDisposable, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
@@ -353,6 +354,67 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            using (new EnterReadLock(_rwlThis))
+                _setData.GetObjectData(info, context);
+        }
+
+        /// <inheritdoc />
+        public void OnDeserialization(object sender)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                _setData.OnDeserialization(sender);
+        }
+
+        /// <inheritdoc cref="List{T}.Sort()" />
+        public void Sort()
+        {
+            using (new EnterWriteLock(_rwlThis))
+            {
+                if (_setData.Comparer is IComparer<T> comparer)
+                    _lstOrderedData.Sort(comparer);
+                else
+                    _lstOrderedData.Sort();
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
+        public void Sort(Comparison<T> comparison)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                _lstOrderedData.Sort(comparison);
+        }
+
+        /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
+        public void Sort(IComparer<T> comparer)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                _lstOrderedData.Sort(comparer);
+        }
+
+        /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
+        public void Sort(int index, int count, IComparer<T> comparer)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                _lstOrderedData.Sort(index, count, comparer);
+        }
+
+        /// <inheritdoc cref="List{T}.Reverse(int, int)" />
+        public void Reverse(int index, int count)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                _lstOrderedData.Reverse(index, count);
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public List<T> FindAll(Predicate<T> predicate)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return _lstOrderedData.FindAll(predicate);
         }
     }
 }

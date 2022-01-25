@@ -47,6 +47,7 @@ namespace Chummer
 
         private bool _blnSkipCollectionChanged;
 
+        /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             if (_blnSkipCollectionChanged)
@@ -62,6 +63,7 @@ namespace Chummer
             base.OnCollectionChanged(e);
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             if (index >= _intMaxSize)
