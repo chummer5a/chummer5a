@@ -12173,15 +12173,17 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategories))
                     {
-                        XmlNodeList xmlAddonCategoryList
-                            = (objParent as IHasXmlNode)?.GetNode()?.SelectNodes("addoncategory");
-                        if (xmlAddonCategoryList?.Count > 0)
+                        using (XmlNodeList xmlAddonCategoryList
+                               = (objParent as IHasXmlNode)?.GetNode()?.SelectNodes("addoncategory"))
                         {
-                            foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                            // Remove the trailing comma.
-                            if (sbdCategories.Length > 0)
-                                --sbdCategories.Length;
+                            if (xmlAddonCategoryList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
+                                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                                // Remove the trailing comma.
+                                if (sbdCategories.Length > 0)
+                                    --sbdCategories.Length;
+                            }
                         }
 
                         strCategories = sbdCategories.ToString();

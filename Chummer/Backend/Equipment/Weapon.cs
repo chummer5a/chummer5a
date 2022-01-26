@@ -6428,18 +6428,28 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty)) return false;
-
-            XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
-            if (xmlTestNode != null && GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
-            {
-                // Assumes topmost parent is an AND node
+            if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty))
                 return false;
+
+            XPathNavigator xmlRequirementsNode;
+            XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
+            if (xmlTestNode != null)
+            {
+                xmlRequirementsNode = GetNode()?.CreateNavigator();
+                // Assumes topmost parent is an AND node
+                if (xmlRequirementsNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    return false;
+                xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+                // Assumes topmost parent is an AND node
+                return xmlTestNode == null || xmlRequirementsNode.ProcessFilterOperationNode(xmlTestNode, false);
             }
 
             xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+            if (xmlTestNode == null)
+                return true;
+            xmlRequirementsNode = GetNode()?.CreateNavigator();
             // Assumes topmost parent is an AND node
-            return xmlTestNode == null || GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false);
+            return xmlRequirementsNode.ProcessFilterOperationNode(xmlTestNode, false);
         }
 
         public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)
