@@ -48,7 +48,7 @@ namespace Chummer
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNode("/chummer/complexforms");
 
-            _xmlOptionalComplexFormNode = _objCharacter.GetNode();
+            _xmlOptionalComplexFormNode = _objCharacter.GetNodeXPath();
             if (_xmlOptionalComplexFormNode == null) return;
             if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
@@ -155,7 +155,7 @@ namespace Chummer
 
             string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ??
                                LanguageManager.GetString("String_Unknown");
-            string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ??
+            string strPage = xmlComplexForm.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
                              xmlComplexForm.SelectSingleNode("page")?.Value ??
                              LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
@@ -276,7 +276,7 @@ namespace Chummer
                         continue;
 
                     lstComplexFormItems.Add(
-                        new ListItem(strId, xmlComplexForm.SelectSingleNode("translate")?.Value ?? strName));
+                        new ListItem(strId, xmlComplexForm.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                 }
 
                 lstComplexFormItems.Sort(CompareListItems.CompareNames);

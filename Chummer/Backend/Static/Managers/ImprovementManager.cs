@@ -1209,7 +1209,7 @@ namespace Chummer
                                                         lstDropdownItems.Add(
                                                             new ListItem(
                                                                 strName,
-                                                                xmlSkill.SelectSingleNode("translate")?.Value
+                                                                xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                                 ?? strName));
                                                 }
                                             }

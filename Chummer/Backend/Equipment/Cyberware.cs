@@ -1437,10 +1437,10 @@ namespace Chummer.Backend.Equipment
             if (objNode["improvementsource"] != null)
             {
                 _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
-                _objCachedMyXmlNode = null;
-                _objCachedMyXPathNode = null;
             }
 
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
@@ -2056,7 +2056,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -2337,7 +2337,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

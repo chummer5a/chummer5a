@@ -329,7 +329,7 @@ namespace Chummer
                     : LanguageManager.GetString("Label_Rating");
 
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlCyberware.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();

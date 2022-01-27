@@ -436,9 +436,9 @@ namespace Chummer.Backend.Attributes
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
             SpecialAttributeList.Clear();
-            XPathNavigator xmlCharNode = _objCharacter.GetNode();
+            XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath();
             // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-            XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
+            XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNodeXPath(true) : null;
             foreach (string strAttribute in AttributeStrings)
             {
                 XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = " + strAttribute.CleanXPath() + "]");
@@ -513,10 +513,10 @@ namespace Chummer.Backend.Attributes
                     objAttribute.UnbindAttribute();
                 AttributeList.Clear();
                 SpecialAttributeList.Clear();
-                XPathNavigator xmlCharNode = _objCharacter.GetNode();
+                XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath();
                 // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
                 XPathNavigator xmlCharNodeAnimalForm =
-                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
+                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNodeXPath(true) : null;
                 foreach (string strAttribute in AttributeStrings)
                 {
                     // First, remake the attribute
@@ -764,7 +764,7 @@ namespace Chummer.Backend.Attributes
         {
             if (_objCharacter.MetatypeCategory == "Shapeshifter")
             {
-                XPathNavigator xmlNode = _objCharacter.GetNode(true);
+                XPathNavigator xmlNode = _objCharacter.GetNodeXPath(true);
 
                 if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                 {

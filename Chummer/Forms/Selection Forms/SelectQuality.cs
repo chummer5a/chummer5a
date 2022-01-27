@@ -52,7 +52,7 @@ namespace Chummer
 
             // Load the Quality information.
             _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
+            _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNodeXPath().SelectSingleNode("qualityrestriction");
         }
 
         private void SelectQuality_Load(object sender, EventArgs e)
@@ -132,7 +132,7 @@ namespace Chummer
                 UpdateCostLabel(xmlQuality);
 
                 string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlQuality.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();

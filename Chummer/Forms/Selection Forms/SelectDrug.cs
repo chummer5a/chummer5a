@@ -237,7 +237,7 @@ namespace Chummer
                 }
 
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = xmlDrug.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
@@ -748,7 +748,7 @@ namespace Chummer
 
                     blnAnyItem = true;
                     lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNode("id")?.Value,
-                                              xmlDrug.SelectSingleNode("translate")?.Value
+                                              xmlDrug.SelectSingleNodeAndCacheExpression("translate")?.Value
                                               ?? xmlDrug.SelectSingleNode("name")?.Value));
                 }
 

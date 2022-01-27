@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -739,11 +740,11 @@ namespace Chummer
 
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            XmlNode xmlAspect = _objLifestyle.GetNode();
+            XPathNavigator xmlAspect = _objLifestyle.GetNodeXPath();
             if (xmlAspect != null)
             {
-                string strSource = xmlAspect["source"]?.InnerText ?? string.Empty;
-                string strPage = xmlAspect["altpage"]?.InnerText ?? xmlAspect["page"]?.InnerText ?? string.Empty;
+                string strSource = xmlAspect.SelectSingleNode("source")?.Value ?? string.Empty;
+                string strPage = xmlAspect.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlAspect.SelectSingleNode("page")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
                     SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,

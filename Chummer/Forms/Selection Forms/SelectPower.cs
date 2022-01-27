@@ -88,7 +88,7 @@ namespace Chummer
                 lblPowerPoints.Text = strPowerPointsText;
 
                 string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();

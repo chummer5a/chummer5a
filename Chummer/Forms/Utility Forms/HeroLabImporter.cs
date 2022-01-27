@@ -376,13 +376,13 @@ namespace Chummer
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
                 }
 
-                string strMetatype = objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metatype;
+                string strMetatype = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metatype;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                    strMetatype += " (" + (objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metavariant) + ')';
+                    strMetatype += " (" + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
                 if (string.IsNullOrEmpty(lblMetatype.Text))

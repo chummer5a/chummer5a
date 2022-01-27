@@ -751,7 +751,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -946,7 +946,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

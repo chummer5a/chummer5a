@@ -567,7 +567,7 @@ namespace Chummer
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
+                XPathNavigator objMetatypeNode = _objCharacter.GetNodeXPath(true);
 
                 strReturn = objMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? _objCharacter.TranslateExtra(LinkedCharacter.Metatype, strLanguage, "metatypes.xml");
 

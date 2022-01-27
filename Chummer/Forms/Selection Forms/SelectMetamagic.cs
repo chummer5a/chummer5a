@@ -98,7 +98,7 @@ namespace Chummer
                 if (objXmlMetamagic != null)
                 {
                     string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value;
-                    string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
+                    string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);

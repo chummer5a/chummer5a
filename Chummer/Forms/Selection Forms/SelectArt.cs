@@ -116,7 +116,7 @@ namespace Chummer
             }
 
             string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();

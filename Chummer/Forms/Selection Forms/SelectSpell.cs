@@ -427,7 +427,7 @@ namespace Chummer
 
                 void AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
                 {
-                    string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
+                    string strDisplayName = objXmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value ??
                                             objXmlSpell.SelectSingleNode("name")?.Value ??
                                             LanguageManager.GetString("String_Unknown");
                     if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0
@@ -783,7 +783,7 @@ namespace Chummer
             }
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = xmlSpell.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();

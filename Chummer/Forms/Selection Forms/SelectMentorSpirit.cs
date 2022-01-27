@@ -140,7 +140,7 @@ namespace Chummer
 
                     string strSource = objXmlMentor.SelectSingleNode("source")?.Value ??
                                        LanguageManager.GetString("String_Unknown");
-                    string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ??
+                    string strPage = objXmlMentor.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
                                      objXmlMentor.SelectSingleNode("page")?.Value ??
                                      LanguageManager.GetString("String_Unknown");
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language,

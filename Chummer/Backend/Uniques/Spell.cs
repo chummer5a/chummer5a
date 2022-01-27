@@ -784,7 +784,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -857,7 +857,7 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            string strReturn = !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name : Name;
+            string strReturn = !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name : Name;
             if (Extended && _blnCustomExtended)
                 strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_SpellExtended", strLanguage);
 

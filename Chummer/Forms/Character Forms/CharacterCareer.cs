@@ -7528,20 +7528,17 @@ namespace Chummer
                 return;
             }
 
-            XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
-            using (XmlNodeList xmlAddonCategoryList = objXmlSensorGear?.SelectNodes("addoncategory"))
+            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            if (xmlAddonCategoryList?.Count > 0)
             {
-                if (xmlAddonCategoryList?.Count > 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                    {
-                        foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        // Remove the trailing comma.
-                        --sbdCategories.Length;
-                        strCategories = sbdCategories.ToString();
-                    }
+                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                        sbdCategories.Append(objXmlCategory.Value).Append(',');
+                    // Remove the trailing comma.
+                    --sbdCategories.Length;
+                    strCategories = sbdCategories.ToString();
                 }
             }
 
@@ -9858,21 +9855,17 @@ namespace Chummer
 
             CharacterObject.Cyberware.FindCyberwareGear(objSensor.InternalId, out Cyberware objCyberware);
 
-            XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
-            using (XmlNodeList xmlAddonCategoryList = objXmlSensorGear?.SelectNodes("addoncategory"))
+            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            if (xmlAddonCategoryList?.Count > 0)
             {
-                if (xmlAddonCategoryList?.Count > 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategories))
-                    {
-                        foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        // Remove the trailing comma.
-                        --sbdCategories.Length;
-                        strCategories = sbdCategories.ToString();
-                    }
+                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                        sbdCategories.Append(objXmlCategory.Value).Append(',');
+                    // Remove the trailing comma.
+                    --sbdCategories.Length;
+                    strCategories = sbdCategories.ToString();
                 }
             }
 
@@ -9976,20 +9969,17 @@ namespace Chummer
                 return;
             }
 
-            XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
-            using (XmlNodeList xmlAddonCategoryList = objXmlSensorGear?.SelectNodes("addoncategory"))
+            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            if (xmlAddonCategoryList?.Count > 0)
             {
-                if (xmlAddonCategoryList?.Count > 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                    {
-                        foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        // Remove the trailing comma.
-                        --sbdCategories.Length;
-                        strCategories = sbdCategories.ToString();
-                    }
+                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                        sbdCategories.Append(objXmlCategory.Value).Append(',');
+                    // Remove the trailing comma.
+                    --sbdCategories.Length;
+                    strCategories = sbdCategories.ToString();
                 }
             }
 
@@ -10214,20 +10204,17 @@ namespace Chummer
 
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
-            XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
-            using (XmlNodeList xmlAddonCategoryList = objXmlSensorGear?.SelectNodes("addoncategory"))
+            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            if (xmlAddonCategoryList?.Count > 0)
             {
-                if (xmlAddonCategoryList?.Count > 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                    {
-                        foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        // Remove the trailing comma.
-                        --sbdCategories.Length;
-                        strCategories = sbdCategories.ToString();
-                    }
+                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                        sbdCategories.Append(objXmlCategory.Value).Append(',');
+                    // Remove the trailing comma.
+                    --sbdCategories.Length;
+                    strCategories = sbdCategories.ToString();
                 }
             }
 
@@ -10374,20 +10361,17 @@ namespace Chummer
 
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
-            XmlNode objXmlSensorGear = objSensor.GetNode();
             string strCategories = string.Empty;
-            using (XmlNodeList xmlAddonCategoryList = objXmlSensorGear?.SelectNodes("addoncategory"))
+            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            if (xmlAddonCategoryList?.Count > 0)
             {
-                if (xmlAddonCategoryList?.Count > 0)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                    {
-                        foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        // Remove the trailing comma.
-                        --sbdCategories.Length;
-                        strCategories = sbdCategories.ToString();
-                    }
+                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                        sbdCategories.Append(objXmlCategory.Value).Append(',');
+                    // Remove the trailing comma.
+                    --sbdCategories.Length;
+                    strCategories = sbdCategories.ToString();
                 }
             }
 

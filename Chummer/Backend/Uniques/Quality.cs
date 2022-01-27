@@ -427,10 +427,12 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
@@ -461,7 +463,6 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             _nodBonus = objNode["bonus"];
-            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? objMyNode.Value?["firstlevelbonus"];
             _nodDiscounts = objNode["costdiscount"]?.CreateNavigator();
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
@@ -648,7 +649,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -779,7 +780,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>

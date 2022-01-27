@@ -565,7 +565,7 @@ namespace Chummer
             lblGearDeviceRatingLabel.Visible = !string.IsNullOrEmpty(strDeviceRating);
 
             string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();

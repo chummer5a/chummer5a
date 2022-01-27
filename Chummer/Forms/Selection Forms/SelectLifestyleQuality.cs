@@ -577,8 +577,7 @@ namespace Chummer
                                     // Check to see if the character has a Metagenic Quality.
                                     foreach (Quality objQuality in _objCharacter.Qualities)
                                     {
-                                        XmlNode objXmlCheck = objQuality.GetNode();
-                                        if (objXmlCheck["metagenic"]?.InnerText == bool.TrueString)
+                                        if (objQuality.GetNodeXPath()?.SelectSingleNode("metagenic")?.Value == bool.TrueString)
                                         {
                                             blnRequirementForbidden = true;
                                             sbdForbidden.AppendLine().Append('\t')

@@ -381,7 +381,7 @@ namespace Chummer
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
 
             string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = objXmlMod.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();

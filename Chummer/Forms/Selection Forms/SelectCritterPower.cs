@@ -49,7 +49,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlMetatypeDataNode = _objCharacter.GetNode();
+            _xmlMetatypeDataNode = _objCharacter.GetNodeXPath();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
             XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("metavariants/metavariant[id = "

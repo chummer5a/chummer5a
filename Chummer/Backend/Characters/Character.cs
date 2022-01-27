@@ -54,7 +54,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName, IHasSource
+    public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
@@ -489,33 +489,72 @@ namespace Chummer
             }
         }
 
-        public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false, string strLanguage = "")
+        public XmlNode GetNode(string strLanguage)
+        {
+            return GetNode(false, strLanguage);
+        }
+
+        public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "")
+        {
+            XmlDocument xmlDoc = LoadData(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
+            XmlNode xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
+                                                                  ? "/chummer/metatypes/metatype[name = "
+                                                                    + Metatype.CleanXPath() + ']'
+                                                                  : "/chummer/metatypes/metatype[id = " +
+                                                                    MetatypeGuid
+                                                                        .ToString(
+                                                                            "D", GlobalSettings.InvariantCultureInfo)
+                                                                        .CleanXPath() + ']');
+            if (blnReturnMetatypeOnly)
+                return xmlMetatypeNode;
+            if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
+                return xmlMetatypeNode;
+            XmlNode xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
+                                                                              ? "metavariants/metavariant[name = "
+                                                                              + Metavariant.CleanXPath() + ']'
+                                                                              : "metavariants/metavariant[id = " +
+                                                                              MetavariantGuid
+                                                                                  .ToString(
+                                                                                      "D",
+                                                                                      GlobalSettings
+                                                                                          .InvariantCultureInfo)
+                                                                                  .CleanXPath() + ']');
+            if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
+            {
+                xmlMetavariantNode =
+                    xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() +
+                                                     ']');
+            }
+            return xmlMetavariantNode ?? xmlMetatypeNode;
+        }
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            return GetNodeXPath(false, strLanguage);
+        }
+
+        public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "")
         {
             XPathNavigator xmlDoc = LoadDataXPath(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
             XPathNavigator xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
-                ? "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + "]"
+                ? "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']'
                 : "/chummer/metatypes/metatype[id = " +
-                  MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
+                  MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
             if (blnReturnMetatypeOnly)
                 return xmlMetatypeNode;
-            if (MetavariantGuid != Guid.Empty && !string.IsNullOrEmpty(Metavariant) && xmlMetatypeNode != null)
+            if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
+                return xmlMetatypeNode;
+            XPathNavigator xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
+                ? "metavariants/metavariant[name = " + Metavariant.CleanXPath() + ']'
+                : "metavariants/metavariant[id = " +
+                  MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
+            if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
             {
-                XPathNavigator xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
-                    ? "metavariants/metavariant[name = " + Metavariant.CleanXPath() + "]"
-                    : "metavariants/metavariant[id = " +
-                      MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
-                if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
-                {
-                    xmlMetavariantNode =
-                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() +
-                                                         "]");
-                }
-
-                if (xmlMetavariantNode != null)
-                    return xmlMetavariantNode;
+                xmlMetavariantNode =
+                    xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() +
+                                                     ']');
             }
-
-            return xmlMetatypeNode;
+            return xmlMetavariantNode ?? xmlMetatypeNode;
         }
 
         public void RefreshAttributeBindings()
@@ -1479,7 +1518,7 @@ namespace Chummer
                     objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ??
                     string.Empty;
             XmlNode objXmlMetavariant =
-                objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strMetavariantId.CleanXPath() + "]");
+                objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strMetavariantId.CleanXPath() + ']');
 
             // Set Metatype information.
             XmlNode charNode =
@@ -1527,7 +1566,7 @@ namespace Chummer
                         {
                             XmlNode objXmlQuality =
                                 xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = " +
-                                    objXmlQualityItem.InnerText.CleanXPath() + "]");
+                                    objXmlQualityItem.InnerText.CleanXPath() + ']');
                             Quality objQuality = new Quality(this);
                             string strForceValue = objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
                             QualitySource objSource =
@@ -1551,7 +1590,7 @@ namespace Chummer
                 {
                     XmlNode objXmlCritterPower =
                         xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
-                                                                           objXmlPower.InnerText.CleanXPath() + "]");
+                                                                           objXmlPower.InnerText.CleanXPath() + ']');
                     CritterPower objPower = new CritterPower(this);
                     string strForcedValue = objXmlPower.Attributes["select"]?.InnerText ?? string.Empty;
                     int intRating =
@@ -1677,7 +1716,7 @@ namespace Chummer
                     if (SkillsSection.KnowledgeSkills.All(x => x.Name != strName))
                     {
                         XmlNode objXmlSkillNode =
-                            xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " + strName.CleanXPath() + "]");
+                            xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " + strName.CleanXPath() + ']');
                         if (objXmlSkillNode != null)
                         {
                             Skill objUncastSkill = Skill.FromData(objXmlSkillNode, this, true);
@@ -1712,7 +1751,7 @@ namespace Chummer
             foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
             {
                 XmlNode xmlComplexFormData = xmlComplexFormDocument.SelectSingleNode(
-                    "/chummer/complexforms/complexform[name = " + xmlComplexForm.InnerText.CleanXPath() + "]");
+                    "/chummer/complexforms/complexform[name = " + xmlComplexForm.InnerText.CleanXPath() + ']');
                 if (xmlComplexFormData == null)
                     continue;
 
@@ -1736,7 +1775,7 @@ namespace Chummer
             {
                 XmlNode objXmlCyberwareNode =
                     xmlCyberwareDocument.SelectSingleNode("chummer/cyberwares/cyberware[name = " +
-                                                          node.InnerText.CleanXPath() + "]");
+                                                          node.InnerText.CleanXPath() + ']');
                 Cyberware objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
@@ -1757,7 +1796,7 @@ namespace Chummer
             {
                 XmlNode objXmlCyberwareNode =
                     xmlBiowareDocument.SelectSingleNode("chummer/biowares/bioware[name = " +
-                                                        node.InnerText.CleanXPath() + "]");
+                                                        node.InnerText.CleanXPath() + ']');
                 Cyberware objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
@@ -1777,7 +1816,7 @@ namespace Chummer
             foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
             {
                 XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = " +
-                    xmlAIProgram.InnerText.CleanXPath() + "]");
+                    xmlAIProgram.InnerText.CleanXPath() + ']');
                 if (xmlAIProgramData == null)
                     continue;
 
@@ -1913,7 +1952,7 @@ namespace Chummer
                             // Add the selected Power.
                             XmlNode objXmlCritterPower =
                                 xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
-                                    strSelectedPossessionMethod.CleanXPath() + "]");
+                                    strSelectedPossessionMethod.CleanXPath() + ']');
                             if (objXmlCritterPower != null)
                             {
                                 CritterPower objPower = new CritterPower(this);
@@ -3332,7 +3371,7 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype)
-                                    && !Guid.TryParse(GetNode(true)?.SelectSingleNode("id")?.Value, out _guiMetatype))
+                                    && !Guid.TryParse(GetNodeXPath(true)?.SelectSingleNode("id")?.Value, out _guiMetatype))
                                 {
                                     return false;
                                 }
@@ -3360,14 +3399,14 @@ namespace Chummer
                                 //Shim for metavariants that were saved with an incorrect metatype string.
                                 if (!string.IsNullOrEmpty(_strMetavariant) && _strMetatype == _strMetavariant)
                                 {
-                                    _strMetatype = GetNode(true).SelectSingleNode("name")?.Value ?? "Human";
+                                    _strMetatype = GetNodeXPath(true).SelectSingleNode("name")?.Value ?? "Human";
                                 }
 
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid",
                                         ref _guiMetavariant) &&
                                     !string.IsNullOrEmpty(_strMetavariant))
                                 {
-                                    _guiMetavariant = Guid.Parse(GetNode()?.SelectSingleNode("id")?.Value);
+                                    _guiMetavariant = Guid.Parse(this.GetNodeXPath()?.SelectSingleNode("id")?.Value);
                                 }
 
                                 bool blnDoSourceFetch =
@@ -3379,7 +3418,7 @@ namespace Chummer
                                     blnDoSourceFetch = true;
                                 if (blnDoSourceFetch)
                                 {
-                                    XPathNavigator xmlCharNode = GetNode();
+                                    XPathNavigator xmlCharNode = this.GetNodeXPath();
                                     if (xmlCharNode != null)
                                     {
                                         _strSource = xmlCharNode.SelectSingleNode("source")?.Value ?? _strSource;
@@ -3943,7 +3982,7 @@ namespace Chummer
                                     {
                                         XmlNode xmlTraditionDataNode =
                                             xmlTraditionListDataNode.SelectSingleNode("tradition[name = " +
-                                                strTemp.CleanXPath() + "]");
+                                                strTemp.CleanXPath() + ']');
                                         if (xmlTraditionDataNode != null)
                                         {
                                             if (!_objTradition.Create(xmlTraditionDataNode, true))
@@ -3999,7 +4038,7 @@ namespace Chummer
                                             xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref strTemp);
                                             XmlNode xmlTraditionDataNode =
                                                 xmlTraditionListDataNode.SelectSingleNode(
-                                                    "tradition[name = " + strTemp.CleanXPath() + "]");
+                                                    "tradition[name = " + strTemp.CleanXPath() + ']');
                                             if (xmlTraditionDataNode != null)
                                             {
                                                 if (!_objTradition.Create(xmlTraditionDataNode))
@@ -4010,7 +4049,7 @@ namespace Chummer
                                                 xmlTraditionDataNode =
                                                     xmlTraditionListDataNode.SelectSingleNode(
                                                         "tradition[id = " +
-                                                        Tradition.CustomMagicalTraditionGuid.CleanXPath() + "]");
+                                                        Tradition.CustomMagicalTraditionGuid.CleanXPath() + ']');
                                                 if (xmlTraditionDataNode != null &&
                                                     !_objTradition.Create(xmlTraditionDataNode))
                                                 {
@@ -4480,7 +4519,7 @@ namespace Chummer
                                             XmlNode objNode =
                                                 objXmlCharacter.SelectSingleNode(
                                                     "powers/power[guid = " + objItem.Value.ToString().CleanXPath()
-                                                                           + "]");
+                                                                           + ']');
                                             if (objNode != null)
                                             {
                                                 Power objPower = new Power(this);
@@ -6993,7 +7032,7 @@ namespace Chummer
                                                                        || x.OriginSource
                                                                        == QualitySource.MetatypeRemovable))
                     {
-                        XmlNode xmlQualityNode = objQuality.GetNode();
+                        XPathNavigator xmlQualityNode = objQuality.GetNodeXPath();
                         if (xmlQualityNode == null)
                             continue;
                         int intLoopKarma = 0;
@@ -7068,14 +7107,14 @@ namespace Chummer
                     // Karma needs to be added based on the character's metatype/metavariant Point Buy karma cost because that is what is used in Point Buy,
                     // not the metatype/metavariant attribute/quality costs.
                     intTemp = 0;
-                    if (GetNode()?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
+                    if (this.GetNodeXPath()?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
                         intExtraKarmaToRemoveForPointBuyComparison -= intTemp;
 
                     intTemp = 0;
                     // This is where "Talent" qualities like Adept and Technomancer get added in
                     foreach (Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Heritage))
                     {
-                        XmlNode xmlQualityNode = objQuality.GetNode();
+                        XPathNavigator xmlQualityNode = objQuality.GetNodeXPath();
                         if (xmlQualityNode == null)
                             continue;
                         int intLoopKarma = 0;
@@ -10227,7 +10266,7 @@ namespace Chummer
                             XmlNode xmlTraditionListDataNode = LoadData("traditions.xml").SelectSingleNode("/chummer/traditions");
                             if(xmlTraditionListDataNode != null)
                             {
-                                XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = " + Tradition.CustomMagicalTraditionGuid.CleanXPath() + "]");
+                                XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = " + Tradition.CustomMagicalTraditionGuid.CleanXPath() + ']');
                                 if(xmlTraditionDataNode != null)
                                 {
                                     if(!MagicTradition.Create(xmlTraditionDataNode))
@@ -10710,7 +10749,7 @@ namespace Chummer
                 Cyberware objHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID);
                 if(objHole == null)
                 {
-                    XmlNode xmlEssHole = LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware.EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
+                    XmlNode xmlEssHole = LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware.EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
                     objHole = new Cyberware(this);
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     List<Vehicle> lstVehicles = new List<Vehicle>(1);
@@ -10774,7 +10813,7 @@ namespace Chummer
                 Cyberware objAntiHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                 if(objAntiHole == null)
                 {
-                    XmlNode xmlEssAntiHole = LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
+                    XmlNode xmlEssAntiHole = LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
                     objAntiHole = new Cyberware(this);
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     List<Vehicle> lstVehicles = new List<Vehicle>(1);
@@ -11973,7 +12012,7 @@ namespace Chummer
                                     .SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
                                 if (xmlErasedQuality != null)
                                 {
-                                    strErasedString = xmlErasedQuality.SelectSingleNode("translate")?.Value ?? "Erased";
+                                    strErasedString = xmlErasedQuality.SelectSingleNodeAndCacheExpression("translate")?.Value ?? "Erased";
                                 }
                             }
 
@@ -14319,7 +14358,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Metatype;
 
-            return GetNode(true, strLanguage)?.SelectSingleNode("translate")?.Value ?? Metatype;
+            return GetNodeXPath(true, strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Metatype;
         }
 
         /// <summary>
@@ -14352,7 +14391,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Metavariant;
 
-            return GetNode(false, strLanguage)?.SelectSingleNode("translate")?.Value ?? Metavariant;
+            return GetNodeXPath(false, strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Metavariant;
         }
 
         public string FormattedMetatype => FormattedMetatypeMethod(GlobalSettings.Language);
@@ -14430,8 +14469,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strMovement))
                 {
-                    _strMovement = GetNode().SelectSingleNode("movement")?.Value
-                                   ?? GetNode(true).SelectSingleNode("movement")?.Value
+                    _strMovement = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("movement")?.Value
+                                   ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("movement")?.Value
                                    ?? string.Empty;
                 }
 
@@ -14456,8 +14495,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strRun))
                 {
-                    _strRun = GetNode().SelectSingleNode("run")?.Value
-                              ?? GetNode(true).SelectSingleNode("run")?.Value
+                    _strRun = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("run")?.Value
+                              ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("run")?.Value
                               ?? string.Empty;
                 }
 
@@ -14482,8 +14521,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strRunAlt))
                 {
-                    _strRunAlt = GetNode().SelectSingleNode("run")?.GetAttribute("alt", string.Empty)
-                                 ?? GetNode(true).SelectSingleNode("run")?.GetAttribute("alt", string.Empty)
+                    _strRunAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
+                                 ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
                                  ?? string.Empty;
                 }
 
@@ -14508,8 +14547,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strWalk))
                 {
-                    _strWalk = GetNode().SelectSingleNode("walk")?.Value
-                               ?? GetNode(true).SelectSingleNode("walk")?.Value
+                    _strWalk = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("walk")?.Value
+                               ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("walk")?.Value
                                ?? string.Empty;
                 }
 
@@ -14534,8 +14573,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strWalkAlt))
                 {
-                    _strWalkAlt = GetNode().SelectSingleNode("walk")?.GetAttribute("alt", string.Empty)
-                                  ?? GetNode(true).SelectSingleNode("walk")?.GetAttribute("alt", string.Empty)
+                    _strWalkAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
+                                  ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
                                   ?? string.Empty;
                 }
 
@@ -14560,8 +14599,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strSprint))
                 {
-                    _strSprint = GetNode().SelectSingleNode("sprint")?.Value
-                                 ?? GetNode(true).SelectSingleNode("sprint")?.Value
+                    _strSprint = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("sprint")?.Value
+                                 ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("sprint")?.Value
                                  ?? string.Empty;
                 }
 
@@ -14586,8 +14625,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strSprintAlt))
                 {
-                    _strSprintAlt = GetNode().SelectSingleNode("sprint")?.GetAttribute("alt", string.Empty)
-                                    ?? GetNode(true).SelectSingleNode("sprint")?.GetAttribute("alt", string.Empty)
+                    _strSprintAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
+                                    ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
                                     ?? string.Empty;
                 }
 
@@ -15753,7 +15792,7 @@ namespace Chummer
                     {
                         XmlNode objXmlQualityNode =
                             xmlRootQualitiesNode.SelectSingleNode(
-                                "quality[name = " + GetQualityName(objXmlQuality.InnerText).CleanXPath() + "]");
+                                "quality[name = " + GetQualityName(objXmlQuality.InnerText).CleanXPath() + ']');
 
                         if(objXmlQualityNode != null)
                         {
@@ -15783,7 +15822,7 @@ namespace Chummer
                 }
 
                 // Take care of the Metatype information.
-                string strXPath = "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + "]";
+                string strXPath = "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']';
                 XmlNode objXmlMetatype = LoadData("metatypes.xml").SelectSingleNode(strXPath) ??
                                          LoadData("critters.xml").SelectSingleNode(strXPath);
 
@@ -15817,7 +15856,7 @@ namespace Chummer
 
                                     XmlNode objXmlQuality =
                                         xmlRootQualitiesNode.SelectSingleNode(
-                                            "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
+                                            "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
                                     objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                         strForceValue);
                                     Qualities.Add(objQuality);
@@ -15854,7 +15893,7 @@ namespace Chummer
 
                                     XmlNode objXmlQuality =
                                         xmlRootQualitiesNode.SelectSingleNode(
-                                            "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
+                                            "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
                                     objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                         strForceValue);
                                     Qualities.Add(objQuality);
@@ -15867,7 +15906,7 @@ namespace Chummer
                     if(!string.IsNullOrEmpty(_strMetavariant))
                     {
                         objXmlMetatype =
-                            objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() + "]");
+                            objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() + ']');
 
                         if (objXmlMetatype != null)
                         {
@@ -15899,7 +15938,7 @@ namespace Chummer
 
                                             XmlNode objXmlQuality =
                                                 xmlRootQualitiesNode.SelectSingleNode(
-                                                    "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
+                                                    "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                                 strForceValue);
                                             Qualities.Add(objQuality);
@@ -15936,7 +15975,7 @@ namespace Chummer
 
                                             XmlNode objXmlQuality =
                                                 xmlRootQualitiesNode.SelectSingleNode(
-                                                    "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
+                                                    "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                                 strForceValue);
                                             Qualities.Add(objQuality);
@@ -16501,10 +16540,10 @@ namespace Chummer
                                                    .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
                 {
                     XPathNavigator objXmlBook
-                        = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + "]");
+                        = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
                     if (objXmlBook != null)
                     {
-                        string strToAppend = objXmlBook.SelectSingleNode("translate")?.Value;
+                        string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
                         if (!string.IsNullOrEmpty(strToAppend))
                             sbdReturn.AppendLine(strToAppend);
                         else
@@ -19256,7 +19295,7 @@ namespace Chummer
                                                         {
                                                             if (objDummy.SelectSingleNode(
                                                                 "/document/public/character[@name = " +
-                                                                strCharacterId.CleanXPath() + "]") != null)
+                                                                strCharacterId.CleanXPath() + ']') != null)
                                                                 xmlStatBlockDocument = objDummy;
                                                         }
                                                         else
@@ -19427,7 +19466,7 @@ namespace Chummer
 
                                 xmlStatBlockBaseNode =
                                     xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = " +
-                                                                          strCharacterId.CleanXPath() + "]");
+                                                                          strCharacterId.CleanXPath() + ']');
                                 xmlLeadsBaseNode =
                                     xmlLeadsDocument.SelectSingleNode("/document/hero[@heroname = " +
                                                                       strCharacterId.CleanXPath() +
@@ -20264,7 +20303,7 @@ namespace Chummer
                                     {
                                         XmlNode xmlArmorData =
                                             xmlArmorDocument.SelectSingleNode(
-                                                "chummer/armors/armor[name = " + strArmorName.CleanXPath() + "]");
+                                                "chummer/armors/armor[name = " + strArmorName.CleanXPath() + ']');
                                         if (xmlArmorData == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -20274,7 +20313,7 @@ namespace Chummer
                                                 string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlArmorData =
                                                     xmlArmorDocument.SelectSingleNode(
-                                                        "/chummer/armors/armor[name = " + strName.CleanXPath() + "]");
+                                                        "/chummer/armors/armor[name = " + strName.CleanXPath() + ']');
                                             }
 
                                             if (xmlArmorData == null)
@@ -20287,7 +20326,7 @@ namespace Chummer
                                                     xmlArmorData =
                                                         xmlArmorDocument.SelectSingleNode(
                                                             "/chummer/armors/armor[name = " +
-                                                            strName.CleanXPath() + "]");
+                                                            strName.CleanXPath() + ']');
                                                 }
                                             }
                                         }
@@ -20796,7 +20835,7 @@ namespace Chummer
                                         string strSpellCategory = xmlHeroLabSpell.SelectSingleNode("@category")?.Value;
                                         XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode(
                                             "chummer/spells/spell[category = " + strSpellCategory.CleanXPath() +
-                                            " and name = " + strSpellName.CleanXPath() + "]");
+                                            " and name = " + strSpellName.CleanXPath() + ']');
                                         if (xmlSpellData == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -20807,7 +20846,7 @@ namespace Chummer
                                                 xmlSpellData = xmlSpellDocument.SelectSingleNode(
                                                     "/chummer/spells/spell[category = " +
                                                     strSpellCategory.CleanXPath() +
-                                                    " and name = " + strName.CleanXPath() + "]");
+                                                    " and name = " + strName.CleanXPath() + ']');
                                             }
 
                                             if (xmlSpellData == null)
@@ -20820,7 +20859,7 @@ namespace Chummer
                                                     xmlSpellData = xmlSpellDocument.SelectSingleNode(
                                                         "/chummer/spells/spell[category = " +
                                                         strSpellCategory.CleanXPath() + " and name = " +
-                                                        strName.CleanXPath() + "]");
+                                                        strName.CleanXPath() + ']');
                                                 }
                                             }
                                         }
@@ -20998,7 +21037,7 @@ namespace Chummer
                                         XmlNode xmlComplexFormData =
                                             xmlComplexFormsDocument.SelectSingleNode(
                                                 "chummer/complexforms/complexform[name = " +
-                                                strComplexFormName.CleanXPath() + "]");
+                                                strComplexFormName.CleanXPath() + ']');
                                         if (xmlComplexFormData == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -21023,7 +21062,7 @@ namespace Chummer
                                                     xmlComplexFormData =
                                                         xmlComplexFormsDocument.SelectSingleNode(
                                                             "/chummer/complexforms/complexform[name = " +
-                                                            strName.CleanXPath() + "]");
+                                                            strName.CleanXPath() + ']');
                                                 }
                                             }
                                         }
@@ -21120,7 +21159,7 @@ namespace Chummer
                                                 ? LoadData("lifestyles.xml")
                                                 : await LoadDataAsync("lifestyles.xml"))
                                             .SelectSingleNode("/chummer/lifestyles/lifestyle[name = " +
-                                                              strLifestyleType.CleanXPath() + "]");
+                                                              strLifestyleType.CleanXPath() + ']');
 
                                         if (xmlLifestyleDataNode != null)
                                         {
@@ -21718,7 +21757,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode()?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

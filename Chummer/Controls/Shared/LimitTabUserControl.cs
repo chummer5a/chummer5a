@@ -105,7 +105,7 @@ namespace Chummer.UI.Shared
                 _objCharacter.LimitModifiers.Add(objLimitModifier);
             }
 
-            MakeDirtyWithCharacterUpdate?.Invoke(null, null);
+            MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
@@ -114,7 +114,7 @@ namespace Chummer.UI.Shared
                 return;
             if (!selectedObject.Remove(GlobalSettings.ConfirmDelete))
                 return;
-            MakeDirtyWithCharacterUpdate?.Invoke(null, null);
+            MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
@@ -150,7 +150,7 @@ namespace Chummer.UI.Shared
                     }
                     treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
                     treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
-                    MakeDirty?.Invoke(null, null);
+                    MakeDirty?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -183,7 +183,7 @@ namespace Chummer.UI.Shared
             }
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap();
-            MakeDirty?.Invoke(null, null);
+            MakeDirty?.Invoke(this, EventArgs.Empty);
         }
 
         private void RefreshLimitModifiers(NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -461,7 +461,7 @@ namespace Chummer.UI.Shared
                 _objCharacter.LimitModifiers.Add(objLimitModifier);
             }
 
-            MakeDirtyWithCharacterUpdate?.Invoke(null, null);
+            MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

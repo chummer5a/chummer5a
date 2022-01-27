@@ -227,7 +227,7 @@ namespace Chummer
                                                                   + " and name = " + objExoticSkill.Name.CleanXPath()
                                                                   + "]");
                             lstSkills.Add(new ListItem(objExoticSkill.DictionaryKey,
-                                                       (objXmlSkill.SelectSingleNode("translate")?.Value
+                                                       (objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                         ?? objExoticSkill.CurrentDisplayName)
                                                        + LanguageManager.GetString("String_Space") + '('
                                                        + objExoticSkill.CurrentDisplaySpecialization + ')'));

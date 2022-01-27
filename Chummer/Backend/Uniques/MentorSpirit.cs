@@ -255,12 +255,11 @@ namespace Chummer
                 _objCachedMyXPathNode = null;
             }
             Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
-            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
             {
-                if (objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
-                {
-                    _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + "]")?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-                }
+                _objCharacter.LoadDataXPath("qualities.xml")
+                             .SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + "]")
+                             ?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -453,7 +452,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -484,7 +483,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

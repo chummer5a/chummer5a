@@ -1357,7 +1357,7 @@ namespace Chummer.Backend.Equipment
                 return _objCharacter.TranslateExtra(Name, strLanguage);
             }
 
-            return xmlGearDataNode?.SelectSingleNode("translate")?.Value ?? Name;
+            return xmlGearDataNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -1424,7 +1424,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

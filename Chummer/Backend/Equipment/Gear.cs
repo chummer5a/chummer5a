@@ -946,16 +946,16 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) &&
                 !objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language, objNode["name"]?.InnerText,
-                    objNode["category"]?.InnerText);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                _guiSourceID = Guid.Empty;
+                GetNodeXPath(GlobalSettings.DefaultLanguage, _strName, _strCategory)?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
-            _objCachedMyXmlNode = null;
-            _objCachedMyXPathNode = null;
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
@@ -968,7 +968,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
 
-            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             // Legacy shim
             if (string.IsNullOrEmpty(_strAvail) &&
                 (objNode["avail3"] != null || objNode["avail6"] != null || objNode["avail10"] != null))
@@ -1853,7 +1852,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -2858,7 +2857,7 @@ namespace Chummer.Backend.Equipment
                 return _objCharacter.TranslateExtra(Name, strLanguage);
             }
 
-            return xmlGearDataNode?.SelectSingleNode("translate")?.Value ?? Name;
+            return xmlGearDataNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>

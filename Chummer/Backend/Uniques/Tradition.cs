@@ -323,7 +323,7 @@ namespace Chummer.Backend.Uniques
             _eTraditionType = TraditionType.MAG;
             _strName = xmlHeroLabNode.SelectSingleNode("@name")?.Value;
             XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName)
-                ? _objCharacter.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = " + _strName.CleanXPath() + "]") : null;
+                ? _objCharacter.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = " + _strName.CleanXPath() + ']') : null;
             if (xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
                 _guiSourceID = new Guid(CustomMagicalTraditionGuid);
@@ -486,7 +486,7 @@ namespace Chummer.Backend.Uniques
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -894,7 +894,7 @@ namespace Chummer.Backend.Uniques
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

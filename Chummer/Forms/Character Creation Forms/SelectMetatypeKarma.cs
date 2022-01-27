@@ -802,7 +802,7 @@ namespace Chummer
                                             ?? _objCharacter?.MetatypeGuid.ToString(
                                                 "D", GlobalSettings.InvariantCultureInfo);
                     if (strOldSelected == Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
-                        strOldSelected = _objCharacter.GetNode(true)?.SelectSingleNodeAndCacheExpression("id")?.Value
+                        strOldSelected = _objCharacter.GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("id")?.Value
                                          ?? string.Empty;
                     _blnLoading = true;
                     lstMetatypes.BeginUpdate();

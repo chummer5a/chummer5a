@@ -340,10 +340,12 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (blnCopy)
             {
@@ -389,13 +391,13 @@ namespace Chummer.Backend.Equipment
                 {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
                     {
-                        foreach (XmlNode xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
+                        foreach (XPathNavigator xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
                                      "/chummer/lifestyles/lifestyle"))
                         {
                             string strName = xmlLifestyle.SelectSingleNode("name")?.Value
                                              ?? LanguageManager.GetString("String_Error");
                             lstQualities.Add(
-                                new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));
+                                new ListItem(strName, xmlLifestyle.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                         }
 
                         using (SelectItem frmSelect = new SelectItem
@@ -419,7 +421,6 @@ namespace Chummer.Backend.Equipment
             }
             if (_strBaseLifestyle == "Middle")
                 _strBaseLifestyle = "Medium";
-            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             // Legacy sweep for issues with Advanced Lifestyle selector not properly resetting values upon changes to the Base Lifestyle
             if (_objCharacter.LastSavedVersion <= new Version(5, 212, 73)
                 && _strBaseLifestyle != "Street"
@@ -630,7 +631,7 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator objXmlAspect = this.GetNodeXPath();
                 if (objXmlAspect != null)
                 {
-                    strBaseLifestyle = objXmlAspect.SelectSingleNode("translate")?.Value
+                    strBaseLifestyle = objXmlAspect.SelectSingleNodeAndCacheExpression("translate")?.Value
                                        ?? objXmlAspect.SelectSingleNode("name")?.Value ?? strBaseLifestyle;
                 }
             }
@@ -706,7 +707,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return BaseLifestyle;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? BaseLifestyle;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? BaseLifestyle;
         }
 
         /// <summary>
@@ -752,7 +753,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

@@ -1318,7 +1318,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -2042,7 +2042,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -2478,7 +2478,7 @@ namespace Chummer.Backend.Equipment
                             if (strPasteCategory == "General")
                                 return true;
                             XPathNodeIterator xmlAddonCategoryList = xmlNode.Select("addoncategory");
-                            return !(xmlAddonCategoryList.Count > 0) || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
+                            return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
                         }
                     case ClipboardContentType.Gear:
                         {
@@ -2486,7 +2486,7 @@ namespace Chummer.Backend.Equipment
                             if (xmlNode == null)
                                 return false;
                             XPathNodeIterator xmlAddonCategoryList = xmlNode.Select("addoncategory");
-                            return !(xmlAddonCategoryList.Count > 0) || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
+                            return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
                         }
                     default:
                         return false;

@@ -54,7 +54,7 @@ namespace Chummer
             // Load the Programs information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (!_objCharacter.IsCritter) return;
-            _xmlOptionalAIProgramsNode = _objCharacter.GetNode().SelectSingleNodeAndCacheExpression("optionalaiprograms");
+            _xmlOptionalAIProgramsNode = _objCharacter.GetNodeXPath().SelectSingleNodeAndCacheExpression("optionalaiprograms");
         }
 
         private void SelectAIProgram_Load(object sender, EventArgs e)
@@ -223,7 +223,7 @@ namespace Chummer
                     string strSource = objXmlProgram.SelectSingleNode("source")?.Value;
                     if (!string.IsNullOrEmpty(strSource))
                     {
-                        string strPage = objXmlProgram.SelectSingleNode("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
+                        string strPage = objXmlProgram.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
                         if (!string.IsNullOrEmpty(strPage))
                         {
                             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
@@ -336,7 +336,7 @@ namespace Chummer
                         && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + "]")
                         == null)
                         continue;
-                    string strDisplayName = objXmlProgram.SelectSingleNode("translate")?.Value ?? strName;
+                    string strDisplayName = objXmlProgram.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
                     if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
                         string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;

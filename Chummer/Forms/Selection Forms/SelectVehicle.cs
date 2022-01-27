@@ -318,7 +318,7 @@ namespace Chummer
             UpdateSelectedVehicleCost();
 
             string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = objXmlVehicle.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
