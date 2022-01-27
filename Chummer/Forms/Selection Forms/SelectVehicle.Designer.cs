@@ -472,7 +472,7 @@ namespace Chummer
             this.chkFreeItem.Tag = "Checkbox_Free";
             this.chkFreeItem.Text = "Free!";
             this.chkFreeItem.UseVisualStyleBackColor = true;
-            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.ProcessVehicleCostsChanged);
+            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
             // 
             // chkBlackMarketDiscount
             // 
