@@ -30185,6 +30185,7 @@
     <metatype>
       <id>b2bae7c6-3570-4bd8-9cb3-277c97dcfb60</id>
       <name>Glow Rat</name>
+      <category>Toxic Critters</category>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>6</bodaug>
@@ -30211,31 +30212,47 @@
       <wilaug>7</wilaug>
       <edgmin>2</edgmin>
       <edgmax>2</edgmax>
-      <edgaug>6</edgaug>
+      <edgaug>2</edgaug>
       <magmin>4</magmin>
-      <magmax>4</magmax>
-      <magaug>8</magaug>
-      <essmin>6</essmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
+      <essmin>0</essmin>
       <essmax>6</essmax>
-      <essaug>10</essaug>
+      <essaug>6</essaug>
       <walk>1/1/0</walk>
       <run>2/0/0</run>
       <sprint>1/1/0</sprint>
-      <armor>2</armor>
       <skills>
-        <skill rating="6">Exotic Ranged Weapon (Spit)</skill>
+        <skill rating="6" spec="Spit">Exotic Ranged Weapon</skill>
         <skill rating="5">Gymnastics</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="2">Running</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="5">Unarmed Combat</skill>
       </skills>
       <powers>
         <power select="Mundane Rodents">Animal Control</power>
         <power select="2">Armor</power>
         <power>Corrosive Spit</power>
         <power>Concealment</power>
+        <power select="Low-Light Vision">Enhanced Senses</power>
+        <power select="Toxins">Immunity</power>
+        <power select="Claws: DV 2P, AP -">Natural Weapon</power>
+        <power>Venom</power>
+        <power select="Sunlight, Mild">Allergy</power>
       </powers>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <enableattribute>
+          <name>MAG</name>
+          <min>1</min>
+          <max>6</max>
+          <aug>6</aug>
+          <val>4</val>
+        </enableattribute>
+        <reach>-1</reach>
       </bonus>
       <source>HS</source>
       <page>95</page>
