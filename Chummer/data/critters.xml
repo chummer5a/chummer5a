@@ -49229,8 +49229,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F-2)*2/(F-2)*2/(F-2)*2</walk>
-      <run>(F-2)*4/(F-2)*4/(F-2)*4</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -49316,8 +49316,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -49407,8 +49407,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -49495,8 +49495,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -49586,8 +49586,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
