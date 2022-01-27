@@ -1535,7 +1535,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -1571,7 +1571,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>

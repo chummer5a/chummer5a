@@ -83,6 +83,7 @@ Data Changes:
 - Custom Items can now be added to cyberlimbs.
 - Fixed Trollbow not using the Bow specialisation. Closes #4676
 - Fixed the following critter entries from Howling Shadows: Glow Rat, Neogargoyle, and Sea Leech.
+- Added Spinrad Global and a list of AA megacorporations to life modules' data files and to the suggested list for SINner (Corporate) and SINner (Corporate Limited). Fixes #4668.
 
 Changed/New Strings:
 - String_GameplayOption

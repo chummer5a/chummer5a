@@ -12319,6 +12319,7 @@
           <r>Renraku</r>
           <s>Saeder-Krupp</s>
           <s2>Shiawase</s2>
+          <s3>Spinrad Global</s3>
           <w>Wuxing</w>
           <aa>a AA corp, such as Monobe International or Docwagon</aa>
           <a>a single A corp, such as The People’s Republic of Vietnam</a>
@@ -12448,6 +12449,7 @@
           <renraku>Renraku</renraku>
           <sk>Saeder-Krupp</sk>
           <shia>Shiawase</shia>
+          <spinrad>Spinrad Global</spinrad>
           <wux>Wuxing</wux>
         </persistent>
       </mega>
@@ -12462,9 +12464,134 @@
           <renraku>Renraku</renraku>
           <sk>Saeder-Krupp</sk>
           <shia>Shiawase</shia>
+          <spinrad>Spinrad Global</spinrad>
           <wux>Wuxing</wux>
         </random>
       </rmega>
+      <megadoublea>
+        <persistent>
+          <agchemieeuropa>AG Chemie Europa</agchemieeuropa>
+          <aerospatiale>Aerospatiale SA</aerospatiale>
+          <chalmerscole>Chalmers and Cole Associates</chalmerscole>
+          <citigroup>Citigroup</citigroup>
+          <colt>Colt Manufacturing</colt>
+          <cordmutual>Cord Mutual Insurance</cordmutual>
+          <docwagon>DocWagon</docwagon>
+          <easterntiger>Eastern Tiger Corporation</easterntiger>
+          <esus>ESUS</esus>
+          <federated-boeing>Federated-Boeing</federated-boeing>
+          <ford>Ford Motor Company, Inc.</ford>
+          <frankfurterbankverein>Frankfurter Bankverein AG</frankfurterbankverein>
+          <gaeatronics>Gaeatronics</gaeatronics>
+          <genesisconsortium>Genesis Consortium</genesisconsortium>
+          <globalstandstorm>Global Standstorm</globalstandstorm>
+          <hildebrandtkleinfortbernal>Hildebrandt-Kleinfort-Bernal</hildebrandtkleinfortbernal>
+          <hyundai>Hyundai</hyundai>
+          <integratedweaponsystems>Integrated Weapon Systems PLC</integratedweaponsystems>
+          <indexaxa>Index-AXA</indexaxa>
+          <korporacjaopatrznoscibozej>Korporacja Opatrznosci Bozej</korporacjaopatrznoscibozej>
+          <kolkota>Kolkota Integrated Talent and Technologies</kolkota>
+          <komatsu>Komatsu Limited</komatsu>
+          <kondorchid>KondOrchid SA</kondorchid>
+          <kwonshan>Kwonshan Industries</kwonshan>
+          <lockheed>Lockheed Corporation</lockheed>
+          <lonestar>Lone Star Security Services</lonestar>
+          <lusiada>Lusiada</lusiada>
+          <maersk>Maersk Incorporated Assets</maersk>
+          <monobe>Monobe International</monobe>
+          <nagato>Nagato Corporation</nagato>
+          <nypdinc>NYPD, Inc.</nypdinc>
+          <phoenix>Phoenix Biotechnologies</phoenix>
+          <prometheus>Prometheus Engineering</prometheus>
+          <proteus>Proteus AG</proteus>
+          <realityinc>Reality, Inc.</realityinc>
+          <regencymegamedia>Regency MegaMedia</regencymegamedia>
+          <regulus>Regulus Joint Industries</regulus>
+          <renaultfiatmeridional>Renault-Fiat-Meridional</renaultfiatmeridional>
+          <samyung>Samyung</samyung>
+          <shibata>Shibata Construction and Engineering</shibata>
+          <shinsiam>ShinSiam</shinsiam>
+          <singaporeinc>Singapore, Inc.</singaporeinc>
+          <sony>Sony Corporation</sony>
+          <spinrad>Spinrad Industries</spinrad>
+          <tablelands>Tablelands Software</tablelands>
+          <tanamyre>Tanamyre Resources</tanamyre>
+          <telestrian>Telestrian Industries Corporation</telestrian>
+          <trans-orbital>Trans-Orbital</trans-orbital>
+          <uol>UOL</uol>
+          <universalomnitech>Universal Omnitech</universalomnitech>
+          <vedacorp>Vedacorp</vedacorp>
+          <virtualrealityinc>Virtual Reality, Inc.</virtualrealityinc>
+          <winter>Winter Systems</winter>
+          <yakashima>Yakashima Technologies</yakashima>
+          <yangsu>Yang Su Enterprises</yangsu>
+          <yokogawa>Yokogawa Corporation</yokogawa>
+          <zetaimpchem>Zeta-ImpChem</zetaimpchem>
+          <zog>Zürich-Orbital Gemeinschaftsbank</zog>
+        </persistent>
+      </megadoublea>
+      <rmegadoublea>
+        <random>
+          <agchemieeuropa>AG Chemie Europa</agchemieeuropa>
+          <aerospatiale>Aerospatiale SA</aerospatiale>
+          <chalmerscole>Chalmers and Cole Associates</chalmerscole>
+          <citigroup>Citigroup</citigroup>
+          <colt>Colt Manufacturing</colt>
+          <cordmutual>Cord Mutual Insurance</cordmutual>
+          <docwagon>DocWagon</docwagon>
+          <easterntiger>Eastern Tiger Corporation</easterntiger>
+          <esus>ESUS</esus>
+          <federated-boeing>Federated-Boeing</federated-boeing>
+          <ford>Ford Motor Company, Inc.</ford>
+          <frankfurterbankverein>Frankfurter Bankverein AG</frankfurterbankverein>
+          <gaeatronics>Gaeatronics</gaeatronics>
+          <genesisconsortium>Genesis Consortium</genesisconsortium>
+          <globalstandstorm>Global Standstorm</globalstandstorm>
+          <hildebrandtkleinfortbernal>Hildebrandt-Kleinfort-Bernal</hildebrandtkleinfortbernal>
+          <hyundai>Hyundai</hyundai>
+          <integratedweaponsystems>Integrated Weapon Systems PLC</integratedweaponsystems>
+          <indexaxa>Index-AXA</indexaxa>
+          <korporacjaopatrznoscibozej>Korporacja Opatrznosci Bozej</korporacjaopatrznoscibozej>
+          <kolkota>Kolkota Integrated Talent and Technologies</kolkota>
+          <komatsu>Komatsu Limited</komatsu>
+          <kondorchid>KondOrchid SA</kondorchid>
+          <kwonshan>Kwonshan Industries</kwonshan>
+          <lockheed>Lockheed Corporation</lockheed>
+          <lonestar>Lone Star Security Services</lonestar>
+          <lusiada>Lusiada</lusiada>
+          <maersk>Maersk Incorporated Assets</maersk>
+          <monobe>Monobe International</monobe>
+          <nagato>Nagato Corporation</nagato>
+          <nypdinc>NYPD, Inc.</nypdinc>
+          <phoenix>Phoenix Biotechnologies</phoenix>
+          <prometheus>Prometheus Engineering</prometheus>
+          <proteus>Proteus AG</proteus>
+          <realityinc>Reality, Inc.</realityinc>
+          <regencymegamedia>Regency MegaMedia</regencymegamedia>
+          <regulus>Regulus Joint Industries</regulus>
+          <renaultfiatmeridional>Renault-Fiat-Meridional</renaultfiatmeridional>
+          <samyung>Samyung</samyung>
+          <shibata>Shibata Construction and Engineering</shibata>
+          <shinsiam>ShinSiam</shinsiam>
+          <singaporeinc>Singapore, Inc.</singaporeinc>
+          <sony>Sony Corporation</sony>
+          <spinrad>Spinrad Industries</spinrad>
+          <tablelands>Tablelands Software</tablelands>
+          <tanamyre>Tanamyre Resources</tanamyre>
+          <telestrian>Telestrian Industries Corporation</telestrian>
+          <trans-orbital>Trans-Orbital</trans-orbital>
+          <uol>UOL</uol>
+          <universalomnitech>Universal Omnitech</universalomnitech>
+          <vedacorp>Vedacorp</vedacorp>
+          <virtualrealityinc>Virtual Reality, Inc.</virtualrealityinc>
+          <winter>Winter Systems</winter>
+          <yakashima>Yakashima Technologies</yakashima>
+          <yangsu>Yang Su Enterprises</yangsu>
+          <yokogawa>Yokogawa Corporation</yokogawa>
+          <zetaimpchem>Zeta-ImpChem</zetaimpchem>
+          <zog>Zürich-Orbital Gemeinschaftsbank</zog>
+        </random>
+      </rmegadoublea>
       <season>
         <random>
           <spring>Spring</spring>
