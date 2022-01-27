@@ -15432,27 +15432,25 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.GetNode();
+            XPathNavigator xmlParent = blnNullParent ? null : objSelectedGear.GetNodeXPath();
 
             using (new CursorWait(this))
             {
                 string strCategories = string.Empty;
 
-                if (!blnNullParent)
+                if (xmlParent != null)
                 {
-                    using (XmlNodeList xmlAddonCategoryList = objXmlGear?.SelectNodes("addoncategory"))
+                    XPathNodeIterator xmlAddonCategoryList = xmlParent.Select("addoncategory");
+                    if (xmlAddonCategoryList.Count > 0)
                     {
-                        if (xmlAddonCategoryList?.Count > 0)
+                        using (new FetchSafelyFromPool<StringBuilder>(
+                                   Utils.StringBuilderPool, out StringBuilder sbdCategories))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(
-                                       Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                            {
-                                foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                                // Remove the trailing comma.
-                                --sbdCategories.Length;
-                                strCategories = sbdCategories.ToString();
-                            }
+                            foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                                sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            // Remove the trailing comma.
+                            --sbdCategories.Length;
+                            strCategories = sbdCategories.ToString();
                         }
                     }
                 }
@@ -15498,7 +15496,7 @@ namespace Chummer
 
                     // Open the Cyberware XML file and locate the selected piece.
                     XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
-                    objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + "]");
+                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + "]");
 
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);

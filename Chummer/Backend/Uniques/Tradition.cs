@@ -155,35 +155,29 @@ namespace Chummer.Backend.Uniques
             _strSpiritManipulation = string.Empty;
             if (Type != TraditionType.None)
             {
-                XmlNode xmlSpiritListNode = this.GetNode()?["spirits"];
+                XPathNavigator xmlSpiritListNode = this.GetNodeXPath()?.SelectSingleNode("spirits");
                 if (xmlSpiritListNode != null)
                 {
-                    using (XmlNodeList xmlAlwaysAccessSpirits = xmlSpiritListNode.SelectNodes("spirit"))
+                    foreach (XPathNavigator xmlSpiritNode in xmlSpiritListNode.Select("spirit"))
                     {
-                        if (xmlAlwaysAccessSpirits?.Count > 0)
-                        {
-                            foreach (XmlNode xmlSpiritNode in xmlAlwaysAccessSpirits)
-                            {
-                                _lstAvailableSpirits.Add(xmlSpiritNode.InnerText);
-                            }
-                        }
+                        _lstAvailableSpirits.Add(xmlSpiritNode.Value);
                     }
 
-                    XmlNode xmlCombatSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritcombat");
+                    XPathNavigator xmlCombatSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritcombat");
                     if (xmlCombatSpiritNode != null)
-                        _strSpiritCombat = xmlCombatSpiritNode.InnerText;
-                    XmlNode xmlDetectionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritdetection");
+                        _strSpiritCombat = xmlCombatSpiritNode.Value;
+                    XPathNavigator xmlDetectionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritdetection");
                     if (xmlDetectionSpiritNode != null)
-                        _strSpiritDetection = xmlDetectionSpiritNode.InnerText;
-                    XmlNode xmlHealthSpiritNode = xmlSpiritListNode.SelectSingleNode("spirithealth");
+                        _strSpiritDetection = xmlDetectionSpiritNode.Value;
+                    XPathNavigator xmlHealthSpiritNode = xmlSpiritListNode.SelectSingleNode("spirithealth");
                     if (xmlHealthSpiritNode != null)
-                        _strSpiritHealth = xmlHealthSpiritNode.InnerText;
-                    XmlNode xmlIllusionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritillusion");
+                        _strSpiritHealth = xmlHealthSpiritNode.Value;
+                    XPathNavigator xmlIllusionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritillusion");
                     if (xmlIllusionSpiritNode != null)
-                        _strSpiritIllusion = xmlIllusionSpiritNode.InnerText;
-                    XmlNode xmlManipulationSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritmanipulation");
+                        _strSpiritIllusion = xmlIllusionSpiritNode.Value;
+                    XPathNavigator xmlManipulationSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritmanipulation");
                     if (xmlManipulationSpiritNode != null)
-                        _strSpiritManipulation = xmlManipulationSpiritNode.InnerText;
+                        _strSpiritManipulation = xmlManipulationSpiritNode.Value;
                 }
             }
             if (blnDoOnPropertyChanged)
@@ -247,10 +241,10 @@ namespace Chummer.Backend.Uniques
                 _guiID = Guid.NewGuid();
             }
             xmlNode.TryGetStringFieldQuickly("name", ref _strName);
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (!xmlNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && !xmlNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             xmlNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -268,7 +262,7 @@ namespace Chummer.Backend.Uniques
                     _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                 }
                 else
-                    this.GetNode()?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+                    objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
             }
 
             xmlNode.TryGetStringFieldQuickly("source", ref _strSource);

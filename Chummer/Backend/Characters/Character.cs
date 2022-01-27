@@ -3691,8 +3691,8 @@ namespace Chummer
                                             if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
                                                 objQuality.SetGUID(Guid.NewGuid());
                                             _lstQualities.Add(objQuality);
-                                            if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")
-                                                    ?.InnerText ==
+                                            if (objQuality.GetNodeXPath()?.SelectSingleNode("bonus/addgear/name")
+                                                    ?.Value ==
                                                 "Living Persona")
                                                 objLivingPersonaQuality = objQuality;
                                             // Legacy shim

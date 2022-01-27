@@ -276,7 +276,7 @@ namespace Chummer
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
                 if (_objCharacter.BlackMarketDiscount && value != null)
                 {
-                    string strCategory = value.GetNode()?.SelectSingleNode("category")?.InnerText ?? string.Empty;
+                    string strCategory = value.GetNodeXPath()?.SelectSingleNode("category")?.Value ?? string.Empty;
                     _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
                 }
                 else

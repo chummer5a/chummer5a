@@ -234,7 +234,7 @@ namespace Chummer
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovable
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                                 continue;
-                            XmlNode xmlRestrictionNode = objQuality.GetNode()?["required"];
+                            XPathNavigator xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("required");
                             if (xmlRestrictionNode != null &&
                                 (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                             {
@@ -242,7 +242,7 @@ namespace Chummer
                             }
                             else
                             {
-                                xmlRestrictionNode = objQuality.GetNode()?["forbidden"];
+                                xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("forbidden");
                                 if (xmlRestrictionNode != null &&
                                     (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                                 {
@@ -256,7 +256,7 @@ namespace Chummer
                             _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
-                            if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
+                            if (objQuality.GetNodeXPath()?.RequirementsMet(_objCharacter) == false)
                                 _objCharacter.Qualities.Remove(objQuality);
                         }
                     }

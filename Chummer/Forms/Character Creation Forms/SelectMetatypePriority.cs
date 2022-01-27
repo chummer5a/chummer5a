@@ -781,7 +781,7 @@ namespace Chummer
                     }
 
                     // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
-                    _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Selected && x.GetNode()?["onlyprioritygiven"] != null);
+                    _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Selected && x.GetNodeXPath()?.SelectSingleNode("onlyprioritygiven") != null);
 
                     string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
                     string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
@@ -808,7 +808,7 @@ namespace Chummer
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovable
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                                 continue;
-                            XmlNode xmlRestrictionNode = objQuality.GetNode()?["required"];
+                            XPathNavigator xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("required");
                             if (xmlRestrictionNode != null &&
                                 (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                             {
@@ -816,7 +816,7 @@ namespace Chummer
                             }
                             else
                             {
-                                xmlRestrictionNode = objQuality.GetNode()?["forbidden"];
+                                xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("forbidden");
                                 if (xmlRestrictionNode != null &&
                                     (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                                 {
@@ -830,8 +830,7 @@ namespace Chummer
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
-                            if (objQuality.GetNode()?.CreateNavigator()
-                                          .RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name) == false)
+                            if (objQuality.GetNodeXPath()?.RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name) == false)
                             {
                                 _objCharacter.Qualities.Remove(objQuality);
                             }

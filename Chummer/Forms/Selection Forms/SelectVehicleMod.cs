@@ -299,7 +299,7 @@ namespace Chummer
                 : _xmlBaseVehicleDataNode.Select("mods/mod[" + strFilter + "]");
             // Update the list of Mods based on the selected Category.
             int intOverLimit = 0;
-            XPathNavigator objXmlVehicleNode = _objVehicle.GetNode()?.CreateNavigator();
+            XPathNavigator objXmlVehicleNode = _objVehicle.GetNodeXPath();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMods))
             {
                 foreach (XPathNavigator objXmlMod in objXmlModList)

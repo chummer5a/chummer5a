@@ -1591,8 +1591,7 @@ namespace Chummer
                     }
                 case "weapondetails" when objParent is Weapon objWeapon:
                     {
-                        XPathNavigator xmlWeaponDataNode = objWeapon.GetNode()?.CreateNavigator();
-                        return xmlWeaponDataNode.ProcessFilterOperationNode(xmlNode, false);
+                        return objWeapon.GetNodeXPath().ProcessFilterOperationNode(xmlNode, false);
                     }
                 case "armormod":
                     {
