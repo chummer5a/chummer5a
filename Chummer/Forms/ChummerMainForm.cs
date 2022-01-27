@@ -271,17 +271,22 @@ namespace Chummer
                                                 GlobalSettings.MostRecentlyUsedCharacters.All(x =>
                                                     Path.GetFileName(x) != objMostRecentAutosave.Name) &&
                                                 GlobalSettings.FavoriteCharacters.All(x =>
-                                                    Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                                && ShowMessageBox(
-                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString(
-                                                                      "Message_PossibleCrashAutosaveFound"),
-                                                                  objMostRecentAutosave.Name,
-                                                                  objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
-                                                    LanguageManager.GetString("MessageTitle_AutosaveFound"),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                                                == DialogResult.Yes)
-                                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                                    Path.GetFileName(x) != objMostRecentAutosave.Name))
+                                            {
+                                                if (ShowMessageBox(
+                                                        string.Format(GlobalSettings.CultureInfo,
+                                                                      LanguageManager.GetString(
+                                                                          "Message_PossibleCrashAutosaveFound"),
+                                                                      objMostRecentAutosave.Name,
+                                                                      objMostRecentAutosave.LastWriteTimeUtc
+                                                                          .ToLocalTime()),
+                                                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                    == DialogResult.Yes)
+                                                    setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                                else
+                                                    lstOldAutosaves.Add(objMostRecentAutosave.FullName);
+                                            }
                                             else if (objMostRecentAutosave.LastWriteTimeUtc
                                                      < objOldAutosaveTimeThreshold)
                                                 lstOldAutosaves.Add(objMostRecentAutosave.FullName);
