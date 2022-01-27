@@ -214,7 +214,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);

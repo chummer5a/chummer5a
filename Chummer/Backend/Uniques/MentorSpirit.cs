@@ -242,15 +242,6 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
-            {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
-                {
-                    _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + "]")?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-                }
-            }
-
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
             {
                 _objCachedMyXmlNode = null;
@@ -263,13 +254,21 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
             }
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                if (objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
+                {
+                    _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + "]")?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
+            }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (_objCharacter.LastSavedVersion <= new Version(5, 217, 31))
             {
                 // Cache advantages from data file because localized version used to be cached directly.
-                XmlNode node = GetNode(GlobalSettings.DefaultLanguage);
+                XPathNavigator node = objMyNode.Value;
                 if (node != null)
                 {
                     if (!node.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage))
@@ -406,7 +405,7 @@ namespace Chummer
             if (strLanguage != GlobalSettings.DefaultLanguage)
             {
                 string strTemp = string.Empty;
-                if (GetNode(strLanguage)?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
+                if (GetNodeXPath(strLanguage)?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
                     strReturn = strTemp;
             }
 
@@ -433,7 +432,7 @@ namespace Chummer
             if (strLanguage != GlobalSettings.DefaultLanguage)
             {
                 string strTemp = string.Empty;
-                if (GetNode(strLanguage)?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
+                if (GetNodeXPath(strLanguage)?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
                     strReturn = strTemp;
             }
 
@@ -454,7 +453,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -485,7 +484,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

@@ -277,7 +277,7 @@ namespace Chummer
             string strReturn = _strName;
             // Get the translated name if applicable.
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? _strName;
+                strReturn = GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? _strName;
 
             return strReturn;
         }
@@ -555,7 +555,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

@@ -248,8 +248,8 @@ namespace Chummer.Backend.Equipment
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 {
                     if (_objCachedBackupSourceDetail == default)
-                        _objCachedBackupSourceDetail = new SourceString(GetNode(GlobalSettings.DefaultLanguage)?["source"]
-                                ?.InnerText ?? Source,
+                        _objCachedBackupSourceDetail = new SourceString(
+                            GetNodeXPath(GlobalSettings.DefaultLanguage)?.SelectSingleNode("source")?.Value ?? Source,
                             DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                             _objCharacter);
                     return _objCachedBackupSourceDetail;
@@ -432,10 +432,10 @@ namespace Chummer.Backend.Equipment
             // we instead display them as if they were one of the CRB mounts, but give them a different name
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
             {
-                XmlNode xmlOverrideNode = GetNode(strLanguageToPrint);
-                objWriter.WriteElementString("sourceid", xmlOverrideNode?["id"]?.InnerText ?? SourceIDString);
+                XPathNavigator xmlOverrideNode = GetNodeXPath(strLanguageToPrint);
+                objWriter.WriteElementString("sourceid", xmlOverrideNode?.SelectSingleNode("id")?.Value ?? SourceIDString);
                 objWriter.WriteElementString("source",
-                    _objCharacter.LanguageBookShort(xmlOverrideNode?["source"]?.InnerText ?? Source,
+                    _objCharacter.LanguageBookShort(xmlOverrideNode?.SelectSingleNode("source")?.Value ?? Source,
                         strLanguageToPrint));
             }
             else
@@ -737,12 +737,12 @@ namespace Chummer.Backend.Equipment
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 {
-                    string strReturn = GetNode(GlobalSettings.DefaultLanguage)?["page"]?.InnerText ?? Page;
+                    string strReturn = GetNodeXPath(strLanguage)?.SelectSingleNode("page")?.Value ?? Page;
                     return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
                 }
                 return Page;
             }
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -1044,11 +1044,11 @@ namespace Chummer.Backend.Equipment
                 // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
-                    return GetNode(GlobalSettings.DefaultLanguage)?["name"]?.InnerText ?? Name;
+                    return GetNodeXPath(strLanguage)?.SelectSingleNode("name")?.Value ?? Name;
                 return Name;
             }
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -1480,7 +1480,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
         }
 
         public string DisplayName(string strLanguage)

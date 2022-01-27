@@ -120,7 +120,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
         }
 
         /// <summary>

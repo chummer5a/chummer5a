@@ -868,7 +868,8 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (!GetValidLimbSlot(objXmlCyberware)) return;
+                    if (!GetValidLimbSlot(objXmlCyberware.CreateNavigator()))
+                        return;
                 }
             }
 
@@ -999,7 +1000,7 @@ namespace Chummer.Backend.Equipment
                 RefreshWirelessBonuses();
         }
 
-        public bool GetValidLimbSlot(XmlNode objXmlCyberware)
+        public bool GetValidLimbSlot(XPathNavigator xpnCyberware)
         {
             using (SelectSide frmPickSide = new SelectSide
             {
@@ -1013,7 +1014,6 @@ namespace Chummer.Backend.Equipment
                     strForcedSide = _strForced;
                 if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                 {
-                    XPathNavigator xpnCyberware = objXmlCyberware.CreateNavigator();
                     IList<Cyberware> lstCyberwareToCheck =
                         Parent == null ? _objCharacter.Cyberware : Parent.Children;
                     Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
@@ -2056,7 +2056,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -2337,7 +2337,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

@@ -648,7 +648,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -779,7 +779,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -805,8 +805,8 @@ namespace Chummer
             else
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
-                XmlNode xmlMyLimitNode = GetNode(strLanguage)?.SelectSingleNode("limit");
-                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.InnerText, out int _))
+                XPathNavigator xmlMyLimitNode = GetNodeXPath(strLanguage)?.SelectSingleNode("limit");
+                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                     strReturn += strSpace + intLevels.ToString(objCulture);
             }
 
