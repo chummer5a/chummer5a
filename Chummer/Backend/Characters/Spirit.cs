@@ -50,7 +50,7 @@ namespace Chummer
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
     [DebuggerDisplay("{Name}, \"{CritterName}\"")]
-    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlNode, IHasMugshots, INotifyMultiplePropertyChanged, IHasNotes
+    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasMugshots, INotifyMultiplePropertyChanged, IHasNotes
     {
         private Guid _guiId;
         private string _strName = string.Empty;
@@ -141,7 +141,11 @@ namespace Chummer
             if (_guiId == Guid.Empty)
                 _guiId = Guid.NewGuid();
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
                 _eEntityType = ConvertToSpiritType(strTemp);
@@ -501,6 +505,7 @@ namespace Chummer
                 if (_strName != value)
                 {
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                     _strName = value;
                     OnPropertyChanged();
                 }
@@ -660,6 +665,7 @@ namespace Chummer
                 if (_eEntityType != value)
                 {
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                     _eEntityType = value;
                     OnPropertyChanged();
                 }
@@ -906,21 +912,33 @@ namespace Chummer
         private string _strCachedXmlNodeLanguage = string.Empty;
         private Color _objColour;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = CharacterObject
-                    .LoadData(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage)
-                    .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + "]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = CharacterObject
+                                  .LoadData(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
+                                            strLanguage)
+                                  .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = CharacterObject
+                                    .LoadDataXPath(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
+                                                   strLanguage)
+                                    .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         public Character LinkedCharacter => _objLinkedCharacter;

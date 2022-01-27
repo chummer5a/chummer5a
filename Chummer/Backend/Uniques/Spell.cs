@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
 using NLog;
@@ -37,7 +38,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, IDisposable
+    public sealed class Spell : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -229,7 +230,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
             if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && _objCharacter.LastSavedVersion <= new Version(5, 197, 30))
             {
-                GetNode()?.TryGetStringFieldQuickly("dv", ref _strDV);
+                this.GetNodeXPath()?.TryGetStringFieldQuickly("dv", ref _strDV);
             }
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
             if (_blnExtended)
@@ -321,6 +322,7 @@ namespace Chummer
                 if (_strName != value)
                 {
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                     _strName = value;
                 }
             }
@@ -1003,27 +1005,43 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("spells.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/spells/spell[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/spells/spell[id = "
-                                                                           + SourceIDString.CleanXPath()
-                                                                           + " or id = " + SourceIDString
-                                                                               .ToUpperInvariant().CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("spells.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/spells/spell[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/spells/spell[id = "
+                                                                       + SourceIDString.CleanXPath()
+                                                                       + " or id = " + SourceIDString
+                                                                           .ToUpperInvariant().CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("spells.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/spells/spell[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/spells/spell[id = "
+                                                                         + SourceIDString.CleanXPath()
+                                                                         + " or id = " + SourceIDString
+                                                                             .ToUpperInvariant().CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false)

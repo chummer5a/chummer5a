@@ -73,7 +73,7 @@ namespace Chummer
             _intCostMultiplier = intCostMultiplier;
             _objCharacter = objCharacter;
             _objGearParent = objGearParent;
-            _objParentNode = (_objGearParent as IHasXmlNode)?.GetNode()?.CreateNavigator();
+            _objParentNode = (_objGearParent as IHasXmlDataNode)?.GetNodeXPath();
             // Stack Checkbox is only available in Career Mode.
             if (!_objCharacter.Created)
             {

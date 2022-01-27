@@ -12170,23 +12170,20 @@ namespace Chummer
                 string strCategories = string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategories))
+                    XPathNodeIterator xmlAddonCategoryList
+                        = (objParent as IHasXmlDataNode)?.GetNodeXPath()?.Select("addoncategory");
+                    if (xmlAddonCategoryList?.Count > 0)
                     {
-                        using (XmlNodeList xmlAddonCategoryList
-                               = (objParent as IHasXmlNode)?.GetNode()?.SelectNodes("addoncategory"))
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCategories))
                         {
-                            if (xmlAddonCategoryList?.Count > 0)
-                            {
-                                foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                                // Remove the trailing comma.
-                                if (sbdCategories.Length > 0)
-                                    --sbdCategories.Length;
-                            }
+                            foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                                sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            // Remove the trailing comma.
+                            if (sbdCategories.Length > 0)
+                                --sbdCategories.Length;
+                            strCategories = sbdCategories.ToString();
                         }
-
-                        strCategories = sbdCategories.ToString();
                     }
                 }
 

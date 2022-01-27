@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
 
@@ -36,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// A piece of Armor Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -129,7 +130,11 @@ namespace Chummer.Backend.Equipment
                 Utils.BreakIfDebug();
             }
             else
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
@@ -371,8 +376,13 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalSettings.Language);
@@ -541,8 +551,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName != value)
-                    _objCachedMyXmlNode = null;
+                if (_strName == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
                 _strName = value;
             }
         }
@@ -1172,11 +1184,6 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
@@ -1191,6 +1198,26 @@ namespace Chummer.Backend.Equipment
                                                                        + SourceIDString.ToUpperInvariant().CleanXPath()
                                                                        + ']');
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("armor.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/mods/mod[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/mods/mod[id = "
+                                                                         + SourceIDString.CleanXPath() + " or id = "
+                                                                         + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Complex Properties
@@ -1453,14 +1480,12 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         {
-                            using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
-                            {
-                                if (!(xmlAddonCategoryList?.Count > 0))
-                                    return true;
-                                string strGearCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
-                                return xmlAddonCategoryList.Cast<XmlNode>()
-                                    .Any(xmlCategory => xmlCategory.InnerText == strGearCategory);
-                            }
+                            XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.Select("addoncategory");
+                            if (!(xmlAddonCategoryList?.Count > 0))
+                                return true;
+                            string strGearCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
+                            return xmlAddonCategoryList.Cast<XPathNavigator>()
+                                                       .Any(xmlCategory => xmlCategory.Value == strGearCategory);
                         }
                     default:
                         return false;

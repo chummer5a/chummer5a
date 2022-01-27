@@ -38,7 +38,7 @@ namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma} {Rating}")]
     [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
-    public class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes, IDisposable
+    public class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlDataNode, IHasNotes, IDisposable
     {
         private CharacterAttrib _objAttribute;
         private string _strDefaultAttribute;
@@ -568,19 +568,14 @@ namespace Chummer.Backend.Skills
             if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
                 _guidInternalId = guiTemp;
 
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             bool blnTemp = false;
-            if (xmlNode.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp))
+            if (xmlNode.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) == true)
                 RequiresGroundMovement = blnTemp;
-            else
-                RequiresGroundMovement = GetNode()?["requiresgroundmovement"]?.InnerText == bool.TrueString;
-            if (xmlNode.TryGetBoolFieldQuickly("requiresswimmovement", ref blnTemp))
+            if (xmlNode.TryGetBoolFieldQuickly("requiresswimmovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresswimmovement", ref blnTemp) == true)
                 RequiresSwimMovement = blnTemp;
-            else
-                RequiresSwimMovement = GetNode()?["requiresswimmovement"]?.InnerText == bool.TrueString;
-            if (xmlNode.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp))
+            if (xmlNode.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) == true)
                 RequiresFlyMovement = blnTemp;
-            else
-                RequiresFlyMovement = GetNode()?["requiresflymovement"]?.InnerText == bool.TrueString;
 
             string strGroup = xmlNode["skillgroup"]?.InnerText;
 
@@ -1397,6 +1392,7 @@ namespace Chummer.Backend.Skills
                     return;
                 _guidSkillId = value;
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
                 _blnRecalculateCachedSuggestedSpecializations = true;
             }
         }
@@ -1421,19 +1417,17 @@ namespace Chummer.Backend.Skills
                         _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
                     else
                         _lstCachedSuggestedSpecializations.Clear();
-                    using (XmlNodeList xmlSpecList = GetNode()?.SelectNodes("specs/spec"))
+                    XPathNodeIterator xmlSpecList = this.GetNodeXPath()?.Select("specs/spec");
+                    if (xmlSpecList?.Count > 0)
                     {
-                        if (xmlSpecList?.Count > 0)
+                        foreach (XPathNavigator xmlSpecNode in xmlSpecList)
                         {
-                            foreach (XmlNode xmlSpecNode in xmlSpecList)
-                            {
-                                string strInnerText = xmlSpecNode.InnerText;
-                                if (string.IsNullOrEmpty(strInnerText))
-                                    continue;
-                                _lstCachedSuggestedSpecializations.Add(new ListItem(strInnerText,
-                                                                           xmlSpecNode.Attributes?["translate"]
-                                                                               ?.InnerText ?? strInnerText));
-                            }
+                            string strInnerText = xmlSpecNode.Value;
+                            if (string.IsNullOrEmpty(strInnerText))
+                                continue;
+                            _lstCachedSuggestedSpecializations.Add(
+                                new ListItem(strInnerText,
+                                             xmlSpecNode.SelectSingleNode("@translate")?.Value ?? strInnerText));
                         }
                     }
                     foreach (string strSpecializationName in ImprovementManager.GetCachedImprovementListForValueOf(
@@ -1989,25 +1983,39 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = CharacterObject.LoadData("skills.xml", strLanguage)
-                    .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                        IsKnowledgeSkill
-                            ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
-                            : "/chummer/skills/skill[id = {0} or id = {1}]",
-                        SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
-                        SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).ToUpperInvariant().CleanXPath()));
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = CharacterObject.LoadData("skills.xml", strLanguage)
+                                                 .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
+                                                                       IsKnowledgeSkill
+                                                                           ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
+                                                                           : "/chummer/skills/skill[id = {0} or id = {1}]",
+                                                                       SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
+                                                                       SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).ToUpperInvariant().CleanXPath()));
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = CharacterObject.LoadDataXPath("skills.xml", strLanguage)
+                                                   .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
+                                                                         IsKnowledgeSkill
+                                                                             ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
+                                                                             : "/chummer/skills/skill[id = {0} or id = {1}]",
+                                                                         SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
+                                                                         SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).ToUpperInvariant().CleanXPath()));
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         // ReSharper disable once InconsistentNaming

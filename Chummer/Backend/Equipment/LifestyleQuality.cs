@@ -30,7 +30,7 @@ using NLog;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, IDisposable
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -138,10 +138,15 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
 
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
@@ -311,7 +316,11 @@ namespace Chummer.Backend.Equipment
             ParentLifestyle = objParentLifestyle;
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID)) _guiID = Guid.NewGuid();
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 var node = GetNode(GlobalSettings.Language);
@@ -344,13 +353,14 @@ namespace Chummer.Backend.Equipment
 #else
             OriginSource = QualitySource.Selected;
 #endif
-            if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory))
-                _strCategory = GetNode()?["category"]?.InnerText ?? string.Empty;
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
+            if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory) && objMyNode.Value?.TryGetStringFieldQuickly("category", ref _strCategory) != true)
+                _strCategory = string.Empty;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             string strAllowedFreeLifestyles = string.Empty;
-            if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
-                strAllowedFreeLifestyles = GetNode()?["allowed"]?.InnerText ?? string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles) && objMyNode.Value?.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles) != true)
+                strAllowedFreeLifestyles = string.Empty;
             _setAllowedFreeLifestyles.Clear();
             foreach (string strLoopLifestyle in strAllowedFreeLifestyles.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 _setAllowedFreeLifestyles.Add(strLoopLifestyle);
@@ -373,7 +383,7 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
                 return;
             XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
-            XPathNavigator objLifestyleQualityNode = GetNode()?.CreateNavigator()
+            XPathNavigator objLifestyleQualityNode = this.GetNodeXPath()
                                                      ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
             if (objLifestyleQualityNode == null)
             {
@@ -496,8 +506,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName != value)
-                    _objCachedMyXmlNode = null;
+                if (_strName == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
                 _strName = value;
             }
         }
@@ -794,32 +806,43 @@ namespace Chummer.Backend.Equipment
             set => _intArea = value;
         }
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage ||
-                GlobalSettings.LiveCustomData)
-            {
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
-                    !GlobalSettings.LiveCustomData) return _objCachedMyXmlNode;
-                _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/qualities/quality[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/qualities/quality[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            }
-
+            _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/qualities/quality[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/qualities/quality[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant()
+                                                                           .CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/qualities/quality[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/qualities/quality[id = "
+                                                                         + SourceIDString.CleanXPath() + " or id = "
+                                                                         + SourceIDString.ToUpperInvariant()
+                                                                             .CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties

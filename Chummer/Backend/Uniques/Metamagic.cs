@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer
@@ -32,7 +33,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
+    public class Metamagic : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
@@ -70,8 +71,13 @@ namespace Chummer
                 Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMetamagicNode });
                 Utils.BreakIfDebug();
             }
+
             if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
             _eImprovementSource = objSource;
@@ -107,6 +113,7 @@ namespace Chummer
                 {
                     _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                 }
                 ImprovementManager.ForcedValue = strOldFocedValue;
                 ImprovementManager.SelectedValue = strOldSelectedValue;
@@ -173,8 +180,13 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalSettings.Language);
@@ -257,11 +269,11 @@ namespace Chummer
             get => _eImprovementSource;
             set
             {
-                if (_eImprovementSource != value)
-                {
-                    _objCachedMyXmlNode = null;
-                    _eImprovementSource = value;
-                }
+                if (_eImprovementSource == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+                _eImprovementSource = value;
             }
         }
 
@@ -273,11 +285,15 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName != value)
+                if (_strName == value)
+                    return;
+                if (SourceID == Guid.Empty)
                 {
                     _objCachedMyXmlNode = null;
-                    _strName = value;
+                    _objCachedMyXPathNode = null;
                 }
+
+                _strName = value;
             }
         }
 
@@ -379,34 +395,55 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            string strDoc = "metamagic.xml";
+            string strPath = "/chummer/metamagics/metamagic";
+            if (_eImprovementSource == Improvement.ImprovementSource.Echo)
             {
-                string doc = "metamagic.xml";
-                string path = "/chummer/metamagics/metamagic";
-                if (_eImprovementSource == Improvement.ImprovementSource.Echo)
-                {
-                    doc = "echoes.xml";
-                    path = "/chummer/echoes/echo";
-                }
-
-                _objCachedMyXmlNode = _objCharacter.LoadData(doc, strLanguage)
-                                                   .SelectSingleNode(path + (SourceID == Guid.Empty
-                                                                         ? "[name = " + Name.CleanXPath() + ']'
-                                                                         : "[id = " + SourceIDString.CleanXPath()
-                                                                         + " or id = " + SourceIDString
-                                                                             .ToUpperInvariant().CleanXPath()
-                                                                         + ']'));
-
-                _strCachedXmlNodeLanguage = strLanguage;
+                strDoc = "echoes.xml";
+                strPath = "/chummer/echoes/echo";
             }
+
+            _objCachedMyXmlNode = _objCharacter.LoadData(strDoc, strLanguage)
+                                               .SelectSingleNode(strPath + (SourceID == Guid.Empty
+                                                                     ? "[name = " + Name.CleanXPath() + ']'
+                                                                     : "[id = " + SourceIDString.CleanXPath()
+                                                                     + " or id = " + SourceIDString
+                                                                         .ToUpperInvariant().CleanXPath()
+                                                                     + ']'));
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            string strDoc = "metamagic.xml";
+            string strPath = "/chummer/metamagics/metamagic";
+            if (_eImprovementSource == Improvement.ImprovementSource.Echo)
+            {
+                strDoc = "echoes.xml";
+                strPath = "/chummer/echoes/echo";
+            }
+
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath(strDoc, strLanguage)
+                                                 .SelectSingleNode(strPath + (SourceID == Guid.Empty
+                                                                       ? "[name = " + Name.CleanXPath() + ']'
+                                                                       : "[id = " + SourceIDString.CleanXPath()
+                                                                       + " or id = " + SourceIDString
+                                                                           .ToUpperInvariant().CleanXPath()
+                                                                       + ']'));
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties

@@ -32,7 +32,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty, ICanRemove
+    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -1085,27 +1085,43 @@ namespace Chummer.Backend.Equipment
             _objCharacter.Improvements.AddRange(lstImprovements);
         }
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/drugcomponents/drugcomponent[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/drugcomponents/drugcomponent[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/drugcomponents/drugcomponent[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/drugcomponents/drugcomponent[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant()
+                                                                           .CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/drugcomponents/drugcomponent[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/drugcomponents/drugcomponent[id = "
+                                                                         + SourceIDString.CleanXPath() + " or id = "
+                                                                         + SourceIDString.ToUpperInvariant()
+                                                                             .CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         public bool Remove(bool blnConfirmDelete = true)
@@ -1125,7 +1141,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Drug Component.
     /// </summary>
-    public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
+    public class DrugComponent : IHasName, IHasInternalId, IHasXmlDataNode
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guidId;
@@ -1725,27 +1741,43 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/drugcomponents/drugcomponent[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/drugcomponents/drugcomponent[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/drugcomponents/drugcomponent[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/drugcomponents/drugcomponent[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant()
+                                                                           .CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/drugcomponents/drugcomponent[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/drugcomponents/drugcomponent[id = "
+                                                                         + SourceIDString.CleanXPath() + " or id = "
+                                                                         + SourceIDString.ToUpperInvariant()
+                                                                             .CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Methods

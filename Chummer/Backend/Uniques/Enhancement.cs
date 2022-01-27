@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer
@@ -30,7 +31,7 @@ namespace Chummer
     /// An Enhancement.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
+    public class Enhancement : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -66,8 +67,13 @@ namespace Chummer
                 Log.Warn(new object[] { "Missing id field for xmlnode", objXmlArtNode });
                 Utils.BreakIfDebug();
             }
+
             if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
@@ -91,6 +97,7 @@ namespace Chummer
                 {
                     _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                 }
             }
             if (string.IsNullOrEmpty(Notes))
@@ -142,8 +149,13 @@ namespace Chummer
                 XmlNode node = GetNode(GlobalSettings.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
+
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
@@ -198,9 +210,11 @@ namespace Chummer
             get => _guiSourceID;
             set
             {
-                if (_guiSourceID == value) return;
+                if (_guiSourceID == value)
+                    return;
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 
@@ -247,8 +261,13 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName != value)
+                if (_strName == value)
+                    return;
+                if (SourceID == Guid.Empty)
+                {
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
                 _strName = value;
             }
         }
@@ -342,27 +361,43 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("powers.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/enhancements/enhancement[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/enhancements/enhancement[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("powers.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/enhancements/enhancement[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/enhancements/enhancement[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant()
+                                                                           .CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("powers.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/enhancements/enhancement[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/enhancements/enhancement[id = "
+                                                                         + SourceIDString.CleanXPath() + " or id = "
+                                                                         + SourceIDString.ToUpperInvariant()
+                                                                             .CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties

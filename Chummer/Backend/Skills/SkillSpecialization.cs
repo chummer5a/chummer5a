@@ -20,13 +20,14 @@
 using System;
 using System.Globalization;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Skills
 {
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public class SkillSpecialization : IHasName, IHasXmlNode
+    public class SkillSpecialization : IHasName, IHasXmlDataNode
     {
         private Guid _guiID;
         private string _strName;
@@ -135,19 +136,26 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + "]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = Parent?.GetNodeXPath(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         /// <summary>
@@ -162,6 +170,7 @@ namespace Chummer.Backend.Skills
                 {
                     _strName = value;
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                 }
             }
         }

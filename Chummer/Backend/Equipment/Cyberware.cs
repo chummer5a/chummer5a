@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class Cyberware : ICanPaste, IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode,
+    public sealed class Cyberware : ICanPaste, IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
         IHasWirelessBonus, ICanBlackMarketDiscount, IDisposable
     {
@@ -566,7 +566,10 @@ namespace Chummer.Backend.Equipment
                 Utils.BreakIfDebug();
             }
             else
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
 
             objXmlCyberware.TryGetStringFieldQuickly("name", ref _strName);
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -605,6 +608,7 @@ namespace Chummer.Backend.Equipment
 
             _objImprovementSource = objSource;
             _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             objXmlCyberware.TryGetStringFieldQuickly("minrating", ref _strMinRating);
             objXmlCyberware.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
@@ -928,7 +932,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-            if (GetNode()?["forcegrade"]?.InnerText != "None")
+            if (this.GetNodeXPath()?.SelectSingleNode("forcegrade")?.Value != "None")
             {
                 switch (_objImprovementSource)
                 {
@@ -1430,10 +1434,17 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode["improvementsource"] != null)
+            {
+                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             if (blnCopy)
@@ -1442,11 +1453,6 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            if (objNode["improvementsource"] != null)
-            {
-                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
-                _objCachedMyXmlNode = null;
-            }
 
             // Legacy shim for mis-formatted name of Reflex Recorder
             if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version(5, 198, 31))
@@ -1472,11 +1478,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (!objNode.TryGetStringFieldQuickly("hasmodularmount", ref _strHasModularMount))
-                _strHasModularMount = GetNode()?["hasmodularmount"]?.InnerText ?? string.Empty;
+                _strHasModularMount = objMyNode.Value?["hasmodularmount"]?.InnerText ?? string.Empty;
             if (!objNode.TryGetStringFieldQuickly("plugsintomodularmount", ref _strPlugsIntoModularMount))
-                _strPlugsIntoModularMount = GetNode()?["plugsintomodularmount"]?.InnerText ?? string.Empty;
+                _strPlugsIntoModularMount = objMyNode.Value?["plugsintomodularmount"]?.InnerText ?? string.Empty;
             if (!objNode.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts))
-                _strBlocksMounts = GetNode()?["blocksmounts"]?.InnerText ?? string.Empty;
+                _strBlocksMounts = objMyNode.Value?["blocksmounts"]?.InnerText ?? string.Empty;
             objNode.TryGetStringFieldQuickly("forced", ref _strForced);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -1487,7 +1493,7 @@ namespace Chummer.Backend.Equipment
             if ((s_StrengthCombinedStrings.Contains(Name) || s_AgilityCombinedStrings.Contains(Name)) &&
                 int.TryParse(MaxRatingString, out int _))
             {
-                XmlNode objMyXmlNode = GetNode();
+                XmlNode objMyXmlNode = objMyNode.Value;
                 if (objMyXmlNode != null)
                 {
                     objMyXmlNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -1521,7 +1527,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlPairIncludeNode = objNode["pairinclude"];
             if (xmlPairIncludeNode == null)
             {
-                xmlPairIncludeNode = GetNode()?["pairinclude"];
+                xmlPairIncludeNode = objMyNode.Value?["pairinclude"];
                 _lstIncludeInPairBonus.Add(Name);
             }
 
@@ -1541,7 +1547,7 @@ namespace Chummer.Backend.Equipment
             xmlPairIncludeNode = objNode["wirelesspairinclude"];
             if (xmlPairIncludeNode == null)
             {
-                xmlPairIncludeNode = GetNode()?["wirelesspairinclude"];
+                xmlPairIncludeNode = objMyNode.Value?["wirelesspairinclude"];
                 _lstIncludeInWirelessPairBonus.Add(Name);
             }
 
@@ -1567,7 +1573,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Sweep
             if (_strForceGrade != "None" && IsGeneware)
             {
-                _strForceGrade = GetNode()?["forcegrade"]?.InnerText;
+                _strForceGrade = objMyNode.Value?["forcegrade"]?.InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
                     _objGrade = Grade.ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
             }
@@ -1619,7 +1625,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             else
-                _blnAddToParentESS = GetNode()?["addtoparentess"] != null;
+                _blnAddToParentESS = objMyNode.Value?["addtoparentess"] != null;
 
             if (objNode["addtoparentcapacity"] != null)
             {
@@ -1629,7 +1635,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             else
-                _blnAddToParentCapacity = GetNode()?["addtoparentcapacity"] != null;
+                _blnAddToParentCapacity = objMyNode.Value?["addtoparentcapacity"] != null;
 
             bool blnIsActive = false;
             if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
@@ -1648,30 +1654,30 @@ namespace Chummer.Backend.Equipment
             }
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
-                GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+                objMyNode.Value?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
-                GetNode()?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+                objMyNode.Value?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
             if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
-                GetNode()?.TryGetStringFieldQuickly("attack", ref _strAttack);
+                objMyNode.Value?.TryGetStringFieldQuickly("attack", ref _strAttack);
             if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
-                GetNode()?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                objMyNode.Value?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
             if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
-                GetNode()?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                objMyNode.Value?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
-                GetNode()?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+                objMyNode.Value?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
-                GetNode()?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+                objMyNode.Value?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
             if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
-                GetNode()?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+                objMyNode.Value?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
             if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
-                GetNode()?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+                objMyNode.Value?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
             if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
-                GetNode()?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+                objMyNode.Value?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
-                GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+                objMyNode.Value?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
-                GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+                objMyNode.Value?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
 
             if (blnCopy)
@@ -1975,8 +1981,10 @@ namespace Chummer.Backend.Equipment
             get => _objImprovementSource;
             set
             {
-                if (_objImprovementSource != value)
-                    _objCachedMyXmlNode = null;
+                if (_objImprovementSource == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
                 _objImprovementSource = value;
             }
         }
@@ -3222,47 +3230,66 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
                 !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            XmlDocument objDoc;
+            string strDoc = "cyberware.xml";
+            string strPath = "/chummer/cyberwares/cyberware";
             if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
             {
-                objDoc = _objCharacter.LoadData("bioware.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = "
-                                                              + SourceIDString.CleanXPath() + " or id = "
-                                                              + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                              + ']');
-                if (_objCachedMyXmlNode == null)
-                {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = " + Name.CleanXPath() + ']');
-                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-                }
+                strDoc = "bioware.xml";
+                strPath = "/chummer/biowares/bioware";
             }
-            else
+
+            XmlDocument objDoc = _objCharacter.LoadData(strDoc, strLanguage);
+            _objCachedMyXmlNode = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
+                                                              ? "[name = " + Name.CleanXPath() + ']'
+                                                              : "[id = " + SourceIDString.CleanXPath()
+                                                                         + " or id = " + SourceIDString
+                                                                             .ToUpperInvariant().CleanXPath()
+                                                                         + ']'));
+            if (_objCachedMyXmlNode == null && SourceID != Guid.Empty)
             {
-                objDoc = _objCharacter.LoadData("cyberware.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = "
-                                                              + SourceIDString.CleanXPath() + " or id = "
-                                                              + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                              + ']');
-                if (_objCachedMyXmlNode == null)
-                {
-                    _objCachedMyXmlNode =
-                        objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = " + Name.CleanXPath() + ']');
-                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-                }
+                _objCachedMyXmlNode = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            string strDoc = "cyberware.xml";
+            string strPath = "/chummer/cyberwares/cyberware";
+            if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
+            {
+                strDoc = "bioware.xml";
+                strPath = "/chummer/biowares/bioware";
+            }
+
+            XPathNavigator objDoc = _objCharacter.LoadDataXPath(strDoc, strLanguage);
+            _objCachedMyXPathNode = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
+                                                                ? "[name = " + Name.CleanXPath() + ']'
+                                                                : "[id = " + SourceIDString.CleanXPath()
+                                                                           + " or id = " + SourceIDString
+                                                                               .ToUpperInvariant().CleanXPath()
+                                                                           + ']'));
+            if (_objCachedMyXPathNode == null && SourceID != Guid.Empty)
+            {
+                _objCachedMyXPathNode = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                _objCachedMyXPathNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties
@@ -4762,12 +4789,12 @@ namespace Chummer.Backend.Equipment
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            XmlNodeList xmlOldAddQualitiesList = GetNode()?.SelectNodes("addqualities/addquality");
-            if (xmlOldAddQualitiesList != null)
+            XPathNodeIterator xmlOldAddQualitiesList = this.GetNodeXPath()?.Select("addqualities/addquality");
+            if (xmlOldAddQualitiesList?.Count > 0)
             {
-                foreach (XmlNode objNode in xmlOldAddQualitiesList)
+                foreach (XPathNavigator objNode in xmlOldAddQualitiesList)
                 {
-                    string strText = objNode.InnerText;
+                    string strText = objNode.Value;
                     Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == strText);
                     if (objQuality == null)
                         continue;
@@ -5205,7 +5232,7 @@ namespace Chummer.Backend.Equipment
                 foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName + "/item[@useradded != \"no\"]"))
                 {
                     Cyberware objPlugin = new Cyberware(_objCharacter);
-                    if (objPlugin.ImportHeroLabCyberware(xmlPluginToAdd, GetNode(), lstWeapons, lstVehicles,
+                    if (objPlugin.ImportHeroLabCyberware(xmlPluginToAdd, this.GetNode(), lstWeapons, lstVehicles,
                         objParentGrade))
                     {
                         objPlugin.Parent = this;
@@ -5215,7 +5242,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objPlugin.Dispose();
                         Gear objPluginGear = new Gear(_objCharacter);
-                        if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
+                        if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(), lstWeapons))
                         {
                             objPluginGear.Parent = this;
                             GearChildren.Add(objPluginGear);

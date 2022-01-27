@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 
@@ -50,7 +49,7 @@ namespace Chummer
             // Load the Armor information.
             _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _objArmor = objParentNode;
-            _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
+            _objParentNode = _objArmor?.GetNodeXPath();
             if (_xmlBaseDataNode != null)
                 _setBlackMarketMaps.AddRange(
                     _objCharacter.GenerateBlackMarketMappings(

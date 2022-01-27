@@ -80,7 +80,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, INotifyMultiplePropertyChanged
+    public class Quality : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, INotifyMultiplePropertyChanged
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -461,7 +461,8 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             _nodBonus = objNode["bonus"];
-            _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? GetNode()?["firstlevelbonus"];
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
+            _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? objMyNode.Value?["firstlevelbonus"];
             _nodDiscounts = objNode["costdiscount"]?.CreateNavigator();
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
@@ -479,14 +480,14 @@ namespace Chummer
                 case QualitySource.Selected when string.IsNullOrEmpty(_nodBonus?.InnerText)
                                                  && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText)
                                                  && (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative)
-                                                 && GetNode() != null
-                                                 && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType:
+                                                 && objMyNode.Value != null
+                                                 && ConvertToQualityType(objMyNode.Value["category"]?.InnerText) != _eQualityType:
                     _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
                     break;
                 // Legacy shim for priority-given qualities
                 case QualitySource.Metatype when _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
                                                  && _objCharacter.EffectiveBuildMethodUsesPriorityTables
-                                                 && GetNode()?["onlyprioritygiven"] != null:
+                                                 && objMyNode.Value?["onlyprioritygiven"] != null:
                     _eQualitySource = QualitySource.Heritage;
                     break;
             }
@@ -1060,27 +1061,43 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("qualities.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/qualities/quality[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/qualities/quality[id = "
-                                                                           + SourceIDString.CleanXPath()
-                                                                           + " or id = " + SourceIDString
-                                                                               .ToUpperInvariant().CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("qualities.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/qualities/quality[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/qualities/quality[id = "
+                                                                       + SourceIDString.CleanXPath()
+                                                                       + " or id = " + SourceIDString
+                                                                           .ToUpperInvariant().CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("qualities.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/qualities/quality[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/qualities/quality[id = "
+                                                                         + SourceIDString.CleanXPath()
+                                                                         + " or id = " + SourceIDString
+                                                                             .ToUpperInvariant().CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties

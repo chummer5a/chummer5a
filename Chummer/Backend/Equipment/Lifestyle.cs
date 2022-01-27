@@ -50,7 +50,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable
+    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
@@ -169,7 +169,11 @@ namespace Chummer.Backend.Equipment
                 Utils.BreakIfDebug();
             }
             else
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlLifestyle.TryGetStringFieldQuickly("name", ref _strBaseLifestyle);
             objXmlLifestyle.TryGetDecFieldQuickly("cost", ref _decCost);
             objXmlLifestyle.TryGetInt32FieldQuickly("dice", ref _intDice);
@@ -415,12 +419,13 @@ namespace Chummer.Backend.Equipment
             }
             if (_strBaseLifestyle == "Middle")
                 _strBaseLifestyle = "Medium";
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             // Legacy sweep for issues with Advanced Lifestyle selector not properly resetting values upon changes to the Base Lifestyle
             if (_objCharacter.LastSavedVersion <= new Version(5, 212, 73)
                 && _strBaseLifestyle != "Street"
                 && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
             {
-                XmlNode xmlDataNode = GetNode();
+                XmlNode xmlDataNode = objMyNode.Value;
                 if (xmlDataNode != null)
                 {
                     xmlDataNode.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
@@ -429,7 +434,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
-                GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
+                objMyNode.Value?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
                 _intBonusLP = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
 
@@ -521,14 +526,8 @@ namespace Chummer.Backend.Equipment
             }
             else if (_eType == LifestyleType.Safehouse)
                 _eIncrement = LifestyleIncrement.Week;
-            else
-            {
-                XmlNode xmlLifestyleNode = GetNode();
-                if (xmlLifestyleNode?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
-                {
-                    _eIncrement = ConvertToLifestyleIncrement(strTemp);
-                }
-            }
+            else if (objMyNode.Value?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
+                _eIncrement = ConvertToLifestyleIncrement(strTemp);
             LegacyShim(objNode);
         }
 
@@ -628,10 +627,11 @@ namespace Chummer.Backend.Equipment
             // Retrieve the Advanced Lifestyle information if applicable.
             if (!string.IsNullOrEmpty(BaseLifestyle))
             {
-                XmlNode objXmlAspect = GetNode();
+                XPathNavigator objXmlAspect = this.GetNodeXPath();
                 if (objXmlAspect != null)
                 {
-                    strBaseLifestyle = objXmlAspect["translate"]?.InnerText ?? objXmlAspect["name"]?.InnerText ?? strBaseLifestyle;
+                    strBaseLifestyle = objXmlAspect.SelectSingleNode("translate")?.Value
+                                       ?? objXmlAspect.SelectSingleNode("name")?.Value ?? strBaseLifestyle;
                 }
             }
 
@@ -1134,27 +1134,43 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/lifestyles/lifestyle[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/lifestyles/lifestyle[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/lifestyles/lifestyle[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/lifestyles/lifestyle[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant()
+                                                                           .CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/lifestyles/lifestyle[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/lifestyles/lifestyle[id = "
+                                                                         + SourceIDString.CleanXPath() + " or id = "
+                                                                         + SourceIDString.ToUpperInvariant()
+                                                                             .CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         /// <summary>

@@ -15678,18 +15678,19 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    using (XmlNodeList xmlAddonCategoryList = (objParent as IHasXmlNode)?.GetNode()?.SelectNodes("addoncategory"))
+                    XPathNodeIterator xmlAddonCategoryList
+                        = (objParent as IHasXmlDataNode)?.GetNodeXPath()?.Select("addoncategory");
+                    if (xmlAddonCategoryList?.Count > 0)
                     {
-                        if (xmlAddonCategoryList?.Count > 0)
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCategories))
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                            {
-                                foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                                // Remove the trailing comma.
+                            foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                                sbdCategories.Append(objXmlCategory.Value).Append(',');
+                            // Remove the trailing comma.
+                            if (sbdCategories.Length > 0)
                                 --sbdCategories.Length;
-                                strCategories = sbdCategories.ToString();
-                            }
+                            strCategories = sbdCategories.ToString();
                         }
                     }
                 }

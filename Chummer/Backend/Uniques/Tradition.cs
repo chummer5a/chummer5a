@@ -43,7 +43,7 @@ namespace Chummer.Backend.Uniques
     /// A Tradition
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    public class Tradition : IHasInternalId, IHasName, IHasXmlNode, IHasSource, INotifyMultiplePropertyChanged
+    public class Tradition : IHasInternalId, IHasName, IHasXmlDataNode, IHasSource, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;
         private Guid _guiSourceID;
@@ -105,7 +105,10 @@ namespace Chummer.Backend.Uniques
             ResetTradition();
             Type = blnIsTechnomancerTradition ? TraditionType.RES : TraditionType.MAG;
             if (xmlTraditionNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
                 _xmlCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
             xmlTraditionNode.TryGetStringFieldQuickly("name", ref _strName);
             xmlTraditionNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTraditionNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -152,7 +155,7 @@ namespace Chummer.Backend.Uniques
             _strSpiritManipulation = string.Empty;
             if (Type != TraditionType.None)
             {
-                XmlNode xmlSpiritListNode = GetNode()?["spirits"];
+                XmlNode xmlSpiritListNode = this.GetNode()?["spirits"];
                 if (xmlSpiritListNode != null)
                 {
                     using (XmlNodeList xmlAlwaysAccessSpirits = xmlSpiritListNode.SelectNodes("spirit"))
@@ -265,7 +268,7 @@ namespace Chummer.Backend.Uniques
                     _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                 }
                 else
-                    GetNode()?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+                    this.GetNode()?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
             }
 
             xmlNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -330,7 +333,7 @@ namespace Chummer.Backend.Uniques
             if (xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
                 _guiSourceID = new Guid(CustomMagicalTraditionGuid);
-                xmlTraditionDataNode = GetNode();
+                xmlTraditionDataNode = this.GetNode();
             }
             Create(xmlTraditionDataNode);
             if (IsCustomTradition)
@@ -430,6 +433,7 @@ namespace Chummer.Backend.Uniques
                 if (_eTraditionType != value)
                 {
                     _xmlCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                     _eTraditionType = value;
                     OnPropertyChanged();
                 }
@@ -905,25 +909,22 @@ namespace Chummer.Backend.Uniques
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
             if (Type == TraditionType.None)
                 return null;
-            if (_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
-                                          : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
-                                          + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                          + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_xmlCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _xmlCachedMyXmlNode;
+            _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                                      : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
+                                                                              + " or id = "
+                                                                              + SourceIDString.ToUpperInvariant()
+                                                                                  .CleanXPath()
+                                                                              + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _xmlCachedMyXmlNode;
         }
 
@@ -936,6 +937,41 @@ namespace Chummer.Backend.Uniques
 
                 case TraditionType.RES:
                     return _objCharacter.LoadData("streams.xml", strLanguage);
+
+                default:
+                    return null;
+            }
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = GetTraditionDocumentXPath(strLanguage)?
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                                      : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
+                                                                              + " or id = "
+                                                                              + SourceIDString.ToUpperInvariant()
+                                                                                  .CleanXPath()
+                                                                              + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
+        }
+
+        public XPathNavigator GetTraditionDocumentXPath(string strLanguage)
+        {
+            switch (Type)
+            {
+                case TraditionType.MAG:
+                    return _objCharacter.LoadDataXPath("traditions.xml", strLanguage);
+
+                case TraditionType.RES:
+                    return _objCharacter.LoadDataXPath("streams.xml", strLanguage);
 
                 default:
                     return null;
