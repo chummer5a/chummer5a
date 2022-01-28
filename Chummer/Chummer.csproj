@@ -1093,7 +1093,9 @@
     <Content Include="customdata\Sum-to-Ten Improved\amend_priorities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Sum-to-Ten Improved\manifest.xml" />
+    <Content Include="customdata\Sum-to-Ten Improved\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\amend_mentors.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
