@@ -877,8 +877,16 @@ namespace Chummer.Backend.Skills
 
                     case Improvement.ImprovementType.Skill:
                     case Improvement.ImprovementType.SkillDisable:
-                    case Improvement.ImprovementType.AllowSkillDefault:
                         if (objImprovement.ImprovedName == strNameToUse)
+                        {
+                            yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.AllowSkillDefault:
+                        if (string.IsNullOrEmpty(objImprovement.ImprovedName) || objImprovement.ImprovedName == strNameToUse)
                         {
                             yield return objImprovement;
                             if (blnExitAfterFirst)
