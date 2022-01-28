@@ -815,7 +815,7 @@ namespace Chummer
                                     objCharacter.Cyberware.Where(
                                                     objCyberware =>
                                                         setEssNodeGradeAttributeText.Any(
-                                                            func => objCyberware.Grade.Name.Contains(func)))
+                                                            func => objCyberware.Grade.Name.Contains(func))).AsParallel()
                                                 .Sum(objCyberware => objCyberware.CalculatedESS);
                             }
 
