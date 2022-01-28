@@ -3186,43 +3186,50 @@
       </karmacost>
       <books>
         <book>SR5</book>
+        <book>RF</book>
         <book>AET</book>
         <book>AP</book>
         <book>BTB</book>
-        <book>BOTL</book>
         <book>BLB</book>
+        <book>BOTL</book>
         <book>BB</book>
-        <book>CA</book>
         <book>CF</book>
+        <book>CA</book>
         <book>DTR</book>
         <book>DT</book>
+        <book>SOTG</book>
+        <book>DPVG</book>
         <book>FA</book>
+        <book>GE</book>
         <book>GH3</book>
+        <book>HAMG</book>
         <book>HT</book>
         <book>HS</book>
-        <book>KK</book>
         <book>KC</book>
+        <book>KK</book>
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
         <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
         <book>SASS</book>
+        <book>SHB</book>
+        <book>SHB2</book>
+        <book>SHB3</book>
         <book>SSP</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
         <book>SFB</book>
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
         <book>SPS</book>
-        <book>SRM0803</book>
-        <book>SRM0804</book>
+        <book>SW</book>
+        <book>SAG</book>
         <book>SS</book>
         <book>SG</book>
-        <book>SGE</book>
-        <book>SW</book>
-        <book>TCT</book>
         <book>SL</book>
+        <book>TCT</book>
         <book>TSG</book>
         <book>TVG</book>
       </books>
@@ -3388,43 +3395,50 @@
       </karmacost>
       <books>
         <book>SR5</book>
+        <book>RF</book>
         <book>AET</book>
         <book>AP</book>
         <book>BTB</book>
-        <book>BOTL</book>
         <book>BLB</book>
+        <book>BOTL</book>
         <book>BB</book>
-        <book>CA</book>
         <book>CF</book>
+        <book>CA</book>
         <book>DTR</book>
         <book>DT</book>
+        <book>SOTG</book>
+        <book>DPVG</book>
         <book>FA</book>
+        <book>GE</book>
         <book>GH3</book>
+        <book>HAMG</book>
         <book>HT</book>
         <book>HS</book>
-        <book>KK</book>
         <book>KC</book>
+        <book>KK</book>
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
         <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
         <book>SASS</book>
+        <book>SHB</book>
+        <book>SHB2</book>
+        <book>SHB3</book>
         <book>SSP</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
         <book>SFB</book>
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
         <book>SPS</book>
-        <book>SRM0803</book>
-        <book>SRM0804</book>
+        <book>SW</book>
+        <book>SAG</book>
         <book>SS</book>
         <book>SG</book>
-        <book>SGE</book>
-        <book>SW</book>
-        <book>TCT</book>
         <book>SL</book>
+        <book>TCT</book>
         <book>TSG</book>
         <book>TVG</book>
       </books>
@@ -3590,43 +3604,50 @@
       </karmacost>
       <books>
         <book>SR5</book>
+        <book>RF</book>
         <book>AET</book>
         <book>AP</book>
         <book>BTB</book>
-        <book>BOTL</book>
         <book>BLB</book>
+        <book>BOTL</book>
         <book>BB</book>
-        <book>CA</book>
         <book>CF</book>
+        <book>CA</book>
         <book>DTR</book>
         <book>DT</book>
+        <book>SOTG</book>
+        <book>DPVG</book>
         <book>FA</book>
+        <book>GE</book>
         <book>GH3</book>
+        <book>HAMG</book>
         <book>HT</book>
         <book>HS</book>
-        <book>KK</book>
         <book>KC</book>
+        <book>KK</book>
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
         <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
         <book>SASS</book>
+        <book>SHB</book>
+        <book>SHB2</book>
+        <book>SHB3</book>
         <book>SSP</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
         <book>SFB</book>
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
         <book>SPS</book>
-        <book>SRM0803</book>
-        <book>SRM0804</book>
+        <book>SW</book>
+        <book>SAG</book>
         <book>SS</book>
         <book>SG</book>
-        <book>SGE</book>
-        <book>SW</book>
-        <book>TCT</book>
         <book>SL</book>
+        <book>TCT</book>
         <book>TSG</book>
         <book>TVG</book>
       </books>
@@ -3797,43 +3818,50 @@
       </karmacost>
       <books>
         <book>SR5</book>
+        <book>RF</book>
         <book>AET</book>
         <book>AP</book>
         <book>BTB</book>
-        <book>BOTL</book>
         <book>BLB</book>
+        <book>BOTL</book>
         <book>BB</book>
-        <book>CA</book>
         <book>CF</book>
+        <book>CA</book>
         <book>DTR</book>
         <book>DT</book>
+        <book>SOTG</book>
+        <book>DPVG</book>
         <book>FA</book>
+        <book>GE</book>
         <book>GH3</book>
+        <book>HAMG</book>
         <book>HT</book>
         <book>HS</book>
-        <book>KK</book>
         <book>KC</book>
+        <book>KK</book>
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
         <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
         <book>SASS</book>
+        <book>SHB</book>
+        <book>SHB2</book>
+        <book>SHB3</book>
         <book>SSP</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
         <book>SFB</book>
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
         <book>SPS</book>
-        <book>SRM0803</book>
-        <book>SRM0804</book>
+        <book>SW</book>
+        <book>SAG</book>
         <book>SS</book>
         <book>SG</book>
-        <book>SGE</book>
-        <book>SW</book>
-        <book>TCT</book>
         <book>SL</book>
+        <book>TCT</book>
         <book>TSG</book>
         <book>TVG</book>
       </books>
