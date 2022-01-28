@@ -90,7 +90,7 @@ namespace Codaxy.WkHtmlToPdf
 
     public class PdfConvertEnvironment
     {
-        public string TempFolderPath { get; set; } = Path.GetTempPath();
+        public string TempFolderPath { get; set; } = Utils.GetTempPath();
         public string WkHtmlToPdfPath { get; set; }
         public int Timeout { get; set; } = 60000;
         public bool Debug { get; set; }

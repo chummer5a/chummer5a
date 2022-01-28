@@ -483,6 +483,11 @@ namespace Chummer
                         }
                     }
 
+                    // Delete the old executable if it exists (created by the update process).
+                    Utils.SafeClearDirectory(Utils.GetStartupPath, "*.old");
+                    // Purge the temporary directory
+                    Utils.SafeClearDirectory(Utils.GetTempPath());
+
                     if (showMainForm)
                     {
                         MainForm.MyStartupPvt = pvt;

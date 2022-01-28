@@ -51,7 +51,7 @@ namespace Chummer
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
         private Task _tskRefresher;
         private Task _tskOutputGenerator;
-        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo) + ".htm");
+        private readonly string _strTempSheetFilePath = Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
 
         #region Control Events
 
@@ -605,7 +605,26 @@ namespace Chummer
                         //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
                         //webBrowser1.Navigate("D:\\temp\\output.htm");
 
-                        if (!GlobalSettings.PrintToFileFirst)
+                        if (GlobalSettings.PrintToFileFirst)
+                        {
+                            // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+
+                            // Delete any old versions of the file
+                            if (!Utils.SafeDeleteFile(_strTempSheetFilePath, true))
+                                return;
+
+                            // Read in the resulting code and pass it to the browser.
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                            {
+                                string strOutput = await objReader.ReadToEndAsync();
+                                File.WriteAllText(_strTempSheetFilePath, strOutput);
+                            }
+
+                            await this.DoThreadSafeAsync(() => UseWaitCursor = true);
+                            await webViewer.DoThreadSafeAsync(
+                                () => webViewer.Url = new Uri("file:///" + _strTempSheetFilePath));
+                        }
+                        else
                         {
                             // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
@@ -613,25 +632,6 @@ namespace Chummer
                                 string strOutput = await objReader.ReadToEndAsync();
                                 await this.DoThreadSafeAsync(() => UseWaitCursor = true);
                                 await webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = strOutput);
-                            }
-                        }
-                        else
-                        {
-                            // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-                            // Read in the resulting code and pass it to the browser.
-
-                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                            {
-                                string strOutput = await objReader.ReadToEndAsync();
-                                File.WriteAllText(_strFilePathName, strOutput);
-                            }
-
-                            await this.DoThreadSafeAsync(() => UseWaitCursor = true);
-                            await webViewer.DoThreadSafeAsync(() => webViewer.Url = new Uri("file:///" + _strFilePathName));
-
-                            if (GlobalSettings.PrintToFileFirst)
-                            {
-                                Utils.SafeDeleteFile(_strFilePathName, true);
                             }
                         }
                     }

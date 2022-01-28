@@ -178,12 +178,6 @@ namespace Chummer
 
                     GlobalSettings.MruChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMruToolstripMenu(senderInner, eInner));
 
-                    // Delete the old executable if it exists (created by the update process).
-                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
-                    {
-                        Utils.SafeDeleteFile(strLoopOldFilePath);
-                    }
-
                     // Populate the MRU list.
                     PopulateMruToolstripMenu(this, null);
 

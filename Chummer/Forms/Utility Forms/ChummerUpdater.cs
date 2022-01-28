@@ -42,8 +42,8 @@ namespace Chummer
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-        private string _strTempPath = string.Empty;
-        private readonly string _strTempUpdatePath;
+        private string _strTempLatestVersionZipPath = string.Empty;
+        private readonly string _strTempLatestVersionChangelogPath;
         private readonly string _strAppPath = Utils.GetStartupPath;
         private readonly bool _blnPreferNightly;
         private bool _blnIsConnected;
@@ -62,8 +62,7 @@ namespace Chummer
             CurrentVersion = string.Format(GlobalSettings.InvariantCultureInfo, "{0}.{1}.{2}",
                 _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
             _blnPreferNightly = GlobalSettings.PreferNightlyBuilds;
-            _strTempUpdatePath = Path.Combine(Path.GetTempPath(), "changelog.txt");
-
+            _strTempLatestVersionChangelogPath = Path.Combine(Utils.GetTempPath(), "changelog.txt");
             _clientChangelogDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
             _clientDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
             _clientDownloader.DownloadFileCompleted += wc_DownloadCompleted;
@@ -159,9 +158,9 @@ namespace Chummer
                         await DownloadUpdates();
                     }
 
-                    if (File.Exists(_strTempUpdatePath))
+                    if (File.Exists(_strTempLatestVersionChangelogPath))
                     {
-                        string strUpdateLog = File.ReadAllText(_strTempUpdatePath).CleanForHtml();
+                        string strUpdateLog = File.ReadAllText(_strTempLatestVersionChangelogPath).CleanForHtml();
                         await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText
                                                              = "<font size=\"-1\" face=\"Courier New,Serif\">"
                                                                + strUpdateLog + "</font>");
@@ -294,22 +293,22 @@ namespace Chummer
                 return;
             }
 
-            if (File.Exists(_strTempUpdatePath))
+            if (File.Exists(_strTempLatestVersionChangelogPath))
             {
-                if (!Utils.SafeDeleteFile(_strTempUpdatePath + ".old", !SilentMode))
+                if (!Utils.SafeDeleteFile(_strTempLatestVersionChangelogPath + ".old", !SilentMode))
                     return;
-                File.Move(_strTempUpdatePath, _strTempUpdatePath + ".old");
+                File.Move(_strTempLatestVersionChangelogPath, _strTempLatestVersionChangelogPath + ".old");
             }
             string strUrl = "https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt";
             try
             {
                 Uri uriConnectionAddress = new Uri(strUrl);
-                if (!Utils.SafeDeleteFile(_strTempUpdatePath + ".tmp", !SilentMode))
+                if (!Utils.SafeDeleteFile(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode))
                     return;
-                await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempUpdatePath + ".tmp");
+                await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp");
                 if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                     return;
-                File.Move(_strTempUpdatePath + ".tmp", _strTempUpdatePath);
+                File.Move(_strTempLatestVersionChangelogPath + ".tmp", _strTempLatestVersionChangelogPath);
             }
             catch (WebException ex)
             {
@@ -375,7 +374,7 @@ namespace Chummer
             set
             {
                 _strLatestVersion = value;
-                _strTempPath = Path.Combine(Path.GetTempPath(), "chummer" + _strLatestVersion + ".zip");
+                _strTempLatestVersionZipPath = Path.Combine(Utils.GetTempPath(), "chummer" + _strLatestVersion + ".zip");
             }
         }
 
@@ -459,7 +458,7 @@ namespace Chummer
         private bool CreateBackupZip()
         {
             //Create a backup file in the temp directory.
-            string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
+            string strBackupZipPath = Path.Combine(Utils.GetTempPath(), "chummer" + CurrentVersion + ".zip");
             Log.Info("Creating archive from application path: " + _strAppPath);
             try
             {
@@ -491,7 +490,7 @@ namespace Chummer
 
         private void DoUpdate()
         {
-            if (Directory.Exists(_strAppPath) && File.Exists(_strTempPath))
+            if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
                 using (new CursorWait())
                 {
@@ -550,7 +549,7 @@ namespace Chummer
                         lstFilesToDelete.Add(strFileToDelete);
                     }
 
-                    InstallUpdateFromZip(_strTempPath, lstFilesToDelete);
+                    InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
                 }
             }
         }
@@ -560,7 +559,7 @@ namespace Chummer
             if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Updater_CleanReinstallPrompt"),
                 LanguageManager.GetString("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
-            if (Directory.Exists(_strAppPath) && File.Exists(_strTempPath))
+            if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
                 using (new CursorWait())
                 {
@@ -593,7 +592,7 @@ namespace Chummer
                         lstFilesToDelete.Add(strFileToDelete);
                     }
 
-                    InstallUpdateFromZip(_strTempPath, lstFilesToDelete);
+                    InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
                 }
             }
         }
@@ -625,6 +624,7 @@ namespace Chummer
                                     blnDoRestart = false;
                                     break;
                                 }
+
                                 File.Move(strLoopPath, strLoopPath + ".old");
                             }
 
@@ -633,21 +633,30 @@ namespace Chummer
                         catch (IOException)
                         {
                             if (!SilentMode)
-                                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strLoopPath)));
+                                Program.MainForm.ShowMessageBox(
+                                    this,
+                                    string.Format(GlobalSettings.CultureInfo,
+                                                  LanguageManager.GetString("Message_File_Cannot_Be_Accessed"),
+                                                  Path.GetFileName(strLoopPath)));
                             blnDoRestart = false;
                             break;
                         }
                         catch (NotSupportedException)
                         {
                             if (!SilentMode)
-                                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strLoopPath)));
+                                Program.MainForm.ShowMessageBox(
+                                    this,
+                                    string.Format(GlobalSettings.CultureInfo,
+                                                  LanguageManager.GetString("Message_File_Cannot_Be_Accessed"),
+                                                  Path.GetFileName(strLoopPath)));
                             blnDoRestart = false;
                             break;
                         }
                         catch (UnauthorizedAccessException)
                         {
                             if (!SilentMode)
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                                Program.MainForm.ShowMessageBox(
+                                    this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                             blnDoRestart = false;
                             break;
                         }
@@ -659,19 +668,26 @@ namespace Chummer
             catch (IOException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
+                    Program.MainForm.ShowMessageBox(
+                        this,
+                        string.Format(GlobalSettings.CultureInfo,
+                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
                 blnDoRestart = false;
             }
             catch (NotSupportedException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
+                    Program.MainForm.ShowMessageBox(
+                        this,
+                        string.Format(GlobalSettings.CultureInfo,
+                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
                 blnDoRestart = false;
             }
             catch (UnauthorizedAccessException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.MainForm.ShowMessageBox(
+                        this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                 blnDoRestart = false;
             }
             if (blnDoRestart)
@@ -736,10 +752,10 @@ namespace Chummer
                 await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
                                    cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
                                    cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
-                Utils.SafeDeleteFile(_strTempPath, !SilentMode);
+                Utils.SafeDeleteFile(_strTempLatestVersionZipPath, !SilentMode);
                 try
                 {
-                    await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempPath);
+                    await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath);
                 }
                 catch (WebException ex)
                 {

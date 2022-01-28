@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 #if DEBUG
@@ -203,13 +204,13 @@ namespace Chummer
             {
                 try
                 {
-                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase))
+                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase) && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
                     {
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                         if (blnShowUnauthorizedAccess)
                         {
                             if (Program.MainForm.ShowMessageBox(
-                                    LanguageManager.GetString("Message_Prompt_Delete_Existing_File"),
+                                    string.Format(GlobalSettings.Language, LanguageManager.GetString("Message_Prompt_Delete_Existing_File"), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
@@ -259,6 +260,59 @@ namespace Chummer
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Safely deletes all files in a directory (though the directory itself remains).
+        /// </summary>
+        /// <param name="strPath">Directory path to clear.</param>
+        /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
+        /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            if (string.IsNullOrEmpty(strPath) || !Directory.Exists(strPath))
+                return true;
+            if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase)
+                && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+            {
+                // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
+                if (blnShowUnauthorizedAccess)
+                {
+                    if (Program.MainForm.ShowMessageBox(
+                            string.Format(GlobalSettings.Language,
+                                          LanguageManager.GetString("Message_Prompt_Delete_Existing_File"),
+                                          strPath),
+                            buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning)
+                        != DialogResult.Yes)
+                        return false;
+                }
+                else
+                {
+                    BreakIfDebug();
+                    return false;
+                }
+            }
+            string[] astrFilesToDelete = Directory.GetFiles(strPath, strSearchPattern,
+                                                            blnRecursive
+                                                                ? SearchOption.AllDirectories
+                                                                : SearchOption.TopDirectoryOnly);
+            object objSuccessLock = new object();
+            bool[] ablnSuccess = new bool[astrFilesToDelete.Length];
+            Parallel.For(0, astrFilesToDelete.Length, i =>
+            {
+                // ReSharper disable once AccessToModifiedClosure
+                string strToDelete = astrFilesToDelete[i];
+                // ReSharper disable once AccessToModifiedClosure
+                bool blnLoop = SafeDeleteFile(strToDelete, blnShowUnauthorizedAccess, intTimeout);
+                lock (objSuccessLock)
+                    // ReSharper disable once AccessToModifiedClosure
+                    ablnSuccess[i] = blnLoop;
+            });
+
+            return ablnSuccess.All(x => x);
         }
 
         /// <summary>
@@ -838,6 +892,21 @@ namespace Chummer
                 strReturn = string.Empty;
             }
             return string.IsNullOrEmpty(strReturn) ? "Unknown" : strReturn;
+        }
+
+        private static string s_strTempPath = string.Empty;
+
+        /// <summary>
+        /// Gets a temporary file folder that is exclusive to Chummer and therefore can be manipulated at will without worrying about interfering with anything else.
+        /// Basically, like Path.GetTempPath(), but safer.
+        /// </summary>
+        public static string GetTempPath()
+        {
+            if (string.IsNullOrEmpty(s_strTempPath))
+                s_strTempPath = Path.Combine(Path.GetTempPath(), "Chummer");
+            if (!Directory.Exists(s_strTempPath))
+                Directory.CreateDirectory(s_strTempPath);
+            return s_strTempPath;
         }
 
         private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider();

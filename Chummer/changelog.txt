@@ -55,6 +55,7 @@ Application Changes:
 - Fixed the tooltips on buttons to open characters linked to contacts.
 - Fixed various issues caused by interactions between bonuses/improvements that add special skills and custom rulesets that can alter special skills lists.
 - If the user is prompted to load an autosave for a character that might have been unsaved as the result of a crash and the user declines, that autosave is now deleted.
+- Reduced crashes and potential weird issues caused by interactions with the current Windows user's designated temporary folder.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
