@@ -854,7 +854,7 @@ namespace Chummer.Backend.Skills
             return (RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value)).StandardRound();
         }
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExistAfterFirst = false)
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false)
         {
             string strNameToUse = DictionaryKey;
             if (string.IsNullOrEmpty(strUseAttribute))
@@ -870,17 +870,18 @@ namespace Chummer.Backend.Skills
                         if (objImprovement.Target == strNameToUse)
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
 
                     case Improvement.ImprovementType.Skill:
                     case Improvement.ImprovementType.SkillDisable:
+                    case Improvement.ImprovementType.AllowSkillDefault:
                         if (objImprovement.ImprovedName == strNameToUse)
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
@@ -890,7 +891,7 @@ namespace Chummer.Backend.Skills
                         if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
@@ -899,7 +900,7 @@ namespace Chummer.Backend.Skills
                         if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(strNameToUse))
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
@@ -908,7 +909,7 @@ namespace Chummer.Backend.Skills
                         if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(strNameToUse))
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
@@ -917,7 +918,7 @@ namespace Chummer.Backend.Skills
                         if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(strNameToUse))
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
@@ -926,7 +927,7 @@ namespace Chummer.Backend.Skills
                         if (objImprovement.ImprovedName == SkillGroup)
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
@@ -935,7 +936,7 @@ namespace Chummer.Backend.Skills
                         if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
                         {
                             yield return objImprovement;
-                            if (blnExistAfterFirst)
+                            if (blnExitAfterFirst)
                                 yield break;
                         }
                         break;
@@ -1162,16 +1163,6 @@ namespace Chummer.Backend.Skills
                     _intCachedEnabled = 0;
                     return false;
                 }
-                // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
-                if (CharacterObject.IsCritter && Rating == 0 && ImprovementManager
-                                                                .GetCachedImprovementListForValueOf(
-                                                                    CharacterObject,
-                                                                    Improvement.ImprovementType.AllowSkillDefault,
-                                                                    DictionaryKey, true).Count == 0)
-                {
-                    _intCachedEnabled = 0;
-                    return false;
-                }
 
                 if (ImprovementManager
                     .GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.SkillDisable,
@@ -1302,15 +1293,30 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                return _blnDefault &&
-                       !RelevantImprovements(
-                           objImprovement =>
-                               objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault,
-                           string.Empty, false, true).Any();
+                // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
+                List<Improvement> lstAllowSkillDefaultImprovements = ImprovementManager
+                    .GetCachedImprovementListForValueOf(
+                        CharacterObject,
+                        Improvement.ImprovementType.AllowSkillDefault,
+                        DictionaryKey, true);
+                if (CharacterObject.IsCritter && Rating == 0 && lstAllowSkillDefaultImprovements.Count == 0)
+                {
+                    return false;
+                }
+
+                if (!_blnDefault && lstAllowSkillDefaultImprovements.Count == 0)
+                    return false;
+
+                return ImprovementManager
+                    .GetCachedImprovementListForValueOf(
+                        CharacterObject,
+                        Improvement.ImprovementType.BlockSkillDefault,
+                        DictionaryKey, true).All(x => SkillGroup != x.ImprovedName);
             }
             set
             {
-                if (_blnDefault == value) return;
+                if (_blnDefault == value)
+                    return;
                 _blnDefault = value;
                 OnPropertyChanged();
             }
@@ -2430,6 +2436,10 @@ namespace Chummer.Backend.Skills
                     this.OnMultiplePropertyChanged(nameof(Base),
                                                    nameof(BaseUnlocked),
                                                    nameof(ForcedBuyWithKarma));
+                    break;
+
+                case nameof(Character.IsCritter):
+                    OnPropertyChanged(nameof(Default));
                     break;
             }
         }

@@ -59,6 +59,7 @@ Application Changes:
 - Minimum and maximum initiative dice for the physical world and AR, astral, cold-sim VR, and hot-sim VR can all now be tweaked through character settings.
 - In order to work with smaller PDFs, the PDF test function now opens to page 3 instead of to page 5.
 - At higher screen resolutions, the splitter for the Karma & Nuyen tab now properly starts in the middle of the tab instead of far off to the left.
+- Improvements that forcefully allow a skill to be defaulted now work properly.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
