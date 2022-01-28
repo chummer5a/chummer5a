@@ -89,6 +89,7 @@ Data Changes:
 - Added Spinrad Global and a list of AA megacorporations to life modules' data files and to the suggested list for SINner (Corporate) and SINner (Corporate Limited). Fixes #4668.
 - Built-in German character settings now use 2d6 for astral initiative instead of 3d6. Fixes #4531.
 - Built-in character settings for Full House with Sum-to-Ten have been added, as well as German versions of all three types of Full House settings.
+- Sum-to-Ten Improved has been added to the Chummer customdata folder. When enabled, it changes the Sum-to-Ten value of A priorities from 4 to 7 and of B priorities from 3 to 4. When using the dataset, it is recommended one uses a Sum-to-Ten value of 14 instead of 10.
 
 Changed/New Strings:
 - String_GameplayOption
@@ -248,7 +249,7 @@ Application Changes:
 - Added weaponrangemodifier bonus type. This can be used to alter the range penalty for a given weapon. The bonus follows the form of <weaponrangemodifier><name>[contains]Partial Weapon Name</name><value>1</value></weaponrangemodifier>. Note that name is optional, and it does not need to use the [contains] tag. If name is not specified, all weapons will be modified. 
 
 Data Changes:
-- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
+- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes custom data folder.
 - Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
 - Whisper of Bones now properly requires Necromancy.
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.
