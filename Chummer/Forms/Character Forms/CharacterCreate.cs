@@ -281,6 +281,28 @@ namespace Chummer
                                               CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
                     }
 
+                    if (!CharacterObjectSettings.BookEnabled("RF"))
+                    {
+                        cmdAddLifestyle.SplitMenuStrip = null;
+                    }
+                    if (!CharacterObjectSettings.BookEnabled("FA"))
+                    {
+                        lblWildReputation.Visible = false;
+                        lblWildReputationTotal.Visible = false;
+                        if (!CharacterObjectSettings.BookEnabled("SG"))
+                        {
+                            lblAstralReputation.Visible = false;
+                            lblAstralReputationTotal.Visible = false;
+                        }
+                    }
+                    if (!CharacterObjectSettings.EnableEnemyTracking)
+                    {
+                        tabPeople.TabPages.Remove(tabEnemies);
+                    }
+
+                    splitMagician.SplitterDistance = Math.Max(splitMagician.SplitterDistance, ((splitMagician.Height - splitMagician.SplitterWidth) * 2 + 2) / 3);
+                    splitTechnomancer.SplitterDistance = Math.Max(splitTechnomancer.SplitterDistance, ((splitTechnomancer.Height - splitTechnomancer.SplitterWidth) * 2 + 2) / 3);
+
                     using (_ = Timekeeper.StartSyncron("load_frm_create_refresh", op_load_frm_create))
                     {
                         OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));

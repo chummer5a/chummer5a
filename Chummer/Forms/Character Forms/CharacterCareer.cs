@@ -73,7 +73,7 @@ namespace Chummer
 
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
-            CharacterObjectSettings.PropertyChanged += OnCharacterObjectSettingsPropertyChanged;
+            CharacterObjectSettings.PropertyChanged += OnCharacterSettingsPropertyChanged;
             
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -282,6 +282,10 @@ namespace Chummer
                     {
                         tabPeople.TabPages.Remove(tabEnemies);
                     }
+
+                    splitKarmaNuyen.SplitterDistance = Math.Max(splitKarmaNuyen.SplitterDistance, (splitKarmaNuyen.Width - splitKarmaNuyen.SplitterWidth + 1) / 2);
+                    splitMagician.SplitterDistance = Math.Max(splitMagician.SplitterDistance, ((splitMagician.Height - splitMagician.SplitterWidth) * 2 + 2) / 3);
+                    splitTechnomancer.SplitterDistance = Math.Max(splitTechnomancer.SplitterDistance, ((splitTechnomancer.Height - splitTechnomancer.SplitterWidth) * 2 + 2) / 3);
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_refresh", op_load_frm_career))
                     {
@@ -1983,7 +1987,7 @@ namespace Chummer
             }
         }
 
-        private void OnCharacterObjectSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             IsCharacterUpdateRequested = true;
             switch (e.PropertyName)
