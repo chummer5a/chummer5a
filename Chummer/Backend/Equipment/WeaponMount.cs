@@ -249,7 +249,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_objCachedBackupSourceDetail == default)
                         _objCachedBackupSourceDetail = new SourceString(
-                            GetNodeXPath(GlobalSettings.DefaultLanguage)?.SelectSingleNode("source")?.Value ?? Source,
+                            this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
                             DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                             _objCharacter);
                     return _objCachedBackupSourceDetail;
@@ -435,9 +435,9 @@ namespace Chummer.Backend.Equipment
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
             {
                 XPathNavigator xmlOverrideNode = GetNodeXPath(strLanguageToPrint);
-                objWriter.WriteElementString("sourceid", xmlOverrideNode?.SelectSingleNode("id")?.Value ?? SourceIDString);
+                objWriter.WriteElementString("sourceid", xmlOverrideNode?.SelectSingleNodeAndCacheExpression("id")?.Value ?? SourceIDString);
                 objWriter.WriteElementString("source",
-                    _objCharacter.LanguageBookShort(xmlOverrideNode?.SelectSingleNode("source")?.Value ?? Source,
+                    _objCharacter.LanguageBookShort(xmlOverrideNode?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
                         strLanguageToPrint));
             }
             else
@@ -739,7 +739,7 @@ namespace Chummer.Backend.Equipment
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 {
-                    string strReturn = GetNodeXPath(strLanguage)?.SelectSingleNode("page")?.Value ?? Page;
+                    string strReturn = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("page")?.Value ?? Page;
                     return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
                 }
                 return Page;
@@ -1046,7 +1046,7 @@ namespace Chummer.Backend.Equipment
                 // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
-                    return GetNodeXPath(strLanguage)?.SelectSingleNode("name")?.Value ?? Name;
+                    return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("name")?.Value ?? Name;
                 return Name;
             }
 

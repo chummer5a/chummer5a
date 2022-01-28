@@ -806,7 +806,7 @@ namespace Chummer
             else
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
-                XPathNavigator xmlMyLimitNode = GetNodeXPath(strLanguage)?.SelectSingleNode("limit");
+                XPathNavigator xmlMyLimitNode = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("limit");
                 if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                     strReturn += strSpace + intLevels.ToString(objCulture);
             }
