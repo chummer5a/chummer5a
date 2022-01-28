@@ -108,6 +108,22 @@ namespace Chummer
             this.nudNuyenDecimalsMinimum = new Chummer.NumericUpDownEx();
             this.nudNuyenDecimalsMaximum = new Chummer.NumericUpDownEx();
             this.nudEssenceDecimals = new Chummer.NumericUpDownEx();
+            this.gpbBasicOptionsInitiativeDice = new System.Windows.Forms.GroupBox();
+            this.tlpBasicOptionsInitiativeDice = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblMinInitiativeDiceLabel = new System.Windows.Forms.Label();
+            this.lblHotSimInitiativeDiceLabel = new System.Windows.Forms.Label();
+            this.lblAstralInitiativeDiceLabel = new System.Windows.Forms.Label();
+            this.lblColdSimInitiativeDiceLabel = new System.Windows.Forms.Label();
+            this.nudMinInitiativeDice = new Chummer.NumericUpDownEx();
+            this.nudMaxInitiativeDice = new Chummer.NumericUpDownEx();
+            this.lblInitiativeDiceLabel = new System.Windows.Forms.Label();
+            this.lblMaxInitiativeDiceLabel = new System.Windows.Forms.Label();
+            this.nudMaxAstralInitiativeDice = new Chummer.NumericUpDownEx();
+            this.nudMaxColdSimInitiativeDice = new Chummer.NumericUpDownEx();
+            this.nudMaxHotSimInitiativeDice = new Chummer.NumericUpDownEx();
+            this.nudMinAstralInitiativeDice = new Chummer.NumericUpDownEx();
+            this.nudMinColdSimInitiativeDice = new Chummer.NumericUpDownEx();
+            this.nudMinHotSimInitiativeDice = new Chummer.NumericUpDownEx();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
             this.tlpKarmaCosts = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblKarmaSpecialization = new System.Windows.Forms.Label();
@@ -238,7 +254,6 @@ namespace Chummer
             this.gbpDirectoryInfoIncompatibilities = new System.Windows.Forms.GroupBox();
             this.pnlDirectoryIncompatibilities = new System.Windows.Forms.Panel();
             this.lblIncompatibilities = new System.Windows.Forms.Label();
-            this.txtDirectoryDescription = new System.Windows.Forms.TextBox();
             this.tlpDirectoryInfoLeft = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblDirectoryNameLabel = new System.Windows.Forms.Label();
             this.lblDirectoryVersion = new System.Windows.Forms.Label();
@@ -319,22 +334,7 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.gpbBasicOptionsInitiativeDice = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsInitiativeDice = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblInitiativeDiceLabel = new System.Windows.Forms.Label();
-            this.lblAstralInitiativeDiceLabel = new System.Windows.Forms.Label();
-            this.lblColdSimInitiativeDiceLabel = new System.Windows.Forms.Label();
-            this.lblHotSimInitiativeDiceLabel = new System.Windows.Forms.Label();
-            this.nudMinInitiativeDice = new Chummer.NumericUpDownEx();
-            this.nudMaxInitiativeDice = new Chummer.NumericUpDownEx();
-            this.lblMinInitiativeDiceLabel = new System.Windows.Forms.Label();
-            this.lblMaxInitiativeDiceLabel = new System.Windows.Forms.Label();
-            this.nudMaxAstralInitiativeDice = new Chummer.NumericUpDownEx();
-            this.nudMaxColdSimInitiativeDice = new Chummer.NumericUpDownEx();
-            this.nudMaxHotSimInitiativeDice = new Chummer.NumericUpDownEx();
-            this.nudMinAstralInitiativeDice = new Chummer.NumericUpDownEx();
-            this.nudMinColdSimInitiativeDice = new Chummer.NumericUpDownEx();
-            this.nudMinHotSimInitiativeDice = new Chummer.NumericUpDownEx();
+            this.rtbDirectoryDescription = new System.Windows.Forms.RichTextBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -361,6 +361,16 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMinimum)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMaximum)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEssenceDecimals)).BeginInit();
+            this.gpbBasicOptionsInitiativeDice.SuspendLayout();
+            this.tlpBasicOptionsInitiativeDice.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinInitiativeDice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxInitiativeDice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAstralInitiativeDice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxColdSimInitiativeDice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxHotSimInitiativeDice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinAstralInitiativeDice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinColdSimInitiativeDice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinHotSimInitiativeDice)).BeginInit();
             this.tabKarmaCosts.SuspendLayout();
             this.tlpKarmaCosts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpecialization)).BeginInit();
@@ -439,16 +449,6 @@ namespace Chummer
             this.flpKarmaGainedFromEnemies.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).BeginInit();
             this.tlpButtons.SuspendLayout();
-            this.gpbBasicOptionsInitiativeDice.SuspendLayout();
-            this.tlpBasicOptionsInitiativeDice.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinInitiativeDice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxInitiativeDice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAstralInitiativeDice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxColdSimInitiativeDice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxHotSimInitiativeDice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinAstralInitiativeDice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinColdSimInitiativeDice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinHotSimInitiativeDice)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -1551,6 +1551,321 @@ namespace Chummer
             this.nudEssenceDecimals.TabIndex = 17;
             this.nudEssenceDecimals.Value = new decimal(new int[] {
             2,
+            0,
+            0,
+            0});
+            // 
+            // gpbBasicOptionsInitiativeDice
+            // 
+            this.gpbBasicOptionsInitiativeDice.AutoSize = true;
+            this.gpbBasicOptionsInitiativeDice.Controls.Add(this.tlpBasicOptionsInitiativeDice);
+            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(370, 436);
+            this.gpbBasicOptionsInitiativeDice.Name = "gpbBasicOptionsInitiativeDice";
+            this.gpbBasicOptionsInitiativeDice.Size = new System.Drawing.Size(239, 148);
+            this.gpbBasicOptionsInitiativeDice.TabIndex = 6;
+            this.gpbBasicOptionsInitiativeDice.TabStop = false;
+            this.gpbBasicOptionsInitiativeDice.Text = "Initiative Dice";
+            // 
+            // tlpBasicOptionsInitiativeDice
+            // 
+            this.tlpBasicOptionsInitiativeDice.AutoSize = true;
+            this.tlpBasicOptionsInitiativeDice.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpBasicOptionsInitiativeDice.ColumnCount = 3;
+            this.tlpBasicOptionsInitiativeDice.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBasicOptionsInitiativeDice.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBasicOptionsInitiativeDice.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblMinInitiativeDiceLabel, 1, 0);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblHotSimInitiativeDiceLabel, 0, 4);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblAstralInitiativeDiceLabel, 0, 2);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblColdSimInitiativeDiceLabel, 0, 3);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinInitiativeDice, 1, 1);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxInitiativeDice, 2, 1);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblInitiativeDiceLabel, 0, 1);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblMaxInitiativeDiceLabel, 2, 0);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxAstralInitiativeDice, 2, 2);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxColdSimInitiativeDice, 2, 3);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxHotSimInitiativeDice, 2, 4);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinAstralInitiativeDice, 1, 2);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinColdSimInitiativeDice, 1, 3);
+            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinHotSimInitiativeDice, 1, 4);
+            this.tlpBasicOptionsInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpBasicOptionsInitiativeDice.Location = new System.Drawing.Point(3, 16);
+            this.tlpBasicOptionsInitiativeDice.Name = "tlpBasicOptionsInitiativeDice";
+            this.tlpBasicOptionsInitiativeDice.RowCount = 5;
+            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsInitiativeDice.Size = new System.Drawing.Size(233, 129);
+            this.tlpBasicOptionsInitiativeDice.TabIndex = 0;
+            // 
+            // lblMinInitiativeDiceLabel
+            // 
+            this.lblMinInitiativeDiceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblMinInitiativeDiceLabel.AutoSize = true;
+            this.lblMinInitiativeDiceLabel.Location = new System.Drawing.Point(119, 6);
+            this.lblMinInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMinInitiativeDiceLabel.Name = "lblMinInitiativeDiceLabel";
+            this.lblMinInitiativeDiceLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblMinInitiativeDiceLabel.TabIndex = 19;
+            this.lblMinInitiativeDiceLabel.Tag = "Label_CreateImprovementMinimum";
+            this.lblMinInitiativeDiceLabel.Text = "Minimum:";
+            this.lblMinInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // lblHotSimInitiativeDiceLabel
+            // 
+            this.lblHotSimInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblHotSimInitiativeDiceLabel.AutoSize = true;
+            this.lblHotSimInitiativeDiceLabel.Location = new System.Drawing.Point(7, 109);
+            this.lblHotSimInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblHotSimInitiativeDiceLabel.Name = "lblHotSimInitiativeDiceLabel";
+            this.lblHotSimInitiativeDiceLabel.Size = new System.Drawing.Size(106, 13);
+            this.lblHotSimInitiativeDiceLabel.TabIndex = 16;
+            this.lblHotSimInitiativeDiceLabel.Tag = "Label_OtherMatrixInitVRHot";
+            this.lblHotSimInitiativeDiceLabel.Text = "Matrix Initiative (Hot):";
+            this.lblHotSimInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblAstralInitiativeDiceLabel
+            // 
+            this.lblAstralInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblAstralInitiativeDiceLabel.AutoSize = true;
+            this.lblAstralInitiativeDiceLabel.Location = new System.Drawing.Point(35, 57);
+            this.lblAstralInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblAstralInitiativeDiceLabel.Name = "lblAstralInitiativeDiceLabel";
+            this.lblAstralInitiativeDiceLabel.Size = new System.Drawing.Size(78, 13);
+            this.lblAstralInitiativeDiceLabel.TabIndex = 14;
+            this.lblAstralInitiativeDiceLabel.Tag = "Label_OtherAstralInit";
+            this.lblAstralInitiativeDiceLabel.Text = "Astral Initiative:";
+            this.lblAstralInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblColdSimInitiativeDiceLabel
+            // 
+            this.lblColdSimInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblColdSimInitiativeDiceLabel.AutoSize = true;
+            this.lblColdSimInitiativeDiceLabel.Location = new System.Drawing.Point(3, 83);
+            this.lblColdSimInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblColdSimInitiativeDiceLabel.Name = "lblColdSimInitiativeDiceLabel";
+            this.lblColdSimInitiativeDiceLabel.Size = new System.Drawing.Size(110, 13);
+            this.lblColdSimInitiativeDiceLabel.TabIndex = 15;
+            this.lblColdSimInitiativeDiceLabel.Tag = "Label_OtherMatrixInitVRCold";
+            this.lblColdSimInitiativeDiceLabel.Text = "Matrix Initiative (Cold):";
+            this.lblColdSimInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMinInitiativeDice
+            // 
+            this.nudMinInitiativeDice.AutoSize = true;
+            this.nudMinInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMinInitiativeDice.Location = new System.Drawing.Point(119, 28);
+            this.nudMinInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMinInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinInitiativeDice.Name = "nudMinInitiativeDice";
+            this.nudMinInitiativeDice.Size = new System.Drawing.Size(51, 20);
+            this.nudMinInitiativeDice.TabIndex = 17;
+            this.nudMinInitiativeDice.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudMaxInitiativeDice
+            // 
+            this.nudMaxInitiativeDice.AutoSize = true;
+            this.nudMaxInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMaxInitiativeDice.Location = new System.Drawing.Point(176, 28);
+            this.nudMaxInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMaxInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxInitiativeDice.Name = "nudMaxInitiativeDice";
+            this.nudMaxInitiativeDice.Size = new System.Drawing.Size(54, 20);
+            this.nudMaxInitiativeDice.TabIndex = 18;
+            this.nudMaxInitiativeDice.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // lblInitiativeDiceLabel
+            // 
+            this.lblInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblInitiativeDiceLabel.AutoSize = true;
+            this.lblInitiativeDiceLabel.Location = new System.Drawing.Point(64, 31);
+            this.lblInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblInitiativeDiceLabel.Name = "lblInitiativeDiceLabel";
+            this.lblInitiativeDiceLabel.Size = new System.Drawing.Size(49, 13);
+            this.lblInitiativeDiceLabel.TabIndex = 13;
+            this.lblInitiativeDiceLabel.Tag = "Label_OtherInit";
+            this.lblInitiativeDiceLabel.Text = "Initiative:";
+            this.lblInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblMaxInitiativeDiceLabel
+            // 
+            this.lblMaxInitiativeDiceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblMaxInitiativeDiceLabel.AutoSize = true;
+            this.lblMaxInitiativeDiceLabel.Location = new System.Drawing.Point(176, 6);
+            this.lblMaxInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxInitiativeDiceLabel.Name = "lblMaxInitiativeDiceLabel";
+            this.lblMaxInitiativeDiceLabel.Size = new System.Drawing.Size(54, 13);
+            this.lblMaxInitiativeDiceLabel.TabIndex = 20;
+            this.lblMaxInitiativeDiceLabel.Tag = "Label_CreateImprovementMaximum";
+            this.lblMaxInitiativeDiceLabel.Text = "Maximum:";
+            this.lblMaxInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // nudMaxAstralInitiativeDice
+            // 
+            this.nudMaxAstralInitiativeDice.AutoSize = true;
+            this.nudMaxAstralInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMaxAstralInitiativeDice.Location = new System.Drawing.Point(176, 54);
+            this.nudMaxAstralInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMaxAstralInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxAstralInitiativeDice.Name = "nudMaxAstralInitiativeDice";
+            this.nudMaxAstralInitiativeDice.Size = new System.Drawing.Size(54, 20);
+            this.nudMaxAstralInitiativeDice.TabIndex = 21;
+            this.nudMaxAstralInitiativeDice.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // nudMaxColdSimInitiativeDice
+            // 
+            this.nudMaxColdSimInitiativeDice.AutoSize = true;
+            this.nudMaxColdSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMaxColdSimInitiativeDice.Location = new System.Drawing.Point(176, 80);
+            this.nudMaxColdSimInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMaxColdSimInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxColdSimInitiativeDice.Name = "nudMaxColdSimInitiativeDice";
+            this.nudMaxColdSimInitiativeDice.Size = new System.Drawing.Size(54, 20);
+            this.nudMaxColdSimInitiativeDice.TabIndex = 22;
+            this.nudMaxColdSimInitiativeDice.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // nudMaxHotSimInitiativeDice
+            // 
+            this.nudMaxHotSimInitiativeDice.AutoSize = true;
+            this.nudMaxHotSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMaxHotSimInitiativeDice.Location = new System.Drawing.Point(176, 106);
+            this.nudMaxHotSimInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMaxHotSimInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxHotSimInitiativeDice.Name = "nudMaxHotSimInitiativeDice";
+            this.nudMaxHotSimInitiativeDice.Size = new System.Drawing.Size(54, 20);
+            this.nudMaxHotSimInitiativeDice.TabIndex = 23;
+            this.nudMaxHotSimInitiativeDice.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // nudMinAstralInitiativeDice
+            // 
+            this.nudMinAstralInitiativeDice.AutoSize = true;
+            this.nudMinAstralInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMinAstralInitiativeDice.Location = new System.Drawing.Point(119, 54);
+            this.nudMinAstralInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMinAstralInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinAstralInitiativeDice.Name = "nudMinAstralInitiativeDice";
+            this.nudMinAstralInitiativeDice.Size = new System.Drawing.Size(51, 20);
+            this.nudMinAstralInitiativeDice.TabIndex = 24;
+            this.nudMinAstralInitiativeDice.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // nudMinColdSimInitiativeDice
+            // 
+            this.nudMinColdSimInitiativeDice.AutoSize = true;
+            this.nudMinColdSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMinColdSimInitiativeDice.Location = new System.Drawing.Point(119, 80);
+            this.nudMinColdSimInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMinColdSimInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinColdSimInitiativeDice.Name = "nudMinColdSimInitiativeDice";
+            this.nudMinColdSimInitiativeDice.Size = new System.Drawing.Size(51, 20);
+            this.nudMinColdSimInitiativeDice.TabIndex = 25;
+            this.nudMinColdSimInitiativeDice.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // nudMinHotSimInitiativeDice
+            // 
+            this.nudMinHotSimInitiativeDice.AutoSize = true;
+            this.nudMinHotSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudMinHotSimInitiativeDice.Location = new System.Drawing.Point(119, 106);
+            this.nudMinHotSimInitiativeDice.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.nudMinHotSimInitiativeDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMinHotSimInitiativeDice.Name = "nudMinHotSimInitiativeDice";
+            this.nudMinHotSimInitiativeDice.Size = new System.Drawing.Size(51, 20);
+            this.nudMinHotSimInitiativeDice.TabIndex = 26;
+            this.nudMinHotSimInitiativeDice.Value = new decimal(new int[] {
+            4,
             0,
             0,
             0});
@@ -3587,9 +3902,9 @@ namespace Chummer
             this.tlpDirectoryInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoDependencies, 0, 2);
             this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoIncompatibilities, 1, 2);
-            this.tlpDirectoryInfo.Controls.Add(this.txtDirectoryDescription, 0, 1);
             this.tlpDirectoryInfo.Controls.Add(this.tlpDirectoryInfoLeft, 0, 0);
             this.tlpDirectoryInfo.Controls.Add(this.gpbDirectoryAuthors, 1, 0);
+            this.tlpDirectoryInfo.Controls.Add(this.rtbDirectoryDescription, 0, 1);
             this.tlpDirectoryInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpDirectoryInfo.Location = new System.Drawing.Point(3, 16);
             this.tlpDirectoryInfo.Name = "tlpDirectoryInfo";
@@ -3671,18 +3986,6 @@ namespace Chummer
             this.lblIncompatibilities.Size = new System.Drawing.Size(87, 13);
             this.lblIncompatibilities.TabIndex = 0;
             this.lblIncompatibilities.Text = "[Incompatibilities]";
-            // 
-            // txtDirectoryDescription
-            // 
-            this.txtDirectoryDescription.BackColor = System.Drawing.SystemColors.Control;
-            this.tlpDirectoryInfo.SetColumnSpan(this.txtDirectoryDescription, 2);
-            this.txtDirectoryDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDirectoryDescription.Location = new System.Drawing.Point(3, 142);
-            this.txtDirectoryDescription.Multiline = true;
-            this.txtDirectoryDescription.Name = "txtDirectoryDescription";
-            this.txtDirectoryDescription.ReadOnly = true;
-            this.txtDirectoryDescription.Size = new System.Drawing.Size(468, 273);
-            this.txtDirectoryDescription.TabIndex = 13;
             // 
             // tlpDirectoryInfoLeft
             // 
@@ -4909,320 +5212,17 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // gpbBasicOptionsInitiativeDice
+            // rtbDirectoryDescription
             // 
-            this.gpbBasicOptionsInitiativeDice.AutoSize = true;
-            this.gpbBasicOptionsInitiativeDice.Controls.Add(this.tlpBasicOptionsInitiativeDice);
-            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(370, 436);
-            this.gpbBasicOptionsInitiativeDice.Name = "gpbBasicOptionsInitiativeDice";
-            this.gpbBasicOptionsInitiativeDice.Size = new System.Drawing.Size(239, 148);
-            this.gpbBasicOptionsInitiativeDice.TabIndex = 6;
-            this.gpbBasicOptionsInitiativeDice.TabStop = false;
-            this.gpbBasicOptionsInitiativeDice.Text = "Initiative Dice";
-            // 
-            // tlpBasicOptionsInitiativeDice
-            // 
-            this.tlpBasicOptionsInitiativeDice.AutoSize = true;
-            this.tlpBasicOptionsInitiativeDice.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpBasicOptionsInitiativeDice.ColumnCount = 3;
-            this.tlpBasicOptionsInitiativeDice.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsInitiativeDice.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBasicOptionsInitiativeDice.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblMinInitiativeDiceLabel, 1, 0);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblHotSimInitiativeDiceLabel, 0, 4);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblAstralInitiativeDiceLabel, 0, 2);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblColdSimInitiativeDiceLabel, 0, 3);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinInitiativeDice, 1, 1);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxInitiativeDice, 2, 1);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblInitiativeDiceLabel, 0, 1);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.lblMaxInitiativeDiceLabel, 2, 0);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxAstralInitiativeDice, 2, 2);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxColdSimInitiativeDice, 2, 3);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMaxHotSimInitiativeDice, 2, 4);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinAstralInitiativeDice, 1, 2);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinColdSimInitiativeDice, 1, 3);
-            this.tlpBasicOptionsInitiativeDice.Controls.Add(this.nudMinHotSimInitiativeDice, 1, 4);
-            this.tlpBasicOptionsInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpBasicOptionsInitiativeDice.Location = new System.Drawing.Point(3, 16);
-            this.tlpBasicOptionsInitiativeDice.Name = "tlpBasicOptionsInitiativeDice";
-            this.tlpBasicOptionsInitiativeDice.RowCount = 5;
-            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBasicOptionsInitiativeDice.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBasicOptionsInitiativeDice.Size = new System.Drawing.Size(233, 129);
-            this.tlpBasicOptionsInitiativeDice.TabIndex = 0;
-            // 
-            // lblInitiativeDiceLabel
-            // 
-            this.lblInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblInitiativeDiceLabel.AutoSize = true;
-            this.lblInitiativeDiceLabel.Location = new System.Drawing.Point(64, 31);
-            this.lblInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblInitiativeDiceLabel.Name = "lblInitiativeDiceLabel";
-            this.lblInitiativeDiceLabel.Size = new System.Drawing.Size(49, 13);
-            this.lblInitiativeDiceLabel.TabIndex = 13;
-            this.lblInitiativeDiceLabel.Tag = "Label_OtherInit";
-            this.lblInitiativeDiceLabel.Text = "Initiative:";
-            this.lblInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblAstralInitiativeDiceLabel
-            // 
-            this.lblAstralInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblAstralInitiativeDiceLabel.AutoSize = true;
-            this.lblAstralInitiativeDiceLabel.Location = new System.Drawing.Point(35, 57);
-            this.lblAstralInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblAstralInitiativeDiceLabel.Name = "lblAstralInitiativeDiceLabel";
-            this.lblAstralInitiativeDiceLabel.Size = new System.Drawing.Size(78, 13);
-            this.lblAstralInitiativeDiceLabel.TabIndex = 14;
-            this.lblAstralInitiativeDiceLabel.Tag = "Label_OtherAstralInit";
-            this.lblAstralInitiativeDiceLabel.Text = "Astral Initiative:";
-            this.lblAstralInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblColdSimInitiativeDiceLabel
-            // 
-            this.lblColdSimInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblColdSimInitiativeDiceLabel.AutoSize = true;
-            this.lblColdSimInitiativeDiceLabel.Location = new System.Drawing.Point(3, 83);
-            this.lblColdSimInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblColdSimInitiativeDiceLabel.Name = "lblColdSimInitiativeDiceLabel";
-            this.lblColdSimInitiativeDiceLabel.Size = new System.Drawing.Size(110, 13);
-            this.lblColdSimInitiativeDiceLabel.TabIndex = 15;
-            this.lblColdSimInitiativeDiceLabel.Tag = "Label_OtherMatrixInitVRCold";
-            this.lblColdSimInitiativeDiceLabel.Text = "Matrix Initiative (Cold):";
-            this.lblColdSimInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblHotSimInitiativeDiceLabel
-            // 
-            this.lblHotSimInitiativeDiceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblHotSimInitiativeDiceLabel.AutoSize = true;
-            this.lblHotSimInitiativeDiceLabel.Location = new System.Drawing.Point(7, 109);
-            this.lblHotSimInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblHotSimInitiativeDiceLabel.Name = "lblHotSimInitiativeDiceLabel";
-            this.lblHotSimInitiativeDiceLabel.Size = new System.Drawing.Size(106, 13);
-            this.lblHotSimInitiativeDiceLabel.TabIndex = 16;
-            this.lblHotSimInitiativeDiceLabel.Tag = "Label_OtherMatrixInitVRHot";
-            this.lblHotSimInitiativeDiceLabel.Text = "Matrix Initiative (Hot):";
-            this.lblHotSimInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMinInitiativeDice
-            // 
-            this.nudMinInitiativeDice.AutoSize = true;
-            this.nudMinInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMinInitiativeDice.Location = new System.Drawing.Point(119, 28);
-            this.nudMinInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMinInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMinInitiativeDice.Name = "nudMinInitiativeDice";
-            this.nudMinInitiativeDice.Size = new System.Drawing.Size(51, 20);
-            this.nudMinInitiativeDice.TabIndex = 17;
-            this.nudMinInitiativeDice.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // nudMaxInitiativeDice
-            // 
-            this.nudMaxInitiativeDice.AutoSize = true;
-            this.nudMaxInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMaxInitiativeDice.Location = new System.Drawing.Point(176, 28);
-            this.nudMaxInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMaxInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxInitiativeDice.Name = "nudMaxInitiativeDice";
-            this.nudMaxInitiativeDice.Size = new System.Drawing.Size(54, 20);
-            this.nudMaxInitiativeDice.TabIndex = 18;
-            this.nudMaxInitiativeDice.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            // 
-            // lblMinInitiativeDiceLabel
-            // 
-            this.lblMinInitiativeDiceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblMinInitiativeDiceLabel.AutoSize = true;
-            this.lblMinInitiativeDiceLabel.Location = new System.Drawing.Point(119, 6);
-            this.lblMinInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMinInitiativeDiceLabel.Name = "lblMinInitiativeDiceLabel";
-            this.lblMinInitiativeDiceLabel.Size = new System.Drawing.Size(51, 13);
-            this.lblMinInitiativeDiceLabel.TabIndex = 19;
-            this.lblMinInitiativeDiceLabel.Tag = "Label_CreateImprovementMinimum";
-            this.lblMinInitiativeDiceLabel.Text = "Minimum:";
-            this.lblMinInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            // 
-            // lblMaxInitiativeDiceLabel
-            // 
-            this.lblMaxInitiativeDiceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblMaxInitiativeDiceLabel.AutoSize = true;
-            this.lblMaxInitiativeDiceLabel.Location = new System.Drawing.Point(176, 6);
-            this.lblMaxInitiativeDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxInitiativeDiceLabel.Name = "lblMaxInitiativeDiceLabel";
-            this.lblMaxInitiativeDiceLabel.Size = new System.Drawing.Size(54, 13);
-            this.lblMaxInitiativeDiceLabel.TabIndex = 20;
-            this.lblMaxInitiativeDiceLabel.Tag = "Label_CreateImprovementMaximum";
-            this.lblMaxInitiativeDiceLabel.Text = "Maximum:";
-            this.lblMaxInitiativeDiceLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            // 
-            // nudMaxAstralInitiativeDice
-            // 
-            this.nudMaxAstralInitiativeDice.AutoSize = true;
-            this.nudMaxAstralInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMaxAstralInitiativeDice.Location = new System.Drawing.Point(176, 54);
-            this.nudMaxAstralInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMaxAstralInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxAstralInitiativeDice.Name = "nudMaxAstralInitiativeDice";
-            this.nudMaxAstralInitiativeDice.Size = new System.Drawing.Size(54, 20);
-            this.nudMaxAstralInitiativeDice.TabIndex = 21;
-            this.nudMaxAstralInitiativeDice.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            // 
-            // nudMaxColdSimInitiativeDice
-            // 
-            this.nudMaxColdSimInitiativeDice.AutoSize = true;
-            this.nudMaxColdSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMaxColdSimInitiativeDice.Location = new System.Drawing.Point(176, 80);
-            this.nudMaxColdSimInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMaxColdSimInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxColdSimInitiativeDice.Name = "nudMaxColdSimInitiativeDice";
-            this.nudMaxColdSimInitiativeDice.Size = new System.Drawing.Size(54, 20);
-            this.nudMaxColdSimInitiativeDice.TabIndex = 22;
-            this.nudMaxColdSimInitiativeDice.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            // 
-            // nudMaxHotSimInitiativeDice
-            // 
-            this.nudMaxHotSimInitiativeDice.AutoSize = true;
-            this.nudMaxHotSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMaxHotSimInitiativeDice.Location = new System.Drawing.Point(176, 106);
-            this.nudMaxHotSimInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMaxHotSimInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxHotSimInitiativeDice.Name = "nudMaxHotSimInitiativeDice";
-            this.nudMaxHotSimInitiativeDice.Size = new System.Drawing.Size(54, 20);
-            this.nudMaxHotSimInitiativeDice.TabIndex = 23;
-            this.nudMaxHotSimInitiativeDice.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            // 
-            // nudMinAstralInitiativeDice
-            // 
-            this.nudMinAstralInitiativeDice.AutoSize = true;
-            this.nudMinAstralInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMinAstralInitiativeDice.Location = new System.Drawing.Point(119, 54);
-            this.nudMinAstralInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMinAstralInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMinAstralInitiativeDice.Name = "nudMinAstralInitiativeDice";
-            this.nudMinAstralInitiativeDice.Size = new System.Drawing.Size(51, 20);
-            this.nudMinAstralInitiativeDice.TabIndex = 24;
-            this.nudMinAstralInitiativeDice.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            // 
-            // nudMinColdSimInitiativeDice
-            // 
-            this.nudMinColdSimInitiativeDice.AutoSize = true;
-            this.nudMinColdSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMinColdSimInitiativeDice.Location = new System.Drawing.Point(119, 80);
-            this.nudMinColdSimInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMinColdSimInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMinColdSimInitiativeDice.Name = "nudMinColdSimInitiativeDice";
-            this.nudMinColdSimInitiativeDice.Size = new System.Drawing.Size(51, 20);
-            this.nudMinColdSimInitiativeDice.TabIndex = 25;
-            this.nudMinColdSimInitiativeDice.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            // 
-            // nudMinHotSimInitiativeDice
-            // 
-            this.nudMinHotSimInitiativeDice.AutoSize = true;
-            this.nudMinHotSimInitiativeDice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudMinHotSimInitiativeDice.Location = new System.Drawing.Point(119, 106);
-            this.nudMinHotSimInitiativeDice.Maximum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.nudMinHotSimInitiativeDice.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMinHotSimInitiativeDice.Name = "nudMinHotSimInitiativeDice";
-            this.nudMinHotSimInitiativeDice.Size = new System.Drawing.Size(51, 20);
-            this.nudMinHotSimInitiativeDice.TabIndex = 26;
-            this.nudMinHotSimInitiativeDice.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
+            this.rtbDirectoryDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tlpDirectoryInfo.SetColumnSpan(this.rtbDirectoryDescription, 2);
+            this.rtbDirectoryDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbDirectoryDescription.Location = new System.Drawing.Point(3, 142);
+            this.rtbDirectoryDescription.Name = "rtbDirectoryDescription";
+            this.rtbDirectoryDescription.ReadOnly = true;
+            this.rtbDirectoryDescription.Size = new System.Drawing.Size(468, 273);
+            this.rtbDirectoryDescription.TabIndex = 17;
+            this.rtbDirectoryDescription.Text = "";
             // 
             // EditCharacterSettings
             // 
@@ -5283,6 +5283,18 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMinimum)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyenDecimalsMaximum)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEssenceDecimals)).EndInit();
+            this.gpbBasicOptionsInitiativeDice.ResumeLayout(false);
+            this.gpbBasicOptionsInitiativeDice.PerformLayout();
+            this.tlpBasicOptionsInitiativeDice.ResumeLayout(false);
+            this.tlpBasicOptionsInitiativeDice.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinInitiativeDice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxInitiativeDice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAstralInitiativeDice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxColdSimInitiativeDice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxHotSimInitiativeDice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinAstralInitiativeDice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinColdSimInitiativeDice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinHotSimInitiativeDice)).EndInit();
             this.tabKarmaCosts.ResumeLayout(false);
             this.tabKarmaCosts.PerformLayout();
             this.tlpKarmaCosts.ResumeLayout(false);
@@ -5389,18 +5401,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            this.gpbBasicOptionsInitiativeDice.ResumeLayout(false);
-            this.gpbBasicOptionsInitiativeDice.PerformLayout();
-            this.tlpBasicOptionsInitiativeDice.ResumeLayout(false);
-            this.tlpBasicOptionsInitiativeDice.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinInitiativeDice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxInitiativeDice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAstralInitiativeDice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxColdSimInitiativeDice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxHotSimInitiativeDice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinAstralInitiativeDice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinColdSimInitiativeDice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMinHotSimInitiativeDice)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -5662,7 +5662,6 @@ namespace Chummer
         private System.Windows.Forms.GroupBox gbpDirectoryInfoIncompatibilities;
         private System.Windows.Forms.Label lblDirectoryAuthors;
         private System.Windows.Forms.GroupBox gbpDirectoryInfoDependencies;
-        private System.Windows.Forms.TextBox txtDirectoryDescription;
         private System.Windows.Forms.Label lblDependencies;
         private System.Windows.Forms.Label lblIncompatibilities;
         private System.Windows.Forms.Panel pnlDirectoryDependencies;
@@ -5706,5 +5705,6 @@ namespace Chummer
         private NumericUpDownEx nudMinAstralInitiativeDice;
         private NumericUpDownEx nudMinColdSimInitiativeDice;
         private NumericUpDownEx nudMinHotSimInitiativeDice;
+        private System.Windows.Forms.RichTextBox rtbDirectoryDescription;
     }
 }

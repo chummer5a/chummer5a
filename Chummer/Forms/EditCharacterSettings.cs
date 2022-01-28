@@ -812,7 +812,7 @@ namespace Chummer
             }
 
             gpbDirectoryInfo.SuspendLayout();
-            txtDirectoryDescription.Text = objSelected.DisplayDescription;
+            rtbDirectoryDescription.Text = objSelected.DisplayDescription;
             lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
             lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
             lblDirectoryName.Text = objSelected.Name;
