@@ -101,6 +101,8 @@ Data Changes:
 - Jack of All Trades Applies Karma Modifiers in Create Mode has been added to the Chummer customdata folder. It makes the karma cost modifiers of Jack of All Trades Master of None also apply at character creation.
 - Delnar's One Karma Qualities has been added to the Chummer customdata folder. It adds a sourcebook that adds eight positive qualities that cost one karma each and three negative qualities that give one karma each.
 - Links in custom dataset descriptions are now properly recognized and formatted as such in the Character Settings form, and they are now clickable, too.
+- Fixed the maximum amount of times that most echoes can be taken.
+- The Mathemagics echo now properly increases Mental limit by 2 for math-intensive actions.
 
 Changed/New Strings:
 - String_GameplayOption
