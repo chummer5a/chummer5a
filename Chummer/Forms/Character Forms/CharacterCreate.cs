@@ -4177,7 +4177,7 @@ namespace Chummer
                 }
 
                 // Fix for legacy characters with old addqualities improvements.
-                RemoveAddedQualities(objXmlDeleteQuality?.CreateNavigator()?.Select("addqualities/addquality"));
+                RemoveAddedQualities(objXmlDeleteQuality?.CreateNavigator().Select("addqualities/addquality"));
 
                 // Perform removal
                 if (objSelectedQuality.Levels > 1 && blnCompleteDelete)
