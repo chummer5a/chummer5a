@@ -57,6 +57,7 @@ Application Changes:
 - If the user is prompted to load an autosave for a character that might have been unsaved as the result of a crash and the user declines, that autosave is now deleted.
 - Reduced crashes and potential weird issues caused by interactions with the current Windows user's designated temporary folder.
 - Minimum and maximum initiative dice for the physical world and AR, astral, cold-sim VR, and hot-sim VR can all now be tweaked through character settings.
+- In order to work with smaller PDFs, the PDF test function now opens to page 3 instead of to page 5.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.

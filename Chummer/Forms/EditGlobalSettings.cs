@@ -256,7 +256,7 @@ namespace Chummer
         private void cmdPDFTest_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
 
         private void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
