@@ -880,7 +880,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strCode))
             {
                 XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]");
+                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
                 if (xmlBook != null)
                 {
                     string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;

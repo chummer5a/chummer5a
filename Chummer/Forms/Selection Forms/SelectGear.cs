@@ -124,7 +124,7 @@ namespace Chummer
                     }
 
                     sbdMount.Append(". = \"General\"");
-                    objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + "]");
+                    objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + ']');
                 }
             }
             else
@@ -205,7 +205,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected piece of Gear.
-                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
 
                 if (objXmlGear != null)
                 {

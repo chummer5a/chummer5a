@@ -381,7 +381,7 @@ namespace Chummer.Backend.Equipment
                 return;
             XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             XPathNavigator objLifestyleQualityNode = this.GetNodeXPath()
-                                                     ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
+                                                     ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + ']');
             if (objLifestyleQualityNode == null)
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
@@ -410,7 +410,7 @@ namespace Chummer.Backend.Equipment
 
                         objLifestyleQualityNode =
                             objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = "
-                                                            + frmSelect.SelectedItem.CleanXPath() + "]");
+                                                            + frmSelect.SelectedItem.CleanXPath() + ']');
                     }
                 }
             }
@@ -462,7 +462,7 @@ namespace Chummer.Backend.Equipment
             if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 XPathNavigator objNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguageToPrint)
-                    .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + "]");
+                    .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + ']');
                 strLifestyleQualityType = objNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strLifestyleQualityType;
             }
 
@@ -618,12 +618,12 @@ namespace Chummer.Backend.Equipment
             if (Multiplier > 0)
                 strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
             else if (Multiplier < 0)
-                strReturn += strSpace + "[" + Multiplier.ToString(objCulture) + "%]";
+                strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
 
             if (Cost > 0)
                 strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
             else if (Cost < 0)
-                strReturn += strSpace + "[" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
             return strReturn;
         }
 

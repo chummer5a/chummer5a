@@ -517,7 +517,7 @@ namespace Chummer
                 {
                     // Get the last error and display it.
                     int intError = Marshal.GetLastWin32Error();
-                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + ".");
+                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + '.');
                     switch (exception.NativeErrorCode)
                     {
                         case 2://file not found - that means the alternate data-stream is not present.

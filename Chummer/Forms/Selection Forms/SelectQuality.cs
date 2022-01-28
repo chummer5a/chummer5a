@@ -108,7 +108,7 @@ namespace Chummer
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedQuality))
             {
-                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
+                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
             }
 
             if (xmlQuality != null)
@@ -181,7 +181,7 @@ namespace Chummer
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedQuality))
             {
-                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
+                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
             }
 
             if (xmlQuality != null)
@@ -560,7 +560,7 @@ namespace Chummer
                         continue;
                     if (_xmlMetatypeQualityRestrictionNode != null
                         && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(
-                            strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
+                            strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + ']') == null)
                         continue;
                     if (!chkLimitList.Checked
                         || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
@@ -597,7 +597,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedQuality))
                 return;
 
-            XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
+            XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
 
             if (objNode?.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality) != true)
                 return;

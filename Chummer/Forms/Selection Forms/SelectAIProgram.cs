@@ -205,7 +205,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Cyberware.
-                XPathNavigator objXmlProgram = _xmlBaseChummerNode.SelectSingleNode("programs/program[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlProgram = _xmlBaseChummerNode.SelectSingleNode("programs/program[id = " + strSelectedId.CleanXPath() + ']');
                 if (objXmlProgram != null)
                 {
                     string strRequiresProgram = objXmlProgram.SelectSingleNode("require")?.Value;
@@ -333,7 +333,7 @@ namespace Chummer
                                      ?? LanguageManager.GetString("String_Unknown");
                     // If this is a critter with Optional Programs, see if this Program is allowed.
                     if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null
-                        && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + "]")
+                        && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + ']')
                         == null)
                         continue;
                     string strDisplayName = objXmlProgram.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
@@ -369,7 +369,7 @@ namespace Chummer
             string strSelectedId = lstAIPrograms.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator xmlProgram = _xmlBaseChummerNode.SelectSingleNode("programs/program[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator xmlProgram = _xmlBaseChummerNode.SelectSingleNode("programs/program[id = " + strSelectedId.CleanXPath() + ']');
                 if (xmlProgram == null)
                     return;
 

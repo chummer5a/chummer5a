@@ -15734,18 +15734,18 @@ namespace Chummer
             int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
             // Determine the interval based on the item's price.
             if(decCost <= 100.0m)
-                strInterval = "6" + strSpace + LanguageManager.GetString("String_Hours");
+                strInterval = '6' + strSpace + LanguageManager.GetString("String_Hours");
             else if(decCost <= 1000.0m)
-                strInterval = "1" + strSpace + LanguageManager.GetString("String_Day");
+                strInterval = '1' + strSpace + LanguageManager.GetString("String_Day");
             else if(decCost <= 10000.0m)
-                strInterval = "2" + strSpace + LanguageManager.GetString("String_Days");
+                strInterval = '2' + strSpace + LanguageManager.GetString("String_Days");
             else if(decCost <= 100000.0m)
-                strInterval = "1" + strSpace + LanguageManager.GetString("String_Week");
+                strInterval = '1' + strSpace + LanguageManager.GetString("String_Week");
             else
-                strInterval = "1" + strSpace + LanguageManager.GetString("String_Month");
+                strInterval = '1' + strSpace + LanguageManager.GetString("String_Month");
 
-            return string.Concat(intPool.ToString(GlobalSettings.CultureInfo), strSpace, "(",
-                   intAvailValue.ToString(GlobalSettings.CultureInfo), ",", strSpace, strInterval, ")");
+            return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
+                   + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';
         }
 
         /// <summary>

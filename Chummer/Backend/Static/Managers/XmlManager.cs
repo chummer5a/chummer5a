@@ -675,7 +675,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
-                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + ". = " + objChild.InnerXml.Replace("&amp;", "&").CleanXPath() + "]") as XmlElement;
+                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + ". = " + objChild.InnerXml.Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
                         // Expected result is null if not found.
                         objItem?.SetAttribute("translate", strTranslate);
                     }
@@ -757,7 +757,7 @@ namespace Chummer
 
                                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
                                     using (XmlNodeList objAmendingNodeExtraIds
-                                           = objType.SelectNodes("child::*[@isidnode = \"True\"]"))
+                                           = objType.SelectNodes("child::*[@isidnode = " + bool.TrueString.CleanXPath() + ']'))
                                     {
                                         if (objAmendingNodeExtraIds?.Count > 0)
                                         {
@@ -1013,7 +1013,7 @@ namespace Chummer
 
                         // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
                         using (XmlNodeList xmlChildrenWithIds
-                               = xmlAmendingNode.SelectNodes("child::*[@isidnode = \"True\"]"))
+                               = xmlAmendingNode.SelectNodes("child::*[@isidnode = " + bool.TrueString.CleanXPath() + ']'))
                         {
                             if (xmlChildrenWithIds != null)
                             {
@@ -1587,7 +1587,7 @@ namespace Chummer
 
                     // First pass: make sure the document exists.
                     bool blnExists = false;
-                    XPathNavigator objLanguageRoot = objLanguageNavigator.SelectSingleNode("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]");
+                    XPathNavigator objLanguageRoot = objLanguageNavigator.SelectSingleNode("/chummer/chummer[@file = " + strFileName.CleanXPath() + ']');
                     if (objLanguageRoot != null)
                         blnExists = true;
 
@@ -1635,7 +1635,7 @@ namespace Chummer
                                     if (xmlName != null)
                                     {
                                         string strChildNameElement = xmlName.Value;
-                                        XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[name = " + strChildNameElement.CleanXPath() + "]");
+                                        XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[name = " + strChildNameElement.CleanXPath() + ']');
                                         if (xmlNode != null)
                                         {
                                             // A match was found, so see what elements, if any, are missing.
@@ -1793,7 +1793,7 @@ namespace Chummer
                                         if (xmlText != null)
                                         {
                                             string strChildTextElement = xmlText.Value;
-                                            XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[text = " + strChildTextElement.CleanXPath() + "]");
+                                            XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[text = " + strChildTextElement.CleanXPath() + ']');
                                             if (xmlNode != null)
                                             {
                                                 // A match was found, so see what elements, if any, are missing.
@@ -1841,7 +1841,7 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(strChildInnerText))
                                         {
                                             // The item does not have a name which means it should have a translate CharacterAttribute instead.
-                                            XPathNavigator objNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[. =" + strChildInnerText.CleanXPath() + "]");
+                                            XPathNavigator objNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[. =" + strChildInnerText.CleanXPath() + ']');
                                             if (objNode != null)
                                             {
                                                 // Make sure the translate attribute is populated.

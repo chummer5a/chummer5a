@@ -349,9 +349,9 @@ namespace Chummer.Backend.Equipment
                         string strLoopID = objXmlAddWeapon.InnerText;
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
+                                "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
                             : objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
+                                "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
 
                         if (objXmlWeapon != null)
                         {
@@ -582,7 +582,7 @@ namespace Chummer.Backend.Equipment
                                     XmlNode objXmlChosenGear =
                                         objXmlChooseGearNode.SelectSingleNode("usegear[name = " +
                                                                               frmPickItem.SelectedItem.CleanXPath()
-                                                                              + "]");
+                                                                              + ']');
 
                                     if (objXmlChosenGear == null)
                                     {
@@ -694,7 +694,7 @@ namespace Chummer.Backend.Equipment
             if (xmlGearNode["name"] != null)
             {
                 xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " +
-                                                                    xmlGearNode["name"].InnerText.CleanXPath() + "]");
+                                                                    xmlGearNode["name"].InnerText.CleanXPath() + ']');
                 XmlNodeList xmlInnerGears = xmlGearNode.SelectNodes("gears/gear");
                 if (xmlInnerGears?.Count > 0)
                 {
@@ -717,7 +717,7 @@ namespace Chummer.Backend.Equipment
             {
                 xmlGearDataNode =
                     xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " +
-                                                      xmlGearNode.InnerText.CleanXPath() + "]");
+                                                      xmlGearNode.InnerText.CleanXPath() + ']');
             }
 
             if (xmlGearDataNode != null)
@@ -1111,7 +1111,7 @@ namespace Chummer.Backend.Equipment
                 if (intResult == -1)
                 {
                     XmlNode gear = _objCharacter.LoadData("gear.xml")
-                        .SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + "]");
+                        .SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + ']');
                     if (gear != null)
                     {
                         Equipped = false;

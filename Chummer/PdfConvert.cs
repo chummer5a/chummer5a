@@ -453,7 +453,7 @@ namespace Codaxy.WkHtmlToPdf
     //    {
     //        FileInfo fi = new FileInfo(filename);
     //        response.ContentType = "application/force-download";
-    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + "\"");
+    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + '\"');
     //    }
     //}
 }

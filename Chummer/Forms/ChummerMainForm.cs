@@ -1180,9 +1180,8 @@ namespace Chummer
                 }
                 catch (Exception e)
                 {
-                    string msg = "Could not show a MessageBox " + caption + ":" + Environment.NewLine;
-                    msg += message + Environment.NewLine + Environment.NewLine;
-                    msg += "Exception: " + e;
+                    string msg = "Could not show a MessageBox " + caption + ':' + Environment.NewLine + message
+                                 + Environment.NewLine + Environment.NewLine + "Exception: " + e;
                     Log.Fatal(e, msg);
                 }
             }
@@ -1917,7 +1916,7 @@ namespace Chummer
                                     {
                                         throw new ArgumentException(
                                             "Chummer started with unknown command line arguments: " +
-                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                            strArgs.Aggregate((j, k) => j + ' ' + k));
                                     }
 
                                     if (Path.GetExtension(strArg) != ".chum5")

@@ -410,7 +410,7 @@ namespace Chummer.Backend.Equipment
 
                                 // Locate the selected piece.
                                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode(
-                                    "/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + "]");
+                                    "/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + ']');
 
                                 if (objXmlMod != null)
                                 {
@@ -472,7 +472,7 @@ namespace Chummer.Backend.Equipment
                             strForceValue = objXmlAttributes["select"]?.InnerText ?? string.Empty;
                         }
 
-                        XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlArmorMod.InnerText.CleanXPath() + "]");
+                        XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlArmorMod.InnerText.CleanXPath() + ']');
                         if (objXmlMod != null)
                         {
                             ArmorMod objMod = new ArmorMod(_objCharacter);
@@ -595,8 +595,8 @@ namespace Chummer.Backend.Equipment
             {
                 string strLoopID = objXmlAddWeapon.InnerText;
                 XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
+                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
+                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
 
                 int intAddWeaponRating = 0;
                 string strLoopRating = objXmlAddWeapon.SelectSingleNode("@rating")?.Value;
@@ -2150,9 +2150,9 @@ namespace Chummer.Backend.Equipment
                     sbdValue.Append(strExpression);
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
-                        sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => "0");
-                        sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => "0");
-                        if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
+                        sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}', () => "0");
+                        sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => "0");
+                        if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                         {
                             int intTotalChildrenValue = 0;
                             foreach (Gear objLoopGear in Children)
@@ -2163,7 +2163,7 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            sbdValue.Replace("{Children " + strMatrixAttribute + "}",
+                            sbdValue.Replace("{Children " + strMatrixAttribute + '}',
                                              intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
                         }
                     }

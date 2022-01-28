@@ -59,7 +59,7 @@ namespace Chummer
                 // Build the list of Exotic Active Skills from the Skills file.
                 using (XmlNodeList objXmlSkillList = _objCharacter.LoadData("skills.xml")
                                                                   .SelectNodes(
-                                                                      "/chummer/skills/skill[exotic = \"True\"]"))
+                                                                      "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + ']'))
                 {
                     if (objXmlSkillList?.Count > 0)
                     {

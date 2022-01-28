@@ -61,7 +61,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSelectedId))
                         objXmlMentor =
                             _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " +
-                                                                          strSelectedId.CleanXPath() + "]");
+                                                                          strSelectedId.CleanXPath() + ']');
                 }
 
                 if (objXmlMentor != null)
@@ -172,7 +172,7 @@ namespace Chummer
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + strSelectedId.CleanXPath() + ']');
                 if (objXmlMentor == null)
                     return;
 
@@ -195,7 +195,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
             {
                 foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
-                             "mentors/mentor[" + strFilter + "]"))
+                             "mentors/mentor[" + strFilter + ']'))
                 {
                     if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
 

@@ -282,8 +282,8 @@ namespace Chummer.Backend.Equipment
                         {
                             string strLoopID = objXmlAddWeapon.InnerText;
                             XmlNode objXmlWeapon = strLoopID.IsGuid()
-                                ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
-                                : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
+                                ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
+                                : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
 
                             int intAddWeaponRating = 0;
                             string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;

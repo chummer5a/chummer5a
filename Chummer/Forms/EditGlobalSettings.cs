@@ -1675,7 +1675,7 @@ namespace Chummer
                     sw.Start();
                     string[] files = Directory.GetFiles(fbd.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly);
                     XPathNavigator books = await tskLoadBooks;
-                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language=\"" + _strSelectedLanguage + "\"]");
+                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']');
                     using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
                     {
                         List<SourcebookInfo> list = null;

@@ -546,7 +546,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 IncludedInVehicle = true
                             };
-                            xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = " + xmlModNode.InnerText.CleanXPath() + "]");
+                            xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = " + xmlModNode.InnerText.CleanXPath() + ']');
                             objMod.Load(xmlDataNode);
                             Mods.Add(objMod);
                         }

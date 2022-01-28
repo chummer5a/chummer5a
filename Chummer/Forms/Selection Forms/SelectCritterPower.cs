@@ -54,7 +54,7 @@ namespace Chummer
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
             XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("metavariants/metavariant[id = "
                                                                                       + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                                                                      + "]");
+                                                                                      + ']');
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }
@@ -132,7 +132,7 @@ namespace Chummer
             string strSelectedPower = trePowers.SelectedNode.Tag?.ToString();
             if (!string.IsNullOrEmpty(strSelectedPower))
             {
-                XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + "]");
+                XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + ']');
                 if (objXmlPower != null)
                 {
                     lblCritterPowerCategory.Text = objXmlPower.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
@@ -188,7 +188,7 @@ namespace Chummer
                             .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"))
                             .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouchLong"))
                             .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"))
-                            .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ')')
+                            .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea") + ')')
                             .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
                     }
                     lblCritterPowerRange.Text = strRange;
@@ -351,7 +351,7 @@ namespace Chummer
                                                  .Append(")) or ");
                                 if (strItem == "Toxic Critter Powers")
                                 {
-                                    sbdCategoryFilter.Append("toxic = \"True\" or ");
+                                    sbdCategoryFilter.Append("toxic = ").Append(bool.TrueString.CleanXPath()).Append(" or ");
                                     blnHasToxic = true;
                                 }
                             }
@@ -365,7 +365,7 @@ namespace Chummer
                     }
 
                     if (!blnHasToxic)
-                        sbdFilter.Append(" and (not(toxic) or toxic != \"True\")");
+                        sbdFilter.Append(" and (not(toxic) or toxic != ").Append(bool.TrueString.CleanXPath()).Append(')');
                 }
 
                 if (!string.IsNullOrEmpty(txtSearch.Text))
@@ -415,7 +415,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedPower))
                 return;
 
-            XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + "]");
+            XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + ']');
             if (objXmlPower == null)
                 return;
 

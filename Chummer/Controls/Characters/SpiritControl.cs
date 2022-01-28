@@ -351,7 +351,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + "]");
+                                    "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + ']');
                             lstCritters.Add(new ListItem(strSpiritCombat,
                                                          objXmlCritterNode
                                                              ?.SelectSingleNodeAndCacheExpression("translate")
@@ -363,7 +363,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + "]");
+                                    "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + ']');
                             lstCritters.Add(new ListItem(strSpiritDetection,
                                                          objXmlCritterNode
                                                              ?.SelectSingleNodeAndCacheExpression("translate")
@@ -375,7 +375,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + "]");
+                                    "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + ']');
                             lstCritters.Add(new ListItem(strSpiritHealth,
                                                          objXmlCritterNode
                                                              ?.SelectSingleNodeAndCacheExpression("translate")
@@ -387,7 +387,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + "]");
+                                    "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + ']');
                             lstCritters.Add(new ListItem(strSpiritIllusion,
                                                          objXmlCritterNode
                                                              ?.SelectSingleNodeAndCacheExpression("translate")
@@ -521,7 +521,7 @@ namespace Chummer
             // Code from frmMetatype.
             XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
 
-            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + "]");
+            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + ']');
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)

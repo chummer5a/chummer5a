@@ -49,7 +49,7 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + _strForceCategory.CleanXPath() + "]")
+                                                      + _strForceCategory.CleanXPath() + ']')
                              : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;

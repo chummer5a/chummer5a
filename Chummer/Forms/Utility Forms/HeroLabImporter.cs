@@ -160,7 +160,7 @@ namespace Chummer
                 }
 
                 string strFileText
-                    = strFile.CheapReplace(Utils.GetStartupPath, () => "<" + Application.ProductName + ">");
+                    = strFile.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>');
                 TreeNode nodRootNode = new TreeNode
                 {
                     Text = strFileText,
@@ -262,7 +262,7 @@ namespace Chummer
                         {
                             Text = CalculatedName(objCache),
                             ToolTipText = strFile.CheapReplace(Utils.GetStartupPath,
-                                                               () => "<" + Application.ProductName + ">")
+                                                               () => '<' + Application.ProductName + '>')
                         };
                         nodRootNode.Nodes.Add(objNode);
 
@@ -369,18 +369,18 @@ namespace Chummer
 
                 // Populate character information fields.
                 XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
-                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
+                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 if (objMetatypeNode == null)
                 {
                     objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
+                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 }
 
                 string strMetatype = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metatype;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
-                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
+                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
                     strMetatype += " (" + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metavariant) + ')';
                 }

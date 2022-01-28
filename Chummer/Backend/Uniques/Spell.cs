@@ -593,7 +593,7 @@ namespace Chummer
                     .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage))
                     .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage)) // Short form to remain export-friendly
                     .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
-                    .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
+                    .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
                     .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage))
                     .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
             }

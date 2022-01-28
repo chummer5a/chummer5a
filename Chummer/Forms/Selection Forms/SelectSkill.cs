@@ -225,7 +225,7 @@ namespace Chummer
                             XPathNavigator objXmlSkill = _objXmlDocument.SelectSingleNode(
                                 "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath()
                                                                   + " and name = " + objExoticSkill.Name.CleanXPath()
-                                                                  + "]");
+                                                                  + ']');
                             lstSkills.Add(new ListItem(objExoticSkill.DictionaryKey,
                                                        (objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                         ?? objExoticSkill.CurrentDisplayName)

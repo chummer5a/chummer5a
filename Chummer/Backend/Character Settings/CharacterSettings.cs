@@ -1167,7 +1167,7 @@ namespace Chummer
             // A very hacky legacy shim, but also works as a bit of a sanity check
             else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
             {
-                _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
             }
             objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
             objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);

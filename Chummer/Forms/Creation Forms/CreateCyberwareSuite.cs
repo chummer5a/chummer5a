@@ -79,7 +79,7 @@ namespace Chummer
             // See if a Suite with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (_objCharacter.LoadDataXPath(_strType + ".xml").SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + "]") != null)
+            if (_objCharacter.LoadDataXPath(_strType + ".xml").SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + ']') != null)
             {
                 Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -126,8 +126,8 @@ namespace Chummer
                     if (!blnNewFile)
                     {
                         // <cyberwares>
-                        objWriter.WriteStartElement(_strType + "s");
-                        using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + "s"))
+                        objWriter.WriteStartElement(_strType + 's');
+                        using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + 's'))
                             if (xmlCyberwareList?.Count > 0)
                                 foreach (XmlNode xmlCyberware in xmlCyberwareList)
                                     xmlCyberware.WriteContentTo(objWriter);
@@ -167,7 +167,7 @@ namespace Chummer
                     // <grade />
                     objWriter.WriteElementString("grade", strGrade);
                     // <cyberwares>
-                    objWriter.WriteStartElement(_strType + "s");
+                    objWriter.WriteStartElement(_strType + 's');
 
                     // Write out the Cyberware.
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
@@ -183,7 +183,7 @@ namespace Chummer
                             if (objCyberware.Children.Count > 0)
                             {
                                 // <cyberwares>
-                                objWriter.WriteStartElement(_strType + "s");
+                                objWriter.WriteStartElement(_strType + 's');
                                 foreach (Cyberware objChild in objCyberware.Children)
                                 {
                                     // Do not include items that come with the base item by default.

@@ -761,8 +761,8 @@ namespace Chummer.Backend.Equipment
             {
                 string strLoopID = objXmlAddWeapon.InnerText;
                 XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
+                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
+                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
 
                 if (objXmlWeapon != null)
                 {
@@ -801,9 +801,9 @@ namespace Chummer.Backend.Equipment
                         string strLoopID = objXml.InnerText;
                         XmlNode objXmlAccessory = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + "]")
+                                "/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + ']')
                             : objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + "]");
+                                "/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + ']');
 
                         if (objXmlAccessory == null) continue;
                         WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
@@ -838,8 +838,8 @@ namespace Chummer.Backend.Equipment
             {
                 string strLoopID = xmlAddVehicle.InnerText;
                 XmlNode xmlVehicle = strLoopID.IsGuid()
-                    ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strLoopID.CleanXPath() + "]")
-                    : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = " + strLoopID.CleanXPath() + "]");
+                    ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strLoopID.CleanXPath() + ']')
+                    : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = " + strLoopID.CleanXPath() + ']');
 
                 if (xmlVehicle != null)
                 {
@@ -1193,7 +1193,7 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = " + strName.CleanXPath() + "]");
+                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = " + strName.CleanXPath() + ']');
 
                             if (objXmlSubsystem != null)
                             {
@@ -1226,7 +1226,7 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = " + strName.CleanXPath() + "]");
+                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = " + strName.CleanXPath() + ']');
 
                             if (objXmlSubsystem != null)
                             {
@@ -3531,7 +3531,7 @@ namespace Chummer.Backend.Equipment
                         strSecondHalf = '[' + strSecondHalf + ']';
                     }
 
-                    strReturn += "/" + strSecondHalf;
+                    strReturn += '/' + strSecondHalf;
                 }
                 else if (strCapacity.Contains("Rating") ||
                          (strCapacity.StartsWith('[') && Children.Any(x => x.AddToParentCapacity)))
@@ -3778,14 +3778,14 @@ namespace Chummer.Backend.Equipment
                     sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
-                        sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}",
+                        sbdValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + '}',
                                               () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(
                                                   GlobalSettings
                                                       .InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}",
+                        sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
                                               () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
                         if (Children.Count + GearChildren.Count > 0 &&
-                            strExpression.Contains("{Children " + strMatrixAttribute + "}"))
+                            strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                         {
                             int intTotalChildrenValue = 0;
                             foreach (Cyberware objLoopCyberware in Children)
@@ -3805,7 +3805,7 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            sbdValue.Replace("{Children " + strMatrixAttribute + "}",
+                            sbdValue.Replace("{Children " + strMatrixAttribute + '}',
                                              intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
                         }
                     }

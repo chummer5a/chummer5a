@@ -1119,7 +1119,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    strReturn += "/" + strSecondHalf;
+                    strReturn += '/' + strSecondHalf;
                 }
                 else if (strReturn.Contains("Rating"))
                 {

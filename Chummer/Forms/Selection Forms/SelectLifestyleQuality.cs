@@ -128,7 +128,7 @@ namespace Chummer
                 return;
             }
 
-            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + "]");
+            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + ']');
             if (objXmlQuality == null)
             {
                 tlpRight.Visible = false;
@@ -433,7 +433,7 @@ namespace Chummer
             string strSelectedSourceIDString = lstLifestyleQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + "]");
+            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + ']');
             if (objNode == null || !RequirementMet(objNode, true))
                 return;
 
@@ -525,10 +525,10 @@ namespace Chummer
                                         XmlNode objNode
                                             = _objMetatypeDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]") ??
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']') ??
                                               _objCritterDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]");
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']');
                                         sbdForbidden.AppendLine().Append('\t')
                                                     .Append(
                                                         objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
@@ -544,10 +544,10 @@ namespace Chummer
                                         XmlNode objNode
                                             = _objMetatypeDocument.SelectSingleNode(
                                                   "/chummer/categories/category[. = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]") ??
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']') ??
                                               _objCritterDocument.SelectSingleNode(
                                                   "/chummer/categories/category[. = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]");
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']');
                                         sbdForbidden.AppendLine().Append('\t').Append(
                                             objNode.Attributes["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                     }
@@ -562,10 +562,10 @@ namespace Chummer
                                         XmlNode objNode
                                             = _objMetatypeDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]") ??
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']') ??
                                               _objCritterDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]");
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']');
                                         sbdForbidden.AppendLine().Append('\t')
                                                     .Append(
                                                         objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
@@ -731,10 +731,10 @@ namespace Chummer
                                                 XmlNode objNode =
                                                     _objMetatypeDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]") ??
+                                                        objXmlRequired.InnerText.CleanXPath() + ']') ??
                                                     _objCritterDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]");
+                                                        objXmlRequired.InnerText.CleanXPath() + ']');
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(objNode["translate"]?.InnerText
                                                                           ?? objXmlRequired.InnerText);
@@ -1085,10 +1085,10 @@ namespace Chummer
                                                 XmlNode objNode =
                                                     _objMetatypeDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]") ??
+                                                        objXmlRequired.InnerText.CleanXPath() + ']') ??
                                                     _objCritterDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]");
+                                                        objXmlRequired.InnerText.CleanXPath() + ']');
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(objNode["translate"]?.InnerText
                                                                           ?? objXmlRequired.InnerText);

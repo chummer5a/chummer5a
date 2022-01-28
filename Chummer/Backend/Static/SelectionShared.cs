@@ -159,7 +159,7 @@ namespace Chummer
                         objCharacter.AttributeSection.ProcessAttributesInXPath(sbdLimitString, strLimitString);
                         foreach (string strLimb in Character.LimbStrings)
                         {
-                            sbdLimitString.CheapReplace(strLimitString, "{" + strLimb + "}",
+                            sbdLimitString.CheapReplace(strLimitString, '{' + strLimb + '}',
                                                         () => (string.IsNullOrEmpty(strLocation)
                                                                 ? objCharacter.LimbCount(strLimb)
                                                                 : objCharacter.LimbCount(strLimb) / 2)

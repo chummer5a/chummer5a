@@ -829,7 +829,7 @@ namespace Chummer
                 if (strReturn.StartsWith("Windows") && !string.IsNullOrEmpty(objOSInfo.ServicePack))
                 {
                     //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
-                    strReturn += " " + objOSInfo.ServicePack;
+                    strReturn += ' ' + objOSInfo.ServicePack;
                 }
             }
             catch (Exception e)

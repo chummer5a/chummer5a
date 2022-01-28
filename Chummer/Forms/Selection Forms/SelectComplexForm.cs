@@ -54,7 +54,7 @@ namespace Chummer
             {
                 XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = "
                                                                                                  + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                                                                                 + "]");
+                                                                                                 + ']');
                 if (xmlMetavariantNode != null)
                     _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
@@ -78,7 +78,7 @@ namespace Chummer
             }
 
             // Display the Complex Form information.
-            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + "]");
+            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + ']');
             if (xmlComplexForm == null)
             {
                 tlpRight.Visible = false;
@@ -272,7 +272,7 @@ namespace Chummer
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                     if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform") != null
                         && _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression(
-                            "complexform[. = " + strName.CleanXPath() + "]") == null)
+                            "complexform[. = " + strName.CleanXPath() + ']') == null)
                         continue;
 
                     lstComplexFormItems.Add(

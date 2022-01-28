@@ -60,9 +60,9 @@ namespace Chummer
                 if (Mode == "Knowledge")
                     xmlParentSkill
                         = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = "
-                                                           + _objSkill.Name.CleanXPath() + "]")
+                                                           + _objSkill.Name.CleanXPath() + ']')
                           ?? _objXmlDocument.SelectSingleNode(
-                              "/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + "]");
+                              "/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + ']');
                 else
                     xmlParentSkill = _objXmlDocument.SelectSingleNode(
                         "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
