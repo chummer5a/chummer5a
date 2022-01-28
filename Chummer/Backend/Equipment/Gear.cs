@@ -768,6 +768,7 @@ namespace Chummer.Backend.Equipment
             if (objGear == null)
                 return;
             _objCachedMyXmlNode = objGear.GetNode();
+            _objCachedMyXPathNode = objGear.GetNodeXPath();
             SourceID = objGear.SourceID;
             _blnAllowRename = objGear.AllowRename;
             _strName = objGear.Name;

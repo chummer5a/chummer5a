@@ -709,12 +709,10 @@ namespace Chummer.Backend.Equipment
         {
             if (objNode == null)
                 return;
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-            {
-                _objCachedMyXmlNode = null;
-                _objCachedMyXPathNode = null;
-            }
-
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -728,8 +726,7 @@ namespace Chummer.Backend.Equipment
                 }
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    XmlNode node = GetNode(GlobalSettings.Language);
-                    node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
                 string strLocation = objNode["location"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLocation))
@@ -801,7 +798,6 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 objMyNode.Value?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))

@@ -144,16 +144,12 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-            }
-
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-            {
-                _objCachedMyXmlNode = null;
-                _objCachedMyXPathNode = null;
+                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetStringFieldQuickly("source", ref _strSource);

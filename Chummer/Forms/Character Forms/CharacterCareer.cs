@@ -5497,7 +5497,7 @@ namespace Chummer
 
         private bool RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
         {
-            XmlNode objXmlDeleteQuality = objSelectedQuality.GetNode();
+            XPathNavigator objXmlDeleteQuality = objSelectedQuality.GetNodeXPath();
             bool blnMetatypeQuality = false;
 
             switch (objSelectedQuality.OriginSource)
@@ -5515,9 +5515,9 @@ namespace Chummer
                     {
                         // Look up the cost of the Quality.
                         int intBP = 0;
-                        if (objSelectedQuality.Type == QualityType.Negative || objXmlDeleteQuality["refundkarmaonremove"] != null)
+                        if (objSelectedQuality.Type == QualityType.Negative || objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("refundkarmaonremove") != null)
                         {
-                            intBP = Convert.ToInt32(objXmlDeleteQuality["karma"]?.InnerText, GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
+                            intBP = Convert.ToInt32(objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("karma")?.Value, GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
                             if (blnCompleteDelete)
                                 intBP *= objSelectedQuality.Levels;
                             if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
@@ -5540,7 +5540,7 @@ namespace Chummer
 
             if (objSelectedQuality.Type == QualityType.Positive)
             {
-                if (objXmlDeleteQuality["refundkarmaonremove"] != null)
+                if (objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("refundkarmaonremove") != null)
                 {
                     int intKarmaCost = objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality;
 
@@ -5602,7 +5602,7 @@ namespace Chummer
             }
 
             // Remove any Critter Powers that are gained through the Quality (Infected).
-            if (objXmlDeleteQuality.SelectNodes("powers/power")?.Count > 0)
+            if (objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("powers/power") != null)
             {
                 foreach (XPathNavigator objXmlPower in CharacterObject.LoadDataXPath("critterpowers.xml").SelectAndCacheExpression("optionalpowers/optionalpower"))
                 {
@@ -5623,7 +5623,7 @@ namespace Chummer
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"));
+            RemoveAddedQualities(objXmlDeleteQuality.Select("addqualities/addquality"));
 
             // Perform removal
             if (blnCompleteDelete && objSelectedQuality.Levels > 1)
@@ -5653,9 +5653,9 @@ namespace Chummer
                 nudQualityLevel.Enabled = false;
                 return;
             }
-            XmlNode objQualityNode = objSelectedQuality.GetNode();
-            string strLimitString = objQualityNode?["limit"]?.InnerText;
-            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode["nolevels"] == null && int.TryParse(strLimitString, out int intMaxRating))
+            XPathNavigator objQualityNode = objSelectedQuality.GetNodeXPath();
+            string strLimitString = objQualityNode?.SelectSingleNodeAndCacheExpression("limit")?.Value;
+            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 nudQualityLevel.Maximum = intMaxRating;
                 nudQualityLevel.Value = objSelectedQuality.Levels;
@@ -5678,9 +5678,8 @@ namespace Chummer
                 // Adding a new level
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
-                    XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                    XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
-                    if (!xpnSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
+                    XPathNavigator objXmlSelectedQuality = objSelectedQuality.GetNodeXPath();
+                    if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
                     {
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
@@ -5694,7 +5693,7 @@ namespace Chummer
                     if (!blnFreeCost)
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                        XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNodeAndCacheExpression("costdiscount");
+                        XPathNavigator xpnDiscountNode = objXmlSelectedQuality.SelectSingleNodeAndCacheExpression("costdiscount");
                         if (xpnDiscountNode?.RequirementsMet(CharacterObject) == true)
                         {
                             int intTemp = 0;
@@ -5723,12 +5722,18 @@ namespace Chummer
                         {
                             if (intKarmaCost > CharacterObject.Karma && !objSelectedQuality.StagedPurchase)
                             {
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.MainForm.ShowMessageBox(
+                                    this, LanguageManager.GetString("Message_NotEnoughKarma"),
+                                    LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
                                 UpdateQualityLevelValue(objSelectedQuality);
                                 break;
                             }
 
-                            string strDisplayName = objXmlSelectedQuality["translate"]?.InnerText ?? objXmlSelectedQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
+                            string strDisplayName
+                                = objXmlSelectedQuality.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                  ?? objXmlSelectedQuality.SelectSingleNodeAndCacheExpression("name")?.Value
+                                  ?? LanguageManager.GetString("String_Unknown");
                             if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                                 , strDisplayName
                                 , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
@@ -5747,7 +5752,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Quality objQuality = new Quality(CharacterObject);
 
-                    objQuality.Create(objXmlSelectedQuality, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                    objQuality.Create(objSelectedQuality.GetNode(), QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                     if (objQuality.InternalId.IsEmptyGuid())
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.

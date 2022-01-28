@@ -4177,7 +4177,7 @@ namespace Chummer
                 }
 
                 // Fix for legacy characters with old addqualities improvements.
-                RemoveAddedQualities(objXmlDeleteQuality?.SelectNodes("addqualities/addquality"));
+                RemoveAddedQualities(objXmlDeleteQuality?.CreateNavigator()?.Select("addqualities/addquality"));
 
                 // Perform removal
                 if (objSelectedQuality.Levels > 1 && blnCompleteDelete)
@@ -6904,9 +6904,12 @@ namespace Chummer
                 nudQualityLevel.Enabled = false;
                 return;
             }
-            XmlNode objQualityNode = objSelectedQuality.GetNode();
-            string strLimitString = objQualityNode != null ? objQualityNode["chargenlimit"]?.InnerText ?? objQualityNode["limit"]?.InnerText : string.Empty;
-            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode?["nolevels"] == null && int.TryParse(strLimitString, out int intMaxRating))
+            XPathNavigator objQualityNode = objSelectedQuality.GetNodeXPath();
+            string strLimitString = objQualityNode != null
+                ? objQualityNode.SelectSingleNodeAndCacheExpression("chargenlimit")?.Value
+                  ?? objQualityNode.SelectSingleNodeAndCacheExpression("limit")?.Value
+                : string.Empty;
+            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode?.SelectSingleNodeAndCacheExpression("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 nudQualityLevel.Maximum = intMaxRating;
                 nudQualityLevel.Value = objSelectedQuality.Levels;
@@ -6934,8 +6937,7 @@ namespace Chummer
             // Adding new levels
             for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
             {
-                XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                if (!objXmlSelectedQuality.CreateNavigator().RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
+                if (!objSelectedQuality.GetNodeXPath().RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
                 {
                     UpdateQualityLevelValue(objSelectedQuality);
                     break;
@@ -6943,7 +6945,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 Quality objQuality = new Quality(CharacterObject);
 
-                objQuality.Create(objXmlSelectedQuality, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                objQuality.Create(objSelectedQuality.GetNode(), QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                 if (objQuality.InternalId.IsEmptyGuid())
                 {
                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.

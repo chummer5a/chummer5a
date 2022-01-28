@@ -209,10 +209,12 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             if (objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors))
@@ -230,7 +232,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
             if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && _objCharacter.LastSavedVersion <= new Version(5, 197, 30))
             {
-                this.GetNodeXPath()?.TryGetStringFieldQuickly("dv", ref _strDV);
+                objMyNode.Value?.TryGetStringFieldQuickly("dv", ref _strDV);
             }
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
             if (_blnExtended)

@@ -255,16 +255,25 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                if (!node.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                if (this.GetNodeXPath().TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+                else
                 {
                     string strPowerName = Name;
                     int intPos = strPowerName.IndexOf('(');
                     if (intPos != -1)
                         strPowerName = strPowerName.Substring(0, intPos - 1);
-                    XPathNavigator xmlPower = CharacterObject.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name, " + strPowerName.CleanXPath() + ")]");
+                    XPathNavigator xmlPower = CharacterObject.LoadDataXPath("powers.xml")
+                                                             .SelectSingleNode(
+                                                                 "/chummer/powers/power[starts-with(./name, "
+                                                                 + strPowerName.CleanXPath() + ")]");
                     if (xmlPower.TryGetField("id", Guid.TryParse, out _guiSourceID))
                     {
                         _objCachedMyXmlNode = null;

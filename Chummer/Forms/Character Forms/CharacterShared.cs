@@ -2007,15 +2007,15 @@ namespace Chummer
         /// Method for removing old <addqualities /> nodes from existing characters.
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
-        protected void RemoveAddedQualities(XmlNodeList objNodeList)
+        protected void RemoveAddedQualities(XPathNodeIterator objNodeList)
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
             using (new CursorWait(this))
             {
-                foreach (XmlNode objNode in objNodeList)
+                foreach (XPathNavigator objNode in objNodeList)
                 {
-                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
+                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.Value);
                     if (objQuality != null)
                     {
                         _objCharacter.Qualities.Remove(objQuality);
