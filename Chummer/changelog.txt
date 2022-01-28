@@ -88,6 +88,7 @@ Data Changes:
 - Fixed the following critter entries from Howling Shadows: Glow Rat, Neogargoyle, and Sea Leech.
 - Added Spinrad Global and a list of AA megacorporations to life modules' data files and to the suggested list for SINner (Corporate) and SINner (Corporate Limited). Fixes #4668.
 - Built-in German character settings now use 2d6 for astral initiative instead of 3d6. Fixes #4531.
+- Built-in character settings for Full House with Sum-to-Ten have been added, as well as German versions of all three types of Full House settings.
 
 Changed/New Strings:
 - String_GameplayOption
