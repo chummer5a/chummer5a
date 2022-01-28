@@ -28,8 +28,10 @@ namespace Chummer
     /// Special class that should be used instead of GetEnumerator for collections with an internal locking object
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct LockingEnumerator<T> : IEnumerator<T>, IEquatable<LockingEnumerator<T>>
+    public sealed class LockingEnumerator<T> : IEnumerator<T>, IEquatable<LockingEnumerator<T>>
     {
+        private bool _blnHasEnteredTopReadLock;
+
         private readonly ReaderWriterLockSlim _rwlThis;
 
         private readonly IEnumerator<T> _objInternalEnumerator;
@@ -51,13 +53,35 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
                 _objInternalEnumerator.Dispose();
+            if (_blnHasEnteredTopReadLock)
+            {
+                _blnHasEnteredTopReadLock = false;
+                _rwlThis.ExitReadLock();
+            }
         }
 
         /// <inheritdoc />
         public bool MoveNext()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _objInternalEnumerator.MoveNext();
+            bool blnReturn = false;
+            // When we start moving, enter a read lock that is only released when we stop moving
+            if (!_blnHasEnteredTopReadLock)
+            {
+                _blnHasEnteredTopReadLock = true;
+                _rwlThis.EnterReadLock();
+            }
+            try
+            {
+                return blnReturn = _objInternalEnumerator.MoveNext();
+            }
+            finally
+            {
+                if (!blnReturn && _blnHasEnteredTopReadLock)
+                {
+                    _blnHasEnteredTopReadLock = false;
+                    _rwlThis.ExitReadLock();
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -65,6 +89,11 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
                 _objInternalEnumerator.Reset();
+            if (_blnHasEnteredTopReadLock)
+            {
+                _blnHasEnteredTopReadLock = false;
+                _rwlThis.ExitReadLock();
+            }
         }
 
         /// <inheritdoc />
@@ -83,7 +112,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Equals(LockingEnumerator<T> other)
         {
-            return Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
+            return other != null && Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
         }
 
         /// <inheritdoc />
@@ -106,7 +135,7 @@ namespace Chummer
 
         public static bool operator ==(LockingEnumerator<T> left, LockingEnumerator<T> right)
         {
-            return left.Equals(right);
+            return left != null && left.Equals(right);
         }
 
         public static bool operator !=(LockingEnumerator<T> left, LockingEnumerator<T> right)
