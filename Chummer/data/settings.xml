@@ -98,6 +98,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -246,6 +255,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -394,6 +412,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -542,6 +569,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -690,6 +726,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -838,6 +883,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -986,6 +1040,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -1135,6 +1198,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -1284,6 +1356,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -1432,6 +1513,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>2</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -1586,6 +1676,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>2</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -1741,6 +1840,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>2</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -1896,6 +2004,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -2082,6 +2199,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -2268,6 +2394,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>False</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -2417,6 +2552,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -2605,6 +2749,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -2793,6 +2946,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -2986,6 +3148,15 @@
       <unclampattributeminimum>False</unclampattributeminimum>
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -3182,6 +3353,14 @@
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
       <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -3377,6 +3556,14 @@
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
       <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -3572,6 +3759,14 @@
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
       <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -3767,6 +3962,14 @@
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
       <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -3962,6 +4165,14 @@
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
       <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>
@@ -4157,6 +4368,14 @@
       <dronemods>True</dronemods>
       <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
       <dicepenaltysustaining>2</dicepenaltysustaining>
+      <mininitiativedice>1</mininitiativedice>
+      <maxinitiativedice>5</maxinitiativedice>
+      <minastralinitiativedice>3</minastralinitiativedice>
+      <maxastralinitiativedice>5</maxastralinitiativedice>
+      <mincoldsiminitiativedice>3</mincoldsiminitiativedice>
+      <maxcoldsiminitiativedice>5</maxcoldsiminitiativedice>
+      <minhotsiminitiativedice>4</minhotsiminitiativedice>
+      <maxhotsiminitiativedice>5</maxhotsiminitiativedice>
       <karmacost>
         <karmaattribute>5</karmaattribute>
         <karmaquality>1</karmaquality>

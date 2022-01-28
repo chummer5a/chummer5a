@@ -1255,6 +1255,19 @@ namespace Chummer
             nudEssenceDecimals.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EssenceDecimals));
             chkDontRoundEssenceInternally.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DontRoundEssenceInternally));
 
+            nudMinInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinInitiativeDice));
+            nudMaxInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinInitiativeDice));
+            nudMaxInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxInitiativeDice));
+            nudMinAstralInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinAstralInitiativeDice));
+            nudMaxAstralInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinAstralInitiativeDice));
+            nudMaxAstralInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxAstralInitiativeDice));
+            nudMinColdSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinColdSimInitiativeDice));
+            nudMaxColdSimInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinColdSimInitiativeDice));
+            nudMaxColdSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxColdSimInitiativeDice));
+            nudMinHotSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinHotSimInitiativeDice));
+            nudMaxHotSimInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinHotSimInitiativeDice));
+            nudMaxHotSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxHotSimInitiativeDice));
+
             chkEnable4eStyleEnemyTracking.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking));
             flpKarmaGainedFromEnemies.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking));
             nudKarmaGainedFromEnemies.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaEnemy));

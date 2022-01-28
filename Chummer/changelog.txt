@@ -56,6 +56,7 @@ Application Changes:
 - Fixed various issues caused by interactions between bonuses/improvements that add special skills and custom rulesets that can alter special skills lists.
 - If the user is prompted to load an autosave for a character that might have been unsaved as the result of a crash and the user declines, that autosave is now deleted.
 - Reduced crashes and potential weird issues caused by interactions with the current Windows user's designated temporary folder.
+- Minimum and maximum initiative dice for the physical world and AR, astral, cold-sim VR, and hot-sim VR can all now be tweaked through character settings.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
@@ -86,6 +87,7 @@ Data Changes:
 - Fixed Trollbow not using the Bow specialisation. Closes #4676
 - Fixed the following critter entries from Howling Shadows: Glow Rat, Neogargoyle, and Sea Leech.
 - Added Spinrad Global and a list of AA megacorporations to life modules' data files and to the suggested list for SINner (Corporate) and SINner (Corporate Limited). Fixes #4668.
+- Built-in German character settings now use 2d6 for astral initiative instead of 3d6. Fixes #4531.
 
 Changed/New Strings:
 - String_GameplayOption

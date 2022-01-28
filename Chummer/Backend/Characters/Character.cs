@@ -661,10 +661,34 @@ namespace Chummer
                     break;
                 case nameof(CharacterSettings.KarmaSpell):
                     if (FreeSpells > 0)
-                    {
                         OnPropertyChanged(nameof(PositiveQualityKarma));
+                    break;
+                case nameof(CharacterSettings.MinInitiativeDice):
+                    if (this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("initiativedice") == null)
+                    {
+                        _intInitiativeDice = Settings.MinInitiativeDice;
+                        OnPropertyChanged(nameof(InitiativeDice));
                     }
-
+                    break;
+                case nameof(CharacterSettings.MaxInitiativeDice):
+                    OnPropertyChanged(nameof(InitiativeDice));
+                    break;
+                case nameof(CharacterSettings.MinAstralInitiativeDice):
+                case nameof(CharacterSettings.MaxAstralInitiativeDice):
+                    OnPropertyChanged(nameof(AstralInitiativeDice));
+                    break;
+                case nameof(CharacterSettings.MinColdSimInitiativeDice):
+                case nameof(CharacterSettings.MaxColdSimInitiativeDice):
+                    OnPropertyChanged(nameof(MatrixInitiativeColdDice));
+                    break;
+                case nameof(CharacterSettings.MinHotSimInitiativeDice):
+                    if (IsAI)
+                        this.OnMultiplePropertyChanged(nameof(MatrixInitiativeDice), nameof(MatrixInitiativeHotDice));
+                    else
+                        OnPropertyChanged(nameof(MatrixInitiativeHotDice));
+                    break;
+                case nameof(CharacterSettings.MaxHotSimInitiativeDice):
+                    OnPropertyChanged(nameof(MatrixInitiativeHotDice));
                     break;
             }
         }
@@ -1541,7 +1565,7 @@ namespace Chummer
             Page = charNode["page"]?.InnerText ?? "0";
             _intMetatypeBP = 0;
             charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
-            _intInitiativeDice = 1;
+            _intInitiativeDice = Settings.MinInitiativeDice;
             charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
 
             Movement = objXmlMetatype["movement"]?.InnerText ?? string.Empty;
@@ -10933,7 +10957,7 @@ namespace Chummer
                                  + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice).StandardRound()
                                  + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd).StandardRound();
 
-                return Math.Min(intExtraIP, 5);
+                return Math.Min(intExtraIP, Settings.MaxInitiativeDice);
             }
         }
 
@@ -10996,7 +11020,14 @@ namespace Chummer
         /// <summary>
         /// Astral Initiative Dice.
         /// </summary>
-        public static int AstralInitiativeDice => 3;
+        public int AstralInitiativeDice
+        {
+            get
+            {
+                int intReturn = Settings.MinAstralInitiativeDice;
+                return Math.Min(intReturn, Settings.MaxAstralInitiativeDice);
+            }
+        }
 
         #endregion
 
@@ -11110,14 +11141,14 @@ namespace Chummer
                 int intReturn;
                 // A.I.s always have 4 Matrix Initiative Dice.
                 if(IsAI)
-                    intReturn = 4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice).StandardRound();
+                    intReturn = Settings.MinHotSimInitiativeDice + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice).StandardRound();
                 else
                     intReturn = InitiativeDice;
 
                 // Add in any additional Matrix Initiative Pass bonuses.
                 intReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDiceAdd).StandardRound();
 
-                return Math.Min(intReturn, 5);
+                return Math.Min(intReturn, Settings.MaxInitiativeDice);
             }
         }
 
@@ -11204,8 +11235,8 @@ namespace Chummer
                     return MatrixInitiativeDice;
                 }
 
-                return Math.Min(3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice).StandardRound(),
-                    5);
+                return Math.Min(Settings.MinColdSimInitiativeDice + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice).StandardRound(),
+                                Settings.MaxColdSimInitiativeDice);
             }
         }
 
@@ -11292,8 +11323,8 @@ namespace Chummer
                     return MatrixInitiativeDice;
                 }
 
-                return Math.Min(4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice).StandardRound(),
-                    5);
+                return Math.Min(Settings.MinHotSimInitiativeDice + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice).StandardRound(),
+                                Settings.MaxHotSimInitiativeDice);
             }
         }
 
