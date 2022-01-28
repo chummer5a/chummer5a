@@ -91,6 +91,8 @@ Data Changes:
 - Built-in character settings for Full House with Sum-to-Ten have been added, as well as German versions of all three types of Full House settings.
 - Sum-to-Ten Improved has been added to the Chummer customdata folder. When enabled, it changes the Sum-to-Ten value of A priorities from 4 to 7 and of B priorities from 3 to 4. When using the dataset, it is recommended one uses a Sum-to-Ten value of 14 instead of 10.
 - Only Allow Basic Metatypes at Character Creation has been added to the Chummer customdata folder. When enabled, it forbids all character types (metasapients, shifters, changelings, drakes, infected, etc.) other than the basic metatypes added by the core rulebook.
+- The Newbie's Choice built-in character setting now has the Only Allow Basic Metatypes at Character Creation custom dataset enabled.
+- Added a German version for the built-in character setting Newbie's Choice.
 
 Changed/New Strings:
 - String_GameplayOption
