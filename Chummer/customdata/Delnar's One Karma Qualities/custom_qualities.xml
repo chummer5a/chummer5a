@@ -75,6 +75,12 @@
       <limit>2</limit>
       <category>Positive</category>
       <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Rad-Tolerant</quality>
+          <quality>Radiation Sponge</quality>
+        </oneof>
+      </forbidden>
       <source>D1KQ</source>
       <page>1</page>
     </quality>
