@@ -867,6 +867,12 @@
     <Content Include="customdata\In Debt Does Not Contribute to BP\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Jack of All Trades Applies Karma Modifiers in Create Mode\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Jack of All Trades Applies Karma Modifiers in Create Mode\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -97,6 +97,7 @@ Data Changes:
 - The Newbie's Choice built-in character setting now has the Only Allow Basic Metatypes at Character Creation custom dataset enabled.
 - Added a German version for the built-in character setting Newbie's Choice.
 - Added Street Grimoire Errata as a separate book entry because the errata PDF adds three new items. The sourcebook entries for Authoritative Tone and the Street Grimoire versions of Keratin Control and Living Focus now direct to Street Grimoire Errata instead of Street Grimoire.
+- Jack of All Trades Applies Karma Modifiers in Create Mode has been added to the Chummer customdata folder. It makes the karma cost modifiers of Jack of All Trades Master of None also apply at character creation.
 
 Changed/New Strings:
 - String_GameplayOption
