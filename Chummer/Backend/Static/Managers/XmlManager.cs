@@ -461,7 +461,10 @@ namespace Chummer
                 {
                     // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
                     // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
-                    XPathDocument objDataDoc = LanguageManager.GetDataDocument(strLanguage);
+                    XPathDocument objDataDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? LanguageManager.GetDataDocument(strLanguage)
+                        : await LanguageManager.GetDataDocumentAsync(strLanguage);
                     if (objDataDoc != null)
                     {
                         XmlNode xmlBaseChummerNode = xmlReturn.SelectSingleNode("/chummer");

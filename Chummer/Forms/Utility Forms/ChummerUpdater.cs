@@ -90,7 +90,7 @@ namespace Chummer
             {
                 Log.Info("More than one instance, exiting");
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Update_MultipleInstances"), LanguageManager.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_MultipleInstances"), await LanguageManager.GetStringAsync("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Log.Info("ChummerUpdater_Load exit");
                 Close();
             }
@@ -179,7 +179,7 @@ namespace Chummer
             if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                 return;
             bool blnChummerVersionGotten = true;
-            string strError = LanguageManager.GetString("String_Error").Trim();
+            string strError = (await LanguageManager.GetStringAsync("String_Error")).Trim();
             _strExceptionString = string.Empty;
             LatestVersion = strError;
             Uri uriUpdateLocation = new Uri(_blnPreferNightly
@@ -286,9 +286,9 @@ namespace Chummer
                 if (!SilentMode)
                     Program.MainForm.ShowMessageBox(this,
                     string.IsNullOrEmpty(_strExceptionString)
-                        ? LanguageManager.GetString("Warning_Update_CouldNotConnect")
+                        ? await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnect")
                         : string.Format(GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Warning_Update_CouldNotConnectException"), _strExceptionString),
+                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"), _strExceptionString),
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -322,7 +322,7 @@ namespace Chummer
                 if (!SilentMode)
                     Program.MainForm.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Warning_Update_CouldNotConnectException"), strException),
+                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"), strException),
                         Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -338,7 +338,7 @@ namespace Chummer
                 if (!SilentMode)
                     Program.MainForm.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Warning_Update_CouldNotConnectException"), strException),
+                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"), strException),
                         Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -383,16 +383,16 @@ namespace Chummer
         /// </summary>
         public string CurrentVersion { get; }
 
-        public void DoVersionTextUpdate()
+        public async Task DoVersionTextUpdate()
         {
             string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
             lblUpdaterStatus.Left = lblUpdaterStatusLabel.Left + lblUpdaterStatusLabel.Width + 6;
-            if (!_blnIsConnected || strLatestVersion == LanguageManager.GetString("String_Error").Trim())
+            if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error")).Trim())
             {
                 lblUpdaterStatus.Text = string.IsNullOrEmpty(_strExceptionString)
-                    ? LanguageManager.GetString("Warning_Update_CouldNotConnect")
-                    : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Warning_Update_CouldNotConnectException").NormalizeWhiteSpace(), _strExceptionString);
-                cmdUpdate.Text = LanguageManager.GetString("Button_Reconnect");
+                    ? await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnect")
+                    : string.Format(GlobalSettings.CultureInfo, (await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException")).NormalizeWhiteSpace(), _strExceptionString);
+                cmdUpdate.Text = await LanguageManager.GetStringAsync("Button_Reconnect");
                 cmdRestart.Enabled = false;
                 cmdCleanReinstall.Enabled = false;
                 return;
@@ -402,32 +402,32 @@ namespace Chummer
             if (VersionExtensions.TryParse(strLatestVersion, out Version objLatestVersion))
                 intResult = objLatestVersion?.CompareTo(_objCurrentVersion) ?? 0;
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             if (intResult > 0)
             {
-                lblUpdaterStatus.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Update_Available"), strLatestVersion) + strSpace +
-                                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"), CurrentVersion);
-                cmdUpdate.Text = LanguageManager.GetString("Button_Download");
+                lblUpdaterStatus.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Update_Available"), strLatestVersion) + strSpace +
+                                        string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Currently_Installed_Version"), CurrentVersion);
+                cmdUpdate.Text = await LanguageManager.GetStringAsync("Button_Download");
             }
             else
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date") + strSpace +
+                lblUpdaterStatus.Text = await LanguageManager.GetStringAsync("String_Up_To_Date") + strSpace +
                                         string.Format(GlobalSettings.CultureInfo,
-                                            LanguageManager.GetString("String_Currently_Installed_Version"),
+                                            await LanguageManager.GetStringAsync("String_Currently_Installed_Version"),
                                             CurrentVersion) + strSpace + string.Format(GlobalSettings.CultureInfo,
-                                            LanguageManager.GetString("String_Latest_Version"),
-                                            LanguageManager.GetString(_blnPreferNightly
+                                            await LanguageManager.GetStringAsync("String_Latest_Version"),
+                                            await LanguageManager.GetStringAsync(_blnPreferNightly
                                                 ? "String_Nightly"
                                                 : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
-                    cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date");
+                    cmdRestart.Text = await LanguageManager.GetStringAsync("Button_Up_To_Date");
                     cmdRestart.Enabled = false;
                 }
-                cmdUpdate.Text = LanguageManager.GetString("Button_Redownload");
+                cmdUpdate.Text = await LanguageManager.GetStringAsync("Button_Redownload");
             }
             if (_blnPreferNightly)
-                lblUpdaterStatus.Text += strSpace + LanguageManager.GetString("String_Nightly_Changelog_Warning");
+                lblUpdaterStatus.Text += strSpace + await LanguageManager.GetStringAsync("String_Nightly_Changelog_Warning");
         }
 
         private async void cmdUpdate_Click(object sender, EventArgs e)
@@ -443,19 +443,19 @@ namespace Chummer
             }
         }
 
-        private void cmdRestart_Click(object sender, EventArgs e)
+        private async void cmdRestart_Click(object sender, EventArgs e)
         {
             Log.Info("cmdRestart_Click");
-            DoUpdate();
+            await DoUpdate();
         }
 
-        private void cmdCleanReinstall_Click(object sender, EventArgs e)
+        private async void cmdCleanReinstall_Click(object sender, EventArgs e)
         {
             Log.Info("cmdCleanReinstall_Click");
-            DoCleanReinstall();
+            await DoCleanReinstall();
         }
 
-        private bool CreateBackupZip()
+        private async Task<bool> CreateBackupZip()
         {
             //Create a backup file in the temp directory.
             string strBackupZipPath = Path.Combine(Utils.GetTempPath(), "chummer" + CurrentVersion + ".zip");
@@ -470,25 +470,25 @@ namespace Chummer
             catch (UnauthorizedAccessException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                 return false;
             }
             catch (IOException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             catch (NotSupportedException)
             {
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             return true;
         }
 
-        private void DoUpdate()
+        private async Task DoUpdate()
         {
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
@@ -497,7 +497,7 @@ namespace Chummer
                     cmdUpdate.Enabled = false;
                     cmdRestart.Enabled = false;
                     cmdCleanReinstall.Enabled = false;
-                    if (!CreateBackupZip())
+                    if (!(await CreateBackupZip()))
                         return;
 
                     string[] astrAllFiles = Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories);
@@ -549,15 +549,15 @@ namespace Chummer
                         lstFilesToDelete.Add(strFileToDelete);
                     }
 
-                    InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
+                    await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
                 }
             }
         }
 
-        private void DoCleanReinstall()
+        private async Task DoCleanReinstall()
         {
-            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Updater_CleanReinstallPrompt"),
-                LanguageManager.GetString("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt"),
+                await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
@@ -566,7 +566,7 @@ namespace Chummer
                     cmdUpdate.Enabled = false;
                     cmdRestart.Enabled = false;
                     cmdCleanReinstall.Enabled = false;
-                    if (!CreateBackupZip())
+                    if (!(await CreateBackupZip()))
                         return;
 
                     string[] astrAllFiles = Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories);
@@ -592,12 +592,12 @@ namespace Chummer
                         lstFilesToDelete.Add(strFileToDelete);
                     }
 
-                    InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
+                    await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
                 }
             }
         }
 
-        private void InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete)
+        private async Task InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete)
         {
             bool blnDoRestart = true;
             // Copy over the archive from the temp directory.
@@ -636,7 +636,7 @@ namespace Chummer
                                 Program.MainForm.ShowMessageBox(
                                     this,
                                     string.Format(GlobalSettings.CultureInfo,
-                                                  LanguageManager.GetString("Message_File_Cannot_Be_Accessed"),
+                                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
                                                   Path.GetFileName(strLoopPath)));
                             blnDoRestart = false;
                             break;
@@ -647,7 +647,7 @@ namespace Chummer
                                 Program.MainForm.ShowMessageBox(
                                     this,
                                     string.Format(GlobalSettings.CultureInfo,
-                                                  LanguageManager.GetString("Message_File_Cannot_Be_Accessed"),
+                                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
                                                   Path.GetFileName(strLoopPath)));
                             blnDoRestart = false;
                             break;
@@ -656,7 +656,7 @@ namespace Chummer
                         {
                             if (!SilentMode)
                                 Program.MainForm.ShowMessageBox(
-                                    this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                                    this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                             blnDoRestart = false;
                             break;
                         }
@@ -671,7 +671,7 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strZipPath));
                 blnDoRestart = false;
             }
             catch (NotSupportedException)
@@ -680,14 +680,14 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strZipPath));
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strZipPath));
                 blnDoRestart = false;
             }
             catch (UnauthorizedAccessException)
             {
                 if (!SilentMode)
                     Program.MainForm.ShowMessageBox(
-                        this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                 blnDoRestart = false;
             }
             if (blnDoRestart)
@@ -707,7 +707,7 @@ namespace Chummer
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdOutput))
                         {
-                            sbdOutput.Append(LanguageManager.GetString("Message_Files_Cannot_Be_Removed"));
+                            sbdOutput.Append(await LanguageManager.GetStringAsync("Message_Files_Cannot_Be_Removed"));
                             foreach (string strFile in lstBlocked)
                             {
                                 sbdOutput.AppendLine().Append(strFile);
@@ -770,7 +770,7 @@ namespace Chummer
                         Program.MainForm.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          LanguageManager.GetString("Warning_Update_CouldNotConnectException"),
+                                          await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"),
                                           strException), Application.ProductName, MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
@@ -792,34 +792,34 @@ namespace Chummer
         /// <summary>
         /// The EXE file is down downloading, so replace the old file with the new one.
         /// </summary>
-        private void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
+        private async void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             Log.Info("wc_DownloadExeFileCompleted enter");
-            cmdUpdate.DoThreadSafe(() =>
+            await cmdUpdate.DoThreadSafeAsync(async () =>
             {
-                cmdUpdate.Text = LanguageManager.GetString("Button_Redownload");
+                cmdUpdate.Text = await LanguageManager.GetStringAsync("Button_Redownload");
                 cmdUpdate.Enabled = true;
             });
-            cmdRestart.DoThreadSafe(() =>
+            await cmdRestart.DoThreadSafeAsync(async () =>
             {
-                if (_blnIsConnected && cmdRestart.Text != LanguageManager.GetString("Button_Up_To_Date"))
+                if (_blnIsConnected && cmdRestart.Text != await LanguageManager.GetStringAsync("Button_Up_To_Date"))
                     cmdRestart.Enabled = true;
             });
-            cmdCleanReinstall.DoThreadSafe(() => cmdCleanReinstall.Enabled = true);
+            await cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = true);
             Log.Info("wc_DownloadExeFileCompleted exit");
             if (SilentMode)
             {
-                if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Update_CloseForms"),
-                        LanguageManager.GetString("Title_Update"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
+                if (Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_CloseForms"),
+                        await LanguageManager.GetStringAsync("Title_Update"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
                     DialogResult.Yes)
                 {
-                    DoUpdate();
+                    await DoUpdate();
                 }
                 else
                 {
                     _blnSilentModeUpdateWasDenied = true; // only actually go through with the attempt in Silent Mode once, don't prompt user any more if they canceled out once already
                     _blnIsConnected = false;
-                    this.DoThreadSafe(Close);
+                    await this.DoThreadSafeAsync(Close);
                 }
             }
         }

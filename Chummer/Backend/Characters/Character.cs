@@ -2980,7 +2980,11 @@ namespace Chummer
 
                         try
                         {
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
+                            frmLoadingForm?.PerformStep(
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_Settings")
+                                    : await LanguageManager.GetStringAsync("String_Settings"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
                             {
@@ -2998,8 +3002,14 @@ namespace Chummer
                                     !Utils.IsUnitTest)
                                 {
                                     Program.MainForm.ShowMessageBox(
-                                        LanguageManager.GetString("Message_IncorrectGameVersion_SR4"),
-                                        LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Message_IncorrectGameVersion_SR4")
+                                            : await LanguageManager.GetStringAsync("Message_IncorrectGameVersion_SR4"),
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("MessageTitle_IncorrectGameVersion")
+                                            : await LanguageManager.GetStringAsync("MessageTitle_IncorrectGameVersion"),
                                         MessageBoxButtons.YesNo,
                                         MessageBoxIcon.Error);
                                     return false;
@@ -3201,11 +3211,15 @@ namespace Chummer
                                         {
                                             if (Program.MainForm.ShowMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString(
-                                                                      "Message_CharacterOptions_CannotLoadSetting"),
+                                                                  blnSync
+                                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                                      ? LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting")
+                                                                      : await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadSetting"),
                                                                   Path.GetFileNameWithoutExtension(_strSettingsKey)),
-                                                    LanguageManager.GetString(
-                                                        "MessageTitle_CharacterOptions_CannotLoadSetting"),
+                                                    blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting")
+                                                        : await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_CannotLoadSetting"),
                                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                             {
                                                 return false;
@@ -3255,15 +3269,33 @@ namespace Chummer
                                         {
                                             if (Program.MainForm.ShowMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString(
-                                                                      "Message_CharacterOptions_DesyncBuildMethod"),
+                                                                  blnSync
+                                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                                      ? LanguageManager.GetString(
+                                                                          "Message_CharacterOptions_DesyncBuildMethod")
+                                                                      : await LanguageManager.GetStringAsync(
+                                                                          "Message_CharacterOptions_DesyncBuildMethod"),
                                                                   Path.GetFileNameWithoutExtension(_strSettingsKey),
-                                                                  LanguageManager.GetString(
-                                                                      "String_" + objProspectiveSettings.BuildMethod),
-                                                                  LanguageManager.GetString(
-                                                                      "String_" + eSavedBuildMethod)),
-                                                    LanguageManager.GetString(
-                                                        "MessageTitle_CharacterOptions_DesyncBuildMethod"),
+                                                                  blnSync
+                                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                                      ? LanguageManager.GetString(
+                                                                          "String_" + objProspectiveSettings
+                                                                              .BuildMethod)
+                                                                      : await LanguageManager.GetStringAsync(
+                                                                          "String_" + objProspectiveSettings
+                                                                              .BuildMethod),
+                                                                  blnSync
+                                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                                      ? LanguageManager.GetString(
+                                                                          "String_" + eSavedBuildMethod)
+                                                                      : await LanguageManager.GetStringAsync(
+                                                                          "String_" + eSavedBuildMethod)),
+                                                    blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString(
+                                                            "MessageTitle_CharacterOptions_DesyncBuildMethod")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "MessageTitle_CharacterOptions_DesyncBuildMethod"),
                                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                             {
                                                 return false;
@@ -3341,11 +3373,19 @@ namespace Chummer
                                         {
                                             DialogResult eShowBPResult = Program.MainForm.ShowMessageBox(string.Format(
                                                     GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString(
-                                                        "Message_CharacterOptions_DesyncBooksOrCustomData"),
+                                                    blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString(
+                                                            "Message_CharacterOptions_DesyncBooksOrCustomData")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "Message_CharacterOptions_DesyncBooksOrCustomData"),
                                                     objCurrentlyLoadedSettings.Name),
-                                                LanguageManager.GetString(
-                                                    "MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
+                                                blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? LanguageManager.GetString(
+                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData")
+                                                    : await LanguageManager.GetStringAsync(
+                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
                                                 MessageBoxButtons.YesNoCancel);
                                             if (eShowBPResult == DialogResult.Cancel)
                                             {
@@ -3579,7 +3619,10 @@ namespace Chummer
                             XmlNodeList objXmlLocationList;
                             XmlNode xmlRootQualitiesNode;
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_MentorSpirit")
+                                                            : await LanguageManager.GetStringAsync("String_MentorSpirit"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
                             {
@@ -3598,7 +3641,10 @@ namespace Chummer
                             List<Improvement> lstCyberadeptSweepGrades = new List<Improvement>(InitiationGrades.Count);
                             _lstInternalIdsNeedingReapplyImprovements.Clear();
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Improvements")
+                                                            : await LanguageManager.GetStringAsync("Tab_Improvements"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
                             {
@@ -3664,8 +3710,14 @@ namespace Chummer
                                             //Utils.BreakIfDebug();
                                             if (blnRemoveImprovements
                                                 || (Program.MainForm.ShowMessageBox(
-                                                    LanguageManager.GetString("Message_OrphanedImprovements"),
-                                                    LanguageManager.GetString("MessageTitle_OrphanedImprovements"),
+                                                    blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString("Message_OrphanedImprovements")
+                                                        : await LanguageManager.GetStringAsync("Message_OrphanedImprovements"),
+                                                    blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString("MessageTitle_OrphanedImprovements")
+                                                        : await LanguageManager.GetStringAsync("MessageTitle_OrphanedImprovements"),
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes))
                                             {
                                                 blnRemoveImprovements = true;
@@ -3714,7 +3766,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_imp");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_Contacts")
+                                                            : await LanguageManager.GetStringAsync("Label_Contacts"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
                             {
@@ -3729,7 +3784,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_contacts");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_Qualities")
+                                                            : await LanguageManager.GetStringAsync("String_Qualities"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_quality", loadActivity))
                             {
@@ -3972,14 +4030,20 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_quality");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_Attributes")
+                                                            : await LanguageManager.GetStringAsync("Label_Attributes"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_attributes", loadActivity))
                             {
                                 AttributeSection.Load(objXmlCharacter);
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_Tradition")
+                                                            : await LanguageManager.GetStringAsync("String_Tradition"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
                             {
@@ -4099,7 +4163,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_misc2");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Skills")
+                                                            : await LanguageManager.GetStringAsync("Tab_Skills"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                             {
@@ -4119,7 +4186,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_skills");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_Locations")
+                                                            : await LanguageManager.GetStringAsync("String_Locations"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_loc", loadActivity))
                             {
@@ -4231,7 +4301,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_sfoci");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Armor")
+                                                            : await LanguageManager.GetStringAsync("Tab_Armor"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_armor", loadActivity))
                             {
@@ -4247,7 +4320,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_armor");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Weapons")
+                                                            : await LanguageManager.GetStringAsync("Tab_Weapons"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
                             {
@@ -4263,7 +4339,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_weapons");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Drugs")
+                                                            : await LanguageManager.GetStringAsync("Tab_Drugs"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
                             {
@@ -4279,7 +4358,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_drugs");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Cyberware")
+                                                            : await LanguageManager.GetStringAsync("Tab_Cyberware"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
                             {
@@ -4486,7 +4568,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_ware");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_SelectedSpells")
+                                                            : await LanguageManager.GetStringAsync("Label_SelectedSpells"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_spells", loadActivity))
                             {
@@ -4501,7 +4586,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Adept")
+                                                            : await LanguageManager.GetStringAsync("Tab_Adept"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
                             {
@@ -4558,7 +4646,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_powers");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_Spirits")
+                                                            : await LanguageManager.GetStringAsync("Label_Spirits"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                             {
@@ -4581,7 +4672,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spirits");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_ComplexForms")
+                                                            : await LanguageManager.GetStringAsync("Label_ComplexForms"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_complex", loadActivity))
                             {
@@ -4597,7 +4691,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_complex");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_AdvancedPrograms")
+                                                            : await LanguageManager.GetStringAsync("Tab_AdvancedPrograms"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
                             {
@@ -4613,7 +4710,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_aiprogram");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_MartialArts")
+                                                            : await LanguageManager.GetStringAsync("Tab_MartialArts"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_marts", loadActivity))
                             {
@@ -4629,7 +4729,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_marts");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Limits")
+                                                            : await LanguageManager.GetStringAsync("Tab_Limits"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
                             {
@@ -4645,7 +4748,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mod");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_SelectPACKSKit_Lifestyles")
+                                                            : await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
                             {
@@ -4661,7 +4767,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_lifestyle");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Gear")
+                                                            : await LanguageManager.GetStringAsync("Tab_Gear"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_gear", loadActivity))
                             {
@@ -4741,7 +4850,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_gear");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_Vehicles")
+                                                            : await LanguageManager.GetStringAsync("Label_Vehicles"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_car", loadActivity))
                             {
@@ -4757,7 +4869,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_car");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_Metamagics")
+                                                            : await LanguageManager.GetStringAsync("String_Metamagics"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_mmagic", loadActivity))
                             {
@@ -4773,7 +4888,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mmagic");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_Arts")
+                                                            : await LanguageManager.GetStringAsync("String_Arts"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_arts", loadActivity))
                             {
@@ -4789,7 +4907,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_arts");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_Enhancements")
+                                                            : await LanguageManager.GetStringAsync("String_Enhancements"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_ench", loadActivity))
                             {
@@ -4805,7 +4926,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_ench");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Critter")
+                                                            : await LanguageManager.GetStringAsync("Tab_Critter"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_cpow", loadActivity))
                             {
@@ -4821,7 +4945,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_cpow");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_SummaryFoci")
+                                                            : await LanguageManager.GetStringAsync("Label_SummaryFoci"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_foci", loadActivity))
                             {
@@ -4837,7 +4964,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_foci");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Label_SummaryInitiation")
+                                                            : await LanguageManager.GetStringAsync("Label_SummaryInitiation"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_init", loadActivity))
                             {
@@ -4853,7 +4983,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_init");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Expenses"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_Expenses")
+                                                            : await LanguageManager.GetStringAsync("String_Expenses"));
                             // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
                             // they shouldn't get loaded in create mode because they shouldn't be there.
                             if (Created)
@@ -4883,7 +5016,10 @@ namespace Chummer
                                 }
                             }
 #endif
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tip_Skill_Sustain"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tip_Skill_Sustain")
+                                                            : await LanguageManager.GetStringAsync("Tip_Skill_Sustain"));
 
                             // Need to load these after everything else so that we can properly link them up during loading
                             using (_ = Timekeeper.StartSyncron("load_char_SustainedAbilities", loadActivity))
@@ -4898,7 +5034,10 @@ namespace Chummer
                                 }
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Improvements")
+                                                            : await LanguageManager.GetStringAsync("Tab_Improvements"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
                             {
@@ -4913,7 +5052,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_igroup");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Calendar")
+                                                            : await LanguageManager.GetStringAsync("Tab_Calendar"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
                             {
@@ -4929,7 +5071,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_calendar");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("String_LegacyFixes")
+                                                            : await LanguageManager.GetStringAsync("String_LegacyFixes"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
                             {
@@ -5094,7 +5239,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_flechettefix");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Options_Plugins"));
+                            frmLoadingForm?.PerformStep(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString("Tab_Options_Plugins")
+                                                            : await LanguageManager.GetStringAsync("Tab_Options_Plugins"));
 
                             //Plugins
                             using (_ = Timekeeper.StartSyncron("load_plugins", loadActivity))
@@ -5116,7 +5264,10 @@ namespace Chummer
                             IsLoading = false;
                         }
 
-                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
+                        frmLoadingForm?.PerformStep(blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString("String_GeneratedImprovements")
+                                                        : await LanguageManager.GetStringAsync("String_GeneratedImprovements"));
 
                         // Refresh certain improvements
                         using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
@@ -19448,8 +19599,14 @@ namespace Chummer
 
                             Program.MainForm.ShowMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                    LanguageManager.GetString("Message_FailedLoad"), ex.Message),
-                                LanguageManager.GetString("MessageTitle_FailedLoad"),
+                                              blnSync
+                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                  ? LanguageManager.GetString("Message_FailedLoad")
+                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad"), ex.Message),
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("MessageTitle_FailedLoad")
+                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return false;
                         }
@@ -19464,9 +19621,14 @@ namespace Chummer
 
                             Program.MainForm.ShowMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                    LanguageManager.GetString("Message_FailedLoad"),
-                                    ex.Message),
-                                LanguageManager.GetString("MessageTitle_FailedLoad"),
+                                              blnSync
+                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                  ? LanguageManager.GetString("Message_FailedLoad")
+                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad"), ex.Message),
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("MessageTitle_FailedLoad")
+                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return false;
                         }
@@ -19481,9 +19643,14 @@ namespace Chummer
 
                             Program.MainForm.ShowMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                    LanguageManager.GetString("Message_FailedLoad"),
-                                    ex.Message),
-                                LanguageManager.GetString("MessageTitle_FailedLoad"),
+                                              blnSync
+                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                  ? LanguageManager.GetString("Message_FailedLoad")
+                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad"), ex.Message),
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("MessageTitle_FailedLoad")
+                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return false;
                         }
@@ -19784,9 +19951,15 @@ namespace Chummer
                                 {
                                     if (Program.MainForm.ShowMessageBox(
                                         string.Format(GlobalSettings.CultureInfo,
-                                            LanguageManager.GetString("Message_MissingGameplayOption"),
+                                                      blnSync
+                                                          // ReSharper disable once MethodHasAsyncOverload
+                                                          ? LanguageManager.GetString("Message_MissingGameplayOption")
+                                                          : await LanguageManager.GetStringAsync("Message_MissingGameplayOption"),
                                             SettingsKey),
-                                        LanguageManager.GetString("Message_MissingGameplayOption_Title"),
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Message_MissingGameplayOption_Title")
+                                            : await LanguageManager.GetStringAsync("Message_MissingGameplayOption_Title"),
                                         MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                                     {
                                         using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))

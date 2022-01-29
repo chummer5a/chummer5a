@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing && (components != null))
             {
                 components.Dispose();
-                Utils.ListItemListPool.Return(_lstPowerItems);
             }
             base.Dispose(disposing);
         }

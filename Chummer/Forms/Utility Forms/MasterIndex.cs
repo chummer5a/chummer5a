@@ -231,7 +231,7 @@ namespace Chummer
                                     = xmlItemNode.SelectSingleNodeAndCacheExpression("translate")?.Value
                                       ?? strName
                                       ?? xmlItemNode.SelectSingleNodeAndCacheExpression("id")?.Value
-                                      ?? LanguageManager.GetString("String_Unknown");
+                                      ?? await LanguageManager.GetStringAsync("String_Unknown");
                                 string strSource = xmlItemNode.SelectSingleNodeAndCacheExpression("source")?.Value;
                                 string strPage = xmlItemNode.SelectSingleNodeAndCacheExpression("page")?.Value;
                                 string strDisplayPage = xmlItemNode.SelectSingleNodeAndCacheExpression("altpage")?.Value
@@ -266,7 +266,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadMasterindex))
                     {
-                        string strSpace = LanguageManager.GetString("String_Space");
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         string strFormat = "{0}" + strSpace + "[{1}]";
                         Dictionary<string, List<ListItem>> dicHelper
                             = new Dictionary<string, List<ListItem>>(lstItemsForLoading.Count);
@@ -358,7 +358,7 @@ namespace Chummer
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadMasterindex))
                 {
-                    _lstFileNamesWithItems.Insert(0, new ListItem(string.Empty, LanguageManager.GetString("String_All")));
+                    _lstFileNamesWithItems.Insert(0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
                     int intOldSelectedIndex = cboFile.SelectedIndex;
 

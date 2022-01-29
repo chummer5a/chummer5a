@@ -60,7 +60,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown"),
+                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
                         Tag = strFileName
                     };
                     treCharacters.Nodes.Add(objNode);

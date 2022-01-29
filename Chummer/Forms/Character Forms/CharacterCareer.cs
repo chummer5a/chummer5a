@@ -2344,7 +2344,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
+        private async void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
         {
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings);
 
@@ -2365,7 +2365,7 @@ namespace Chummer
             // Display the Select CharacterAttribute window and record which Skill was selected.
             using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
             {
-                Description = LanguageManager.GetString("String_CyberzombieReduceAttribute"),
+                Description = await LanguageManager.GetStringAsync("String_CyberzombieReduceAttribute"),
                 ShowMetatypeMaximum = true
             })
             {
@@ -2395,7 +2395,7 @@ namespace Chummer
             int intClones;
             using (SelectNumber frmPickNumber = new SelectNumber(0)
             {
-                Description = LanguageManager.GetString("String_CloningMachineNumber"),
+                Description = await LanguageManager.GetStringAsync("String_CloningMachineNumber"),
                 Minimum = 1
             })
             {
@@ -2409,13 +2409,13 @@ namespace Chummer
 
             if (intClones <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CloningMachineNumberRequired"), LanguageManager.GetString("MessageTitle_CloningMachineNumberRequired"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CloningMachineNumberRequired"), await LanguageManager.GetStringAsync("MessageTitle_CloningMachineNumberRequired"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             using (new CursorWait(this))
             {
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 Character[] lstClones = new Character[intClones];
                 // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
                 await Task.Run(() => Parallel.For(0, intClones,
@@ -2425,11 +2425,11 @@ namespace Chummer
             }
         }
 
-        private void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
+        private async void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
         {
             // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
             // Verify that the user wants to go through with it.
-            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmReapplyImprovements"), await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             DoReapplyImprovements();

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -105,7 +106,7 @@ namespace Chummer
                     _dicSumtoTenValues.Add(strPriority, 0);
         }
 
-        private void SelectMetatypePriority_Load(object sender, EventArgs e)
+        private async void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -140,7 +141,7 @@ namespace Chummer
                                                      objXmlPriority.SelectSingleNodeAndCacheExpression("translate")
                                                                    ?.Value ??
                                                      objXmlPriority.SelectSingleNodeAndCacheExpression("name")?.Value ??
-                                                     LanguageManager.GetString("String_Unknown")));
+                                                     await LanguageManager.GetStringAsync("String_Unknown")));
                                 }
                             }
 
@@ -200,7 +201,7 @@ namespace Chummer
                 PopulateMetatypes();
                 PopulateMetavariants();
                 PopulateTalents();
-                RefreshSelectedMetatype();
+                await RefreshSelectedMetatype();
 
                 //Magical/Resonance Type
                 cboTalents.SelectedValue = _objCharacter.TalentPriority;
@@ -273,14 +274,14 @@ namespace Chummer
                 PopulateMetatypes();
                 PopulateMetavariants();
                 PopulateTalents();
-                RefreshSelectedMetatype();
+                await RefreshSelectedMetatype();
                 if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     SumToTen();
             }
 
             // Set up possession boxes
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
-            chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
+            chkPossessionBased.SetToolTip(await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition"));
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethods))
             {
@@ -314,7 +315,7 @@ namespace Chummer
 
         #region Control Events
 
-        private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -324,7 +325,7 @@ namespace Chummer
                 SumToTen();
             }
             PopulateMetavariants();
-            RefreshSelectedMetatype();
+            await RefreshSelectedMetatype();
             PopulateTalents();
             ResumeLayout();
         }
@@ -558,12 +559,12 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             SuspendLayout();
-            RefreshSelectedMetatype();
+            await RefreshSelectedMetatype();
             PopulateTalents();
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -591,7 +592,7 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -609,7 +610,7 @@ namespace Chummer
             LoadMetatypes();
             PopulateMetatypes();
             PopulateMetavariants();
-            RefreshSelectedMetatype();
+            await RefreshSelectedMetatype();
             ResumeLayout();
         }
 
@@ -1337,9 +1338,9 @@ namespace Chummer
             return value;
         }
 
-        private void RefreshSelectedMetatype()
+        private async Task RefreshSelectedMetatype()
         {
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
             string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
@@ -1365,7 +1366,7 @@ namespace Chummer
             {
                 if (objXmlMetavariantPriorityNode == null)
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("String_NotSupported"), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported"), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     cmdOK.Enabled = false;
                 }
                 else
@@ -1404,14 +1405,14 @@ namespace Chummer
                     }
                     else
                     {
-                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
                 }
                 else
                 {
-                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
                     lblSource.SetToolTip(strUnknown);
                 }
@@ -1447,7 +1448,7 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
+                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect) + ')';
                     }
                     else
                     {
@@ -1484,7 +1485,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None");
+                    lblMetavariantQualities.Text = await LanguageManager.GetStringAsync("String_None");
                 }
             }
             else if (objXmlMetatype != null)
@@ -1519,7 +1520,7 @@ namespace Chummer
 
                         string strSelect = xmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
+                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect) + ')';
                     }
                     else
                     {
@@ -1557,7 +1558,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None");
+                    lblMetavariantQualities.Text = await LanguageManager.GetStringAsync("String_None");
                 }
 
                 lblMetavariantKarma.Text = objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpression("karma")?.Value ?? 0.ToString(GlobalSettings.CultureInfo);
@@ -1574,14 +1575,14 @@ namespace Chummer
                     }
                     else
                     {
-                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
                 }
                 else
                 {
-                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
                     lblSource.SetToolTip(strUnknown);
                 }

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -60,7 +61,7 @@ namespace Chummer
             _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
 
-        private void frmMetatype_Load(object sender, EventArgs e)
+        private async void frmMetatype_Load(object sender, EventArgs e)
         {
             // Populate the Metatype Category list.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategories))
@@ -96,7 +97,7 @@ namespace Chummer
                 }
 
                 lstCategories.Sort(CompareListItems.CompareNames);
-                lstCategories.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                lstCategories.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
 
                 cboCategory.BeginUpdate();
                 cboCategory.PopulateWithListItems(lstCategories);
@@ -109,7 +110,7 @@ namespace Chummer
             }
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
-            chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
+            chkPossessionBased.SetToolTip(await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition"));
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethods))
             {
@@ -137,7 +138,7 @@ namespace Chummer
 
             PopulateMetatypes();
             PopulateMetavariants();
-            RefreshSelectedMetavariant();
+            await RefreshSelectedMetavariant();
 
             _blnLoading = false;
         }
@@ -160,12 +161,12 @@ namespace Chummer
             MetatypeSelected();
         }
 
-        private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             SuspendLayout();
-            RefreshSelectedMetavariant();
+            await RefreshSelectedMetavariant();
             ResumeLayout();
         }
 
@@ -294,9 +295,9 @@ namespace Chummer
             }
         }
 
-        private void RefreshSelectedMetavariant()
+        private async Task RefreshSelectedMetavariant()
         {
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             XPathNavigator objXmlMetatype = null;
             XPathNavigator objXmlMetavariant = null;
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
@@ -412,7 +413,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strSelect))
                             {
                                 sbdQualities.Append(strSpace).Append('(')
-                                            .Append(_objCharacter.TranslateExtra(strSelect)).Append(')');
+                                            .Append(await _objCharacter.TranslateExtraAsync(strSelect)).Append(')');
                             }
                         }
                         else
@@ -429,7 +430,7 @@ namespace Chummer
                     }
 
                     lblQualities.Text = sbdQualities.Length == 0
-                        ? LanguageManager.GetString("String_None")
+                        ? await LanguageManager.GetStringAsync("String_None")
                         : sbdQualities.ToString();
                 }
 
@@ -447,14 +448,14 @@ namespace Chummer
                     }
                     else
                     {
-                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
                 }
                 else
                 {
-                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
                     lblSource.SetToolTip(strUnknown);
                 }
@@ -545,7 +546,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strSelect))
                             {
                                 sbdQualities.Append(strSpace).Append('(')
-                                            .Append(_objCharacter.TranslateExtra(strSelect))
+                                            .Append(await _objCharacter.TranslateExtraAsync(strSelect))
                                             .Append(')');
                             }
                         }
@@ -563,7 +564,7 @@ namespace Chummer
                     }
 
                     lblQualities.Text = sbdQualities.Length == 0
-                        ? LanguageManager.GetString("String_None")
+                        ? await LanguageManager.GetStringAsync("String_None")
                         : sbdQualities.ToString();
                 }
 
@@ -581,14 +582,14 @@ namespace Chummer
                     }
                     else
                     {
-                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
                 }
                 else
                 {
-                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
                     lblSource.SetToolTip(strUnknown);
                 }
@@ -639,18 +640,18 @@ namespace Chummer
                     if (intPos > 0)
                     {
                         --intPos;
-                        lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", LanguageManager.GetString("String_D6"));
+                        lblForceLabel.Text = strEssMax.Substring(intPos, 3).Replace("D6", await LanguageManager.GetStringAsync("String_D6"));
                         nudForce.Maximum = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
                     }
                     else
                     {
-                        lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_D6");
+                        lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_D6");
                         nudForce.Maximum = 6;
                     }
                 }
                 else
                 {
-                    lblForceLabel.Text = LanguageManager.GetString(
+                    lblForceLabel.Text = await LanguageManager.GetStringAsync(
                         objXmlMetatype.SelectSingleNodeAndCacheExpression("forceislevels") != null
                             ? "String_Level"
                             : "String_Force");

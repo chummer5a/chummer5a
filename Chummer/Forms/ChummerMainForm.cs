@@ -161,7 +161,7 @@ namespace Chummer
                                 //Timekeeper.Finish("cache_load");
                             }
 
-                            _frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
+                            _frmProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
 
                             _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
 
@@ -227,12 +227,12 @@ namespace Chummer
                                             {
                                                 if (ShowMessageBox(
                                                         string.Format(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
+                                                                      await LanguageManager.GetStringAsync(
                                                                           "Message_PossibleCrashAutosaveFound"),
                                                                       objMostRecentAutosave.Name,
                                                                       objMostRecentAutosave.LastWriteTimeUtc
                                                                           .ToLocalTime()),
-                                                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                                                        await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound"),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                                                     == DialogResult.Yes)
                                                     setFilesToLoad.Add(objMostRecentAutosave.FullName);
@@ -268,7 +268,7 @@ namespace Chummer
                                 }
                             }
 
-                            _frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
+                            _frmProgressBar.PerformStep(await LanguageManager.GetStringAsync("Title_MasterIndex"));
 
                             if (MasterIndex != null)
                             {
@@ -277,7 +277,7 @@ namespace Chummer
                                 MasterIndex.Show();
                             }
 
-                            _frmProgressBar.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
+                            _frmProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_CharacterRoster"));
 
                             if (CharacterRoster != null)
                             {
@@ -288,7 +288,7 @@ namespace Chummer
 
                             if (GlobalSettings.AllowEasterEggs)
                             {
-                                _frmProgressBar.PerformStep(LanguageManager.GetString("String_Chummy"));
+                                _frmProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_Chummy"));
                                 _mascotChummy = new Chummy(null);
                                 _mascotChummy.Show(this);
                             }
@@ -555,12 +555,12 @@ namespace Chummer
                 if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested ||
                     Utils.GitUpdateAvailable <= 0)
                     return;
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strNewText = Application.ProductName + strSpace + '-' + strSpace +
-                                    LanguageManager.GetString("String_Version")
+                                    await LanguageManager.GetStringAsync("String_Version")
                                     + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
                                     + string.Format(GlobalSettings.CultureInfo,
-                                        LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
+                                        await LanguageManager.GetStringAsync("String_Update_Available"), Utils.CachedGitVersion);
                 await this.DoThreadSafeAsync(() =>
                 {
                     if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
@@ -753,7 +753,7 @@ namespace Chummer
             }
         }
 
-        private void ChummerMainForm_MdiChildActivate(object sender, EventArgs e)
+        private async void ChummerMainForm_MdiChildActivate(object sender, EventArgs e)
         {
             // If there are no child forms, hide the tab control.
             if (ActiveMdiChild != null)
@@ -783,7 +783,7 @@ namespace Chummer
                     }
                     else
                     {
-                        string strTagText = LanguageManager.GetString(ActiveMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
+                        string strTagText = await LanguageManager.GetStringAsync(ActiveMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
                         if (!string.IsNullOrEmpty(strTagText))
                             tp.Text = strTagText;
                     }
@@ -1004,10 +1004,11 @@ namespace Chummer
             }
         }
 
-        private void mnuHeroLabImporter_Click(object sender, EventArgs e)
+        private async void mnuHeroLabImporter_Click(object sender, EventArgs e)
         {
-            if (ShowMessageBox(LanguageManager.GetString("Message_HeroLabImporterWarning"),
-                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (ShowMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning"),
+                               await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title"),
+                               MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
             HeroLabImporter frmImporter = new HeroLabImporter();
@@ -1230,8 +1231,8 @@ namespace Chummer
                 List<string> lstFilesToOpen;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
-                             LanguageManager.GetString("DialogFilter_All"),
+                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                             await LanguageManager.GetStringAsync("DialogFilter_All"),
                     Multiselect = true
                 })
                 {
@@ -1254,7 +1255,7 @@ namespace Chummer
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                 using (_frmProgressBar = CreateAndShowProgressBar(
-                    string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
+                    string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
                     lstFilesToOpen.Count * Character.NumLoadingSections))
                 {
                     Dictionary<int, string> dicIndexedStrings =
@@ -1435,11 +1436,13 @@ namespace Chummer
                     }
                     if (blnLoadAutosave && ShowMessageBox(
                         string.Format(GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Message_AutosaveFound"),
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      blnSync ? LanguageManager.GetString("Message_AutosaveFound") : await LanguageManager.GetStringAsync("Message_AutosaveFound"),
                             Path.GetFileName(strFileName),
                             File.GetLastWriteTimeUtc(objCharacter.FileName).ToLocalTime(),
                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
-                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                        // ReSharper disable once MethodHasAsyncOverload
+                        blnSync ? LanguageManager.GetString("MessageTitle_AutosaveFound") : await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound"),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     {
                         blnLoadAutosave = false;
@@ -1498,8 +1501,17 @@ namespace Chummer
             }
             else if (blnShowErrors)
             {
-                ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), strFileName),
-                    LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                             blnSync
+                                                 // ReSharper disable once MethodHasAsyncOverload
+                                                 ? LanguageManager.GetString("Message_FileNotFound")
+                                                 : await LanguageManager.GetStringAsync("Message_FileNotFound"),
+                                             strFileName),
+                               blnSync
+                                   // ReSharper disable once MethodHasAsyncOverload
+                                   ? LanguageManager.GetString("MessageTitle_FileNotFound")
+                                   : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"),
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
         }

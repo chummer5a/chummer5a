@@ -1256,7 +1256,8 @@ namespace Chummer
                 using (new CursorWait(Program.MainForm))
                 using (EditGlobalSettings frmOptions = new EditGlobalSettings())
                 {
-                    frmOptions.DoLinkPdf(objBookInfo.Code);
+                    // ReSharper disable once AccessToDisposedClosure
+                    Utils.RunWithoutThreadLock(() => frmOptions.DoLinkPdf(objBookInfo.Code));
                     if (frmOptions.ShowDialogSafe(Program.MainForm) != DialogResult.OK)
                         return;
                     uriPath = null;

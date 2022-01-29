@@ -203,7 +203,10 @@ namespace Chummer
                 if (!File.Exists(strFile))
                 {
                     xmlSourceNode = null;
-                    strErrorText = LanguageManager.GetString("MessageTitle_FileNotFound");
+                    strErrorText = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? LanguageManager.GetString("MessageTitle_FileNotFound")
+                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
                 }
                 else
                 {
@@ -256,8 +259,16 @@ namespace Chummer
                             strSettings, out CharacterSettings objSettings))
                             SettingsFile = objSettings.DisplayName;
                         else
-                            SettingsFile = LanguageManager.GetString("MessageTitle_FileNotFound") +
-                                           LanguageManager.GetString("String_Space") + '[' + strSettings + ']';
+                        {
+                            string strTemp = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("MessageTitle_FileNotFound") +
+                                  // ReSharper disable once MethodHasAsyncOverload
+                                  LanguageManager.GetString("String_Space")
+                                : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound") +
+                                  await LanguageManager.GetStringAsync("String_Space");
+                            SettingsFile = strTemp + '[' + strSettings + ']';
+                        }
                     }
                     else
                         SettingsFile = string.Empty;

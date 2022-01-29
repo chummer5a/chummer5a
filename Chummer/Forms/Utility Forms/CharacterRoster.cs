@@ -255,7 +255,7 @@ namespace Chummer
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    RefreshNodeTexts();
+                    await RefreshNodeTexts();
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -307,7 +307,7 @@ namespace Chummer
             }
         }
 
-        public void RefreshNodeTexts()
+        public async Task RefreshNodeTexts()
         {
             if (treCharacterList.IsNullOrDisposed())
                 return;
@@ -326,7 +326,7 @@ namespace Chummer
                     treCharacterList.QueueThreadSafe(() => objCharacterNode.ForeColor = ColorManager.ErrorColor);
                     if (!string.IsNullOrEmpty(objCache.FilePath))
                         strTooltip += Environment.NewLine + Environment.NewLine;
-                    strTooltip += LanguageManager.GetString("String_Error") + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
+                    strTooltip += await LanguageManager.GetStringAsync("String_Error") + await LanguageManager.GetStringAsync("String_Colon") + Environment.NewLine + objCache.ErrorText;
                 }
                 else
                     treCharacterList.QueueThreadSafe(() => objCharacterNode.ForeColor = ColorManager.WindowText);
@@ -347,7 +347,7 @@ namespace Chummer
             TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
             if (objFavoriteNode == null && blnRefreshFavorites)
             {
-                objFavoriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavoriteCharacters"))
+                objFavoriteNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_FavoriteCharacters"))
                     {Tag = "Favorite"};
                 blnAddFavoriteNode = true;
             }
@@ -372,7 +372,7 @@ namespace Chummer
             TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
             if (objRecentNode == null && lstRecents.Count > 0)
             {
-                objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters"))
+                objRecentNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_RecentCharacters"))
                     {Tag = "Recent"};
                 blnAddRecentNode = true;
             }
@@ -556,7 +556,7 @@ namespace Chummer
                 if (objWatchNode != null)
                     objWatchNode.Nodes.Clear();
                 else
-                    objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
+                    objWatchNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
             }
             else
                 objWatchNode?.Remove();
@@ -819,14 +819,14 @@ namespace Chummer
         /// Update the labels and images based on the selected treenode.
         /// </summary>
         /// <param name="objCache"></param>
-        public void UpdateCharacter(CharacterCache objCache)
+        public async Task UpdateCharacter(CharacterCache objCache)
         {
             if (this.IsNullOrDisposed()) // Safety check for external calls
                 return;
             tlpRight.SuspendLayout();
             if (objCache != null)
             {
-                string strUnknown = LanguageManager.GetString("String_Unknown");
+                string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                 txtCharacterBio.Text = objCache.Description.RtfToPlainText();
                 txtCharacterBackground.Text = objCache.Background.RtfToPlainText();
                 txtCharacterNotes.Text = objCache.CharacterNotes.RtfToPlainText();
@@ -834,7 +834,7 @@ namespace Chummer
                 txtCharacterConcept.Text = objCache.Concept.RtfToPlainText();
                 lblCareerKarma.Text = objCache.Karma;
                 if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
-                    lblCareerKarma.Text = LanguageManager.GetString("String_None");
+                    lblCareerKarma.Text = await LanguageManager.GetStringAsync("String_None");
                 lblPlayerName.Text = objCache.PlayerName;
                 if (string.IsNullOrEmpty(lblPlayerName.Text))
                     lblPlayerName.Text = strUnknown;
@@ -849,21 +849,21 @@ namespace Chummer
                     lblEssence.Text = strUnknown;
                 lblFilePath.Text = objCache.FileName;
                 if (string.IsNullOrEmpty(lblFilePath.Text))
-                    lblFilePath.Text = LanguageManager.GetString("MessageTitle_FileNotFound");
+                    lblFilePath.Text = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
                 lblSettings.Text = objCache.SettingsFile;
                 if (string.IsNullOrEmpty(lblSettings.Text))
                     lblSettings.Text = strUnknown;
-                lblFilePath.SetToolTip(objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'));
+                lblFilePath.SetToolTip(await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'));
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
                 if (objCache.Metatype != null)
                 {
-                    XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
+                    XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
                     XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
                     if (objMetatypeNode == null)
                     {
-                        objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
+                        objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
                     }
 
@@ -873,12 +873,12 @@ namespace Chummer
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
-                        strMetatype += LanguageManager.GetString("String_Space") + '(' + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metavariant) + ')';
+                        strMetatype += await LanguageManager.GetStringAsync("String_Space") + '(' + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metavariant) + ')';
                     }
                     lblMetatype.Text = strMetatype;
                 }
                 else
-                    lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError");
+                    lblMetatype.Text = await LanguageManager.GetStringAsync("String_MetatypeLoadError");
                 tabCharacterText.Visible = true;
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
@@ -922,14 +922,14 @@ namespace Chummer
 
         #region Form Methods
 
-        private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode == null)
                 return;
             CharacterCache objCache = objSelectedNode.Tag as CharacterCache;
             objCache?.OnMyAfterSelect?.Invoke(sender, e);
-            UpdateCharacter(objCache);
+            await UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
 
@@ -1204,7 +1204,7 @@ namespace Chummer
                 else
                     e.Node.ContextMenuStrip = CreateContextMenuStrip(false);
             }
-            foreach (var plugin in Program.PluginLoader.MyActivePlugins)
+            foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
             {
                 plugin.SetCharacterRosterNode(e.Node);
             }

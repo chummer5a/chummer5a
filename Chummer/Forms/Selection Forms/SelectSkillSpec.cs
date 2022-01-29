@@ -153,10 +153,8 @@ namespace Chummer
                 {
                     return cboSpec.SelectedValue.ToString();
                 }
-                else
-                {
-                    return cboSpec.Text;
-                }
+
+                return cboSpec.Text;
             }
         }
 

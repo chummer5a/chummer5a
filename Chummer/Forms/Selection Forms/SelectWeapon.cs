@@ -420,39 +420,36 @@ namespace Chummer
 
                         if (blnForCategories)
                             return true;
-                        else
+                        if (chkHideOverAvailLimit.Checked
+                            && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                         {
-                            if (chkHideOverAvailLimit.Checked
-                                && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                            ++intOverLimit;
+                            continue;
+                        }
+
+                        if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                        {
+                            decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                            if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                                decCostMultiplier *= 0.9m;
+                            if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
+                                (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
+                            {
+                                string[] astrParentDoubledCostModificationSlots
+                                    = ParentWeapon.DoubledCostModificationSlots.Split(
+                                        '/', StringSplitOptions.RemoveEmptyEntries);
+                                if (astrParentDoubledCostModificationSlots.Contains(strMount)
+                                    || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
+                                {
+                                    decCostMultiplier *= 2;
+                                }
+                            }
+
+                            if (!SelectionShared.CheckNuyenRestriction(
+                                    objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
                             {
                                 ++intOverLimit;
                                 continue;
-                            }
-
-                            if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
-                            {
-                                decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                                if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
-                                    decCostMultiplier *= 0.9m;
-                                if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
-                                    (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
-                                {
-                                    string[] astrParentDoubledCostModificationSlots
-                                        = ParentWeapon.DoubledCostModificationSlots.Split(
-                                            '/', StringSplitOptions.RemoveEmptyEntries);
-                                    if (astrParentDoubledCostModificationSlots.Contains(strMount)
-                                        || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
-                                    {
-                                        decCostMultiplier *= 2;
-                                    }
-                                }
-
-                                if (!SelectionShared.CheckNuyenRestriction(
-                                        objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
-                                {
-                                    ++intOverLimit;
-                                    continue;
-                                }
                             }
                         }
 

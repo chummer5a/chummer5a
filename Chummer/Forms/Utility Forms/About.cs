@@ -93,9 +93,9 @@ namespace Chummer
 
         #region Controls Methods
 
-        private void About_Load(object sender, EventArgs e)
+        private async void About_Load(object sender, EventArgs e)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strReturn = LanguageManager.GetString("Label_About", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
@@ -119,7 +119,7 @@ namespace Chummer
             txtDescription.Text = strReturn;
             txtContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames)
                                     + Environment.NewLine + "/u/Iridios";
-            txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text");
+            txtDisclaimer.Text = await LanguageManager.GetStringAsync("About_Label_Disclaimer_Text");
         }
 
         private void txt_KeyDown(object sender, KeyEventArgs e)

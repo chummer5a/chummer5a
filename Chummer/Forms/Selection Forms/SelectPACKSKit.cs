@@ -151,7 +151,7 @@ namespace Chummer
             cmdDelete.Visible = false;
         }
 
-        private void lstKits_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstKits_SelectedIndexChanged(object sender, EventArgs e)
         {
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
@@ -169,7 +169,7 @@ namespace Chummer
                 return;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             foreach (XPathNavigator objXmlItem in objXmlPack.SelectChildren(XPathNodeType.Element))
             {
                 if (objXmlItem.SelectSingleNodeAndCacheExpression("hide") != null)
@@ -178,7 +178,7 @@ namespace Chummer
                 switch (objXmlItem.Name)
                 {
                     case "attributes":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Attributes");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Attributes");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlAttribute in objXmlItem.SelectChildren(XPathNodeType.Element))
                         {
@@ -187,7 +187,7 @@ namespace Chummer
                             string strNameUpper = objXmlAttribute.Name.ToUpperInvariant();
                             TreeNode objChild = new TreeNode
                             {
-                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short") + strSpace + (objXmlAttribute.ValueAsInt - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalSettings.CultureInfo)
+                                Text = await LanguageManager.GetStringAsync("String_Attribute" + strNameUpper + "Short") + strSpace + (objXmlAttribute.ValueAsInt - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalSettings.CultureInfo)
                             };
 
                             objParent.Nodes.Add(objChild);
@@ -196,7 +196,7 @@ namespace Chummer
                         break;
 
                     case "qualities":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Qualities");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Qualities");
                         treContents.Nodes.Add(objParent);
                         // Positive Qualities.
                         foreach (XPathNavigator objXmlQuality in objXmlItem.SelectAndCacheExpression("positive/quality"))
@@ -206,14 +206,15 @@ namespace Chummer
                             XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Settings.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode
-                            {
-                                Text = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlQuality.Value
-                            };
-
+                            string strText = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                             ?? objXmlQuality.Value;
                             string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                objChild.Text += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
+                                strText += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect) + ')';
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = strText
+                            };
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -226,32 +227,33 @@ namespace Chummer
                             XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Settings.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + ']');
                             if (objNode == null)
                                 continue;
-                            TreeNode objChild = new TreeNode
-                            {
-                                Text = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlQuality.Value
-                            };
-
+                            string strText = objNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                             ?? objXmlQuality.Value;
                             string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                objChild.Text += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
+                                strText += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect) + ')';
+                            TreeNode objChild = new TreeNode
+                            {
+                                Text = strText
+                            };
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
                         break;
 
                     case "nuyenbp":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Nuyen");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Nuyen");
                         treContents.Nodes.Add(objParent);
                         TreeNode objNuyenChild = new TreeNode
                         {
-                            Text = LanguageManager.GetString("String_SelectPACKSKit_StartingNuyenBP") + strSpace + objXmlItem.Value
+                            Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_StartingNuyenBP") + strSpace + objXmlItem.Value
                         };
                         objParent.Nodes.Add(objNuyenChild);
                         objParent.Expand();
                         break;
 
                     case "skills":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Skills");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Skills");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlSkill in objXmlItem.SelectAndCacheExpression("skill"))
                         {
@@ -285,7 +287,7 @@ namespace Chummer
                             {
                                 Text = objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName
                             };
-                            objChild.Text += strSpace + LanguageManager.GetString("String_SelectPACKSKit_Group") + strSpace + objXmlSkill.SelectSingleNode("rating")?.Value;
+                            objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_SelectPACKSKit_Group") + strSpace + objXmlSkill.SelectSingleNode("rating")?.Value;
 
                             string strSpec = objXmlSkill.SelectSingleNodeAndCacheExpression("spec")?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
@@ -296,7 +298,7 @@ namespace Chummer
                         break;
 
                     case "knowledgeskills":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_KnowledgeSkills");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_KnowledgeSkills");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlSkill in objXmlItem.SelectAndCacheExpression("skill"))
                         {
@@ -323,22 +325,22 @@ namespace Chummer
 
                     case "selectmartialart":
                         {
-                            objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
+                            objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_SelectMartialArt");
                             treContents.Nodes.Add(objParent);
 
                             int intRating = objXmlItem.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 1;
-                            string strSelect = objXmlItem.SelectSingleNodeAndCacheExpression("@select")?.Value ?? LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
+                            string strSelect = objXmlItem.SelectSingleNodeAndCacheExpression("@select")?.Value ?? await LanguageManager.GetStringAsync("String_SelectPACKSKit_SelectMartialArt");
 
                             TreeNode objMartialArt = new TreeNode
                             {
-                                Text = strSelect + strSpace + LanguageManager.GetString("String_Rating") + strSpace + intRating.ToString(GlobalSettings.CultureInfo)
+                                Text = strSelect + strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + intRating.ToString(GlobalSettings.CultureInfo)
                             };
                             objParent.Nodes.Add(objMartialArt);
                             objParent.Expand();
                             break;
                         }
                     case "martialarts":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_MartialArts");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_MartialArts");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlArt in objXmlItem.SelectAndCacheExpression("martialart"))
                         {
@@ -379,7 +381,7 @@ namespace Chummer
 
                     case "powers":
                         {
-                            objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Powers");
+                            objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Powers");
                             treContents.Nodes.Add(objParent);
                             foreach (XPathNavigator objXmlPower in objXmlItem.SelectAndCacheExpression("power"))
                             {
@@ -406,7 +408,7 @@ namespace Chummer
                             break;
                         }
                     case "programs":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Programs");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Programs");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlProgram in objXmlItem.SelectAndCacheExpression("program"))
                         {
@@ -449,7 +451,7 @@ namespace Chummer
                         break;
 
                     case "spells":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spells");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Spells");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlSpell in objXmlItem.SelectAndCacheExpression("spell"))
                         {
@@ -474,7 +476,7 @@ namespace Chummer
 
                     case "spirits":
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spirits");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Spirits");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlSpirit in objXmlItem.SelectAndCacheExpression("spirit"))
                         {
@@ -483,8 +485,8 @@ namespace Chummer
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objXmlSpirit.SelectSingleNodeAndCacheExpression("name").Value + strSpace + '(' +
-                                       LanguageManager.GetString("Label_Spirit_Force") + strSpace + objXmlSpirit.SelectSingleNodeAndCacheExpression("force").Value + ',' + strSpace +
-                                       LanguageManager.GetString("Label_Spirit_ServicesOwed") + strSpace + objXmlSpirit.SelectSingleNodeAndCacheExpression("services").Value + ')'
+                                       await LanguageManager.GetStringAsync("Label_Spirit_Force") + strSpace + objXmlSpirit.SelectSingleNodeAndCacheExpression("force").Value + ',' + strSpace +
+                                       await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed") + strSpace + objXmlSpirit.SelectSingleNodeAndCacheExpression("services").Value + ')'
                             };
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
@@ -493,7 +495,7 @@ namespace Chummer
 
                     case "lifestyles":
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Lifestyles");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlLifestyle in objXmlItem.SelectAndCacheExpression("lifestyle"))
                         {
@@ -509,18 +511,18 @@ namespace Chummer
                             {
                                 case "day":
                                 case "Day":
-                                    strIncrementString = LanguageManager.GetString("String_Days");
+                                    strIncrementString = await LanguageManager.GetStringAsync("String_Days");
                                     intPermanentAmount = 3044;
                                     break;
 
                                 case "week":
                                 case "Week":
-                                    strIncrementString = LanguageManager.GetString("String_Weeks");
+                                    strIncrementString = await LanguageManager.GetStringAsync("String_Weeks");
                                     intPermanentAmount = 435;
                                     break;
 
                                 default:
-                                    strIncrementString = LanguageManager.GetString("String_Months");
+                                    strIncrementString = await LanguageManager.GetStringAsync("String_Months");
                                     intPermanentAmount = 100;
                                     break;
                             }
@@ -529,7 +531,7 @@ namespace Chummer
                             {
                                 Text = (objXmlLifestyle.SelectSingleNodeAndCacheExpression("translate") ?? objXmlLifestyle.SelectSingleNodeAndCacheExpression("baselifestyle")).Value
                                        + strSpace + objXmlLifestyle.SelectSingleNodeAndCacheExpression("months").Value
-                                       + strSpace + strIncrementString + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent"), intPermanentAmount.ToString(GlobalSettings.CultureInfo))
+                                       + strSpace + strIncrementString + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent"), intPermanentAmount.ToString(GlobalSettings.CultureInfo))
                             };
 
                             // Check for Qualities.
@@ -551,7 +553,7 @@ namespace Chummer
                         break;
 
                     case "cyberwares":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Cyberware");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Cyberware");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlCyberware in objXmlItem.SelectAndCacheExpression("cyberware"))
                         {
@@ -568,7 +570,7 @@ namespace Chummer
 
                             string strRating = objXmlCyberware.SelectSingleNodeAndCacheExpression("rating")?.Value;
                             if (!string.IsNullOrEmpty(strRating))
-                                objChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                                objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strRating;
                             objChild.Text += strSpace + '(' + objXmlCyberware.SelectSingleNode("grade").Value + ')';
 
                             // Check for children.
@@ -587,7 +589,7 @@ namespace Chummer
 
                                 strRating = objXmlChild.SelectSingleNodeAndCacheExpression("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
-                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                                    objChildChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strRating;
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.SelectAndCacheExpression("gears/gear"))
                                     WriteGear(objXmlGearNode, objChildChild);
@@ -607,7 +609,7 @@ namespace Chummer
                         break;
 
                     case "biowares":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Bioware");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Bioware");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlBioware in objXmlItem.SelectAndCacheExpression("bioware"))
                         {
@@ -624,7 +626,7 @@ namespace Chummer
 
                             string strRating = objXmlBioware.SelectSingleNodeAndCacheExpression("rating")?.Value;
                             if (!string.IsNullOrEmpty(strRating))
-                                objChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                                objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strRating;
                             objChild.Text += strSpace + '(' + objXmlBioware.SelectSingleNodeAndCacheExpression("grade").Value + ')';
 
                             // Check for children.
@@ -643,7 +645,7 @@ namespace Chummer
 
                                 strRating = objXmlChild.SelectSingleNodeAndCacheExpression("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
-                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                                    objChildChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strRating;
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.SelectAndCacheExpression("gears/gear"))
                                     WriteGear(objXmlGearNode, objChildChild);
@@ -663,7 +665,7 @@ namespace Chummer
                         break;
 
                     case "armors":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Armor");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Armor");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlArmor in objXmlItem.SelectAndCacheExpression("armor"))
                         {
@@ -694,7 +696,7 @@ namespace Chummer
 
                                 string strRating = objXmlChild.SelectSingleNodeAndCacheExpression("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
-                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                                    objChildChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strRating;
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.SelectAndCacheExpression("gears/gear"))
                                     WriteGear(objXmlGearNode, objChildChild);
@@ -713,7 +715,7 @@ namespace Chummer
                         break;
 
                     case "weapons":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Weapons");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Weapons");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlWeapon in objXmlItem.SelectAndCacheExpression("weapon"))
                         {
@@ -744,7 +746,7 @@ namespace Chummer
 
                                 string strRating = objXmlAccessory.SelectSingleNodeAndCacheExpression("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
-                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                                    objChildChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strRating;
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlAccessory.SelectAndCacheExpression("gears/gear"))
                                     WriteGear(objXmlGearNode, objChildChild);
@@ -779,7 +781,7 @@ namespace Chummer
                         break;
 
                     case "gears":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Gear");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Gear");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlGear in objXmlItem.SelectAndCacheExpression("gear"))
                         {
@@ -791,7 +793,7 @@ namespace Chummer
                         break;
 
                     case "vehicles":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Vehicles");
+                        objParent.Text = await LanguageManager.GetStringAsync("String_SelectPACKSKit_Vehicles");
                         treContents.Nodes.Add(objParent);
                         foreach (XPathNavigator objXmlVehicle in objXmlItem.SelectAndCacheExpression("vehicle"))
                         {
@@ -822,7 +824,7 @@ namespace Chummer
 
                                 string strRating = objXmlMod.SelectSingleNodeAndCacheExpression("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
-                                    objChildChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strRating;
+                                    objChildChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strRating;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
