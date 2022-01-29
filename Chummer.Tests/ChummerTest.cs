@@ -109,11 +109,18 @@ namespace Chummer.Tests
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
-                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                while
+                    (!frmTestForm
+                        .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
                     Utils.SafeSleep(true);
                 }
+
                 frmTestForm.Close();
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
             }
             finally
             {
@@ -283,7 +290,8 @@ namespace Chummer.Tests
         /// <summary>
         /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
-        private static Character LoadCharacter(FileSystemInfo objFileInfo)
+        // ReSharper disable once SuggestBaseTypeForParameter
+        private static Character LoadCharacter(FileInfo objFileInfo)
         {
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             Character objCharacter = null;
