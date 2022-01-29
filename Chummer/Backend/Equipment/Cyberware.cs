@@ -3721,11 +3721,11 @@ namespace Chummer.Backend.Equipment
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
             if (_objCharacter?.IsPrototypeTranshuman == true)
                 decReturn += Children
-                             .Where(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman).AsParallel().Sum(
+                             .Where(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman).Sum(
                                  objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
             else
                 decReturn += Children
-                             .Where(objChild => objChild.AddToParentESS).AsParallel().Sum(
+                             .Where(objChild => objChild.AddToParentESS).Sum(
                                  objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
             return decReturn;
         }

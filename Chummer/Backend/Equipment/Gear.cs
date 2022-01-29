@@ -2633,7 +2633,7 @@ namespace Chummer.Backend.Equipment
                 decimal decTotalChildrenCost = 0;
                 if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
                 {
-                    decTotalChildrenCost += Children.AsParallel().Sum(x => x.CalculatedCost);
+                    decTotalChildrenCost += Children.Sum(x => x.CalculatedCost);
                 }
 
                 if (string.IsNullOrEmpty(strCostExpression))
@@ -2704,7 +2704,7 @@ namespace Chummer.Backend.Equipment
                 if (Children.Count > 0)
                 {
                     // Add in the cost of all child components.
-                    decPlugin += Children.AsParallel().Sum(x => x.TotalCost);
+                    decPlugin += Children.Sum(x => x.TotalCost);
                 }
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
