@@ -82,6 +82,7 @@ Data Changes:
 - Fixed the category entry of the Horizon-Flynn Defense-Com Commlink Holdout weapon.
 - Custom Items can now be added to cyberlimbs.
 - Fixed Trollbow not using the Bow specialisation. Closes #4676
+- Added dummy mods (speakers, strobes) to Horizon Noizquito. Closes #4675
 
 Changed/New Strings:
 - String_GameplayOption

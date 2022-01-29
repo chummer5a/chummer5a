@@ -3422,6 +3422,10 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
+      <mods>
+        <mod name="Speakers" />
+        <mod name="Strobes" />
+      </mods>
     </vehicle>
     <vehicle>
       <id>8b1aff5b-a9a3-4fdc-a10c-de56d88e4b91</id>
@@ -10694,6 +10698,30 @@
           <name operation="contains">Ruhrmetall Wolf II</name>
         </vehicledetails>
       </required>
+    </mod>
+    <mod>
+      <id>62C611C4-F081-43AD-8EFD-02FFDFE3014C</id>
+      <name>Speakers</name>
+      <page>128</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>62C611C4-F081-43AD-8EFD-02FFDFE3014C</id>
+      <name>Strobes</name>
+      <page>128</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
     </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
