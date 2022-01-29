@@ -1,3 +1,8 @@
+Future Build 218
+
+Data Changes:
+- Fixed the stats for Boggles so that they appear and can be processed properly when creating a new critter. Fixes #4679.
+
 Build 217
 Application Changes:
 - Adding a new non-advanced lifestyle that is eligible for Trust Fund no longer causes a crash. Fixes #4601.

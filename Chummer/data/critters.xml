@@ -51706,24 +51706,42 @@
       <name>Boggle</name>
       <category>Extraplanar Travelers</category>
       <forcecreature />
-      <bod>F-2</bod>
-      <agi>F-1</agi>
-      <rea>F-1</rea>
-      <str>F-2</str>
-      <cha>F</cha>
-      <int>F</int>
-      <log>F</log>
-      <wil>F+2</wil>
-      <ini>0</ini>
-      <edg>F/2</edg>
-      <mag>F</mag>
-      <res>0</res>
-      <dep>0</dep>
-      <ess>F</ess>
+      <bodmin>F-2</bodmin>
+      <bodmax>F-2</bodmax>
+      <bodaug>F-2</bodaug>
+      <agimin>F-1</agimin>
+      <agimax>F-1</agimax>
+      <agiaug>F-1</agiaug>
+      <reamin>F-1</reamin>
+      <reamax>F-1</reamax>
+      <reaaug>F-1</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F+2</wilmin>
+      <wilmax>F+2</wilmax>
+      <wilaug>F+2</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/1/0</walk>
       <run>4/0/0</run>
       <sprint>2/1/0</sprint>
-      <armor>0</armor>
       <skills>
         <group>Close Combat</group>
         <skill>Assensing</skill>
