@@ -1684,13 +1684,13 @@ namespace Chummer
                         foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
-                                nameof(Skill.Enabled));
+                                nameof(Skill.Default));
                         }
 
                         foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
-                                nameof(Skill.Enabled));
+                                nameof(Skill.Default));
                         }
                     }
                     else
@@ -1702,7 +1702,7 @@ namespace Chummer
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                nameof(Skill.Enabled));
+                                nameof(Skill.Default));
                         }
                     }
                 }

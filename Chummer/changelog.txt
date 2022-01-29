@@ -9,6 +9,7 @@ Application Changes:
 - Adept Powers, AI Programs, Metamagic Arts, Complex Forms, Critter Powers, Mentor Spirits, Metamagics, Spells, and Weapon Mounts should now automatically fetch notes from linked PDFs.
 - Mugshot compression settings should now properly get saved with other global settings.
 - Added an option to have Chummer automatically set the lossy compression quality for mugshots in save files instead of using the same, manually defined setting for all images. Using this automatic setting, larger images will be saved with lower Jpeg quality settings because Jpeg artifacts will be less visible in them, while smaller images get saved with higher quality settings.
+- Default mugshot compression for new Chummer users is now Lossy with automatic quality instead of Lossless. Existing Chummer users migrating from older versions of Chummer that did not have mugshot compression as a setting will still have it set to Lossless so that there is no change in functionality for them. 
 - If the prompt asking the user if they wish to automatically apply a Chummer updater is dismissed, it no longer re-appears until the user has closed and later re-opened Chummer.
 - Non-PDF files can no longer be linked in as a sourcebook's PDF file.
 - Fixed a crash when taking the Apprentice quality.
@@ -54,6 +55,13 @@ Application Changes:
 - Added a browser view for vehicles to show content in a grid view, similar to the weapons browser. Currently a bit slow.
 - Fixed the tooltips on buttons to open characters linked to contacts.
 - Fixed various issues caused by interactions between bonuses/improvements that add special skills and custom rulesets that can alter special skills lists.
+- If the user is prompted to load an autosave for a character that might have been unsaved as the result of a crash and the user declines, that autosave is now deleted.
+- Reduced crashes and potential weird issues caused by interactions with the current Windows user's designated temporary folder.
+- Minimum and maximum initiative dice for the physical world and AR, astral, cold-sim VR, and hot-sim VR can all now be tweaked through character settings.
+- In order to work with smaller PDFs, the PDF test function now opens to page 3 instead of to page 5.
+- At higher screen resolutions, the splitter for the Karma & Nuyen tab now properly starts in the middle of the tab instead of far off to the left.
+- Improvements that forcefully allow a skill to be defaulted now work properly.
+- Conditional boosts to skills that only boost specific specializations are now always represented in the specialization's dice pool bonus, no matter where it is shown. Fixes #3855.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
@@ -82,6 +90,21 @@ Data Changes:
 - Fixed the category entry of the Horizon-Flynn Defense-Com Commlink Holdout weapon.
 - Custom Items can now be added to cyberlimbs.
 - Fixed Trollbow not using the Bow specialisation. Closes #4676
+- Fixed the following critter entries from Howling Shadows: Glow Rat, Neogargoyle, and Sea Leech.
+- Added Spinrad Global and a list of AA megacorporations to life modules' data files and to the suggested list for SINner (Corporate) and SINner (Corporate Limited). Fixes #4668.
+- Built-in German character settings now use 2d6 for astral initiative instead of 3d6. Fixes #4531.
+- Built-in character settings for Full House with Sum-to-Ten have been added, as well as German versions of all three types of Full House settings.
+- Sum-to-Ten Improved has been added to the Chummer customdata folder. When enabled, it changes the Sum-to-Ten value of A priorities from 4 to 7 and of B priorities from 3 to 4. When using the dataset, it is recommended one uses a Sum-to-Ten value of 14 instead of 10.
+- Added new built-in character settings that are alternate versions of Sum-to-Ten, Full House (Sum-to-Ten), and their German versions that use Sum-to-Ten Improved instead of RAW Sum-to-Ten.
+- Only Allow Basic Metatypes at Character Creation has been added to the Chummer customdata folder. When enabled, it forbids all character types (metasapients, shifters, changelings, drakes, infected, etc.) other than the basic metatypes added by the core rulebook.
+- The Newbie's Choice built-in character setting now has the Only Allow Basic Metatypes at Character Creation custom dataset enabled.
+- Added a German version for the built-in character setting Newbie's Choice.
+- Added Street Grimoire Errata as a separate book entry because the errata PDF adds three new items. The sourcebook entries for Authoritative Tone and the Street Grimoire versions of Keratin Control and Living Focus now direct to Street Grimoire Errata instead of Street Grimoire.
+- Jack of All Trades Applies Karma Modifiers in Create Mode has been added to the Chummer customdata folder. It makes the karma cost modifiers of Jack of All Trades Master of None also apply at character creation.
+- Delnar's One Karma Qualities has been added to the Chummer customdata folder. It adds a sourcebook that adds eight positive qualities that cost one karma each and three negative qualities that give one karma each.
+- Links in custom dataset descriptions are now properly recognized and formatted as such in the Character Settings form, and they are now clickable, too.
+- Fixed the maximum amount of times that most echoes can be taken.
+- The Mathemagics echo now properly increases Mental limit by 2 for math-intensive actions.
 - Added dummy mods (speakers, strobes) to Horizon Noizquito. Closes #4675
 
 Changed/New Strings:
@@ -242,7 +265,7 @@ Application Changes:
 - Added weaponrangemodifier bonus type. This can be used to alter the range penalty for a given weapon. The bonus follows the form of <weaponrangemodifier><name>[contains]Partial Weapon Name</name><value>1</value></weaponrangemodifier>. Note that name is optional, and it does not need to use the [contains] tag. If name is not specified, all weapons will be modified. 
 
 Data Changes:
-- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
+- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes custom data folder.
 - Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
 - Whisper of Bones now properly requires Necromancy.
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.

@@ -139,6 +139,16 @@ namespace Chummer
         private bool _blnDroneMods;
         private bool _blnDroneModsMaximumPilot;
 
+        // Initiative variables
+        private int _intMinInitiativeDice = 1;
+        private int _intMaxInitiativeDice = 5;
+        private int _intMinAstralInitiativeDice = 3;
+        private int _intMaxAstralInitiativeDice = 5;
+        private int _intMinColdSimInitiativeDice = 3;
+        private int _intMaxColdSimInitiativeDice = 5;
+        private int _intMinHotSimInitiativeDice = 4;
+        private int _intMaxHotSimInitiativeDice = 5;
+
         // Karma variables.
         private int _intKarmaAttribute = 5;
 
@@ -592,6 +602,14 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneModsMaximumPilot.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intMinInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMinAstralInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxAstralInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMinColdSimInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxColdSimInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMinHotSimInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxHotSimInitiativeDice;
                 hashCode = (hashCode * 397) ^ _intKarmaAttribute;
                 hashCode = (hashCode * 397) ^ _intKarmaCarryover;
                 hashCode = (hashCode * 397) ^ _intKarmaContact;
@@ -858,8 +876,25 @@ namespace Chummer
                     // <dronemodsmaximumpilot />
                     objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    // <DicePenaltySustaining />
+                    // <dicepenaltysustaining />
                     objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalSettings.InvariantCultureInfo));
+
+                    // <mininitiativedice />
+                    objWriter.WriteElementString("mininitiativedice", _intMinInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxinitiativedice />
+                    objWriter.WriteElementString("maxinitiativedice", _intMaxInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <minastralinitiativedice />
+                    objWriter.WriteElementString("minastralinitiativedice", _intMinAstralInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxastralinitiativedice />
+                    objWriter.WriteElementString("maxastralinitiativedice", _intMaxAstralInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <mincoldsiminitiativedice />
+                    objWriter.WriteElementString("mincoldsiminitiativedice", _intMinColdSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxcoldsiminitiativedice />
+                    objWriter.WriteElementString("maxcoldsiminitiativedice", _intMaxColdSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <minhotsiminitiativedice />
+                    objWriter.WriteElementString("minhotsiminitiativedice", _intMinHotSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxhotsiminitiativedice />
+                    objWriter.WriteElementString("maxhotsiminitiativedice", _intMaxHotSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // <karmacost>
                     objWriter.WriteStartElement("karmacost");
@@ -1167,7 +1202,7 @@ namespace Chummer
             // A very hacky legacy shim, but also works as a bit of a sanity check
             else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
             {
-                _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
             }
             objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
             objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
@@ -1318,6 +1353,16 @@ namespace Chummer
 
             //House Rule: The DicePenalty per sustained spell or form
             objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
+
+            // Initiative dice
+            objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxinitiativedice", ref _intMaxInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("minastralinitiativedice", ref _intMinAstralInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxastralinitiativedice", ref _intMaxAstralInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("mincoldsiminitiativedice", ref _intMinColdSimInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxcoldsiminitiativedice", ref _intMaxColdSimInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
 
             XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost");
             // Attempt to populate the Karma values.
@@ -3575,6 +3620,138 @@ namespace Chummer
         }
 
         #endregion Properties and Methods
+
+        #region Initiative Dice Properties
+
+        /// <summary>
+        /// Minimum number of initiative dice
+        /// </summary>
+        public int MinInitiativeDice
+        {
+            get => _intMinInitiativeDice;
+            set
+            {
+                if (_intMinInitiativeDice != value)
+                {
+                    _intMinInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice
+        /// </summary>
+        public int MaxInitiativeDice
+        {
+            get => _intMaxInitiativeDice;
+            set
+            {
+                if (_intMaxInitiativeDice != value)
+                {
+                    _intMaxInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimum number of initiative dice in Astral
+        /// </summary>
+        public int MinAstralInitiativeDice
+        {
+            get => _intMinAstralInitiativeDice;
+            set
+            {
+                if (_intMinAstralInitiativeDice != value)
+                {
+                    _intMinAstralInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in Astral
+        /// </summary>
+        public int MaxAstralInitiativeDice
+        {
+            get => _intMaxAstralInitiativeDice;
+            set
+            {
+                if (_intMaxAstralInitiativeDice != value)
+                {
+                    _intMaxAstralInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimum number of initiative dice in cold sim VR
+        /// </summary>
+        public int MinColdSimInitiativeDice
+        {
+            get => _intMinColdSimInitiativeDice;
+            set
+            {
+                if (_intMinColdSimInitiativeDice != value)
+                {
+                    _intMinColdSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in cold sim VR
+        /// </summary>
+        public int MaxColdSimInitiativeDice
+        {
+            get => _intMaxColdSimInitiativeDice;
+            set
+            {
+                if (_intMaxColdSimInitiativeDice != value)
+                {
+                    _intMaxColdSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimum number of initiative dice in hot sim VR
+        /// </summary>
+        public int MinHotSimInitiativeDice
+        {
+            get => _intMinHotSimInitiativeDice;
+            set
+            {
+                if (_intMinHotSimInitiativeDice != value)
+                {
+                    _intMinHotSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in hot sim VR
+        /// </summary>
+        public int MaxHotSimInitiativeDice
+        {
+            get => _intMaxHotSimInitiativeDice;
+            set
+            {
+                if (_intMaxHotSimInitiativeDice != value)
+                {
+                    _intMaxHotSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
 
         #region Karma
 

@@ -54,7 +54,7 @@ namespace ChummerHub.Client.Sinners
             {
                 StringBuilder sbdReturn = new StringBuilder(TagName);
                 if (!string.IsNullOrEmpty(TagValue))
-                    sbdReturn.Append(": " + TagValue);
+                    sbdReturn.Append(": ").Append(TagValue);
                 Tag tempParent = MyParentTag;
                 while (tempParent != null)
                 {
@@ -65,7 +65,7 @@ namespace ChummerHub.Client.Sinners
                     tempParent = tempParent.MyParentTag;
                 }
                 if(!string.IsNullOrEmpty(TagComment))
-                    sbdReturn.Append(" (" + TagComment + ")");
+                    sbdReturn.Append(" (").Append(TagComment).Append(')');
                 return sbdReturn.ToString();
             }
         }
@@ -143,7 +143,7 @@ namespace ChummerHub.Client.Sinners
             if (objItem == null || objAttribute == null)
                 return;
             Type objItemType = objItem.GetType();
-            StringBuilder sbdPropertyValues = new StringBuilder();
+            StringBuilder sbdPropertyValues = new StringBuilder(byte.MaxValue);
             foreach (string strProperty in objAttribute.ListCommentProperties)
             {
                 System.Reflection.PropertyInfo objProperty = objItemType.GetProperties().FirstOrDefault(p => p.Name == strProperty);
@@ -152,7 +152,7 @@ namespace ChummerHub.Client.Sinners
 
                 string strPropertyValue = objProperty.GetValue(objItem)?.ToString();
                 if (!string.IsNullOrEmpty(strPropertyValue))
-                    sbdPropertyValues.Append(strPropertyValue + " ");
+                    sbdPropertyValues.Append(strPropertyValue).Append(' ');
             }
             if (sbdPropertyValues.Length > 0)
                 sbdPropertyValues.Remove(sbdPropertyValues.Length - 1, 1); // Remove trailing whitespace

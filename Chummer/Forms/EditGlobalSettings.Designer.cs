@@ -430,7 +430,7 @@ namespace Chummer
             this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
             this.cmdPDFTest.TabIndex = 17;
             this.cmdPDFTest.Tag = "Button_Options_PDFTest";
-            this.cmdPDFTest.Text = "Test - Open to Page 5";
+            this.cmdPDFTest.Text = "Test - Open to Page 3";
             this.cmdPDFTest.UseVisualStyleBackColor = true;
             this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
             // 

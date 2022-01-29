@@ -102,7 +102,7 @@ namespace Chummer
                             {
                                 if (_xmlBaseSpellDataNode.SelectSingleNode(
                                         strFilterPrefix + strCategory.CleanXPath() + " and range = "
-                                        + improvement.ImprovedName.CleanXPath() + "]")
+                                        + improvement.ImprovedName.CleanXPath() + ']')
                                     != null)
                                 {
                                     limit.Add(strCategory);
@@ -116,7 +116,7 @@ namespace Chummer
                             continue;
                     }
 
-                    if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory.CleanXPath() + "]")
+                    if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory.CleanXPath() + ']')
                         == null)
                         continue;
 
@@ -427,7 +427,7 @@ namespace Chummer
 
                 void AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
                 {
-                    string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
+                    string strDisplayName = objXmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value ??
                                             objXmlSpell.SelectSingleNode("name")?.Value ??
                                             LanguageManager.GetString("String_Unknown");
                     if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0
@@ -457,7 +457,7 @@ namespace Chummer
                 return;
 
             // Display the Spell information.
-            XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("spells/spell[id = " + strSelectedItem.CleanXPath() + "]");
+            XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("spells/spell[id = " + strSelectedItem.CleanXPath() + ']');
             // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
             // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
             int intSpellCount = 0;
@@ -534,7 +534,7 @@ namespace Chummer
             }
             if (!string.IsNullOrEmpty(strSelectedSpellId))
             {
-                xmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + strSelectedSpellId.CleanXPath() + "]");
+                xmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + strSelectedSpellId.CleanXPath() + ']');
             }
             if (xmlSpell == null)
             {
@@ -783,7 +783,7 @@ namespace Chummer
             }
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = xmlSpell.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();

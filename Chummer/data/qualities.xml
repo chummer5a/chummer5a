@@ -1535,7 +1535,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -1571,7 +1571,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -2483,12 +2483,10 @@
       <name>Conjuring Geas</name>
       <karma>-5</karma>
       <category>Negative</category>
+      <careeronly />
       <bonus>
         <astralreputation>-1</astralreputation>
       </bonus>
-      <required>
-        <careeronly />
-      </required>
       <source>SG</source>
       <page>199</page>
     </quality>
@@ -3689,7 +3687,6 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3701,7 +3698,6 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-
       <source>RF</source>
       <page>141</page>
     </quality>

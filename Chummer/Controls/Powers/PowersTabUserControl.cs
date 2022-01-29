@@ -234,7 +234,7 @@ namespace Chummer.UI.Powers
 
                     Power objPower = new Power(_objCharacter);
 
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]");
+                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + ']');
                     if (objPower.Create(objXmlPower))
                     {
                         _objCharacter.Powers.Add(objPower);

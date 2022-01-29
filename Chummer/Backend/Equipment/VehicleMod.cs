@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
 
@@ -36,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -156,9 +157,17 @@ namespace Chummer.Backend.Equipment
                 Utils.BreakIfDebug();
             }
             else
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             if (objXmlMod.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
@@ -365,12 +374,14 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
+
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
@@ -400,7 +411,7 @@ namespace Chummer.Backend.Equipment
             if (Name.StartsWith("Gecko Tips (Bod", StringComparison.Ordinal))
             {
                 Name = "Gecko Tips";
-                XmlNode objNewNode = GetNode();
+                XPathNavigator objNewNode = objMyNode.Value;
                 if (objNewNode != null)
                 {
                     objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
@@ -410,7 +421,7 @@ namespace Chummer.Backend.Equipment
             if (Name.StartsWith("Gliding System (Bod", StringComparison.Ordinal))
             {
                 Name = "Gliding System";
-                XmlNode objNewNode = GetNode();
+                XPathNavigator objNewNode = objMyNode.Value;
                 if (objNewNode != null)
                 {
                     objNewNode.TryGetStringFieldQuickly("cost", ref _strCost);
@@ -563,6 +574,7 @@ namespace Chummer.Backend.Equipment
                 if (_strName != value)
                 {
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                     _strName = value;
                 }
             }
@@ -712,7 +724,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -1107,7 +1119,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    strReturn += "/" + strSecondHalf;
+                    strReturn += '/' + strSecondHalf;
                 }
                 else if (strReturn.Contains("Rating"))
                 {
@@ -1447,7 +1459,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -1553,30 +1565,49 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                XmlDocument objDoc = _objCharacter.LoadData("vehicles.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
-                                                              + SourceIDString.CleanXPath() + " or id = "
-                                                              + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                              + ']')
-                                      ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
-                                                                 + SourceIDString.CleanXPath() + " or id = "
-                                                                 + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                                 + ']')
-                                      ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
-                                      ?? objDoc.SelectSingleNode(
-                                          "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            XmlDocument objDoc = _objCharacter.LoadData("vehicles.xml", strLanguage);
+            _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
+                                                          + SourceIDString.CleanXPath() + " or id = "
+                                                          + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                          + ']')
+                                  ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
+                                                             + SourceIDString.CleanXPath() + " or id = "
+                                                             + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                             + ']')
+                                  ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
+                                  ?? objDoc.SelectSingleNode(
+                                      "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            XPathNavigator objDoc = _objCharacter.LoadDataXPath("vehicles.xml", strLanguage);
+            _objCachedMyXPathNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
+                                                            + SourceIDString.CleanXPath() + " or id = "
+                                                            + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                            + ']')
+                                    ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
+                                                               + SourceIDString.CleanXPath() + " or id = "
+                                                               + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                               + ']')
+                                    ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
+                                    ?? objDoc.SelectSingleNode(
+                                        "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Complex Properties

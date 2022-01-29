@@ -48,13 +48,13 @@ namespace Chummer
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNode("/chummer/complexforms");
 
-            _xmlOptionalComplexFormNode = _objCharacter.GetNode();
+            _xmlOptionalComplexFormNode = _objCharacter.GetNodeXPath();
             if (_xmlOptionalComplexFormNode == null) return;
             if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
                 XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = "
                                                                                                  + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                                                                                 + "]");
+                                                                                                 + ']');
                 if (xmlMetavariantNode != null)
                     _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
@@ -78,7 +78,7 @@ namespace Chummer
             }
 
             // Display the Complex Form information.
-            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + "]");
+            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + ']');
             if (xmlComplexForm == null)
             {
                 tlpRight.Visible = false;
@@ -155,7 +155,7 @@ namespace Chummer
 
             string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ??
                                LanguageManager.GetString("String_Unknown");
-            string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ??
+            string strPage = xmlComplexForm.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
                              xmlComplexForm.SelectSingleNode("page")?.Value ??
                              LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
@@ -272,11 +272,11 @@ namespace Chummer
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                     if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform") != null
                         && _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression(
-                            "complexform[. = " + strName.CleanXPath() + "]") == null)
+                            "complexform[. = " + strName.CleanXPath() + ']') == null)
                         continue;
 
                     lstComplexFormItems.Add(
-                        new ListItem(strId, xmlComplexForm.SelectSingleNode("translate")?.Value ?? strName));
+                        new ListItem(strId, xmlComplexForm.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                 }
 
                 lstComplexFormItems.Sort(CompareListItems.CompareNames);

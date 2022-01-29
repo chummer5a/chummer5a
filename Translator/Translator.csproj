@@ -79,11 +79,11 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmTranslate.cs">
+    <Compile Include="TranslateData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmTranslate.Designer.cs">
-      <DependentUpon>frmTranslate.cs</DependentUpon>
+    <Compile Include="TranslateData.Designer.cs">
+      <DependentUpon>TranslateData.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>false</AutoGen>
@@ -103,25 +103,25 @@
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="frmTranslatorMain.cs">
+    <Compile Include="TranslatorMain.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="StringExtensions.cs" />
     <Compile Include="XmlExtensions.cs" />
-    <EmbeddedResource Include="frmTranslate.resx">
-      <DependentUpon>frmTranslate.cs</DependentUpon>
+    <EmbeddedResource Include="TranslateData.resx">
+      <DependentUpon>TranslateData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmTranslatorMain.resx">
-      <DependentUpon>frmTranslatorMain.cs</DependentUpon>
+    <EmbeddedResource Include="TranslatorMain.resx">
+      <DependentUpon>TranslatorMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="frmTranslatorMain.Designer.cs">
-      <DependentUpon>frmTranslatorMain.cs</DependentUpon>
+    <Compile Include="TranslatorMain.Designer.cs">
+      <DependentUpon>TranslatorMain.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

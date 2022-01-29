@@ -135,10 +135,7 @@ namespace ChummerDataViewer.Model
         private static void WriteCrashToDb(IDictionary<string, AttributeValue> attributeValues)
         {
             Guid guid = Guid.Parse(attributeValues["crash_id"].S);
-            if (Version.TryParse(attributeValues["version"].S, out Version version))
-            {
-            }
-            else
+            if (!Version.TryParse(attributeValues["version"].S, out Version version))
             {
                 version = new Version(attributeValues["version"].S + ".0");
             }
@@ -204,6 +201,7 @@ namespace ChummerDataViewer.Model
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable Support

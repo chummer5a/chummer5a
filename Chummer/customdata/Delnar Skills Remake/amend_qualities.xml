@@ -289,5 +289,10 @@
       <name>Enchanter</name>
       <hide />
     </quality>
+    <quality>
+      <!-- Sharper Knife from Delnar's One Karma Qualities (Not needed because everything is now defaultable) -->
+      <id>60dcf3b1-8b34-4c4f-a2f5-0131bd5dc13b</id>
+      <hide />
+    </quality>
   </qualities>
 </chummer>

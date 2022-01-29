@@ -1,6 +1,6 @@
 namespace CrashHandler
 {
-	public sealed partial class frmCrashReporter
+	public sealed partial class CrashReporter
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,7 +28,7 @@ namespace CrashHandler
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCrashReporter));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CrashReporter));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusCollectionProgess = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnNo = new System.Windows.Forms.Button();

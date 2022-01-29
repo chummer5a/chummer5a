@@ -256,7 +256,7 @@ namespace Chummer
         private void cmdPDFTest_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
 
         private void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
@@ -1522,8 +1522,16 @@ namespace Chummer
                                          : strFile,
                                      xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
                 }
-
-                string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                string strOldSelected;
+                try
+                {
+                    strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                }
+                catch(IndexOutOfRangeException)
+                { 
+                    strOldSelected = string.Empty;
+                }
+                 
                 // Strip away the language prefix
                 int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
                 if (intPos != -1)
@@ -1667,7 +1675,7 @@ namespace Chummer
                     sw.Start();
                     string[] files = Directory.GetFiles(fbd.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly);
                     XPathNavigator books = await tskLoadBooks;
-                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language=\"" + _strSelectedLanguage + "\"]");
+                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']');
                     using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
                     {
                         List<SourcebookInfo> list = null;

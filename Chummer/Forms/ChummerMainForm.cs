@@ -178,12 +178,6 @@ namespace Chummer
 
                     GlobalSettings.MruChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMruToolstripMenu(senderInner, eInner));
 
-                    // Delete the old executable if it exists (created by the update process).
-                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
-                    {
-                        Utils.SafeDeleteFile(strLoopOldFilePath);
-                    }
-
                     // Populate the MRU list.
                     PopulateMruToolstripMenu(this, null);
 
@@ -271,17 +265,22 @@ namespace Chummer
                                                 GlobalSettings.MostRecentlyUsedCharacters.All(x =>
                                                     Path.GetFileName(x) != objMostRecentAutosave.Name) &&
                                                 GlobalSettings.FavoriteCharacters.All(x =>
-                                                    Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                                && ShowMessageBox(
-                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString(
-                                                                      "Message_PossibleCrashAutosaveFound"),
-                                                                  objMostRecentAutosave.Name,
-                                                                  objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
-                                                    LanguageManager.GetString("MessageTitle_AutosaveFound"),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                                                == DialogResult.Yes)
-                                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                                    Path.GetFileName(x) != objMostRecentAutosave.Name))
+                                            {
+                                                if (ShowMessageBox(
+                                                        string.Format(GlobalSettings.CultureInfo,
+                                                                      LanguageManager.GetString(
+                                                                          "Message_PossibleCrashAutosaveFound"),
+                                                                      objMostRecentAutosave.Name,
+                                                                      objMostRecentAutosave.LastWriteTimeUtc
+                                                                          .ToLocalTime()),
+                                                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                    == DialogResult.Yes)
+                                                    setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                                else
+                                                    lstOldAutosaves.Add(objMostRecentAutosave.FullName);
+                                            }
                                             else if (objMostRecentAutosave.LastWriteTimeUtc
                                                      < objOldAutosaveTimeThreshold)
                                                 lstOldAutosaves.Add(objMostRecentAutosave.FullName);
@@ -1175,9 +1174,8 @@ namespace Chummer
                 }
                 catch (Exception e)
                 {
-                    string msg = "Could not show a MessageBox " + caption + ":" + Environment.NewLine;
-                    msg += message + Environment.NewLine + Environment.NewLine;
-                    msg += "Exception: " + e;
+                    string msg = "Could not show a MessageBox " + caption + ':' + Environment.NewLine + message
+                                 + Environment.NewLine + Environment.NewLine + "Exception: " + e;
                     Log.Fatal(e, msg);
                 }
             }
@@ -1912,7 +1910,7 @@ namespace Chummer
                                     {
                                         throw new ArgumentException(
                                             "Chummer started with unknown command line arguments: " +
-                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                            strArgs.Aggregate((j, k) => j + ' ' + k));
                                     }
 
                                     if (Path.GetExtension(strArg) != ".chum5")

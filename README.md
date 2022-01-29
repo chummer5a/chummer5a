@@ -30,7 +30,11 @@ Chummer uses a single tree release strategy with two release channels; **Milesto
 
 ## Installation - Linux and OSX
 
-As Chummer is a WinForms application, support for other operating systems is limited. For Linux and Mac OSX, it is possible to run Chummer through Wine on these operating systems. See the [wiki](https://github.com/chummer5a/chummer5a/wiki#installation) for further details.
+As Chummer is a WinForms application, support for other operating systems is limited. For Linux, macOS, and Chrome OS, Chummer can be run through one of three possible ways:
+
+1. Set up and run [Wine](https://www.winehq.org/), an open-source Windows compatibility layer. This is usually not for the faint-of-heart, especially on Chrome OS, but it is completely free. Some details about the steps necessary to run Chummer5a under Wine can be found on [the wiki](https://github.com/chummer5a/chummer5a/wiki#installation). Note that even after you set up Chummer5a to run on Wine, Wine is not perfect and you will encounter some additional bugs while using Chummer5a that you wouldn't run into under Windows.
+2. Set up and run [CrossOver](https://www.codeweavers.com/crossover), a hassle-free version of Wine with commercial support. It costs money (though it has a limited free trial), but what you are effectively purchasing is for someone else to do all the hard work setting up Wine for you, no matter what you want to run on it. If you do not want to mess around with technical stuff, we highly recommend using CrossOver.
+3. Set up and run a Windows virtual machine through programs like [VirtualBox](https://www.virtualbox.org/), [VMWare Fusion](https://www.vmware.com/products/fusion.html), or [Parallels](https://www.parallels.com/). You will need a valid copy of Windows and lots of disk space, but Chummer5a will run on a Windows virtual machine exactly how it would run under full Windows. Virtual machine hosts are generally not available for Chrome OS, though with some behind-the-scenes tinkering, it can still be possible to run a Windows virtual machine on Chrome OS.
 
 ## Contributing
 

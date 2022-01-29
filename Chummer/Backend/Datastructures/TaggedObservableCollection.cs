@@ -64,6 +64,7 @@ namespace Chummer
             return false;
         }
 
+        /// <inheritdoc />
         public override event NotifyCollectionChangedEventHandler CollectionChanged
         {
             add => throw new NotSupportedException("TaggedObservableCollection should use AddTaggedCollectionChanged method instead of adding to CollectionChanged");

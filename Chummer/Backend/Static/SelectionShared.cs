@@ -159,7 +159,7 @@ namespace Chummer
                         objCharacter.AttributeSection.ProcessAttributesInXPath(sbdLimitString, strLimitString);
                         foreach (string strLimb in Character.LimbStrings)
                         {
-                            sbdLimitString.CheapReplace(strLimitString, "{" + strLimb + "}",
+                            sbdLimitString.CheapReplace(strLimitString, '{' + strLimb + '}',
                                                         () => (string.IsNullOrEmpty(strLocation)
                                                                 ? objCharacter.LimbCount(strLimb)
                                                                 : objCharacter.LimbCount(strLimb) / 2)
@@ -815,7 +815,7 @@ namespace Chummer
                                     objCharacter.Cyberware.Where(
                                                     objCyberware =>
                                                         setEssNodeGradeAttributeText.Any(
-                                                            func => objCyberware.Grade.Name.Contains(func)))
+                                                            func => objCyberware.Grade.Name.Contains(func))).AsParallel()
                                                 .Sum(objCyberware => objCyberware.CalculatedESS);
                             }
 
@@ -1591,7 +1591,7 @@ namespace Chummer
                     }
                 case "weapondetails" when objParent is Weapon objWeapon:
                     {
-                        return objWeapon.GetNode().CreateNavigator().ProcessFilterOperationNode(xmlNode, false);
+                        return objWeapon.GetNodeXPath().ProcessFilterOperationNode(xmlNode, false);
                     }
                 case "armormod":
                     {

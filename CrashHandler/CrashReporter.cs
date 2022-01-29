@@ -6,13 +6,13 @@ using System.Windows.Forms;
 
 namespace CrashHandler
 {
-    public sealed partial class frmCrashReporter : Form
+    public sealed partial class CrashReporter : Form
     {
         private delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 
         private readonly CrashDumper _dumper;
 
-        public frmCrashReporter(CrashDumper dumper)
+        public CrashReporter(CrashDumper dumper)
         {
             _dumper = dumper ?? throw new ArgumentNullException(nameof(dumper));
             InitializeComponent();

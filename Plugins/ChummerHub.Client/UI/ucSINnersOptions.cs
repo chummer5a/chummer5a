@@ -549,17 +549,22 @@ namespace ChummerHub.Client.UI
                 Title = "Please Select Chummer File(s) for Batch-Upload"
             })
             {
-                if (thisDialog.ShowDialog() == DialogResult.OK)
+                if (thisDialog.ShowDialog() != DialogResult.OK)
+                    return;
+                foreach (string file in thisDialog.FileNames)
                 {
-                    foreach (string file in thisDialog.FileNames)
+                    CharacterExtended objTemp = null;
+                    try
                     {
-                        using (_ = await Utils.UploadCharacterFromFile(file))
-                        {
-                        }
+                        objTemp = await Utils.UploadCharacterFromFile(file);
                     }
-
-                    Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+                    finally
+                    {
+                        objTemp?.Dispose();
+                    }
                 }
+
+                Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
             }
         }
 

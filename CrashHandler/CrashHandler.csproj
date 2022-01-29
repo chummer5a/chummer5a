@@ -51,6 +51,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
@@ -64,25 +67,25 @@
     <Compile Include="CrashDumper.cs" />
     <Compile Include="DbgHlp.cs" />
     <Compile Include="ext.cs" />
-    <Compile Include="frmCrashReporter.cs">
+    <Compile Include="CrashReporter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCrashReporter.Designer.cs">
-      <DependentUpon>frmCrashReporter.cs</DependentUpon>
+    <Compile Include="CrashReporter.Designer.cs">
+      <DependentUpon>CrashReporter.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmNoMoreUserInput.cs">
+    <Compile Include="NoMoreUserInput.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmNoMoreUserInput.Designer.cs">
-      <DependentUpon>frmNoMoreUserInput.cs</DependentUpon>
+    <Compile Include="NoMoreUserInput.Designer.cs">
+      <DependentUpon>NoMoreUserInput.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmCrashReporter.resx">
-      <DependentUpon>frmCrashReporter.cs</DependentUpon>
+    <EmbeddedResource Include="CrashReporter.resx">
+      <DependentUpon>CrashReporter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmNoMoreUserInput.resx">
-      <DependentUpon>frmNoMoreUserInput.cs</DependentUpon>
+    <EmbeddedResource Include="NoMoreUserInput.resx">
+      <DependentUpon>NoMoreUserInput.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

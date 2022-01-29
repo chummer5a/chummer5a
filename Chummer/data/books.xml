@@ -105,6 +105,18 @@
       </matches>
     </book>
     <book>
+      <id>ee63bbc5-2abd-4543-8371-457044bc7c63</id>
+      <name>Street Grimoire Errata</name>
+      <code>SGE</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>PROTECT VEHICLE SUB-HEADER</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
       <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
       <name>Bullets &amp; Bandages</name>
       <code>BB</code>

@@ -53,7 +53,7 @@ namespace Chummer
             {
                 // Populate the Program list.
                 XmlNodeList objXmlOptionList
-                    = _objXmlDocument.SelectNodes("/chummer/options/option[" + _objCharacter.Options.BookXPath() + "]");
+                    = _objXmlDocument.SelectNodes("/chummer/options/option[" + _objCharacter.Options.BookXPath() + ']');
 
                 foreach (XmlNode objXmlOption in objXmlOptionList)
                 {
@@ -87,7 +87,7 @@ namespace Chummer
             string strSelectedId = lstOptions.SelectedValue?.ToString();
             XmlNode xmlOption = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = " + strSelectedId.CleanXPath() + "]");
+                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = " + strSelectedId.CleanXPath() + ']');
 
             if (xmlOption != null)
             {

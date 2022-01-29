@@ -35,4 +35,10 @@
       <lang>en-us</lang>
     </description>
   </descriptions>
+  <incompatibilities>
+    <incompatibility>
+      <name>Sum-to-Ten Improved</name>
+      <guid>2d4f861b-02e4-4689-938b-6db6a77b765f</guid>
+    </incompatibility>
+  </incompatibilities>
 </manifest>

@@ -58,7 +58,7 @@ namespace Chummer
             //Sort the list (Crude way, but have to do)
             for (int i = 0; i < modules.Count; i++)
             {
-                string stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = " + (i <= 4 ? (i + 1).ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() : "\"5\"") + "]")?.Value;
+                string stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = " + (i <= 4 ? (i + 1).ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() : "\"5\"") + ']')?.Value;
                 int j;
                 for (j = i; j < modules.Count; j++)
                 {
@@ -237,7 +237,7 @@ namespace Chummer
                                     break;
                                 }
                             default:
-                                return "(Formating error in $DOLLAR" + macroName + ")";
+                                return "(Formating error in $DOLLAR" + macroName + ')';
                         }
                     }
 
@@ -254,12 +254,12 @@ namespace Chummer
                         return strDefault;
                     }
 
-                    return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ")";
+                    return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ')';
                 }
 
                 return xmlUserMacroNode.Value;
             }
-            return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ")";
+            return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ')';
         }
 
         /// <inheritdoc />

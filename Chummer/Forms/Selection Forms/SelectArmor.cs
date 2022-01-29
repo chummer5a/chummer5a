@@ -99,7 +99,7 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
                     string strInnerText = objXmlCategory.InnerText;
-                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
+                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText,
                             objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
@@ -148,7 +148,7 @@ namespace Chummer
             XmlNode xmlArmor = null;
             string strSelectedId = lstArmor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + "]");
+                xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + ']');
             if (xmlArmor != null)
             {
                 // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).

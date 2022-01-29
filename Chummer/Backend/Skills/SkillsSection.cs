@@ -236,7 +236,7 @@ namespace Chummer.Backend.Skills
             foreach (Skill objSkill in lstSkillsToAdd)
             {
                 Guid guidLoop = objSkill.SkillId;
-                if (guidLoop != Guid.Empty)
+                if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
                 {
                     Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == guidLoop);
                     if (objExistingSkill != null)
@@ -292,7 +292,8 @@ namespace Chummer.Backend.Skills
                 Skill objSkill = Skills[i];
                 if (!setSkillsToRemove.Contains(objSkill))
                     continue;
-                _dicSkillBackups.Add(objSkill.SkillId, objSkill);
+                if (!objSkill.IsExoticSkill)
+                    _dicSkillBackups.Add(objSkill.SkillId, objSkill);
                 Skills.RemoveAt(i);
 
                 if (blnCreateKnowledge && objSkill.TotalBaseRating > 0)
@@ -398,7 +399,7 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstLoadingSkills)
                         {
-                            if (objSkill.SkillId != Guid.Empty)
+                            if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                             {
                                 Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
                                 if (objExistingSkill != null)
@@ -521,7 +522,7 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstUnsortedSkills)
                         {
-                            if (objSkill.SkillId != Guid.Empty)
+                            if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                             {
                                 Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
                                 if (objExistingSkill != null)
@@ -673,7 +674,7 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill objSkill in lstUnsortedSkills)
                 {
-                    if (objSkill.SkillId != Guid.Empty)
+                    if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                     {
                         Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
                         if (objExistingSkill != null)
@@ -985,7 +986,7 @@ namespace Chummer.Backend.Skills
                                                         + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")?.Value
                                       != "active";
                                 Skill objSkill = Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
-                                if (objSkill.SkillId != Guid.Empty)
+                                if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                                 {
                                     Skill objExistingSkill = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
                                     if (objExistingSkill != null)

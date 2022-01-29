@@ -5,17 +5,17 @@ using System.Text;
 
 namespace ChummerDataViewer.Model
 {
-    public class CrashReport
+    public sealed class CrashReport
     {
         public EventHandler ProgressChanged { get; set; }
 
         private readonly Database.DatabasePrivateApi _database;
-        private readonly string _key;
-        private readonly string _downloadedZip;
-        private readonly string _folderlocation;
+        private readonly string _strKey;
+        private readonly string _strDownloadedZip;
+        private readonly string _strFolderlocation;
 
-        public bool IsDownloadStarted => _downloadedZip != null;
-        public bool IsUnpackStarted => _folderlocation != null;
+        public bool IsDownloadStarted => !string.IsNullOrEmpty(_strDownloadedZip);
+        public bool IsUnpackStarted => !string.IsNullOrEmpty(_strFolderlocation);
 
         public Guid Guid { get; }
 
@@ -37,13 +37,13 @@ namespace ChummerDataViewer.Model
             }
         }
 
-        internal CrashReport(Database.DatabasePrivateApi database, Guid guid, long unixTimeStamp, string buildType, string errorFrindly, string key,
-            string webFileLocation, Version version, string downloadedZip = null, string folderlocation = null, string stackTrace = null, string userstory = null)
+        internal CrashReport(Database.DatabasePrivateApi database, Guid guid, long unixTimeStamp, string buildType, string errorFrindly, string strKey,
+            string webFileLocation, Version version, string strDownloadedZip = null, string strFolderlocation = null, string stackTrace = null, string userstory = null)
         {
             _database = database;
-            _key = key;
-            _downloadedZip = downloadedZip;
-            _folderlocation = folderlocation;
+            _strKey = strKey;
+            _strDownloadedZip = strDownloadedZip;
+            _strFolderlocation = strFolderlocation;
             Guid = guid;
             BuildType = buildType;
             ErrorFrindly = errorFrindly;
@@ -56,11 +56,11 @@ namespace ChummerDataViewer.Model
             //Addseconds complains, 1 second = 10000 ns ticks so do that instead
             Timestamp = unixStart.AddTicks(unixTimeStamp * 10000);
 
-            if (folderlocation != null)
+            if (strFolderlocation != null)
             {
                 Progress = CrashReportProcessingProgress.Unpacked;
             }
-            else if (downloadedZip != null)
+            else if (strDownloadedZip != null)
             {
                 Progress = CrashReportProcessingProgress.Downloaded;
             }
@@ -86,7 +86,7 @@ namespace ChummerDataViewer.Model
 
                 string file = PersistentState.Database.GetKey("crashdumps_zip_folder") + Path.DirectorySeparatorChar + Guid + ".zip";
                 _worker = worker;
-                _worker.Enqueue(Guid, uriLocation, _key, file);
+                _worker.Enqueue(Guid, uriLocation, _strKey, file);
 
                 _worker.StatusChanged += WorkerOnStatusChanged;
             }

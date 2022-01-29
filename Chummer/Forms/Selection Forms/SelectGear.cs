@@ -73,7 +73,7 @@ namespace Chummer
             _intCostMultiplier = intCostMultiplier;
             _objCharacter = objCharacter;
             _objGearParent = objGearParent;
-            _objParentNode = (_objGearParent as IHasXmlNode)?.GetNode()?.CreateNavigator();
+            _objParentNode = (_objGearParent as IHasXmlDataNode)?.GetNodeXPath();
             // Stack Checkbox is only available in Career Mode.
             if (!_objCharacter.Created)
             {
@@ -124,7 +124,7 @@ namespace Chummer
                     }
 
                     sbdMount.Append(". = \"General\"");
-                    objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + "]");
+                    objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + ']');
                 }
             }
             else
@@ -205,7 +205,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected piece of Gear.
-                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
 
                 if (objXmlGear != null)
                 {
@@ -565,7 +565,7 @@ namespace Chummer
             lblGearDeviceRatingLabel.Visible = !string.IsNullOrEmpty(strDeviceRating);
 
             string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();

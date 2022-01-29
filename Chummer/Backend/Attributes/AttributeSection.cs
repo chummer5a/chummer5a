@@ -436,12 +436,12 @@ namespace Chummer.Backend.Attributes
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
             SpecialAttributeList.Clear();
-            XPathNavigator xmlCharNode = _objCharacter.GetNode();
+            XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath();
             // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
-            XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
+            XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNodeXPath(true) : null;
             foreach (string strAttribute in AttributeStrings)
             {
-                XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = " + strAttribute.CleanXPath() + "]");
+                XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = " + strAttribute.CleanXPath() + ']');
                 // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
                 if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version(5, 200, 25))
                 {
@@ -513,10 +513,10 @@ namespace Chummer.Backend.Attributes
                     objAttribute.UnbindAttribute();
                 AttributeList.Clear();
                 SpecialAttributeList.Clear();
-                XPathNavigator xmlCharNode = _objCharacter.GetNode();
+                XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath();
                 // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
                 XPathNavigator xmlCharNodeAnimalForm =
-                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
+                    _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNodeXPath(true) : null;
                 foreach (string strAttribute in AttributeStrings)
                 {
                     // First, remake the attribute
@@ -565,7 +565,7 @@ namespace Chummer.Backend.Attributes
                         continue;
                     XPathNavigator xmlHeroLabAttributeNode =
                         xmlStatBlockBaseNode.SelectSingleNode(
-                            "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath() + "]");
+                            "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath() + ']');
                     XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
                     if (xmlAttributeBaseNode != null &&
                         int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
@@ -764,7 +764,7 @@ namespace Chummer.Backend.Attributes
         {
             if (_objCharacter.MetatypeCategory == "Shapeshifter")
             {
-                XPathNavigator xmlNode = _objCharacter.GetNode(true);
+                XPathNavigator xmlNode = _objCharacter.GetNodeXPath(true);
 
                 if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                 {
@@ -772,7 +772,7 @@ namespace Chummer.Backend.Attributes
                 }
                 else
                 {
-                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = " + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
+                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = " + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
                     objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
             }

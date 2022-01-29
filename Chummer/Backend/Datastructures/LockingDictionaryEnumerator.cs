@@ -23,8 +23,10 @@ using System.Threading;
 
 namespace Chummer
 {
-    public readonly struct LockingDictionaryEnumerator : IDictionaryEnumerator, IEquatable<LockingDictionaryEnumerator>
+    public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IEquatable<LockingDictionaryEnumerator>, IDisposable
     {
+        private bool _blnHasEnteredTopReadLock;
+
         private readonly ReaderWriterLockSlim _rwlThis;
 
         private readonly IDictionaryEnumerator _objInternalEnumerator;
@@ -44,8 +46,25 @@ namespace Chummer
         /// <inheritdoc />
         public bool MoveNext()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _objInternalEnumerator.MoveNext();
+            bool blnReturn = false;
+            // When we start moving, enter a read lock that is only released when we stop moving
+            if (!_blnHasEnteredTopReadLock)
+            {
+                _blnHasEnteredTopReadLock = true;
+                _rwlThis.EnterReadLock();
+            }
+            try
+            {
+                return blnReturn = _objInternalEnumerator.MoveNext();
+            }
+            finally
+            {
+                if (!blnReturn && _blnHasEnteredTopReadLock)
+                {
+                    _blnHasEnteredTopReadLock = false;
+                    _rwlThis.ExitReadLock();
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -53,6 +72,11 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
                 _objInternalEnumerator.Reset();
+            if (_blnHasEnteredTopReadLock)
+            {
+                _blnHasEnteredTopReadLock = false;
+                _rwlThis.ExitReadLock();
+            }
         }
 
         /// <inheritdoc />
@@ -98,19 +122,22 @@ namespace Chummer
         /// <inheritdoc />
         public bool Equals(LockingDictionaryEnumerator other)
         {
-            return Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
+            return other != null && Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             return obj != null && Equals((LockingDictionaryEnumerator)obj);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return (_rwlThis, _objInternalEnumerator).GetHashCode();
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return _objInternalEnumerator.ToString() + ' ' + _rwlThis;
@@ -118,12 +145,22 @@ namespace Chummer
 
         public static bool operator ==(LockingDictionaryEnumerator left, LockingDictionaryEnumerator right)
         {
-            return left.Equals(right);
+            return left != null && left.Equals(right);
         }
 
         public static bool operator !=(LockingDictionaryEnumerator left, LockingDictionaryEnumerator right)
         {
             return !(left == right);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (_blnHasEnteredTopReadLock)
+            {
+                _blnHasEnteredTopReadLock = false;
+                _rwlThis.ExitReadLock();
+            }
         }
     }
 }

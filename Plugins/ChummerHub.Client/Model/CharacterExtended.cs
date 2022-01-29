@@ -593,15 +593,20 @@ namespace ChummerHub.Client.Sinners
                         UserRights = ucSINnersOptions.SINnerVisibility.UserRights
                     };
             }
-            if (!string.IsNullOrEmpty(Settings.Default.UserEmail) && MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail"))
+            if (!string.IsNullOrEmpty(Settings.Default.UserEmail) && MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a =>
+                    string.Equals(a.EMail, "delete.this.and.add@your.mail", StringComparison.OrdinalIgnoreCase)))
             {
-                List<SINnerUserRight> found = MySINnerFile.SiNnerMetaData.Visibility.UserRights.Where(a => a.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail").ToList();
+                List<SINnerUserRight> found = MySINnerFile.SiNnerMetaData.Visibility.UserRights.Where(a =>
+                                                              string.Equals(
+                                                                  a.EMail, "delete.this.and.add@your.mail",
+                                                                  StringComparison.OrdinalIgnoreCase))
+                                                          .ToList();
                 foreach (SINnerUserRight one in found)
                     MySINnerFile.SiNnerMetaData.Visibility.UserRights.Remove(one);
             }
-            if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+            if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
             {
-                MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(new SINnerUserRight()
+                MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(new SINnerUserRight
                 {
                     Id = Guid.NewGuid(),
                     CanEdit = true,
@@ -694,22 +699,26 @@ namespace ChummerHub.Client.Sinners
         {
             string[] pathParts = path.Split('\\');
 
+            string strPrevious = string.Empty;
             for (int i = 0; i < pathParts.Length; i++)
             {
+                string strCurrent = pathParts[i];
                 if (i > 0)
-                    pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
+                    strCurrent = Path.Combine(strPrevious, strCurrent);
 
-                if (!Directory.Exists(pathParts[i]))
+                if (!Directory.Exists(strCurrent))
                 {
                     try
                     {
-                        Directory.CreateDirectory(pathParts[i]);
+                        Directory.CreateDirectory(strCurrent);
                     }
                     catch (UnauthorizedAccessException e)
                     {
-                        throw new UnauthorizedAccessException("Path: " + pathParts[i], e);
+                        throw new UnauthorizedAccessException("Path: " + strCurrent, e);
                     }
                 }
+
+                strPrevious = strCurrent;
             }
         }
 
