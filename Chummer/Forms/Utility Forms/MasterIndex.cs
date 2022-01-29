@@ -47,7 +47,7 @@ namespace Chummer
             return SettingsManager.LoadedCharacterSettings.Values.First();
         }
 
-        private readonly List<string> _lstFileNames = new List<string>
+        private static readonly IReadOnlyCollection<string> _astrFileNames = new []
         {
             "actions.xml",
             "armor.xml",
@@ -212,7 +212,7 @@ namespace Chummer
                     {
                         ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                         // Prevents locking the UI thread while still benefitting from static scheduling of Parallel.ForEach
-                        await Task.WhenAll(_lstFileNames.Select(strFileName => Task.Run(async () =>
+                        await Task.WhenAll(_astrFileNames.Select(strFileName => Task.Run(async () =>
                         {
                             XPathNavigator xmlBaseNode
                                 = await XmlManager.LoadXPathAsync(strFileName,

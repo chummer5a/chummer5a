@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -112,6 +113,47 @@ namespace Chummer
         public static string GetStartupPath => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath;
 
         public static string GetAutosavesFolderPath => Path.Combine(GetStartupPath, "saves", "autosave");
+
+        public static ReadOnlyCollection<string> BasicDataFileNames { get; } = Array.AsReadOnly(new[]
+        {
+            "actions.xml",
+            "armor.xml",
+            "bioware.xml",
+            "books.xml",
+            "complexforms.xml",
+            "contacts.xml",
+            "critters.xml",
+            "critterpowers.xml",
+            "cyberware.xml",
+            "drugcomponents.xml",
+            "echoes.xml",
+            "options.xml",
+            "gear.xml",
+            "improvements.xml",
+            "licenses.xml",
+            "lifemodules.xml",
+            "lifestyles.xml",
+            "martialarts.xml",
+            "mentors.xml",
+            "metamagic.xml",
+            "metatypes.xml",
+            "options.xml",
+            "packs.xml",
+            "powers.xml",
+            "priorities.xml",
+            "programs.xml",
+            "qualities.xml",
+            "ranges.xml",
+            "settings.xml",
+            "sheets.xml",
+            "skills.xml",
+            "spells.xml",
+            "spiritpowers.xml",
+            "streams.xml",
+            "traditions.xml",
+            "vehicles.xml",
+            "weapons.xml"
+        });
 
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
 

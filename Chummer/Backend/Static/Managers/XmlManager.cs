@@ -97,9 +97,27 @@ namespace Chummer
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
             .Combine(Utils.GetStartupPath, "data").Yield()
             .Concat(GlobalSettings.CustomDataDirectoryInfos.Select(x => x.DirectoryPath)));
+        private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
+
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         #region Methods
+
+        static XmlManager()
+        {
+            foreach (string strFileName in Utils.BasicDataFileNames)
+            {
+                if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
+                {
+                    setLoop = new HashSet<string>();
+                    s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                }
+                else
+                    setLoop.Clear();
+                setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
+            }
+        }
+
         public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> customDirectories)
         {
             if (!s_blnSetDataDirectoriesLoaded)
@@ -113,6 +131,17 @@ namespace Chummer
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in customDirectories)
                 {
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
+                }
+                foreach (string strFileName in Utils.BasicDataFileNames)
+                {
+                    if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
+                    {
+                        setLoop = new HashSet<string>();
+                        s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                    }
+                    else
+                        setLoop.Clear();
+                    setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
                 }
                 s_blnSetDataDirectoriesLoaded = true;
             }
@@ -187,10 +216,15 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
 
-            List<string> lstRelevantCustomDataPaths =
-                CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
-            List<string> lstKey = new List<string> {strLanguage, strPath};
-            lstKey.AddRange(lstRelevantCustomDataPaths);
+            string[] astrRelevantCustomDataPaths;
+            if (lstEnabledCustomDataPaths == null)
+                astrRelevantCustomDataPaths = Array.Empty<string>();
+            else if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
+                astrRelevantCustomDataPaths = lstEnabledCustomDataPaths.Where(x => setDirectoriesPossible.Contains(x)).ToArray();
+            else
+                astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths).ToArray();
+            List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) {strLanguage, strPath};
+            lstKey.AddRange(astrRelevantCustomDataPaths);
             KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             // Look to see if this XmlDocument is already loaded.
@@ -312,11 +346,16 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
 
-            List<string> lstRelevantCustomDataPaths =
-                CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
-            bool blnHasCustomData = lstRelevantCustomDataPaths.Count > 0;
-            List<string> lstKey = new List<string> { strLanguage, strPath };
-            lstKey.AddRange(lstRelevantCustomDataPaths);
+            string[] astrRelevantCustomDataPaths;
+            if (lstEnabledCustomDataPaths == null)
+                astrRelevantCustomDataPaths = Array.Empty<string>();
+            else if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
+                astrRelevantCustomDataPaths = lstEnabledCustomDataPaths.Where(x => setDirectoriesPossible.Contains(x)).ToArray();
+            else
+                astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths).ToArray();
+            bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
+            List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
+            lstKey.AddRange(astrRelevantCustomDataPaths);
             KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             XmlDocument xmlReturn = null;
@@ -411,7 +450,7 @@ namespace Chummer
                 // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
                 if (blnHasCustomData)
                 {
-                    foreach (string strLoopPath in lstRelevantCustomDataPaths)
+                    foreach (string strLoopPath in astrRelevantCustomDataPaths)
                     {
                         DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath, strFileName);
                     }
@@ -689,35 +728,34 @@ namespace Chummer
         /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
         /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
         /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in <paramref name="lstPaths"/>.</returns>
-        private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyCollection<string> lstPaths)
+        private static IEnumerable<string> CompileRelevantCustomDataPaths(string strFileName, IEnumerable<string> lstPaths)
         {
-            List<string> lstReturn = new List<string>();
-            if (strFileName != "improvements.xml" && lstPaths?.Count > 0)
+            if (strFileName == "improvements.xml" || lstPaths == null)
+                yield break;
+            foreach (string strLoopPath in lstPaths)
             {
-                lstReturn.Capacity = lstPaths.Count;
-                foreach (string strLoopPath in lstPaths)
+                if (Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, SearchOption.AllDirectories)
+                             .Any(x =>
+                             {
+                                 string strInnerFileName = Path.GetFileName(x);
+                                 return strInnerFileName.StartsWith("override_") || strInnerFileName.StartsWith("custom_")
+                                     || strInnerFileName.StartsWith("amend_");
+                             }))
                 {
-                    if (Directory.EnumerateFiles(strLoopPath, "override_*_" + strFileName, SearchOption.AllDirectories).Any()
-                        || Directory.EnumerateFiles(strLoopPath, "override_" + strFileName, SearchOption.AllDirectories).Any()
-                        || Directory.EnumerateFiles(strLoopPath, "custom_*_" + strFileName, SearchOption.AllDirectories).Any()
-                        || Directory.EnumerateFiles(strLoopPath, "custom_" + strFileName, SearchOption.AllDirectories).Any()
-                        || Directory.EnumerateFiles(strLoopPath, "amend_*_" + strFileName, SearchOption.AllDirectories).Any()
-                        || Directory.EnumerateFiles(strLoopPath, "amend_" + strFileName, SearchOption.AllDirectories).Any())
-                    {
-                        lstReturn.Add(strLoopPath);
-                    }
+                    yield return strLoopPath;
                 }
             }
-            return lstReturn;
         }
 
         private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories)
         {
             bool blnReturn = false;
             XmlElement objDocElement = xmlDataDoc.DocumentElement;
-            foreach (string strFile in Directory.GetFiles(strLoopPath, "override_*_" + strFileName, eSearchOption)
-                .Concat(Directory.GetFiles(strLoopPath, "override_" + strFileName, eSearchOption)))
+            List<string> lstPossibleCustomFiles = Directory.GetFiles(strLoopPath, "*_" + strFileName, eSearchOption).ToList();
+            foreach (string strFile in lstPossibleCustomFiles)
             {
+                if (!strFile.StartsWith("override_"))
+                    continue;
                 try
                 {
                     xmlFile.LoadStandard(strFile);
@@ -791,9 +829,10 @@ namespace Chummer
             }
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
-            foreach (string strFile in Directory.GetFiles(strLoopPath, "custom_*_" + strFileName, eSearchOption)
-                .Concat(Directory.GetFiles(strLoopPath, "custom_" + strFileName, eSearchOption)))
+            foreach (string strFile in lstPossibleCustomFiles)
             {
+                if (!strFile.StartsWith("custom_"))
+                    continue;
                 try
                 {
                     xmlFile.LoadStandard(strFile);
@@ -919,9 +958,10 @@ namespace Chummer
             }
 
             // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
-            foreach (string strFile in Directory.GetFiles(strLoopPath, "amend_*_" + strFileName, eSearchOption)
-                .Concat(Directory.GetFiles(strLoopPath, "amend_" + strFileName, eSearchOption)))
+            foreach (string strFile in lstPossibleCustomFiles)
             {
+                if (!strFile.StartsWith("amend_"))
+                    continue;
                 try
                 {
                     xmlFile.LoadStandard(strFile);

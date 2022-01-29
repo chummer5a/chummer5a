@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -94,47 +93,6 @@ namespace Chummer
             }
         }
 
-        private static readonly ReadOnlyCollection<string> s_PreloadFileNames = Array.AsReadOnly(new[]
-        {
-            "actions.xml",
-            "armor.xml",
-            "bioware.xml",
-            "books.xml",
-            "complexforms.xml",
-            "contacts.xml",
-            "critters.xml",
-            "critterpowers.xml",
-            "cyberware.xml",
-            "drugcomponents.xml",
-            "echoes.xml",
-            "options.xml",
-            "gear.xml",
-            "improvements.xml",
-            "licenses.xml",
-            "lifemodules.xml",
-            "lifestyles.xml",
-            "martialarts.xml",
-            "mentors.xml",
-            "metamagic.xml",
-            "metatypes.xml",
-            "options.xml",
-            "packs.xml",
-            "powers.xml",
-            "priorities.xml",
-            "programs.xml",
-            "qualities.xml",
-            "ranges.xml",
-            "settings.xml",
-            "sheets.xml",
-            "skills.xml",
-            "spells.xml",
-            "spiritpowers.xml",
-            "streams.xml",
-            "traditions.xml",
-            "vehicles.xml",
-            "weapons.xml"
-        });
-
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
         private async void ChummerMainForm_Load(object sender, EventArgs e)
@@ -187,12 +145,12 @@ namespace Chummer
                     using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
                     {
                         Task<ParallelLoopResult> objCharacterLoadingTask = null;
-                        using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
+                        using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + Utils.BasicDataFileNames.Count))
                         {
                             // Attempt to cache all XML files that are used the most.
                             using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
                             {
-                                await Task.WhenAll(s_PreloadFileNames.Select(x => Task.Run(() =>
+                                await Task.WhenAll(Utils.BasicDataFileNames.Select(x => Task.Run(() =>
                                 {
                                     // Load default language data first for performance reasons
                                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
