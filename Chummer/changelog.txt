@@ -1,6 +1,7 @@
 Future Build 218
 Application Changes:
 - For improvements that require specifying text where possible options or suggestions for the text are loaded from a data file, these options now show up translated to the program's UI language if it is not English.
+- Fixed an issue where adding plugins to cyberlimbs would cause Chummer to freeze up.
 
 Data Changes:
 - Fixed the stats for Boggles so that they appear and can be processed properly when creating a new critter. Fixes #4679.
