@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 namespace Translator
 {
-    public partial class frmTranslatorMain : Form
+    public partial class TranslatorMain : Form
     {
 
         private IContainer components;
@@ -28,7 +28,7 @@ namespace Translator
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTranslatorMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TranslatorMain));
             this.gbxCreate = new System.Windows.Forms.GroupBox();
             this.tlpCreate = new System.Windows.Forms.TableLayoutPanel();
             this.chkRightToLeft = new System.Windows.Forms.CheckBox();
