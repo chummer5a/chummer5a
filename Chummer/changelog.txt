@@ -9,6 +9,7 @@ Application Changes:
 - Adept Powers, AI Programs, Metamagic Arts, Complex Forms, Critter Powers, Mentor Spirits, Metamagics, Spells, and Weapon Mounts should now automatically fetch notes from linked PDFs.
 - Mugshot compression settings should now properly get saved with other global settings.
 - Added an option to have Chummer automatically set the lossy compression quality for mugshots in save files instead of using the same, manually defined setting for all images. Using this automatic setting, larger images will be saved with lower Jpeg quality settings because Jpeg artifacts will be less visible in them, while smaller images get saved with higher quality settings.
+- Default mugshot compression for new Chummer users is now Lossy with automatic quality instead of Lossless. Existing Chummer users migrating from older versions of Chummer that did not have mugshot compression as a setting will still have it set to Lossless so that there is no change in functionality for them. 
 - If the prompt asking the user if they wish to automatically apply a Chummer updater is dismissed, it no longer re-appears until the user has closed and later re-opened Chummer.
 - Non-PDF files can no longer be linked in as a sourcebook's PDF file.
 - Fixed a crash when taking the Apprentice quality.

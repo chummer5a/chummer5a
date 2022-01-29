@@ -207,7 +207,7 @@ namespace Chummer
         private static string _strCustomTimeFormat;
         private static string _strDefaultCharacterSetting = DefaultCharacterSettingDefaultValue;
         private static string _strDefaultMasterIndexSetting = DefaultMasterIndexSettingDefaultValue;
-        private static int _intSavedImageQuality = int.MaxValue;
+        private static int _intSavedImageQuality = -1; // Jpeg compression with automatic quality
         private static ColorMode _eColorMode;
         private static bool _blnConfirmDelete = true;
         private static bool _blnConfirmKarmaExpense = true;
@@ -589,8 +589,11 @@ namespace Chummer
             LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
             LoadStringFromRegistry(ref _strCustomTimeFormat, "customtimeformat");
 
-            // The quality at which images should be saved. int.MaxValue saves as Png, everything else saves as Jpeg
-            LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality");
+            // The quality at which images should be saved. int.MaxValue saves as Png, everything else saves as Jpeg, negative values save as Jpeg with automatic quality
+            if (!LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality")
+                // In order to not throw off veteran users, PNG is the default for them instead of Jpeg with automatic compression
+                && !blnFirstEverLaunch)
+                _intSavedImageQuality = int.MaxValue;
 
             // Retrieve CustomDataDirectoryInfo objects from registry
             RegistryKey objCustomDataDirectoryKey = s_ObjBaseChummerKey.OpenSubKey("CustomDataDirectory");
