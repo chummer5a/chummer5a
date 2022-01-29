@@ -1197,7 +1197,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Language.
+        /// Chummer's UI Language.
         /// </summary>
         public static string Language
         {
@@ -1257,6 +1257,9 @@ namespace Chummer
 
         private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
 
+        /// <summary>
+        /// XmlReaderSettings that should be used when reading almost Xml readable.
+        /// </summary>
         public static XmlReaderSettings SafeXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true };
 
         /// <summary>
@@ -1317,6 +1320,9 @@ namespace Chummer
             set => _strDefaultMasterIndexSetting = value;
         }
 
+        /// <summary>
+        /// Registry key storing all of Chummer's global settings (and character settings from much older versions of Chummer)
+        /// </summary>
         public static RegistryKey ChummerRegistryKey => s_ObjBaseChummerKey;
 
         /// <summary>
@@ -1328,6 +1334,9 @@ namespace Chummer
             set => _strPdfAppPath = value;
         }
 
+        /// <summary>
+        /// Parameter style to use when opening a PDF with the PDF application specified in PdfAppPath
+        /// </summary>
         public static string PdfParameters
         {
             get => _strPdfParameters;
@@ -1433,6 +1442,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Path to the directory that Chummer should watch and from which to automatically populate its character roster.
+        /// </summary>
         public static string CharacterRosterPath
         {
             get => _strCharacterRosterPath;
@@ -1441,12 +1453,20 @@ namespace Chummer
 
         public static string PdfArguments { get; internal set; }
 
+        /// <summary>
+        /// Compression quality to use when saving images. int.MaxValue is PNG (Lossless), anything else that is positive is JPEG (Lossy),
+        /// anything else that is negative is JPEG with quality set automatically based on the size of the image.
+        /// </summary>
         public static int SavedImageQuality
         {
             get => _intSavedImageQuality;
             set => _intSavedImageQuality = value;
         }
 
+        /// <summary>
+        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// </summary>
+        /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
         public static string ImageToBase64StringForStorage(Image objImageToSave)
         {
             return SavedImageQuality == int.MaxValue
