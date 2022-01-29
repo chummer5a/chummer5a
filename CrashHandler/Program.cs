@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Windows.Forms;
 
 [assembly: CLSCompliant(true)]
@@ -11,14 +12,16 @@ namespace CrashHandler
     internal static class Program
     {
         private static readonly Dictionary<string, Action<string[]>> s_DictionaryFunctions =
-            new Dictionary<string, Action<string[]>>()
+            new Dictionary<string, Action<string[]>>
             {
                 {"crash", ShowCrashReport}
             };
 
+        internal static HttpClient UploadClient { get; } = new HttpClient();
+
         private static void ShowCrashReport(string[] args)
         {
-            if (args.Contains("--debug") && Debugger.IsAttached == false)
+            if (args.Contains("--debug") && !Debugger.IsAttached)
             {
                 Debugger.Launch();
             }
