@@ -854,7 +854,7 @@ namespace Chummer.Backend.Skills
             return (RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value)).StandardRound();
         }
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false)
+        public IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false)
         {
             string strNameToUse = DictionaryKey;
             if (string.IsNullOrEmpty(strUseAttribute))
@@ -1973,7 +1973,7 @@ namespace Chummer.Backend.Skills
             if (intSpecBonus == 0 && intPool == intConditionalBonus)
                 return intPool.ToString(GlobalSettings.CultureInfo);
             return string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                intPool, LanguageManager.GetString("String_Space"), intSpecBonus + intConditionalBonus);
+                intPool, LanguageManager.GetString("String_Space"), Math.Max(intPool + intSpecBonus, intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
         }
 
         public int GetSpecializationBonus(string strSpecialization = "")
@@ -1987,7 +1987,18 @@ namespace Chummer.Backend.Skills
                     .GetCachedImprovementListForValueOf(CharacterObject,
                                                         Improvement.ImprovementType.DisableSpecializationEffects,
                                                         DictionaryKey).Count == 0)
-                    objTargetSpecialization = Specializations.FirstOrDefault();
+                {
+                    int intHighestSpecBonus = 0;
+                    foreach (SkillSpecialization objSpec in Specializations)
+                    {
+                        int intLoopSpecBonus = objSpec.SpecializationBonus;
+                        if (intHighestSpecBonus < intLoopSpecBonus)
+                        {
+                            intHighestSpecBonus = intLoopSpecBonus;
+                            objTargetSpecialization = objSpec;
+                        }
+                    }
+                }
             }
             else
                 objTargetSpecialization = GetSpecialization(strSpecialization);

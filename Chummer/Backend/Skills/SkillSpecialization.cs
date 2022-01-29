@@ -92,14 +92,11 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalSettings.InvariantCultureInfo));
-            int intSpecializationBonus = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableSpecializationEffects, Name).Count == 0
-                ? SpecializationBonus
-                : 0;
-            objWriter.WriteElementString("specbonus", intSpecializationBonus.ToString(objCulture));
+            objWriter.WriteElementString("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("specbonus", SpecializationBonus.ToString(objCulture));
             objWriter.WriteEndElement();
         }
 
@@ -188,7 +185,37 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public int SpecializationBonus => _objCharacter.Settings.SpecializationBonus + (Expertise ? 1 : 0);
+        public int SpecializationBonus
+        {
+            get
+            {
+                int intReturn = 0;
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(_objCharacter,
+                                                        Improvement.ImprovementType.DisableSpecializationEffects, Name)
+                    .Count == 0)
+                {
+                    intReturn += _objCharacter.Settings.SpecializationBonus;
+                    if (Expertise)
+                        intReturn += 1;
+                }
+                decimal decBonus = 0;
+                foreach (Improvement objImprovement in Parent.RelevantImprovements(x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true))
+                {
+                    switch (objImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.Skill:
+                        case Improvement.ImprovementType.SkillBase:
+                        case Improvement.ImprovementType.SkillCategory:
+                        case Improvement.ImprovementType.SkillGroup:
+                        case Improvement.ImprovementType.SkillGroupBase:
+                            decBonus += objImprovement.Rating;
+                            break;
+                    }
+                }
+                return intReturn + decBonus.StandardRound();
+            }
+        }
 
         #endregion Properties
     }
