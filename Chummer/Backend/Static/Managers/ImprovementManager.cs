@@ -1446,8 +1446,9 @@ namespace Chummer
                                     return DialogResult.Cancel;
                                 }
 
+                                string strXmlFile = nodBonus.SelectSingleNode("selecttext/@xml")?.Value ?? string.Empty;
                                 XPathNavigator xmlDoc
-                                    = objCharacter.LoadDataXPath(nodBonus.SelectSingleNode("selecttext/@xml")?.Value);
+                                    = objCharacter.LoadDataXPath(strXmlFile);
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstItems))
                                 {
@@ -1467,13 +1468,11 @@ namespace Chummer
                                                 // like the lifemodule storybuilder macros.
                                                 string strValue = objNode.Value;
                                                 if (setUsedValues.Add(strValue))
-                                                    lstItems.Add(new ListItem(strValue, strValue));
+                                                    lstItems.Add(new ListItem(strValue, objCharacter.TranslateExtra(strValue, strPreferFile: strXmlFile)));
                                             }
                                             else if (setUsedValues.Add(strName))
                                             {
-                                                lstItems.Add(new ListItem(strName,
-                                                                          objNode.SelectSingleNodeAndCacheExpression(
-                                                                              "translate")?.Value ?? strName));
+                                                lstItems.Add(new ListItem(strName, objCharacter.TranslateExtra(strName, strPreferFile: strXmlFile)));
                                             }
                                         }
                                     }
