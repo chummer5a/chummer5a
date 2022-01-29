@@ -199,11 +199,10 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess]);
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
                     }
-
                 }
                 finally
                 {
