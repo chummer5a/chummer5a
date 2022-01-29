@@ -157,7 +157,7 @@ namespace Chummer
 
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
 
-        public const int DefaultSleepDuration = 20;
+        public const int DefaultSleepDuration = 15;
 
         /// <summary>
         /// Can the current user context write to a given file path?
