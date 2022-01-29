@@ -966,7 +966,7 @@ namespace Chummer.Backend.Equipment
             foreach (KeyValuePair<string, int> objLimit in Limits)
             {
                 if (objLimit.Value == 0) continue;
-                var i = new Improvement(_objCharacter)
+                Improvement i = new Improvement(_objCharacter)
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
@@ -993,7 +993,7 @@ namespace Chummer.Backend.Equipment
 
             if (Initiative != 0)
             {
-                var i = new Improvement(_objCharacter)
+                Improvement i = new Improvement(_objCharacter)
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
@@ -1007,7 +1007,7 @@ namespace Chummer.Backend.Equipment
 
             if (InitiativeDice != 0)
             {
-                var i = new Improvement(_objCharacter)
+                Improvement i = new Improvement(_objCharacter)
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
@@ -1040,7 +1040,7 @@ namespace Chummer.Backend.Equipment
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
                             xpnSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
                         {
-                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objAddQuality = new Quality(_objCharacter);
                             objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, Name);
 
@@ -1053,7 +1053,7 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.Qualities.Add(objAddQuality);
                             foreach (Weapon objWeapon in lstWeapons)
                                 _objCharacter.Weapons.Add(objWeapon);
-                            var objImprovement = new Improvement(_objCharacter)
+                            Improvement objImprovement = new Improvement(_objCharacter)
                             {
                                 ImprovedName = objAddQuality.InternalId,
                                 ImproveSource = Improvement.ImprovementSource.Drug,

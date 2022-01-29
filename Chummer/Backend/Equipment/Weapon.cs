@@ -6616,7 +6616,7 @@ namespace Chummer.Backend.Equipment
                     {"STRBase", intUseSTRBase},
                     {"AGI", intUseAGI},
                     {"AGIUnaug", intUseAGIUnaug},
-                    {"AGIBase", intUseAGIBase},
+                    {"AGIBase", intUseAGIBase}
                 };
             }
             _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);

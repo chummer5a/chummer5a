@@ -93,6 +93,7 @@ namespace Chummer
             // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
             int intResetThreshold = ablnItemChanged.Length / 2;
             int intCountTrues = 0;
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < ablnItemChanged.Length; ++i)
             {
                 if (ablnItemChanged[i])
@@ -169,6 +170,7 @@ namespace Chummer
             // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
             int intResetThreshold = ablnItemChanged.Length / 2;
             int intCountTrues = 0;
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < ablnItemChanged.Length; ++i)
             {
                 if (ablnItemChanged[i])
@@ -246,6 +248,7 @@ namespace Chummer
             // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
             int intResetThreshold = ablnItemChanged.Length / 2;
             int intCountTrues = 0;
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < ablnItemChanged.Length; ++i)
             {
                 if (ablnItemChanged[i])

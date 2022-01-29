@@ -193,9 +193,9 @@ namespace Chummer
             }
         }
 
-        private void frmCareer_Load(object sender, EventArgs e)
+        private void CharacterCareer_Load(object sender, EventArgs e)
         {
-            using (var op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
+            using (CustomActivity op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
                 if (CharacterObject == null)
                 {
@@ -647,7 +647,7 @@ namespace Chummer
 
                     IsLoading = false;
 
-                    using (var op_load_frm_career_databindingCallbacks2 =
+                    using (CustomActivity op_load_frm_career_databindingCallbacks2 =
                         Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2", op_load_frm_career))
                     {
                         treGear.ItemDrag += treGear_ItemDrag;
@@ -886,7 +886,7 @@ namespace Chummer
                             nameof(Character.StunCMNaturalRecovery));
                     }
 
-                    using (var op_load_frm_career_finishingStuff =
+                    using (CustomActivity op_load_frm_career_finishingStuff =
                         Timekeeper.StartSyncron("load_frm_career_finishingStuff", op_load_frm_career))
                     {
                         RefreshAttributes(pnlAttributes, null, lblAttributes, -1, lblAttributesAug.PreferredWidth, lblAttributesMetatype.PreferredWidth);

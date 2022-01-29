@@ -59,10 +59,8 @@ namespace Chummer
             {
                 return s_Time.Elapsed - objStartTimeSpan;
             }
-            else
-            {
-                return TimeSpan.Zero;
-            }
+
+            return TimeSpan.Zero;
         }
 
         public static TimeSpan Finish(string taskname)

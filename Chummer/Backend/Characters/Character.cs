@@ -42,6 +42,7 @@ using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Threading;
+using Chummer.Plugins;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using NLog;
@@ -2677,7 +2678,7 @@ namespace Chummer
                     {
                         // <plugins>
                         objWriter.WriteStartElement("plugins");
-                        foreach (var plugin in Program.PluginLoader.MyActivePlugins)
+                        foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                         {
                             try
                             {
@@ -2889,8 +2890,8 @@ namespace Chummer
             LoadAsDirty = false;
             try
             {
-                using (var loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
-                    CustomActivity.OperationType.DependencyOperation, _strFileName))
+                using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
+                                                                             CustomActivity.OperationType.DependencyOperation, _strFileName))
                 {
                     try
                     {
@@ -5098,7 +5099,7 @@ namespace Chummer
                             //Plugins
                             using (_ = Timekeeper.StartSyncron("load_plugins", loadActivity))
                             {
-                                foreach (var plugin in Program.PluginLoader.MyActivePlugins)
+                                foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                                 {
                                     foreach (XmlNode objXmlPlugin in objXmlCharacter.SelectNodes("plugins/" +
                                         plugin.GetPluginAssembly().GetName().Name))
@@ -6681,10 +6682,9 @@ namespace Chummer
                                    .SelectSingleNode(
                                        "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
                                    ?.Value ?? "Cyber-Singularity Seeker";
-                        else
-                            return LoadDataXPath("qualities.xml")
-                                   .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
-                                   ?.Value ?? "Redliner";
+                        return LoadDataXPath("qualities.xml")
+                               .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
+                               ?.Value ?? "Redliner";
                     }
 
                     foreach(Quality objQuality in Qualities)
@@ -9698,14 +9698,15 @@ namespace Chummer
                                             blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
                                             break;
                                         }
-                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
                                             List<Improvement> lstSpecificQualityImprovements = ImprovementManager
                                                 .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecificQuality, objQuality.InternalId);
                                             if (lstSpecificQualityImprovements.Any(x =>
-                                                x.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                || x.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                || x.ImproveSource == Improvement.ImprovementSource.Heritage))
+                                                    x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage))
                                             {
                                                 blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
                                                 break;
@@ -9744,7 +9745,8 @@ namespace Chummer
                                             blnCountImprovement = true;
                                             break;
                                         }
-                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
                                             Improvement objParentImprovement = ImprovementManager
                                                                                .GetCachedImprovementListForValueOf(
@@ -10151,7 +10153,8 @@ namespace Chummer
                                             blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
                                             break;
                                         }
-                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
                                             List<Improvement> lstSpecificQualityImprovements = ImprovementManager
                                                 .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecificQuality, objQuality.InternalId);
@@ -10198,7 +10201,8 @@ namespace Chummer
                                             blnCountImprovement = true;
                                             break;
                                         }
-                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
                                             Improvement objParentImprovement = ImprovementManager
                                                                                .GetCachedImprovementListForValueOf(
@@ -10376,7 +10380,8 @@ namespace Chummer
                                             blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
                                             break;
                                         }
-                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
                                             List<Improvement> lstSpecificQualityImprovements = ImprovementManager
                                                 .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecificQuality, objQuality.InternalId);
@@ -10423,7 +10428,8 @@ namespace Chummer
                                             blnCountImprovement = true;
                                             break;
                                         }
-                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
                                         {
                                             Improvement objParentImprovement = ImprovementManager
                                                                                .GetCachedImprovementListForValueOf(
@@ -19285,8 +19291,8 @@ namespace Chummer
                 XPathNavigator xmlStatBlockDocument = null;
                 XPathNavigator xmlLeadsDocument = null;
                 List<string> lstTextStatBlockLines = null;
-                using (var op_load = Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
-                    CustomActivity.OperationType.DependencyOperation, strPorFile))
+                using (CustomActivity op_load = Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
+                                                                        CustomActivity.OperationType.DependencyOperation, strPorFile))
                 {
                     try
                     {
@@ -20155,7 +20161,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_misc2");
                             }
 
-                            using (var op_load_char_skills =
+                            using (CustomActivity op_load_char_skills =
                                 Timekeeper.StartSyncron("load_char_skills", op_load)) //slightly messy
                             {
                                 SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("skills"),
@@ -20910,7 +20916,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
-                            using (var _ = Timekeeper.StartSyncron("load_char_powers", op_load))
+                            using (CustomActivity _ = Timekeeper.StartSyncron("load_char_powers", op_load))
                             {
                                 // Powers.
                                 xmlNodeList = xmlStatBlockBaseNode.SelectAndCacheExpression("magic/adeptpowers/adeptpower");

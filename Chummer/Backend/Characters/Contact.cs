@@ -43,7 +43,7 @@ namespace Chummer
     {
         Contact = 0,
         Enemy = 1,
-        Pet = 2,
+        Pet = 2
     }
 
     /// <summary>

@@ -134,7 +134,7 @@ namespace Chummer
 
                     //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
                     PageViewTelemetry pvt = null;
-                    var startTime = DateTimeOffset.UtcNow;
+                    DateTimeOffset startTime = DateTimeOffset.UtcNow;
                     // Set default cultures based on the currently set language
                     CultureInfo.DefaultThreadCurrentCulture = GlobalSettings.CultureInfo;
                     CultureInfo.DefaultThreadCurrentUICulture = GlobalSettings.CultureInfo;
@@ -331,7 +331,7 @@ namespace Chummer
 
                             //Log an Event with AssemblyVersion and CultureInfo
                             MetricIdentifier objMetricIdentifier = new MetricIdentifier("Chummer", "Program Start",
-                                "Version", "Culture", dimension3Name: "AISetting", dimension4Name: "OSVersion");
+                                "Version", "Culture", "AISetting", "OSVersion");
                             string strOSVersion = Utils.HumanReadableOSVersion;
                             Metric objMetric = ChummerTelemetryClient.GetMetric(objMetricIdentifier);
                             objMetric.TrackValue(1,

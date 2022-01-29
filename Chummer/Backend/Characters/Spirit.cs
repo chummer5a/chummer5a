@@ -43,7 +43,7 @@ namespace Chummer
     public enum SpiritType
     {
         Spirit = 0,
-        Sprite = 1,
+        Sprite = 1
     }
 
     /// <summary>

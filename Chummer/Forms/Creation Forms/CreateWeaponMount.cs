@@ -785,7 +785,7 @@ namespace Chummer
 
                     VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
-                        DiscountCost = frmPickVehicleMod.BlackMarketDiscount,
+                        DiscountCost = frmPickVehicleMod.BlackMarketDiscount
                     };
                     objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _objVehicle, frmPickVehicleMod.Markup);
                     if (frmPickVehicleMod.FreeCost)

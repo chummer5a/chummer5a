@@ -18,6 +18,7 @@
  */
 
 using System;
+using Chummer.Plugins;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
@@ -67,7 +68,7 @@ namespace Chummer
                 //don't fill the "productive" log with garbage from debug sessions
                 telemetry.Context.InstrumentationKey = "f4b2ea1b-afe4-4bd6-9175-f5bb167a4d8b";
             }
-            foreach (var plugin in Program.PluginLoader.MyActivePlugins)
+            foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
             {
                 try
                 {

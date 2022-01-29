@@ -294,7 +294,7 @@ namespace Chummer.UI.Powers
                     }
                 },
                 MinExtractor = (p => 0),
-                ValueGetter = (p => p.Rating),
+                ValueGetter = (p => p.Rating)
             })
             {
                 Text = "Rating",
@@ -307,7 +307,7 @@ namespace Chummer.UI.Powers
                                         " against another one of Type " + o2.GetType() + " in the ratingColumn." +
                                         Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
                     throw new ArgumentException(strMessage, nameof(o1));
-                },
+                }
             };
 
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
@@ -327,7 +327,7 @@ namespace Chummer.UI.Powers
                                         " against another one of Type " + o2.GetType() + " in the totalRatingColumn." +
                                         Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
                     throw new ArgumentException(strMessage, nameof(o1));
-                },
+                }
             };
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
@@ -349,7 +349,7 @@ namespace Chummer.UI.Powers
                 Text = "Source",
                 Extractor = (power => power.SourceDetail),
                 Tag = "Label_Source",
-                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip),
+                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
             };
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
@@ -387,7 +387,7 @@ namespace Chummer.UI.Powers
             TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox
             {
                 Image = Resources.note_edit,
-                Size = GetImageSize(Resources.note_edit),
+                Size = GetImageSize(Resources.note_edit)
             })
             {
                 ClickHandler = p =>

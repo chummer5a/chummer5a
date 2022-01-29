@@ -245,8 +245,9 @@ namespace Chummer
                                          .Replace('{' + strCharAttributeName + "Base}", "0");
             }
 
-            if (string.IsNullOrEmpty(strXPathExpression)) return true;
-            CommonFunctions.EvaluateInvariantXPath(strXPathExpression, out bool blnSuccess);
+            if (string.IsNullOrEmpty(strXPathExpression))
+                return true;
+            EvaluateInvariantXPath(strXPathExpression, out bool blnSuccess);
             return blnSuccess;
         }
 
@@ -263,13 +264,7 @@ namespace Chummer
         {
             if (lstGear == null)
                 throw new ArgumentNullException(nameof(lstGear));
-            foreach (Drug objDrug in lstGear)
-            {
-                if (objDrug.InternalId == strGuid)
-                    return objDrug;
-            }
-
-            return null;
+            return lstGear.FirstOrDefault(objDrug => objDrug.InternalId == strGuid);
         }
 
         /// <summary>
@@ -679,14 +674,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstArmors));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Armor objArmor in lstArmors)
-                {
-                    foreach (ArmorMod objMod in objArmor.ArmorMods)
-                    {
-                        if (objMod.InternalId == strGuid)
-                            return objMod;
-                    }
-                }
+                return lstArmors.SelectMany(objArmor => objArmor.ArmorMods).FirstOrDefault(objMod => objMod.InternalId == strGuid);
             }
 
             return null;
@@ -743,16 +731,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0))
-                {
-                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                    {
-                        if (objAccessory.InternalId == strGuid)
-                        {
-                            return objAccessory;
-                        }
-                    }
-                }
+                return lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0)
+                                 .SelectMany(objWeapon => objWeapon.WeaponAccessories)
+                                 .FirstOrDefault(objAccessory => objAccessory.InternalId == strGuid);
             }
 
             return null;
@@ -818,14 +799,7 @@ namespace Chummer
                         return objEnhancement;
                 }
 
-                foreach (Power objPower in objCharacter.Powers)
-                {
-                    foreach (Enhancement objEnhancement in objPower.Enhancements)
-                    {
-                        if (objEnhancement.InternalId == strGuid)
-                            return objEnhancement;
-                    }
-                }
+                return objCharacter.Powers.SelectMany(objPower => objPower.Enhancements).FirstOrDefault(objEnhancement => objEnhancement.InternalId == strGuid);
             }
 
             return null;

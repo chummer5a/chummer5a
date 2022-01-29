@@ -122,7 +122,7 @@ namespace Chummer
             _objDrug = new Drug(_objCharacter)
             {
                 Name = txtDrugName.Text,
-                Category = "Custom Drug",
+                Category = "Custom Drug"
             };
             if ((_objCharacter != null) && (!string.IsNullOrEmpty(cboGrade?.SelectedValue?.ToString())))
                 _objDrug.Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),

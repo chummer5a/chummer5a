@@ -59,13 +59,13 @@ namespace Chummer
 
             Paint += panel1_Paint;
 
-            using (var tmrDraw = new Timer { Interval = 100 })
+            using (Timer tmrDraw = new Timer { Interval = 100 })
             {
                 tmrDraw.Tick += tmr_DrawTick;
                 tmrDraw.Start();
             }
 
-            using (var tmrTip = new Timer { Interval = 300000 })
+            using (Timer tmrTip = new Timer { Interval = 300000 })
             {
                 tmrTip.Tick += tmr_TipTick;
                 tmrTip.Start();
@@ -191,7 +191,7 @@ namespace Chummer
             }
             foreach (XPathNavigator objXmlTip in _objXmlDocument.SelectAndCacheExpression("tip"))
             {
-                var strId = objXmlTip.SelectSingleNodeAndCacheExpression("id")?.Value;
+                string strId = objXmlTip.SelectSingleNodeAndCacheExpression("id")?.Value;
                 if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
                 if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
                 _usedTips.Add(strId);

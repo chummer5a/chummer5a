@@ -41,7 +41,7 @@ namespace Chummer
             Art = 0,
             Enhancement,
             Enchantment,
-            Ritual,
+            Ritual
         }
 
         public SelectArt(Character objCharacter, Mode objWindowMode)

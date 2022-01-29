@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -682,7 +683,7 @@ namespace Chummer
                     return objChild;
 
                 if (!blnDeep) continue;
-                var objFound = objChild.FindNode(strGuid);
+                TreeNode objFound = objChild.FindNode(strGuid);
                 if (objFound != null)
                     return objFound;
             }
@@ -818,7 +819,7 @@ namespace Chummer
                 return;
             string strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
 
-            var currentSorter = treView.TreeViewNodeSorter;
+            IComparer currentSorter = treView.TreeViewNodeSorter;
             treView.TreeViewNodeSorter = new CustomNodeSorter();
             treView.Sort();
             treView.TreeViewNodeSorter = currentSorter;
@@ -832,7 +833,7 @@ namespace Chummer
         /// <summary>
         /// Custom comparer used by SortCustomOrder
         /// </summary>
-        private sealed class CustomNodeSorter : System.Collections.IComparer
+        private sealed class CustomNodeSorter : IComparer
         {
             public int Compare(object x, object y)
             {
@@ -893,7 +894,7 @@ namespace Chummer
                     return objNode;
 
                 if (!blnDeep) continue;
-                var objFound = objNode.FindNode(strGuid);
+                TreeNode objFound = objNode.FindNode(strGuid);
                 if (objFound != null)
                     return objFound;
             }

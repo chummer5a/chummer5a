@@ -228,7 +228,7 @@ namespace Chummer.Backend.Skills
                         _intCachedCareerIncrease = 0;
                     else
                     {
-                        var firstOrDefault = _lstAffectedSkills.Find(x => x.Enabled);
+                        Skill firstOrDefault = _lstAffectedSkills.Find(x => x.Enabled);
                         if (firstOrDefault != null)
                         {
                             int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;

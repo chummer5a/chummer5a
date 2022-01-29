@@ -483,11 +483,7 @@ namespace Chummer.Backend.Attributes
                 // If this is AGI or STR, factor in any Cyberlimbs.
                 if (!_objCharacter.Settings.DontUseCyberlimbCalculation && (Abbrev == "AGI" || Abbrev == "STR"))
                 {
-                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                    {
-                        if (objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot))
-                            return true;
-                    }
+                    return _objCharacter.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot));
                 }
 
                 return false;

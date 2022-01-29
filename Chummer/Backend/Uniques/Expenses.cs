@@ -27,7 +27,7 @@ namespace Chummer
     public enum ExpenseType
     {
         Karma = 0,
-        Nuyen = 1,
+        Nuyen = 1
     }
 
     public enum KarmaExpenseType
@@ -83,7 +83,7 @@ namespace Chummer
         AddCyberwareGear,
         AddWeaponGear,
         ImproveInitiateGrade,
-        AddVehicleWeaponMountMod,
+        AddVehicleWeaponMountMod
     }
 
     /// <summary>

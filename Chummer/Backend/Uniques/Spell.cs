@@ -1162,7 +1162,7 @@ namespace Chummer
                             SourceName = objImprovement.SourceName,
                             ImprovedName = objImprovement.ImprovedName,
                             ImproveSource = objImprovement.ImproveSource,
-                            ImproveType = objImprovement.ImproveType,
+                            ImproveType = objImprovement.ImproveType
                         };
                     return null;
                 }

@@ -64,7 +64,7 @@ namespace Chummer
         private enum Mode
         {
             Cyberware = 0,
-            Bioware,
+            Bioware
         }
 
         #region Control Events

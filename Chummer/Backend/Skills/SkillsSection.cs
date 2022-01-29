@@ -338,7 +338,7 @@ namespace Chummer.Backend.Skills
         {
             if (xmlSkillNode == null)
                 return;
-            using (var opLoadCharSkills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
+            using (CustomActivity opLoadCharSkills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
             {
                 if (!blnLegacy)
                 {
@@ -1348,7 +1348,7 @@ namespace Chummer.Backend.Skills
             Technomancer,
             Spellcasting,
             Name,
-            XPath,
+            XPath
         }
 
         internal void ForceProperyChangedNotificationAll(string strName)

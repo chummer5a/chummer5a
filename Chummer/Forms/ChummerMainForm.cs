@@ -137,7 +137,7 @@ namespace Chummer
                     GlobalSettings.MruChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMruToolstripMenu(senderInner, eInner));
 
                     // Populate the MRU list.
-                    PopulateMruToolstripMenu(this, null);
+                    PopulateMruToolstripMenu(this, TextEventArgs.Empty);
 
                     Program.MainForm = this;
 
@@ -1146,7 +1146,7 @@ namespace Chummer
             MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
 
         /// <summary>
-        /// Syntatic sugar for creating and displaying a frmLoading screen with specific text and progress bar size.
+        /// Syntactic sugar for creating and displaying a frmLoading screen with specific text and progress bar size.
         /// </summary>
         /// <param name="strFile"></param>
         /// <param name="intCount"></param>
@@ -1417,7 +1417,7 @@ namespace Chummer
                         if (!blnLoadAutosave && !string.IsNullOrEmpty(strNewName))
                         {
                             string strOldAutosaveName = strNewName;
-                            foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                            foreach (char invalidChar in Path.GetInvalidFileNameChars())
                             {
                                 strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
                             }

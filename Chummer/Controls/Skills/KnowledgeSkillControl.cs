@@ -248,7 +248,7 @@ namespace Chummer.UI.Skills
 
                 AdjustForDpi();
                 this.UpdateLightDarkMode();
-                this.TranslateWinForm(string.Empty, false);
+                this.TranslateWinForm(blnDoResumeLayout: false);
             }
             finally
             {

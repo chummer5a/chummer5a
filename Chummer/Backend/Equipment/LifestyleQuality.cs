@@ -188,7 +188,7 @@ namespace Chummer.Backend.Equipment
             _strExtra = strExtra;
             if (!string.IsNullOrEmpty(_strExtra))
             {
-                var intParenthesesIndex = _strExtra.IndexOf('(');
+                int intParenthesesIndex = _strExtra.IndexOf('(');
                 if (intParenthesesIndex != -1)
                     _strExtra = intParenthesesIndex + 1 < strExtra.Length
                         ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')')
@@ -229,7 +229,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
             if (xmlBonus != null)
             {
-                var strOldForced = ImprovementManager.ForcedValue;
+                string strOldForced = ImprovementManager.ForcedValue;
                 if (!string.IsNullOrEmpty(_strExtra))
                     ImprovementManager.ForcedValue = _strExtra;
                 if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality,
@@ -415,8 +415,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            var intTemp = 0;
-            var strTemp = string.Empty;
+            int intTemp = 0;
+            string strTemp = string.Empty;
             if (objLifestyleQualityNode.TryGetStringFieldQuickly("cost", ref strTemp))
                 CostString = strTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
@@ -458,7 +458,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("lp", LP.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            var strLifestyleQualityType = Type.ToString();
+            string strLifestyleQualityType = Type.ToString();
             if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 XPathNavigator objNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguageToPrint)
@@ -599,7 +599,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            var strReturn = DisplayNameShort(strLanguage);
+            string strReturn = DisplayNameShort(strLanguage);
 
             if (!string.IsNullOrEmpty(Extra))
                 // Attempt to retrieve the CharacterAttribute name.
@@ -666,9 +666,9 @@ namespace Chummer.Backend.Equipment
                 if (Free || FreeByLifestyle)
                     return 0;
                 if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                    out var decReturn))
+                    out decimal decReturn))
                 {
-                    var objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out var blnIsSuccess);
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out bool blnIsSuccess);
                     if (blnIsSuccess)
                         return Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -852,7 +852,7 @@ namespace Chummer.Backend.Equipment
                 !_objCharacter.Settings.BookEnabled(Source))
                 return null;
 
-            var objNode = new TreeNode
+            TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = CurrentFormattedDisplayName,

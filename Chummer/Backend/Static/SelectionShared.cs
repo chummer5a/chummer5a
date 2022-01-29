@@ -666,7 +666,7 @@ namespace Chummer
                                   + strSpace + (!string.IsNullOrEmpty(strTranslate)
                                       ? strTranslate
                                       : strNodeInnerText);
-                        }
+                    }
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         if (objParent is Cyberware objCyberware)
@@ -701,7 +701,7 @@ namespace Chummer
                                   + strSpace + (!string.IsNullOrEmpty(strTranslate)
                                       ? strTranslate
                                       : strNodeInnerText);
-                        }
+                    }
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         if (objParent is Cyberware objCyberware)

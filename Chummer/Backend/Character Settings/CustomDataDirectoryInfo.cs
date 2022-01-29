@@ -60,7 +60,7 @@ namespace Chummer
                     HasManifest = true;
                     XmlDocument xmlObjManifest = new XmlDocument();
                     xmlObjManifest.LoadStandard(strFullDirectory);
-                    var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
+                    XmlNode xmlNode = xmlObjManifest.SelectSingleNode("manifest");
 
                     if (!xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion))
                         _objMyVersion = new Version(1, 0);
@@ -612,9 +612,9 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            var dependencyHash = DependenciesList.GetEnsembleHashCode();
-            var incompatibilityHash = IncompatibilitiesList.GetEnsembleHashCode();
-            var guid = HasManifest ? Guid : Guid.Empty;
+            int dependencyHash = DependenciesList.GetEnsembleHashCode();
+            int incompatibilityHash = IncompatibilitiesList.GetEnsembleHashCode();
+            Guid guid = HasManifest ? Guid : Guid.Empty;
             //Path and Guid should already be enough because they are both unique, but just to be sure.
             return (Name, guid, DirectoryPath, MyVersion, incompatibilityHash, dependencyHash).GetHashCode();
         }

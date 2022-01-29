@@ -177,7 +177,7 @@ namespace Chummer
 
                     if (string.IsNullOrEmpty(strShowFileName))
                         strShowFileName = _objCharacter.CharacterName + ".chum5";
-                    foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                    foreach (char invalidChar in Path.GetInvalidFileNameChars())
                     {
                         strShowFileName = strShowFileName.Replace(invalidChar, '_');
                     }

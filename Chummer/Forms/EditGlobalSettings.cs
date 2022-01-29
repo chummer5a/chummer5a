@@ -65,7 +65,7 @@ namespace Chummer
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
             this.UpdateLightDarkMode();
-            this.TranslateWinForm(_strSelectedLanguage);
+            this.TranslateWinForm();
 
             _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
             _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>(GlobalSettings.SourcebookInfos);

@@ -485,7 +485,7 @@ namespace Chummer.UI.Skills
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
-                    })),
+                    }))
             };
 
             return ret;
@@ -606,7 +606,7 @@ namespace Chummer.UI.Skills
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
-                    })),
+                    }))
             };
 
             return ret;

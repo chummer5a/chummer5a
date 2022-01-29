@@ -22022,7 +22022,7 @@ namespace Chummer
             this.Text = "Chummer - Career Mode";
             this.Activated += new System.EventHandler(this.CharacterCareer_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCareer_FormClosing);
-            this.Load += new System.EventHandler(this.frmCareer_Load);
+            this.Load += new System.EventHandler(this.CharacterCareer_Load);
             this.StatusStrip.ResumeLayout(false);
             this.StatusStrip.PerformLayout();
             this.cmsMartialArts.ResumeLayout(false);

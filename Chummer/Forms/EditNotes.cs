@@ -121,7 +121,7 @@ namespace Chummer
         private void btnColorSelect_Click(object sender, EventArgs e)
         {
             _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
-            var resNewColor = colorDialog1.ShowDialog();
+            DialogResult resNewColor = colorDialog1.ShowDialog();
             if (resNewColor == DialogResult.OK)
             {
                 _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);

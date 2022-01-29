@@ -439,7 +439,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task StartStaTask(Action func)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread = new Thread(() =>
             {
                 try
@@ -470,7 +470,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task<T> StartStaTask<T>(Func<T> func)
         {
-            var tcs = new TaskCompletionSource<T>();
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
             Thread thread = new Thread(() =>
             {
                 try
@@ -494,7 +494,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task StartStaTask(Task func)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread = new Thread(RunFunction);
             async void RunFunction()
             {
@@ -526,7 +526,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task<T> StartStaTask<T>(Task<T> func)
         {
-            var tcs = new TaskCompletionSource<T>();
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
             Thread thread = new Thread(RunFunction);
             async void RunFunction()
             {
@@ -552,6 +552,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConfiguredTaskAwaitable SafeSleepAsync()
         {
+            // ReSharper disable once IntroduceOptionalParameters.Global
             return SafeSleepAsync(DefaultSleepDuration);
         }
 

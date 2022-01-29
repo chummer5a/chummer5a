@@ -130,7 +130,8 @@ namespace Chummer
         
         public bool Contains(Tuple<TKey, TValue> item)
         {
-            return _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && item.Item2.Equals(objValue);
+            (TKey objKey, TValue objValue) = item;
+            return _dicUnorderedData.TryGetValue(objKey, out TValue objExistingValue) && objValue.Equals(objExistingValue);
         }
 
         /// <inheritdoc cref="Dictionary{TKey, TValue}.ContainsKey" />
@@ -154,7 +155,8 @@ namespace Chummer
         /// <inheritdoc cref="Dictionary{TKey, TValue}.Add" />
         public void Add(Tuple<TKey, TValue> item)
         {
-            Add(item.Item1, item.Item2);
+            (TKey objKey, TValue objValue) = item;
+            Add(objKey, objValue);
         }
 
         /// <inheritdoc />

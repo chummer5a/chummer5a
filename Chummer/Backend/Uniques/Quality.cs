@@ -58,7 +58,7 @@ namespace Chummer
         LifeModule = 4,
         Improvement = 5,
         MetatypeRemovedAtChargen = 6,
-        Heritage = 7,
+        Heritage = 7
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace Chummer
         RequiredSingle = 0x2,
         RequiredMultiple = 0x4,
         ForbiddenSingle = 0x8,
-        MetatypeRequired = 0x10,
+        MetatypeRequired = 0x10
     }
 
     /// <summary>
