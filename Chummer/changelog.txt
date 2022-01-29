@@ -106,6 +106,7 @@ Data Changes:
 - Fixed the maximum amount of times that most echoes can be taken.
 - The Mathemagics echo now properly increases Mental limit by 2 for math-intensive actions.
 - Added dummy mods (speakers, strobes) to Horizon Noizquito. Closes #4675
+- Modified Shaman Tuxedo to prompt for all spirits by name instead of the tradition's category. Closes #4599
 
 Changed/New Strings:
 - String_GameplayOption
