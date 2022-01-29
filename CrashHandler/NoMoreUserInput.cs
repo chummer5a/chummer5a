@@ -2,13 +2,13 @@ using System.Windows.Forms;
 
 namespace CrashHandler
 {
-    public sealed partial class frmNoMoreUserInput : Form
+    public sealed partial class NoMoreUserInput : Form
     {
         private delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 
         private readonly CrashDumper _objCrashDumper;
 
-        public frmNoMoreUserInput(CrashDumper objCrashDumper)
+        public NoMoreUserInput(CrashDumper objCrashDumper)
         {
             _objCrashDumper = objCrashDumper;
             InitializeComponent();

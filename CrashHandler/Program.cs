@@ -30,13 +30,13 @@ namespace CrashHandler
             try
             {
                 dmper = new CrashDumper(args[0]);
-                frmCrashReporter reporter = new frmCrashReporter(dmper);
+                CrashReporter reporter = new CrashReporter(dmper);
 
                 Application.Run(reporter);
 
                 if (reporter.DialogResult == DialogResult.OK)
                 {
-                    Application.Run(new frmNoMoreUserInput(dmper));
+                    Application.Run(new NoMoreUserInput(dmper));
                 }
             }
             finally
