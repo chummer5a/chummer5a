@@ -32,7 +32,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IHasCost
+    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -1121,7 +1121,7 @@ namespace Chummer.Backend.Equipment
             return _objCachedMyXPathNode;
         }
 
-        public bool Remove(bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteDrug")))
             {

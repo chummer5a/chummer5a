@@ -486,7 +486,7 @@ namespace Chummer
 
         #endregion UI Methods
 
-        public bool Remove(bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (Grade <= 0)
                 return false;

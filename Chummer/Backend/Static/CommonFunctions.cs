@@ -1209,7 +1209,8 @@ namespace Chummer
                 using (EditGlobalSettings frmOptions = new EditGlobalSettings())
                 {
                     if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
-                        frmOptions.DoLinkPdfReader();
+                        // ReSharper disable once AccessToDisposedClosure
+                        Utils.RunWithoutThreadLock(() => frmOptions.DoLinkPdfReader());
                     if (frmOptions.ShowDialogSafe(Program.MainForm) != DialogResult.OK)
                         return;
                     strPdfParameters = GlobalSettings.PdfParameters;

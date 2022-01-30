@@ -323,7 +323,7 @@ namespace Chummer
 
         #region Methods
 
-        public bool Remove(bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
                 return false;

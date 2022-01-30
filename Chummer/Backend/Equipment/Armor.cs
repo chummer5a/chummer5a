@@ -2361,7 +2361,7 @@ namespace Chummer.Backend.Equipment
 
         #endregion Methods
 
-        public bool Remove(bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
                 return false;

@@ -5248,7 +5248,7 @@ namespace Chummer.Backend.Equipment
 
         #endregion Methods
 
-        public bool Remove(bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
             {

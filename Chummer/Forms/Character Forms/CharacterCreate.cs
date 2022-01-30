@@ -3509,12 +3509,6 @@ namespace Chummer
 
                 case VehicleMod objMod:
                     {
-                        // Check for Improved Sensor bonus.
-                        if (objMod.Bonus?["improvesensor"] != null || objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null)
-                        {
-                            objMod.Parent.ChangeVehicleSensor(treVehicles, false);
-                        }
-
                         // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
                         if (objMod.Name == "Obsolete" ||
                             objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade)
@@ -4854,12 +4848,6 @@ namespace Chummer
                         }
 
                         objVehicle.Mods.Add(objMod);
-
-                        // Check for Improved Sensor bonus.
-                        if (objMod.Bonus?["improvesensor"] != null)
-                        {
-                            objVehicle.ChangeVehicleSensor(treVehicles, true);
-                        }
                     }
 
                     IsCharacterUpdateRequested = true;

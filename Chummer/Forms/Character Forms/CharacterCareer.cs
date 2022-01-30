@@ -3936,13 +3936,8 @@ namespace Chummer
 
             if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
             {
-                // Check for Improved Sensor bonus.
-                if (objMod.Bonus?["improvesensor"] != null || objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null)
-                {
-                    objMod.Parent.ChangeVehicleSensor(treVehicles, false);
-                }
                 // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
-                else if (objMod.Name == "Obsolete" || objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade)
+                if (objMod.Name == "Obsolete" || objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade)
                 {
                     using (SelectNumber frmModPercent = new SelectNumber
                     {
@@ -4893,8 +4888,7 @@ namespace Chummer
                 case Gear objSelectedGear:
                     {
                         // Locate the selected Gear.
-                        CharacterObject.Vehicles.FindVehicleGear(objSelectedGear.InternalId, out Vehicle objVehicle,
-                            out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
+                        CharacterObject.Vehicles.FindVehicleGear(objSelectedGear.InternalId);
 
                         decimal decMinimumAmount = 1.0m;
                         int intDecimalPlaces = 0;
@@ -5032,7 +5026,7 @@ namespace Chummer
             else
             {
                 // Remove the Gear if its quantity has been reduced to 0.
-                objGear?.DeleteGear();
+                objGear.DeleteGear();
             }
 
             IsCharacterUpdateRequested = true;
@@ -6813,12 +6807,6 @@ namespace Chummer
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
                     objExpense.Undo = objUndo;
-
-                    // Check for Improved Sensor bonus.
-                    if (objMod.Bonus?["improvesensor"] != null)
-                    {
-                        objVehicle.ChangeVehicleSensor(treVehicles, true);
-                    }
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -8354,17 +8342,8 @@ namespace Chummer
                     case NuyenExpenseType.AddVehicleMod:
                         {
                             // Locate the Vehicle Mod that was added.
-                            VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strUndoId, out Vehicle objVehicle, out WeaponMount objWeaponMount);
-                            if (objVehicleMod != null)
-                            {
-                                // Check for Improved Sensor bonus.
-                                if (objVehicleMod.Bonus?["improvesensor"] != null || objVehicleMod.WirelessOn && objVehicleMod.WirelessBonus?["improvesensor"] != null)
-                                {
-                                    objVehicle.ChangeVehicleSensor(treVehicles, false);
-                                }
-
-                                objVehicleMod.DeleteVehicleMod();
-                            }
+                            VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strUndoId);
+                            objVehicleMod?.DeleteVehicleMod();
                         }
                         break;
 

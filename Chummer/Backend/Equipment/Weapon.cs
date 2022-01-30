@@ -6322,7 +6322,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool Remove(bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (!CanBeRemoved)
                 return false;

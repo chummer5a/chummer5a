@@ -34,7 +34,6 @@ using Chummer.Backend.Attributes;
 using NLog;
 using TreeNode = System.Windows.Forms.TreeNode;
 using TreeNodeCollection = System.Windows.Forms.TreeNodeCollection;
-using TreeView = System.Windows.Forms.TreeView;
 
 namespace Chummer.Backend.Equipment
 {
@@ -3400,100 +3399,6 @@ namespace Chummer.Backend.Equipment
             return null;
         }
 
-        /// <summary>
-        /// Change the size of a Vehicle's Sensor -- This appears to be obsolete code
-        /// </summary>
-        /// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>
-        /// <param name="treVehicles">TreeView where the vehicle's node would be.</param>
-        public void ChangeVehicleSensor(TreeView treVehicles, bool blnIncrease)
-        {
-            Gear objCurrentSensor = null;
-            Gear objNewSensor = new Gear(_objCharacter);
-
-            List<Weapon> lstWeapons = new List<Weapon>(1);
-            foreach (Gear objCurrentGear in GearChildren)
-            {
-                if (objCurrentGear.Name == "Microdrone Sensor")
-                {
-                    if (blnIncrease)
-                    {
-                        XmlNode xmlNewGear = _objCharacter.LoadData("gear.xml").SelectSingleNode("/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
-                        objNewSensor.Create(xmlNewGear, 0, lstWeapons);
-                        objCurrentSensor = objCurrentGear;
-                    }
-                    break;
-                }
-                if (objCurrentGear.Name == "Minidrone Sensor")
-                {
-                    XmlNode xmlNewGear = _objCharacter.LoadData("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Microdrone Sensor\" and category = \"Sensors\"]");
-                    objNewSensor.Create(xmlNewGear, 0, lstWeapons);
-                    objCurrentSensor = objCurrentGear;
-                    break;
-                }
-                if (objCurrentGear.Name == "Small Drone Sensor")
-                {
-                    XmlNode xmlNewGear = _objCharacter.LoadData("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Minidrone Sensor\" and category = \"Sensors\"]");
-                    objNewSensor.Create(xmlNewGear, 0, lstWeapons);
-                    objCurrentSensor = objCurrentGear;
-                    break;
-                }
-                if (objCurrentGear.Name == "Medium Drone Sensor")
-                {
-                    XmlNode xmlNewGear = _objCharacter.LoadData("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Small Drone Sensor\" and category = \"Sensors\"]");
-                    objNewSensor.Create(xmlNewGear, 0, lstWeapons);
-                    objCurrentSensor = objCurrentGear;
-                    break;
-                }
-                if (objCurrentGear.Name == "Large Drone Sensor")
-                {
-                    XmlNode xmlNewGear = _objCharacter.LoadData("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Medium Drone Sensor\" and category = \"Sensors\"]");
-                    objNewSensor.Create(xmlNewGear, 0, lstWeapons);
-                    objCurrentSensor = objCurrentGear;
-                    break;
-                }
-                if (objCurrentGear.Name == "Vehicle Sensor")
-                {
-                    XmlNode xmlNewGear = _objCharacter.LoadData("gear.xml").SelectSingleNode(blnIncrease ? "/chummer/gears/gear[name = \"Extra-Large Vehicle Sensor\" and category = \"Sensors\"]" : "/chummer/gears/gear[name = \"Large Drone Sensor\" and category = \"Sensors\"]");
-                    objNewSensor.Create(xmlNewGear, 0, lstWeapons);
-                    objCurrentSensor = objCurrentGear;
-                    break;
-                }
-                if (objCurrentGear.Name == "Extra-Large Vehicle Sensor")
-                {
-                    if (!blnIncrease)
-                    {
-                        XmlNode xmlNewGear = _objCharacter.LoadData("gear.xml").SelectSingleNode("/chummer/gears/gear[name = \"Vehicle Sensor\" and category = \"Sensors\"]");
-                        objNewSensor.Create(xmlNewGear, 0, lstWeapons);
-                        objCurrentSensor = objCurrentGear;
-                    }
-                    break;
-                }
-            }
-
-            // If the item was found, update the Vehicle Sensor information.
-            if (objCurrentSensor != null)
-            {
-                objCurrentSensor.Name = objNewSensor.Name;
-                objCurrentSensor.Rating = objNewSensor.Rating;
-                objCurrentSensor.Capacity = objNewSensor.Capacity;
-                objCurrentSensor.DeviceRating = objNewSensor.DeviceRating;
-                objCurrentSensor.Avail = objNewSensor.Avail;
-                objCurrentSensor.Cost = objNewSensor.Cost;
-                objCurrentSensor.Source = objNewSensor.Source;
-                objCurrentSensor.Page = objNewSensor.Page;
-
-                // Update the name of the item in the TreeView.
-                TreeNode objNode = treVehicles.FindNode(objCurrentSensor.InternalId);
-                if (objNode != null)
-                    objNode.Text = objCurrentSensor.DisplayNameShort(GlobalSettings.Language);
-
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    Weapons.Add(objWeapon);
-                }
-            }
-        }
-
         public int GetBaseMatrixAttribute(string strAttributeName)
         {
             string strExpression = this.GetMatrixAttributeString(strAttributeName);
@@ -3610,7 +3515,7 @@ namespace Chummer.Backend.Equipment
 
         #endregion Methods
 
-        public bool Remove(bool blnConfirmDelete = true)
+        public bool Remove(bool blnConfirmDelete)
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
                 return false;
