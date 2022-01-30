@@ -5268,12 +5268,26 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public void Sell(decimal percentage)
+        public bool Sell(decimal percentage, bool blnConfirmDelete)
         {
+            if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_CannotRemoveCyberware"),
+                    LanguageManager.GetString("MessageTitle_CannotRemoveCyberware"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Bioware
+                                                                       ? "Message_DeleteBioware"
+                                                                       : "Message_DeleteCyberware")))
+                return false;
+
             if (!_objCharacter.Created)
             {
                 DeleteCyberware();
-                return;
+                return true;
             }
 
             string strEntry = LanguageManager.GetString(
@@ -5300,6 +5314,7 @@ namespace Chummer.Backend.Equipment
                 DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
+            return true;
         }
 
         /// <summary>

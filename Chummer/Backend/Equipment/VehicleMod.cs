@@ -1806,12 +1806,15 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public void Sell(decimal percentage)
+        public bool Sell(decimal percentage, bool blnConfirmDelete)
         {
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleMod")))
+                return false;
+
             if (!_objCharacter.Created)
             {
                 DeleteVehicleMod();
-                return;
+                return true;
             }
 
             IHasCost objParent = (IHasCost)WeaponMountParent ?? Parent;
@@ -1823,6 +1826,7 @@ namespace Chummer.Backend.Equipment
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
+            return true;
         }
     }
 }

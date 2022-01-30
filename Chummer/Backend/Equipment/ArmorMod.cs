@@ -1422,16 +1422,20 @@ namespace Chummer.Backend.Equipment
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
                 return false;
+
             DeleteArmorMod();
             return true;
         }
 
-        public void Sell(decimal percentage)
+        public bool Sell(decimal percentage, bool blnConfirmDelete)
         {
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
+                return false;
+
             if (!_objCharacter.Created)
             {
                 DeleteArmorMod();
-                return;
+                return true;
             }
 
             // Record the cost of the Armor with the ArmorMod.
@@ -1444,8 +1448,7 @@ namespace Chummer.Backend.Equipment
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
-
-            Parent.ArmorMods.Remove(this);
+            return true;
         }
 
         /// <summary>

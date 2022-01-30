@@ -2369,12 +2369,15 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public void Sell(decimal percentage)
+        public bool Sell(decimal percentage, bool blnConfirmDelete)
         {
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
+                return false;
+
             if (!_objCharacter.Created)
             {
                 DeleteArmor();
-                return;
+                return true;
             }
             // Create the Expense Log Entry for the sale.
             decimal decAmount = TotalCost * percentage;
@@ -2383,6 +2386,7 @@ namespace Chummer.Backend.Equipment
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
+            return true;
         }
 
         /// <summary>

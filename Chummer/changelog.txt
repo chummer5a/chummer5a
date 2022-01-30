@@ -3,6 +3,7 @@ Application Changes:
 - Deleting or selling gear that has plugins inside of it no longer causes a crash.
 - Characters are now properly compensated when selling an item that is either located inside another item or adds items with non-zero cost.
 - When attempting to delete a weapon mount mod, the program will now properly show a confirmation dialog before deleting the mod if the appropriate setting is set.
+- If the program is set to confirm deletions, attempts to sell items in Career mode now also confirm if the user wishes to go through with the sale.
 
 Build 219
 Application Changes:

@@ -3973,12 +3973,15 @@ namespace Chummer.Backend.Equipment
             return true;
         }
 
-        public void Sell(decimal percentage)
+        public bool Sell(decimal percentage, bool blnConfirmDelete)
         {
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
+                return false;
+
             if (!_objCharacter.Created)
             {
                 DeleteGear();
-                return;
+                return true;
             }
 
             IHasCost objParent = Parent as IHasCost;
@@ -3992,6 +3995,7 @@ namespace Chummer.Backend.Equipment
                 DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen += decAmount;
+            return true;
         }
 
         public void SetSourceDetail(Control sourceControl)

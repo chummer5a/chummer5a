@@ -7716,7 +7716,8 @@ namespace Chummer
                             if (frmSell.DialogResult == DialogResult.Cancel)
                                 return;
 
-                            vendorTrash.Sell(frmSell.SellPercent);
+                            if (!vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete))
+                                return;
                         }
 
                         break;
@@ -7732,7 +7733,7 @@ namespace Chummer
 
         private void tsArmorSell_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode?.Tag is ICanSell selectedObject)
+            if (treArmor.SelectedNode?.Tag is ICanSell vendorTrash)
             {
                 using (SellItem frmSell = new SellItem())
                 {
@@ -7741,7 +7742,8 @@ namespace Chummer
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
 
-                    selectedObject.Sell(frmSell.SellPercent);
+                    if (!vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete))
+                        return;
                 }
             }
             else
@@ -7765,7 +7767,8 @@ namespace Chummer
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
 
-                    vendorTrash.Sell(frmSell.SellPercent);
+                    if (!vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete))
+                        return;
                 }
             }
             else
@@ -7789,7 +7792,8 @@ namespace Chummer
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
 
-                    vendorTrash.Sell(frmSell.SellPercent);
+                    if (!vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete))
+                        return;
                 }
             }
             else
@@ -7813,7 +7817,8 @@ namespace Chummer
                     if (frmSell.DialogResult == DialogResult.Cancel)
                         return;
 
-                    vendorTrash.Sell(frmSell.SellPercent);
+                    if (!vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete))
+                        return;
                 }
             }
             else
@@ -13380,7 +13385,7 @@ namespace Chummer
                         cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                         lblCyberwareRating.Text = objCyberware.Rating.ToString(GlobalSettings.CultureInfo);
                         lblCyberwareCapacity.Text = objCyberware.DisplayCapacity;
-                        lblCyberwareCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                        lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                         if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal))
                         {
                             lblCyberlimbAGILabel.Visible = true;
@@ -16282,7 +16287,7 @@ namespace Chummer
                         lblVehicleGearQty.Visible = false;
                         cmdVehicleGearReduceQty.Visible = false;
                         lblVehicleAvail.Text = objCyberware.DisplayTotalAvail;
-                        lblVehicleCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                        lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                         cmdVehicleMoveToInventory.Visible = false;
                         cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                         chkVehicleWeaponAccessoryInstalled.Visible = false;
