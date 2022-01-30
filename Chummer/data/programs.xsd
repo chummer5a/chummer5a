@@ -33,6 +33,7 @@
                     <!-- <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="capacity" type="xs:string" minOccurs="1" maxOccurs="1" />-->
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="tags" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
@@ -66,6 +67,7 @@
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="programtypes" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>

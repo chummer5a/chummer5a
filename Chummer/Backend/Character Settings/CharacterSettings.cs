@@ -2057,7 +2057,7 @@ namespace Chummer
                 {
                     if (sbdPath.Length != 0)
                         sbdPath.Append(" and ");
-                    sbdPath.Append(_strBookXPath);
+                    sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
                 }
                 else
                 {
