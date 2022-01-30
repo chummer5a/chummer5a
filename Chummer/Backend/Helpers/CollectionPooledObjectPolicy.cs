@@ -36,7 +36,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Create()
         {
-            return _objBasePolicy.Create();
+            T objReturn = _objBasePolicy.Create();
+            objReturn.Clear(); // Just in case
+            return objReturn;
         }
 
         /// <inheritdoc />

@@ -1,6 +1,7 @@
 Future Build 219
 Application Changes:
 - Fixed a bug preventing any override, custom, or amend files from processing.
+- Fixed a source of unpredictable crashes that would happen seemingly for no reason at random points in time.
 
 Build 218
 Application Changes:
