@@ -3,6 +3,7 @@ Application Changes:
 - Saved character settings files properly exclude disabled custom data directories that are present in the Chummer customdata folder.
 - Added support for enabling individual items in Chummer on a case-by-case basis without needing to enable the entire sourcebook that contains them. Any item with a `<ignoresourcedisabled />` node inside of it can show up in Chummer regardless of whether or not its sourcebook is enabled.
 - Fixed some crashes that could occur when opening characters under certain software conditions.
+- When switching attribute categories as a shifter, the cursor now changes to a waiting/hourglass one until all the needed changes have been processed.
 
 Build 220
 Application Changes:
