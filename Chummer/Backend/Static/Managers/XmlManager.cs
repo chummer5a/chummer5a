@@ -757,7 +757,7 @@ namespace Chummer
             List<string> lstPossibleCustomFiles = Directory.GetFiles(strLoopPath, "*_" + strFileName, eSearchOption).ToList();
             foreach (string strFile in lstPossibleCustomFiles)
             {
-                if (!strFile.StartsWith("override_"))
+                if (!Path.GetFileName(strFile).StartsWith("override_"))
                     continue;
                 try
                 {
@@ -834,7 +834,7 @@ namespace Chummer
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             foreach (string strFile in lstPossibleCustomFiles)
             {
-                if (!strFile.StartsWith("custom_"))
+                if (!Path.GetFileName(strFile).StartsWith("custom_"))
                     continue;
                 try
                 {
@@ -963,7 +963,7 @@ namespace Chummer
             // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
             foreach (string strFile in lstPossibleCustomFiles)
             {
-                if (!strFile.StartsWith("amend_"))
+                if (!Path.GetFileName(strFile).StartsWith("amend_"))
                     continue;
                 try
                 {
