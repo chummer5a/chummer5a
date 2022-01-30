@@ -793,9 +793,13 @@ namespace Chummer.Backend.Attributes
 
         public CharacterAttrib GetAttributeByName(string abbrev)
         {
-            bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created && _objCharacter.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
-            CharacterAttrib objReturn = AttributeList.Find(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute)
-                                        ?? SpecialAttributeList.Find(att => att.Abbrev == abbrev);
+            bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
+                && AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
+            CharacterAttrib objReturn
+                = AttributeList.Find(att => att.Abbrev == abbrev
+                                            && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+                                            == blnGetShifterAttribute)
+                  ?? SpecialAttributeList.Find(att => att.Abbrev == abbrev);
             return objReturn;
         }
 
@@ -1068,8 +1072,15 @@ namespace Chummer.Backend.Attributes
             get => _eAttributeCategory;
             set
             {
-                if (_eAttributeCategory == value) return;
+                if (_eAttributeCategory == value)
+                    return;
                 _eAttributeCategory = value;
+                if (_objCharacter.Created)
+                {
+                    ResetBindings();
+                    ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
+                                                                 nameof(CharacterAttrib.MetatypeMinimum));
+                }
                 OnPropertyChanged();
             }
         }

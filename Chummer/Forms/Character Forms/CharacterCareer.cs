@@ -74,6 +74,7 @@ namespace Chummer
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
             CharacterObjectSettings.PropertyChanged += OnCharacterSettingsPropertyChanged;
+            CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionPropertyChanged;
             
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -1179,6 +1180,8 @@ namespace Chummer
                 CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
                 CharacterObject.SustainedCollection.CollectionChanged -= SustainedSpellCollectionChanged;
                 CharacterObject.ExpenseEntries.CollectionChanged -= ExpenseEntriesCollectionChanged;
+                CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionPropertyChanged;
+                CharacterObjectSettings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -2204,6 +2207,12 @@ namespace Chummer
             IsDirty = true;
         }
         */
+
+        private void OnAttributeSectionPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
 
         #endregion Character Events
 
@@ -17944,16 +17953,10 @@ namespace Chummer
 
         private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (CharacterObject.AttributeSection.AttributeCategory ==
-                AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString())) return;
             using (new CursorWait(this))
             {
                 CharacterObject.AttributeSection.AttributeCategory
                     = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
-                CharacterObject.AttributeSection.ResetBindings();
-                CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(
-                    nameof(CharacterAttrib.MetatypeMaximum), nameof(CharacterAttrib.MetatypeMinimum));
-                MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
             }
         }
 
