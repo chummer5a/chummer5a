@@ -1019,7 +1019,7 @@ namespace Chummer
                         bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
                         if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
                             x => x.DirectoryPath.StartsWith(strCustomDataRootPath)
-                                 && x.Name.Equals(strDirectoryName, StringComparison.OrdinalIgnoreCase)))
+                                 && x.CharacterSettingsSaveKey.Equals(strDirectoryName, StringComparison.OrdinalIgnoreCase)))
                             continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         objWriter.WriteStartElement("customdatadirectoryname");
                         objWriter.WriteElementString("directoryname", strDirectoryName);
