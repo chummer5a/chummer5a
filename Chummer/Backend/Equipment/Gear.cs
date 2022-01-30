@@ -3277,7 +3277,7 @@ namespace Chummer.Backend.Equipment
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objChild in Children)
-                decReturn += objChild.DeleteGear();
+                decReturn += objChild.DeleteGear(false);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())

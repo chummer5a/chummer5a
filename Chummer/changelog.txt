@@ -1,3 +1,7 @@
+Future Build 220
+Application Changes:
+- Deleting or selling gear that has plugins inside of it no longer causes a crash.
+
 Build 219
 Application Changes:
 - Fixed a bug preventing any override, custom, or amend files from processing.
