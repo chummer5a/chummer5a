@@ -17946,10 +17946,15 @@ namespace Chummer
         {
             if (CharacterObject.AttributeSection.AttributeCategory ==
                 AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString())) return;
-            CharacterObject.AttributeSection.AttributeCategory = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
-            CharacterObject.AttributeSection.ResetBindings();
-            CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum), nameof(CharacterAttrib.MetatypeMinimum));
-            MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
+            using (new CursorWait(this))
+            {
+                CharacterObject.AttributeSection.AttributeCategory
+                    = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
+                CharacterObject.AttributeSection.ResetBindings();
+                CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(
+                    nameof(CharacterAttrib.MetatypeMaximum), nameof(CharacterAttrib.MetatypeMinimum));
+                MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
+            }
         }
 
         private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
