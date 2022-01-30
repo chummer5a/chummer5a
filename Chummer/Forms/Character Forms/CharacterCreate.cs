@@ -1433,20 +1433,15 @@ namespace Chummer
                                 {
                                     if (objCyberware.CanRemoveThroughImprovements)
                                     {
-                                        objCyberware.ChangeModularEquip(false);
                                         objCyberware.Parent?.Children.Remove(objCyberware);
                                         CharacterObject.Cyberware.Add(objCyberware);
+                                        objCyberware.ChangeModularEquip(false);
                                     }
                                     continue;
                                 }
                                 if (!objCyberware.CanRemoveThroughImprovements)
                                     continue;
                                 objCyberware.DeleteCyberware();
-                                Cyberware objParent = objCyberware.Parent;
-                                if (objParent != null)
-                                    objParent.Children.Remove(objCyberware);
-                                else
-                                    CharacterObject.Cyberware.Remove(objCyberware);
                                 blnDoRefresh = true;
                             }
 
@@ -1484,53 +1479,6 @@ namespace Chummer
                                 if (!objCyberware.CanRemoveThroughImprovements)
                                     continue;
                                 objCyberware.DeleteCyberware();
-                                Cyberware objParent = objCyberware.Parent;
-                                if (objParent != null)
-                                    objParent.Children.Remove(objCyberware);
-                                else
-                                    CharacterObject.Cyberware.Remove(objCyberware);
-                                blnDoRefresh = true;
-                            }
-
-                            if (blnDoRefresh)
-                            {
-                                IsCharacterUpdateRequested = true;
-                            }
-                        }
-                    }
-                    break;
-
-                case nameof(Character.CyberwareDisabled):
-                    {
-                        if (CharacterObject.CyberwareDisabled)
-                        {
-                            bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children).ToList())
-                            {
-                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                                    continue;
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    continue;
-                                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
-                                {
-                                    if (objCyberware.CanRemoveThroughImprovements)
-                                    {
-                                        objCyberware.ChangeModularEquip(false);
-                                        objCyberware.Parent?.Children.Remove(objCyberware);
-                                        CharacterObject.Cyberware.Add(objCyberware);
-                                    }
-                                    continue;
-                                }
-                                if (!objCyberware.CanRemoveThroughImprovements)
-                                    continue;
-                                objCyberware.DeleteCyberware();
-                                Cyberware objParent = objCyberware.Parent;
-                                if (objParent != null)
-                                    objParent.Children.Remove(objCyberware);
-                                else
-                                    CharacterObject.Cyberware.Remove(objCyberware);
                                 blnDoRefresh = true;
                             }
 
@@ -1562,20 +1510,15 @@ namespace Chummer
                                 {
                                     if (objCyberware.CanRemoveThroughImprovements)
                                     {
-                                        objCyberware.ChangeModularEquip(false);
                                         objCyberware.Parent?.Children.Remove(objCyberware);
                                         CharacterObject.Cyberware.Add(objCyberware);
+                                        objCyberware.ChangeModularEquip(false);
                                     }
                                     continue;
                                 }
                                 if (!objCyberware.CanRemoveThroughImprovements)
                                     continue;
                                 objCyberware.DeleteCyberware();
-                                Cyberware objParent = objCyberware.Parent;
-                                if (objParent != null)
-                                    objParent.Children.Remove(objCyberware);
-                                else
-                                    CharacterObject.Cyberware.Remove(objCyberware);
                                 blnDoRefresh = true;
                             }
 
@@ -3609,10 +3552,6 @@ namespace Chummer
                         }
 
                         objMod.DeleteVehicleMod();
-                        if (objMod.WeaponMountParent != null)
-                            objMod.WeaponMountParent.Mods.Remove(objMod);
-                        else
-                            objMod.Parent.Mods.Remove(objMod);
 
                         IsCharacterUpdateRequested = true;
                         IsDirty = true;

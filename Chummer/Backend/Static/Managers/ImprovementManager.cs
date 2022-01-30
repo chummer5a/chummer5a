@@ -2721,39 +2721,23 @@ namespace Chummer
                             = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
                         if (objGear != null)
                         {
-                            decReturn += objGear.DeleteGear();
                             decReturn += objGear.TotalCost;
-                            objCharacter.Gear.Remove(objGear);
+                            decReturn += objGear.DeleteGear();
                         }
 
                         break;
 
                     case Improvement.ImprovementType.Weapon:
                     {
-                        Vehicle objVehicle = null;
-                        WeaponMount objWeaponMount = null;
-                        VehicleMod objVehicleMod = null;
                         Weapon objWeapon
                             = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
                                                                       x => x.InternalId == strImprovedName)
                               ??
-                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out objVehicle,
-                                                                      out objWeaponMount, out objVehicleMod);
+                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
                         if (objWeapon != null)
                         {
-                            decReturn += objWeapon.DeleteWeapon();
                             decReturn += objWeapon.TotalCost;
-                            Weapon objParent = objWeapon.Parent;
-                            if (objParent != null)
-                                objParent.Children.Remove(objWeapon);
-                            else if (objVehicleMod != null)
-                                objVehicleMod.Weapons.Remove(objWeapon);
-                            else if (objWeaponMount != null)
-                                objWeaponMount.Weapons.Remove(objWeapon);
-                            else if (objVehicle != null)
-                                objVehicle.Weapons.Remove(objWeapon);
-                            else
-                                objCharacter.Weapons.Remove(objWeapon);
+                            decReturn += objWeapon.DeleteWeapon();
                         }
                     }
                         break;
@@ -2819,9 +2803,8 @@ namespace Chummer
                             objLoopQuality => objLoopQuality.InternalId == strImprovedName);
                         if (objQuality != null)
                         {
-                            decReturn += objQuality
-                                .DeleteQuality(); // We need to add in the return cost of deleting the quality, so call this manually
-                            objCharacter.Qualities.Remove(objQuality);
+                            // We need to add in the return cost of deleting the quality, so call this manually
+                            decReturn += objQuality.DeleteQuality();
                         }
 
                         break;
@@ -2880,9 +2863,8 @@ namespace Chummer
                             = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
                         if (objCyberware != null)
                         {
-                            decReturn += objCyberware.DeleteCyberware();
                             decReturn += objCyberware.CurrentTotalCost;
-                            objCharacter.Cyberware.Remove(objCyberware);
+                            decReturn += objCyberware.DeleteCyberware();
                         }
                     }
                         break;

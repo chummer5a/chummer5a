@@ -1541,12 +1541,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public decimal DeleteWeaponAccessory()
+        public decimal DeleteWeaponAccessory(bool blnDoRemoval = true)
         {
+            if (blnDoRemoval)
+                Parent.WeaponAccessories.Remove(this);
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objLoopGear in GearChildren)
-                decReturn += objLoopGear.DeleteGear();
+                decReturn += objLoopGear.DeleteGear(false);
 
             return decReturn;
         }
@@ -1607,7 +1609,7 @@ namespace Chummer.Backend.Equipment
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
                 return false;
             DeleteWeaponAccessory();
-            return Parent.WeaponAccessories.Remove(this);
+            return true;
         }
 
         public void Sell(decimal percentage)

@@ -1614,19 +1614,25 @@ namespace Chummer.Backend.Equipment
 
         #region Methods
 
-        public decimal DeleteVehicleMod()
+        public decimal DeleteVehicleMod(bool blnDoRemoval = true)
         {
-            decimal decReturn = 0;
+            if (blnDoRemoval)
+            {
+                if (WeaponMountParent != null)
+                    WeaponMountParent.Mods.Remove(this);
+                else
+                    Parent.Mods.Remove(this);
+            }
 
+            decimal decReturn = 0;
             foreach (Weapon objLoopWeapon in Weapons)
             {
-                decReturn += objLoopWeapon.DeleteWeapon();
+                decReturn += objLoopWeapon.DeleteWeapon(false);
             }
             foreach (Cyberware objLoopCyberware in Cyberware)
             {
-                decReturn += objLoopCyberware.DeleteCyberware();
+                decReturn += objLoopCyberware.DeleteCyberware(false);
             }
-
             return decReturn;
         }
 
@@ -1797,7 +1803,7 @@ namespace Chummer.Backend.Equipment
                 return false;
 
             DeleteVehicleMod();
-            return Parent.Mods.Remove(this);
+            return true;
         }
 
         public void Sell(decimal percentage)

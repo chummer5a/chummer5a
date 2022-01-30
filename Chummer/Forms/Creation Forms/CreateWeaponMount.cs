@@ -826,18 +826,9 @@ namespace Chummer
                 VehicleMod objMod = _lstMods.Find(x => x.InternalId == strSelectedId);
                 if (objMod?.IncludedInVehicle != false)
                     return;
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
+                if (!objMod.Remove())
                     return;
-
                 _lstMods.Remove(objMod);
-                foreach (Weapon objLoopWeapon in objMod.Weapons)
-                {
-                    objLoopWeapon.DeleteWeapon();
-                }
-                foreach (Cyberware objLoopCyberware in objMod.Cyberware)
-                {
-                    objLoopCyberware.DeleteCyberware();
-                }
                 TreeNode objParentNode = objSelectedNode.Parent;
                 objSelectedNode.Remove();
                 if (objParentNode.Nodes.Count == 0)

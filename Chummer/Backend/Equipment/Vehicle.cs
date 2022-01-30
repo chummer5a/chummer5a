@@ -3100,23 +3100,25 @@ namespace Chummer.Backend.Equipment
 
         public decimal DeleteVehicle()
         {
+            _objCharacter.Vehicles.Remove(this);
+
             decimal decReturn = 0;
 
             foreach (Gear objGear in GearChildren)
             {
-                decReturn += objGear.DeleteGear();
+                decReturn += objGear.DeleteGear(false);
             }
             foreach (Weapon objLoopWeapon in Weapons)
             {
-                decReturn += objLoopWeapon.DeleteWeapon();
+                decReturn += objLoopWeapon.DeleteWeapon(false);
             }
             foreach (VehicleMod objLoopMod in Mods)
             {
-                decReturn += objLoopMod.DeleteVehicleMod();
+                decReturn += objLoopMod.DeleteVehicleMod(false);
             }
             foreach (WeaponMount objLoopMount in WeaponMounts)
             {
-                decReturn += objLoopMount.DeleteWeaponMount();
+                decReturn += objLoopMount.DeleteWeaponMount(false);
             }
 
             return decReturn;
@@ -3614,16 +3616,14 @@ namespace Chummer.Backend.Equipment
                 return false;
 
             DeleteVehicle();
-            return _objCharacter.Vehicles.Remove(this);
+            return true;
         }
 
         public void Sell(decimal percentage)
         {
-            if (!Remove(GlobalSettings.ConfirmDelete))
-                return;
-
             // Create the Expense Log Entry for the sale.
             decimal decAmount = TotalCost * percentage;
+            decAmount += DeleteVehicle() * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);

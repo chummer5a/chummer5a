@@ -475,6 +475,17 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
         /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <returns></returns>
+        public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        {
+            return FindVehicleWeaponMount(lstVehicles, strGuid, out Vehicle _);
+        }
+
+        /// <summary>
+        /// Locate a Weapon Mount within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle in which the Weapon Mount was found.</param>
         /// <returns></returns>
         public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
@@ -498,6 +509,17 @@ namespace Chummer
 
             objFoundVehicle = null;
             return null;
+        }
+
+        /// <summary>
+        /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
+        /// </summary>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <returns></returns>
+        public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid)
+        {
+            return FindVehicleWeaponMountMod(lstVehicles, strGuid, out WeaponMount _);
         }
 
         /// <summary>

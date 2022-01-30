@@ -1175,17 +1175,20 @@ namespace Chummer.Backend.Equipment
 
         #region Methods
 
-        public decimal DeleteWeaponMount()
+        public decimal DeleteWeaponMount(bool blnDoRemoval = true)
         {
+            if (blnDoRemoval)
+                Parent.WeaponMounts.Remove(this);
+
             decimal decReturn = 0;
 
             foreach (Weapon objLoopWeapon in Weapons)
             {
-                decReturn += objLoopWeapon.DeleteWeapon();
+                decReturn += objLoopWeapon.DeleteWeapon(false);
             }
             foreach (VehicleMod objLoopMod in Mods)
             {
-                decReturn += objLoopMod.DeleteVehicleMod();
+                decReturn += objLoopMod.DeleteVehicleMod(false);
             }
 
             return decReturn;
@@ -1321,7 +1324,7 @@ namespace Chummer.Backend.Equipment
                 return false;
 
             DeleteWeaponMount();
-            return Parent.WeaponMounts.Remove(this);
+            return true;
         }
 
         public void Sell(decimal percentage)
@@ -1336,8 +1339,6 @@ namespace Chummer.Backend.Equipment
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
-
-            Parent.WeaponMounts.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

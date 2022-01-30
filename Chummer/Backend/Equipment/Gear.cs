@@ -3254,8 +3254,26 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of Gear and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        public decimal DeleteGear()
+        public decimal DeleteGear(bool blnDoRemoval = true)
         {
+            if (blnDoRemoval)
+            {
+                switch (Parent)
+                {
+                    case IHasGear objHasChildren:
+                        objHasChildren.GearChildren.Remove(this);
+                        break;
+
+                    case IHasChildren<Gear> objHasChildren:
+                        objHasChildren.Children.Remove(this);
+                        break;
+
+                    default:
+                        CharacterObject.Gear.Remove(this);
+                        break;
+                }
+            }
+
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objChild in Children)
@@ -3264,62 +3282,32 @@ namespace Chummer.Backend.Equipment
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete =
-                    new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
-                foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children,
-                    x => x.ParentID == InternalId))
+                foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                 {
-                    lstWeaponsToDelete.Add(
-                        new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));
+                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                 }
-
                 foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                 {
-                    foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
-                        x => x.ParentID == InternalId))
+                    foreach (Weapon objDeleteWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                     {
-                        lstWeaponsToDelete.Add(
-                            new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, null));
+                        decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                     }
 
                     foreach (VehicleMod objMod in objVehicle.Mods)
                     {
-                        foreach (Weapon objWeapon in objMod.Weapons.DeepWhere(x => x.Children,
-                            x => x.ParentID == InternalId))
+                        foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                         {
-                            lstWeaponsToDelete.Add(
-                                new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, objMod,
-                                    null));
+                            decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                         }
                     }
 
                     foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                     {
-                        foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(x => x.Children,
-                            x => x.ParentID == InternalId))
+                        foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                         {
-                            lstWeaponsToDelete.Add(
-                                new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null,
-                                    objMount));
+                            decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                         }
                     }
-                }
-
-                // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-                foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
-                {
-                    Weapon objWeapon = objLoopTuple.Item1;
-                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon();
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else if (objLoopTuple.Item4 != null)
-                        objLoopTuple.Item4.Weapons.Remove(objWeapon);
-                    else if (objLoopTuple.Item3 != null)
-                        objLoopTuple.Item3.Weapons.Remove(objWeapon);
-                    else if (objLoopTuple.Item2 != null)
-                        objLoopTuple.Item2.Weapons.Remove(objWeapon);
-                    else
-                        _objCharacter.Weapons.Remove(objWeapon);
                 }
             }
 
@@ -3981,24 +3969,7 @@ namespace Chummer.Backend.Equipment
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
                 return false;
 
-            switch (Parent)
-            {
-                case IHasGear objHasChildren:
-                    DeleteGear();
-                    objHasChildren.GearChildren.Remove(this);
-                    break;
-
-                case IHasChildren<Gear> objHasChildren:
-                    DeleteGear();
-                    objHasChildren.Children.Remove(this);
-                    break;
-
-                default:
-                    DeleteGear();
-                    CharacterObject.Gear.Remove(this);
-                    break;
-            }
-
+            DeleteGear();
             return true;
         }
 
@@ -4006,13 +3977,14 @@ namespace Chummer.Backend.Equipment
         {
             decimal decOriginal = 0;
             decimal decNewCost = 0;
+            bool blnDoRemoval = true;
             if (CharacterObject.Gear.Contains(this))
             {
                 decOriginal = TotalCost;
-                CharacterObject.Gear.Remove(this);
             }
             else if (Parent is IHasChildrenAndCost<Gear> parentObject)
             {
+                blnDoRemoval = false;
                 decOriginal = parentObject.TotalCost;
                 parentObject.Children.Remove(this);
                 decNewCost = parentObject.TotalCost;
@@ -4020,7 +3992,7 @@ namespace Chummer.Backend.Equipment
 
             // Create the Expense Log Entry for the sale.
             decimal decAmount = (decOriginal - decNewCost) * percentage;
-            decAmount += DeleteGear() * percentage;
+            decAmount += DeleteGear(blnDoRemoval) * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
             objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,

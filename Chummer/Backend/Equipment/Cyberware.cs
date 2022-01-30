@@ -4561,72 +4561,79 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        public decimal DeleteCyberware()
+        public decimal DeleteCyberware(bool blnDoRemoval = true, bool blnIncreaseEssenceHole = true)
         {
+            // Unequip all modular children first so that we don't delete them
+            Cyberware objModularChild = Children.DeepFirstOrDefault(x => x.Children, x => !string.IsNullOrEmpty(x.PlugsIntoModularMount));
+            while (objModularChild != null)
+            {
+                Children.Remove(objModularChild);
+                _objCharacter.Cyberware.Add(objModularChild);
+                objModularChild.ChangeModularEquip(false);
+                objModularChild = Children.DeepFirstOrDefault(x => x.Children, x => !string.IsNullOrEmpty(x.PlugsIntoModularMount));
+            }
+
+            // Remove the cyberware from the actual parent
+            if (blnDoRemoval)
+            {
+                if (Parent != null)
+                {
+                    Parent.Children.Remove(this);
+                }
+                else if (ParentVehicle != null)
+                {
+                    _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
+                                                                out VehicleMod objMod);
+                    objMod.Cyberware.Remove(this);
+                }
+                else if (_objCharacter.Cyberware.Contains(this))
+                {
+                    if (blnIncreaseEssenceHole && SourceID != EssenceAntiHoleGUID && SourceID != EssenceHoleGUID)
+                    {
+                        // Add essence hole.
+                        decimal decEssenceHoleToAdd = CalculatedESS;
+                        _objCharacter.Cyberware.Remove(this);
+                        _objCharacter.IncreaseEssenceHole(decEssenceHoleToAdd);
+                    }
+                    else
+                        _objCharacter.Cyberware.Remove(this);
+                }
+            }
+
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Cyberware objChild in Children)
-                decReturn += objChild.DeleteCyberware();
+                decReturn += objChild.DeleteCyberware(false);
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete =
-                    new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
-                foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children,
-                    x => x.ParentID == InternalId))
+                foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                 {
-                    lstWeaponsToDelete.Add(
-                        new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));
+                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                 }
-
                 foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                 {
-                    foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
-                        x => x.ParentID == InternalId))
+                    foreach (Weapon objDeleteWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                     {
-                        lstWeaponsToDelete.Add(
-                            new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, null));
+                        decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                     }
 
                     foreach (VehicleMod objMod in objVehicle.Mods)
                     {
-                        foreach (Weapon objWeapon in objMod.Weapons.DeepWhere(x => x.Children,
-                            x => x.ParentID == InternalId))
+                        foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                         {
-                            lstWeaponsToDelete.Add(
-                                new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, objMod,
-                                    null));
+                            decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                         }
                     }
 
                     foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                     {
-                        foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(x => x.Children,
-                            x => x.ParentID == InternalId))
+                        foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                         {
-                            lstWeaponsToDelete.Add(
-                                new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null,
-                                    objMount));
+                            decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                         }
                     }
-                }
-
-                // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-                foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
-                {
-                    Weapon objWeapon = objLoopTuple.Item1;
-                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon();
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else if (objLoopTuple.Item4 != null)
-                        objLoopTuple.Item4.Weapons.Remove(objWeapon);
-                    else if (objLoopTuple.Item3 != null)
-                        objLoopTuple.Item3.Weapons.Remove(objWeapon);
-                    else if (objLoopTuple.Item2 != null)
-                        objLoopTuple.Item2.Weapons.Remove(objWeapon);
-                    else
-                        _objCharacter.Weapons.Remove(objWeapon);
                 }
             }
             if (!WeaponAccessoryID.IsEmptyGuid())
@@ -4634,60 +4641,18 @@ namespace Chummer.Backend.Equipment
                 // Locate the Weapon Accessory that was added.
                 WeaponAccessory objWeaponAccessory = _objCharacter.Vehicles.FindVehicleWeaponAccessory(WeaponAccessoryID) ??
                                                      _objCharacter.Weapons.FindWeaponAccessory(WeaponAccessoryID);
-                if (objWeaponAccessory != null)
-                {
-                    objWeaponAccessory.DeleteWeaponAccessory();
-
-                    // Remove the Weapon Accessory.
-                    objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
-                }
+                objWeaponAccessory?.DeleteWeaponAccessory();
             }
 
             // Remove any Vehicle that the Cyberware created.
             if (!VehicleID.IsEmptyGuid())
             {
-                List<Vehicle> lstVehiclesToRemove = new List<Vehicle>(1);
-                foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles)
+                foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles.ToList())
                 {
                     if (objLoopVehicle.ParentID == InternalId)
                     {
-                        lstVehiclesToRemove.Add(objLoopVehicle);
-                    }
-                }
-
-                foreach (Vehicle objLoopVehicle in lstVehiclesToRemove)
-                {
-                    decReturn += objLoopVehicle.TotalCost;
-                    _objCharacter.Vehicles.Remove(objLoopVehicle);
-                    foreach (Gear objLoopGear in objLoopVehicle.GearChildren)
-                    {
-                        decReturn += objLoopGear.DeleteGear();
-                    }
-
-                    foreach (Weapon objLoopWeapon in objLoopVehicle.Weapons)
-                    {
-                        decReturn += objLoopWeapon.DeleteWeapon();
-                    }
-
-                    foreach (VehicleMod objLoopMod in objLoopVehicle.Mods)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                        {
-                            decReturn += objLoopWeapon.DeleteWeapon();
-                        }
-
-                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                        {
-                            decReturn += objLoopCyberware.DeleteCyberware();
-                        }
-                    }
-
-                    foreach (WeaponMount objLoopWeaponMount in objLoopVehicle.WeaponMounts)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopWeaponMount.Weapons)
-                        {
-                            decReturn += objLoopWeapon.DeleteWeapon();
-                        }
+                        decReturn += objLoopVehicle.TotalCost;
+                        decReturn += objLoopVehicle.DeleteVehicle();
                     }
                 }
             }
@@ -4784,9 +4749,7 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objLoopGear in GearChildren)
-            {
-                decReturn += objLoopGear.DeleteGear();
-            }
+                decReturn += objLoopGear.DeleteGear(false);
 
             // Fix for legacy characters with old addqualities improvements.
             XPathNodeIterator xmlOldAddQualitiesList = this.GetNodeXPath()?.Select("addqualities/addquality");
@@ -4798,8 +4761,8 @@ namespace Chummer.Backend.Equipment
                     Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == strText);
                     if (objQuality == null)
                         continue;
-                    decReturn += objQuality.DeleteQuality(); // We need to add in the return cost of deleting the quality, so call this manually
-                    _objCharacter.Qualities.Remove(objQuality);
+                    // We need to add in the return cost of deleting the quality, so call this manually
+                    decReturn += objQuality.DeleteQuality();
                     decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
                 }
             }
@@ -5301,19 +5264,6 @@ namespace Chummer.Backend.Equipment
                 : "Message_DeleteCyberware")))
                 return false;
 
-            if (ParentVehicle != null)
-            {
-                _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
-                    out VehicleMod objMod);
-                objMod.Cyberware.Remove(this);
-            }
-            else if (Parent != null)
-                Parent.Children.Remove(this);
-            else
-            {
-                _objCharacter.Cyberware.Remove(this);
-            }
-
             DeleteCyberware();
             return true;
         }
@@ -5332,11 +5282,6 @@ namespace Chummer.Backend.Equipment
                 DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
-
-            if (Parent != null)
-                Parent.Children.Remove(this);
-            else
-                _objCharacter.Cyberware.Remove(this);
         }
 
         /// <summary>

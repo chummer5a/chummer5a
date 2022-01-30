@@ -953,19 +953,21 @@ namespace Chummer
                                 {
                                     foreach (Quality objOldItem in e.OldItems)
                                     {
-                                        objOldItem.DeleteQuality();
+                                        objOldItem.DeleteQuality(false);
                                     }
 
                                     break;
                                 }
                                 case NotifyCollectionChangedAction.Replace:
                                 {
+                                    HashSet<Quality> setNewQualities = e.NewItems.OfType<Quality>().ToHashSet();
                                     foreach (Quality objOldItem in e.OldItems)
                                     {
-                                        objOldItem.DeleteQuality();
+                                        if (!setNewQualities.Contains(objOldItem))
+                                            objOldItem.DeleteQuality(false);
                                     }
 
-                                    foreach (Quality objNewItem in e.NewItems)
+                                    foreach (Quality objNewItem in setNewQualities)
                                     {
                                         // Needed in order to properly process named sources where
                                         // the tooltip was built before the object was added to the character
@@ -8126,20 +8128,57 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Clear all Cyberware tab elements from the character.
+        /// Clear all cyberware and bioware implanted on the character.
         /// </summary>
         public void ClearCyberwareTab()
         {
-            for(int i = Cyberware.Count - 1; i >= 0; i--)
+            string strDisabledSource = string.Empty;
+            if (Created)
             {
-                if(i < Cyberware.Count)
+                Improvement objDisablingImprovement = ImprovementManager
+                                                      .GetCachedImprovementListForValueOf(
+                                                          this,
+                                                          Improvement.ImprovementType.SpecialTab,
+                                                          "Cyberware")
+                                                      .FirstOrDefault(x => x.UniqueName == "disabletab");
+                if (objDisablingImprovement != null)
                 {
-                    Cyberware objToRemove = Cyberware[i];
-                    if(string.IsNullOrEmpty(objToRemove.ParentID))
+                    strDisabledSource = LanguageManager.GetString("String_Space") +
+                                        '(' + GetObjectName(objDisablingImprovement, GlobalSettings.Language) + ')' +
+                                        LanguageManager.GetString("String_Space");
+                }
+            }
+
+            foreach (Cyberware objCyberware in Cyberware.ToList())
+            {
+                if (objCyberware.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID)
+                    continue;
+                if (objCyberware.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID)
+                    continue;
+                if (!objCyberware.IsModularCurrentlyEquipped)
+                    continue;
+                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                {
+                    if (objCyberware.CanRemoveThroughImprovements)
                     {
-                        objToRemove.DeleteCyberware();
-                        Cyberware.RemoveAt(i);
+                        objCyberware.Parent?.Children.Remove(objCyberware);
+                        Cyberware.Add(objCyberware);
+                        objCyberware.ChangeModularEquip(false);
                     }
+                }
+                else if (objCyberware.CanRemoveThroughImprovements)
+                {
+                    objCyberware.DeleteCyberware();
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(this);
+                    string strEntry = LanguageManager.GetString(
+                        objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
+                            ? "String_ExpenseSoldCyberware"
+                            : "String_ExpenseSoldBioware");
+                    objExpense.Create(0,
+                                      strEntry + strDisabledSource
+                                               + objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                      ExpenseType.Nuyen, DateTime.Now);
+                    ExpenseEntries.AddWithSort(objExpense);
                 }
             }
         }
@@ -8149,7 +8188,7 @@ namespace Chummer
         /// </summary>
         public void ClearCritterPowers()
         {
-            for(int i = CritterPowers.Count - 1; i >= 0; i--)
+            for(int i = CritterPowers.Count - 1; i >= 0; --i)
             {
                 if(i < CritterPowers.Count)
                 {
@@ -10922,7 +10961,6 @@ namespace Chummer
 
                 intCentiessence -= objAntiHole.Rating;
                 objAntiHole.DeleteCyberware();
-                Cyberware.Remove(objAntiHole);
             }
 
             if(blnOverflowIntoHole)
@@ -10986,7 +11024,6 @@ namespace Chummer
 
                 intCentiessence -= objHole.Rating;
                 objHole.DeleteCyberware();
-                Cyberware.Remove(objHole);
             }
 
             if(blnOverflowIntoAntiHole && intCentiessence != 0)
@@ -15237,10 +15274,8 @@ namespace Chummer
                 if(_blnCyberwareDisabled != value)
                 {
                     _blnCyberwareDisabled = value;
-                    if(value)
-                    {
+                    if (value)
                         ClearCyberwareTab();
-                    }
 
                     OnPropertyChanged();
                 }

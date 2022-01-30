@@ -5359,59 +5359,60 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
-        public decimal DeleteWeapon()
+        public decimal DeleteWeapon(bool blnDoRemoval = true)
         {
+            // Remove the Weapon from the character.
+            if (blnDoRemoval)
+            {
+                if (Parent != null)
+                    Parent.Children.Remove(this);
+                else if (ParentVehicle != null)
+                {
+                    if (ParentVehicleMod != null)
+                        ParentVehicleMod.Weapons.Remove(this);
+                    else if (ParentMount != null)
+                        ParentMount.Weapons.Remove(this);
+                    else
+                        ParentVehicle.Weapons.Remove(this);
+                }
+                else
+                    _objCharacter.Weapons.Remove(this);
+            }
+
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Weapon objChild in Children)
-                decReturn += objChild.DeleteWeapon();
+                decReturn += objChild.DeleteWeapon(false);
 
             foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
-                decReturn += objLoopAccessory.DeleteWeaponAccessory();
+                decReturn += objLoopAccessory.DeleteWeaponAccessory(false);
 
-            List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>(1);
-            foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+            foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
             {
-                lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, null, null, null));
+                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
             }
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
-                foreach (Weapon objDeleteWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+                foreach (Weapon objDeleteWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                 {
-                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, null, null));
+                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                 }
 
                 foreach (VehicleMod objMod in objVehicle.Mods)
                 {
-                    foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+                    foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                     {
-                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, objMod, null));
+                        decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                     }
                 }
 
                 foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                 {
-                    foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+                    foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                     {
-                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, null, objMount));
+                        decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                     }
                 }
-            }
-            // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-            foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
-            {
-                Weapon objDeleteWeapon = objLoopTuple.Item1;
-                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
-                if (objDeleteWeapon.Parent != null)
-                    objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
-                else if (objLoopTuple.Item4 != null)
-                    objLoopTuple.Item4.Weapons.Remove(objDeleteWeapon);
-                else if (objLoopTuple.Item3 != null)
-                    objLoopTuple.Item3.Weapons.Remove(objDeleteWeapon);
-                else if (objLoopTuple.Item2 != null)
-                    objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
-                else
-                    _objCharacter.Weapons.Remove(objDeleteWeapon);
             }
 
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Weapon, InternalId + "Wireless");
@@ -6327,24 +6328,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
                 return false;
-
             DeleteWeapon();
-            if (_objCharacter.Weapons.Contains(this))
-            {
-                return _objCharacter.Weapons.Remove(this);
-            }
-            if (Parent != null)
-                return Parent.Children.Remove(this);
-            if (ParentVehicle != null)
-            {
-                if (ParentMount != null)
-                    return ParentMount.Weapons.Remove(this);
-                if (ParentVehicleMod != null)
-                    return ParentVehicleMod.Weapons.Remove(this);
-            }
-            //else if (objWeapon.parent != null)
-            //    objWeaponMount.Weapons.Remove(objWeapon);
-            // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
             return false;
         }
 
