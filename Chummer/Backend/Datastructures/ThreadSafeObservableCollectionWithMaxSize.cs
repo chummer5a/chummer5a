@@ -34,21 +34,25 @@ namespace Chummer
         public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize) : base(list)
         {
             _intMaxSize = intMaxSize;
+            _blnSkipCollectionChanged = true;
             using (new EnterWriteLock(LockerObject))
             {
                 while (Count > _intMaxSize)
                     RemoveAt(Count - 1);
             }
+            _blnSkipCollectionChanged = false;
         }
 
         public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize) : base(collection)
         {
             _intMaxSize = intMaxSize;
+            _blnSkipCollectionChanged = true;
             using (new EnterWriteLock(LockerObject))
             {
                 while (Count > _intMaxSize)
                     RemoveAt(Count - 1);
             }
+            _blnSkipCollectionChanged = false;
         }
 
         private bool _blnSkipCollectionChanged;
@@ -83,9 +87,9 @@ namespace Chummer
             {
                 if (index >= _intMaxSize)
                     return;
-                base.InsertItem(index, item);
-                while (Count > _intMaxSize)
+                while (Count >= _intMaxSize)
                     RemoveAt(Count - 1);
+                base.InsertItem(index, item);
             }
         }
 
