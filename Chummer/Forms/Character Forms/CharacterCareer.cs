@@ -3934,17 +3934,17 @@ namespace Chummer
                 return;
             }
 
-            if (treVehicles.SelectedNode?.Tag is VehicleMod objMod)
+            switch (treVehicles.SelectedNode?.Tag)
             {
                 // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
-                if (objMod.Name == "Obsolete" || objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade)
+                case VehicleMod objMod when objMod.Name == "Obsolete" || objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade:
                 {
                     using (SelectNumber frmModPercent = new SelectNumber
-                    {
-                        Minimum = 0,
-                        Maximum = 1000000,
-                        Description = LanguageManager.GetString("String_Retrofit")
-                    })
+                           {
+                               Minimum = 0,
+                               Maximum = 1000000,
+                               Description = LanguageManager.GetString("String_Retrofit")
+                           })
                     {
                         frmModPercent.ShowDialogSafe(this);
 
@@ -3976,13 +3976,13 @@ namespace Chummer
                         // Adjust the character's Nuyen total.
                         CharacterObject.Nuyen += decCost * -1;
                     }
+
+                    break;
                 }
-                else if (!objMod.Remove(GlobalSettings.ConfirmDelete))
-                    return;
-            }
-            else if (treVehicles.SelectedNode?.Tag is ICanRemove selectedObject)
-            {
-                selectedObject.Remove(GlobalSettings.ConfirmDelete);
+                case ICanRemove selectedObject:
+                    if (!selectedObject.Remove(GlobalSettings.ConfirmDelete))
+                        return;
+                    break;
             }
 
             IsCharacterUpdateRequested = true;

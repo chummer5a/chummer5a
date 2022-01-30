@@ -41,10 +41,11 @@ namespace Chummer
             if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
                                                                     out CharacterSettings objReturn))
                 return objReturn;
-            if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSettingDefaultValue,
-                                                                    out objReturn))
-                return objReturn;
-            return SettingsManager.LoadedCharacterSettings.Values.First();
+            return SettingsManager.LoadedCharacterSettings.TryGetValue(
+                GlobalSettings.DefaultMasterIndexSettingDefaultValue,
+                out objReturn)
+                ? objReturn
+                : SettingsManager.LoadedCharacterSettings.Values.First();
         }
 
         private static readonly IReadOnlyCollection<string> _astrFileNames = new []

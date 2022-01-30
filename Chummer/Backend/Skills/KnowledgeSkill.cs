@@ -209,9 +209,7 @@ namespace Chummer.Backend.Skills
         
         public override string DisplaySpecialization(string strLanguage)
         {
-            if (IsNativeLanguage)
-                return string.Empty;
-            return base.DisplaySpecialization(strLanguage);
+            return IsNativeLanguage ? string.Empty : base.DisplaySpecialization(strLanguage);
         }
 
         public string Type

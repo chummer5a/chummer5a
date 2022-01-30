@@ -790,8 +790,7 @@ namespace Chummer
                     objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _objVehicle, frmPickVehicleMod.Markup);
                     if (frmPickVehicleMod.FreeCost)
                         objMod.Cost = "0";
-                    if (_objMount != null)
-                        _objMount.Mods.Add(objMod);
+                    _objMount?.Mods.Add(objMod);
                     _lstMods.Add(objMod);
                     intSlots += objMod.CalculatedSlots;
 

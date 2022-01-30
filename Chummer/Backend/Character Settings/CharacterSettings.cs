@@ -4484,7 +4484,7 @@ namespace Chummer
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
-        public int SpecializationBonus { get; } = 2;
+        public int SpecializationBonus => 2;
 
         #endregion Constant Values
 

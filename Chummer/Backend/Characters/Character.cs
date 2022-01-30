@@ -13905,9 +13905,9 @@ namespace Chummer
         {
             get
             {
-                if (IsAI)
-                    return LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM");
-                return LanguageManager.GetString("Label_OtherPhysicalCM");
+                return IsAI
+                    ? LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM")
+                    : LanguageManager.GetString("Label_OtherPhysicalCM");
             }
         }
 
