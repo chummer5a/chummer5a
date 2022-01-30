@@ -3975,24 +3975,17 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
-            decimal decOriginal = 0;
-            decimal decNewCost = 0;
-            bool blnDoRemoval = true;
-            if (CharacterObject.Gear.Contains(this))
+            if (!_objCharacter.Created)
             {
-                decOriginal = TotalCost;
-            }
-            else if (Parent is IHasChildrenAndCost<Gear> parentObject)
-            {
-                blnDoRemoval = false;
-                decOriginal = parentObject.TotalCost;
-                parentObject.Children.Remove(this);
-                decNewCost = parentObject.TotalCost;
+                DeleteGear();
+                return;
             }
 
+            IHasCost objParent = Parent as IHasCost;
+            decimal decOriginal = objParent?.TotalCost ?? TotalCost;
             // Create the Expense Log Entry for the sale.
-            decimal decAmount = (decOriginal - decNewCost) * percentage;
-            decAmount += DeleteGear(blnDoRemoval) * percentage;
+            decimal decAmount = DeleteGear() * percentage;
+            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
             objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,

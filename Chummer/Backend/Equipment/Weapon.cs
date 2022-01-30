@@ -6375,13 +6375,33 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
-            decimal decAmount = TotalCost * percentage;
-            string expense = ParentVehicle != null ? "String_ExpenseSoldVehicleWeapon" : "String_ExpenseSoldWeapon";
-            if (!Remove(GlobalSettings.ConfirmDelete)) return;
+            if (!_objCharacter.Created)
+            {
+                DeleteWeapon();
+                return;
+            }
 
+            string strExpense = ParentVehicle != null ? "String_ExpenseSoldVehicleWeapon" : "String_ExpenseSoldWeapon";
+
+            IHasCost objParent = null;
+            if (Parent != null)
+                objParent = Parent;
+            else if (ParentVehicle != null)
+            {
+                if (ParentVehicleMod != null)
+                    objParent = ParentVehicleMod;
+                else if (ParentMount != null)
+                    objParent = ParentMount;
+                else
+                    objParent = ParentVehicle;
+            }
+            // Record the cost of the Weapon carrier with the Weapon.
+            decimal decOriginal = Parent?.TotalCost ?? TotalCost;
+            decimal decAmount = DeleteWeapon() * percentage;
+            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString(expense) + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString(strExpense) + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
         }

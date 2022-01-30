@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class Cyberware : ICanPaste, IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlDataNode,
+    public sealed class Cyberware : ICanPaste, IHasChildrenAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
         IHasWirelessBonus, ICanBlackMarketDiscount, IDisposable
     {
@@ -1814,8 +1814,8 @@ namespace Chummer.Backend.Equipment
                 CalculatedESS.ToString(_objCharacter.Settings.EssenceFormat, objCulture));
             objWriter.WriteElementString("capacity", Capacity);
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("cost", CurrentTotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("owncost", CurrentOwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
@@ -3859,7 +3859,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the just the Cyberware itself before we factor in any multipliers.
         /// </summary>
-        public decimal OwnCostPreMultipliers(int intRating, Grade objGrade)
+        public decimal CalculatedOwnCostPreMultipliers(int intRating, Grade objGrade)
         {
             string strCostExpression = Cost;
 
@@ -3896,7 +3896,7 @@ namespace Chummer.Backend.Equipment
             decimal decTotalChildrenCost = 0;
             if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
             {
-                decTotalChildrenCost += Children.Sum(loopWare => loopWare.TotalCost(loopWare.Rating, objGrade));
+                decTotalChildrenCost += Children.Sum(loopWare => loopWare.CalculatedTotalCost(loopWare.Rating, objGrade));
             }
 
             if (string.IsNullOrEmpty(strCostExpression))
@@ -3934,9 +3934,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Cyberware and its plugins.
         /// </summary>
-        public decimal TotalCost(int intRating, Grade objGrade)
+        public decimal CalculatedTotalCost(int intRating, Grade objGrade)
         {
-            decimal decReturn = TotalCostWithoutModifiers(intRating, objGrade);
+            decimal decReturn = CalculatedTotalCostWithoutModifiers(intRating, objGrade);
 
             if (_blnSuite)
                 decReturn *= 0.9m;
@@ -3947,9 +3947,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identical to TotalCost, but without the Improvement and Suite multipliers which would otherwise be doubled.
         /// </summary>
-        private decimal TotalCostWithoutModifiers(int intRating, Grade objGrade)
+        private decimal CalculatedTotalCostWithoutModifiers(int intRating, Grade objGrade)
         {
-            decimal decCost = OwnCostPreMultipliers(intRating, objGrade);
+            decimal decCost = CalculatedOwnCostPreMultipliers(intRating, objGrade);
             decimal decReturn = decCost;
 
             // Factor in the Cost multiplier of the selected CyberwareGrade.
@@ -3984,7 +3984,7 @@ namespace Chummer.Backend.Equipment
                     decReturn += decPluginCost;
                 }
                 else
-                    decReturn += objChild.TotalCostWithoutModifiers(objChild.Rating, objGrade);
+                    decReturn += objChild.CalculatedTotalCostWithoutModifiers(objChild.Rating, objGrade) * ChildCostMultiplier;
             }
 
             // Add in the cost of all Gear plugins.
@@ -4003,7 +4003,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal CalculatedStolenTotalCost(int intRating, Grade objGrade)
         {
-            decimal decCost = OwnCostPreMultipliers(intRating, objGrade);
+            decimal decCost = CalculatedOwnCostPreMultipliers(intRating, objGrade);
             decimal decReturn = decCost;
 
             // Factor in the Cost multiplier of the selected CyberwareGrade.
@@ -4030,7 +4030,7 @@ namespace Chummer.Backend.Equipment
                     decReturn += decPluginCost;
                 }
                 else
-                    decReturn += objChild.TotalCostWithoutModifiers(objChild.Rating, objGrade);
+                    decReturn += objChild.CalculatedTotalCostWithoutModifiers(objChild.Rating, objGrade) * ChildCostMultiplier;
             }
 
             // Add in the cost of all Gear plugins.
@@ -4045,9 +4045,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Cost of just the Cyberware itself.
         /// </summary>
-        public decimal OwnCost(int intRating, Grade objGrade)
+        public decimal CalculatedOwnCost(int intRating, Grade objGrade)
         {
-            decimal decReturn = OwnCostPreMultipliers(intRating, objGrade);
+            decimal decReturn = CalculatedOwnCostPreMultipliers(intRating, objGrade);
 
             // Factor in the Cost multiplier of the selected CyberwareGrade.
             decReturn *= objGrade.Cost;
@@ -4061,9 +4061,9 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public decimal CurrentTotalCost => TotalCost(Rating, Grade);
+        public decimal TotalCost => CalculatedTotalCost(Rating, Grade);
 
-        public decimal CurrentOwnCost => OwnCost(Rating, Grade);
+        public decimal OwnCost => CalculatedOwnCost(Rating, Grade);
 
         /// <summary>
         /// The amount of Capacity remaining in the Cyberware.
@@ -5270,14 +5270,32 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
-            // Create the Expense Log Entry for the sale.
-            decimal decAmount = CurrentTotalCost * percentage;
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+            if (!_objCharacter.Created)
+            {
+                DeleteCyberware();
+                return;
+            }
+
             string strEntry = LanguageManager.GetString(
                 SourceType == Improvement.ImprovementSource.Cyberware
                     ? "String_ExpenseSoldCyberware"
                     : "String_ExpenseSoldBioware");
-            decAmount += DeleteCyberware() * percentage;
+
+            IHasCost objParent = null;
+            if (Parent != null)
+                objParent = Parent;
+            else if (ParentVehicle != null)
+            {
+                _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
+                                                            out VehicleMod objMod);
+                objParent = objMod;
+            }
+            // Record the cost of the Cyberware carrier with the Cyberware.
+            decimal decOriginal = Parent?.TotalCost ?? TotalCost;
+            decimal decAmount = DeleteCyberware() * percentage;
+            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
+            // Create the Expense Log Entry for the sale.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                 DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
@@ -5328,7 +5346,7 @@ namespace Chummer.Backend.Equipment
                 // Check the item's Cost and make sure the character can afford it.
                 if (!blnFree)
                 {
-                    decCost = CurrentTotalCost;
+                    decCost = TotalCost;
 
                     // Multiply the cost if applicable.
                     char chrAvail = TotalAvailTuple().Suffix;
@@ -5420,10 +5438,10 @@ namespace Chummer.Backend.Equipment
 
         public void Upgrade(Grade objGrade, int intRating, decimal refundPercentage, bool blnFree)
         {
-            decimal decSaleCost = CurrentTotalCost * refundPercentage;
+            decimal decSaleCost = TotalCost * refundPercentage;
             decimal decOldEssence = CalculatedESS;
 
-            decimal decNewCost = blnFree ? 0 : TotalCost(intRating, objGrade) - decSaleCost;
+            decimal decNewCost = blnFree ? 0 : CalculatedTotalCost(intRating, objGrade) - decSaleCost;
             if (decNewCost > _objCharacter.Nuyen)
             {
                 Program.MainForm.ShowMessageBox(
@@ -5618,5 +5636,8 @@ namespace Chummer.Backend.Equipment
             Utils.StringHashSetPool.Return(_lstIncludeInPairBonus);
             Utils.StringHashSetPool.Return(_lstIncludeInWirelessPairBonus);
         }
+
+        /// <inheritdoc />
+        public int ChildCostMultiplier => 1;
     }
 }

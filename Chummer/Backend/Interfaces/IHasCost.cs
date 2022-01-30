@@ -19,8 +19,8 @@
 
 namespace Chummer
 {
-    public interface IHasChildrenAndCost<T> : IHasChildren<T>, IHasCost
+    public interface IHasCost
     {
-        int ChildCostMultiplier { get; }
+        decimal TotalCost { get; }
     }
 }

@@ -2371,6 +2371,11 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
+            if (!_objCharacter.Created)
+            {
+                DeleteArmor();
+                return;
+            }
             // Create the Expense Log Entry for the sale.
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteArmor() * percentage;

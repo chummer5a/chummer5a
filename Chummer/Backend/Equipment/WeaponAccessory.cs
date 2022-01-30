@@ -1616,11 +1616,18 @@ namespace Chummer.Backend.Equipment
         {
             if (IncludedInWeapon)
                 return;
-            Parent.WeaponAccessories.Remove(this);
+
+            if (!_objCharacter.Created)
+            {
+                DeleteWeaponAccessory();
+                return;
+            }
 
             // Create the Expense Log Entry for the sale.
-            decimal decAmount = TotalCost * percentage;
-            decAmount += DeleteWeaponAccessory() * percentage;
+            Weapon objParent = Parent;
+            decimal decOriginal = objParent?.TotalCost ?? TotalCost;
+            decimal decAmount = DeleteWeaponAccessory() * percentage;
+            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);

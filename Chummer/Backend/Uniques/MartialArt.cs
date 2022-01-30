@@ -598,16 +598,23 @@ namespace Chummer
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
                 return false;
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
-                InternalId);
+            DeleteMartialArt();
+            return true;
+        }
+
+        public decimal DeleteMartialArt()
+        {
+            _objCharacter.MartialArts.Remove(this);
+
+            decimal decReturn = 0;
             // Remove the Improvements for any Techniques for the Martial Art that is being removed.
             foreach (MartialArtTechnique objTechnique in Techniques.ToList()) // Need ToList() because removing techniques alters parent Art's Techniques list
             {
-                objTechnique.Remove(false);
+                decReturn += objTechnique.DeleteTechnique(false);
             }
-
-            _objCharacter.MartialArts.Remove(this);
-            return true;
+            decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
+                                                           InternalId);
+            return decReturn;
         }
 
         public Color PreferredColor

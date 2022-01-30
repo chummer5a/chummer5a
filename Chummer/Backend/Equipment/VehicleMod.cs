@@ -1288,7 +1288,7 @@ namespace Chummer.Backend.Equipment
 
             return decReturn + Weapons.Where(x => x.ParentID != InternalId).Sum(objWeapon => objWeapon.TotalCost)
                              + Cyberware.Where(x => x.ParentID != InternalId)
-                                        .Sum(objCyberware => objCyberware.CurrentTotalCost);
+                                        .Sum(objCyberware => objCyberware.TotalCost);
         }
 
         /// <summary>
@@ -1298,7 +1298,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return OwnCost + Weapons.Sum(objWeapon => objWeapon.TotalCost) + Cyberware.Sum(objCyberware => objCyberware.CurrentTotalCost);
+                return OwnCost + Weapons.Sum(objWeapon => objWeapon.TotalCost) + Cyberware.Sum(objCyberware => objCyberware.TotalCost);
             }
         }
 
@@ -1808,11 +1808,17 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
-            if (!Remove(GlobalSettings.ConfirmDelete))
+            if (!_objCharacter.Created)
+            {
+                DeleteVehicleMod();
                 return;
+            }
 
+            IHasCost objParent = (IHasCost)WeaponMountParent ?? Parent;
+            decimal decOriginal = Parent?.TotalCost ?? TotalCost;
+            decimal decAmount = DeleteVehicleMod() * percentage;
+            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
             // Create the Expense Log Entry for the sale.
-            decimal decAmount = TotalCost * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);

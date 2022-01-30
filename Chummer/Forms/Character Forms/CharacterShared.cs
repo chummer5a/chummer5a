@@ -2369,7 +2369,7 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            foreach (Location objLocation in _objCharacter.WeaponLocations)
+                            foreach (Location objLocation in _objCharacter.WeaponLocations.ToList())
                             {
                                 TreeNode nodLocation = treSelected.FindNode(objLocation?.InternalId, false);
                                 if (nodLocation == null)
@@ -2394,7 +2394,7 @@ namespace Chummer
                                     }
                                 }
 
-                                objLocation?.Remove();
+                                objLocation?.Remove(false);
                             }
                         }
                         break;

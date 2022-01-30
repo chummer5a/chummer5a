@@ -328,11 +328,16 @@ namespace Chummer
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
                 return false;
 
-            ImprovementManager.RemoveImprovements(_objCharacter,
-                Improvement.ImprovementSource.MartialArtTechnique, InternalId);
-
-            Parent?.Techniques.Remove(this);
+            DeleteTechnique();
             return true;
+        }
+
+        public decimal DeleteTechnique(bool blnDoRemoval = true)
+        {
+            if (blnDoRemoval)
+                Parent?.Techniques.Remove(this);
+            return ImprovementManager.RemoveImprovements(_objCharacter,
+                                                         Improvement.ImprovementSource.MartialArtTechnique, InternalId);
         }
 
         #endregion Methods

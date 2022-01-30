@@ -1896,7 +1896,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
                         decCost += objMod.Weapons.Sum(objWeapon => objWeapon.TotalCost);
-                        decCost += objMod.Cyberware.Sum(objCyberware => objCyberware.CurrentTotalCost);
+                        decCost += objMod.Cyberware.Sum(objCyberware => objCyberware.TotalCost);
                     }
                 }
                 decCost += WeaponMounts.Sum(wm => wm.TotalCost);
@@ -3621,6 +3621,12 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
+            if (!_objCharacter.Created)
+            {
+                DeleteVehicle();
+                return;
+            }
+
             // Create the Expense Log Entry for the sale.
             decimal decAmount = TotalCost * percentage;
             decAmount += DeleteVehicle() * percentage;

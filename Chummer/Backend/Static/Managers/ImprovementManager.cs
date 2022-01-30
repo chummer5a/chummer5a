@@ -2863,7 +2863,7 @@ namespace Chummer
                             = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
                         if (objCyberware != null)
                         {
-                            decReturn += objCyberware.CurrentTotalCost;
+                            decReturn += objCyberware.TotalCost;
                             decReturn += objCyberware.DeleteCyberware();
                         }
                     }
