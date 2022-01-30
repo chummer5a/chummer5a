@@ -1,4 +1,4 @@
-Future Build 220
+Build 220
 Application Changes:
 - Deleting or selling gear that has plugins inside of it no longer causes a crash.
 - Characters are now properly compensated when selling an item that is either located inside another item or adds items with non-zero cost.
