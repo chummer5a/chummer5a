@@ -1522,8 +1522,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
             if (_objCharacter.IsPrototypeTranshuman && SourceType == Improvement.ImprovementSource.Bioware)
                 objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
-            _nodBonus = objNode["bonus"];
-            _nodPairBonus = objNode["pairbonus"];
+
+            _nodBonus = objNode["bonus"] ?? objMyNode.Value?["bonus"];
+            _nodPairBonus = objNode["pairbonus"] ?? objMyNode.Value?["pairbonus"];
             XmlNode xmlPairIncludeNode = objNode["pairinclude"];
             if (xmlPairIncludeNode == null)
             {
@@ -1543,7 +1544,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            _nodWirelessPairBonus = objNode["wirelesspairbonus"];
+            _nodWirelessPairBonus = objNode["wirelesspairbonus"] ?? objMyNode.Value?["wirelesspairbonus"];
             xmlPairIncludeNode = objNode["wirelesspairinclude"];
             if (xmlPairIncludeNode == null)
             {
@@ -1563,7 +1564,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            _nodWirelessBonus = objNode["wirelessbonus"];
+            _nodWirelessBonus = objNode["wirelessbonus"] ?? objMyNode.Value?["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
             {
                 _blnWirelessOn = false;
@@ -2758,50 +2759,119 @@ namespace Chummer.Backend.Equipment
 
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
         {
-            if (!ProcessPropertyChanges)
+            // Do not do property changes if we're not directly equipped to a character
+            if (!ProcessPropertyChanges || !IsModularCurrentlyEquipped || ParentVehicle != null)
                 return;
             bool blnDoMovementUpdate = false;
-            if (blnDoRating && _objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false &&
-                _objParent.ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
-                !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
             {
-                if (s_AgilityCombinedStrings.Contains(Name))
+                try
                 {
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
-                        .Where(abbrev => abbrev.Abbrev == "AGI"))
+                    if ((blnDoGrade || (blnDoRating && (ESS.Contains("Rating") || ESS.Contains("FixedValues")))) &&
+                        (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount))
                     {
-                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                        if (!dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                        }
+                        setChangedProperties.Add(EssencePropertyName);
                     }
 
-                    blnDoMovementUpdate = true;
+                    if (blnDoRating)
+                    {
+                        if (_objParent?.Category == "Cyberlimb" &&
+                            _objParent.Parent?.InheritAttributes != false &&
+                            _objParent.ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                            !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
+                            !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                        {
+                            if (s_AgilityCombinedStrings.Contains(Name))
+                            {
+                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
+                                             .AttributeList
+                                             .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                                             .Where(abbrev => abbrev.Abbrev == "AGI"))
+                                {
+                                    if (!dicChangedProperties.TryGetValue(objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                    }
+                                    setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                }
+
+                                blnDoMovementUpdate = true;
+                            }
+                            else if (s_StrengthCombinedStrings.Contains(Name))
+                            {
+                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
+                                             .AttributeList
+                                             .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                                             .Where(abbrev => abbrev.Abbrev == "STR"))
+                                {
+                                    if (!dicChangedProperties.TryGetValue(objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                    }
+                                    setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                }
+
+                                blnDoMovementUpdate = true;
+                            }
+                        }
+
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        if (_nodBonus?.InnerText.Contains("Rating") == true
+                            || _nodPairBonus?.InnerText.Contains("Rating") == true
+                            || (WirelessOn && (_nodWirelessBonus?.InnerText.Contains("Rating") == true
+                                               || _nodWirelessPairBonus?.InnerText.Contains("Rating") == true)))
+                        {
+                            foreach (Improvement objImprovement in _objCharacter.Improvements)
+                            {
+                                if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") !=
+                                    InternalId || !objImprovement.Enabled)
+                                    continue;
+                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                             string strPropertyToUpdate) in
+                                         objImprovement.GetRelevantPropertyChangers())
+                                {
+                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                    }
+                                    setChangedProperties.Add(strPropertyToUpdate);
+                                }
+                            }
+                        }
+                    }
+
+                    if (blnDoMovementUpdate && _objCharacter.Settings.CyberlegMovement && LimbSlot == "leg")
+                    {
+                        if (!dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                        }
+                        setChangedProperties.Add(nameof(Character.GetMovement));
+                    }
+
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    {
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                    }
                 }
-                else if (s_StrengthCombinedStrings.Contains(Name))
+                finally
                 {
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
-                        .Where(abbrev => abbrev.Abbrev == "STR"))
-                    {
-                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                    }
-
-                    blnDoMovementUpdate = true;
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
                 }
             }
-
-            blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Settings.CyberlegMovement && LimbSlot == "leg";
-            bool blnDoEssenceUpdate =
-                (blnDoGrade || (blnDoRating && (ESS.Contains("Rating") || ESS.Contains("FixedValues")))) &&
-                (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
-                ParentVehicle == null;
-            // ReSharper disable once ConvertIfStatementToSwitchStatement
-            if (blnDoMovementUpdate && blnDoEssenceUpdate)
-                _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
-            else if (blnDoMovementUpdate)
-                _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
-            else if (blnDoEssenceUpdate)
-                _objCharacter.OnPropertyChanged(EssencePropertyName);
         }
 
         /// <summary>
@@ -5469,7 +5539,7 @@ namespace Chummer.Backend.Equipment
             string strSpace = LanguageManager.GetString("String_Space");
             string strExpense = LanguageManager.GetString("String_ExpenseUpgradedCyberware") + strSpace +
                                 CurrentDisplayNameShort;
-            bool blnDoGradeChange = Grade != objGrade;
+            bool blnDoGradeChange = Grade.Essence != objGrade.Essence;
             bool blnDoRatingChange = Rating != intRating;
             if (blnDoGradeChange || blnDoRatingChange)
             {
