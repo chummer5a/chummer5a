@@ -423,7 +423,7 @@ namespace Chummer
         {
             SuspendLayout();
             int intOverLimit = 0;
-            if (tabControl1.SelectedIndex == 1)
+            if (tabViews.SelectedIndex == 1)
             {
                 DataTable tabVehicles = new DataTable("vehicles");
                 tabVehicles.Columns.Add("VehicleGuid");
@@ -643,7 +643,7 @@ namespace Chummer
         private void AcceptForm()
         {
             XPathNavigator xmlVehicle = null;
-            switch (tabControl1.SelectedIndex)
+            switch (tabViews.SelectedIndex)
             {
                 case 0:
                     string strSelectedId = lstVehicle.SelectedValue?.ToString();

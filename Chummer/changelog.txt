@@ -9,6 +9,7 @@ Application Changes:
 - Fixed various issues with advanced lifestyles' stats not updating properly when modifying them.
 - Advanced lifestyles' lifestyle qualities' LP costs are now properly accounted for.
 - Selling gear, weapons, and cyberware that are not inside something else now properly gives characters money.
+- The Select Vehicle window no longer automatically resizes to an unusable size on smaller screens.
 
 Build 220
 Application Changes:
