@@ -5306,7 +5306,7 @@ namespace Chummer
                         // Make sure the dialogue window was not canceled.
                         if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                         {
-                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle))
+                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle) && frmPickLifestyle.SelectedLifestyle != null)
                                 frmPickLifestyle.SelectedLifestyle.Dispose();
                             return;
                         }
