@@ -919,6 +919,7 @@ namespace Chummer
                         {
                             switch (e.Action)
                             {
+                                // Note: Removal is already handled through DeleteQuality
                                 case NotifyCollectionChangedAction.Add:
                                 {
                                     foreach (Quality objNewItem in e.NewItems)
@@ -949,25 +950,9 @@ namespace Chummer
 
                                     break;
                                 }
-                                case NotifyCollectionChangedAction.Remove:
-                                {
-                                    foreach (Quality objOldItem in e.OldItems)
-                                    {
-                                        objOldItem.DeleteQuality(false);
-                                    }
-
-                                    break;
-                                }
                                 case NotifyCollectionChangedAction.Replace:
                                 {
-                                    HashSet<Quality> setNewQualities = e.NewItems.OfType<Quality>().ToHashSet();
-                                    foreach (Quality objOldItem in e.OldItems)
-                                    {
-                                        if (!setNewQualities.Contains(objOldItem))
-                                            objOldItem.DeleteQuality(false);
-                                    }
-
-                                    foreach (Quality objNewItem in setNewQualities)
+                                    foreach (Quality objNewItem in e.NewItems)
                                     {
                                         // Needed in order to properly process named sources where
                                         // the tooltip was built before the object was added to the character
@@ -1534,10 +1519,16 @@ namespace Chummer
                     || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant).ToList());
 
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
-            Qualities.RemoveAll(objQuality =>
-                                objQuality.OriginSource == QualitySource.Metatype ||
-                                objQuality.OriginSource == QualitySource.MetatypeRemovable ||
-                                objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen);
+            for (int i = Qualities.Count - 1; i >= 0; --i)
+            {
+                if (i >= Qualities.Count)
+                    continue;
+                Quality objQuality = Qualities[i];
+                if (objQuality.OriginSource == QualitySource.Metatype ||
+                    objQuality.OriginSource == QualitySource.MetatypeRemovable ||
+                    objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                    objQuality.DeleteQuality();
+            }
 
             // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
             if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
@@ -5124,7 +5115,7 @@ namespace Chummer
                                                 StringComparison.Ordinal));
                                     if (objOldQuality != null)
                                     {
-                                        Qualities.Remove(objOldQuality);
+                                        objOldQuality.DeleteQuality();
                                         if (Qualities.All(x =>
                                                 !x.Name.Equals("Resistance to Pathogens/Toxins",
                                                     StringComparison.Ordinal))
@@ -5142,8 +5133,8 @@ namespace Chummer
 
                                             objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
                                             foreach (Weapon objWeapon in lstWeapons)
-                                                _lstWeapons.Add(objWeapon);
-                                            _lstQualities.Add(objQuality);
+                                                Weapons.Add(objWeapon);
+                                            Qualities.Add(objQuality);
                                         }
                                     }
                                 }
@@ -7178,7 +7169,14 @@ namespace Chummer
             }
             if (eOldBuildMethod == CharacterBuildMethod.LifeModule)
             {
-                Qualities.RemoveAll(x => x.OriginSource == QualitySource.LifeModule);
+                for (int i = Qualities.Count - 1; i >= 0; --i)
+                {
+                    if (i >= Qualities.Count)
+                        continue;
+                    Quality objQuality = Qualities[i];
+                    if (objQuality.OriginSource == QualitySource.LifeModule)
+                        objQuality.DeleteQuality();
+                }
             }
             return true;
         }

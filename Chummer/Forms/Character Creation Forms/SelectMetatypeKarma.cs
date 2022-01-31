@@ -216,7 +216,14 @@ namespace Chummer
                     }
 
                     // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
-                    _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Heritage);
+                    for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                    {
+                        if (i >= _objCharacter.Qualities.Count)
+                            continue;
+                        Quality objQuality = _objCharacter.Qualities[i];
+                        if (objQuality.OriginSource == QualitySource.Heritage)
+                            objQuality.DeleteQuality();
+                    }
 
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                     if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
@@ -258,7 +265,7 @@ namespace Chummer
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             if (objQuality.GetNodeXPath()?.RequirementsMet(_objCharacter) == false)
-                                _objCharacter.Qualities.Remove(objQuality);
+                                objQuality.DeleteQuality();
                         }
                     }
 

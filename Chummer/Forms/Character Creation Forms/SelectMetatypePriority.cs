@@ -782,7 +782,15 @@ namespace Chummer
                     }
 
                     // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
-                    _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Selected && x.GetNodeXPath()?.SelectSingleNode("onlyprioritygiven") != null);
+                    for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                    {
+                        if (i >= _objCharacter.Qualities.Count)
+                            continue;
+                        Quality objQuality = _objCharacter.Qualities[i];
+                        if (objQuality.OriginSource == QualitySource.Selected
+                            && objQuality.GetNodeXPath()?.SelectSingleNode("onlyprioritygiven") != null)
+                            objQuality.DeleteQuality();
+                    }
 
                     string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
                     string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
@@ -833,7 +841,7 @@ namespace Chummer
                             // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
                             if (objQuality.GetNodeXPath()?.RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name) == false)
                             {
-                                _objCharacter.Qualities.Remove(objQuality);
+                                objQuality.DeleteQuality();
                             }
                         }
                     }
@@ -921,7 +929,7 @@ namespace Chummer
 
                                     foreach (Quality objQuality in lstOldPriorityQualities)
                                     {
-                                        _objCharacter.Qualities.Remove(objQuality);
+                                        objQuality.DeleteQuality();
                                     }
 
                                     // Set starting magic
