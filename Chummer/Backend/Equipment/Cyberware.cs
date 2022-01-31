@@ -2760,7 +2760,7 @@ namespace Chummer.Backend.Equipment
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
         {
             // Do not do property changes if we're not directly equipped to a character
-            if (!ProcessPropertyChanges || !IsModularCurrentlyEquipped || ParentVehicle != null)
+            if (!ProcessPropertyChanges || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
                 return;
             bool blnDoMovementUpdate = false;
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
@@ -2782,7 +2782,9 @@ namespace Chummer.Backend.Equipment
 
                     if (blnDoRating)
                     {
-                        if (_objParent?.Category == "Cyberlimb" &&
+                        if (IsModularCurrentlyEquipped &&
+                            ParentVehicle == null &&
+                            _objParent?.Category == "Cyberlimb" &&
                             _objParent.Parent?.InheritAttributes != false &&
                             _objParent.ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
                             !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
@@ -2826,28 +2828,61 @@ namespace Chummer.Backend.Equipment
 
                         // Needed in order to properly process named sources where
                         // the tooltip was built before the object was added to the character
-                        if (_nodBonus?.InnerText.Contains("Rating") == true
-                            || _nodPairBonus?.InnerText.Contains("Rating") == true
-                            || (WirelessOn && (_nodWirelessBonus?.InnerText.Contains("Rating") == true
-                                               || _nodWirelessPairBonus?.InnerText.Contains("Rating") == true)))
+                        if (Bonus?.InnerText.Contains("Rating") == true
+                            || PairBonus?.InnerText.Contains("Rating") == true
+                            || (WirelessOn && (WirelessBonus?.InnerText.Contains("Rating") == true
+                                               || WirelessPairBonus?.InnerText.Contains("Rating") == true)))
                         {
-                            foreach (Improvement objImprovement in _objCharacter.Improvements)
+                            if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                ImprovementManager.ForcedValue = _strForced;
+
+                            if (Bonus != null)
                             {
-                                if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") !=
-                                    InternalId || !objImprovement.Enabled)
-                                    continue;
-                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                             string strPropertyToUpdate) in
-                                         objImprovement.GetRelevantPropertyChangers())
+                                ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
+                                ImprovementManager.CreateImprovements(_objCharacter, SourceType,
+                                    InternalId, Bonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                            }
+
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                                _strExtra = ImprovementManager.SelectedValue;
+
+                            if (PairBonus != null)
+                            {
+                                ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "Pair");
+                                // This cyberware should not be included in the count to make things easier.
+                                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                                    x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                         x.IsModularCurrentlyEquipped).ToList();
+                                int intCount = lstPairableCyberwares.Count;
+                                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                                if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
                                 {
-                                    if (!dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
+                                    intCount = 0;
+                                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                                     {
-                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                        dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                        if (objPairableCyberware.Location != Location)
+                                            // We have found a cyberware with which this one could be paired, so increase count by 1
+                                            ++intCount;
+                                        else
+                                            // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                                            --intCount;
                                     }
-                                    setChangedProperties.Add(strPropertyToUpdate);
+
+                                    // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
+                                    intCount = intCount > 0 ? 1 : 0;
+                                }
+
+                                if ((intCount & 1) == 1)
+                                {
+                                    ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair",
+                                        PairBonus, Rating, DisplayNameShort(GlobalSettings.Language));
                                 }
                             }
+
+                            if (!IsModularCurrentlyEquipped || ParentVehicle != null)
+                                ChangeModularEquip(false);
+                            else
+                                RefreshWirelessBonuses();
                         }
                     }
 

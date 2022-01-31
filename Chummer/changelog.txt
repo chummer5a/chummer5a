@@ -11,6 +11,7 @@ Application Changes:
 - Selling gear, weapons, and cyberware that are not inside something else now properly gives characters money.
 - The Select Vehicle window no longer automatically resizes to an unusable size on smaller screens.
 - Removing qualities that have added other qualities, e.g. Prototype Transhuman, no longer causes a crash.
+- Changing the rating of a piece of 'ware after it has been added to a character now properly propagates those changes through any rating-dependent improvements and bonuses the 'ware has.
 
 Build 220
 Application Changes:
