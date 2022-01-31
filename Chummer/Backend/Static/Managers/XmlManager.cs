@@ -105,6 +105,8 @@ namespace Chummer
 
         static XmlManager()
         {
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return;
             foreach (string strFileName in Utils.BasicDataFileNames)
             {
                 if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
@@ -132,16 +134,19 @@ namespace Chummer
                 {
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                 }
-                foreach (string strFileName in Utils.BasicDataFileNames)
+                if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
                 {
-                    if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
+                    foreach (string strFileName in Utils.BasicDataFileNames)
                     {
-                        setLoop = new HashSet<string>();
-                        s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                        if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
+                        {
+                            setLoop = new HashSet<string>();
+                            s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                        }
+                        else
+                            setLoop.Clear();
+                        setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
                     }
-                    else
-                        setLoop.Clear();
-                    setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
                 }
                 s_blnSetDataDirectoriesLoaded = true;
             }
