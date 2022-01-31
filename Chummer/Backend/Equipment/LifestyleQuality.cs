@@ -493,7 +493,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         ///     String-formatted identifier of the <inheritdoc cref="SourceID" /> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string SourceIDString => SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         ///     LifestyleQuality's name.
@@ -578,7 +578,14 @@ namespace Chummer.Backend.Equipment
         public int LP
         {
             get => Free || !ContributesLP ? 0 : _intLP;
-            set => _intLP = value;
+            set
+            {
+                if (_intLP == value)
+                    return;
+                _intLP = value;
+                if (!Free && ContributesLP)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+            }
         }
 
         /// <summary>
@@ -683,7 +690,14 @@ namespace Chummer.Backend.Equipment
         public string CostString
         {
             get => string.IsNullOrWhiteSpace(_strCost) ? "0" : _strCost;
-            set => _strCost = value;
+            set
+            {
+                if (_strCost == value)
+                    return;
+                _strCost = value;
+                if (!Free && !FreeByLifestyle)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalMonthlyCost));
+            }
         }
 
         /// <summary>
@@ -692,13 +706,34 @@ namespace Chummer.Backend.Equipment
         public bool Free
         {
             get => _blnFree || OriginSource == QualitySource.BuiltIn;
-            set => _blnFree = value;
+            set
+            {
+                if (_blnFree == value)
+                    return;
+                _blnFree = value;
+                if (ContributesLP)
+                {
+                    if (!FreeByLifestyle)
+                        ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalLP), nameof(Lifestyle.TotalMonthlyCost), nameof(Lifestyle.CostMultiplier), nameof(Lifestyle.BaseCostMultiplier));
+                    else
+                        ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+                }
+                else if (!FreeByLifestyle)
+                    ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalMonthlyCost), nameof(Lifestyle.CostMultiplier), nameof(Lifestyle.BaseCostMultiplier));
+            }
         }
 
         public bool ContributesLP
         {
             get => _blnContributeToLP;
-            set => _blnContributeToLP = value;
+            set
+            {
+                if (_blnContributeToLP == value)
+                    return;
+                _blnContributeToLP = value;
+                if (value && !Free)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+            }
         }
 
         /// <summary>
@@ -728,7 +763,13 @@ namespace Chummer.Backend.Equipment
         public int Comfort
         {
             get => _intComfort;
-            set => _intComfort = value;
+            set
+            {
+                if (_intComfort == value)
+                    return;
+                _intComfort = value;
+                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalComforts), nameof(Lifestyle.ComfortsDelta));
+            }
         }
 
         /// <summary>
@@ -737,7 +778,13 @@ namespace Chummer.Backend.Equipment
         public int ComfortMaximum
         {
             get => _intComfortMaximum;
-            set => _intComfortMaximum = value;
+            set
+            {
+                if (_intComfortMaximum == value)
+                    return;
+                _intComfortMaximum = value;
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalComfortsMaximum));
+            }
         }
 
         /// <summary>
@@ -746,7 +793,13 @@ namespace Chummer.Backend.Equipment
         public int SecurityMaximum
         {
             get => _intSecurityMaximum;
-            set => _intSecurityMaximum = value;
+            set
+            {
+                if (_intSecurityMaximum == value)
+                    return;
+                _intSecurityMaximum = value;
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalSecurityMaximum));
+            }
         }
 
         /// <summary>
@@ -755,7 +808,13 @@ namespace Chummer.Backend.Equipment
         public int Security
         {
             get => _intSecurity;
-            set => _intSecurity = value;
+            set
+            {
+                if (_intSecurity == value)
+                    return;
+                _intSecurity = value;
+                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalSecurity), nameof(Lifestyle.SecurityDelta));
+            }
         }
 
         /// <summary>
@@ -764,7 +823,14 @@ namespace Chummer.Backend.Equipment
         public int Multiplier
         {
             get => Free || FreeByLifestyle ? 0 : _intMultiplier;
-            set => _intMultiplier = value;
+            set
+            {
+                if (_intMultiplier == value)
+                    return;
+                _intMultiplier = value;
+                if (!Free && !FreeByLifestyle)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.CostMultiplier));
+            }
         }
 
         /// <summary>
@@ -773,7 +839,14 @@ namespace Chummer.Backend.Equipment
         public int BaseMultiplier
         {
             get => Free || FreeByLifestyle ? 0 : _intBaseMultiplier;
-            set => _intBaseMultiplier = value;
+            set
+            {
+                if (_intBaseMultiplier == value)
+                    return;
+                _intBaseMultiplier = value;
+                if (!Free && !FreeByLifestyle)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.BaseCostMultiplier));
+            }
         }
 
         /// <summary>
@@ -791,7 +864,13 @@ namespace Chummer.Backend.Equipment
         public int AreaMaximum
         {
             get => _intAreaMaximum;
-            set => _intAreaMaximum = value;
+            set
+            {
+                if (_intAreaMaximum == value)
+                    return;
+                _intAreaMaximum = value;
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalAreaMaximum));
+            }
         }
 
         /// <summary>
@@ -800,7 +879,13 @@ namespace Chummer.Backend.Equipment
         public int Area
         {
             get => _intArea;
-            set => _intArea = value;
+            set
+            {
+                if (_intArea == value)
+                    return;
+                _intArea = value;
+                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalArea), nameof(Lifestyle.AreaDelta));
+            }
         }
 
         public XmlNode GetNode(string strLanguage)
