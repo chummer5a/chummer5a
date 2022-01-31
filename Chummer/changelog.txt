@@ -8,6 +8,7 @@ Application Changes:
 - The prompt for whether or not the user wishes to delete an existing file outside of the Chummer directory now properly shows up instead of just showing the current UI language's code.
 - Fixed various issues with advanced lifestyles' stats not updating properly when modifying them.
 - Advanced lifestyles' lifestyle qualities' LP costs are now properly accounted for.
+- Selling gear, weapons, and cyberware that are not inside something else now properly gives characters money.
 
 Build 220
 Application Changes:

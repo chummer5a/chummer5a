@@ -1820,7 +1820,7 @@ namespace Chummer.Backend.Equipment
             IHasCost objParent = (IHasCost)WeaponMountParent ?? Parent;
             decimal decOriginal = Parent?.TotalCost ?? TotalCost;
             decimal decAmount = DeleteVehicleMod() * percentage;
-            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
+            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);

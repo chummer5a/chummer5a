@@ -1442,7 +1442,7 @@ namespace Chummer.Backend.Equipment
             Armor objParent = Parent;
             decimal decOriginal = Parent?.TotalCost ?? TotalCost;
             decimal decAmount = DeleteArmorMod() * percentage;
-            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
+            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);

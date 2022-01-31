@@ -1631,7 +1631,7 @@ namespace Chummer.Backend.Equipment
             Weapon objParent = Parent;
             decimal decOriginal = objParent?.TotalCost ?? TotalCost;
             decimal decAmount = DeleteWeaponAccessory() * percentage;
-            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
+            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);

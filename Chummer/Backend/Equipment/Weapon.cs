@@ -6403,7 +6403,7 @@ namespace Chummer.Backend.Equipment
             // Record the cost of the Weapon carrier with the Weapon.
             decimal decOriginal = Parent?.TotalCost ?? TotalCost;
             decimal decAmount = DeleteWeapon() * percentage;
-            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
+            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, LanguageManager.GetString(strExpense) + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);

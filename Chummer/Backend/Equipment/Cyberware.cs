@@ -5307,7 +5307,7 @@ namespace Chummer.Backend.Equipment
             // Record the cost of the Cyberware carrier with the Cyberware.
             decimal decOriginal = Parent?.TotalCost ?? TotalCost;
             decimal decAmount = DeleteCyberware() * percentage;
-            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
+            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
             objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,

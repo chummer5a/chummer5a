@@ -3988,7 +3988,7 @@ namespace Chummer.Backend.Equipment
             decimal decOriginal = objParent?.TotalCost ?? TotalCost;
             // Create the Expense Log Entry for the sale.
             decimal decAmount = DeleteGear() * percentage;
-            decAmount += (decOriginal - objParent?.TotalCost ?? 0) * percentage;
+            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
             objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
