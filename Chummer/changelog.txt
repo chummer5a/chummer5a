@@ -5,6 +5,7 @@ Application Changes:
 - Fixed some crashes that could occur when opening characters under certain software conditions.
 - When switching attribute categories as a shifter, the cursor now changes to a waiting/hourglass one until all the needed changes have been processed.
 - Fixed a null reference when canceling out of the Advanced Lifestyle window.
+- The prompt for whether or not the user wishes to delete an existing file outside of the Chummer directory now properly shows up instead of just showing the current UI language's code.
 
 Build 220
 Application Changes:

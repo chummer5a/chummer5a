@@ -252,7 +252,7 @@ namespace Chummer
                         if (blnShowUnauthorizedAccess)
                         {
                             if (Program.MainForm.ShowMessageBox(
-                                    string.Format(GlobalSettings.Language, LanguageManager.GetString("Message_Prompt_Delete_Existing_File"), strPath),
+                                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_Prompt_Delete_Existing_File"), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
