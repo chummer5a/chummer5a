@@ -207,33 +207,40 @@ namespace Chummer
 
                     sw.TaskEnd("languagefreestartup");
 
-                    void HandleCrash(object o, UnhandledExceptionEventArgs e)
+                    void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                     {
                         try
                         {
-                            if (e.ExceptionObject is Exception myException)
+                            var ex = exa.ExceptionObject as Exception;
+                            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
+                                && Program.ChummerTelemetryClient != null
+                                && CustomTelemetryInitializer.IsMilestone == false)
                             {
-                                myException.Data.Add("IsCrash", bool.TrueString);
-                                ExceptionTelemetry et = new ExceptionTelemetry(myException)
-                                { SeverityLevel = SeverityLevel.Critical };
-                                //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                                foreach (DictionaryEntry d in myException.Data)
+                                ExceptionTelemetry et = new ExceptionTelemetry(ex)
                                 {
-                                    if (d.Key != null && d.Value != null)
+                                    SeverityLevel = SeverityLevel.Critical
+                                };
+                                //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                                foreach (DictionaryEntry d in ex.Data)
+                                {
+                                    if ((d.Key != null) && (d.Value != null))
                                         et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                                 }
+                                et.Properties.Add("IsCrash", bool.TrueString);
+                                var ti = new CustomTelemetryInitializer();
+                                ti.Initialize(et);
 
-                                ChummerTelemetryClient?.TrackException(myException);
-                                ChummerTelemetryClient?.Flush();
+                                Program.ChummerTelemetryClient.TrackException(et);
+                                Program.ChummerTelemetryClient.Flush();
                             }
                         }
-                        catch (Exception exception)
+                        catch (Exception ex1)
                         {
-                            Console.WriteLine(exception);
+                            Log.Error(ex1);
                         }
 #if !DEBUG
-                    if (e.ExceptionObject is Exception ex)
-                        CrashHandler.WebMiniDumpHandler(ex);
+                        if (exa.ExceptionObject is Exception ex2)
+                            CrashHandler.WebMiniDumpHandler(ex2);
 #endif
                     }
 

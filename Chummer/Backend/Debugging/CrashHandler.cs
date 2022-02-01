@@ -194,29 +194,7 @@ namespace Chummer.Backend
 
         public static void WebMiniDumpHandler(Exception ex)
         {
-            try
-            {
-                if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes && Program.ChummerTelemetryClient != null)
-                {
-                    ex.Data.Add("IsCrash", bool.TrueString);
-                    ExceptionTelemetry et = new ExceptionTelemetry(ex)
-                    {
-                        SeverityLevel = SeverityLevel.Critical
-                    };
-                    //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                    foreach (DictionaryEntry d in ex.Data)
-                    {
-                        if ((d.Key != null) && (d.Value != null))
-                            et.Properties.Add(d.Key.ToString(), d.Value.ToString());
-                    }
-                    Program.ChummerTelemetryClient.TrackException(et);
-                    Program.ChummerTelemetryClient.Flush();
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
+            
 
             try
             {

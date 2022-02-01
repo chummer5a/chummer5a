@@ -247,12 +247,13 @@ namespace Chummer.Plugins
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
-            //We should maybe add an option in the plugin-option dialog to give the user the opportunity to enable this again.
-            //if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
-            //{
-            //    if (telemetry?.Context?.User != null)
-            //        telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
-            //}
+            if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
+            {
+                if (telemetry?.Context?.User != null)
+                {
+                    telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
+                }
+            }
             return telemetry;
         }
 
