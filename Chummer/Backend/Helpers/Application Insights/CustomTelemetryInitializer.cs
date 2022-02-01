@@ -31,9 +31,6 @@ namespace Chummer
 
         // Set session data:
         //private static string Hostname =  Dns.GetHostName();
-        private static string Version { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-        private static bool IsMilestone { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
 
         [CLSCompliant(false)]
         public void Initialize(ITelemetry telemetry)
@@ -42,10 +39,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(telemetry));
             if (!telemetry.Context.GlobalProperties.ContainsKey("Milestone"))
             {
-                telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString(GlobalSettings.InvariantCultureInfo));
+                telemetry.Context.GlobalProperties.Add("Milestone", Utils.IsMilestoneVersion.ToString(GlobalSettings.InvariantCultureInfo));
             }
             else
-                telemetry.Context.GlobalProperties["Milestone"] = IsMilestone.ToString(GlobalSettings.InvariantCultureInfo);
+                telemetry.Context.GlobalProperties["Milestone"] = Utils.IsMilestoneVersion.ToString(GlobalSettings.InvariantCultureInfo);
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
             {
@@ -62,7 +59,7 @@ namespace Chummer
             telemetry.Context.User.Id = Properties.Settings.Default.UploadClientId.ToString();
 
             telemetry.Context.User.Id = telemetry.Context.Device.Id;
-            telemetry.Context.Component.Version = Version;
+            telemetry.Context.Component.Version = Utils.CurrentChummerVersion.ToString();
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 //don't fill the "productive" log with garbage from debug sessions

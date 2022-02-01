@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.ApplicationInsights;
@@ -36,16 +35,16 @@ namespace Chummer
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
 
-            List<PropertyInfo> allProperties;
+            PropertyInfo[] allProperties;
             string name;
             if (obj is Type objAsType)
             {
-                allProperties = objAsType.GetProperties().ToList();
+                allProperties = objAsType.GetProperties();
                 name = objAsType.Name;
             }
             else
             {
-                allProperties = obj.GetType().GetProperties().ToList();
+                allProperties = obj.GetType().GetProperties();
                 name = obj.ToString();
             }
 
