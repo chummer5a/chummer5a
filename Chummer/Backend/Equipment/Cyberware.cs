@@ -4693,7 +4693,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (_objCharacter.Cyberware.Contains(this))
                 {
-                    if (blnIncreaseEssenceHole && SourceID != EssenceAntiHoleGUID && SourceID != EssenceHoleGUID)
+                    if (blnIncreaseEssenceHole && _objCharacter.Created && SourceID != EssenceAntiHoleGUID && SourceID != EssenceHoleGUID)
                     {
                         // Add essence hole.
                         decimal decEssenceHoleToAdd = CalculatedESS;
