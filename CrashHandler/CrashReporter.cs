@@ -114,7 +114,5 @@ namespace CrashHandler
 
             Process.Start(strSend);
         }
-
-      
     }
 }

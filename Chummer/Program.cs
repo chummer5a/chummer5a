@@ -209,39 +209,41 @@ namespace Chummer
 
                     void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                     {
-                        try
+                        if (exa.ExceptionObject is Exception ex)
                         {
-                            var ex = exa.ExceptionObject as Exception;
-                            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
-                                && Program.ChummerTelemetryClient != null
-                                && CustomTelemetryInitializer.IsMilestone == false)
+                            try
                             {
-                                ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                                if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
+                                    && ChummerTelemetryClient != null
+                                    && !Utils.IsMilestoneVersion)
                                 {
-                                    SeverityLevel = SeverityLevel.Critical
-                                };
-                                //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                                foreach (DictionaryEntry d in ex.Data)
-                                {
-                                    if ((d.Key != null) && (d.Value != null))
-                                        et.Properties.Add(d.Key.ToString(), d.Value.ToString());
-                                }
-                                et.Properties.Add("IsCrash", bool.TrueString);
-                                var ti = new CustomTelemetryInitializer();
-                                ti.Initialize(et);
+                                    ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                                    {
+                                        SeverityLevel = SeverityLevel.Critical
+                                    };
+                                    //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                                    foreach (DictionaryEntry d in ex.Data)
+                                    {
+                                        if ((d.Key != null) && (d.Value != null))
+                                            et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                                    }
 
-                                Program.ChummerTelemetryClient.TrackException(et);
-                                Program.ChummerTelemetryClient.Flush();
+                                    et.Properties.Add("IsCrash", bool.TrueString);
+                                    CustomTelemetryInitializer ti = new CustomTelemetryInitializer();
+                                    ti.Initialize(et);
+
+                                    ChummerTelemetryClient.TrackException(et);
+                                    ChummerTelemetryClient.Flush();
+                                }
                             }
-                        }
-                        catch (Exception ex1)
-                        {
-                            Log.Error(ex1);
-                        }
+                            catch (Exception ex1)
+                            {
+                                Log.Error(ex1);
+                            }
 #if !DEBUG
-                        if (exa.ExceptionObject is Exception ex2)
-                            CrashHandler.WebMiniDumpHandler(ex2);
+                            CrashHandler.WebMiniDumpHandler(ex);
 #endif
+                        }
                     }
 
                     AppDomain.CurrentDomain.UnhandledException += HandleCrash;

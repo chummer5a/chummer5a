@@ -54,14 +54,14 @@ namespace Chummer
             if ((item is PageViewTelemetry
                 || item is PageViewPerformanceTelemetry)
                 && (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Info)
-                && CustomTelemetryInitializer.IsMilestone == false)
+                && !Utils.IsMilestoneVersion)
             {
                 Next.Process(item);
                 return;
             }
             if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
                 && item is ExceptionTelemetry exceptionTelemetry
-                && CustomTelemetryInitializer.IsMilestone == false
+                && !Utils.IsMilestoneVersion
                 && (exceptionTelemetry.Exception.Data.Contains("IsCrash")
                     || exceptionTelemetry.Properties.ContainsKey("IsCrash")))
             {
@@ -76,12 +76,11 @@ namespace Chummer
             if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.NotSet
                 && item is TraceTelemetry traceTelemetry
                 && traceTelemetry.SeverityLevel >= SeverityLevel.Information
-                && CustomTelemetryInitializer.IsMilestone == false)
+                && !Utils.IsMilestoneVersion)
             {
                 Next.Process(item);
                 return;
             }
-            
         }
 
         // Example: replace with your own modifiers.
