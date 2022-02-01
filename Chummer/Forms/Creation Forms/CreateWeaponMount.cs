@@ -935,7 +935,7 @@ namespace Chummer
                             case "Flexibility":
                             {
                                 XPathNodeIterator xmlNodeList = xmlForbiddenNode?.SelectAndCacheExpression("flexibility");
-                                if (xmlNodeList.Count > 0)
+                                if (xmlNodeList?.Count > 0)
                                 {
                                     foreach (XPathNavigator xmlLoopNode in xmlNodeList)
                                     {

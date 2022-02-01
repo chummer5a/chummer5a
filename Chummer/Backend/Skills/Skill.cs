@@ -492,32 +492,44 @@ namespace Chummer.Backend.Skills
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        if (e.NewItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        if (e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
                             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
                             RecacheAttribute();
                             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-                            AttributeActiveOnPropertyChanged(sender, null);
+                            AttributeActiveOnPropertyChanged(this, null);
                         }
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        if (e.OldItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
                             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
                             RecacheAttribute();
                             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-                            AttributeActiveOnPropertyChanged(sender, null);
+                            AttributeActiveOnPropertyChanged(this, null);
                         }
                         break;
                     }
+                case NotifyCollectionChangedAction.Replace:
+                {
+                    if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute)
+                        || e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                    {
+                        AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
+                        RecacheAttribute();
+                        AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
+                        AttributeActiveOnPropertyChanged(this, null);
+                    }
+                    break;
+                }
                 case NotifyCollectionChangedAction.Reset:
                     {
                         AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
                         RecacheAttribute();
                         AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-                        AttributeActiveOnPropertyChanged(sender, null);
+                        AttributeActiveOnPropertyChanged(this, null);
                         break;
                     }
             }
@@ -530,10 +542,10 @@ namespace Chummer.Backend.Skills
             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
             RecacheAttribute();
             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-            AttributeActiveOnPropertyChanged(sender, e);
+            AttributeActiveOnPropertyChanged(this, null);
         }
 
-        private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             OnPropertyChanged(nameof(Rating));
         }

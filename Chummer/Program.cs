@@ -25,7 +25,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -57,9 +56,6 @@ namespace Chummer
         public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();
 
         internal static readonly IntPtr CommandLineArgsDataTypeId = (IntPtr)7593599;
-
-        private static readonly Lazy<Version> _objCurrentVersion = new Lazy<Version>(() => Assembly.GetExecutingAssembly().GetName().Version);
-        public static Version CurrentVersion => _objCurrentVersion.Value;
 
         /// <summary>
         /// Check this to see if we are currently in the Main Thread.
@@ -165,7 +161,7 @@ namespace Chummer
                     Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
                     // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
                     // were made in an older version (i.e. an older assembly)
-                    string strProfileOptimizationName = "chummerprofile_" + CurrentVersion + ".profile";
+                    string strProfileOptimizationName = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
                     foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile", SearchOption.TopDirectoryOnly))
                         if (!string.Equals(strProfileFile, strProfileOptimizationName,
                                            StringComparison.OrdinalIgnoreCase))
@@ -200,7 +196,7 @@ namespace Chummer
                     string strInfo =
                         string.Format(GlobalSettings.InvariantCultureInfo,
                             "Application Chummer5a build {0} started at {1} with command line arguments {2}",
-                            Assembly.GetExecutingAssembly().GetName().Version, DateTime.UtcNow,
+                            Utils.CurrentChummerVersion, DateTime.UtcNow,
                             Environment.CommandLine);
                     sw.TaskEnd("infogen");
 
@@ -342,7 +338,7 @@ namespace Chummer
                             string strOSVersion = Utils.HumanReadableOSVersion;
                             Metric objMetric = ChummerTelemetryClient.GetMetric(objMetricIdentifier);
                             objMetric.TrackValue(1,
-                                                 Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                                Utils.CurrentChummerVersion.ToString(),
                                                  CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
                                                  GlobalSettings.UseLoggingApplicationInsights.ToString(),
                                                  strOSVersion);
@@ -351,7 +347,7 @@ namespace Chummer
                             pvt = new PageViewTelemetry("frmChummerMain()")
                             {
                                 Name = "Chummer Startup: " +
-                                       Assembly.GetExecutingAssembly().GetName().Version,
+                                       Utils.CurrentChummerVersion,
                                 Id = Settings.Default.UploadClientId.ToString(),
                                 Timestamp = startTime
                             };

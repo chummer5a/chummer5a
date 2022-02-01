@@ -139,8 +139,7 @@ namespace Chummer
 
                             if (cv != null)
                             {
-                                report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
-                                report.AppendLine();
+                                report.Append("Machine ID Primary=").AppendLine(cv.GetValue("ProductId").ToString());
                             }
                         }
 
@@ -150,13 +149,12 @@ namespace Chummer
 
                     report.Append("CommandLine=").AppendLine(Environment.CommandLine);
 
-                    report.AppendFormat("Version={0}",
-                                        System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+                    report.Append("Version=").Append(Utils.CurrentChummerVersion);
                 }
                 catch (Exception ex)
                 {
                     report.AppendLine();
-                    report.AppendFormat("CrashHandlerException={0}", ex);
+                    report.Append("CrashHandlerException=").Append(ex);
                 }
 
                 return report.ToString();

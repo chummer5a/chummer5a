@@ -5417,22 +5417,7 @@ namespace Chummer
             RemoveAddedQualities(objXmlDeleteQuality.Select("addqualities/addquality"));
 
             // Perform removal
-            if (blnCompleteDelete && objSelectedQuality.Levels > 1)
-            {
-                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
-                {
-                    Quality objLoopQuality = CharacterObject.Qualities[i];
-                    if (objLoopQuality.SourceIDString == objSelectedQuality.SourceIDString
-                        && objLoopQuality.Extra == objSelectedQuality.Extra
-                        && objLoopQuality.SourceName == objSelectedQuality.SourceName
-                        && objLoopQuality.Type == objSelectedQuality.Type)
-                        CharacterObject.Qualities.RemoveAt(i);
-                }
-            }
-            else
-            {
-                CharacterObject.Qualities.Remove(objSelectedQuality);
-            }
+            objSelectedQuality.DeleteQuality(blnCompleteDelete);
             return true;
         }
 
@@ -6359,6 +6344,11 @@ namespace Chummer
                             })
                             {
                                 frmPickNumber.ShowDialogSafe(this);
+                                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                                {
+                                    objAccessory.DeleteWeaponAccessory();
+                                    continue;
+                                }
                                 objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             }
                         }
@@ -8011,7 +8001,14 @@ namespace Chummer
                 case KarmaExpenseType.AddQuality:
                     {
                         // Locate the Quality that was added.
-                        CharacterObject.Qualities.RemoveAll(x => x.InternalId == objExpense.Undo.ObjectId);
+                        for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
+                        {
+                            if (i >= CharacterObject.Qualities.Count)
+                                continue;
+                            Quality objQuality = CharacterObject.Qualities[i];
+                            if (objQuality.InternalId == objExpense.Undo.ObjectId)
+                                objQuality.DeleteQuality();
+                        }
                     }
                     break;
 

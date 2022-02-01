@@ -73,8 +73,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _strCurrentVersion =
-                string.Format(GlobalSettings.InvariantCultureInfo, "{0}.{1}.{2}", Program.CurrentVersion.Major, Program.CurrentVersion.Minor, Program.CurrentVersion.Build);
+            _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || isUnitTest)

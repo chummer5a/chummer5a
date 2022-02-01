@@ -2018,7 +2018,7 @@ namespace Chummer
                     Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.Value);
                     if (objQuality != null)
                     {
-                        _objCharacter.Qualities.Remove(objQuality);
+                        objQuality.DeleteQuality();
                         ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower,
                                                               objQuality.InternalId);
                     }

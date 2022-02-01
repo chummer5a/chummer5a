@@ -221,7 +221,7 @@ namespace Chummer.Backend
             {
                 Program.MainForm.ShowMessageBox(
                     "Failed to create crash report." + Environment.NewLine +
-                    "Chummer crashed with version: " + Assembly.GetAssembly(typeof(Program))?.GetName().Version + Environment.NewLine +
+                    "Chummer crashed with version: " + Utils.CurrentChummerVersion + Environment.NewLine +
                     "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +
                     Environment.NewLine + "Crash information:" + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

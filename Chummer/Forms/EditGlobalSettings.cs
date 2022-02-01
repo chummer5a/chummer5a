@@ -23,7 +23,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -1308,7 +1307,7 @@ namespace Chummer
                 foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
                 {
                     //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
-                    if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !Debugger.IsAttached
+                    if (Utils.IsMilestoneVersion && !Debugger.IsAttached
                         && eOption > UseAILogging.NotSet)
                         continue;
                     lstUseAIOptions.Add(new ListItem(

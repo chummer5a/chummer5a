@@ -4135,22 +4135,7 @@ namespace Chummer
                 RemoveAddedQualities(objXmlDeleteQuality?.CreateNavigator().Select("addqualities/addquality"));
 
                 // Perform removal
-                if (objSelectedQuality.Levels > 1 && blnCompleteDelete)
-                {
-                    for (int i = CharacterObject.Qualities.Count - 1; i >= 0; i--)
-                    {
-                        Quality objLoopQuality = CharacterObject.Qualities[i];
-                        if (objLoopQuality.SourceIDString == objSelectedQuality.SourceIDString
-                            && objLoopQuality.Extra == objSelectedQuality.Extra
-                            && objLoopQuality.SourceName == objSelectedQuality.SourceName
-                            && objLoopQuality.Type == objSelectedQuality.Type)
-                            CharacterObject.Qualities.RemoveAt(i);
-                    }
-                }
-                else
-                {
-                    CharacterObject.Qualities.Remove(objSelectedQuality);
-                }
+                objSelectedQuality.DeleteQuality(blnCompleteDelete);
             }
 
             return true;
@@ -4591,6 +4576,11 @@ namespace Chummer
                                 })
                                 {
                                     frmPickNumber.ShowDialogSafe(this);
+                                    if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                                    {
+                                        objAccessory.DeleteWeaponAccessory();
+                                        continue;
+                                    }
                                     objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                                 }
                             }

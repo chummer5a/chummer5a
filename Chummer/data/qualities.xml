@@ -18642,6 +18642,26 @@
       <doublecareer>False</doublecareer>
       <bonus>
         <cyberadeptdaemon />
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Fault Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Companion Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Fault Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Companion Sprite</condition>
+        </specificskill>
       </bonus>
       <forbidden>
         <oneof>
@@ -18667,7 +18687,42 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <!-- These are the CFs that affect devices -->
+        <fadingvalue specific="Diffusion of [Matrix Attribute]">-2</fadingvalue>
+        <fadingvalue specific="Infusion of [Matrix Attribute]">-2</fadingvalue>
+        <fadingvalue specific="Puppeteer">-2</fadingvalue>
+        <fadingvalue specific="Resonance Channel">-2</fadingvalue>
+        <fadingvalue specific="Resonance Spike">-2</fadingvalue>
+        <fadingvalue specific="Resonance Veil">-2</fadingvalue>
+        <fadingvalue specific="FAQ">-2</fadingvalue>
+        <fadingvalue specific="Redundancy">-2</fadingvalue>
+        <fadingvalue specific="LOTO">-2</fadingvalue>
+        <fadingvalue specific="Causal Nexus">-2</fadingvalue>
+        <fadingvalue specific="Dissonance Spike">-2</fadingvalue>
+        <fadingvalue specific="Bootleg Program">-2</fadingvalue>
+        <fadingvalue specific="Search History">-2</fadingvalue>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Machine Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Generalist Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Machine Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Generalist Sprite</condition>
+        </specificskill>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>
@@ -18693,6 +18748,7 @@
       <category>Positive</category>
       <doublecareer>False</doublecareer>
       <bonus>
+        <fadingvalue>-2</fadingvalue>
         <addecho>Sourcerer Daemon</addecho>
       </bonus>
       <forbidden>

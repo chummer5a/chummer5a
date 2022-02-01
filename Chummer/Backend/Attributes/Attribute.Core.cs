@@ -1363,36 +1363,56 @@ namespace Chummer.Backend.Attributes
             new PropertyDependencyGraph<CharacterAttrib>(
                 new DependencyGraphNode<string, CharacterAttrib>(nameof(ToolTip),
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(DisplayValue),
-                        new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers)),
-                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue),
-                            new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeModifiers),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(AugmentedMaximumModifiers)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(Value))
-                            ),
-                            new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalAugmentedMaximum),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(AugmentedMaximumModifiers)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
-                            ),
-                            new DependencyGraphNode<string, CharacterAttrib>(nameof(Value),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(Karma)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(Base)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(FreeBase)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeValueModifiers)),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMinimum),
-                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum),
-                                        new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMinimum)),
-                                        new DependencyGraphNode<string, CharacterAttrib>(nameof(MinimumModifiers))
-                                    ),
-                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum))
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(Value),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(Karma)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(Base)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(FreeBase)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeValueModifiers)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMinimum),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMinimum)),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MinimumModifiers))
                                 ),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum),
-                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
-                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
-                                )
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum))
+                            ),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
+                            )
+                        ),
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue), x => x.HasModifiers),
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers))
+                    )
+                ),
+                new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue),
+                    new DependencyGraphNode<string, CharacterAttrib>(nameof(CalculatedTotalValue),
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeModifiers),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(AugmentedMaximumModifiers)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(Value))
+                        ),
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalAugmentedMaximum),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(AugmentedMaximumModifiers)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
+                        ),
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(Value),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(Karma)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(Base)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(FreeBase)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeValueModifiers)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMinimum),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMinimum)),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MinimumModifiers))
+                                ),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum))
+                            ),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
                             )
                         )
                     )

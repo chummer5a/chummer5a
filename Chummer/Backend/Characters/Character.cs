@@ -243,6 +243,7 @@ namespace Chummer
 
         private readonly EnhancedObservableCollection<Drug> _lstDrugs = new EnhancedObservableCollection<Drug>();
 
+        private readonly SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap = new SortedDictionary<decimal, Tuple<string, string>>();
         //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>(1);
 
@@ -274,7 +275,7 @@ namespace Chummer
 
             Settings.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
-            AttributeSection.Reset();
+            AttributeSection.Reset(true);
             AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
 
             SkillsSection = new SkillsSection(this);
@@ -560,6 +561,55 @@ namespace Chummer
 
         public void RefreshAttributeBindings()
         {
+            // First remove all existing bindings
+            foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
+            {
+                switch (objAttribute.Abbrev)
+                {
+                    case "BOD":
+                        objAttribute.PropertyChanged -= RefreshBODDependentProperties;
+                        break;
+                    case "AGI":
+                        objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
+                        break;
+                    case "REA":
+                        objAttribute.PropertyChanged -= RefreshREADependentProperties;
+                        break;
+                    case "STR":
+                        objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
+                        break;
+                    case "CHA":
+                        objAttribute.PropertyChanged -= RefreshCHADependentProperties;
+                        break;
+                    case "INT":
+                        objAttribute.PropertyChanged -= RefreshINTDependentProperties;
+                        break;
+                    case "LOG":
+                        objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
+                        break;
+                    case "WIL":
+                        objAttribute.PropertyChanged -= RefreshWILDependentProperties;
+                        break;
+                    case "EDG":
+                        objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
+                        break;
+                    case "MAG":
+                        objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
+                        break;
+                    case "MAGAdept":
+                        objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
+                        break;
+                    case "RES":
+                        objAttribute.PropertyChanged -= RefreshRESDependentProperties;
+                        break;
+                    case "DEP":
+                        objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
+                        break;
+                    case "ESS":
+                        objAttribute.PropertyChanged -= RefreshESSDependentProperties;
+                        break;
+                }
+            }
             BOD.PropertyChanged += RefreshBODDependentProperties;
             AGI.PropertyChanged += RefreshAGIDependentProperties;
             REA.PropertyChanged += RefreshREADependentProperties;
@@ -919,6 +969,7 @@ namespace Chummer
                         {
                             switch (e.Action)
                             {
+                                // Note: Removal is already handled through DeleteQuality
                                 case NotifyCollectionChangedAction.Add:
                                 {
                                     foreach (Quality objNewItem in e.NewItems)
@@ -949,25 +1000,9 @@ namespace Chummer
 
                                     break;
                                 }
-                                case NotifyCollectionChangedAction.Remove:
-                                {
-                                    foreach (Quality objOldItem in e.OldItems)
-                                    {
-                                        objOldItem.DeleteQuality(false);
-                                    }
-
-                                    break;
-                                }
                                 case NotifyCollectionChangedAction.Replace:
                                 {
-                                    HashSet<Quality> setNewQualities = e.NewItems.OfType<Quality>().ToHashSet();
-                                    foreach (Quality objOldItem in e.OldItems)
-                                    {
-                                        if (!setNewQualities.Contains(objOldItem))
-                                            objOldItem.DeleteQuality(false);
-                                    }
-
-                                    foreach (Quality objNewItem in setNewQualities)
+                                    foreach (Quality objNewItem in e.NewItems)
                                     {
                                         // Needed in order to properly process named sources where
                                         // the tooltip was built before the object was added to the character
@@ -1534,10 +1569,16 @@ namespace Chummer
                     || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant).ToList());
 
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
-            Qualities.RemoveAll(objQuality =>
-                                objQuality.OriginSource == QualitySource.Metatype ||
-                                objQuality.OriginSource == QualitySource.MetatypeRemovable ||
-                                objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen);
+            for (int i = Qualities.Count - 1; i >= 0; --i)
+            {
+                if (i >= Qualities.Count)
+                    continue;
+                Quality objQuality = Qualities[i];
+                if (objQuality.OriginSource == QualitySource.Metatype ||
+                    objQuality.OriginSource == QualitySource.MetatypeRemovable ||
+                    objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                    objQuality.DeleteQuality();
+            }
 
             // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
             if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
@@ -5124,7 +5165,7 @@ namespace Chummer
                                                 StringComparison.Ordinal));
                                     if (objOldQuality != null)
                                     {
-                                        Qualities.Remove(objOldQuality);
+                                        objOldQuality.DeleteQuality();
                                         if (Qualities.All(x =>
                                                 !x.Name.Equals("Resistance to Pathogens/Toxins",
                                                     StringComparison.Ordinal))
@@ -5142,8 +5183,8 @@ namespace Chummer
 
                                             objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
                                             foreach (Weapon objWeapon in lstWeapons)
-                                                _lstWeapons.Add(objWeapon);
-                                            _lstQualities.Add(objQuality);
+                                                Weapons.Add(objWeapon);
+                                            Qualities.Add(objQuality);
                                         }
                                     }
                                 }
@@ -7178,7 +7219,14 @@ namespace Chummer
             }
             if (eOldBuildMethod == CharacterBuildMethod.LifeModule)
             {
-                Qualities.RemoveAll(x => x.OriginSource == QualitySource.LifeModule);
+                for (int i = Qualities.Count - 1; i >= 0; --i)
+                {
+                    if (i >= Qualities.Count)
+                        continue;
+                    Quality objQuality = Qualities[i];
+                    if (objQuality.OriginSource == QualitySource.LifeModule)
+                        objQuality.DeleteQuality();
+                }
             }
             return true;
         }
@@ -15952,20 +16000,24 @@ namespace Chummer
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            string strInterval;
+            string strInterval = string.Empty;
             // Find the character's Negotiation total.
             int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
+            if (_dicAvailabilityMap.Count == 0)
+            {
+                using (XmlNodeList xmlAvailList =
+                       LoadData("options.xml").SelectNodes("/chummer/availmap/avail"))
+                {
+                    foreach (XmlNode objNode in xmlAvailList)
+                    {
+                        _dicAvailabilityMap.Add(Convert.ToDecimal(objNode["value"].InnerText),new Tuple<string, string>(objNode["duration"].InnerText,objNode["interval"].InnerText));
+                    }
+                }
+            }
+
+            KeyValuePair<decimal, Tuple<string, string>> item = _dicAvailabilityMap.Where(x => decCost < x.Key).FirstOrDefault(); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
             // Determine the interval based on the item's price.
-            if(decCost <= 100.0m)
-                strInterval = '6' + strSpace + LanguageManager.GetString("String_Hours");
-            else if(decCost <= 1000.0m)
-                strInterval = '1' + strSpace + LanguageManager.GetString("String_Day");
-            else if(decCost <= 10000.0m)
-                strInterval = '2' + strSpace + LanguageManager.GetString("String_Days");
-            else if(decCost <= 100000.0m)
-                strInterval = '1' + strSpace + LanguageManager.GetString("String_Week");
-            else
-                strInterval = '1' + strSpace + LanguageManager.GetString("String_Month");
+            strInterval = item.Value.Item1 + strSpace + LanguageManager.GetString(item.Value.Item2);
 
             return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                    + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';

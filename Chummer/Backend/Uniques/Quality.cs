@@ -1466,11 +1466,7 @@ namespace Chummer
             }
 
             // Removing the old quality from the character
-            _objCharacter.Qualities.Remove(objOldQuality);
-
-            _objCharacter.Qualities.RemoveAll(x =>
-                                              x.SourceIDString == SourceIDString && x.Extra == Extra &&
-                                              x.SourceName == SourceName && x.Type == Type);
+            objOldQuality.DeleteQuality(true);
 
             // Add the new Quality to the character.
             _objCharacter.Qualities.Add(this);
@@ -1563,10 +1559,23 @@ namespace Chummer
         /// TODO: make Quality properly inherit from ICanRemove by also putting the UI stuff in here as well
         /// </summary>
         /// <returns>Nuyen cost of the actual removal (necessary for removing some stuff that adds qualities as part of their effects).</returns>
-        public decimal DeleteQuality(bool blnDoRemoval = true)
+        public decimal DeleteQuality(bool blnFullRemoval = false)
         {
-            if (blnDoRemoval)
-                _objCharacter.Qualities.Remove(this);
+            _objCharacter.Qualities.Remove(this);
+            if (blnFullRemoval)
+            {
+                for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                {
+                    if (i >= _objCharacter.Qualities.Count)
+                        continue;
+                    Quality objLoopQuality = _objCharacter.Qualities[i];
+                    if (objLoopQuality.SourceIDString == SourceIDString
+                        && objLoopQuality.Extra == Extra
+                        && objLoopQuality.SourceName == SourceName
+                        && objLoopQuality.Type == Type)
+                        objLoopQuality.DeleteQuality();
+                }
+            }
 
             // Remove the Improvements that were created by the Quality.
             decimal decReturn = ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);

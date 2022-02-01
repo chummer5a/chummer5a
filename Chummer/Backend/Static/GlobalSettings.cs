@@ -195,7 +195,7 @@ namespace Chummer
         private static bool _blnPrintToFileFirst;
         private static int _intEmulatedBrowserVersion = 8;
         private static bool _lifeModuleEnabled;
-        private static bool _blnPreferNightlyUpdates = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision != 0;
+        private static bool _blnPreferNightlyUpdates = !Utils.IsMilestoneVersion;
         private static bool _blnLiveUpdateCleanCharacterFiles;
         private static bool _blnHideMasterIndex;
         private static bool _blnHideCharacterRoster;
@@ -1123,7 +1123,7 @@ namespace Chummer
                 if (UseLoggingResetCounter > 0)
                     return UseLoggingApplicationInsightsPreference;
 
-                if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build == 0
+                if (Utils.IsMilestoneVersion
                     //stable builds should not log more than metrics
                     && UseLoggingApplicationInsightsPreference > UseAILogging.OnlyMetric)
                     return UseAILogging.OnlyMetric;

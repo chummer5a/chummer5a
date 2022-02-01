@@ -1001,13 +1001,23 @@ namespace Chummer
                         {
                             strTargetAttribute = strTargetAttribute.TrimEndOnce("Base", true);
                             if (Augmented != 0)
+                            {
                                 setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeValueModifiers));
+                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
+                            }
                         }
-                        else
+                        else if (Augmented != 0)
                         {
-                            if (Augmented != 0)
-                                setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
                         }
+                        else if ((ImproveSource == ImprovementSource.EssenceLoss ||
+                                  ImproveSource == ImprovementSource.EssenceLossChargen ||
+                                  ImproveSource == ImprovementSource.CyberadeptDaemon)
+                                 && (_objCharacter.MAGEnabled && (strTargetAttribute == "MAG" || strTargetAttribute == "MAGAdept") ||
+                                     _objCharacter.RESEnabled && strTargetAttribute == "RES" ||
+                                     _objCharacter.DEPEnabled && strTargetAttribute == "DEP"))
+                            setAttributePropertiesChanged.Add(nameof(CharacterAttrib.HasModifiers));
 
                         if (setAttributePropertiesChanged.Count > 0)
                         {

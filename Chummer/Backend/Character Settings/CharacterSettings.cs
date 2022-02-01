@@ -374,7 +374,7 @@ namespace Chummer
             List<string> lstPropertiesToUpdate;
             try
             {
-                PropertyInfo[] aobjProperties = GetType().GetProperties();
+                PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                 lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
                 if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                 {
@@ -397,22 +397,14 @@ namespace Chummer
                 }
 
                 // Copy over via properties in order to trigger OnPropertyChanged as appropriate
-                PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
-                foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead && x.CanWrite))
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
                 {
-                    string strPropertyName = objOtherProperty.Name;
-                    Type ePropertyType = objOtherProperty.PropertyType;
-                    foreach (PropertyInfo objProperty in Array.FindAll(aobjProperties,
-                                                                       x => x.Name == strPropertyName
-                                                                            && x.PropertyType == ePropertyType))
-                    {
-                        object objMyValue = objProperty.GetValue(this);
-                        object objOtherValue = objOtherProperty.GetValue(objOther);
-                        if (objMyValue.Equals(objOtherValue))
-                            continue;
-                        lstPropertiesToUpdate.Add(strPropertyName);
-                        objProperty.SetValue(this, objOtherValue);
-                    }
+                    object objMyValue = objProperty.GetValue(this);
+                    object objOtherValue = objProperty.GetValue(objOther);
+                    if (objMyValue.Equals(objOtherValue))
+                        continue;
+                    lstPropertiesToUpdate.Add(objProperty.Name);
+                    objProperty.SetValue(this, objOtherValue);
                 }
 
                 if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
@@ -466,44 +458,14 @@ namespace Chummer
             if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
                 return false;
 
-            PropertyInfo[] aobjPropertyInfos = GetType().GetProperties();
-            List<PropertyInfo> lstPropertyInfos
-                = new List<PropertyInfo>(aobjPropertyInfos.Length);
-            lstPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
-            aobjPropertyInfos = objOther.GetType().GetProperties();
-            List<PropertyInfo> lstOtherPropertyInfos
-                = new List<PropertyInfo>(aobjPropertyInfos.Length);
-            lstOtherPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
-
-            if (lstPropertyInfos.Count != lstOtherPropertyInfos.Count)
-                return false;
-
-            for (int i = lstPropertyInfos.Count - 1; i >= 0; --i)
+            PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType && x.CanRead))
             {
-                PropertyInfo objPropertyInfo = lstPropertyInfos[i];
-                string strPropertyName = objPropertyInfo.Name;
-                Type ePropertyType = objPropertyInfo.PropertyType;
-                int intOtherIndex
-                    = lstOtherPropertyInfos.FindIndex(x => x.Name == strPropertyName
-                                                           && x.PropertyType == ePropertyType);
-                if (intOtherIndex < 0)
+                object objMyValue = objProperty.GetValue(this);
+                object objOtherValue = objProperty.GetValue(objOther);
+                if (!objMyValue.Equals(objOtherValue))
                     return false;
-                PropertyInfo objOtherPropertyInfo = lstOtherPropertyInfos[intOtherIndex];
-                object objMyValue = objPropertyInfo.GetValue(this);
-                object objOtherValue = objOtherPropertyInfo.GetValue(objOther);
-                if (objMyValue.Equals(objOtherValue))
-                {
-                    // Removed checked property from the other list, both to speed up future checks and to make last check easier
-                    lstOtherPropertyInfos.RemoveAt(intOtherIndex);
-                }
-                else
-                {
-                    return false;
-                }
             }
-            // This will only happen if there are any properties in other that haven't been accounted for in this object
-            if (lstOtherPropertyInfos.Count > 0)
-                return false;
 
             if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther._dicCustomDataDirectoryKeys))
                 return false;

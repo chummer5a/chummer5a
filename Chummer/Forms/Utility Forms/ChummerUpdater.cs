@@ -24,7 +24,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +40,6 @@ namespace Chummer
         private bool _blnSilentModeUpdateWasDenied;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
-        private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private string _strTempLatestVersionZipPath = string.Empty;
         private readonly string _strTempLatestVersionChangelogPath;
         private readonly string _strAppPath = Utils.GetStartupPath;
@@ -59,8 +57,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            CurrentVersion = string.Format(GlobalSettings.InvariantCultureInfo, "{0}.{1}.{2}",
-                _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
+            CurrentVersion = Utils.CurrentChummerVersion.ToString(3);
             _blnPreferNightly = GlobalSettings.PreferNightlyBuilds;
             _strTempLatestVersionChangelogPath = Path.Combine(Utils.GetTempPath(), "changelog.txt");
             _clientChangelogDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
@@ -400,7 +397,7 @@ namespace Chummer
 
             int intResult = 0;
             if (VersionExtensions.TryParse(strLatestVersion, out Version objLatestVersion))
-                intResult = objLatestVersion?.CompareTo(_objCurrentVersion) ?? 0;
+                intResult = objLatestVersion?.CompareTo(Utils.CurrentChummerVersion) ?? 0;
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
             if (intResult > 0)

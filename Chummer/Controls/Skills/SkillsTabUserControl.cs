@@ -34,6 +34,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
+        private bool _blnDisposeCharacterOnDispose;
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _lstActiveSkills;
@@ -89,6 +90,7 @@ namespace Chummer.UI.Skills
                 _objCharacter = frmParent.CharacterObject;
             else
             {
+                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
                 Utils.BreakIfDebug();
             }

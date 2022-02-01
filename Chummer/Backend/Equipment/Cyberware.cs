@@ -740,7 +740,7 @@ namespace Chummer.Backend.Equipment
                                    AllowCancel = false
                                })
                         {
-                            if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                            if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
                                 _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             return frmPickNumber.DialogResult;
                         }
@@ -1522,8 +1522,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
             if (_objCharacter.IsPrototypeTranshuman && SourceType == Improvement.ImprovementSource.Bioware)
                 objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
-            _nodBonus = objNode["bonus"];
-            _nodPairBonus = objNode["pairbonus"];
+
+            _nodBonus = objNode["bonus"] ?? objMyNode.Value?["bonus"];
+            _nodPairBonus = objNode["pairbonus"] ?? objMyNode.Value?["pairbonus"];
             XmlNode xmlPairIncludeNode = objNode["pairinclude"];
             if (xmlPairIncludeNode == null)
             {
@@ -1543,7 +1544,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            _nodWirelessPairBonus = objNode["wirelesspairbonus"];
+            _nodWirelessPairBonus = objNode["wirelesspairbonus"] ?? objMyNode.Value?["wirelesspairbonus"];
             xmlPairIncludeNode = objNode["wirelesspairinclude"];
             if (xmlPairIncludeNode == null)
             {
@@ -1563,7 +1564,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            _nodWirelessBonus = objNode["wirelessbonus"];
+            _nodWirelessBonus = objNode["wirelessbonus"] ?? objMyNode.Value?["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
             {
                 _blnWirelessOn = false;
@@ -2758,50 +2759,154 @@ namespace Chummer.Backend.Equipment
 
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
         {
-            if (!ProcessPropertyChanges)
+            // Do not do property changes if we're not directly equipped to a character
+            if (!ProcessPropertyChanges || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
                 return;
             bool blnDoMovementUpdate = false;
-            if (blnDoRating && _objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false &&
-                _objParent.ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
-                !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
             {
-                if (s_AgilityCombinedStrings.Contains(Name))
+                try
                 {
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
-                        .Where(abbrev => abbrev.Abbrev == "AGI"))
+                    if ((blnDoGrade || (blnDoRating && (ESS.Contains("Rating") || ESS.Contains("FixedValues")))) &&
+                        (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount))
                     {
-                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                        if (!dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                        }
+                        setChangedProperties.Add(EssencePropertyName);
                     }
 
-                    blnDoMovementUpdate = true;
+                    if (blnDoRating)
+                    {
+                        if (IsModularCurrentlyEquipped &&
+                            ParentVehicle == null &&
+                            _objParent?.Category == "Cyberlimb" &&
+                            _objParent.Parent?.InheritAttributes != false &&
+                            _objParent.ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                            !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
+                            !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                        {
+                            if (s_AgilityCombinedStrings.Contains(Name))
+                            {
+                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
+                                             .AttributeList
+                                             .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                                             .Where(abbrev => abbrev.Abbrev == "AGI"))
+                                {
+                                    if (!dicChangedProperties.TryGetValue(objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                    }
+                                    setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                }
+
+                                blnDoMovementUpdate = true;
+                            }
+                            else if (s_StrengthCombinedStrings.Contains(Name))
+                            {
+                                foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection
+                                             .AttributeList
+                                             .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
+                                             .Where(abbrev => abbrev.Abbrev == "STR"))
+                                {
+                                    if (!dicChangedProperties.TryGetValue(objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                    }
+                                    setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                }
+
+                                blnDoMovementUpdate = true;
+                            }
+                        }
+
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        if (Bonus?.InnerText.Contains("Rating") == true
+                            || PairBonus?.InnerText.Contains("Rating") == true
+                            || (WirelessOn && (WirelessBonus?.InnerText.Contains("Rating") == true
+                                               || WirelessPairBonus?.InnerText.Contains("Rating") == true)))
+                        {
+                            if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                ImprovementManager.ForcedValue = _strForced;
+
+                            if (Bonus != null)
+                            {
+                                ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
+                                ImprovementManager.CreateImprovements(_objCharacter, SourceType,
+                                    InternalId, Bonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                            }
+
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                                _strExtra = ImprovementManager.SelectedValue;
+
+                            if (PairBonus != null)
+                            {
+                                ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "Pair");
+                                // This cyberware should not be included in the count to make things easier.
+                                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                                    x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                         x.IsModularCurrentlyEquipped).ToList();
+                                int intCount = lstPairableCyberwares.Count;
+                                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                                if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                                {
+                                    intCount = 0;
+                                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                                    {
+                                        if (objPairableCyberware.Location != Location)
+                                            // We have found a cyberware with which this one could be paired, so increase count by 1
+                                            ++intCount;
+                                        else
+                                            // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                                            --intCount;
+                                    }
+
+                                    // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
+                                    intCount = intCount > 0 ? 1 : 0;
+                                }
+
+                                if ((intCount & 1) == 1)
+                                {
+                                    ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair",
+                                        PairBonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                                }
+                            }
+
+                            if (!IsModularCurrentlyEquipped || ParentVehicle != null)
+                                ChangeModularEquip(false);
+                            else
+                                RefreshWirelessBonuses();
+                        }
+                    }
+
+                    if (blnDoMovementUpdate && _objCharacter.Settings.CyberlegMovement && LimbSlot == "leg")
+                    {
+                        if (!dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                        }
+                        setChangedProperties.Add(nameof(Character.GetMovement));
+                    }
+
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    {
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                    }
                 }
-                else if (s_StrengthCombinedStrings.Contains(Name))
+                finally
                 {
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                        .Concat(_objCharacter.AttributeSection.SpecialAttributeList)
-                        .Where(abbrev => abbrev.Abbrev == "STR"))
-                    {
-                        objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                    }
-
-                    blnDoMovementUpdate = true;
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
                 }
             }
-
-            blnDoMovementUpdate = blnDoMovementUpdate && _objCharacter.Settings.CyberlegMovement && LimbSlot == "leg";
-            bool blnDoEssenceUpdate =
-                (blnDoGrade || (blnDoRating && (ESS.Contains("Rating") || ESS.Contains("FixedValues")))) &&
-                (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
-                ParentVehicle == null;
-            // ReSharper disable once ConvertIfStatementToSwitchStatement
-            if (blnDoMovementUpdate && blnDoEssenceUpdate)
-                _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
-            else if (blnDoMovementUpdate)
-                _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
-            else if (blnDoEssenceUpdate)
-                _objCharacter.OnPropertyChanged(EssencePropertyName);
         }
 
         /// <summary>
@@ -5469,7 +5574,7 @@ namespace Chummer.Backend.Equipment
             string strSpace = LanguageManager.GetString("String_Space");
             string strExpense = LanguageManager.GetString("String_ExpenseUpgradedCyberware") + strSpace +
                                 CurrentDisplayNameShort;
-            bool blnDoGradeChange = Grade != objGrade;
+            bool blnDoGradeChange = Grade.Essence != objGrade.Essence;
             bool blnDoRatingChange = Rating != intRating;
             if (blnDoGradeChange || blnDoRatingChange)
             {
