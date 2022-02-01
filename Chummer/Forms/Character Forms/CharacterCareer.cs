@@ -6344,6 +6344,11 @@ namespace Chummer
                             })
                             {
                                 frmPickNumber.ShowDialogSafe(this);
+                                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                                {
+                                    objAccessory.DeleteWeaponAccessory();
+                                    continue;
+                                }
                                 objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             }
                         }
