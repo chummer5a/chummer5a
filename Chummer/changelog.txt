@@ -12,6 +12,8 @@ Application Changes:
 - The Select Vehicle window no longer automatically resizes to an unusable size on smaller screens.
 - Removing qualities that have added other qualities, e.g. Prototype Transhuman, no longer causes a crash.
 - Changing the rating of a piece of 'ware after it has been added to a character now properly propagates those changes through any rating-dependent improvements and bonuses the 'ware has.
+- Fixed an assortment of issues where attribute controls were not properly in sync with underlying attribute values, e.g. burning Edge would not decrease the shown Edge value.
+- Swapping back and forth between forms as a shapeshifter and then doing anything to modify any attribute no longer slows Chummer down to a crawl.
 
 Build 220
 Application Changes:

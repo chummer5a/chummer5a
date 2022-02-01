@@ -274,7 +274,7 @@ namespace Chummer
 
             Settings.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
-            AttributeSection.Reset();
+            AttributeSection.Reset(true);
             AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
 
             SkillsSection = new SkillsSection(this);
@@ -560,6 +560,55 @@ namespace Chummer
 
         public void RefreshAttributeBindings()
         {
+            // First remove all existing bindings
+            foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
+            {
+                switch (objAttribute.Abbrev)
+                {
+                    case "BOD":
+                        objAttribute.PropertyChanged -= RefreshBODDependentProperties;
+                        break;
+                    case "AGI":
+                        objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
+                        break;
+                    case "REA":
+                        objAttribute.PropertyChanged -= RefreshREADependentProperties;
+                        break;
+                    case "STR":
+                        objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
+                        break;
+                    case "CHA":
+                        objAttribute.PropertyChanged -= RefreshCHADependentProperties;
+                        break;
+                    case "INT":
+                        objAttribute.PropertyChanged -= RefreshINTDependentProperties;
+                        break;
+                    case "LOG":
+                        objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
+                        break;
+                    case "WIL":
+                        objAttribute.PropertyChanged -= RefreshWILDependentProperties;
+                        break;
+                    case "EDG":
+                        objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
+                        break;
+                    case "MAG":
+                        objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
+                        break;
+                    case "MAGAdept":
+                        objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
+                        break;
+                    case "RES":
+                        objAttribute.PropertyChanged -= RefreshRESDependentProperties;
+                        break;
+                    case "DEP":
+                        objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
+                        break;
+                    case "ESS":
+                        objAttribute.PropertyChanged -= RefreshESSDependentProperties;
+                        break;
+                }
+            }
             BOD.PropertyChanged += RefreshBODDependentProperties;
             AGI.PropertyChanged += RefreshAGIDependentProperties;
             REA.PropertyChanged += RefreshREADependentProperties;

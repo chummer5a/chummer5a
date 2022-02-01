@@ -36,6 +36,7 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
+        private bool _blnDisposeCharacterOnDispose;
         private TableView<Power> _table;
 
         public PowersTabUserControl()
@@ -69,8 +70,9 @@ namespace Chummer.UI.Powers
                 _objCharacter = frmParent.CharacterObject;
             else
             {
-                Utils.BreakIfDebug();
+                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
+                Utils.BreakIfDebug();
             }
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
