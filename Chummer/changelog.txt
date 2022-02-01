@@ -15,6 +15,11 @@ Application Changes:
 - Fixed an assortment of issues where attribute controls were not properly in sync with underlying attribute values, e.g. burning Edge would not decrease the shown Edge value.
 - Swapping back and forth between forms as a shapeshifter and then doing anything to modify any attribute no longer slows Chummer down to a crawl.
 - Trying to add or edit a weapon mount no longer causes a crash. Fixes #4682.
+- Improvements that modify drain and/or fading values can now do so on an individual spell and/or complex form basis respectively. To do this, use add a `specific` attribute to the `drainvalue` or `fadingvalue` node and enter the name of the spell or complex form to which the effect should be restricted.
+
+Data Changes:
+- Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
+- Cyberadept and Machinist technomancers now have their Compiling and Decompiling bonuses represented in Chummer.
 
 Build 220
 Application Changes:

@@ -397,8 +397,9 @@ namespace Chummer
                     }
 
                     decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter,
-                                                                    Improvement.ImprovementType.FadingValue,
-                                                                    out List<Improvement> lstFadingImprovements);
+                        Improvement.ImprovementType.FadingValue,
+                        out List<Improvement> lstFadingImprovements, strImprovedName: Name,
+                        blnIncludeNonImproved: true);
                     if (decFVBonus != 0)
                     {
                         sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
@@ -423,7 +424,7 @@ namespace Chummer
             {
                 string strReturn = _strFv;
                 decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingValue,
-                                                                out List<Improvement> lstUsedImprovements);
+                                                                out List<Improvement> lstUsedImprovements, strImprovedName: Name, blnIncludeNonImproved: true);
                 if (decFVBonus != 0)
                 {
                     bool force = strReturn.StartsWith('L');

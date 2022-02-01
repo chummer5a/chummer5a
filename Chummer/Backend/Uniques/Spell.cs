@@ -1130,7 +1130,8 @@ namespace Chummer
 
                     case Improvement.ImprovementType.DrainValue:
                         {
-                            yield return objImprovement;
+                            if (string.IsNullOrEmpty(objImprovement.ImprovedName) || objImprovement.ImprovedName == Name)
+                                yield return objImprovement;
                             if (blnExitAfterFirst)
                                 yield break;
                         }
