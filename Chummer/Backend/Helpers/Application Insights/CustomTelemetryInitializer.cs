@@ -27,13 +27,14 @@ namespace Chummer
 {
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
+       
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         // Set session data:
         //private static string Hostname =  Dns.GetHostName();
-        private static string Version { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private static string Version { get; } = typeof(Chummer.Program).Assembly.GetName().Version.ToString();
 
-        private static bool IsMilestone { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
+        public static bool IsMilestone { get; } = typeof(Chummer.Program).Assembly.GetName().Version.Revision == 0;
 
         [CLSCompliant(false)]
         public void Initialize(ITelemetry telemetry)
@@ -47,21 +48,26 @@ namespace Chummer
             else
                 telemetry.Context.GlobalProperties["Milestone"] = IsMilestone.ToString(GlobalSettings.InvariantCultureInfo);
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
-            if (Properties.Settings.Default.UploadClientId != Guid.Empty)
+            if (Properties.Settings.Default.UploadClientId == Guid.Empty)
             {
+                Properties.Settings.Default.UploadClientId = Guid.NewGuid();
+                Properties.Settings.Default.Save();
+            }
+            else
+            { 
                 //sometimes, there are odd values stored in the UploadClientId.
                 if (!Properties.Settings.Default.UploadClientId.ToString().IsGuid())
                 {
                     Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                     Properties.Settings.Default.Save();
                 }
-                telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
-                telemetry.Context.Device.Id = Properties.Settings.Default.UploadClientId.ToString();
             }
+            telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
+            telemetry.Context.Cloud.RoleName = Properties.Settings.Default.UploadClientId.ToString();
+            telemetry.Context.Device.Id = Environment.MachineName;
             telemetry.Context.Session.Id = Properties.Settings.Default.UploadClientId.ToString();
             telemetry.Context.User.Id = Properties.Settings.Default.UploadClientId.ToString();
 
-            telemetry.Context.User.Id = telemetry.Context.Device.Id;
             telemetry.Context.Component.Version = Version;
             if (System.Diagnostics.Debugger.IsAttached)
             {

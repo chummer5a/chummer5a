@@ -51,13 +51,19 @@ namespace Chummer
                 Next.Process(item);
                 return;
             }
-            if (item is PageViewTelemetry
+            if ((item is PageViewTelemetry
                 || item is PageViewPerformanceTelemetry)
+                && (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Info)
+                && CustomTelemetryInitializer.IsMilestone == false)
             {
+                Next.Process(item);
                 return;
             }
-            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes && item is ExceptionTelemetry exceptionTelemetry && (exceptionTelemetry.Exception.Data.Contains("IsCrash")
-                || exceptionTelemetry.Properties.ContainsKey("IsCrash")))
+            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
+                && item is ExceptionTelemetry exceptionTelemetry
+                && CustomTelemetryInitializer.IsMilestone == false
+                && (exceptionTelemetry.Exception.Data.Contains("IsCrash")
+                    || exceptionTelemetry.Properties.ContainsKey("IsCrash")))
             {
                 Next.Process(item);
                 return;
@@ -67,10 +73,15 @@ namespace Chummer
                 Next.Process(item);
                 return;
             }
-            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Info && item is TraceTelemetry traceTelemetry && traceTelemetry.SeverityLevel >= SeverityLevel.Information)
+            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.NotSet
+                && item is TraceTelemetry traceTelemetry
+                && traceTelemetry.SeverityLevel >= SeverityLevel.Information
+                && CustomTelemetryInitializer.IsMilestone == false)
             {
                 Next.Process(item);
+                return;
             }
+            
         }
 
         // Example: replace with your own modifiers.
