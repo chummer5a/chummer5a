@@ -16,6 +16,7 @@ Application Changes:
 - Swapping back and forth between forms as a shapeshifter and then doing anything to modify any attribute no longer slows Chummer down to a crawl.
 - Trying to add or edit a weapon mount no longer causes a crash. Fixes #4682.
 - Improvements that modify drain and/or fading values can now do so on an individual spell and/or complex form basis respectively. To do this, use add a `specific` attribute to the `drainvalue` or `fadingvalue` node and enter the name of the spell or complex form to which the effect should be restricted.
+- Added support for modifying the Availability Test formula using options.xml. options.xml is exposed to the custom/override/amend system, allowing it to be modified using customdata files. There are three relevant nodes, with one identifier node. Value represents the maximum nuyen value for that node. Interval is a string that is used to refer to the language file and is expected to be String_Hours, String_Day, etc. Duration is the total number of the Intervals that will pass. In total, this will parse to a label like this: {Negotiation dicepool} ({Availability Value}, {Duration} {Interval}), ie 12 (6R, 1 day).
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.

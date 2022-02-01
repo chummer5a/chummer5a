@@ -243,6 +243,7 @@ namespace Chummer
 
         private readonly EnhancedObservableCollection<Drug> _lstDrugs = new EnhancedObservableCollection<Drug>();
 
+        private readonly SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap = new SortedDictionary<decimal, Tuple<string, string>>();
         //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>(1);
 
@@ -15999,20 +16000,24 @@ namespace Chummer
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            string strInterval;
+            string strInterval = string.Empty;
             // Find the character's Negotiation total.
             int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
+            if (_dicAvailabilityMap.Count == 0)
+            {
+                using (XmlNodeList xmlAvailList =
+                       LoadData("options.xml").SelectNodes("/chummer/availmap/avail"))
+                {
+                    foreach (XmlNode objNode in xmlAvailList)
+                    {
+                        _dicAvailabilityMap.Add(Convert.ToDecimal(objNode["value"].InnerText),new Tuple<string, string>(objNode["duration"].InnerText,objNode["interval"].InnerText));
+                    }
+                }
+            }
+
+            KeyValuePair<decimal, Tuple<string, string>> item = _dicAvailabilityMap.Where(x => decCost < x.Key).FirstOrDefault(); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
             // Determine the interval based on the item's price.
-            if(decCost <= 100.0m)
-                strInterval = '6' + strSpace + LanguageManager.GetString("String_Hours");
-            else if(decCost <= 1000.0m)
-                strInterval = '1' + strSpace + LanguageManager.GetString("String_Day");
-            else if(decCost <= 10000.0m)
-                strInterval = '2' + strSpace + LanguageManager.GetString("String_Days");
-            else if(decCost <= 100000.0m)
-                strInterval = '1' + strSpace + LanguageManager.GetString("String_Week");
-            else
-                strInterval = '1' + strSpace + LanguageManager.GetString("String_Month");
+            strInterval = item.Value.Item1 + strSpace + LanguageManager.GetString(item.Value.Item2);
 
             return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                    + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';
