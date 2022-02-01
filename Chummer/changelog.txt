@@ -14,6 +14,7 @@ Application Changes:
 - Changing the rating of a piece of 'ware after it has been added to a character now properly propagates those changes through any rating-dependent improvements and bonuses the 'ware has.
 - Fixed an assortment of issues where attribute controls were not properly in sync with underlying attribute values, e.g. burning Edge would not decrease the shown Edge value.
 - Swapping back and forth between forms as a shapeshifter and then doing anything to modify any attribute no longer slows Chummer down to a crawl.
+- Trying to add or edit a weapon mount no longer causes a crash. Fixes #4682.
 
 Build 220
 Application Changes:
