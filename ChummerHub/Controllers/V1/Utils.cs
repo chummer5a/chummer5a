@@ -13,7 +13,7 @@ namespace ChummerHub.Controllers.V1
             var databaseValues = entry.GetDatabaseValues();
             var setvalues = databaseValues;
             string msg = string.Empty;
-            ResultBase res;
+            //ResultBase res;
             try
             {
                 bool throwexception = false;

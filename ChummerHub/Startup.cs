@@ -30,6 +30,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Newtonsoft.Json.Converters;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 
 namespace ChummerHub
 {
@@ -69,7 +70,7 @@ namespace ChummerHub
         {
             _logger = logger;
             Configuration = configuration;
-            AppSettings = ConfigurationManager.AppSettings;
+            AppSettings = System.Configuration.ConfigurationManager.AppSettings;
             if (_gdrive == null)
                 _gdrive = new DriveHandler(logger, configuration);
            
@@ -117,12 +118,23 @@ namespace ChummerHub
 
             // Add SnapshotCollector telemetry processor.
             //services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+            Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions
+                = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            // Disables adaptive sampling.
+            aiOptions.EnableAdaptiveSampling = true;
 
-            var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
-            tcbuilder.Use(next => new GroupNotFoundFilter(next));
+            // Disables QuickPulse (Live Metrics stream).
+            aiOptions.EnableQuickPulseMetricStream = true;
 
-            // If you have more processors:
-            tcbuilder.Use(next => new ExceptionDataProcessor(next));
+            services.AddApplicationInsightsTelemetry(aiOptions);
+            
+
+
+            //var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
+            //tcbuilder.Use(next => new GroupNotFoundFilter(next));
+
+            //// If you have more processors:
+            //tcbuilder.Use(next => new ExceptionDataProcessor(next));
 
 
 
@@ -420,7 +432,7 @@ namespace ChummerHub
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             //app.UseSession();
             app.UseCors(options => options.AllowAnyOrigin());
@@ -554,7 +566,7 @@ namespace ChummerHub
                 var testUserPw = config["SeedUserPW"];
                 try
                 {
-                    var env = services.GetService<IHostingEnvironment>();
+                    var env = services.GetService<IHostEnvironment>();
                     SeedData.Initialize(services, testUserPw, env).Wait();
                 }
                 catch (Exception ex)

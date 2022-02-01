@@ -164,9 +164,9 @@ namespace ChummerHub.Models.V1
 
     public class SINnerGroupSetting : SINnerUploadAble
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid? Id { get; set; }
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //public Guid? Id { get; set; }
 
         public Guid MyGroupId { get; set; }
     }
