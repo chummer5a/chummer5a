@@ -34,7 +34,7 @@ namespace Chummer
         //private static string Hostname =  Dns.GetHostName();
         private static string Version { get; } = typeof(Chummer.Program).Assembly.GetName().Version.ToString();
 
-        public static bool IsMilestone { get; } = typeof(Chummer.Program).Assembly.GetName().Version.MinorRevision == 0;
+        public static bool IsMilestone { get; } = typeof(Chummer.Program).Assembly.GetName().Version.Build == 0;
 
         [CLSCompliant(false)]
         public void Initialize(ITelemetry telemetry)
