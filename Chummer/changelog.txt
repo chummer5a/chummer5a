@@ -19,6 +19,7 @@ Application Changes:
 - Added support for modifying the Availability Test formula using options.xml. options.xml is exposed to the custom/override/amend system, allowing it to be modified using customdata files. There are three relevant nodes, with one identifier node. Value represents the maximum nuyen value for that node. Interval is a string that is used to refer to the language file and is expected to be String_Hours, String_Day, etc. Duration is the total number of the Intervals that will pass. In total, this will parse to a label like this: {Negotiation dicepool} ({Availability Value}, {Duration} {Interval}), ie 12 (6R, 1 day).
 - Items with variable cost, e.g. the Custom Item gear, now properly prompt the user to select their cost.
 - Essence holes are no longer created when removing 'ware in Create mode.
+- Suggested specializations for knowledge skills now appear in dropdown menus again.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.

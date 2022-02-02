@@ -43,14 +43,19 @@ namespace Chummer.UI.Skills
         private readonly Font _fntNormalName;
         private readonly Font _fntItalicName;
         private CharacterAttrib _objAttributeActive;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Button cmdDelete;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnCareerIncrease;
         private readonly Label lblCareerRating;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudSkill;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Label lblCareerSpec;
         private readonly ButtonWithToolTip btnAddSpec;
         private readonly ElasticComboBox cboSpec;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ColorableCheckBox chkKarma;
         private readonly ElasticComboBox cboSelectAttribute;
 
@@ -83,7 +88,7 @@ namespace Chummer.UI.Skills
 
                 btnAttribute.DoOneWayDataBinding("Text", objSkill, nameof(Skill.DisplayAttribute));
 
-                SkillControl2_RefreshPoolTooltipAndDisplay();
+                RefreshPoolTooltipAndDisplay();
 
                 // Creating controls outside of the designer saves on handles if the controls would be invisible anyway
                 if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
@@ -338,7 +343,7 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    SkillControl2_RefreshPoolTooltipAndDisplay();
+                    RefreshPoolTooltipAndDisplay();
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
                     break;
@@ -385,6 +390,7 @@ namespace Chummer.UI.Skills
                         IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
                         cboSpec.QueueThreadSafe(() =>
                         {
+                            _blnUpdatingSpec = true;
                             cboSpec.BeginUpdate();
                             cboSpec.PopulateWithListItems(lstSpecializations);
                             if (string.IsNullOrEmpty(strOldSpec))
@@ -395,8 +401,8 @@ namespace Chummer.UI.Skills
                                 if (cboSpec.SelectedIndex == -1)
                                     cboSpec.Text = strOldSpec;
                             }
-
                             cboSpec.EndUpdate();
+                            _blnUpdatingSpec = false;
                         });
                     }
                     break;
@@ -413,7 +419,7 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-                    SkillControl2_RefreshPoolTooltipAndDisplay();
+                    RefreshPoolTooltipAndDisplay();
                     break;
             }
         }
@@ -521,7 +527,7 @@ namespace Chummer.UI.Skills
                     _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
                 btnAttribute.QueueThreadSafe(() =>
                     btnAttribute.Font = _objAttributeActive == _objSkill.AttributeObject ? _fntNormal : _fntItalic);
-                SkillControl2_RefreshPoolTooltipAndDisplay();
+                RefreshPoolTooltipAndDisplay();
                 CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -633,7 +639,7 @@ namespace Chummer.UI.Skills
 
         #endregion ButtonWithToolTip Visibility workaround
 
-        private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
+        private void SkillControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
             AdjustForDpi();
         }
@@ -652,7 +658,7 @@ namespace Chummer.UI.Skills
         /// <summary>
         /// Refreshes the Tooltip and Displayed Dice Pool. Can be used in another Thread
         /// </summary>
-        private void SkillControl2_RefreshPoolTooltipAndDisplay()
+        private void RefreshPoolTooltipAndDisplay()
         {
             string backgroundCalcPool = _objSkill.DisplayOtherAttribute(AttributeActive.Abbrev);
             lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);

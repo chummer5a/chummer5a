@@ -36,14 +36,19 @@ namespace Chummer.UI.Skills
         private readonly KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudSkill;
         private readonly Label lblRating;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnCareerIncrease;
         private readonly ColorableCheckBox chkNativeLanguage;
         private readonly ElasticComboBox cboSpec;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ColorableCheckBox chkKarma;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Label lblSpec;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnAddSpec;
 
         public KnowledgeSkillControl(KnowledgeSkill objSkill)
@@ -283,9 +288,9 @@ namespace Chummer.UI.Skills
                         IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
                         cboSpec.QueueThreadSafe(() =>
                         {
+                            _blnUpdatingSpec = true;
                             cboSpec.BeginUpdate();
                             cboSpec.PopulateWithListItems(lstSpecializations);
-                            cboSpec.EndUpdate();
                             if (string.IsNullOrEmpty(strOldSpec))
                                 cboSpec.SelectedIndex = -1;
                             else
@@ -294,6 +299,8 @@ namespace Chummer.UI.Skills
                                 if (cboSpec.SelectedIndex == -1)
                                     cboSpec.Text = strOldSpec;
                             }
+                            cboSpec.EndUpdate();
+                            _blnUpdatingSpec = false;
                         });
                     }
                     if (blnAll)
