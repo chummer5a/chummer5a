@@ -20,6 +20,7 @@ Application Changes:
 - Items with variable cost, e.g. the Custom Item gear, now properly prompt the user to select their cost.
 - Essence holes are no longer created when removing 'ware in Create mode.
 - Suggested specializations for knowledge skills now appear in dropdown menus again.
+- Editing a karma or nuyen expense now properly has that edit reflected in the list of karma or nuyen expenses respectively.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
