@@ -897,7 +897,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
             // Legacy catch for if a damage expression is not empty but has no attributes associated with it.
-            if (_objCharacter.LastSavedVersion < new Version(5, 214, 98) && !string.IsNullOrEmpty(_strDamage) &&
+            if (_objCharacter.LastSavedVersion < new System.Version(5, 214, 98) && !string.IsNullOrEmpty(_strDamage) &&
                 !_strDamage.Contains('{') && AttributeSection.AttributeStrings.Any(x => _strDamage.Contains(x)))
             {
                 objMyNode.Value?.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -5725,7 +5725,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                                                                     x.Quantity > 0
                                                                     && x.IsFlechetteAmmo
-                                                                    && x.AmmoForWeaponType == WeaponType
+                                                                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                                                                     && (string.IsNullOrEmpty(x.Extra)
                                                                         || x.Extra == AmmoCategory
                                                                         || x.Name == Name)))
@@ -5737,7 +5737,7 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                                                                     x.Quantity > 0
-                                                                    && x.AmmoForWeaponType == WeaponType
+                                                                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                                                                     && (string.IsNullOrEmpty(x.Extra)
                                                                         || x.Extra == AmmoCategory
                                                                         || x.Name == Name)))
@@ -5751,7 +5751,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0
                     && x.IsFlechetteAmmo
-                    && x.AmmoForWeaponType == WeaponType
+                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                     && (string.IsNullOrEmpty(x.Extra)
                         || x.Extra == AmmoCategory)))
                 {
@@ -5762,7 +5762,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0
-                    && x.AmmoForWeaponType == WeaponType
+                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                     && (string.IsNullOrEmpty(x.Extra)
                         || x.Extra == AmmoCategory)))
                 {
