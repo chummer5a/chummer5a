@@ -21,6 +21,8 @@ Application Changes:
 - Essence holes are no longer created when removing 'ware in Create mode.
 - Suggested specializations for knowledge skills now appear in dropdown menus again.
 - Editing a karma or nuyen expense now properly has that edit reflected in the list of karma or nuyen expenses respectively.
+- Fixed various issues where Essence cost modifiers would not get applied properly.
+- Additively stacking Essence cost modifiers no longer result in the total modifier being rounded to the nearest ten percent.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
