@@ -21,7 +21,8 @@ install:
 nuget:
   disable_publish_on_pr: true
 cache:
-  - packages -> **\packages.config
+  - packages -> **\packages.config                        # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+  - '%USERPROFILE%\.nuget\packages -> **\project.json'    # project.json cache
 before_build:
 - ps: |
     $token = $env:api_token
