@@ -48,7 +48,9 @@ namespace Chummer
     {
         private static Logger Log;
         private const string ChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        internal static readonly Process MyProcess = Process.GetCurrentProcess();
+
+        private static readonly Lazy<Process> s_objMyProcess = new Lazy<Process>(Process.GetCurrentProcess);
+        internal static readonly Process MyProcess = s_objMyProcess.Value;
 
         [CLSCompliant(false)]
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();

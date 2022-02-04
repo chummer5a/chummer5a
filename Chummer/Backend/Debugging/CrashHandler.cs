@@ -144,7 +144,7 @@ namespace Chummer.Backend
             public readonly Dictionary<string, string> _dicAttributes;
 
             // ReSharper disable once MemberCanBePrivate.Local
-            public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+            public readonly int _intProcessId = Program.MyProcess.Id;
 
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
