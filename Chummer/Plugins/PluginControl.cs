@@ -286,7 +286,18 @@ namespace Chummer.Plugins
 
                 //Fill the imports of this object
                 StartWatch();
-                _container.ComposeParts(this);
+                try
+                {
+                    _container.ComposeParts(this);
+                }
+                catch(ReflectionTypeLoadException e)
+                {
+                    Log.Error(e, "Plugins (at least not all of them) could not be loaded. Detailed exception follow as warnings.");
+                    foreach(var except in e.LoaderExceptions)
+                    {
+                        Log.Warn(except, except.Message);
+                    }
+                }
 
                 Log.Info("Plugins found: " + MyPlugins.Count);
                 if (MyPlugins.Count == 0)
