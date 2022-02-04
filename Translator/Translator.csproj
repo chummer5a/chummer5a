@@ -9,7 +9,7 @@
     <AssemblyName>Translator</AssemblyName>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Translator</RootNamespace>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
