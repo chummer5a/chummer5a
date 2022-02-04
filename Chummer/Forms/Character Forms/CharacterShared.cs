@@ -5496,10 +5496,9 @@ namespace Chummer
                                             if (chkPsycheActiveMagician != null)
                                                 chkPsycheActiveMagician.Visible = false;
                                         }
-                                        else if (refreshingPanel == pnlSustainedComplexForms)
+                                        else if (refreshingPanel == pnlSustainedComplexForms && chkPsycheActiveTechnomancer != null)
                                         {
-                                            if (chkPsycheActiveTechnomancer != null)
-                                                chkPsycheActiveTechnomancer.Visible = false;
+                                            chkPsycheActiveTechnomancer.Visible = false;
                                         }
                                     }
                                 }
@@ -5550,10 +5549,9 @@ namespace Chummer
                                             if (chkPsycheActiveMagician != null)
                                                 chkPsycheActiveMagician.Visible = false;
                                         }
-                                        else if (refreshingPanel == pnlSustainedComplexForms)
+                                        else if (refreshingPanel == pnlSustainedComplexForms && chkPsycheActiveTechnomancer != null)
                                         {
-                                            if (chkPsycheActiveTechnomancer != null)
-                                                chkPsycheActiveTechnomancer.Visible = false;
+                                            chkPsycheActiveTechnomancer.Visible = false;
                                         }
                                     }
                                 }
