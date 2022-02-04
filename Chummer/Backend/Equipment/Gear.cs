@@ -744,24 +744,30 @@ namespace Chummer.Backend.Equipment
 
             if (xmlGearDataNode != null)
             {
+                bool blnConsumeCapacity = lstGearAttributes?["consumecapacity"]?.InnerText == bool.TrueString;
+
                 string strForceValue = lstGearAttributes?["select"]?.InnerText ?? string.Empty;
                 decimal decQty = Convert.ToDecimal(lstGearAttributes?["qty"]?.InnerText ?? "1",
                                                    GlobalSettings.InvariantCultureInfo);
                 string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
                 Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms);
 
-                string strOldCapacity = Capacity;
-                int intSlashIndex = strOldCapacity?.IndexOf("/[", StringComparison.Ordinal) ?? -1;
-                if (intSlashIndex == -1)
-                    Capacity = "[0]";
-                else
-                    Capacity = (strOldCapacity?.Substring(0, intSlashIndex) ?? "0") + "/[0]";
-                strOldCapacity = ArmorCapacity;
-                intSlashIndex = strOldCapacity?.IndexOf("/[", StringComparison.Ordinal) ?? -1;
-                if (intSlashIndex == -1)
-                    ArmorCapacity = "[0]";
-                else
-                    ArmorCapacity = (strOldCapacity?.Substring(0, intSlashIndex) ?? "0") + "/[0]";
+                if (!blnConsumeCapacity)
+                {
+                    string strOldCapacity = Capacity;
+                    int intSlashIndex = strOldCapacity?.IndexOf("/[", StringComparison.Ordinal) ?? -1;
+                    if (intSlashIndex == -1)
+                        Capacity = "[0]";
+                    else
+                        Capacity = (strOldCapacity?.Substring(0, intSlashIndex) ?? "0") + "/[0]";
+                    strOldCapacity = ArmorCapacity;
+                    intSlashIndex = strOldCapacity?.IndexOf("/[", StringComparison.Ordinal) ?? -1;
+                    if (intSlashIndex == -1)
+                        ArmorCapacity = "[0]";
+                    else
+                        ArmorCapacity = (strOldCapacity?.Substring(0, intSlashIndex) ?? "0") + "/[0]";
+                }
+
                 Cost = "0";
                 Quantity = decQty;
                 if (!string.IsNullOrEmpty(strMaxRating))

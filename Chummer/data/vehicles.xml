@@ -4220,8 +4220,8 @@
           <rating>4</rating>
           <maxrating>4</maxrating>
           <gears>
-            <gear rating="6">Geiger Counter</gear>
-            <gear rating="8">Olfactory Scanner</gear>
+            <gear rating="6" consumecapacity="True">Geiger Counter</gear>
+            <gear rating="8" consumecapacity="True">Olfactory Scanner</gear>
           </gears>
         </gear>
       </gears>
@@ -4248,7 +4248,7 @@
           <rating>2</rating>
           <maxrating>3</maxrating>
         </gear>
-        <gear rating="6">Radio Signal Scanner</gear>
+        <gear rating="6" consumecapacity="True">Radio Signal Scanner</gear>
       </gears>
       <modslots>1</modslots>
     </vehicle>
@@ -4352,14 +4352,14 @@
           <rating>8</rating>
           <maxrating>8</maxrating>
           <gears>
-            <gear rating="8">Atmosphere Sensor</gear>
-            <gear rating="8">Camera</gear>
-            <gear rating="8">Geiger Counter</gear>
-            <gear rating="8">MAD Scanner</gear>
-            <gear rating="8">Olfactory Scanner</gear>
-            <gear rating="8">Radio Signal Scanner</gear>
-            <gear rating="8">Ultrasound</gear>
-            <gear rating="8">X-Ray</gear>
+            <gear rating="8" consumecapacity="True">Atmosphere Sensor</gear>
+            <gear rating="8" consumecapacity="True">Camera</gear>
+            <gear rating="8" consumecapacity="True">Geiger Counter</gear>
+            <gear rating="8" consumecapacity="True">MAD Scanner</gear>
+            <gear rating="8" consumecapacity="True">Olfactory Scanner</gear>
+            <gear rating="8" consumecapacity="True">Radio Signal Scanner</gear>
+            <gear rating="8" consumecapacity="True">Ultrasound</gear>
+            <gear rating="8" consumecapacity="True">X-Ray</gear>
           </gears>
         </gear>
       </gears>

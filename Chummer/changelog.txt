@@ -33,6 +33,7 @@ Data Changes:
 - Fichetti Pain Inducer can now properly track the 10 charges it has the same way as Stun Batons.
 - Fixed all cases where exotic ranged weapons that used ammo of some kind could not be refilled with ammo.
 - Fixed incorrect powers for the Bugul and Croki.
+- Vehicles that come with sensor functions explicitly specified in their sensor arrays can no longer support more than the eight sensor functions they would be allowed to support.
 
 Build 220
 Application Changes:
