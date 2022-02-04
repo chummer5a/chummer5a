@@ -6344,6 +6344,11 @@ namespace Chummer
                             })
                             {
                                 frmPickNumber.ShowDialogSafe(this);
+                                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                                {
+                                    objAccessory.DeleteWeaponAccessory();
+                                    continue;
+                                }
                                 objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             }
                         }
@@ -12267,14 +12272,15 @@ namespace Chummer
                                                             objExpense.Undo.KarmaType ==
                                                             KarmaExpenseType.ManualSubtract);
 
+            bool blnDoRepopulateList;
             using (CreateExpense frmEditExpense = new CreateExpense(CharacterObjectSettings)
-            {
-                Reason = objExpense.Reason,
-                Amount = objExpense.Amount,
-                Refund = objExpense.Refund,
-                SelectedDate = objExpense.Date,
-                ForceCareerVisible = objExpense.ForceCareerVisible
-            })
+                   {
+                       Reason = objExpense.Reason,
+                       Amount = objExpense.Amount,
+                       Refund = objExpense.Refund,
+                       SelectedDate = objExpense.Date,
+                       ForceCareerVisible = objExpense.ForceCareerVisible
+                   })
             {
                 frmEditExpense.LockFields(blnAllowEdit);
 
@@ -12289,12 +12295,18 @@ namespace Chummer
                 {
                     objExpense.Amount = intNewAmount;
                     CharacterObject.Karma += intNewAmount - intOldAmount;
+                    blnDoRepopulateList = true;
                 }
+                else
+                    blnDoRepopulateList = intNewAmount != 0 || chkShowFreeKarma.Checked;
 
                 // Rename the Expense.
                 objExpense.Reason = frmEditExpense.Reason;
                 objExpense.Date = frmEditExpense.SelectedDate;
             }
+
+            if (blnDoRepopulateList)
+                RepopulateKarmaExpenseList();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -12318,15 +12330,16 @@ namespace Chummer
                                                             objExpense.Undo.NuyenType ==
                                                             NuyenExpenseType.ManualSubtract);
 
+            bool blnDoRepopulateList;
             using (CreateExpense frmEditExpense = new CreateExpense(CharacterObjectSettings)
-            {
-                Mode = ExpenseType.Nuyen,
-                Reason = objExpense.Reason,
-                Amount = objExpense.Amount,
-                Refund = objExpense.Refund,
-                SelectedDate = objExpense.Date,
-                ForceCareerVisible = objExpense.ForceCareerVisible
-            })
+                   {
+                       Mode = ExpenseType.Nuyen,
+                       Reason = objExpense.Reason,
+                       Amount = objExpense.Amount,
+                       Refund = objExpense.Refund,
+                       SelectedDate = objExpense.Date,
+                       ForceCareerVisible = objExpense.ForceCareerVisible
+                   })
             {
                 frmEditExpense.LockFields(blnAllowEdit);
 
@@ -12341,12 +12354,18 @@ namespace Chummer
                 {
                     objExpense.Amount = decNewAmount;
                     CharacterObject.Nuyen += decNewAmount - decOldAmount;
+                    blnDoRepopulateList = true;
                 }
+                else
+                    blnDoRepopulateList = decNewAmount != 0 || chkShowFreeNuyen.Checked;
 
                 // Rename the Expense.
                 objExpense.Reason = frmEditExpense.Reason;
                 objExpense.Date = frmEditExpense.SelectedDate;
             }
+
+            if (blnDoRepopulateList)
+                RepopulateNuyenExpenseList();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;

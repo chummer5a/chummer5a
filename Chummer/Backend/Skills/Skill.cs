@@ -1420,6 +1420,7 @@ namespace Chummer.Backend.Skills
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
                 _blnRecalculateCachedSuggestedSpecializations = true;
+                OnPropertyChanged();
             }
         }
 
@@ -2245,7 +2246,10 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, Skill>(nameof(PreferredColor),
                     new DependencyGraphNode<string, Skill>(nameof(Notes))
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(CGLSpecializations)),
+                new DependencyGraphNode<string, Skill>(nameof(CGLSpecializations),
+                    new DependencyGraphNode<string, Skill>(nameof(SkillId)),
+                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
+                ),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentSpCost),
                     new DependencyGraphNode<string, Skill>(nameof(BasePoints)),
                     new DependencyGraphNode<string, Skill>(nameof(Specializations)),

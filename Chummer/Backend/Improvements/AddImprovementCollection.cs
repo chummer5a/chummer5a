@@ -7528,7 +7528,7 @@ namespace Chummer
                            })
                     {
                         frmPickItem.SetDropdownItemsMode(lstActions);
-                        frmPickItem.ShowDialog(Program.MainForm);
+                        frmPickItem.ShowDialogSafe(Program.MainForm);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)

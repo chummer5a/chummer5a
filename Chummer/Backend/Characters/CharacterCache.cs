@@ -18,13 +18,13 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -40,6 +40,9 @@ namespace Chummer
     [DebuggerDisplay("{CharacterName} ({FileName})")]
     public sealed class CharacterCache : IDisposable
     {
+        private readonly ReaderWriterLockSlim
+            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
         public string FilePath { get; set; }
         public string FileName { get; set; }
         public string ErrorText { get; set; }
@@ -56,11 +59,22 @@ namespace Chummer
         public string CharacterAlias { get; set; }
         public string BuildMethod { get; set; }
         public string Essence { get; set; }
-        public override string ToString()
+
+        private bool _blnIsLoadMethodRunning;
+
+        public bool IsLoadMethodRunning
         {
-            return FilePath;
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return _blnIsLoadMethodRunning;
+            }
+            set
+            {
+                using (new EnterWriteLock(_rwlThis))
+                    _blnIsLoadMethodRunning = value;
+            }
         }
-        public bool IsLoadMethodRunning { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
@@ -68,12 +82,13 @@ namespace Chummer
         public Image Mugshot { get; private set; }
 
         public bool Created { get; set; }
+
         public string SettingsFile { get; set; }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public Dictionary<string, object> MyPluginDataDic { get; } = new Dictionary<string, object>();
+        public LockingDictionary<string, object> MyPluginDataDic { get; } = new LockingDictionary<string, object>();
 
         public Task<string> DownLoadRunning { get; set; }
 
@@ -390,6 +405,13 @@ namespace Chummer
         {
             Mugshot?.Dispose();
             DownLoadRunning?.Dispose();
+            MyPluginDataDic.Dispose();
+            _rwlThis?.Dispose();
+        }
+
+        public override string ToString()
+        {
+            return FilePath;
         }
     }
 }

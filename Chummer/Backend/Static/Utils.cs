@@ -24,7 +24,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 #if DEBUG
 using System.Runtime.InteropServices;
@@ -155,7 +154,13 @@ namespace Chummer
             "weapons.xml"
         });
 
-        public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
+        private static readonly Lazy<Version> s_ObjCurrentChummerVersion = new Lazy<Version>(() => typeof(Program).Assembly.GetName().Version);
+
+        public static Version CurrentChummerVersion => s_ObjCurrentChummerVersion.Value;
+
+        public static bool IsMilestoneVersion => CurrentChummerVersion.Build == 0;
+
+        public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(CurrentChummerVersion) ?? 0;
 
         public const int DefaultSleepDuration = 15;
 

@@ -17,7 +17,8 @@ namespace CrashHandler
             _dumper = dumper ?? throw new ArgumentNullException(nameof(dumper));
             InitializeComponent();
             lblDesc.Text = _dumper.Attributes["visible-error-friendly"];
-            txtIdSelectable.Text = "Crash followup id = " + _dumper.Attributes["visible-crash-id"];
+            txtIdSelectable.Text = "Crash followup Id = " + _dumper.Attributes["visible-crash-id"];
+            txtIdSelectable2.Text = "Installation Id = " + _dumper.Attributes["installation-id"];
             _dumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
         }
 

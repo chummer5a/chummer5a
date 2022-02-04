@@ -181,7 +181,7 @@ namespace Chummer.UI.Skills
             this.Name = "SkillControl";
             this.Size = new System.Drawing.Size(143, 25);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
-            this.DpiChangedAfterParent += new System.EventHandler(this.SkillControl2_DpiChangedAfterParent);
+            this.DpiChangedAfterParent += new System.EventHandler(this.SkillControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.cmsSkillLabel.ResumeLayout(false);
             this.tlpMain.ResumeLayout(false);

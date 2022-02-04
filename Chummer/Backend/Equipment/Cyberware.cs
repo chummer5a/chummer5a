@@ -86,7 +86,7 @@ namespace Chummer.Backend.Equipment
         private readonly HashSet<string> _lstIncludeInWirelessPairBonus = Utils.StringHashSetPool.Get();
         private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
-        private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
+        private Improvement.ImprovementSource _eImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intEssenceDiscount;
@@ -606,7 +606,7 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
             objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
 
-            _objImprovementSource = objSource;
+            _eImprovementSource = objSource;
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
             objXmlCyberware.TryGetStringFieldQuickly("rating", ref _strMaxRating);
@@ -740,7 +740,7 @@ namespace Chummer.Backend.Equipment
                                    AllowCancel = false
                                })
                         {
-                            if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                            if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
                                 _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             return frmPickNumber.DialogResult;
                         }
@@ -935,7 +935,7 @@ namespace Chummer.Backend.Equipment
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
             if (this.GetNodeXPath()?.SelectSingleNode("forcegrade")?.Value != "None")
             {
-                switch (_objImprovementSource)
+                switch (_eImprovementSource)
                 {
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Cyberware:
@@ -1348,7 +1348,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("wirelesspairbonus", string.Empty);
             if (_nodAllowGear != null)
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
-            objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
+            objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
             if (_guiVehicleID != Guid.Empty)
@@ -1436,7 +1436,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (objNode["improvementsource"] != null)
             {
-                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _eImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             }
 
             _objCachedMyXmlNode = null;
@@ -1458,7 +1458,7 @@ namespace Chummer.Backend.Equipment
             if (_strName == "Reflex Recorder (Skill)" && _objCharacter.LastSavedVersion <= new Version(5, 198, 31))
             {
                 // This step is needed in case there's a custom data file that has the name "Reflex Recorder (Skill)", in which case we wouldn't want to rename the 'ware
-                XPathNavigator xmlReflexRecorderNode = _objImprovementSource == Improvement.ImprovementSource.Bioware
+                XPathNavigator xmlReflexRecorderNode = _eImprovementSource == Improvement.ImprovementSource.Bioware
                     ? _objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
                     : _objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
                 if (xmlReflexRecorderNode == null)
@@ -1505,7 +1505,7 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
             if (objNode["grade"] != null)
-                _objGrade = Grade.ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter);
+                _objGrade = Grade.ConvertToCyberwareGrade(objNode["grade"].InnerText, _eImprovementSource, _objCharacter);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             if (!objNode.TryGetStringFieldQuickly("extra", ref _strExtra) && _strLocation != "Left" &&
                 _strLocation != "Right")
@@ -1576,7 +1576,7 @@ namespace Chummer.Backend.Equipment
             {
                 _strForceGrade = objMyNode.Value?["forcegrade"]?.InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
-                    _objGrade = Grade.ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
+                    _objGrade = Grade.ConvertToCyberwareGrade(_strForceGrade, _eImprovementSource, _objCharacter);
             }
 
             if (objNode["weaponguid"] != null && !Guid.TryParse(objNode["weaponguid"].InnerText, out _guiWeaponID))
@@ -1690,7 +1690,7 @@ namespace Chummer.Backend.Equipment
 
                     if (Bonus != null)
                     {
-                        ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource,
+                        ImprovementManager.CreateImprovements(_objCharacter, _eImprovementSource,
                             _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating, DisplayNameShort(GlobalSettings.Language));
                     }
 
@@ -1699,7 +1699,7 @@ namespace Chummer.Backend.Equipment
 
                     if (WirelessBonus != null)
                     {
-                        ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource,
+                        ImprovementManager.CreateImprovements(_objCharacter, _eImprovementSource,
                             _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
                     }
 
@@ -1979,14 +1979,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Improvement.ImprovementSource SourceType
         {
-            get => _objImprovementSource;
+            get => _eImprovementSource;
             set
             {
-                if (_objImprovementSource == value)
+                if (_eImprovementSource == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _objImprovementSource = value;
+                _eImprovementSource = value;
             }
         }
 
@@ -2432,7 +2432,7 @@ namespace Chummer.Backend.Equipment
                                                                                   && x.SourceName == InternalId));
                         }
 
-                        ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource, InternalId + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                        ImprovementManager.CreateImprovements(_objCharacter, _eImprovementSource, InternalId + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
 
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                             _strExtra = ImprovementManager.SelectedValue;
@@ -3342,7 +3342,7 @@ namespace Chummer.Backend.Equipment
                 return _objCachedMyXmlNode;
             string strDoc = "cyberware.xml";
             string strPath = "/chummer/cyberwares/cyberware";
-            if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
+            if (SourceType == Improvement.ImprovementSource.Bioware)
             {
                 strDoc = "bioware.xml";
                 strPath = "/chummer/biowares/bioware";
@@ -3375,7 +3375,7 @@ namespace Chummer.Backend.Equipment
                 return _objCachedMyXPathNode;
             string strDoc = "cyberware.xml";
             string strPath = "/chummer/cyberwares/cyberware";
-            if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
+            if (SourceType == Improvement.ImprovementSource.Bioware)
             {
                 strDoc = "bioware.xml";
                 strPath = "/chummer/biowares/bioware";
@@ -3755,10 +3755,12 @@ namespace Chummer.Backend.Equipment
             }
 
             // Factor in the Essence multiplier of the selected CyberwareGrade.
+            // We apply grade-based Essence modifiers to the additive stack because of Wakshaani's post about Biocompatibility:
+            // https://forums.shadowruntabletop.com/index.php?topic=21061.msg381782#msg381782
             decimal decESSMultiplier = objGrade.Essence + ExtraESSAdditiveMultiplier;
-            decimal decTotalESSMultiplier = 1.0m * ExtraESSMultiplicativeMultiplier;
+            decimal decTotalESSMultiplier = ExtraESSMultiplicativeMultiplier;
 
-            if (_blnSuite)
+            if (Suite)
                 decESSMultiplier -= 0.1m;
 
             if (ESSDiscount != 0)
@@ -3767,63 +3769,70 @@ namespace Chummer.Backend.Equipment
                 decTotalESSMultiplier *= 1.0m - decDiscount;
             }
 
-            void UpdateMultipliers(Improvement.ImprovementType baseMultiplier, Improvement.ImprovementType totalMultiplier, ref decimal decMultiplier, ref decimal decTotalMultiplier)
-            {
-                if (baseMultiplier != Improvement.ImprovementType.None && ImprovementManager.ValueOf(_objCharacter, baseMultiplier, out List<Improvement> lstUsedImprovements) != 0)
-                {
-                    decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                                                  (current, objImprovement) =>
-                                                                      current - (1m - objImprovement.Value / 100m));
-                    decESSMultiplier = Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
-                }
-                if (totalMultiplier != Improvement.ImprovementType.None && ImprovementManager.ValueOf(_objCharacter, totalMultiplier, out lstUsedImprovements) != 0)
-                {
-                    decTotalMultiplier = lstUsedImprovements.Aggregate(decTotalESSMultiplier,
-                                                                       (current, objImprovement) =>
-                                                                           current * (objImprovement.Value / 100m));
-                }
-            }
-
             // Retrieve the Bioware, Geneware or Cyberware ESS Cost Multiplier.
-            if (ForceGrade == "None" && !IsGeneware)
+            if (ForceGrade != "None" || IsGeneware)
             {
-                decESSMultiplier = 1.0m;
-                decTotalESSMultiplier = 1.0m;
-            }
-            else
-            {
-                decimal decMultiplier = 1;
-                switch (_objImprovementSource)
+                switch (SourceType)
                 {
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Cyberware:
-                        UpdateMultipliers(Improvement.ImprovementType.CyberwareEssCost, Improvement.ImprovementType.CyberwareTotalEssMultiplier, ref decMultiplier, ref decTotalESSMultiplier);
+                        UpdateMultipliers(Improvement.ImprovementType.CyberwareEssCost,
+                            Improvement.ImprovementType.CyberwareTotalEssMultiplier);
                         break;
                     // Apply the character's Bioware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Bioware when !IsGeneware:
-                        UpdateMultipliers(Improvement.ImprovementType.BiowareEssCost, Improvement.ImprovementType.BiowareTotalEssMultiplier, ref decMultiplier, ref decTotalESSMultiplier);
+                        UpdateMultipliers(Improvement.ImprovementType.BiowareEssCost,
+                            Improvement.ImprovementType.BiowareTotalEssMultiplier);
+                        // Apply the character's Basic Bioware Essence cost multiplier if applicable.
+                        if (Category == "Basic")
+                        {
+                            List<Improvement> lstUsedImprovements =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BasicBiowareEssCost);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                    decESSMultiplier -= 1m - objImprovement.Value / 100m;
+                            }
+                        }
+
                         break;
                     // Apply the character's Geneware Essence cost multiplier if applicable. Since Geneware does not use Grades, we only check the genetechessmultiplier improvement.
                     case Improvement.ImprovementSource.Bioware when IsGeneware:
-                        UpdateMultipliers(Improvement.ImprovementType.GenetechEssMultiplier, Improvement.ImprovementType.None, ref decMultiplier, ref decTotalESSMultiplier);
+                        UpdateMultipliers(Improvement.ImprovementType.GenetechEssMultiplier,
+                            Improvement.ImprovementType.None);
                         break;
                 }
-
-                // Apply the character's Basic Bioware Essence cost multiplier if applicable.
-                if (_strCategory == "Basic" && _objImprovementSource == Improvement.ImprovementSource.Bioware &&
-                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicBiowareEssCost, out List<Improvement> lstUsedImprovements) != 0)
+                void UpdateMultipliers(Improvement.ImprovementType eBaseMultiplier, Improvement.ImprovementType eTotalMultiplier)
                 {
-                    decimal decBasicMultiplier = lstUsedImprovements.Aggregate<Improvement, decimal>(1,
-                            (current, objImprovement) =>
-                                current - (1m - objImprovement.Value / 100m));
-                    decESSMultiplier -= 1.0m - decBasicMultiplier;
+                    if (eBaseMultiplier != Improvement.ImprovementType.None)
+                    {
+                        List<Improvement> lstUsedImprovements =
+                            ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, eBaseMultiplier);
+                        if (lstUsedImprovements.Count != 0)
+                        {
+                            foreach (Improvement objImprovement in lstUsedImprovements)
+                                decESSMultiplier -= 1m - objImprovement.Value / 100m;
+                        }
+                    }
+                    if (eTotalMultiplier != Improvement.ImprovementType.None)
+                    {
+                        List<Improvement> lstUsedImprovements =
+                            ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, eTotalMultiplier);
+                        if (lstUsedImprovements.Count != 0)
+                        {
+                            foreach (Improvement objImprovement in lstUsedImprovements)
+                                decTotalESSMultiplier *= objImprovement.Value / 100m;
+                        }
+                    }
                 }
             }
 
-            decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
+            decReturn *= Math.Max(0, decESSMultiplier * decTotalESSMultiplier);
 
             if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
+
             if (_objCharacter?.IsPrototypeTranshuman == true)
                 decReturn += Children
                              .Where(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman).Sum(
@@ -4693,7 +4702,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (_objCharacter.Cyberware.Contains(this))
                 {
-                    if (blnIncreaseEssenceHole && SourceID != EssenceAntiHoleGUID && SourceID != EssenceHoleGUID)
+                    if (blnIncreaseEssenceHole && _objCharacter.Created && SourceID != EssenceAntiHoleGUID && SourceID != EssenceHoleGUID)
                     {
                         // Add essence hole.
                         decimal decEssenceHoleToAdd = CalculatedESS;

@@ -388,7 +388,7 @@ namespace Chummer.Backend.Equipment
                                        AllowCancel = false
                                    })
                             {
-                                if (frmPickNumber.DialogResult != DialogResult.Cancel)
+                                if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
                                     _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                                 return frmPickNumber.DialogResult;
                             }
@@ -5725,7 +5725,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                                                                     x.Quantity > 0
                                                                     && x.IsFlechetteAmmo
-                                                                    && x.AmmoForWeaponType == WeaponType
+                                                                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                                                                     && (string.IsNullOrEmpty(x.Extra)
                                                                         || x.Extra == AmmoCategory
                                                                         || x.Name == Name)))
@@ -5737,7 +5737,7 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                                                                     x.Quantity > 0
-                                                                    && x.AmmoForWeaponType == WeaponType
+                                                                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                                                                     && (string.IsNullOrEmpty(x.Extra)
                                                                         || x.Extra == AmmoCategory
                                                                         || x.Name == Name)))
@@ -5751,7 +5751,7 @@ namespace Chummer.Backend.Equipment
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0
                     && x.IsFlechetteAmmo
-                    && x.AmmoForWeaponType == WeaponType
+                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                     && (string.IsNullOrEmpty(x.Extra)
                         || x.Extra == AmmoCategory)))
                 {
@@ -5762,7 +5762,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0
-                    && x.AmmoForWeaponType == WeaponType
+                    && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                     && (string.IsNullOrEmpty(x.Extra)
                         || x.Extra == AmmoCategory)))
                 {

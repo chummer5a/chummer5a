@@ -3091,21 +3091,21 @@ namespace Chummer
                                         !string.IsNullOrEmpty(strMinimumVersion))
                                     {
                                         strMinimumVersion = strMinimumVersion.TrimStartOnce("0.");
-                                        if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Program.CurrentVersion)
+                                        if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Utils.CurrentChummerVersion)
                                         {
                                             Program.MainForm.ShowMessageBox(
                                                 string.Format(GlobalSettings.CultureInfo,
                                                     LanguageManager.GetString("Message_OlderThanChummerSaveMinimumVersion"),
-                                                    objMinimumVersion, Program.CurrentVersion),
+                                                    objMinimumVersion, Utils.CurrentChummerVersion),
                                                 LanguageManager.GetString("MessageTitle_OlderThanChummerSaveMinimumVersion"),
                                                 MessageBoxButtons.OK,
                                                 MessageBoxIcon.Error);
                                             return false;
                                         }
                                     }
-                                    if (_verSavedVersion > Program.CurrentVersion && DialogResult.Yes != Program.MainForm.ShowMessageBox(
+                                    if (_verSavedVersion > Utils.CurrentChummerVersion && DialogResult.Yes != Program.MainForm.ShowMessageBox(
                                         string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
-                                            _verSavedVersion, Program.CurrentVersion),
+                                            _verSavedVersion, Utils.CurrentChummerVersion),
                                         LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
                                         MessageBoxButtons.YesNo,
                                         MessageBoxIcon.Warning))
@@ -16000,24 +16000,23 @@ namespace Chummer
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            string strInterval = string.Empty;
             // Find the character's Negotiation total.
             int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
+            if (GlobalSettings.LiveCustomData)
+                _dicAvailabilityMap.Clear();
             if (_dicAvailabilityMap.Count == 0)
             {
-                using (XmlNodeList xmlAvailList =
-                       LoadData("options.xml").SelectNodes("/chummer/availmap/avail"))
+                foreach (XPathNavigator objNode in LoadDataXPath("options.xml").SelectAndCacheExpression("/chummer/availmap/avail"))
                 {
-                    foreach (XmlNode objNode in xmlAvailList)
-                    {
-                        _dicAvailabilityMap.Add(Convert.ToDecimal(objNode["value"].InnerText),new Tuple<string, string>(objNode["duration"].InnerText,objNode["interval"].InnerText));
-                    }
+                    _dicAvailabilityMap.Add(Convert.ToDecimal(objNode.SelectSingleNodeAndCacheExpression("value").Value),
+                                            new Tuple<string, string>(objNode.SelectSingleNodeAndCacheExpression("duration").Value,
+                                                                      objNode.SelectSingleNodeAndCacheExpression("interval").Value));
                 }
             }
 
-            KeyValuePair<decimal, Tuple<string, string>> item = _dicAvailabilityMap.Where(x => decCost < x.Key).FirstOrDefault(); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
+            KeyValuePair<decimal, Tuple<string, string>> item = _dicAvailabilityMap.FirstOrDefault(x => decCost < x.Key); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
             // Determine the interval based on the item's price.
-            strInterval = item.Value.Item1 + strSpace + LanguageManager.GetString(item.Value.Item2);
+            string strInterval = item.Value.Item1 + strSpace + LanguageManager.GetString(item.Value.Item2);
 
             return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                    + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';

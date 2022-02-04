@@ -569,6 +569,33 @@
       <ammoforweapontype>squirtgun</ammoforweapontype>
     </gear>
     <gear>
+      <id>6fbc580a-50f8-481b-99b0-84243e53fc12</id>
+      <name>Ammo: Narcoject Gas Gun Canisters</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>43</page>
+      <avail>2R</avail>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <cost>20</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype>gasgun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>ff6aa1f8-d0a5-4d24-af56-2bc2d75bfdd5</id>
+      <name>Ammo: Narcoject Trackstopper Foam</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>44</page>
+      <avail>15R</avail>
+      <cost>500</cost>
+      <costfor>6</costfor>
+      <ammoforweapontype>trackstopper</ammoforweapontype>
+    </gear>
+    <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
       <name>Arrow: Standard</name>
       <category>Ammunition</category>
@@ -638,6 +665,18 @@
       <avail>4R</avail>
       <addweapon>Shuriken</addweapon>
       <cost>25</cost>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
+      <id>13b3f7fb-87c1-41d1-9c98-54484b0d557c</id>
+      <name>Elektro-Netz</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>HAMG</source>
+      <page>172</page>
+      <avail>6</avail>
+      <cost>600</cost>
+      <addweapon>Elektro-Netz</addweapon>
       <costfor>1</costfor>
     </gear>
     <gear>
@@ -9087,6 +9126,7 @@
       <page>449</page>
       <avail>4</avail>
       <cost>50</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>14243f3e-8d05-480d-8e74-b90ee615e6ff</id>
@@ -9097,6 +9137,7 @@
       <page>449</page>
       <avail>10</avail>
       <cost>200</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>8adaecd5-0c24-4982-8803-e4459e16589f</id>
@@ -9107,6 +9148,7 @@
       <page>449</page>
       <avail>0</avail>
       <cost>50</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>76890101-9f90-41db-a6f0-6f5fd4802896</id>
@@ -9117,6 +9159,7 @@
       <page>449</page>
       <avail>8F</avail>
       <cost>85</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>24299462-b0d1-470e-b520-64fb755421db</id>
@@ -9127,6 +9170,7 @@
       <page>185</page>
       <avail>8</avail>
       <cost>100</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>54fc44f0-fc74-4efb-a323-1bd47c8ca5e1</id>
@@ -9137,6 +9181,7 @@
       <page>185</page>
       <avail>2</avail>
       <cost>100</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>3a9dc42d-6fb8-42f2-93c3-554d67a7eb6a</id>
@@ -9147,6 +9192,7 @@
       <page>185</page>
       <avail>12F</avail>
       <cost>170</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
@@ -12367,6 +12413,7 @@
       <page>409</page>
       <avail>4R</avail>
       <cost>20</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>e90016cf-cf44-4cd2-9343-c0f2a58e1aa2</id>
@@ -12397,6 +12444,7 @@
       <page>410</page>
       <avail>6R</avail>
       <cost>25</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>24e87c73-22be-480d-bb79-978277672a1d</id>
@@ -12407,6 +12455,7 @@
       <page>410</page>
       <avail>12R</avail>
       <cost>60</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>f81d9a2e-5c2d-49ad-93b4-1a7a71439bf3</id>
@@ -12417,6 +12466,7 @@
       <page>410</page>
       <avail>13R</avail>
       <cost>60</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>4ad3f9ea-4ee0-45f8-a57b-ed40c660d0b0</id>
@@ -12427,6 +12477,7 @@
       <page>410</page>
       <avail>14R</avail>
       <cost>100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>a79225da-7507-4b40-8cc1-867213a3c7d8</id>
@@ -12438,7 +12489,7 @@
       <avail>0</avail>
       <cost>5</cost>
       <!-- ReSharper disable once MarkupTextTypo -->
-      <ammoforweapontype>pepperpunch</ammoforweapontype>
+      <ammoforweapontype>pepperpunch,spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>189c3bb8-357b-412a-afc4-ce931ea8871d</id>
@@ -12449,6 +12500,7 @@
       <page>410</page>
       <avail>20F</avail>
       <cost>1000</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>0a2194c5-1bfa-4c6a-b84b-c828f0e8fea5</id>
@@ -12479,6 +12531,7 @@
       <page>20</page>
       <avail>10F</avail>
       <cost>500</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>2b8ff345-7f72-4a42-a8b1-0acd54c4db9a</id>
@@ -12499,6 +12552,7 @@
       <page>21</page>
       <avail>16R</avail>
       <cost>5000</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>4235dd3f-1865-4f7b-b2e5-e43fdcbd94de</id>
@@ -12533,6 +12587,7 @@
       <page>411</page>
       <avail>3F</avail>
       <cost>15</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>8dc829b9-8b94-4510-ab1a-2305cbad69c9</id>
@@ -12543,6 +12598,7 @@
       <page>411</page>
       <avail>2R</avail>
       <cost>10</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>5f5bc907-ce31-4f34-b7cf-a48d9d5d10b3</id>
@@ -12553,6 +12609,7 @@
       <page>411</page>
       <avail>8F</avail>
       <cost>400</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>929c4835-1754-4999-9215-9859e8ec5384</id>
@@ -12563,6 +12620,7 @@
       <page>411</page>
       <avail>2R</avail>
       <cost>75</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>098bf489-bea9-4f17-b3d9-aead979fdc32</id>
@@ -12573,6 +12631,7 @@
       <page>412</page>
       <avail>4R</avail>
       <cost>100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>d4cf626d-0af1-41f7-bec0-e53b4dba2eb1</id>
@@ -12593,6 +12652,7 @@
       <page>412</page>
       <avail>2R</avail>
       <cost>50</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>836f54d5-1e11-49ea-b115-34c14ed843c9</id>
@@ -12603,6 +12663,7 @@
       <page>412</page>
       <avail>2R</avail>
       <cost>10</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>778eefae-94ad-4f8c-ad03-8b9039b5c48e</id>
@@ -12623,6 +12684,7 @@
       <page>412</page>
       <avail>4R</avail>
       <cost>5</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>35309aeb-0cbc-4b64-a809-34de50812564</id>
@@ -12715,6 +12777,7 @@
       <page>205</page>
       <avail>6R</avail>
       <cost>200</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>ee783a4e-331f-4e03-bf47-7ecb93341919</id>
@@ -12725,6 +12788,7 @@
       <page>204</page>
       <avail>6R</avail>
       <cost>100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>31f51b7e-d2eb-4274-aead-72710b198c13</id>
@@ -12745,6 +12809,7 @@
       <page>204</page>
       <avail>6R</avail>
       <cost>75</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>8cb8086b-3171-4a60-bee4-2996e29d5156</id>
@@ -12825,6 +12890,7 @@
       <page>180</page>
       <avail>5F</avail>
       <cost>30</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>67436993-439d-4e6b-b64a-3f506f44721a</id>
@@ -12915,6 +12981,7 @@
       <page>181</page>
       <avail>8R</avail>
       <cost>60</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>df660e33-ce77-46e4-8c13-a92e3b5f37e8</id>
@@ -12985,6 +13052,7 @@
       <page>187</page>
       <avail>12F</avail>
       <cost>1800</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>65122a92-ae48-4e94-8c68-69c1bdc7d46a</id>
@@ -13025,6 +13093,7 @@
       <page>186</page>
       <avail>6F</avail>
       <cost>1250</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>aa22ff52-1615-48cb-9e55-e63539ede39a</id>
@@ -13035,6 +13104,7 @@
       <page>186</page>
       <avail>10F</avail>
       <cost>800</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>7fdde8cd-95f8-4316-9ca4-2ad06f77cb15</id>
@@ -13055,6 +13125,7 @@
       <page>186</page>
       <avail>8F</avail>
       <cost>800</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>9c3ae30d-dd3e-49da-a30b-acbe06b444ac</id>
@@ -13125,6 +13196,7 @@
       <page>187</page>
       <avail>6R</avail>
       <cost>1000</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>62d633d1-0e3a-4ea6-a4ba-f88ccdf72cf9</id>
@@ -13155,6 +13227,7 @@
       <page>183</page>
       <avail>1R</avail>
       <cost>10</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>6c030daa-7dc0-4d7e-86a8-d36f4b15e13f</id>
@@ -13185,6 +13258,7 @@
       <page>186</page>
       <avail>10F</avail>
       <cost>1100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>8a01190e-f484-4fc6-981e-3e954ce17107</id>
@@ -13205,6 +13279,7 @@
       <page>187</page>
       <avail>12F</avail>
       <cost>2350</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>2d35de28-3b3d-4009-8ced-de5fd3869069</id>
@@ -13285,6 +13360,7 @@
       <page>188</page>
       <avail>4R</avail>
       <cost>75</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>691af444-8ffc-406b-9999-4ff2058eff1f</id>
