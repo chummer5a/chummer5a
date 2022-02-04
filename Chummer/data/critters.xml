@@ -51798,8 +51798,8 @@
       <powers>
         <power>Astral Form</power>
         <power>Aura Masking</power>
-        <power select="Smell">Improved Sense</power>
-        <power>Thermal)</power>
+        <power select="Smell">Improved Senses</power>
+        <power select="Thermal">Improved Senses</power>
         <power>Materialization</power>
         <power>Sapience</power>
         <power select="4">Spell Resistance</power>
@@ -51979,7 +51979,7 @@
       <sprint>2/1/0</sprint>
       <armor>0</armor>
       <skills>
-        <skill>Artifcing</skill>
+        <skill>Artificing</skill>
         <skill>Assensing</skill>
         <skill>Astral Combat</skill>
         <skill>Gymnastics</skill>
@@ -51993,8 +51993,8 @@
         <power>Fae Glamour</power>
         <power>Flay Touch</power>
         <power>Fold Perception</power>
-        <power select="Smell">Improved Sense</power>
-        <power>Thermal)</power>
+        <power select="Smell">Improved Senses</power>
+        <power select="Thermal">Improved Senses</power>
         <power>Materialization</power>
         <power>Sapience</power>
         <power>Spirit Pact</power>

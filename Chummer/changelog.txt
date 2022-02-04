@@ -21,6 +21,7 @@ Application Changes:
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
 - Cyberadept and Machinist technomancers now have their Compiling and Decompiling bonuses represented in Chummer.
+- Fixed incorrect powers for the Bugul and Croki.
 
 Build 220
 Application Changes:
