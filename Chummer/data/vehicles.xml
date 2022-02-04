@@ -10088,7 +10088,7 @@
       <source>KK</source>
       <accel>2</accel>
       <armor>5</armor>
-      <avail>-</avail>
+      <avail>0</avail>
       <body>4</body>
       <category>Cars</category>
       <cost>10000</cost>

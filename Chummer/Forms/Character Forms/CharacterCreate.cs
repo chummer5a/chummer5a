@@ -14785,7 +14785,7 @@ namespace Chummer
                     if (objXmlVehicleNode == null)
                         continue;
                     Vehicle objVehicle = new Vehicle(CharacterObject);
-                    objVehicle.Create(objXmlVehicleNode, blnCreateChildren);
+                    objVehicle.Create(objXmlVehicleNode, blnCreateChildren: blnCreateChildren);
                     CharacterObject.Vehicles.Add(objVehicle);
 
                     // Grab the default Sensor that comes with the Vehicle.

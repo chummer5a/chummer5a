@@ -552,10 +552,11 @@ namespace Chummer.Backend.Equipment
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
         /// <param name="objParent">Cyberware to which this new cyberware should be added (needed in creation method for selecting a side).</param>
         /// <param name="objParentVehicle">Vehicle to which this new cyberware will be added (needed in creation method for selecting a side and improvements).</param>
+        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         public void Create(XmlNode objXmlCyberware, Grade objGrade, Improvement.ImprovementSource objSource,
             int intRating, IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles, bool blnCreateImprovements = true,
             bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null,
-            Vehicle objParentVehicle = null)
+            Vehicle objParentVehicle = null, bool blnSkipSelectForms = false)
         {
             Parent = objParent;
             _strForced = strForced;
@@ -708,107 +709,90 @@ namespace Chummer.Backend.Equipment
             // Check for a Variable Cost.
             if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
-                decimal decMin;
-                decimal decMax = decimal.MaxValue;
-                string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                if (strCost.Contains('-'))
+                string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                string strSecondHalf = string.Empty;
+                int intHyphenIndex = strFirstHalf.IndexOf('-');
+                if (intHyphenIndex != -1)
                 {
-                    string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    if (intHyphenIndex + 1 < strFirstHalf.Length)
+                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
+                }
+
+                if (!blnSkipSelectForms)
+                {
+                    decimal decMin;
+                    decimal decMax = decimal.MaxValue;
+                    if (intHyphenIndex != -1)
+                    {
+                        decMin = Convert.ToDecimal(strFirstHalf, GlobalSettings.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strSecondHalf, GlobalSettings.InvariantCultureInfo);
+                    }
+                    else
+                        decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+
+                    if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
+                    {
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+
+                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                        {
+                            using (SelectNumber frmPickNumber
+                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost"),
+                                           DisplayNameShort(GlobalSettings.Language)),
+                                       AllowCancel = false
+                                   })
+                            {
+                                if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
+                                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                                return frmPickNumber.DialogResult;
+                            }
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                    else
+                        _strCost = strFirstHalf;
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+                    _strCost = strFirstHalf;
+            }
 
-                if (decMin != 0 || decMax != decimal.MaxValue)
+            if (blnCreateChildren)
+            {
+                // Add Cyberweapons if applicable.
+                XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
+
+                // More than one Weapon can be added, so loop through all occurrences.
+                foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
                 {
-                    if (decMax > 1000000)
-                        decMax = 1000000;
-                    Form frmToUse = Program.GetFormForDialog(_objCharacter);
+                    string strLoopID = objXmlAddWeapon.InnerText;
+                    XmlNode objXmlWeapon = strLoopID.IsGuid()
+                        ? objXmlWeaponDocument.SelectSingleNode(
+                            "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
+                        : objXmlWeaponDocument.SelectSingleNode(
+                            "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
 
-                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                    if (objXmlWeapon != null)
                     {
-                        using (SelectNumber frmPickNumber
-                               = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                               {
-                                   Minimum = decMin,
-                                   Maximum = decMax,
-                                   Description = string.Format(
-                                       GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_SelectVariableCost"),
-                                       DisplayNameShort(GlobalSettings.Language)),
-                                   AllowCancel = false
-                               })
+                        Weapon objGearWeapon = new Weapon(_objCharacter)
                         {
-                            if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
-                                _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                            return frmPickNumber.DialogResult;
-                        }
-                    });
-                    if (eResult == DialogResult.Cancel)
-                    {
-                        _guiID = Guid.Empty;
-                        return;
-                    }
-                }
-            }
-
-            // Add Cyberweapons if applicable.
-            XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
-
-            // More than one Weapon can be added, so loop through all occurrences.
-            foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
-            {
-                string strLoopID = objXmlAddWeapon.InnerText;
-                XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
-
-                if (objXmlWeapon != null)
-                {
-                    Weapon objGearWeapon = new Weapon(_objCharacter)
-                    {
-                        ParentVehicle = ParentVehicle
-                    };
-                    int intAddWeaponRating = 0;
-                    string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strLoopRating))
-                    {
-                        strLoopRating = strLoopRating.CheapReplace("{Rating}",
-                            () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAddWeaponRating);
-                    }
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, false, intAddWeaponRating);
-                    objGearWeapon.ParentID = InternalId;
-                    objGearWeapon.Cost = "0";
-
-                    if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
-                        lstWeapons.Add(objGearWeapon);
-                }
-            }
-
-            string strWeaponId = Parent?.WeaponID;
-            if (!string.IsNullOrEmpty(strWeaponId) && strWeaponId != Guid.Empty.ToString())
-            {
-                Weapon objWeapon = ParentVehicle != null
-                    ? ParentVehicle.Weapons.FindById(strWeaponId)
-                    : _objCharacter.Weapons.FindById(strWeaponId);
-
-                if (objWeapon != null)
-                {
-                    foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
-                    {
-                        string strLoopID = objXml.InnerText;
-                        XmlNode objXmlAccessory = strLoopID.IsGuid()
-                            ? objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + ']')
-                            : objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + ']');
-
-                        if (objXmlAccessory == null) continue;
-                        WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
+                            ParentVehicle = ParentVehicle
+                        };
                         int intAddWeaponRating = 0;
-                        string strLoopRating = objXml.Attributes["rating"]?.InnerText;
+                        string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
                         if (!string.IsNullOrEmpty(strLoopRating))
                         {
                             strLoopRating = strLoopRating.CheapReplace("{Rating}",
@@ -818,37 +802,82 @@ namespace Chummer.Backend.Equipment
                                          out intAddWeaponRating);
                         }
 
-                        objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>("", ""), intAddWeaponRating,
-                                             true);
-                        objGearWeapon.Cost = "0";
+                        objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
+                                             blnSkipSelectForms, intAddWeaponRating);
                         objGearWeapon.ParentID = InternalId;
-                        objGearWeapon.Parent = objWeapon;
+                        objGearWeapon.Cost = "0";
 
-                        if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
-                            objWeapon.WeaponAccessories.Add(objGearWeapon);
+                        if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
+                            lstWeapons.Add(objGearWeapon);
                     }
                 }
-            }
 
-            // Add Drone Bodyparts if applicable.
-            XmlDocument objXmlVehicleDocument = _objCharacter.LoadData("vehicles.xml");
-
-            // More than one Weapon can be added, so loop through all occurrences.
-            foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
-            {
-                string strLoopID = xmlAddVehicle.InnerText;
-                XmlNode xmlVehicle = strLoopID.IsGuid()
-                    ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strLoopID.CleanXPath() + ']')
-                    : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = " + strLoopID.CleanXPath() + ']');
-
-                if (xmlVehicle != null)
+                string strWeaponId = Parent?.WeaponID;
+                if (!string.IsNullOrEmpty(strWeaponId) && strWeaponId != Guid.Empty.ToString())
                 {
-                    Vehicle objVehicle = new Vehicle(_objCharacter);
-                    objVehicle.Create(xmlVehicle);
-                    objVehicle.ParentID = InternalId;
+                    Weapon objWeapon = ParentVehicle != null
+                        ? ParentVehicle.Weapons.FindById(strWeaponId)
+                        : _objCharacter.Weapons.FindById(strWeaponId);
 
-                    if (Guid.TryParse(objVehicle.InternalId, out _guiVehicleID))
-                        lstVehicles.Add(objVehicle);
+                    if (objWeapon != null)
+                    {
+                        foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
+                        {
+                            string strLoopID = objXml.InnerText;
+                            XmlNode objXmlAccessory = strLoopID.IsGuid()
+                                ? objXmlWeaponDocument.SelectSingleNode(
+                                    "/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + ']')
+                                : objXmlWeaponDocument.SelectSingleNode(
+                                    "/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + ']');
+
+                            if (objXmlAccessory == null) continue;
+                            WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
+                            int intAddWeaponRating = 0;
+                            string strLoopRating = objXml.Attributes["rating"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strLoopRating))
+                            {
+                                strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                                                                           () => Rating.ToString(
+                                                                               GlobalSettings.InvariantCultureInfo));
+                                int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                             out intAddWeaponRating);
+                            }
+
+                            objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>("", ""), intAddWeaponRating,
+                                                 blnSkipSelectForms, true, blnCreateImprovements);
+                            objGearWeapon.Cost = "0";
+                            objGearWeapon.ParentID = InternalId;
+                            objGearWeapon.Parent = objWeapon;
+
+                            if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
+                                objWeapon.WeaponAccessories.Add(objGearWeapon);
+                        }
+                    }
+                }
+
+                // Add Drone Bodyparts if applicable.
+                XmlDocument objXmlVehicleDocument = _objCharacter.LoadData("vehicles.xml");
+
+                // More than one Weapon can be added, so loop through all occurrences.
+                foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
+                {
+                    string strLoopID = xmlAddVehicle.InnerText;
+                    XmlNode xmlVehicle = strLoopID.IsGuid()
+                        ? objXmlVehicleDocument.SelectSingleNode(
+                            "/chummer/vehicles/vehicle[id = " + strLoopID.CleanXPath() + ']')
+                        : objXmlVehicleDocument.SelectSingleNode(
+                            "/chummer/vehicles/vehicle[name = " + strLoopID.CleanXPath() + ']');
+
+                    if (xmlVehicle != null)
+                    {
+                        Vehicle objVehicle = new Vehicle(_objCharacter);
+                        objVehicle.Create(xmlVehicle, blnSkipSelectForms, true, blnCreateImprovements,
+                                          blnSkipSelectForms);
+                        objVehicle.ParentID = InternalId;
+
+                        if (Guid.TryParse(objVehicle.InternalId, out _guiVehicleID))
+                            lstVehicles.Add(objVehicle);
+                    }
                 }
             }
 
@@ -875,13 +904,13 @@ namespace Chummer.Backend.Equipment
 
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             // Modular cyberlimbs only get their bonuses applied when they are equipped onto a limb, so we're skipping those here
-            if (blnCreateImprovements && (Bonus != null || PairBonus != null))
+            if ((Bonus != null || PairBonus != null) && !blnSkipSelectForms)
             {
                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                     ImprovementManager.ForcedValue = _strForced;
 
                 if (Bonus != null && !ImprovementManager.CreateImprovements(_objCharacter, objSource,
-                    _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating, DisplayNameShort(GlobalSettings.Language)))
+                    _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating, DisplayNameShort(GlobalSettings.Language), blnCreateImprovements))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -923,7 +952,7 @@ namespace Chummer.Backend.Equipment
                             ImprovementManager.ForcedValue = _strExtra;
                         if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
                             _guiID.ToString("D", GlobalSettings.InvariantCultureInfo) + "Pair", PairBonus, Rating,
-                            DisplayNameShort(GlobalSettings.Language)))
+                            DisplayNameShort(GlobalSettings.Language), blnCreateImprovements))
                         {
                             _guiID = Guid.Empty;
                             return;

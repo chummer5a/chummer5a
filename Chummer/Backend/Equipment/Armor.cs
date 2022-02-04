@@ -254,7 +254,7 @@ namespace Chummer.Backend.Equipment
 
         /// Create an Armor from an XmlNode.
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
-        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
+        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="intRating">Rating of the item.</param>
         /// <param name="lstWeapons">List of Weapons that added to the character's weapons.</param>

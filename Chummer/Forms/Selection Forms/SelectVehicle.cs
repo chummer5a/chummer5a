@@ -476,7 +476,7 @@ namespace Chummer
 
                     XmlDocument dummy = new XmlDocument();
                     Vehicle objVehicle = new Vehicle(_objCharacter);
-                    objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, false);
+                    objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, true, false, true);
                     string strID = objVehicle.SourceIDString;
                     string strVehicleName = objVehicle.CurrentDisplayName;
                     string strAccel = objVehicle.TotalAccel;

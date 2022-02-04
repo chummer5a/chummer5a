@@ -25,6 +25,7 @@ Application Changes:
 - Additively stacking Essence cost modifiers no longer result in the total modifier being rounded to the nearest ten percent.
 - Gear can now be marked as ammo for multiple weapon types by separating each weapon type key with a comma.
 - Migrated Chummer to .NET Framework 4.8 to get better DPI scaling behavior in expense charts and slightly better general performance from 4.8's JIT compiler improvements.
+- Adding gear that requires something specified for it, e.g. a weapon targeting autosoft, to a vehicle now properly prompts the user to specify the entry for the gear.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.

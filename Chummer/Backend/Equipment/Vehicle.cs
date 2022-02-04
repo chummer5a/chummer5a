@@ -136,9 +136,11 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Vehicle from an XmlNode.
         /// <param name="objXmlVehicle">XmlNode of the Vehicle to create.</param>
+        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        public void Create(XmlNode objXmlVehicle, bool blnCreateChildren = true, bool blnCreateImprovements = true)
+        /// <param name="blnSkipCost">Whether or not creating the Vehicle should skip the Variable price dialogue (should only be used by SelectVehicle form).</param>
+        public void Create(XmlNode objXmlVehicle, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, bool blnSkipSelectForms = false)
         {
             if (!objXmlVehicle.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -230,52 +232,68 @@ namespace Chummer.Backend.Equipment
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             _strCost = objXmlVehicle["cost"]?.InnerText ?? string.Empty;
-            if (!string.IsNullOrEmpty(_strCost) && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
+            if (!blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
-                // Check for a Variable Cost.
-                decimal decMin;
-                decimal decMax = decimal.MaxValue;
-                string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                if (strCost.Contains('-'))
+                string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                string strSecondHalf = string.Empty;
+                int intHyphenIndex = strFirstHalf.IndexOf('-');
+                if (intHyphenIndex != -1)
                 {
-                    string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    if (intHyphenIndex + 1 < strFirstHalf.Length)
+                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
+                }
+
+                if (!blnSkipSelectForms)
+                {
+                    // Check for a Variable Cost.
+                    decimal decMin;
+                    decimal decMax = decimal.MaxValue;
+                    if (intHyphenIndex != -1)
+                    {
+                        decMin = Convert.ToDecimal(strFirstHalf, GlobalSettings.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strSecondHalf, GlobalSettings.InvariantCultureInfo);
+                    }
+                    else
+                        decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+
+                    if (decMin != 0 || decMax != decimal.MaxValue)
+                    {
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                        {
+                            using (SelectNumber frmPickNumber
+                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost"),
+                                           DisplayNameShort(GlobalSettings.Language)),
+                                       AllowCancel = false
+                                   })
+                            {
+                                if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
+                                    _strCost = frmPickNumber.SelectedValue.ToString(
+                                        GlobalSettings.InvariantCultureInfo);
+                                return frmPickNumber.DialogResult;
+                            }
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                    else
+                        _strCost = strFirstHalf;
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
-
-                if (decMin != 0 || decMax != decimal.MaxValue)
-                {
-                    if (decMax > 1000000)
-                        decMax = 1000000;
-                    Form frmToUse = Program.GetFormForDialog(_objCharacter);
-
-                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
-                    {
-                        using (SelectNumber frmPickNumber
-                               = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                               {
-                                   Minimum = decMin,
-                                   Maximum = decMax,
-                                   Description = string.Format(
-                                       GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_SelectVariableCost"),
-                                       DisplayNameShort(GlobalSettings.Language)),
-                                   AllowCancel = false
-                               })
-                        {
-                            if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
-                                _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                            return frmPickNumber.DialogResult;
-                        }
-                    });
-                    if (eResult == DialogResult.Cancel)
-                    {
-                        _guiID = Guid.Empty;
-                        return;
-                    }
-                }
+                    _strCost = strFirstHalf;
             }
 
             DealerConnectionDiscount = DoesDealerConnectionCurrentlyApply();
@@ -340,7 +358,7 @@ namespace Chummer.Backend.Equipment
                                         intRating = 0;
 
                                     objMod.Extra = strForcedValue;
-                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue,blnCreateImprovements);
+                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue, blnSkipSelectForms);
 
                                     _lstVehicleMods.Add(objMod);
                                 }
@@ -369,7 +387,7 @@ namespace Chummer.Backend.Equipment
                                         intRating = 0;
 
                                     objMod.Extra = strForcedValue;
-                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
+                                    objMod.Create(objXmlMod, intRating, this, 0, strForcedValue, blnSkipSelectForms);
 
                                     XmlNode xmlSubsystemsNode = objXmlVehicleMod["subsystems"];
                                     if (xmlSubsystemsNode != null)
@@ -441,7 +459,7 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
                                 Gear objGear = new Gear(_objCharacter);
-                                if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons,blnCreateImprovements))
+                                if (objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons, blnCreateImprovements, blnSkipSelectForms))
                                 {
                                     objGear.Parent = this;
                                     objGear.ParentID = InternalId;
@@ -474,7 +492,7 @@ namespace Chummer.Backend.Equipment
                         List<Weapon> objSubWeapons = new List<Weapon>(1);
                         XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strWeaponName.CleanXPath() + ']');
                         objWeapon.ParentVehicle = this;
-                        objWeapon.Create(objXmlWeaponNode, objSubWeapons,blnCreateChildren,blnCreateImprovements);
+                        objWeapon.Create(objXmlWeaponNode, objSubWeapons, blnCreateChildren, !blnSkipSelectForms && blnCreateImprovements, blnSkipCost);
                         objWeapon.ParentID = InternalId;
                         objWeapon.Cost = "0";
 
@@ -537,7 +555,7 @@ namespace Chummer.Backend.Equipment
                                 objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
                                 string strExtraMount = "None";
                                 objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
-                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren,blnCreateImprovements);
+                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, blnSkipCost, blnCreateChildren, !blnSkipSelectForms && blnCreateImprovements);
 
                                 objMod.Cost = "0";
 

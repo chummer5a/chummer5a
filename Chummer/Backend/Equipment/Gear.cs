@@ -153,8 +153,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="strForceValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
+        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         public void Create(XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
-            bool blnAddImprovements = true, bool blnCreateChildren = true)
+            bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
             if (objXmlGear == null)
                 return;
@@ -187,7 +188,8 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objXmlGear.TryGetDecFieldQuickly("costfor", ref _decCostFor);
             _decQty = _decCostFor;
-            objXmlGear.TryGetStringFieldQuickly("cost", ref _strCost);
+            if (!objXmlGear.TryGetStringFieldQuickly("cost", ref _strCost))
+                _strCost = string.Empty;
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
             _blnWirelessOn = false;
@@ -224,32 +226,7 @@ namespace Chummer.Backend.Equipment
             // Check for a Custom name
             if (_strName == "Custom Item")
             {
-                if (string.IsNullOrEmpty(_strForcedValue))
-                {
-                    using (SelectText frmPickText = new SelectText
-                    {
-                        PreventXPathErrors = true,
-                        Description = LanguageManager.GetString("String_CustomItem_SelectText")
-                    })
-                    {
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
-                        {
-                            _guiID = Guid.Empty;
-                            return;
-                        }
-
-                        string strCustomName = LanguageManager.GetString(frmPickText.SelectedValue,
-                            GlobalSettings.DefaultLanguage, false);
-                        if (string.IsNullOrEmpty(strCustomName))
-                            strCustomName =
-                                _objCharacter.ReverseTranslateExtra(frmPickText.SelectedValue);
-                        _strName = strCustomName;
-                        _objCachedMyXmlNode = null;
-                        _objCachedMyXPathNode = null;
-                    }
-                }
-                else
+                if (!string.IsNullOrEmpty(_strForcedValue))
                 {
                     string strCustomName =
                         LanguageManager.GetString(_strForcedValue, GlobalSettings.DefaultLanguage, false);
@@ -259,81 +236,126 @@ namespace Chummer.Backend.Equipment
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }
+                else if (!blnSkipSelectForms)
+                {
+                    using (SelectText frmPickText = new SelectText
+                           {
+                               PreventXPathErrors = true,
+                               Description = LanguageManager.GetString("String_CustomItem_SelectText")
+                           })
+                    {
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+
+                        string strCustomName = LanguageManager.GetString(frmPickText.SelectedValue,
+                                                                         GlobalSettings.DefaultLanguage, false);
+                        if (string.IsNullOrEmpty(strCustomName))
+                            strCustomName =
+                                _objCharacter.ReverseTranslateExtra(frmPickText.SelectedValue);
+                        _strName = strCustomName;
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+                }
             }
 
             // Check for a Variable Cost.
             if (!string.IsNullOrEmpty(_strCost) && _strCost.StartsWith("Variable(", StringComparison.Ordinal) &&
                 string.IsNullOrEmpty(_strForcedValue))
             {
-                decimal decMin;
-                decimal decMax = decimal.MaxValue;
-                string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                if (strCost.Contains('-'))
+                string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                string strSecondHalf = string.Empty;
+                int intHyphenIndex = strFirstHalf.IndexOf('-');
+                if (intHyphenIndex != -1)
                 {
-                    string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                    if (intHyphenIndex + 1 < strFirstHalf.Length)
+                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
+                }
+
+                if (!blnSkipSelectForms)
+                {
+                    decimal decMin;
+                    decimal decMax = decimal.MaxValue;
+                    if (intHyphenIndex != -1)
+                    {
+                        decMin = Convert.ToDecimal(strFirstHalf, GlobalSettings.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strSecondHalf, GlobalSettings.InvariantCultureInfo);
+                    }
+                    else
+                        decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+
+                    if (decMin != 0 || decMax != decimal.MaxValue)
+                    {
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
+
+                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                        {
+                            using (SelectNumber frmPickNumber
+                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost"),
+                                           DisplayNameShort(GlobalSettings.Language)),
+                                       AllowCancel = false
+                                   })
+                            {
+                                if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
+                                    _strCost = frmPickNumber.SelectedValue.ToString(
+                                        GlobalSettings.InvariantCultureInfo);
+                                return frmPickNumber.DialogResult;
+                            }
+                        });
+                        if (eResult == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+                    }
+                    else
+                        _strCost = strFirstHalf;
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+                    _strCost = strFirstHalf;
+            }
 
-                if (decMin != 0 || decMax != decimal.MaxValue)
+            if (!blnSkipSelectForms)
+            {
+                // If the Gear is Ammunition, ask the user to select a Weapon Category for it to be limited to.
+                string strAmmoWeaponType = string.Empty;
+                bool blnDoExtra = false;
+                if (objXmlGear.TryGetStringFieldQuickly("ammoforweapontype", ref strAmmoWeaponType))
+                    blnDoExtra = objXmlGear.SelectSingleNode("ammoforweapontype/@noextra")?.Value != bool.TrueString;
+                if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
                 {
-                    if (decMax > 1000000)
-                        decMax = 1000000;
-                    Form frmToUse = Program.GetFormForDialog(_objCharacter);
-
-                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                    SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter)
                     {
-                        using (SelectNumber frmPickNumber
-                               = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                               {
-                                   Minimum = decMin,
-                                   Maximum = decMax,
-                                   Description = string.Format(
-                                       GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_SelectVariableCost"),
-                                       DisplayNameShort(GlobalSettings.Language)),
-                                   AllowCancel = false
-                               })
-                        {
-                            if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
-                                _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                            return frmPickNumber.DialogResult;
-                        }
-                    });
-                    if (eResult == DialogResult.Cancel)
+                        Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
+                        WeaponType = strAmmoWeaponType
+                    };
+                    if (!string.IsNullOrEmpty(_strForcedValue) &&
+                        !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
+                        frmPickWeaponCategory.OnlyCategory = _strForcedValue;
+
+                    if (frmPickWeaponCategory.ShowDialogSafe(Program.GetFormForDialog(_objCharacter))
+                        != DialogResult.OK)
                     {
                         _guiID = Guid.Empty;
                         return;
                     }
+
+                    if (!string.IsNullOrEmpty(frmPickWeaponCategory.SelectedCategory))
+                        _strExtra = frmPickWeaponCategory.SelectedCategory;
                 }
-            }
-
-            // If the Gear is Ammunition, ask the user to select a Weapon Category for it to be limited to.
-            string strAmmoWeaponType = string.Empty;
-            bool blnDoExtra = false;
-            if (objXmlGear.TryGetStringFieldQuickly("ammoforweapontype", ref strAmmoWeaponType))
-                blnDoExtra = objXmlGear.SelectSingleNode("ammoforweapontype/@noextra")?.Value != bool.TrueString;
-            if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
-            {
-                SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter)
-                {
-                    Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
-                    WeaponType = strAmmoWeaponType
-                };
-                if (!string.IsNullOrEmpty(_strForcedValue) &&
-                    !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
-                    frmPickWeaponCategory.OnlyCategory = _strForcedValue;
-
-                if (frmPickWeaponCategory.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) != DialogResult.OK)
-                {
-                    _guiID = Guid.Empty;
-                    return;
-                }
-
-                if (!string.IsNullOrEmpty(frmPickWeaponCategory.SelectedCategory))
-                    _strExtra = frmPickWeaponCategory.SelectedCategory;
             }
 
             // Add Gear Weapons if applicable.
@@ -366,7 +388,7 @@ namespace Chummer.Backend.Equipment
 
                             Weapon objGearWeapon = new Weapon(_objCharacter);
                             objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements,
-                                !blnAddImprovements, intAddWeaponRating);
+                                                 blnSkipSelectForms, intAddWeaponRating);
                             objGearWeapon.ParentID = InternalId;
                             objGearWeapon.Cost = "0";
                             if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
@@ -379,7 +401,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (Bonus != null && blnAddImprovements)
+            if (Bonus != null && !blnSkipSelectForms)
             {
                 // Do not apply the Improvements if this is a Focus, unless we're specifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
                 // to the character which is incorrect, and once when the Focus is actually Bonded).
@@ -391,7 +413,7 @@ namespace Chummer.Backend.Equipment
                     string strSource = _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
                     ImprovementManager.ForcedValue = _strForcedValue;
                     if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                        strSource, Bonus, intRating, DisplayNameShort(GlobalSettings.Language)))
+                        strSource, Bonus, intRating, DisplayNameShort(GlobalSettings.Language), blnAddImprovements))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -412,7 +434,7 @@ namespace Chummer.Backend.Equipment
             if (blnCreateChildren)
             {
                 // Check to see if there are any child elements.
-                CreateChildren(objXmlGear, blnAddImprovements);
+                CreateChildren(objXmlGear, blnAddImprovements, blnSkipSelectForms);
             }
 
             // If the item grants a Weapon bonus (Ammunition), just fill the WeaponBonus XmlNode.
@@ -444,7 +466,7 @@ namespace Chummer.Backend.Equipment
 
             objXmlGear.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
-            if (blnAddImprovements)
+            if (blnAddImprovements && !blnSkipSelectForms)
                 RefreshWirelessBonuses();
         }
 
@@ -461,7 +483,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements)
+        private void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements, bool blnSkipSelectForms)
         {
             XmlNode objGearsNode = xmlParentGearNode?["gears"];
             if (objGearsNode != null)
@@ -473,7 +495,7 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode objXmlChild in xmlUseGearList)
                         {
-                            CreateChild(objXmlChild, blnAddImprovements);
+                            CreateChild(objXmlChild, blnAddImprovements, blnSkipSelectForms);
                         }
                     }
                 }
@@ -604,7 +626,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlChild in lstChildrenToCreate)
                             {
-                                CreateChild(objXmlChild, blnAddImprovements);
+                                CreateChild(objXmlChild, blnAddImprovements, blnSkipSelectForms);
                             }
                         }
                     }
@@ -612,7 +634,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private void CreateChild(XmlNode xmlChildNode, bool blnAddImprovements)
+        private void CreateChild(XmlNode xmlChildNode, bool blnAddImprovements, bool blnSkipSelectForms)
         {
             if (xmlChildNode == null)
                 return;
@@ -653,7 +675,7 @@ namespace Chummer.Backend.Equipment
             Gear objChild = new Gear(_objCharacter);
             List<Weapon> lstChildWeapons = new List<Weapon>(1);
             objChild.Create(xmlChildDataNode, intChildRating, lstChildWeapons, strChildForceValue,
-                blnAddChildImprovements, blnCreateChildren);
+                blnAddChildImprovements, blnCreateChildren, blnSkipSelectForms);
             objChild.Quantity = decChildQty;
             objChild.Cost = "0";
             objChild.ParentID = InternalId;
@@ -668,7 +690,7 @@ namespace Chummer.Backend.Equipment
             if (xmlChildNode["capacity"] != null)
                 objChild.Capacity = '[' + xmlChildNode["capacity"].InnerText + ']';
 
-            objChild.CreateChildren(xmlChildNode, blnAddChildImprovements);
+            objChild.CreateChildren(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms);
         }
 
         /// <summary>
@@ -678,9 +700,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="xmlGearNode">XmlNode containing information about the child gear that needs to be created.</param>
         /// <param name="lstWeapons">List of weapons that this (and other children) gear creates.</param>
         /// <param name="blnAddImprovements">Whether to create improvements for the gear or not (for Selection Windows, set to False).</param>
-        /// <returns></returns>
+        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         public bool CreateFromNode(XmlDocument xmlGearsDocument, XmlNode xmlGearNode, ICollection<Weapon> lstWeapons,
-            bool blnAddImprovements = true)
+            bool blnAddImprovements = true, bool blnSkipSelectForms = false)
         {
             if (xmlGearsDocument == null)
                 throw new ArgumentNullException(nameof(xmlGearsDocument));
@@ -702,7 +724,7 @@ namespace Chummer.Backend.Equipment
                     {
                         Gear objChildGear = new Gear(_objCharacter);
                         if (objChildGear.CreateFromNode(xmlGearsDocument, xmlChildGearNode, lstWeapons,
-                            blnAddImprovements))
+                            blnAddImprovements, blnSkipSelectForms))
                         {
                             objChildGear.ParentID = InternalId;
                             objChildGear.Parent = this;
@@ -726,7 +748,7 @@ namespace Chummer.Backend.Equipment
                 decimal decQty = Convert.ToDecimal(lstGearAttributes?["qty"]?.InnerText ?? "1",
                                                    GlobalSettings.InvariantCultureInfo);
                 string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
-                Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements);
+                Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms);
 
                 string strOldCapacity = Capacity;
                 int intSlashIndex = strOldCapacity?.IndexOf("/[", StringComparison.Ordinal) ?? -1;
@@ -2110,11 +2132,10 @@ namespace Chummer.Backend.Equipment
             get => _objParent;
             set
             {
-                if (_objParent != value)
-                {
-                    _objParent = value;
-                    Rating = Math.Max(MinRatingValue, Math.Min(MaxRatingValue, Rating));
-                }
+                if (_objParent == value)
+                    return;
+                _objParent = value;
+                Rating = Math.Max(MinRatingValue, Math.Min(MaxRatingValue, Rating));
             }
         }
 
