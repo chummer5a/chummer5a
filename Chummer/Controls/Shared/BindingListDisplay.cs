@@ -668,13 +668,13 @@ namespace Chummer.UI.Shared
 
         private sealed class IndexComparer : IComparer<TType>
         {
-            private readonly Dictionary<TType, int> _index = new Dictionary<TType, int>();
+            private readonly Dictionary<TType, int> _dicIndeces = new Dictionary<TType, int>();
 
             public int Compare(TType x, TType y)
             {
-                if (x != null && _index.TryGetValue(x, out int xindex))
+                if (x != null && _dicIndeces.TryGetValue(x, out int xindex))
                 {
-                    if (y != null && _index.TryGetValue(y, out int yindex))
+                    if (y != null && _dicIndeces.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }
@@ -684,7 +684,7 @@ namespace Chummer.UI.Shared
                 }
 
                 Utils.BreakIfDebug();
-                if (y != null && (x == null || _index.ContainsKey(y)))
+                if (y != null && (x == null || _dicIndeces.ContainsKey(y)))
                     return -1;
 
                 return 0;
@@ -697,10 +697,10 @@ namespace Chummer.UI.Shared
 
             public void Reset(IReadOnlyList<TType> source)
             {
-                _index.Clear();
+                _dicIndeces.Clear();
                 for (int i = 0; i < source.Count; i++)
                 {
-                    _index.Add(source[i], i);
+                    _dicIndeces.Add(source[i], i);
                 }
             }
         }

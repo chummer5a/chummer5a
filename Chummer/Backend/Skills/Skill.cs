@@ -1473,15 +1473,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _dicCachedStringSpec = new Dictionary<string, string>();
 
         public virtual string DisplaySpecialization(string strLanguage)
         {
-            if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn))
+            if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                 return strReturn;
             strReturn = string.Join(", ", Specializations.Select(x => x.DisplayName(strLanguage)));
 
-            _cachedStringSpec.Add(strLanguage, strReturn);
+            _dicCachedStringSpec.Add(strLanguage, strReturn);
 
             return strReturn;
         }
@@ -2586,7 +2586,7 @@ namespace Chummer.Backend.Skills
         {
             if (_blnSkipSpecializationRefresh)
                 return;
-            _cachedStringSpec.Clear();
+            _dicCachedStringSpec.Clear();
             if (IsExoticSkill)
                 _strDictionaryKey = null;
             _blnSkipSpecializationRefresh = true; // Needed to make sure we don't call this method another time when we set the specialization's Parent

@@ -31,7 +31,7 @@ namespace Chummer
     public class HoverDisplayCoordinator
     {
         //List of controls in the group. A n-tree might do this faster
-        private readonly List<Control> _controls;
+        private readonly List<Control> _lstControls;
 
         //If it have left once we don't want to do it again. This limits flexibility
         //but we don't need general purpose and this is easier to implement
@@ -47,7 +47,7 @@ namespace Chummer
         /// </summary>
         public HoverDisplayCoordinator()
         {
-            _controls = new List<Control>();
+            _lstControls = new List<Control>();
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Chummer
         /// </summary>
         public HoverDisplayCoordinator(int intCapacity)
         {
-            _controls = new List<Control>(intCapacity);
+            _lstControls = new List<Control>(intCapacity);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Chummer
         /// <param name="collection">A collection of controls to include</param>
         public HoverDisplayCoordinator(IEnumerable<Control> collection)
         {
-            _controls = new List<Control>(collection);
+            _lstControls = new List<Control>(collection);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Chummer
         {
             if (control == null)
                 throw new ArgumentNullException(nameof(control));
-            _controls.Add(control);
+            _lstControls.Add(control);
             control.MouseLeave += control_MouseLeave;
         }
 
@@ -88,7 +88,7 @@ namespace Chummer
         {
             if (control == null)
                 throw new ArgumentNullException(nameof(control));
-            _controls.Add(control);
+            _lstControls.Add(control);
             control.MouseLeave += control_MouseLeave;
             if (control.HasChildren)
             {
@@ -106,7 +106,7 @@ namespace Chummer
             if (_left) return;
 
             //Check if the mouse is inside any control
-            if (_controls.Any(x => x.ClientRectangle.Contains(x.PointToClient(Control.MousePosition))))
+            if (_lstControls.Any(x => x.ClientRectangle.Contains(x.PointToClient(Control.MousePosition))))
                 return;
 
             _left = true; //Don't do again flag
@@ -114,7 +114,7 @@ namespace Chummer
             //remove everything we have a listener on. Might not be necessary but afraid of GC leak
             //Anybody can test this by uncommenting the lines below and triggering 100000 of those
             //then checking if memory usage changed
-            foreach (Control control in _controls)
+            foreach (Control control in _lstControls)
             {
                 control.MouseLeave -= control_MouseLeave;
             }
@@ -123,7 +123,7 @@ namespace Chummer
             OnAllLeave?.Invoke(sender, e);
 
             //As we don't call after this we don't need to store references to potential dead controls
-            _controls.Clear();
+            _lstControls.Clear();
         }
     }
 }

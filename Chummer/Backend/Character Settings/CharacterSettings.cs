@@ -239,7 +239,7 @@ namespace Chummer
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
-        private readonly HashSet<string> _lstBooks = Utils.StringHashSetPool.Get();
+        private readonly HashSet<string> _setBooks = Utils.StringHashSetPool.Get();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -417,13 +417,13 @@ namespace Chummer
                     }
                 }
 
-                if (!_lstBooks.SetEquals(objOther._lstBooks))
+                if (!_setBooks.SetEquals(objOther._setBooks))
                 {
                     lstPropertiesToUpdate.Add(nameof(Books));
-                    _lstBooks.Clear();
-                    foreach (string strBook in objOther._lstBooks)
+                    _setBooks.Clear();
+                    foreach (string strBook in objOther._setBooks)
                     {
-                        _lstBooks.Add(strBook);
+                        _setBooks.Add(strBook);
                     }
                 }
 
@@ -472,7 +472,7 @@ namespace Chummer
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return _lstBooks.SetEquals(objOther._lstBooks) && BannedWareGrades.SetEquals(objOther.BannedWareGrades);
+            return _setBooks.SetEquals(objOther._setBooks) && BannedWareGrades.SetEquals(objOther.BannedWareGrades);
         }
 
         /// <summary>
@@ -628,7 +628,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths?.GetEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_lstBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_setBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (BannedWareGrades?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (RedlinerExcludes?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationGroupPercent.GetHashCode();
@@ -957,7 +957,7 @@ namespace Chummer
                     {
                         foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
                         {
-                            if (_lstBooks.Contains(objAllowedBook.Value))
+                            if (_setBooks.Contains(objAllowedBook.Value))
                                 setAllowedBooks.Add(objAllowedBook.Value);
                         }
 
@@ -1439,16 +1439,16 @@ namespace Chummer
             }
 
             // Load Books.
-            _lstBooks.Clear();
+            _setBooks.Clear();
             foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book"))
-                _lstBooks.Add(xmlBook.Value);
+                _setBooks.Add(xmlBook.Value);
             // Legacy sweep for sourcebooks
             if (xmlLegacyCharacterNavigator != null)
             {
                 foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression("sources/source"))
                 {
                     if (!string.IsNullOrEmpty(xmlBook.Value))
-                        _lstBooks.Add(xmlBook.Value);
+                        _setBooks.Add(xmlBook.Value);
                 }
             }
 
@@ -1618,7 +1618,7 @@ namespace Chummer
                                                              "/chummer/books/book[permanent]/code"))
             {
                 if (!string.IsNullOrEmpty(xmlBook.Value))
-                    _lstBooks.Add(xmlBook.Value);
+                    _setBooks.Add(xmlBook.Value);
             }
 
             RecalculateBookXPath();
@@ -1909,7 +1909,7 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         public bool BookEnabled(string strCode)
         {
-            return _lstBooks.Contains(strCode);
+            return _setBooks.Contains(strCode);
         }
 
         /// <summary>
@@ -1922,7 +1922,7 @@ namespace Chummer
             {
                 if (excludeHidden)
                     sbdPath.Append("not(hide)");
-                if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
+                if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
                 {
                     RecalculateBookXPath();
                 }
@@ -1966,7 +1966,7 @@ namespace Chummer
                                                           out StringBuilder sbdBookXPath))
             {
                 sbdBookXPath.Append('(');
-                foreach (string strBook in _lstBooks)
+                foreach (string strBook in _setBooks)
                 {
                     if (!string.IsNullOrWhiteSpace(strBook))
                     {
@@ -2495,12 +2495,12 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> BooksWritable => _lstBooks;
+        public HashSet<string> BooksWritable => _setBooks;
 
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public IReadOnlyCollection<string> Books => _lstBooks;
+        public IReadOnlyCollection<string> Books => _setBooks;
 
         /// <summary>
         /// File name of the option (if it is not a built-in one).
@@ -4365,7 +4365,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            Utils.StringHashSetPool.Return(_lstBooks);
+            Utils.StringHashSetPool.Return(_setBooks);
             Utils.StringHashSetPool.Return(BannedWareGrades);
             Utils.StringHashSetPool.Return(RedlinerExcludes);
         }

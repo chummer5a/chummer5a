@@ -759,11 +759,11 @@ namespace Chummer
                 int intChildrenCount = objLoopNodeChildren.Count;
                 if (intChildrenCount > 0)
                 {
-                    TreeNode[] lstNodes = new TreeNode[intChildrenCount];
-                    objLoopNodeChildren.CopyTo(lstNodes, 0);
+                    TreeNode[] aobjNodes = new TreeNode[intChildrenCount];
+                    objLoopNodeChildren.CopyTo(aobjNodes, 0);
                     objLoopNodeChildren.Clear();
-                    Array.Sort(lstNodes, CompareTreeNodes.CompareText);
-                    objLoopNodeChildren.AddRange(lstNodes);
+                    Array.Sort(aobjNodes, CompareTreeNodes.CompareText);
+                    objLoopNodeChildren.AddRange(aobjNodes);
 
                     objLoopNode.Expand();
                 }
@@ -793,11 +793,11 @@ namespace Chummer
                 int intChildrenCount = objLoopNodeChildren.Count;
                 if (intChildrenCount > 0)
                 {
-                    TreeNode[] lstNodes = new TreeNode[intChildrenCount];
-                    objLoopNodeChildren.CopyTo(lstNodes, 0);
+                    TreeNode[] aobjNodes = new TreeNode[intChildrenCount];
+                    objLoopNodeChildren.CopyTo(aobjNodes, 0);
                     objLoopNodeChildren.Clear();
-                    Array.Sort(lstNodes, CompareTreeNodes.CompareText);
-                    objLoopNodeChildren.AddRange(lstNodes);
+                    Array.Sort(aobjNodes, CompareTreeNodes.CompareText);
+                    objLoopNodeChildren.AddRange(aobjNodes);
 
                     objLoopNode.Expand();
                 }
