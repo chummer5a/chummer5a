@@ -1340,252 +1340,257 @@ namespace Chummer
                                               XmlNode nodBonus, int intRating = 1, string strFriendlyName = "",
                                               bool blnAddImprovementsToCharacter = true)
         {
-            Log.Debug("CreateImprovements enter");
-            Log.Info("objImprovementSource = " + objImprovementSource);
-            Log.Info("strSourceName = " + strSourceName);
-            Log.Info("nodBonus = " + nodBonus?.OuterXml);
-            Log.Info("intRating = " + intRating.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info("strFriendlyName = " + strFriendlyName);
+            string trace = "CreateImprovements enter" + Environment.NewLine;
+            trace += "objImprovementSource = " + objImprovementSource + Environment.NewLine;
+            trace += "strSourceName = " + strSourceName + Environment.NewLine;
+            trace += "nodBonus = " + nodBonus?.OuterXml + Environment.NewLine;
+            trace += "intRating = " + intRating.ToString(GlobalSettings.InvariantCultureInfo) + Environment.NewLine;
+            trace += "strFriendlyName = " + strFriendlyName + Environment.NewLine;
 
-            /*try
-            {*/
-            if (nodBonus == null)
+            try
             {
-                _strForcedValue = string.Empty;
-                _strLimitSelection = string.Empty;
-                Log.Debug("CreateImprovements exit");
-                return true;
-            }
-
-            _strSelectedValue = string.Empty;
-
-            Log.Info("_strForcedValue = " + _strForcedValue);
-            Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-            // If no friendly name was provided, use the one from SourceName.
-            if (string.IsNullOrEmpty(strFriendlyName))
-                strFriendlyName = strSourceName;
-
-            if (nodBonus.HasChildNodes)
-            {
-                string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
-                Log.Info("Has Child Nodes");
-                if (nodBonus["selecttext"] != null)
+                if (nodBonus == null)
                 {
-                    Log.Info("selecttext");
+                    _strForcedValue = string.Empty;
+                    _strLimitSelection = string.Empty;
+                    trace += "CreateImprovements exit" + Environment.NewLine;
+                    return true;
+                }
 
-                    if (!string.IsNullOrEmpty(_strForcedValue))
-                    {
-                        LimitSelection = _strForcedValue;
-                    }
-                    else if (objCharacter?.Pushtext.Count != 0)
-                    {
-                        LimitSelection = objCharacter?.Pushtext.Pop();
-                    }
+                _strSelectedValue = string.Empty;
 
-                    Log.Info("_strForcedValue = " + SelectedValue);
-                    Log.Info("_strLimitSelection = " + LimitSelection);
+                trace += "_strForcedValue = " + _strForcedValue + Environment.NewLine;
+                trace += "_strLimitSelection = " + _strLimitSelection + Environment.NewLine;
 
-                    if (!string.IsNullOrEmpty(LimitSelection))
+                // If no friendly name was provided, use the one from SourceName.
+                if (string.IsNullOrEmpty(strFriendlyName))
+                    strFriendlyName = strSourceName;
+
+                if (nodBonus.HasChildNodes)
+                {
+                    string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
+                    trace += "Has Child Nodes" + Environment.NewLine;
+                    if (nodBonus["selecttext"] != null)
                     {
-                        _strSelectedValue = LimitSelection;
-                    }
-                    else if (nodBonus["selecttext"].Attributes.Count == 0)
-                    {
-                        Form frmToUse = Program.GetFormForDialog(objCharacter);
-                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                        trace += "selecttext" + Environment.NewLine;
+
+                        if (!string.IsNullOrEmpty(_strForcedValue))
                         {
+                            LimitSelection = _strForcedValue;
+                        }
+                        else if (objCharacter?.Pushtext.Count != 0)
+                        {
+                            LimitSelection = objCharacter?.Pushtext.Pop();
+                        }
+
+                        trace += "_strForcedValue = " + SelectedValue + Environment.NewLine;
+                        trace += "_strLimitSelection = " + LimitSelection + Environment.NewLine;
+
+                        if (!string.IsNullOrEmpty(LimitSelection))
+                        {
+                            _strSelectedValue = LimitSelection;
+                        }
+                        else if (nodBonus["selecttext"].Attributes.Count == 0)
+                        {
+                            Form frmToUse = Program.GetFormForDialog(objCharacter);
+                            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                            {
                             // Display the Select Text window and record the value that was entered.
                             using (SelectText frmPickText = new SelectText
-                                   {
-                                       Description =
-                                           string.Format(GlobalSettings.CultureInfo,
-                                                         LanguageManager.GetString("String_Improvement_SelectText"),
-                                                         strFriendlyName)
-                                   })
-                            {
-                                frmPickText.ShowDialogSafe(frmToUse);
+                                {
+                                    Description =
+                                               string.Format(GlobalSettings.CultureInfo,
+                                                             LanguageManager.GetString("String_Improvement_SelectText"),
+                                                             strFriendlyName)
+                                })
+                                {
+                                    frmPickText.ShowDialogSafe(frmToUse);
 
                                 // Make sure the dialogue window was not canceled.
                                 if (frmPickText.DialogResult != DialogResult.Cancel)
-                                {
-                                    _strSelectedValue = frmPickText.SelectedValue;
-                                }
-
-                                return frmPickText.DialogResult;
-                            }
-                        });
-                        if (eResult == DialogResult.Cancel)
-                        {
-                            Rollback(objCharacter);
-                            ForcedValue = string.Empty;
-                            LimitSelection = string.Empty;
-                            Log.Debug("CreateImprovements exit");
-                            return false;
-                        }
-                    }
-                    else if (objCharacter != null)
-                    {
-                        Form frmToUse = Program.GetFormForDialog(objCharacter);
-                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
-                        {
-                            using (SelectItem frmSelect = new SelectItem
-                                   {
-                                       Description = string.Format(GlobalSettings.CultureInfo,
-                                                                   LanguageManager.GetString(
-                                                                       "String_Improvement_SelectText"),
-                                                                   strFriendlyName)
-                                   })
-                            {
-                                string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
-                                if (string.IsNullOrEmpty(strXPath))
-                                {
-                                    return DialogResult.Cancel;
-                                }
-
-                                string strXmlFile = nodBonus.SelectSingleNode("selecttext/@xml")?.Value ?? string.Empty;
-                                XPathNavigator xmlDoc
-                                    = objCharacter.LoadDataXPath(strXmlFile);
-                                using (new FetchSafelyFromPool<List<ListItem>>(
-                                           Utils.ListItemListPool, out List<ListItem> lstItems))
-                                {
-                                    //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
-                                    //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                               out HashSet<string> setUsedValues))
                                     {
-                                        foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
-                                        {
-                                            string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                             ?? string.Empty;
-                                            if (string.IsNullOrWhiteSpace(strName))
-                                            {
-                                                // Assume that if we're not looking at something that has an XML node,
-                                                // we're looking at a direct xpath filter or something that has proper names
-                                                // like the lifemodule storybuilder macros.
-                                                string strValue = objNode.Value;
-                                                if (setUsedValues.Add(strValue))
-                                                    lstItems.Add(new ListItem(strValue, objCharacter.TranslateExtra(strValue, strPreferFile: strXmlFile)));
-                                            }
-                                            else if (setUsedValues.Add(strName))
-                                            {
-                                                lstItems.Add(new ListItem(strName, objCharacter.TranslateExtra(strName, strPreferFile: strXmlFile)));
-                                            }
-                                        }
+                                        _strSelectedValue = frmPickText.SelectedValue;
                                     }
 
-                                    if (lstItems.Count == 0)
+                                    return frmPickText.DialogResult;
+                                }
+                            });
+                            if (eResult == DialogResult.Cancel)
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                trace += "CreateImprovements exit" + Environment.NewLine;
+                                return false;
+                            }
+                        }
+                        else if (objCharacter != null)
+                        {
+                            Form frmToUse = Program.GetFormForDialog(objCharacter);
+                            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                            {
+                                using (SelectItem frmSelect = new SelectItem
+                                {
+                                    Description = string.Format(GlobalSettings.CultureInfo,
+                                                                       LanguageManager.GetString(
+                                                                           "String_Improvement_SelectText"),
+                                                                       strFriendlyName)
+                                })
+                                {
+                                    string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
+                                    if (string.IsNullOrEmpty(strXPath))
                                     {
                                         return DialogResult.Cancel;
                                     }
 
-                                    if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
-                                                          GlobalSettings.InvariantCultureInfo))
+                                    string strXmlFile = nodBonus.SelectSingleNode("selecttext/@xml")?.Value ?? string.Empty;
+                                    XPathNavigator xmlDoc
+                                        = objCharacter.LoadDataXPath(strXmlFile);
+                                    using (new FetchSafelyFromPool<List<ListItem>>(
+                                               Utils.ListItemListPool, out List<ListItem> lstItems))
                                     {
-                                        lstItems.Insert(0, ListItem.Blank);
-                                        frmSelect.SetDropdownItemsMode(lstItems);
-                                    }
-                                    else
-                                    {
-                                        frmSelect.SetGeneralItemsMode(lstItems);
-                                    }
+                                    //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
+                                    //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
+                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                   out HashSet<string> setUsedValues))
+                                        {
+                                            foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                                            {
+                                                string strName = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                                                 ?? string.Empty;
+                                                if (string.IsNullOrWhiteSpace(strName))
+                                                {
+                                                // Assume that if we're not looking at something that has an XML node,
+                                                // we're looking at a direct xpath filter or something that has proper names
+                                                // like the lifemodule storybuilder macros.
+                                                string strValue = objNode.Value;
+                                                    if (setUsedValues.Add(strValue))
+                                                        lstItems.Add(new ListItem(strValue, objCharacter.TranslateExtra(strValue, strPreferFile: strXmlFile)));
+                                                }
+                                                else if (setUsedValues.Add(strName))
+                                                {
+                                                    lstItems.Add(new ListItem(strName, objCharacter.TranslateExtra(strName, strPreferFile: strXmlFile)));
+                                                }
+                                            }
+                                        }
 
-                                    frmSelect.ShowDialogSafe(frmToUse);
+                                        if (lstItems.Count == 0)
+                                        {
+                                            return DialogResult.Cancel;
+                                        }
 
-                                    if (frmSelect.DialogResult != DialogResult.Cancel)
-                                    {
-                                        _strSelectedValue = frmSelect.SelectedItem;
+                                        if (Convert.ToBoolean(nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
+                                                              GlobalSettings.InvariantCultureInfo))
+                                        {
+                                            lstItems.Insert(0, ListItem.Blank);
+                                            frmSelect.SetDropdownItemsMode(lstItems);
+                                        }
+                                        else
+                                        {
+                                            frmSelect.SetGeneralItemsMode(lstItems);
+                                        }
+
+                                        frmSelect.ShowDialogSafe(frmToUse);
+
+                                        if (frmSelect.DialogResult != DialogResult.Cancel)
+                                        {
+                                            _strSelectedValue = frmSelect.SelectedItem;
+                                        }
+
+                                        return frmSelect.DialogResult;
                                     }
-
-                                    return frmSelect.DialogResult;
                                 }
+                            });
+                            if (eResult == DialogResult.Cancel)
+                            {
+                                Rollback(objCharacter);
+                                ForcedValue = string.Empty;
+                                LimitSelection = string.Empty;
+                                trace += "CreateImprovements exit" + Environment.NewLine;
+                                return false;
                             }
-                        });
-                        if (eResult == DialogResult.Cancel)
+                        }
+
+                        trace += "_strSelectedValue = " + SelectedValue + Environment.NewLine;
+                        trace += "strSourceName = " + strSourceName + Environment.NewLine;
+
+                        // Create the Improvement.
+                        trace += "Calling CreateImprovement" + Environment.NewLine;
+
+                        CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource, strSourceName,
+                                          Improvement.ImprovementType.Text,
+                                          strUnique);
+                    }
+
+                    // If there is no character object, don't attempt to add any Improvements.
+                    if (objCharacter == null && blnAddImprovementsToCharacter)
+                    {
+                        trace += "_objCharacter = Null" + Environment.NewLine;
+                        trace += "CreateImprovements exit" + Environment.NewLine;
+                        return true;
+                    }
+
+                    // Check to see what bonuses the node grants.
+                    foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                    {
+                        if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, intRating, strFriendlyName,
+                                          bonusNode, strUnique, !blnAddImprovementsToCharacter))
                         {
                             Rollback(objCharacter);
-                            ForcedValue = string.Empty;
-                            LimitSelection = string.Empty;
-                            Log.Debug("CreateImprovements exit");
+                            trace += "No idea, why we return here without logging something." + Environment.NewLine;
                             return false;
                         }
                     }
-
-                    Log.Info("_strSelectedValue = " + SelectedValue);
-                    Log.Info("strSourceName = " + strSourceName);
-
-                    // Create the Improvement.
-                    Log.Info("Calling CreateImprovement");
-
-                    CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource, strSourceName,
-                                      Improvement.ImprovementType.Text,
-                                      strUnique);
                 }
-
                 // If there is no character object, don't attempt to add any Improvements.
-                if (objCharacter == null && blnAddImprovementsToCharacter)
+                else if (objCharacter == null && blnAddImprovementsToCharacter)
                 {
-                    Log.Info("_objCharacter = Null");
-                    Log.Debug("CreateImprovements exit");
+                    trace += "_objCharacter = Null" + Environment.NewLine;
+                    trace += "CreateImprovements exit" + Environment.NewLine;
                     return true;
                 }
 
-                // Check to see what bonuses the node grants.
-                foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                // If we've made it this far, everything went OK, so commit the Improvements.
+
+                if (blnAddImprovementsToCharacter)
                 {
-                    if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, intRating, strFriendlyName,
-                                      bonusNode, strUnique, !blnAddImprovementsToCharacter))
-                    {
-                        Rollback(objCharacter);
-                        return false;
-                    }
+                    trace += "Calling Commit" + Environment.NewLine;
+                    Commit(objCharacter);
+                    trace += "Returned from Commit" + Environment.NewLine;
                 }
+                else
+                {
+                    trace += "Calling scheduled Rollback due to blnAddImprovementsToCharacter = false" + Environment.NewLine;
+                    Rollback(objCharacter);
+                    trace += "Returned from scheduled Rollback" + Environment.NewLine;
+                }
+
+                // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
+                if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
+                {
+                    SelectedValue = string.Empty;
+                }
+
+                // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
+                _strForcedValue = string.Empty;
+                _strLimitSelection = string.Empty;
+                trace += "CreateImprovements exit" + Environment.NewLine;
             }
-            // If there is no character object, don't attempt to add any Improvements.
-            else if (objCharacter == null && blnAddImprovementsToCharacter)
+            //catch (Exception ex)
+            //{
+            //    objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Message = " + ex.Message);
+            //    objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Source  = " + ex.Source);
+            //    objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager",
+            //        "ERROR Trace   = " + ex.StackTrace.ToString());
+
+            //    Rollback();
+            //    throw;
+            //}
+            finally
             {
-                Log.Info("_objCharacter = Null");
-                Log.Debug("CreateImprovements exit");
-                return true;
+                Log.Debug(trace);
             }
-
-            // If we've made it this far, everything went OK, so commit the Improvements.
-
-            if (blnAddImprovementsToCharacter)
-            {
-                Log.Info("Calling Commit");
-                Commit(objCharacter);
-                Log.Info("Returned from Commit");
-            }
-            else
-            {
-                Log.Info("Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
-                Rollback(objCharacter);
-                Log.Info("Returned from scheduled Rollback");
-            }
-
-            // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
-            if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
-            {
-                SelectedValue = string.Empty;
-            }
-
-            // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-            _strForcedValue = string.Empty;
-            _strLimitSelection = string.Empty;
-
-            /*}
-            catch (Exception ex)
-            {
-                objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Message = " + ex.Message);
-                objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Source  = " + ex.Source);
-                objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager",
-                    "ERROR Trace   = " + ex.StackTrace.ToString());
-
-                Rollback();
-                throw;
-            }*/
-            Log.Debug("CreateImprovements exit");
+            
             return true;
         }
 
