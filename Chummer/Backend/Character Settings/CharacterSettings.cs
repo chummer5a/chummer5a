@@ -638,6 +638,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationSchoolingPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ KarmaRESInitiationSchoolingPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ SpecializationBonus;
+                hashCode = (hashCode * 397) ^ ExpertiseBonus;
                 return hashCode;
             }
         }
@@ -4359,6 +4360,11 @@ namespace Chummer
         /// The value by which Specializations add to dicepool.
         /// </summary>
         public int SpecializationBonus => 2;
+
+        /// <summary>
+        /// The value by which Expertise Specializations add to dicepool (does not stack with SpecializationBonus).
+        /// </summary>
+        public int ExpertiseBonus => 3;
 
         #endregion Constant Values
 

@@ -2563,6 +2563,14 @@ namespace Chummer.Backend.Skills
                         }
                         break;
                     }
+                case nameof(CharacterSettings.ExpertiseBonus):
+                {
+                    if (Specializations.Any(x => x.Expertise))
+                    {
+                        OnPropertyChanged(nameof(PoolOtherAttribute));
+                    }
+                    break;
+                }
             }
         }
 

@@ -195,9 +195,10 @@ namespace Chummer.Backend.Skills
                                                         Improvement.ImprovementType.DisableSpecializationEffects, Name)
                     .Count == 0)
                 {
-                    intReturn += _objCharacter.Settings.SpecializationBonus;
                     if (Expertise)
-                        intReturn += 1;
+                        intReturn += _objCharacter.Settings.ExpertiseBonus;
+                    else
+                        intReturn += _objCharacter.Settings.SpecializationBonus;
                 }
                 decimal decBonus = 0;
                 foreach (Improvement objImprovement in Parent.RelevantImprovements(x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true))
