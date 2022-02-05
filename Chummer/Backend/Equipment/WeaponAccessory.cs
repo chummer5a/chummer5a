@@ -37,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -1550,6 +1550,7 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objLoopGear in GearChildren)
                 decReturn += objLoopGear.DeleteGear(false);
 
+            Dispose();
             return decReturn;
         }
 
@@ -1687,6 +1688,12 @@ namespace Chummer.Backend.Equipment
         public bool AllowPasteObject(object input)
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstGear.Dispose();
         }
     }
 }

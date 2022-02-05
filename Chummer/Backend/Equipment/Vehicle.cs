@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -3138,6 +3138,8 @@ namespace Chummer.Backend.Equipment
                 decReturn += objLoopMount.DeleteWeaponMount(false);
             }
 
+            Dispose();
+
             return decReturn;
         }
 
@@ -3598,5 +3600,15 @@ namespace Chummer.Backend.Equipment
         }
 
         public const int MaxWheels = 50;
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstVehicleMods.Dispose();
+            _lstGear.Dispose();
+            _lstWeapons.Dispose();
+            _lstWeaponMounts.Dispose();
+            _lstLocations.Dispose();
+        }
     }
 }

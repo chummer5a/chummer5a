@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
     public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes,
         IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort,
-        IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount
+        IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -3386,6 +3386,8 @@ namespace Chummer.Backend.Equipment
             }
 
             this.SetActiveCommlink(_objCharacter, false);
+
+            Dispose();
             return decReturn;
         }
 
@@ -4097,5 +4099,11 @@ namespace Chummer.Backend.Equipment
         }
 
         public TaggedObservableCollection<Gear> GearChildren => Children;
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstChildren.Dispose();
+        }
     }
 }

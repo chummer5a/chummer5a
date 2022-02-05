@@ -37,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -1191,6 +1191,8 @@ namespace Chummer.Backend.Equipment
                 decReturn += objLoopMod.DeleteVehicleMod(false);
             }
 
+            Dispose();
+
             return decReturn;
         }
 
@@ -1390,6 +1392,13 @@ namespace Chummer.Backend.Equipment
         public bool AllowPasteObject(object input)
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstWeapons.Dispose();
+            _lstMods.Dispose();
         }
     }
 

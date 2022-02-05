@@ -37,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -1635,6 +1635,9 @@ namespace Chummer.Backend.Equipment
             {
                 decReturn += objLoopCyberware.DeleteCyberware(false);
             }
+
+            Dispose();
+
             return decReturn;
         }
 
@@ -1829,6 +1832,13 @@ namespace Chummer.Backend.Equipment
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
             return true;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstVehicleWeapons.Dispose();
+            _lstCyberware.Dispose();
         }
     }
 }
