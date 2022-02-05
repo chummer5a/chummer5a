@@ -782,14 +782,26 @@ namespace Chummer
         /// <param name="strFile"></param>
         private TreeNode CacheCharacter(string strFile)
         {
-            CharacterCache objCache;
+            CharacterCache objCache = null;
             if (!_dicSavedCharacterCaches.IsDisposed)
             {
-                while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
+                try
                 {
-                    objCache = new CharacterCache(strFile);
-                    if (_dicSavedCharacterCaches.TryAdd(strFile, objCache))
-                        break;
+                    while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
+                    {
+                        objCache = new CharacterCache(strFile);
+                        if (_dicSavedCharacterCaches.TryAdd(strFile, objCache))
+                            break;
+                        objCache.Dispose();
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    // We shouldn't be caching characters if we've already disposed ourselves, so if you break here,
+                    // something went wrong (but not fatally so, which is why the exception is handled)
+                    Utils.BreakIfDebug();
+                    if (objCache == null)
+                        objCache = new CharacterCache(strFile);
                 }
             }
             else
