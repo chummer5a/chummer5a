@@ -34,7 +34,7 @@ namespace Chummer
         /// CollectionChanged event subscription that will fire right before the collection is cleared.
         /// To make things easy, all of the collections elements will be present in e.OldItems.
         /// </summary>
-        public virtual event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged;
+        public event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged;
 
         /// <inheritdoc />
         public EnhancedObservableCollection()
