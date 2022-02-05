@@ -31,6 +31,7 @@ Application Changes:
 - Bonuses and improvements that replace physical attributes with new values, e.g. Infected qualities, no longer affect shapeshifters' animal form attributes.
 - If a character has a bonus or improvement that replaces their Edge attribute, burning Edge now properly descreases their Edge.
 - The setting to prefer Nightly updates no longer requires the setting for automatic updates to be on. Fixes #4690.
+- The total, calculated, and remaining capacities of armor are now exported as `totalarmorcapacity`, `calculatedcapacity`, and `capacityremaining` respectively.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.

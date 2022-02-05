@@ -6523,7 +6523,7 @@ namespace Chummer
                 using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
                 {
                     ArmorCost = objArmor.OwnCost,
-                    ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo),
+                    ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo),
                     AllowedCategories = objArmor.Category + ',' + objArmor.Name,
                     CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                 })

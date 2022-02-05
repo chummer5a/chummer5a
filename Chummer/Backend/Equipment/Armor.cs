@@ -912,6 +912,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("armor", DisplayArmorValue);
+            objWriter.WriteElementString("totalarmorcapacity", TotalArmorCapacity(objCulture));
+            objWriter.WriteElementString("calculatedcapacity", CalculatedCapacity(objCulture));
+            objWriter.WriteElementString("capacityremaining", CapacityRemaining.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
@@ -1145,34 +1148,33 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Armor's Capacity.
         /// </summary>
-        public string TotalArmorCapacity
+        public string TotalArmorCapacity(CultureInfo objCultureInfo)
         {
-            get
+            string strArmorCapacity = ArmorCapacity;
+            if (strArmorCapacity.Contains("Rating"))
             {
-                string strArmorCapacity = ArmorCapacity;
-                if (strArmorCapacity.Contains("Rating"))
-                {
-                    // If the Capaicty is determined by the Rating, evaluate the expression.
-                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = strArmorCapacity.StartsWith('[');
-                    string strCapacity = strArmorCapacity;
-                    if (blnSquareBrackets)
-                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                // If the Capacity is determined by the Rating, evaluate the expression.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                bool blnSquareBrackets = strArmorCapacity.StartsWith('[');
+                string strCapacity = strArmorCapacity;
+                if (blnSquareBrackets)
+                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                    string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : objProcess.ToString();
-                    if (blnSquareBrackets)
-                        strReturn = '[' + strReturn + ']';
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", objCultureInfo) : objProcess.ToString();
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
 
-                    return strReturn;
-                }
-
-                return decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                    out decimal decReturn)
-                    ? decReturn.ToString("#,0.##", GlobalSettings.CultureInfo)
-                    : strArmorCapacity;
+                return strReturn;
             }
+
+            return decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                    out decimal decReturn)
+                ? decReturn.ToString("#,0.##", objCultureInfo)
+                : strArmorCapacity;
         }
+
+        public string CurrentTotalArmorCapacity => TotalArmorCapacity(GlobalSettings.CultureInfo);
 
         /// <summary>
         /// Armor's Availability.
@@ -1915,53 +1917,55 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Capacity of the Armor.
         /// </summary>
-        public string CalculatedCapacity
+        public string CalculatedCapacity(CultureInfo objCultureInfo)
         {
-            get
+            string strReturn = TotalArmorCapacity(objCultureInfo);
+
+            // If an Armor Capacity is specified for the Armor, use that value.
+            if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
+                strReturn = (0.0m).ToString("#,0.##", objCultureInfo);
+            else if (strReturn == "Rating")
+                strReturn = Rating.ToString(objCultureInfo);
+            else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
+                strReturn = decReturn.ToString("#,0.##", objCultureInfo);
+
+            foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
             {
-                string strReturn = TotalArmorCapacity;
+                if (!strArmorModCapacity.StartsWith('-')
+                    && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
+                    continue;
+                // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                string strCapacity = strArmorModCapacity
+                                     .FastEscape('[', ']')
+                                     .CheapReplace("Capacity", () => TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
+                                     .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                // If an Armor Capacity is specified for the Armor, use that value.
-                if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
-                    strReturn = (0.0m).ToString("#,0.##", GlobalSettings.CultureInfo);
-                else if (strReturn == "Rating")
-                    strReturn = Rating.ToString(GlobalSettings.CultureInfo);
-                else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn))
-                    strReturn = decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
-
-                foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
+                if (blnIsSuccess)
                 {
-                    if (!strArmorModCapacity.StartsWith('-')
-                        && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
-                        continue;
-                    // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
-                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    string strCapacity = strArmorModCapacity
-                                         .FastEscape('[', ']')
-                                         .CheapReplace("Capacity", () => TotalArmorCapacity)
-                                         .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                    {
-                        strCapacity = (Convert.ToDecimal(strReturn, GlobalSettings.CultureInfo) - Convert.ToDecimal(objProcess, GlobalSettings.CultureInfo)).ToString("#,0.##", GlobalSettings.CultureInfo);
-                    }
-                    strReturn = strCapacity;
+                    strCapacity = (Convert.ToDecimal(strReturn, objCultureInfo)
+                                   - Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo))
+                        .ToString("#,0.##", objCultureInfo);
                 }
 
-                return strReturn;
+                strReturn = strCapacity;
             }
+
+            return strReturn;
         }
 
+        public string CurrentCalculatedCapacity => CalculatedCapacity(GlobalSettings.CultureInfo);
+
         /// <summary>
-        /// The amount of Capacity remaining in the Gear.
+        /// The amount of Capacity remaining in the Armor.
         /// </summary>
         public decimal CapacityRemaining
         {
             get
             {
                 // Get the Armor base Capacity.
-                decimal decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalSettings.CultureInfo);
+                decimal decCapacity = Convert.ToDecimal(CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
 
                 // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
                 // Capacity since it's disabled and return 0 instead.
@@ -1969,7 +1973,7 @@ namespace Chummer.Backend.Equipment
                     return 0;
 
                 // Calculate the remaining Capacity for a Suit of Armor.
-                string strArmorCapacity = TotalArmorCapacity;
+                string strArmorCapacity = TotalArmorCapacity(GlobalSettings.InvariantCultureInfo);
                 if (strArmorCapacity != "0" && !string.IsNullOrEmpty(strArmorCapacity)) // && _objCharacter.Settings.ArmorSuitCapacity)
                 {
                     // Run through its Armor Mods and deduct the Capacity costs. Mods that confer capacity (ie negative values) are excluded, as they're processed in TotalArmorCapacity.
@@ -2005,15 +2009,16 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (CalculatedCapacity.Contains('[') && !CalculatedCapacity.Contains("/["))
-                    return CalculatedCapacity;
+                string strCalculatedCapacity = CurrentCalculatedCapacity;
+                if (strCalculatedCapacity.Contains('[') && !strCalculatedCapacity.Contains("/["))
+                    return strCalculatedCapacity;
                 return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
-                    CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
+                                     strCalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
             }
         }
 
         /// <summary>
-        /// Capacity display style;
+        /// Capacity display style.
         /// </summary>
         public CapacityStyle CapacityDisplayStyle
         {
@@ -2451,7 +2456,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCapacity = CalculatedCapacity;
+                string strCapacity = CalculatedCapacity(GlobalSettings.InvariantCultureInfo);
                 if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
                     return false;
                 string strPasteCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value ?? string.Empty;

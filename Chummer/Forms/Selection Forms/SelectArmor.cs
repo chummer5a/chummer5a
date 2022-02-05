@@ -442,7 +442,7 @@ namespace Chummer
                                 string strArmorName = objArmor.CurrentDisplayName;
                                 int intArmor = objArmor.TotalArmor;
                                 decimal decCapacity
-                                    = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo);
+                                    = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
                                 AvailabilityValue objAvail = objArmor.TotalAvailTuple();
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdAccessories))
@@ -607,7 +607,7 @@ namespace Chummer
                 lblArmorValueLabel.Visible = true;
                 lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
                 lblCapacityLabel.Visible = true;
-                lblCapacity.Text = _objSelectedArmor.CalculatedCapacity;
+                lblCapacity.Text = _objSelectedArmor.DisplayCapacity;
 
                 lblCostLabel.Visible = true;
                 decimal decItemCost = 0;

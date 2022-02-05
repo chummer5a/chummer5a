@@ -993,8 +993,17 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
-                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(Parent?.TotalArmorCapacity, GlobalSettings.CultureInfo).ToString(GlobalSettings.InvariantCultureInfo))
-                    .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                strCapacity = strCapacity
+                              .CheapReplace(
+                                  "Capacity",
+                                  () => Parent != null
+                                      ? Convert.ToDecimal(
+                                                   Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo),
+                                                   GlobalSettings.InvariantCultureInfo)
+                                               .ToString(GlobalSettings.InvariantCultureInfo)
+                                      : "0")
+                              .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
@@ -1059,8 +1068,17 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
-                strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(Parent?.TotalArmorCapacity, GlobalSettings.CultureInfo).ToString(GlobalSettings.InvariantCultureInfo))
-                    .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                strCapacity = strCapacity
+                              .CheapReplace(
+                                  "Capacity",
+                                  () => Parent != null
+                                      ? Convert.ToDecimal(
+                                                   Parent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo),
+                                                   GlobalSettings.InvariantCultureInfo)
+                                               .ToString(GlobalSettings.InvariantCultureInfo)
+                                      : "0")
+                              .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 bool blnSquareBrackets = strCapacity.StartsWith('[');
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
