@@ -1340,9 +1340,9 @@ namespace Chummer
                                               XmlNode nodBonus, int intRating = 1, string strFriendlyName = "",
                                               bool blnAddImprovementsToCharacter = true)
         {
+            Log.Debug("CreateImprovements enter");
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
-                sbdTrace.AppendLine("CreateImprovements enter");
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
                 sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
                 sbdTrace.Append("nodBonus = ").AppendLine(nodBonus?.OuterXml ?? string.Empty);
@@ -1597,8 +1597,8 @@ namespace Chummer
                 //}
                 finally
                 {
-                    sbdTrace.AppendLine("CreateImprovements exit");
-                    Log.Debug(sbdTrace.ToString);
+                    Log.Trace(sbdTrace.ToString);
+                    Log.Debug("CreateImprovements exit");
                 }
             }
 
@@ -2920,31 +2920,24 @@ namespace Chummer
                                              string strCondition = "")
         {
             Log.Debug("CreateImprovement");
-            Log.Info(
-                "strImprovedName = " + strImprovedName);
-            Log.Info(
-                "objImprovementSource = " + objImprovementSource);
-            Log.Info(
-                "strSourceName = " + strSourceName);
-            Log.Info(
-                "objImprovementType = " + objImprovementType);
-            Log.Info("strUnique = " + strUnique);
-            Log.Info(
-                "decValue = " + decValue.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info(
-                "intRating = " + intRating.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info(
-                "intMinimum = " + intMinimum.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info(
-                "intMaximum = " + intMaximum.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info(
-                "decAugmented = " + decAugmented.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info(
-                "intAugmentedMaximum = " + intAugmentedMaximum.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info("strExclude = " + strExclude);
-            Log.Info(
-                "blnAddToRating = " + blnAddToRating.ToString(GlobalSettings.InvariantCultureInfo));
-            Log.Info("strCondition = " + strCondition);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            {
+                sbdTrace.Append("strImprovedName = ").AppendLine(strImprovedName);
+                sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
+                sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
+                sbdTrace.Append("objImprovementType = ").AppendLine(objImprovementType.ToString());
+                sbdTrace.Append("strUnique = ").AppendLine(strUnique);
+                sbdTrace.Append("decValue = ").AppendLine(decValue.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intRating = ").AppendLine(intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intMinimum = ").AppendLine(intMinimum.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intMaximum = ").AppendLine(intMaximum.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("decAugmented = ").AppendLine(decAugmented.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intAugmentedMaximum = ").AppendLine(intAugmentedMaximum.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("strExclude = ").AppendLine(strExclude);
+                sbdTrace.Append("blnAddToRating = ").AppendLine(blnAddToRating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("strCondition = ").AppendLine(strCondition);
+                Log.Trace(sbdTrace.ToString);
+            }
 
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
