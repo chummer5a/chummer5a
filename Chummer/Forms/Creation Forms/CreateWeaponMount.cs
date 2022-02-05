@@ -825,7 +825,7 @@ namespace Chummer
                 VehicleMod objMod = _lstMods.Find(x => x.InternalId == strSelectedId);
                 if (objMod?.IncludedInVehicle != false)
                     return;
-                if (!objMod.Remove(GlobalSettings.ConfirmDelete))
+                if (!objMod.Remove())
                     return;
                 _lstMods.Remove(objMod);
                 TreeNode objParentNode = objSelectedNode.Parent;

@@ -316,7 +316,7 @@ namespace Chummer
 
         #endregion UI Methods
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             if (_objCharacter.LimitModifiers.Contains(this) && blnConfirmDelete)
             {

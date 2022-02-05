@@ -1226,14 +1226,10 @@ namespace Chummer
 
         #endregion UI Methods
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                string strMessage = LanguageManager.GetString("Message_DeleteSpell");
-                if (!CommonFunctions.ConfirmDelete(strMessage))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell")))
+                return false;
 
             _objCharacter.Spells.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Spell, InternalId);

@@ -3991,7 +3991,7 @@ namespace Chummer.Backend.Equipment
                 objChild.AddGearImprovements();
         }
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
                 return false;

@@ -1799,7 +1799,7 @@ namespace Chummer.Backend.Equipment
             throw new NotImplementedException();
         }
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleMod")))
                 return false;

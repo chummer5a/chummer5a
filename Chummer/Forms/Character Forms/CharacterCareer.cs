@@ -3522,7 +3522,7 @@ namespace Chummer
             if (!(treSpells.SelectedNode?.Tag is Spell objSpell)) return;
             // Spells that come from Initiation Grades can't be deleted normally.
             if (objSpell.Grade != 0) return;
-            if (!objSpell.Remove(GlobalSettings.ConfirmDelete)) return;
+            if (!objSpell.Remove()) return;
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -3572,7 +3572,7 @@ namespace Chummer
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0)
                 return;
             // Locate the piece of Cyberware that is selected in the tree.
-            if (treCyberware.SelectedNode?.Tag is ICanRemove objToRemove && objToRemove.Remove(GlobalSettings.ConfirmDelete))
+            if (treCyberware.SelectedNode?.Tag is ICanRemove objToRemove && objToRemove.Remove())
             {
                 IsCharacterUpdateRequested = true;
 
@@ -3784,7 +3784,7 @@ namespace Chummer
         {
             if (selectedObject is ICanRemove iRemovable)
             {
-                if (!iRemovable.Remove(GlobalSettings.ConfirmDelete))
+                if (!iRemovable.Remove())
                     return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -3989,7 +3989,7 @@ namespace Chummer
                     break;
                 }
                 case ICanRemove selectedObject:
-                    if (!selectedObject.Remove(GlobalSettings.ConfirmDelete))
+                    if (!selectedObject.Remove())
                         return;
                     break;
             }
@@ -4558,7 +4558,7 @@ namespace Chummer
         {
             // If the selected object is not a complex form or it comes from an initiate grade, we don't want to remove it.
             if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0) return;
-            if (!objCritterPower.Remove(GlobalSettings.ConfirmDelete)) return;
+            if (!objCritterPower.Remove()) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -4568,7 +4568,7 @@ namespace Chummer
         {
             // If the selected object is not a complex form or it comes from an initiate grade, we don't want to remove it.
             if (!(treComplexForms.SelectedNode?.Tag is ComplexForm objComplexForm) || objComplexForm.Grade != 0) return;
-            if (!objComplexForm.Remove(GlobalSettings.ConfirmDelete)) return;
+            if (!objComplexForm.Remove()) return;
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -17700,7 +17700,7 @@ namespace Chummer
             // Delete the selected AI Program.
             if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove(GlobalSettings.ConfirmDelete))
+            if (!selectedObject.Remove())
                 return;
 
             IsCharacterUpdateRequested = true;

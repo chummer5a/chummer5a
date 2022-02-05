@@ -590,7 +590,7 @@ namespace Chummer
             return true;
         }
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             // Delete the selected Martial Art.
             if (IsQuality)

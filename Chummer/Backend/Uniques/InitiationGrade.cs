@@ -339,7 +339,7 @@ namespace Chummer
 
         #endregion Methods
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             return Remove(blnConfirmDelete, true);
         }

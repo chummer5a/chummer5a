@@ -21,6 +21,6 @@ namespace Chummer
 {
     public interface ICanRemove
     {
-        bool Remove(bool blnConfirmDelete);
+        bool Remove(bool blnConfirmDelete = true);
     }
 }

@@ -245,16 +245,13 @@ namespace Chummer
             }
         }
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation"));
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
+                return false;
+
             foreach (IHasLocation item in Children)
-            {
                 item.Location = null;
-            }
 
             return Parent.Remove(Parent.SingleOrDefault(i => i.InternalId == InternalId));
         }

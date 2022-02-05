@@ -114,7 +114,7 @@ namespace Chummer.UI.Shared
         {
             if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove(GlobalSettings.ConfirmDelete))
+            if (!selectedObject.Remove())
                 return;
             MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
         }
