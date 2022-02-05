@@ -1550,7 +1550,8 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objLoopGear in GearChildren)
                 decReturn += objLoopGear.DeleteGear(false);
 
-            Dispose();
+            DisposeSelf();
+
             return decReturn;
         }
 
@@ -1692,6 +1693,13 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (Gear objChild in _lstGear)
+                objChild.Dispose();
+            DisposeSelf();
+        }
+
+        private void DisposeSelf()
         {
             _lstGear.Dispose();
         }

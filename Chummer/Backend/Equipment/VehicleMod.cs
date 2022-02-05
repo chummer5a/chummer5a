@@ -1636,7 +1636,7 @@ namespace Chummer.Backend.Equipment
                 decReturn += objLoopCyberware.DeleteCyberware(false);
             }
 
-            Dispose();
+            DisposeSelf();
 
             return decReturn;
         }
@@ -1836,6 +1836,15 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (Weapon objChild in _lstVehicleWeapons)
+                objChild.Dispose();
+            foreach (Cyberware objChild in _lstCyberware)
+                objChild.Dispose();
+            DisposeSelf();
+        }
+
+        private void DisposeSelf()
         {
             _lstVehicleWeapons.Dispose();
             _lstCyberware.Dispose();

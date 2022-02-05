@@ -1868,7 +1868,10 @@ namespace Chummer.Backend.Equipment
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
                 return false;
-            return _objCharacter.Lifestyles.Remove(this);
+            if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
+                return false;
+            Dispose();
+            return true;
         }
 
         public void SetSourceDetail(Control sourceControl)

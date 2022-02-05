@@ -1267,7 +1267,7 @@ namespace Chummer.Backend.Equipment
 
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId);
 
-            Dispose();
+            DisposeSelf();
 
             return decReturn;
         }
@@ -1495,6 +1495,13 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (Gear objChild in _lstGear)
+                objChild.Dispose();
+            DisposeSelf();
+        }
+
+        private void DisposeSelf()
         {
             _lstGear.Dispose();
         }

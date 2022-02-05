@@ -291,74 +291,12 @@ namespace Chummer
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
             _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
             _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
-            _lstSpells.CollectionChanged += SpellsOnCollectionChanged;
-            _lstSpells.BeforeClearCollectionChanged += SpellsOnBeforeClearCollectionChanged;
             _lstSpells.CollectionChanged += SustainableOnCollectionChanged;
             _lstComplexForms.CollectionChanged += SustainableOnCollectionChanged;
             _lstCritterPowers.CollectionChanged += SustainableOnCollectionChanged;
             _lstSustainedObjects.CollectionChanged += SustainedObjectsOnCollectionChanged;
             _lstInitiationGrades.CollectionChanged += InitiationGradesOnCollectionChanged;
-            _lstLifestyles.CollectionChanged += LifestylesOnCollectionChanged;
-            _lstLifestyles.BeforeClearCollectionChanged += LifestylesOnBeforeClearCollectionChanged;
             _objTradition = new Tradition(this);
-        }
-
-        private void LifestylesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (IsLoading)
-                return;
-            foreach (Lifestyle objLifestyle in e.OldItems)
-                objLifestyle.Dispose();
-        }
-
-        private void LifestylesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (IsLoading)
-                return;
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (Lifestyle objLifestyle in e.OldItems)
-                        objLifestyle.Dispose();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    List<Lifestyle> lstNewLifestyles = e.NewItems.OfType<Lifestyle>().ToList();
-                    foreach (Lifestyle objLifestyle in e.OldItems)
-                    {
-                        if (!lstNewLifestyles.Contains(objLifestyle))
-                            objLifestyle.Dispose();
-                    }
-                    break;
-            }
-        }
-
-        private void SpellsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (IsLoading)
-                return;
-            foreach (Spell objSpell in e.OldItems)
-                objSpell.Dispose();
-        }
-
-        private void SpellsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (IsLoading)
-                return;
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (Spell objSpell in e.OldItems)
-                        objSpell.Dispose();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    List<Spell> lstNewSpells = e.NewItems.OfType<Spell>().ToList();
-                    foreach (Spell objSpell in e.OldItems)
-                    {
-                        if (!lstNewSpells.Contains(objSpell))
-                            objSpell.Dispose();
-                    }
-                    break;
-            }
         }
 
         private bool _blnClearingInitiations;
@@ -6256,10 +6194,25 @@ namespace Chummer
                 objContact.Dispose();
             foreach (Spirit objSpirit in _lstSpirits)
                 objSpirit.Dispose();
-            _lstLifestyles.Clear(); // Will automatically dispose all Lifestyles
             ImprovementManager.ClearCachedValues(this);
             AttributeSection.Dispose();
             SkillsSection.Dispose();
+            foreach (Armor objItem in _lstArmor)
+                objItem.Dispose();
+            foreach (Weapon objItem in _lstWeapons)
+                objItem.Dispose();
+            foreach (Gear objItem in _lstGear)
+                objItem.Dispose();
+            foreach (Cyberware objItem in _lstCyberware)
+                objItem.Dispose();
+            foreach (Vehicle objItem in _lstVehicles)
+                objItem.Dispose();
+            foreach (Lifestyle objItem in _lstLifestyles)
+                objItem.Dispose();
+            foreach (Spell objItem in _lstSpells)
+                objItem.Dispose();
+            foreach (MartialArt objItem in _lstMartialArts)
+                objItem.Dispose();
             DoOnSaveCompleted.Dispose();
             if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
                 _objSettings.Dispose();
@@ -6361,6 +6314,22 @@ namespace Chummer
             foreach (Spirit objSpirit in _lstSpirits)
                 objSpirit.Dispose();
             _lstSpirits.Clear();
+            foreach (Armor objItem in _lstArmor)
+                objItem.Dispose();
+            foreach (Weapon objItem in _lstWeapons)
+                objItem.Dispose();
+            foreach (Gear objItem in _lstGear)
+                objItem.Dispose();
+            foreach (Cyberware objItem in _lstCyberware)
+                objItem.Dispose();
+            foreach (Vehicle objItem in _lstVehicles)
+                objItem.Dispose();
+            foreach (Lifestyle objItem in _lstLifestyles)
+                objItem.Dispose();
+            foreach (Spell objItem in _lstSpells)
+                objItem.Dispose();
+            foreach (MartialArt objItem in _lstMartialArts)
+                objItem.Dispose();
             // Reset all of the Lists.
             // This kills the GC
             ImprovementManager.ClearCachedValues(this);
@@ -20671,6 +20640,8 @@ namespace Chummer
                                                                         xmlArmorModData,
                                                                         lstWeapons))
                                                                         objArmorMod.GearChildren.Add(objPlugin);
+                                                                    else
+                                                                        objPlugin.Dispose();
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -20710,6 +20681,8 @@ namespace Chummer
                                                                 xmlArmorData,
                                                                 lstWeapons))
                                                                 objArmor.GearChildren.Add(objPlugin);
+                                                            else
+                                                                objPlugin.Dispose();
                                                         }
                                                     }
                                                 }
@@ -20740,6 +20713,8 @@ namespace Chummer
                                                                     if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                         objArmorMod.GetNode(), lstWeapons))
                                                                         objArmorMod.GearChildren.Add(objPlugin);
+                                                                    else
+                                                                        objPlugin.Dispose();
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -20807,6 +20782,8 @@ namespace Chummer
                                     Weapon objWeapon = new Weapon(this);
                                     if (objWeapon.ImportHeroLabWeapon(xmlWeaponToImport, lstWeapons))
                                         _lstWeapons.Add(objWeapon);
+                                    else
+                                        objWeapon.Dispose();
                                 }
 
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(

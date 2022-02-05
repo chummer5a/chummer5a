@@ -156,6 +156,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
 
+                _objSelectedArmor?.Dispose();
                 _objSelectedArmor = objArmor;
 
                 int intRating = 0;
@@ -206,6 +207,7 @@ namespace Chummer
             }
             else
             {
+                _objSelectedArmor?.Dispose();
                 _objSelectedArmor = null;
                 lblRatingLabel.Visible = false;
                 lblRatingNALabel.Visible = false;
@@ -431,37 +433,40 @@ namespace Chummer
                                 || SelectionShared.CheckNuyenRestriction(
                                     objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
                         {
-                            Armor objArmor = new Armor(_objCharacter);
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
-
-                            string strArmorGuid = objArmor.SourceIDString;
-                            string strArmorName = objArmor.CurrentDisplayName;
-                            int intArmor = objArmor.TotalArmor;
-                            decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo);
-                            AvailabilityValue objAvail = objArmor.TotalAvailTuple();
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdAccessories))
+                            using (Armor objArmor = new Armor(_objCharacter))
                             {
-                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+                                objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
+
+                                string strArmorGuid = objArmor.SourceIDString;
+                                string strArmorName = objArmor.CurrentDisplayName;
+                                int intArmor = objArmor.TotalArmor;
+                                decimal decCapacity
+                                    = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo);
+                                AvailabilityValue objAvail = objArmor.TotalAvailTuple();
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdAccessories))
                                 {
-                                    sbdAccessories.AppendLine(objMod.CurrentDisplayName);
+                                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                    {
+                                        sbdAccessories.AppendLine(objMod.CurrentDisplayName);
+                                    }
+
+                                    foreach (Gear objGear in objArmor.GearChildren)
+                                    {
+                                        sbdAccessories.AppendLine(objGear.CurrentDisplayName);
+                                    }
+
+                                    if (sbdAccessories.Length > 0)
+                                        sbdAccessories.Length -= Environment.NewLine.Length;
+                                    SourceString strSource = new SourceString(
+                                        objArmor.Source, objArmor.DisplayPage(GlobalSettings.Language),
+                                        GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                                    NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
+
+                                    tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
+                                                      sbdAccessories.ToString(), strSource, strCost);
                                 }
-
-                                foreach (Gear objGear in objArmor.GearChildren)
-                                {
-                                    sbdAccessories.AppendLine(objGear.CurrentDisplayName);
-                                }
-
-                                if (sbdAccessories.Length > 0)
-                                    sbdAccessories.Length -= Environment.NewLine.Length;
-                                SourceString strSource = new SourceString(
-                                    objArmor.Source, objArmor.DisplayPage(GlobalSettings.Language),
-                                    GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                                NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
-
-                                tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
-                                                  sbdAccessories.ToString(), strSource, strCost);
                             }
                         }
                     }

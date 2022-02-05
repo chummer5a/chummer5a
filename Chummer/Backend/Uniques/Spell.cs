@@ -1233,6 +1233,7 @@ namespace Chummer
 
             _objCharacter.Spells.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Spell, InternalId);
+            Dispose();
             return true;
         }
 

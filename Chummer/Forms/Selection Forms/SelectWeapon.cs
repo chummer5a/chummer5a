@@ -147,10 +147,14 @@ namespace Chummer
                 Weapon objWeapon = new Weapon(_objCharacter);
                 objWeapon.Create(xmlWeapon, null, true, false, true);
                 objWeapon.Parent = ParentWeapon;
+                _objSelectedWeapon?.Dispose();
                 _objSelectedWeapon = objWeapon;
             }
             else
+            {
+                _objSelectedWeapon?.Dispose();
                 _objSelectedWeapon = null;
+            }
 
             UpdateWeaponInfo();
         }
@@ -308,46 +312,50 @@ namespace Chummer
                             continue;
                     }
 
-                    Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, null, true, false, true);
-                    objWeapon.Parent = ParentWeapon;
-                    if (objWeapon.RangeType == "Ranged")
-                        blnAnyRanged = true;
-                    else
-                        blnAnyMelee = true;
-                    string strID = objWeapon.SourceIDString;
-                    string strWeaponName = objWeapon.CurrentDisplayName;
-                    string strDice = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
-                    string strAccuracy = objWeapon.DisplayAccuracy;
-                    string strDamage = objWeapon.DisplayDamage;
-                    string strAP = objWeapon.DisplayTotalAP;
-                    if (strAP == "-")
-                        strAP = "0";
-                    string strRC = objWeapon.DisplayTotalRC;
-                    string strAmmo = objWeapon.DisplayAmmo;
-                    string strMode = objWeapon.DisplayMode;
-                    string strReach = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
-                    string strConceal = objWeapon.DisplayConcealability;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdAccessories))
+                    using (Weapon objWeapon = new Weapon(_objCharacter))
                     {
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        objWeapon.Create(objXmlWeapon, null, true, false, true);
+                        objWeapon.Parent = ParentWeapon;
+                        if (objWeapon.RangeType == "Ranged")
+                            blnAnyRanged = true;
+                        else
+                            blnAnyMelee = true;
+                        string strID = objWeapon.SourceIDString;
+                        string strWeaponName = objWeapon.CurrentDisplayName;
+                        string strDice = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
+                        string strAccuracy = objWeapon.DisplayAccuracy;
+                        string strDamage = objWeapon.DisplayDamage;
+                        string strAP = objWeapon.DisplayTotalAP;
+                        if (strAP == "-")
+                            strAP = "0";
+                        string strRC = objWeapon.DisplayTotalRC;
+                        string strAmmo = objWeapon.DisplayAmmo;
+                        string strMode = objWeapon.DisplayMode;
+                        string strReach = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                        string strConceal = objWeapon.DisplayConcealability;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdAccessories))
                         {
-                            sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
+                            }
+
+                            if (sbdAccessories.Length > 0)
+                                sbdAccessories.Length -= Environment.NewLine.Length;
+                            AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
+                            SourceString strSource = new SourceString(objWeapon.Source,
+                                                                      objWeapon.DisplayPage(GlobalSettings.Language),
+                                                                      GlobalSettings.Language,
+                                                                      GlobalSettings.CultureInfo,
+                                                                      _objCharacter);
+                            NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
+
+                            tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC,
+                                                strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(),
+                                                objAvail,
+                                                strSource, strCost);
                         }
-
-                        if (sbdAccessories.Length > 0)
-                            sbdAccessories.Length -= Environment.NewLine.Length;
-                        AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                        SourceString strSource = new SourceString(objWeapon.Source,
-                                                                  objWeapon.DisplayPage(GlobalSettings.Language),
-                                                                  GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                                                  _objCharacter);
-                        NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
-
-                        tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC,
-                                            strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(), objAvail,
-                                            strSource, strCost);
                     }
                 }
 

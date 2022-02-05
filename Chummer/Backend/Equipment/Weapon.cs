@@ -5417,7 +5417,7 @@ namespace Chummer.Backend.Equipment
 
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Weapon, InternalId + "Wireless");
 
-            Dispose();
+            DisposeSelf();
 
             return decReturn;
         }
@@ -6636,6 +6636,15 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (WeaponAccessory objChild in _lstAccessories)
+                objChild.Dispose();
+            foreach (Weapon objChild in _lstUnderbarrel)
+                objChild.Dispose();
+            DisposeSelf();
+        }
+
+        private void DisposeSelf()
         {
             _lstAccessories.Dispose();
             _lstUnderbarrel.Dispose();

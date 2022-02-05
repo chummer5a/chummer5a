@@ -1191,7 +1191,7 @@ namespace Chummer.Backend.Equipment
                 decReturn += objLoopMod.DeleteVehicleMod(false);
             }
 
-            Dispose();
+            DisposeSelf();
 
             return decReturn;
         }
@@ -1396,6 +1396,15 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (Weapon objChild in _lstWeapons)
+                objChild.Dispose();
+            foreach (VehicleMod objChild in _lstMods)
+                objChild.Dispose();
+            DisposeSelf();
+        }
+
+        private void DisposeSelf()
         {
             _lstWeapons.Dispose();
             _lstMods.Dispose();

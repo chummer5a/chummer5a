@@ -3387,7 +3387,8 @@ namespace Chummer.Backend.Equipment
 
             this.SetActiveCommlink(_objCharacter, false);
 
-            Dispose();
+            DisposeSelf();
+
             return decReturn;
         }
 
@@ -4102,6 +4103,14 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (Gear objChild in _lstChildren)
+                objChild.Dispose();
+            DisposeSelf();
+            
+        }
+
+        private void DisposeSelf()
         {
             _lstChildren.Dispose();
         }

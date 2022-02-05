@@ -425,6 +425,7 @@ namespace Chummer
             int intOverLimit = 0;
             if (tabViews.SelectedIndex == 1)
             {
+                XmlDocument dummy = new XmlDocument { XmlResolver = null };
                 DataTable tabVehicles = new DataTable("vehicles");
                 tabVehicles.Columns.Add("VehicleGuid");
                 tabVehicles.Columns.Add("VehicleName");
@@ -474,70 +475,75 @@ namespace Chummer
                         }
                     }
 
-                    XmlDocument dummy = new XmlDocument();
-                    Vehicle objVehicle = new Vehicle(_objCharacter);
-                    objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, true, false, true);
-                    string strID = objVehicle.SourceIDString;
-                    string strVehicleName = objVehicle.CurrentDisplayName;
-                    string strAccel = objVehicle.TotalAccel;
-                    string strArmor = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
-                    string strBody= objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
-                    string strHandling = objVehicle.TotalHandling;
-                    string strPilot = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo);
-                    string strSensor = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo);
-                    string strSpeed = objVehicle.TotalSpeed;
-                    string strSeats = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdGear))
+                    using (Vehicle objVehicle = new Vehicle(_objCharacter))
                     {
-                        foreach (Gear objGear in objVehicle.GearChildren)
-                        {
-                            sbdGear.AppendLine(objGear.CurrentDisplayName);
-                        }
-
-                        if (sbdGear.Length > 0)
-                            sbdGear.Length -= Environment.NewLine.Length;
-
+                        objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, true, false, true);
+                        string strID = objVehicle.SourceIDString;
+                        string strVehicleName = objVehicle.CurrentDisplayName;
+                        string strAccel = objVehicle.TotalAccel;
+                        string strArmor = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
+                        string strBody = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
+                        string strHandling = objVehicle.TotalHandling;
+                        string strPilot = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo);
+                        string strSensor = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo);
+                        string strSpeed = objVehicle.TotalSpeed;
+                        string strSeats = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdMods))
+                                                                      out StringBuilder sbdGear))
                         {
-                            foreach (VehicleMod objMod in objVehicle.Mods)
+                            foreach (Gear objGear in objVehicle.GearChildren)
                             {
-                                sbdMods.AppendLine(objMod.CurrentDisplayName);
+                                sbdGear.AppendLine(objGear.CurrentDisplayName);
                             }
 
-                            if (sbdMods.Length > 0)
-                                sbdMods.Length -= Environment.NewLine.Length;
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                       out StringBuilder sbdWeapons))
-                            {
-                                if (sbdWeapons.Length > 0)
-                                    sbdWeapons.Length -= Environment.NewLine.Length;
-                                foreach (Weapon objWeapon in objVehicle.Weapons)
-                                {
-                                    sbdWeapons.AppendLine(objWeapon.CurrentDisplayName);
-                                }
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                           out StringBuilder sbdWeaponMounts))
-                                {
-                                    foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
-                                    {
-                                        sbdWeaponMounts.AppendLine(objWeaponMount.CurrentDisplayName);
-                                    }
-                                    if (sbdWeaponMounts.Length > 0)
-                                        sbdWeaponMounts.Length -= Environment.NewLine.Length;
+                            if (sbdGear.Length > 0)
+                                sbdGear.Length -= Environment.NewLine.Length;
 
-                                    AvailabilityValue objAvail = objVehicle.TotalAvailTuple();
-                                    SourceString strSource = new SourceString(objVehicle.Source,
-                                        objVehicle.DisplayPage(GlobalSettings.Language),
-                                        GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                        _objCharacter);
-                                    NuyenString strCost =
-                                        new NuyenString(objVehicle.TotalCost.ToString(GlobalSettings.CultureInfo));
-                                    
-                                    tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
-                                        strHandling, strPilot, strSensor, strSpeed, strSeats, sbdGear.ToString(), sbdMods.ToString(),
-                                        sbdWeapons.ToString(),sbdWeaponMounts.ToString(), objAvail,strSource, strCost);
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdMods))
+                            {
+                                foreach (VehicleMod objMod in objVehicle.Mods)
+                                {
+                                    sbdMods.AppendLine(objMod.CurrentDisplayName);
+                                }
+
+                                if (sbdMods.Length > 0)
+                                    sbdMods.Length -= Environment.NewLine.Length;
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdWeapons))
+                                {
+                                    if (sbdWeapons.Length > 0)
+                                        sbdWeapons.Length -= Environment.NewLine.Length;
+                                    foreach (Weapon objWeapon in objVehicle.Weapons)
+                                    {
+                                        sbdWeapons.AppendLine(objWeapon.CurrentDisplayName);
+                                    }
+
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdWeaponMounts))
+                                    {
+                                        foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
+                                        {
+                                            sbdWeaponMounts.AppendLine(objWeaponMount.CurrentDisplayName);
+                                        }
+
+                                        if (sbdWeaponMounts.Length > 0)
+                                            sbdWeaponMounts.Length -= Environment.NewLine.Length;
+
+                                        AvailabilityValue objAvail = objVehicle.TotalAvailTuple();
+                                        SourceString strSource = new SourceString(objVehicle.Source,
+                                            objVehicle.DisplayPage(GlobalSettings.Language),
+                                            GlobalSettings.Language, GlobalSettings.CultureInfo,
+                                            _objCharacter);
+                                        NuyenString strCost =
+                                            new NuyenString(objVehicle.TotalCost.ToString(GlobalSettings.CultureInfo));
+
+                                        tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
+                                                             strHandling, strPilot, strSensor, strSpeed, strSeats,
+                                                             sbdGear.ToString(), sbdMods.ToString(),
+                                                             sbdWeapons.ToString(), sbdWeaponMounts.ToString(),
+                                                             objAvail, strSource, strCost);
+                                    }
                                 }
                             }
                         }

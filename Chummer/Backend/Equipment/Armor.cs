@@ -2258,7 +2258,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            Dispose();
+            DisposeSelf();
 
             return decReturn;
         }
@@ -2491,6 +2491,15 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (ArmorMod objChild in _lstArmorMods)
+                objChild.Dispose();
+            foreach (Gear objChild in _lstGear)
+                objChild.Dispose();
+            DisposeSelf();
+        }
+
+        private void DisposeSelf()
         {
             _lstArmorMods.Dispose();
             _lstGear.Dispose();

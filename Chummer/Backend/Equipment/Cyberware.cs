@@ -4910,7 +4910,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            Dispose();
+            DisposeSelf();
 
             return decReturn;
         }
@@ -5788,6 +5788,15 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public void Dispose()
+        {
+            foreach (Cyberware objChild in _lstChildren)
+                objChild.Dispose();
+            foreach (Gear objChild in _lstGear)
+                objChild.Dispose();
+            DisposeSelf();
+        }
+
+        private void DisposeSelf()
         {
             _lstChildren.Dispose();
             _lstGear.Dispose();
