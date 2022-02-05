@@ -2369,9 +2369,19 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            foreach (Location objLocation in _objCharacter.WeaponLocations.ToList())
+                            List<Location> lstLocations = new List<Location>(
+                                _objCharacter.ArmorLocations.Count + _objCharacter.WeaponLocations.Count
+                                                                   + _objCharacter.GearLocations.Count
+                                                                   + _objCharacter.VehicleLocations.Count
+                                                                   + _objCharacter.Vehicles.Count);
+                            lstLocations.AddRange(_objCharacter.ArmorLocations);
+                            lstLocations.AddRange(_objCharacter.WeaponLocations);
+                            lstLocations.AddRange(_objCharacter.GearLocations);
+                            lstLocations.AddRange(_objCharacter.VehicleLocations);
+                            lstLocations.AddRange(_objCharacter.Vehicles.SelectMany(x => x.Locations));
+                            foreach (Location objLocation in lstLocations)
                             {
-                                TreeNode nodLocation = treSelected.FindNode(objLocation?.InternalId, false);
+                                TreeNode nodLocation = treSelected.FindNode(objLocation.InternalId, false);
                                 if (nodLocation == null)
                                     continue;
                                 if (nodLocation.Nodes.Count > 0)
@@ -2394,7 +2404,7 @@ namespace Chummer
                                     }
                                 }
 
-                                objLocation?.Remove(false);
+                                objLocation.Remove(false);
                             }
                         }
                         break;
