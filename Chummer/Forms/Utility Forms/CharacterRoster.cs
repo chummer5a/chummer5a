@@ -468,7 +468,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            Log.Info("Populating CharacterRosterTreeNode MRUs (MainThread).");
+            Log.Trace("Populating CharacterRosterTreeNode MRUs (MainThread).");
             await treCharacterList.DoThreadSafeAsync(() =>
             {
                 treCharacterList.SuspendLayout();
@@ -642,7 +642,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            Log.Info("Populating CharacterRosterTreeNode Watch Folder (MainThread).");
+            Log.Trace("Populating CharacterRosterTreeNode Watch Folder (MainThread).");
             await treCharacterList.DoThreadSafeAsync(() =>
             {
                 treCharacterList.SuspendLayout();

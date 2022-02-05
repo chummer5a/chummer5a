@@ -271,13 +271,13 @@ namespace Chummer.UI.Shared
                 if (_intOffScreenChunkSize > 1)
                 {
                     _intOffScreenChunkSize /= 2;
-                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
+                    Log.Trace("Offscreen chunk render size decreased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
                 }
             }
             else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f))
             {
                 _intOffScreenChunkSize *= 2;
-                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
+                Log.Trace("Offscreen chunk render size increased to " + _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
             }
         }
 
