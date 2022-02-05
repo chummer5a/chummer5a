@@ -7139,22 +7139,6 @@
       <text>Color Mode:</text>
     </string>
     <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
-      <text>May buy Qualities (RC 40)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Override Knowledge Points (INT + LOG) Multiplier</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Override Contact Points Charisma Multiplier</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactPoints</key>
-      <text>Contact points instead of fixed Contacts (RC 40)</text>
-    </string>
-    <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Automatically download updates</text>
     </string>

@@ -6617,14 +6617,6 @@
             <text>Wählen sie eine Fertigkeit/Fertigkeitsgruppe</text>
         </string>
         <string>
-            <key>Checkbox_Options_MayBuyQualities</key>
-            <text>Kann Vorteile kaufen (RC 40)</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactPoints</key>
-            <text>Connection-Punkte anstatt fester Anzahl von Connections (RC 40)</text>
-        </string>
-        <string>
             <key>Checkbox_Options_UseLogging</key>
             <text>Benutze Logging</text>
         </string>
@@ -7509,14 +7501,6 @@
         <string>
             <key>Checkbox_Option_DontRoundEssenceInternally</key>
             <text>Runde Essenz nur zu Anzeigezwecken, nicht für interne Berechnungen</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactMultiplier</key>
-            <text>Überschreibe Connection-Punkte Charisma Multiplikator</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_KnowledgeMultiplier</key>
-            <text>Überschreibe Wissensfertigkeitenpunkte (INT+LOG) Multiplikator</text>
         </string>
         <string>
             <key>Checkbox_Options_SearchInCategoryOnly</key>

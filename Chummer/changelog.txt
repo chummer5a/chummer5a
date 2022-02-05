@@ -45,6 +45,12 @@ Changed/New Strings:
 - Checkbox_Options_PreferNightlyBuilds
 - Checkbox_Options_AutomaticUpdates
 
+Removed Strings:
+- Checkbox_Options_MayBuyQualities
+- Checkbox_Options_ContactPoints
+- Checkbox_Options_ContactMultiplier
+- Checkbox_Options_KnowledgeMultiplier
+
 Build 220
 Application Changes:
 - Deleting or selling gear that has plugins inside of it no longer causes a crash.

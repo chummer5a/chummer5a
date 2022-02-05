@@ -6839,14 +6839,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Initiative d'Interfacé (RA) :</text>
     </string>
     <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
-      <text>Peut Acheter des traits (RC 40)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactPoints</key>
-      <text>Point de Contact au lieu de Contacts fixes (RC 40)</text>
-    </string>
-    <string>
       <key>String_AddLimitModifier</key>
       <text>Ajouter un modificateur de limite</text>
     </string>
@@ -8633,14 +8625,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Tab_Options_GitHubIssues</key>
       <text>GitHub Issues</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Remplacer le multiplicateur pour les points de connaissance (INT + LOG)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Remplacer le multiplicateur de charisme pour les points de connexion</text>
     </string>
     <string>
       <key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>

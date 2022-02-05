@@ -6499,14 +6499,6 @@
             <text>选择一个技能/技能组</text>
         </string>
         <string>
-            <key>Checkbox_Options_MayBuyQualities</key>
-            <text>May buy Qualities (RC 40)</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactPoints</key>
-            <text>使用人脉点数而非固定的人脉（RC 40）</text>
-        </string>
-        <string>
             <key>Checkbox_Options_UseLogging</key>
             <text>使用调试日志</text>
         </string>
@@ -7181,10 +7173,6 @@
             <text>没有找到武器，可能是名称或其他信息有变动。请先移除武器并再次添加。</text>
         </string>
         <string>
-            <key>Checkbox_Options_ContactMultiplier</key>
-            <text>免费人脉点数等于魅力属性</text>
-        </string>
-        <string>
             <key>Label_FreeContactPoints</key>
             <text>剩余免费人脉业力：</text>
         </string>
@@ -7211,10 +7199,6 @@
         <string>
             <key>Label_Options_SpellShapingFocus</key>
             <text>塑法法器</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_KnowledgeMultiplier</key>
-            <text>免费知识和语言技能点等于（直觉+逻辑）</text>
         </string>
         <string>
             <key>Label_PowerLevels</key>
