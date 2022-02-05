@@ -82,7 +82,7 @@ namespace Chummer
         {
             if (_dicTaggedAddedBeforeClearDelegates.TryAdd(objTag, funcDelegateToAdd))
             {
-                base.CollectionChanged += funcDelegateToAdd;
+                base.BeforeClearCollectionChanged += funcDelegateToAdd;
                 return true;
             }
             Utils.BreakIfDebug();
@@ -98,7 +98,7 @@ namespace Chummer
         {
             if (_dicTaggedAddedBeforeClearDelegates.TryRemove(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
             {
-                base.CollectionChanged -= funcDelegateToRemove;
+                base.BeforeClearCollectionChanged -= funcDelegateToRemove;
                 return true;
             }
             Utils.BreakIfDebug();
