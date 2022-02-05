@@ -206,6 +206,40 @@ namespace Chummer.Backend.Equipment
 
         private void CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            // If we are loading (or we are not attached to a character), only manage parent setting, don't do property updating
+            if (_objCharacter?.IsLoading != false)
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (Cyberware objNewItem in e.NewItems)
+                            objNewItem.Parent = this;
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Cyberware objOldItem in e.OldItems)
+                        {
+                            if (objOldItem.Parent == this)
+                                objOldItem.Parent = null;
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
+                        foreach (Cyberware objOldItem in e.OldItems)
+                        {
+                            if (!setNewItems.Contains(objOldItem) && objOldItem.Parent == this)
+                                objOldItem.Parent = null;
+                        }
+                        foreach (Cyberware objNewItem in setNewItems)
+                            objNewItem.Parent = this;
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        return;
+                    case NotifyCollectionChangedAction.Reset:
+                        break;
+                }
+                this.RefreshMatrixAttributeArray();
+                return;
+            }
             bool blnDoCyberlimbAGIRefresh = false;
             bool blnDoCyberlimbSTRRefresh = false;
             bool blnDoEssenceImprovementsRefresh = false;
@@ -222,30 +256,25 @@ namespace Chummer.Backend.Equipment
                             foreach (Cyberware objNewItem in e.NewItems)
                             {
                                 objNewItem.Parent = this;
-                                if (_objCharacter?.IsLoading == false)
+
+                                // Needed in order to properly process named sources where
+                                // the tooltip was built before the object was added to the character
+                                foreach (Improvement objImprovement in _objCharacter.Improvements)
                                 {
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                    if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless")
+                                        != objNewItem.InternalId || !objImprovement.Enabled)
+                                        continue;
+                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                              string strPropertyToUpdate) in objImprovement
+                                                 .GetRelevantPropertyChangers())
                                     {
-                                        if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless")
-                                            == objNewItem.InternalId && objImprovement.Enabled)
+                                        if (!dicChangedProperties.TryGetValue(
+                                                objItemToUpdate, out HashSet<string> setChangedProperties))
                                         {
-                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                      string strPropertyToUpdate) in objImprovement
-                                                         .GetRelevantPropertyChangers())
-                                            {
-                                                if (dicChangedProperties.TryGetValue(
-                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
-                                                    setChangedProperties.Add(strPropertyToUpdate);
-                                                else
-                                                {
-                                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                                    setTemp.Add(strPropertyToUpdate);
-                                                    dicChangedProperties.Add(objItemToUpdate, setTemp);
-                                                }
-                                            }
+                                            setChangedProperties = Utils.StringHashSetPool.Get();
+                                            dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                         }
+                                        setChangedProperties.Add(strPropertyToUpdate);
                                     }
                                 }
 
@@ -290,7 +319,8 @@ namespace Chummer.Backend.Equipment
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
-                                objOldItem.Parent = null;
+                                if (objOldItem.Parent == this)
+                                    objOldItem.Parent = null;
                                 if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                                     Category == "Cyberlimb" && Parent?.InheritAttributes != false
                                     && ParentVehicle == null
@@ -330,9 +360,13 @@ namespace Chummer.Backend.Equipment
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                            HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
-                                objOldItem.Parent = null;
+                                if (setNewItems.Contains(objOldItem))
+                                    continue;
+                                if (objOldItem.Parent == this)
+                                    objOldItem.Parent = null;
                                 if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                                     Category == "Cyberlimb" && Parent?.InheritAttributes != false
                                     && ParentVehicle == null
@@ -367,7 +401,7 @@ namespace Chummer.Backend.Equipment
                                     blnDoEssenceImprovementsRefresh = true;
                             }
 
-                            foreach (Cyberware objNewItem in e.NewItems)
+                            foreach (Cyberware objNewItem in setNewItems)
                             {
                                 objNewItem.Parent = this;
                                 if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
@@ -442,45 +476,39 @@ namespace Chummer.Backend.Equipment
                         blnDoMovementUpdate = _objCharacter.Settings.CyberlegMovement && LimbSlot == "leg";
                     }
 
-                    if (_objCharacter != null)
+                    if (_objCharacter?.IsLoading == false)
                     {
                         if (blnDoRedlinerRefresh)
                         {
-                            if (dicChangedProperties.TryGetValue(_objCharacter,
-                                                                 out HashSet<string> setChangedProperties))
-                                setChangedProperties.Add(nameof(Character.RedlinerBonus));
-                            else
+                            if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                  out HashSet<string> setChangedProperties))
                             {
-                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                setTemp.Add(nameof(Character.RedlinerBonus));
-                                dicChangedProperties.Add(_objCharacter, setTemp);
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
                             }
+                            setChangedProperties.Add(nameof(Character.RedlinerBonus));
                         }
 
                         if (blnDoEssenceImprovementsRefresh)
                         {
-                            if (dicChangedProperties.TryGetValue(_objCharacter,
-                                                                 out HashSet<string> setChangedProperties))
-                                setChangedProperties.Add(EssencePropertyName);
-                            else
+                            if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                  out HashSet<string> setChangedProperties))
                             {
-                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                setTemp.Add(EssencePropertyName);
-                                dicChangedProperties.Add(_objCharacter, setTemp);
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
                             }
+                            setChangedProperties.Add(EssencePropertyName);
                         }
 
                         if (blnDoMovementUpdate)
                         {
-                            if (dicChangedProperties.TryGetValue(_objCharacter,
-                                                                 out HashSet<string> setChangedProperties))
-                                setChangedProperties.Add(nameof(Character.GetMovement));
-                            else
+                            if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                  out HashSet<string> setChangedProperties))
                             {
-                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                setTemp.Add(nameof(Character.GetMovement));
-                                dicChangedProperties.Add(_objCharacter, setTemp);
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
                             }
+                            setChangedProperties.Add(nameof(Character.GetMovement));
                         }
                     }
 

@@ -32,6 +32,7 @@ Application Changes:
 - If a character has a bonus or improvement that replaces their Edge attribute, burning Edge now properly descreases their Edge.
 - The setting to prefer Nightly updates no longer requires the setting for automatic updates to be on. Fixes #4690.
 - The total, calculated, and remaining capacities of armor are now exported as `totalarmorcapacity`, `calculatedcapacity`, and `capacityremaining` respectively.
+- Noticeably sped up loading times for characters with lots of cyberware and/or bioware.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
