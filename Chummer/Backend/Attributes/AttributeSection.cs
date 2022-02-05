@@ -957,14 +957,14 @@ namespace Chummer.Backend.Attributes
             if (node != null)
             {
                 int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
-                    GlobalSettings.InvariantCultureInfo, out int intDummy);
-                objTarget.MetatypeMinimum = intDummy;
+                             GlobalSettings.InvariantCultureInfo, out int intMinimum);
                 int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
-                    GlobalSettings.InvariantCultureInfo, out intDummy);
-                objTarget.MetatypeMaximum = Math.Max(intDummy, objTarget.MetatypeMinimum);
+                             GlobalSettings.InvariantCultureInfo, out int intMaximum);
                 int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
-                    GlobalSettings.InvariantCultureInfo, out intDummy);
-                objTarget.MetatypeAugmentedMaximum = Math.Max(intDummy, objTarget.MetatypeMaximum);
+                             GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
+                intMaximum = Math.Max(intMaximum, intMinimum);
+                intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
+                objTarget.AssignLimits(intMinimum, intMaximum, intAugmentedMaximum);
             }
 
             objTarget.Base = objSource.Base;

@@ -394,6 +394,7 @@ namespace Chummer
             WeaponAccessory,
             AstralReputation,
             CyberadeptDaemon,
+            BurnedEdge,
             NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
@@ -1870,22 +1871,26 @@ namespace Chummer
                     // Keeping two enumerations separate helps avoid extra heap allocations
                     foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
                     {
-                        if (objCharacterAttrib.Abbrev != ImprovedName)
+                        if (objCharacterAttrib.Abbrev != ImprovedName || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
                             continue;
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
                             nameof(CharacterAttrib.MetatypeMaximum));
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
                             nameof(CharacterAttrib.MetatypeMinimum));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            nameof(CharacterAttrib.MetatypeAugmentedMaximum));
                     }
 
                     foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
                     {
-                        if (objCharacterAttrib.Abbrev != ImprovedName)
+                        if (objCharacterAttrib.Abbrev != ImprovedName || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
                             continue;
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
                             nameof(CharacterAttrib.MetatypeMaximum));
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
                             nameof(CharacterAttrib.MetatypeMinimum));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            nameof(CharacterAttrib.MetatypeAugmentedMaximum));
                     }
                 }
                     break;

@@ -17325,14 +17325,10 @@ namespace Chummer
                                 {
                                     MAG.Base = MAGAdept.Base;
                                     MAG.Karma = MAGAdept.Karma;
-                                    MAG.MetatypeMinimum = MAGAdept.MetatypeMinimum;
-                                    MAG.MetatypeMaximum = MAGAdept.MetatypeMaximum;
-                                    MAG.MetatypeAugmentedMaximum = MAGAdept.MetatypeAugmentedMaximum;
+                                    MAG.AssignLimits(MAGAdept.RawMetatypeMinimum, MAGAdept.RawMetatypeMaximum, MAGAdept.RawMetatypeAugmentedMaximum);
                                     MAGAdept.Base = 0;
                                     MAGAdept.Karma = 0;
-                                    MAGAdept.MetatypeMinimum = 0;
-                                    MAGAdept.MetatypeMaximum = 0;
-                                    MAGAdept.MetatypeAugmentedMaximum = 0;
+                                    MAGAdept.AssignLimits(0, 0, 0);
 
                                     MagicianEnabled = false;
                                 }
@@ -17341,9 +17337,7 @@ namespace Chummer
                                 {
                                     MAGAdept.Base = 0;
                                     MAGAdept.Karma = 0;
-                                    MAGAdept.MetatypeMinimum = 0;
-                                    MAGAdept.MetatypeMaximum = 0;
-                                    MAGAdept.MetatypeAugmentedMaximum = 0;
+                                    MAGAdept.AssignLimits(0, 0, 0);
 
                                     AdeptEnabled = false;
                                 }
@@ -17355,9 +17349,7 @@ namespace Chummer
                             {
                                 MAG.Base = 0;
                                 MAG.Karma = 0;
-                                MAG.MetatypeMinimum = 0;
-                                MAG.MetatypeMaximum = 0;
-                                MAG.MetatypeAugmentedMaximum = 0;
+                                MAG.AssignLimits(0, 0, 0);
 
                                 MagicianEnabled = false;
                                 AdeptEnabled = false;
@@ -17370,14 +17362,10 @@ namespace Chummer
                             {
                                 MAG.Base = MAGAdept.Base;
                                 MAG.Karma = MAGAdept.Karma;
-                                MAG.MetatypeMinimum = MAGAdept.MetatypeMinimum;
-                                MAG.MetatypeMaximum = MAGAdept.MetatypeMaximum;
-                                MAG.MetatypeAugmentedMaximum = MAGAdept.MetatypeAugmentedMaximum;
+                                MAG.AssignLimits(MAGAdept.RawMetatypeMinimum, MAGAdept.RawMetatypeMaximum, MAGAdept.RawMetatypeAugmentedMaximum);
                                 MAGAdept.Base = 0;
                                 MAGAdept.Karma = 0;
-                                MAGAdept.MetatypeMinimum = 0;
-                                MAGAdept.MetatypeMaximum = 0;
-                                MAGAdept.MetatypeAugmentedMaximum = 0;
+                                MAGAdept.AssignLimits(0, 0, 0);
 
                                 MagicianEnabled = false;
                             }
@@ -17386,9 +17374,7 @@ namespace Chummer
                             {
                                 MAGAdept.Base = 0;
                                 MAGAdept.Karma = 0;
-                                MAGAdept.MetatypeMinimum = 0;
-                                MAGAdept.MetatypeMaximum = 0;
-                                MAGAdept.MetatypeAugmentedMaximum = 0;
+                                MAGAdept.AssignLimits(0, 0, 0);
 
                                 AdeptEnabled = false;
                             }
@@ -17400,9 +17386,7 @@ namespace Chummer
                         {
                             MAG.Base = 0;
                             MAG.Karma = 0;
-                            MAG.MetatypeMinimum = 0;
-                            MAG.MetatypeMaximum = 0;
-                            MAG.MetatypeAugmentedMaximum = 0;
+                            MAG.AssignLimits(0, 0, 0);
 
                             MagicianEnabled = false;
                             AdeptEnabled = false;
@@ -17418,9 +17402,7 @@ namespace Chummer
                     {
                         RES.Base = 0;
                         RES.Karma = 0;
-                        RES.MetatypeMinimum = 0;
-                        RES.MetatypeMinimum = 0;
-                        RES.MetatypeAugmentedMaximum = 0;
+                        RES.AssignLimits(0, 0, 0);
 
                         RESEnabled = false;
                         TechnomancerEnabled = false;
@@ -22109,8 +22091,7 @@ namespace Chummer
 
             // Gain MAG that is permanently set to 1.
             MAGEnabled = true;
-            MAG.MetatypeMinimum = 1;
-            MAG.MetatypeMaximum = 1;
+            MAG.AssignLimits(1, 1, 1);
 
             // Add the Cyberzombie Lifestyle if it is not already taken.
             if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))

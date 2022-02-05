@@ -28,6 +28,8 @@ Application Changes:
 - Adding gear that requires something specified for it, e.g. a weapon targeting autosoft, to a vehicle now properly prompts the user to specify the entry for the gear.
 - Removing locations other than weapon locations now works properly.
 - Fixed a regression in use of ReplaceAttribute Improvements that caused improvements that did not exceed the value of the attribute. Closes #4689
+- Bonuses and improvements that replace physical attributes with new values, e.g. Infected qualities, no longer affect shapeshifters' animal form attributes.
+- If a character has a bonus or improvement that replaces their Edge attribute, burning Edge now properly descreases their Edge.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
@@ -36,6 +38,9 @@ Data Changes:
 - Fixed all cases where exotic ranged weapons that used ammo of some kind could not be refilled with ammo.
 - Fixed incorrect powers for the Bugul and Croki.
 - Vehicles that come with sensor functions explicitly specified in their sensor arrays can no longer support more than the eight sensor functions they would be allowed to support.
+
+Changed/New Strings:
+- String_BurnedEdge
 
 Build 220
 Application Changes:

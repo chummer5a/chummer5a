@@ -933,26 +933,32 @@ namespace Chummer
                                     }
 
                                     // Set starting magic
-                                    int intTemp = 0;
-                                    _objCharacter.MAG.MetatypeMinimum =
-                                        xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp) ? intTemp : 1;
+                                    int intTemp = 1;
+                                    int intMax = 0;
+                                    if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp))
+                                        intTemp = 1;
+                                    if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intMax))
+                                        intMax = Math.Max(CommonFunctions.ExpressionToInt(
+                                                              charNode["magmax"]?.InnerText, intForce), intTemp);
+                                    _objCharacter.MAG.AssignLimits(intTemp, intMax, intMax);
                                     _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
-                                    _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp)
-                                        ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intForce);
                                     // Set starting resonance
-                                    _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;
+                                    if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp))
+                                        intTemp = 1;
+                                    if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intMax))
+                                        intMax = Math.Max(CommonFunctions.ExpressionToInt(
+                                                              charNode["resmax"]?.InnerText, intForce), intTemp);
+                                    _objCharacter.RES.AssignLimits(intTemp, intMax, intMax);
                                     _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
-                                    _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp)
-                                        ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intForce);
                                     // Set starting depth
-                                    _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 1;
+                                    if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp))
+                                        intTemp = 1;
+                                    if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intMax))
+                                        intMax = Math.Max(CommonFunctions.ExpressionToInt(
+                                                              charNode["depmax"]?.InnerText, intForce), intTemp);
+                                    _objCharacter.DEP.AssignLimits(intTemp, intMax, intMax);
                                     _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
                                     _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
-                                    _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp)
-                                        ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intForce);
 
                                     // Set Free Skills/Skill Groups
                                     int intFreeLevels = 0;

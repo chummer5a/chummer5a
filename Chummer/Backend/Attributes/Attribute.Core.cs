@@ -219,30 +219,58 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Minimum value for the CharacterAttribute as set by the character's Metatype.
         /// </summary>
+        public int RawMetatypeMinimum
+        {
+            get => _intMetatypeMin;
+            // DO NOT MAKE THIS NOT PRIVATE! Instead, create improvements to adjust this because that will play nice with ReplaceAttribute improvements
+            private set
+            {
+                if (value == _intMetatypeMin)
+                    return;
+                _intMetatypeMin = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Minimum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
         public int MetatypeMinimum
         {
             get
             {
-                int intReturn = _intMetatypeMin;
-                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+                if (MetatypeCategory == AttributeCategory.Shapeshifter)
+                    return RawMetatypeMinimum;
+                int intReturn = RawMetatypeMinimum;
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(
+                    x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev
+                        && x.Enabled);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.Minimum;
                 }
                 return intReturn;
             }
-            set
-            {
-                if (value != _intMetatypeMin)
-                {
-                    _intMetatypeMin = value;
-                    OnPropertyChanged();
-                }
-            }
         }
 
         /// <summary>
         /// Maximum value for the CharacterAttribute as set by the character's Metatype.
+        /// </summary>
+        public int RawMetatypeMaximum
+        {
+            get => _intMetatypeMax;
+            // DO NOT MAKE THIS NOT PRIVATE! Instead, create improvements to adjust this because that will play nice with ReplaceAttribute improvements
+            private set
+            {
+                if (value == _intMetatypeMax)
+                    return;
+                _intMetatypeMax = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Maximum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
         /// </summary>
         public int MetatypeMaximum
         {
@@ -250,8 +278,9 @@ namespace Chummer.Backend.Attributes
             {
                 if (Abbrev == "EDG" && _objCharacter.IsAI)
                     return _objCharacter.DEP.TotalValue;
-
-                int intReturn = _intMetatypeMax;
+                if (MetatypeCategory == AttributeCategory.Shapeshifter)
+                    return RawMetatypeMaximum;
+                int intReturn = RawMetatypeMaximum;
                 Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
                 if (objImprovement != null)
                 {
@@ -264,38 +293,40 @@ namespace Chummer.Backend.Attributes
                 }
                 return intReturn;
             }
-            set
-            {
-                if (value != _intMetatypeMax)
-                {
-                    _intMetatypeMax = value;
-                    OnPropertyChanged();
-                }
-            }
         }
 
         /// <summary>
         /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype.
         /// </summary>
+        public int RawMetatypeAugmentedMaximum
+        {
+            get => _intMetatypeAugMax;
+            // DO NOT MAKE THIS NOT PRIVATE! Instead, create improvements to adjust this because that will play nice with ReplaceAttribute improvements
+            private set
+            {
+                if (value == _intMetatypeAugMax)
+                    return;
+                _intMetatypeAugMax = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
         public int MetatypeAugmentedMaximum
         {
             get
             {
-                int intReturn = _intMetatypeAugMax;
+                if (MetatypeCategory == AttributeCategory.Shapeshifter)
+                    return RawMetatypeAugmentedMaximum;
+                int intReturn = RawMetatypeAugmentedMaximum;
                 Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.AugmentedMaximum;
                 }
                 return intReturn;
-            }
-            set
-            {
-                if (value != _intMetatypeAugMax)
-                {
-                    _intMetatypeAugMax = value;
-                    OnPropertyChanged();
-                }
             }
         }
 
@@ -803,9 +834,10 @@ namespace Chummer.Backend.Attributes
         /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         public void AssignLimits(int intMin, int intMax, int intAug)
         {
-            MetatypeMinimum = intMin;
-            MetatypeMaximum = intMax;
-            MetatypeAugmentedMaximum = intAug;
+            _intMetatypeMin = intMin;
+            _intMetatypeMax = intMax;
+            _intMetatypeAugMax = intAug;
+            this.OnMultiplePropertyChanged(nameof(RawMetatypeMinimum), nameof(RawMetatypeMaximum), nameof(RawMetatypeAugmentedMaximum));
         }
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0
@@ -1376,13 +1408,17 @@ namespace Chummer.Backend.Attributes
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(AttributeValueModifiers)),
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMinimum),
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum),
-                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMinimum)),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMinimum),
+                                        new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMetatypeMinimum))
+                                    ),
                                     new DependencyGraphNode<string, CharacterAttrib>(nameof(MinimumModifiers))
                                 ),
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum))
                             ),
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum),
-                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMetatypeMaximum))
+                                ),
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
                             )
                         ),
@@ -1401,7 +1437,9 @@ namespace Chummer.Backend.Attributes
                         ),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalAugmentedMaximum),
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(AugmentedMaximumModifiers)),
-                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum)),
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeAugmentedMaximum),
+                                new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMetatypeAugmentedMaximum))
+                            ),
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
                         ),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(Value),
@@ -1484,6 +1522,32 @@ namespace Chummer.Backend.Attributes
                     _objCharacter.ExpenseEntries.AddWithSort(objExpense);
 
                     _objCharacter.Karma -= intPrice;
+
+                    // Undo burned Edge if possible first
+                    if (Abbrev == "EDG")
+                    {
+                        int intBurnedEdge = -ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 _objCharacter, Improvement.ImprovementType.Attribute, "EDG")
+                                             .Where(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge)
+                                             .Sum(x => x.Minimum * x.Rating);
+                        if (intBurnedEdge > 0)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.BurnedEdge);
+                            intBurnedEdge -= 1;
+                            if (intBurnedEdge > 0)
+                            {
+                                ImprovementManager.CreateImprovement(_objCharacter, "EDG",
+                                                                     Improvement.ImprovementSource.BurnedEdge,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, -intBurnedEdge);
+                                ImprovementManager.Commit(_objCharacter);
+                            }
+
+                            continue; // Skip increasing Karma
+                        }
+                    }
                 }
 
                 ++Karma;
@@ -1505,7 +1569,15 @@ namespace Chummer.Backend.Attributes
                 else if (Abbrev == "EDG" && _objCharacter.Created && TotalMinimum > 0)
                 {
                     //Edge can reduce the metatype minimum below zero.
-                    --MetatypeMinimum;
+                    int intBurnedEdge = -ImprovementManager
+                                        .GetCachedImprovementListForValueOf(
+                                            _objCharacter, Improvement.ImprovementType.Attribute, "EDG")
+                                        .Where(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge)
+                                        .Sum(x => x.Minimum * x.Rating) + 1;
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.BurnedEdge);
+                    ImprovementManager.CreateImprovement(_objCharacter, "EDG", Improvement.ImprovementSource.BurnedEdge,
+                                                         string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intBurnedEdge);
+                    ImprovementManager.Commit(_objCharacter);
                 }
                 else
                     return;
