@@ -156,6 +156,21 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public override event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged
+        {
+            add
+            {
+                using (new EnterWriteLock(LockerObject))
+                    base.BeforeClearCollectionChanged += value;
+            }
+            remove
+            {
+                using (new EnterWriteLock(LockerObject))
+                    base.BeforeClearCollectionChanged -= value;
+            }
+        }
+
+        /// <inheritdoc />
         protected override event PropertyChangedEventHandler PropertyChanged
         {
             add
