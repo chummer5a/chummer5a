@@ -224,9 +224,11 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeMin;
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                             _objCharacter, Improvement.ImprovementType.ReplaceAttribute, Abbrev))
-                    intReturn = Math.Max(intReturn, objImprovement.Minimum);
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+                if (objImprovement != null)
+                {
+                    intReturn = objImprovement.Minimum;
+                }
                 return intReturn;
             }
             set
@@ -250,9 +252,11 @@ namespace Chummer.Backend.Attributes
                     return _objCharacter.DEP.TotalValue;
 
                 int intReturn = _intMetatypeMax;
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                             _objCharacter, Improvement.ImprovementType.ReplaceAttribute, Abbrev))
-                    intReturn = Math.Min(intReturn, objImprovement.Maximum);
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+                if (objImprovement != null)
+                {
+                    intReturn = objImprovement.Maximum;
+                }
 
                 if (Abbrev == "ESS")
                 {
@@ -278,9 +282,11 @@ namespace Chummer.Backend.Attributes
             get
             {
                 int intReturn = _intMetatypeAugMax;
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                             _objCharacter, Improvement.ImprovementType.ReplaceAttribute, Abbrev))
-                    intReturn = Math.Min(intReturn, objImprovement.AugmentedMaximum);
+                Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+                if (objImprovement != null)
+                {
+                    intReturn = objImprovement.AugmentedMaximum;
+                }
                 return intReturn;
             }
             set
