@@ -1421,14 +1421,18 @@ namespace Chummer
                         if (!CharacterObject.AddBiowareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Bioware).ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(
+                                                                                  x => x.Children, x =>
+                                                                                      x.SourceType
+                                                                                      == Improvement.ImprovementSource
+                                                                                          .Bioware
+                                                                                      && x.SourceID != Cyberware
+                                                                                          .EssenceHoleGUID
+                                                                                      && x.SourceID != Cyberware
+                                                                                          .EssenceAntiHoleGUID
+                                                                                      && x.IsModularCurrentlyEquipped)
+                                                                              .ToList())
                             {
-                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                                    continue;
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
                                     if (objCyberware.CanRemoveThroughImprovements)
@@ -1458,14 +1462,18 @@ namespace Chummer
                         if (!CharacterObject.AddCyberwareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Cyberware).ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(
+                                                                                  x => x.Children, x =>
+                                                                                      x.SourceType
+                                                                                      == Improvement.ImprovementSource
+                                                                                          .Cyberware
+                                                                                      && x.SourceID != Cyberware
+                                                                                          .EssenceHoleGUID
+                                                                                      && x.SourceID != Cyberware
+                                                                                          .EssenceAntiHoleGUID
+                                                                                      && x.IsModularCurrentlyEquipped)
+                                                                              .ToList())
                             {
-                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                                    continue;
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
                                     if (objCyberware.CanRemoveThroughImprovements)
@@ -1495,16 +1503,16 @@ namespace Chummer
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children).ToList())
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(
+                                                                                  x => x.Children, x =>
+                                                                                      x.SourceID != Cyberware.EssenceHoleGUID
+                                                                                      && x.SourceID != Cyberware
+                                                                                          .EssenceAntiHoleGUID
+                                                                                      && x.IsModularCurrentlyEquipped)
+                                                                              .ToList())
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                                 if (chrAvail != 'R' && chrAvail != 'F')
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                                    continue;
-                                if (!objCyberware.IsModularCurrentlyEquipped)
                                     continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {

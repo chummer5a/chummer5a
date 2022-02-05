@@ -231,18 +231,15 @@ namespace Chummer
 
         public static void ClearCachedValues(Character objCharacter)
         {
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.ToList())
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
             {
-                if (objKey.CharacterObject == objCharacter
-                    && s_DictionaryCachedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
+                if (s_DictionaryCachedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
             {
-                if (objKey.CharacterObject == objCharacter
-                    && s_DictionaryCachedAugmentedValues.TryRemove(
-                        objKey, out Tuple<decimal, List<Improvement>> tupTemp))
+                if (s_DictionaryCachedAugmentedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 

@@ -8197,14 +8197,12 @@ namespace Chummer
                 }
             }
 
-            foreach (Cyberware objCyberware in Cyberware.ToList())
+            foreach (Cyberware objCyberware in Cyberware
+                                               .Where(x => x.SourceID != Backend.Equipment.Cyberware.EssenceHoleGUID
+                                                           && x.SourceID != Backend.Equipment.Cyberware
+                                                               .EssenceAntiHoleGUID && x.IsModularCurrentlyEquipped)
+                                               .ToList())
             {
-                if (objCyberware.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID)
-                    continue;
-                if (objCyberware.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID)
-                    continue;
-                if (!objCyberware.IsModularCurrentlyEquipped)
-                    continue;
                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                 {
                     if (objCyberware.CanRemoveThroughImprovements)
