@@ -401,22 +401,6 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void chkAutomaticUpdate_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            if (chkAutomaticUpdate.Checked)
-            {
-                chkPreferNightlyBuilds.Enabled = true;
-            }
-            else
-            {
-                chkPreferNightlyBuilds.Enabled = false;
-                chkPreferNightlyBuilds.Checked = false;
-            }
-            OptionsChanged(sender, e);
-        }
-
         private void cmdRemovePDFLocation_Click(object sender, EventArgs e)
         {
             UpdateSourcebookInfoPath(string.Empty);
@@ -1007,8 +991,7 @@ namespace Chummer
             PopulateCustomDataDirectoryListBox();
 
             chkAutomaticUpdate.Checked = GlobalSettings.AutomaticUpdate;
-            chkPreferNightlyBuilds.Enabled = GlobalSettings.AutomaticUpdate;
-            chkPreferNightlyBuilds.Checked = chkPreferNightlyBuilds.Enabled && GlobalSettings.PreferNightlyBuilds;
+            chkPreferNightlyBuilds.Checked = GlobalSettings.PreferNightlyBuilds;
             chkLiveCustomData.Checked = GlobalSettings.LiveCustomData;
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalSettings.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalSettings.UseLogging;

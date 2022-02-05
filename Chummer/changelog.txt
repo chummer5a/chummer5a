@@ -30,6 +30,7 @@ Application Changes:
 - Fixed a regression in use of ReplaceAttribute Improvements that caused improvements that did not exceed the value of the attribute. Closes #4689
 - Bonuses and improvements that replace physical attributes with new values, e.g. Infected qualities, no longer affect shapeshifters' animal form attributes.
 - If a character has a bonus or improvement that replaces their Edge attribute, burning Edge now properly descreases their Edge.
+- The setting to prefer Nightly updates no longer requires the setting for automatic updates to be on. Fixes #4690.
 
 Data Changes:
 - Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
@@ -41,6 +42,8 @@ Data Changes:
 
 Changed/New Strings:
 - String_BurnedEdge
+- Checkbox_Options_PreferNightlyBuilds
+- Checkbox_Options_AutomaticUpdates
 
 Build 220
 Application Changes:

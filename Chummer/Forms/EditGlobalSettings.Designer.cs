@@ -628,9 +628,9 @@ namespace Chummer
             this.chkAutomaticUpdate.Size = new System.Drawing.Size(116, 17);
             this.chkAutomaticUpdate.TabIndex = 5;
             this.chkAutomaticUpdate.Tag = "Checkbox_Options_AutomaticUpdates";
-            this.chkAutomaticUpdate.Text = "Automatic Updates";
+            this.chkAutomaticUpdate.Text = "Automatically download updates";
             this.chkAutomaticUpdate.UseVisualStyleBackColor = true;
-            this.chkAutomaticUpdate.CheckedChanged += new System.EventHandler(this.chkAutomaticUpdate_CheckedChanged);
+            this.chkAutomaticUpdate.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkConfirmKarmaExpense
             // 
@@ -1308,12 +1308,12 @@ namespace Chummer
             this.chkPreferNightlyBuilds.AutoSize = true;
             this.chkPreferNightlyBuilds.DefaultColorScheme = true;
             this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(23, 243);
-            this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
             this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(120, 17);
             this.chkPreferNightlyBuilds.TabIndex = 25;
             this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
-            this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
+            this.chkPreferNightlyBuilds.Text = "Prefer Nightly builds when updating";
             this.chkPreferNightlyBuilds.UseVisualStyleBackColor = true;
             this.chkPreferNightlyBuilds.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 

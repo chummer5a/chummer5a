@@ -5845,7 +5845,7 @@
     </string>
     <string>
       <key>Checkbox_Options_PreferNightlyBuilds</key>
-      <text>Prefer Nightly Builds</text>
+      <text>Prefer Nightly builds when updating</text>
     </string>
     <string>
       <key>Checkbox_Option_HideItemsOverAvailLimit</key>
@@ -7156,7 +7156,7 @@
     </string>
     <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
-      <text>Automatic Updates</text>
+      <text>Automatically download updates</text>
     </string>
     <string>
       <key>Checkbox_Options_Live_CustomData</key>
