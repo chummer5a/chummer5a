@@ -766,12 +766,12 @@ namespace Chummer
         {
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
             string strSearchText       = txtSearch.Text;
-            string strFilter = string.Empty;
             if (!string.IsNullOrEmpty(strSelectedCategory) || !string.IsNullOrEmpty(strSearchText))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstMetatypeItems))
                 {
+                    string strFilter = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');

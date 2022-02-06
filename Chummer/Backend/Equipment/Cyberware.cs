@@ -4822,13 +4822,10 @@ namespace Chummer.Backend.Equipment
             // Remove any Vehicle that the Cyberware created.
             if (!VehicleID.IsEmptyGuid())
             {
-                foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles.ToList())
+                foreach (Vehicle objLoopVehicle in _objCharacter.Vehicles.Where(x => x.ParentID == InternalId).ToList())
                 {
-                    if (objLoopVehicle.ParentID == InternalId)
-                    {
-                        decReturn += objLoopVehicle.TotalCost;
-                        decReturn += objLoopVehicle.DeleteVehicle();
-                    }
+                    decReturn += objLoopVehicle.TotalCost;
+                    decReturn += objLoopVehicle.DeleteVehicle();
                 }
             }
 

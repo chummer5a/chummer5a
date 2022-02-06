@@ -1655,24 +1655,18 @@ namespace Chummer
 
                             bool blnDoRefresh = false;
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
-                                x => x.SourceType == Improvement.ImprovementSource.Bioware).ToList())
+                                         x => x.SourceType == Improvement.ImprovementSource.Bioware
+                                              && x.SourceID != Cyberware.EssenceHoleGUID
+                                              && x.SourceID != Cyberware.EssenceAntiHoleGUID
+                                              && x.IsModularCurrentlyEquipped).ToList())
                             {
-                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                                    continue;
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (objCyberware.CanRemoveThroughImprovements)
-                                    {
-                                        objCyberware.Parent?.Children.Remove(objCyberware);
-                                        CharacterObject.Cyberware.Add(objCyberware);
-                                        objCyberware.ChangeModularEquip(false);
-                                    }
-                                    else
+                                    if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
+                                    objCyberware.Parent?.Children.Remove(objCyberware);
+                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    objCyberware.ChangeModularEquip(false);
                                 }
                                 else if (objCyberware.CanRemoveThroughImprovements)
                                 {
@@ -1721,24 +1715,18 @@ namespace Chummer
 
                             bool blnDoRefresh = false;
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
-                                x => x.SourceType == Improvement.ImprovementSource.Cyberware).ToList())
+                                         x => x.SourceType == Improvement.ImprovementSource.Cyberware
+                                              && x.SourceID != Cyberware.EssenceHoleGUID
+                                              && x.SourceID != Cyberware.EssenceAntiHoleGUID
+                                              && x.IsModularCurrentlyEquipped).ToList())
                             {
-                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                                    continue;
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (objCyberware.CanRemoveThroughImprovements)
-                                    {
-                                        objCyberware.Parent?.Children.Remove(objCyberware);
-                                        CharacterObject.Cyberware.Add(objCyberware);
-                                        objCyberware.ChangeModularEquip(false);
-                                    }
-                                    else
+                                    if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
+                                    objCyberware.Parent?.Children.Remove(objCyberware);
+                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    objCyberware.ChangeModularEquip(false);
                                 }
                                 else if (objCyberware.CanRemoveThroughImprovements)
                                 {
@@ -1785,29 +1773,23 @@ namespace Chummer
                                                      GlobalSettings.Language) + ')' +
                                                  LanguageManager.GetString("String_Space");
                             }
-
+                            
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
-                                x => x.Grade.Name != "None").ToList())
+                                         x => x.Grade.Name != "None"
+                                              && x.SourceID != Cyberware.EssenceHoleGUID
+                                              && x.SourceID != Cyberware.EssenceAntiHoleGUID
+                                              && x.IsModularCurrentlyEquipped).ToList())
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                                 if (chrAvail != 'R' && chrAvail != 'F')
                                     continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
-                                    continue;
-                                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
-                                    continue;
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (objCyberware.CanRemoveThroughImprovements)
-                                    {
-                                        objCyberware.Parent?.Children.Remove(objCyberware);
-                                        CharacterObject.Cyberware.Add(objCyberware);
-                                        objCyberware.ChangeModularEquip(false);
-                                    }
-                                    else
+                                    if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
+                                    objCyberware.Parent?.Children.Remove(objCyberware);
+                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    objCyberware.ChangeModularEquip(false);
                                 }
                                 else if (objCyberware.CanRemoveThroughImprovements)
                                 {
@@ -6515,34 +6497,37 @@ namespace Chummer
             // Open the Armor XML file and locate the selected Armor.
             XmlDocument objXmlDocument = CharacterObject.LoadData("armor.xml");
 
+            XmlNode objXmlArmor = objArmor.GetNode();
+
+            string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
+            bool blnExcludeGeneralCategory = false;
+            XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
+            if (xmlAddModCategory != null)
+            {
+                strAllowedCategories = xmlAddModCategory.InnerText;
+                blnExcludeGeneralCategory = true;
+            }
+            else
+            {
+                xmlAddModCategory = objXmlArmor["addmodcategory"];
+                if (xmlAddModCategory != null)
+                {
+                    strAllowedCategories += ',' + xmlAddModCategory.InnerText;
+                }
+            }
+
             bool blnAddAgain;
             do
             {
-                XmlNode objXmlArmor = objArmor.GetNode();
-
                 using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
+                       {
+                           ArmorCost = objArmor.OwnCost,
+                           ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo),
+                           AllowedCategories = strAllowedCategories,
+                           ExcludeGeneralCategory = blnExcludeGeneralCategory,
+                           CapacityDisplayStyle = objArmor.CapacityDisplayStyle
+                       })
                 {
-                    ArmorCost = objArmor.OwnCost,
-                    ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo),
-                    AllowedCategories = objArmor.Category + ',' + objArmor.Name,
-                    CapacityDisplayStyle = objArmor.CapacityDisplayStyle
-                })
-                {
-                    XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
-                    if (xmlAddModCategory != null)
-                    {
-                        frmPickArmorMod.AllowedCategories = xmlAddModCategory.InnerText;
-                        frmPickArmorMod.ExcludeGeneralCategory = true;
-                    }
-                    else
-                    {
-                        xmlAddModCategory = objXmlArmor["addmodcategory"];
-                        if (xmlAddModCategory != null)
-                        {
-                            frmPickArmorMod.AllowedCategories += ',' + xmlAddModCategory.InnerText;
-                        }
-                    }
-
                     frmPickArmorMod.ShowDialogSafe(this);
 
                     if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
@@ -7958,6 +7943,8 @@ namespace Chummer
                 return;
             }
 
+            string strUndoId = objExpense.Undo.ObjectId;
+
             if (objExpense.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
             {
                 // Get the grade of the item we're undoing and make sure it's the highest grade
@@ -7968,7 +7955,7 @@ namespace Chummer
                 }
                 foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
                 {
-                    if (objGrade.InternalId != objExpense.Undo.ObjectId)
+                    if (objGrade.InternalId != strUndoId)
                         continue;
                     if (objGrade.Grade < intMaxGrade)
                     {
@@ -7990,7 +7977,7 @@ namespace Chummer
             {
                 case KarmaExpenseType.ImproveAttribute:
                     {
-                        CharacterObject.GetAttribute(objExpense.Undo.ObjectId).Degrade(1);
+                        CharacterObject.GetAttribute(strUndoId).Degrade(1);
                         break;
                     }
                 case KarmaExpenseType.AddPowerPoint:
@@ -8006,7 +7993,7 @@ namespace Chummer
                             if (i >= CharacterObject.Qualities.Count)
                                 continue;
                             Quality objQuality = CharacterObject.Qualities[i];
-                            if (objQuality.InternalId == objExpense.Undo.ObjectId)
+                            if (objQuality.InternalId == strUndoId)
                                 objQuality.DeleteQuality();
                         }
                     }
@@ -8015,10 +8002,13 @@ namespace Chummer
                 case KarmaExpenseType.AddSpell:
                     {
                         // Locate the Spell that was added.
-                        foreach (Spell objSpell in CharacterObject.Spells.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.Spells.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Spell from the character.
-                            objSpell.Remove(false);
+                            if (i >= CharacterObject.Spells.Count)
+                                continue;
+                            Spell objSpell = CharacterObject.Spells[i];
+                            if (objSpell.InternalId == strUndoId)
+                                objSpell.Remove(false); // Remove the Spell from the character.
                         }
                         break;
                     }
@@ -8028,11 +8018,11 @@ namespace Chummer
                         SkillSpecialization objSpec = CharacterObject.SkillsSection.KnowledgeSkills
                                                                      .SelectMany(x => x.Specializations)
                                                                      .FirstOrDefault(
-                                                                         x => x.InternalId == objExpense.Undo.ObjectId)
+                                                                         x => x.InternalId == strUndoId)
                                                       ?? CharacterObject.SkillsSection.Skills
                                                                         .SelectMany(x => x.Specializations)
                                                                         .FirstOrDefault(
-                                                                            x => x.InternalId == objExpense.Undo.ObjectId);
+                                                                            x => x.InternalId == strUndoId);
 
                         objSpec?.Parent.Specializations.Remove(objSpec);
 
@@ -8041,7 +8031,7 @@ namespace Chummer
                 case KarmaExpenseType.ImproveSkillGroup:
                     {
                         // Locate the Skill Group that was affected.
-                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == objExpense.Undo.ObjectId);
+                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == strUndoId);
 
                         if (group != null)
                             --group.Karma;
@@ -8051,7 +8041,7 @@ namespace Chummer
                 case KarmaExpenseType.AddSkill:
                     {
                         // Locate the Skill that was affected.
-                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId);
+                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId);
                         if (objSkill != null)
                         {
                             if (objSkill.AllowDelete)
@@ -8064,7 +8054,7 @@ namespace Chummer
                         }
                         else
                         {
-                            KnowledgeSkill objKnowledgeSkill = CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId);
+                            KnowledgeSkill objKnowledgeSkill = CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == strUndoId);
                             if (objKnowledgeSkill != null)
                             {
                                 if (objKnowledgeSkill.AllowDelete)
@@ -8082,8 +8072,8 @@ namespace Chummer
                 case KarmaExpenseType.ImproveSkill:
                     {
                         // Locate the Skill that was affected.
-                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId) ??
-                                         CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId);
+                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId) ??
+                                         CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == strUndoId);
 
                         if (objSkill != null)
                             --objSkill.Karma;
@@ -8093,61 +8083,86 @@ namespace Chummer
                 case KarmaExpenseType.AddMetamagic:
                     {
                         // Locate the Metamagic that was affected.
-                        foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.Metamagics.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Metamagic from the character.
-                            objMetamagic.Remove(false);
+                            if (i >= CharacterObject.Metamagics.Count)
+                                continue;
+                            Metamagic objMetamagic = CharacterObject.Metamagics[i];
+                            if (objMetamagic.InternalId == strUndoId)
+                                objMetamagic.Remove(false); // Remove the Metamagic from the character.
                         }
                         break;
                     }
                 case KarmaExpenseType.ImproveInitiateGrade:
                     {
                         // Locate the Initiate Grade that was affected.
-                        foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.InitiationGrades.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Grade from the character.
-                            objGrade.Remove(false);
+                            if (i >= CharacterObject.InitiationGrades.Count)
+                                continue;
+                            InitiationGrade objGrade = CharacterObject.InitiationGrades[i];
+                            if (objGrade.InternalId == strUndoId)
+                                objGrade.Remove(false); // Remove the Grade from the character.
                         }
                         break;
                     }
                 case KarmaExpenseType.AddMartialArt:
                     {
                         // Locate the Martial Art that was affected.
-                        foreach (MartialArt objMartialArt in CharacterObject.MartialArts.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.MartialArts.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Martial Art from the character.
-                            objMartialArt.Remove(false);
+                            if (i >= CharacterObject.MartialArts.Count)
+                                continue;
+                            MartialArt objMartialArt = CharacterObject.MartialArts[i];
+                            if (objMartialArt.InternalId == strUndoId)
+                                objMartialArt.Remove(false); // Remove the Martial Art from the character.
                         }
                         break;
                     }
                 case KarmaExpenseType.AddMartialArtTechnique:
                     {
                         // Locate the Martial Art Technique that was affected.
-                        foreach (MartialArtTechnique objTechnique in CharacterObject.MartialArts.SelectMany(x => x.Techniques).Where(x =>
-                            x.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.MartialArts.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Technique from the character.
-                            objTechnique.Remove(false);
+                            if (i >= CharacterObject.MartialArts.Count)
+                                continue;
+                            MartialArt objMartialArt = CharacterObject.MartialArts[i];
+                            for (int j = objMartialArt.Techniques.Count - 1; j >= 0; --j)
+                            {
+                                if (j >= objMartialArt.Techniques.Count)
+                                    continue;
+                                MartialArtTechnique objTechnique = objMartialArt.Techniques[i];
+                                if (objTechnique.InternalId == strUndoId)
+                                    objTechnique.Remove(false); // Remove the Technique from the character.
+                            }
                         }
+                        break;
                     }
-                    break;
 
                 case KarmaExpenseType.AddComplexForm:
                     {
                         // Locate the Complex Form that was affected.
-                        foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.ComplexForms.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Complex Form from the character.
-                            objComplexForm.Remove(false);
+                            if (i >= CharacterObject.ComplexForms.Count)
+                                continue;
+                            ComplexForm objComplexForm = CharacterObject.ComplexForms[i];
+                            if (objComplexForm.InternalId == strUndoId)
+                                objComplexForm.Remove(false); // Remove the Complex Form from the character.
                         }
                         break;
                     }
                 case KarmaExpenseType.BindFocus:
                     {
                         // Locate the Focus that was bound.
-                        foreach (Focus objFocus in CharacterObject.Foci.Where(x => x.GearObject.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                         {
-                            TreeNode objNode = treFoci.FindNode(objExpense.Undo.ObjectId);
+                            if (i >= CharacterObject.Foci.Count)
+                                continue;
+                            Focus objFocus = CharacterObject.Foci[i];
+                            if (objFocus.InternalId != strUndoId)
+                                continue;
+                            TreeNode objNode = treFoci.FindNode(objFocus.InternalId);
                             if (objNode != null)
                             {
                                 IsRefreshing = true;
@@ -8156,11 +8171,15 @@ namespace Chummer
                             }
                             CharacterObject.Foci.Remove(objFocus);
                         }
-
                         // Locate the Stacked Focus that was bound.
-                        foreach (StackedFocus objStack in CharacterObject.StackedFoci.Where(x => x.InternalId == objExpense.Undo.ObjectId).ToList())
+                        for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
                         {
-                            TreeNode objNode = treFoci.FindNode(objExpense.Undo.ObjectId);
+                            if (i >= CharacterObject.StackedFoci.Count)
+                                continue;
+                            StackedFocus objStack = CharacterObject.StackedFoci[i];
+                            if (objStack.InternalId != strUndoId)
+                                continue;
+                            TreeNode objNode = treFoci.FindNode(objStack.InternalId);
                             if (objNode == null)
                                 continue;
                             IsRefreshing = true;
@@ -8193,8 +8212,8 @@ namespace Chummer
 
                         Quality objAddQuality = new Quality(CharacterObject);
                         XmlDocument objXmlQualityDocument = CharacterObject.LoadData("qualities.xml");
-                        XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[id = " + objExpense.Undo.ObjectId.CleanXPath() + ']')
-                                                    ?? objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objExpense.Undo.ObjectId.CleanXPath() + ']');
+                        XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strUndoId.CleanXPath() + ']')
+                                                    ?? objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strUndoId.CleanXPath() + ']');
                         objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, objExpense.Undo.Extra);
 
                         CharacterObject.Qualities.Add(objAddQuality);
@@ -8213,10 +8232,14 @@ namespace Chummer
 
                 case KarmaExpenseType.AddCritterPower:
                     {
-                        foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(objPower => objPower.InternalId == objExpense.Undo.ObjectId).ToList())
+                        // Locate the Critter Power that was affected.
+                        for (int i = CharacterObject.CritterPowers.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Critter Power.
-                            objPower.Remove(false);
+                            if (i >= CharacterObject.CritterPowers.Count)
+                                continue;
+                            CritterPower objPower = CharacterObject.CritterPowers[i];
+                            if (objPower.InternalId == strUndoId)
+                                objPower.Remove(false); // Remove the Critter Power from the character.
                         }
                     }
                     break;
