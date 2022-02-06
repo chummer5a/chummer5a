@@ -17527,7 +17527,8 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(2)
                     {
-                        nameof(SpellDefenseDecreaseAGI)
+                        nameof(SpellDefenseDecreaseAGI),
+                        nameof(CalculatedMovement)
                     };
                     if (!Created)
                     {
@@ -17638,7 +17639,8 @@ namespace Chummer
                         nameof(LimitPhysical),
                         nameof(LiftAndCarry),
                         nameof(SpellDefenseDecreaseSTR),
-                        nameof(SpellDefenseManipulationPhysical)
+                        nameof(SpellDefenseManipulationPhysical),
+                        nameof(CalculatedMovement)
                     };
                     if (!Created)
                     {

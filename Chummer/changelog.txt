@@ -1,3 +1,7 @@
+Future Build 222
+Application Changes:
+- Changing AGI or STR values now properly updates movement speeds in the UI.
+
 Build 221
 Application Changes:
 - Saved character settings files properly exclude disabled custom data directories that are present in the Chummer customdata folder.
