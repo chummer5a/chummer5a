@@ -292,11 +292,21 @@ namespace Chummer.Plugins
                 }
                 catch(ReflectionTypeLoadException e)
                 {
-                    Log.Error(e, "Plugins (at least not all of them) could not be loaded. Detailed exception follow as warnings.");
-                    foreach(var except in e.LoaderExceptions)
+                    if (Program.ChummerTelemetryClient != null)
                     {
-                        Log.Warn(except, except.Message);
+                        foreach (var except in e.LoaderExceptions)
+                        {
+                            Program.ChummerTelemetryClient.TrackException(except);
+                        }
+                        Program.ChummerTelemetryClient.Flush();
+                        string msg = $"Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: {Properties.Settings.Default.UploadClientId}";
+                        Log.Info(e, msg);
                     }
+                    else
+                    {
+                        Log.Error(e, "Plugins (at least not all of them) could not be loaded. Please allow logging to upload logs.");
+                    }
+
                 }
 
                 Log.Info("Plugins found: " + MyPlugins.Count);
