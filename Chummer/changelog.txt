@@ -2,6 +2,8 @@ Future Build 222
 Application Changes:
 - Changing AGI or STR values now properly updates movement speeds in the UI.
 - Cyberware and bioware with pair bonuses and/or wireless pair bonuses but no `<pairinclude>` or `<wirelesspairinclude>` nodes specified now still have those bonuses applied properly for every pair of item.
+- The default Internet Explorer version emulated for the character sheet viewer is now 11 instead of 8.
+- Fixed a rare crash that could happen when attempting to print a character.
 
 Build 221
 Application Changes:

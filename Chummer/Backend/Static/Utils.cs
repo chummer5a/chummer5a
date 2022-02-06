@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security;
 #if DEBUG
 using System.Runtime.InteropServices;
 #endif
@@ -35,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.Win32;
 using NLog;
 
 namespace Chummer
@@ -941,6 +943,44 @@ namespace Chummer
             }
             return string.IsNullOrEmpty(strReturn) ? "Unknown" : strReturn;
         }
+
+        public static void SetupWebBrowserRegistryKeys()
+        {
+            int intInternetExplorerVersionKey = GlobalSettings.EmulatedBrowserVersion * 1000;
+            string strChummerExeName = AppDomain.CurrentDomain.FriendlyName;
+            try
+            {
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true))
+                    objRegistry?.SetValue(strChummerExeName, intInternetExplorerVersionKey, RegistryValueKind.DWord);
+
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true))
+                    objRegistry?.SetValue(strChummerExeName, intInternetExplorerVersionKey, RegistryValueKind.DWord);
+
+                // These two needed to have WebBrowser control obey DPI settings for Chummer
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL", true))
+                    objRegistry?.SetValue(strChummerExeName, 1, RegistryValueKind.DWord);
+
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL", true))
+                    objRegistry?.SetValue(strChummerExeName, 1, RegistryValueKind.DWord);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Swallow this
+            }
+            catch (IOException)
+            {
+                // Swallow this
+            }
+            catch (SecurityException)
+            {
+                // Swallow this
+            }
+        }
+
 
         private static string s_strTempPath = string.Empty;
 

@@ -193,7 +193,7 @@ namespace Chummer
         private static string _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst;
-        private static int _intEmulatedBrowserVersion = 8;
+        private static int _intEmulatedBrowserVersion = 11;
         private static bool _lifeModuleEnabled;
         private static bool _blnPreferNightlyUpdates = !Utils.IsMilestoneVersion;
         private static bool _blnLiveUpdateCleanCharacterFiles;
@@ -378,7 +378,7 @@ namespace Chummer
             {
                 using (RegistryKey objKey = Registry.CurrentUser.OpenSubKey("Software\\Chummer5"))
                     blnFirstEverLaunch = objKey == null;
-                s_ObjBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+                s_ObjBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5", true);
             }
             catch (Exception ex)
             {
@@ -500,6 +500,7 @@ namespace Chummer
 
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
             LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
+            Utils.SetupWebBrowserRegistryKeys();
 
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
@@ -867,7 +868,7 @@ namespace Chummer
                 objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
 
                 // Save the SourcebookInfo.
-                using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook"))
+                using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook", true))
                 {
                     if (objSourceRegistry != null)
                     {
@@ -880,20 +881,20 @@ namespace Chummer
                 }
 
                 // Save the Custom Data Directory Info.
+                bool blnTemp;
                 using (RegistryKey objKey = objRegistry.OpenSubKey("CustomDataDirectory"))
-                {
-                    if (objKey != null)
-                        objRegistry.DeleteSubKeyTree("CustomDataDirectory");
-                }
+                    blnTemp = objKey != null;
+                if (blnTemp)
+                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
 
-                using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory"))
+                using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory", true))
                 {
                     if (objCustomDataDirectoryRegistry != null)
                     {
                         foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
                         {
                             using (RegistryKey objLoopKey =
-                                   objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name))
+                                   objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name, true))
                             {
                                 objLoopKey?.SetValue("Path",
                                                      objCustomDataDirectory.DirectoryPath.Replace(
@@ -1218,12 +1219,18 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view. Defaults to 8
+        /// Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view. Defaults to 11
         /// </summary>
         public static int EmulatedBrowserVersion
         {
             get => _intEmulatedBrowserVersion;
-            set => _intEmulatedBrowserVersion = value;
+            set
+            {
+                if (_intEmulatedBrowserVersion == value)
+                    return;
+                _intEmulatedBrowserVersion = value;
+                Utils.SetupWebBrowserRegistryKeys();
+            }
         }
 
         /// <summary>

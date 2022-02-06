@@ -77,19 +77,6 @@ namespace Chummer
                     _strSelectedSheet = _strSelectedSheet.Substring(intLastIndexDirectorySeparator + 1);
             }
 
-            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"))
-                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalSettings.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
-
-            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"))
-                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalSettings.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
-
-            // These two needed to have WebBrowser control obey DPI settings for Chummer
-            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
-                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
-
-            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
-                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
-
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -669,7 +656,7 @@ namespace Chummer
                 try
                 {
                     using (RegistryKey objKey =
-                        Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Internet Explorer\\PageSetup", true))
+                        Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\PageSetup", true))
                     {
                         if (objKey != null)
                         {
@@ -718,7 +705,7 @@ namespace Chummer
                 try
                 {
                     using (RegistryKey objKey =
-                        Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Internet Explorer\\PageSetup", true))
+                        Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\PageSetup", true))
                     {
                         if (objKey != null)
                         {
