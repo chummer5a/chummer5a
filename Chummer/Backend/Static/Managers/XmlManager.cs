@@ -90,13 +90,12 @@ namespace Chummer
             public bool IsLoaded { get; set; }
         }
 
+        private static readonly string s_StrBaseDataPath = Path.Combine(Utils.GetStartupPath, "data");
         private static readonly LockingDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
             new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
         private static bool s_blnSetDataDirectoriesLoaded = true;
         private static readonly object s_SetDataDirectoriesLock = new object();
-        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
-            .Combine(Utils.GetStartupPath, "data").Yield()
-            .Concat(GlobalSettings.CustomDataDirectoryInfos.Select(x => x.DirectoryPath)));
+        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(s_StrBaseDataPath.Yield());
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
 
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
@@ -120,7 +119,7 @@ namespace Chummer
             }
         }
 
-        public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> customDirectories)
+        public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories)
         {
             if (!s_blnSetDataDirectoriesLoaded)
                 return;
@@ -129,8 +128,8 @@ namespace Chummer
             {
                 s_blnSetDataDirectoriesLoaded = false;
                 s_SetDataDirectories.Clear();
-                s_SetDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-                foreach (CustomDataDirectoryInfo objCustomDataDirectory in customDirectories)
+                s_SetDataDirectories.Add(s_StrBaseDataPath);
+                foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
                 {
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                 }
@@ -1619,7 +1618,7 @@ namespace Chummer
                 // <results>
                 objWriter.WriteStartElement("results");
 
-                string strPath = Path.Combine(Utils.GetStartupPath, "data");
+                string strPath = s_StrBaseDataPath;
                 foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
                 {
                     string strFileName = Path.GetFileName(strFile);

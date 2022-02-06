@@ -43,7 +43,8 @@ namespace Chummer
 {
     public static class Utils
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void BreakIfDebug()
