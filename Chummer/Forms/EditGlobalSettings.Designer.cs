@@ -1306,6 +1306,7 @@ namespace Chummer
             // 
             this.chkPreferNightlyBuilds.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPreferNightlyBuilds.AutoSize = true;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkPreferNightlyBuilds, 2);
             this.chkPreferNightlyBuilds.DefaultColorScheme = true;
             this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(23, 243);
             this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
