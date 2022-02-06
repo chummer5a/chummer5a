@@ -1,6 +1,7 @@
 Future Build 222
 Application Changes:
 - Changing AGI or STR values now properly updates movement speeds in the UI.
+- Cyberware and bioware with pair bonuses and/or wireless pair bonuses but no `<pairinclude>` or `<wirelesspairinclude>` nodes specified now still have those bonuses applied properly for every pair of item.
 
 Build 221
 Application Changes:

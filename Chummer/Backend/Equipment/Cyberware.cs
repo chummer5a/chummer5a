@@ -711,6 +711,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            else
+                _lstIncludeInPairBonus.Add(Name);
 
             xmlPairInclude = objXmlCyberware.SelectSingleNode("wirelesspairinclude");
             if (xmlPairInclude != null)
@@ -732,6 +734,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            else
+                _lstIncludeInWirelessPairBonus.Add(Name);
 
             _strCost = objXmlCyberware["cost"]?.InnerText ?? "0";
             // Check for a Variable Cost.
