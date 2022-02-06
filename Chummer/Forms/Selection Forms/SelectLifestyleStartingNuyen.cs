@@ -56,7 +56,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void frmLifestyleNuyen_Load(object sender, EventArgs e)
+        private void SelectLifestyleStartingNuyen_Load(object sender, EventArgs e)
         {
             RefreshSelectLifestyle();
         }

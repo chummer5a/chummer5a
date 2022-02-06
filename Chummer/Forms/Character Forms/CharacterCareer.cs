@@ -1112,7 +1112,7 @@ namespace Chummer
             RefreshVehicleLocations(treVehicles, cmsVehicleLocation, notifyCollectionChangedEventArgs);
         }
 
-        private void frmCareer_FormClosing(object sender, FormClosingEventArgs e)
+        private void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
         {
             // If there are unsaved changes to the character, as the user if they would like to save their changes.
             if (IsDirty)

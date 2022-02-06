@@ -62,7 +62,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_History";
             this.Text = "Chummer Revision History";
-            this.Load += new System.EventHandler(this.frmHistory_Load);
+            this.Load += new System.EventHandler(this.VersionHistory_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

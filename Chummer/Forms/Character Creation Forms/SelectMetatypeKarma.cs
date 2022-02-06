@@ -61,7 +61,7 @@ namespace Chummer
             _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
 
-        private async void frmMetatype_Load(object sender, EventArgs e)
+        private async void SelectMetatypeKarma_Load(object sender, EventArgs e)
         {
             // Populate the Metatype Category list.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategories))

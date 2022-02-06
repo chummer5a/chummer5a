@@ -510,8 +510,8 @@ namespace Chummer
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "String_CharacterRoster";
             this.Text = "Character Roster";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCharacterRoster_FormClosing);
-            this.Load += new System.EventHandler(this.frmCharacterRoster_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterRoster_FormClosing);
+            this.Load += new System.EventHandler(this.CharacterRoster_Load);
             this.tabCharacterText.ResumeLayout(false);
             this.panCharacterBio.ResumeLayout(false);
             this.panCharacterBio.PerformLayout();

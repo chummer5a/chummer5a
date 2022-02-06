@@ -173,7 +173,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreateCyberwareSuite";
             this.Text = "Create Cyberware Suite";
-            this.Load += new System.EventHandler(this.frmCreateCyberwareSuite_Load);
+            this.Load += new System.EventHandler(this.CreateCyberwareSuite_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

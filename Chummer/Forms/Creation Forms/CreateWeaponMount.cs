@@ -61,7 +61,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmCreateWeaponMount_Load(object sender, EventArgs e)
+        private void CreateWeaponMount_Load(object sender, EventArgs e)
         {
             XPathNavigator xmlVehicleNode = _objVehicle.GetNodeXPath();
             // Populate the Weapon Mount Category list.

@@ -5240,7 +5240,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CharacterOptions";
             this.Text = "Character Settings";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCharacterSettings_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditCharacterSettings_FormClosing);
             this.Load += new System.EventHandler(this.EditCharacterSettings_Load);
             this.tlpOptions.ResumeLayout(false);
             this.tlpOptions.PerformLayout();

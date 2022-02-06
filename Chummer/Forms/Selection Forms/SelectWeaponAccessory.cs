@@ -63,7 +63,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode));
         }
 
-        private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
+        private void SelectWeaponAccessory_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {

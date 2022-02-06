@@ -573,7 +573,7 @@ namespace Chummer
             Close();
         }
 
-        private async void frmCharacterSettings_FormClosing(object sender, FormClosingEventArgs e)
+        private async void EditCharacterSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (IsDirty && Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty"),
                 await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)

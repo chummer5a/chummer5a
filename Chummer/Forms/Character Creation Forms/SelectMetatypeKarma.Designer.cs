@@ -662,7 +662,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Metatype";
             this.Text = "Select a Metatype";
-            this.Load += new System.EventHandler(this.frmMetatype_Load);
+            this.Load += new System.EventHandler(this.SelectMetatypeKarma_Load);
             this.tlpMetatypes.ResumeLayout(false);
             this.tlpMetatypes.PerformLayout();
             this.pnlQualities.ResumeLayout(false);

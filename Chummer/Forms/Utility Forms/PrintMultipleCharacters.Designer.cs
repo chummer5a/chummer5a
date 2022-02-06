@@ -171,7 +171,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_PrintMultiple";
             this.Text = "Select Characters to Print";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmPrintMultiple_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PrintMultipleCharacters_FormClosing);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

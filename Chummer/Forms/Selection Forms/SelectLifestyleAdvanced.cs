@@ -408,7 +408,7 @@ namespace Chummer
             treLifestyleQualities.SortCustomAlphabetically(strSelectedNode);
         }
 
-        private void frmSelectAdvancedLifestyle_Load(object sender, EventArgs e)
+        private void SelectAdvancedLifestyle_Load(object sender, EventArgs e)
         {
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.

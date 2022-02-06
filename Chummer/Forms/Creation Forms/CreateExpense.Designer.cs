@@ -326,7 +326,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Expense_Karma";
             this.Text = "Karmic Change";
-            this.Load += new System.EventHandler(this.frmExpanse_Load);
+            this.Load += new System.EventHandler(this.CreateExpanse_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).EndInit();
             this.tlpMain.ResumeLayout(false);

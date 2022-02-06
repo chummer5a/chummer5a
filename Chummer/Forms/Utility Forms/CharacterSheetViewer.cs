@@ -109,7 +109,7 @@ namespace Chummer
             }
         }
 
-        private async void frmViewer_Load(object sender, EventArgs e)
+        private async void CharacterSheetViewer_Load(object sender, EventArgs e)
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
@@ -213,7 +213,7 @@ namespace Chummer
             }
         }
 
-        private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)
+        private void CharacterSheetViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objRefresherCancellationTokenSource?.Cancel(false);
             _objOutputGeneratorCancellationTokenSource?.Cancel(false);
@@ -416,7 +416,7 @@ namespace Chummer
             }
         }
 
-        private async void frmViewer_CursorChanged(object sender, EventArgs e)
+        private async void CharacterSheetViewer_CursorChanged(object sender, EventArgs e)
         {
             if (Cursor == Cursors.WaitCursor)
             {

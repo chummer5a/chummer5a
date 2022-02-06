@@ -50,7 +50,7 @@ namespace Chummer
             _objDocument = objCharacter.LoadData("improvements.xml");
         }
 
-        private async void frmCreateImprovement_Load(object sender, EventArgs e)
+        private async void CreateImprovement_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {

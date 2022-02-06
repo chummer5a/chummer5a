@@ -1024,7 +1024,7 @@ namespace Chummer
             this.Tag = "Title_SelectAdvancedLifestyle";
             this.Text = "Build Advanced Lifestyle";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectLifestyleAdvanced_FormClosing);
-            this.Load += new System.EventHandler(this.frmSelectAdvancedLifestyle_Load);
+            this.Load += new System.EventHandler(this.SelectAdvancedLifestyle_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).EndInit();

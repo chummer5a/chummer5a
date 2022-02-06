@@ -43,7 +43,7 @@ namespace Chummer
             dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All");
         }
 
-        private void frmPrintMultiple_FormClosing(object sender, FormClosingEventArgs e)
+        private void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objPrinterCancellationTokenSource?.Cancel(false);
 

@@ -213,7 +213,7 @@ namespace Chummer
             KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
         }
 
-        private void frmExpanse_Load(object sender, EventArgs e)
+        private void CreateExpanse_Load(object sender, EventArgs e)
         {
             chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;

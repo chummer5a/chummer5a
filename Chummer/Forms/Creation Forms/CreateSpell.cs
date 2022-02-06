@@ -43,7 +43,7 @@ namespace Chummer
             _objXmlDocument = objCharacter.LoadDataXPath("spells.xml");
         }
 
-        private void frmCreateSpell_Load(object sender, EventArgs e)
+        private void CreateSpell_Load(object sender, EventArgs e)
         {
             _blnLoading = true;
             lblDV.Text = 0.ToString(GlobalSettings.CultureInfo);

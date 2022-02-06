@@ -117,7 +117,7 @@ namespace Chummer
             }
         }
 
-        private async void frmCharacterRoster_Load(object sender, EventArgs e)
+        private async void CharacterRoster_Load(object sender, EventArgs e)
         {
             SetMyEventHandlers();
             _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
@@ -136,7 +136,7 @@ namespace Chummer
             await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
         }
 
-        private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
+        private void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
             _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);

@@ -647,7 +647,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeaponAccessory";
             this.Text = "Select an Accessory";
-            this.Load += new System.EventHandler(this.frmSelectWeaponAccessory_Load);
+            this.Load += new System.EventHandler(this.SelectWeaponAccessory_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
             this.tlpMain.ResumeLayout(false);

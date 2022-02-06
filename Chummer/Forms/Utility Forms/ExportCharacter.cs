@@ -59,7 +59,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private async void frmExport_Load(object sender, EventArgs e)
+        private async void ExportCharacter_Load(object sender, EventArgs e)
         {
             LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
             cboXSLT.BeginUpdate();
@@ -83,7 +83,7 @@ namespace Chummer
             await Task.WhenAll(this.DoThreadSafeAsync(() => Text = Text + LanguageManager.GetString("String_Space") + _objCharacter?.Name), DoLanguageUpdate());
         }
 
-        private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
+        private void ExportCharacter_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objXmlGeneratorCancellationTokenSource?.Cancel(false);
             _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);

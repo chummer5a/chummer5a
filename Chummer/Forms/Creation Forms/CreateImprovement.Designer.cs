@@ -445,7 +445,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreateImprovement";
             this.Text = "Create Improvement";
-            this.Load += new System.EventHandler(this.frmCreateImprovement_Load);
+            this.Load += new System.EventHandler(this.CreateImprovement_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMax)).EndInit();

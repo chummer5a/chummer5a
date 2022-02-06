@@ -237,7 +237,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_LifestyleNuyen";
             this.Text = "Starting Nuyen";
-            this.Load += new System.EventHandler(this.frmLifestyleNuyen_Load);
+            this.Load += new System.EventHandler(this.SelectLifestyleStartingNuyen_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).EndInit();

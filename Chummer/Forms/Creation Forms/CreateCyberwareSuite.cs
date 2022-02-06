@@ -228,7 +228,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void frmCreateCyberwareSuite_Load(object sender, EventArgs e)
+        private void CreateCyberwareSuite_Load(object sender, EventArgs e)
         {
             txtName.Left = lblName.Left + lblName.Width + 6;
             txtName.Width = Width - txtName.Left - 19;

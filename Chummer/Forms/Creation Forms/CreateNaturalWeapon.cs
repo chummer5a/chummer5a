@@ -47,7 +47,7 @@ namespace Chummer
             MoveControls();
         }
 
-        private void frmNaturalWeapon_Load(object sender, EventArgs e)
+        private void CreateNaturalWeapon_Load(object sender, EventArgs e)
         {
             // Load the list of Combat Active Skills and populate the Skills list.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))

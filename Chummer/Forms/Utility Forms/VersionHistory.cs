@@ -34,7 +34,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmHistory_Load(object sender, EventArgs e)
+        private void VersionHistory_Load(object sender, EventArgs e)
         {
             // Display the contents of the changelog.txt file in the TextBox.
             try
