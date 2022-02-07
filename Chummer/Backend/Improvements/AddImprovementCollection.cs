@@ -116,14 +116,14 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selecttext: " + SelectedValue);
+            Log.Trace("selecttext: " + SelectedValue);
         }
 
         public void surprise(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("surprise");
+            Log.Trace("surprise");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Surprise, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -132,7 +132,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("spellresistance");
+            Log.Trace("spellresistance");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -141,7 +141,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("mentalmanipulationresist");
+            Log.Trace("mentalmanipulationresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MentalManipulationResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -150,7 +150,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("physicalmanipulationresist");
+            Log.Trace("physicalmanipulationresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalManipulationResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -159,7 +159,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("manaillusionresist");
+            Log.Trace("manaillusionresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ManaIllusionResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -168,7 +168,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("physicalillusionresist");
+            Log.Trace("physicalillusionresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalIllusionResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -177,7 +177,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("detectionspellresist");
+            Log.Trace("detectionspellresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DetectionSpellResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -186,7 +186,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("directmanaspellresist");
+            Log.Trace("directmanaspellresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectManaSpellResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -195,7 +195,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("directphysicalspellresist");
+            Log.Trace("directphysicalspellresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectPhysicalSpellResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -204,7 +204,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreasebodresist");
+            Log.Trace("decreasebodresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseBODResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -213,7 +213,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreaseagiresist");
+            Log.Trace("decreaseagiresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseAGIResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -222,7 +222,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreaserearesist");
+            Log.Trace("decreaserearesist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseREAResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -231,7 +231,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreasestrresist");
+            Log.Trace("decreasestrresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseSTRResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -240,7 +240,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreasecharesist");
+            Log.Trace("decreasecharesist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseCHAResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -249,7 +249,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreaseintresist");
+            Log.Trace("decreaseintresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseINTResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -258,7 +258,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreaselogresist");
+            Log.Trace("decreaselogresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseLOGResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -267,7 +267,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("decreasewilresist");
+            Log.Trace("decreasewilresist");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseWILResist, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -276,7 +276,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("enableattribute");
+            Log.Trace("enableattribute");
             switch (bonusNode["name"]?.InnerText)
             {
                 case "MAG":
@@ -308,8 +308,9 @@ namespace Chummer
                     return;
                 foreach (XmlNode objXmlAttribute in objXmlAttributes)
                 {
-                    Log.Info("replaceattribute");
-                    Log.Info("replaceattribute = " + bonusNode.OuterXml);
+                    Log.Trace("replaceattribute" + Environment.NewLine
+                        + "replaceattribute = " + bonusNode.OuterXml
+                        );
                     // Record the improvement.
                     string strAttribute = string.Empty;
                     if (objXmlAttribute.TryGetStringFieldQuickly("name", ref strAttribute))
@@ -341,7 +342,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("enabletab");
+            
             using (XmlNodeList xmlEnableList = bonusNode.SelectNodes("name"))
             {
                 if (xmlEnableList?.Count > 0)
@@ -352,32 +353,32 @@ namespace Chummer
                         {
                             case "magician":
                                 _objCharacter.MagicianEnabled = true;
-                                Log.Info("magician");
+                                Log.Trace("enabletab " + " magician");
                                 CreateImprovement("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
                             case "adept":
                                 _objCharacter.AdeptEnabled = true;
-                                Log.Info("adept");
+                                Log.Trace("enabletab " + " adept");
                                 CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab",
                                     0, 0);
                                 break;
                             case "technomancer":
                                 _objCharacter.TechnomancerEnabled = true;
-                                Log.Info("technomancer");
+                                Log.Trace("enabletab " + " technomancer");
                                 CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
                             case "advanced programs":
                                 _objCharacter.AdvancedProgramsEnabled = true;
-                                Log.Info("advanced programs");
+                                Log.Trace("enabletab " + " advanced programs");
                                 CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
                             case "critter":
                                 _objCharacter.CritterEnabled = true;
-                                Log.Info("critter");
+                                Log.Trace("enabletab " + " critter");
                                 CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
@@ -392,7 +393,6 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("disabletab");
             using (XmlNodeList xmlDisableList = bonusNode.SelectNodes("name"))
             {
                 if (xmlDisableList?.Count > 0)
@@ -403,13 +403,13 @@ namespace Chummer
                         {
                             case "cyberware":
                                 _objCharacter.CyberwareDisabled = true;
-                                Log.Info("cyberware");
+                                Log.Trace("disabletab" + " cyberware");
                                 CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
                             case "initiation":
                                 _objCharacter.InitiationForceDisabled = true;
-                                Log.Info("cyberware");
+                                Log.Trace("disabletab" + " initiation");
                                 CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
@@ -424,7 +424,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectrestricted");
+            Log.Trace("selectrestricted");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 SelectedValue = ForcedValue;
@@ -459,7 +459,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selecttradition");
+            Log.Trace("selecttradition");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 SelectedValue = ForcedValue;
@@ -537,7 +537,12 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("blockskillgroupdefaulting");
+
+            Log.Trace("blockskillgroupdefaulting" + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                );
+
             string strExclude = string.Empty;
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
@@ -549,8 +554,7 @@ namespace Chummer
                     : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
             })
             {
-                Log.Info("_strForcedValue = " + ForcedValue);
-                Log.Info("_strLimitSelection = " + LimitSelection);
+               
 
                 if (!string.IsNullOrEmpty(ForcedValue))
                 {
@@ -580,7 +584,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("allowskilldefaulting");
+            Log.Trace("allowskilldefaulting");
             // Expected values are either a Skill Name or an empty string.
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AllowSkillDefault, _strUnique);
@@ -591,13 +595,15 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //TODO this don't work
-            Log.Info("selectskill");
+            
             if (ForcedValue == "+2 to a Combat Skill")
                 ForcedValue = string.Empty;
 
-            Log.Info("SelectedValue = " + SelectedValue + Environment.NewLine + "ForcedValue = " + ForcedValue);
-
+            //TODO this don't work
+            Log.Trace("selectskill" + Environment.NewLine
+                + "SelectedValue = " + SelectedValue + Environment.NewLine + "ForcedValue = " + ForcedValue
+                );
+        
             bool blnIsKnowledgeSkill = false;
             string strSelectedSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill);
 
@@ -757,7 +763,12 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectskillgroup");
+
+            Log.Trace("selectskillgroup" + Environment.NewLine
+                + "ForcedValue = " + ForcedValue + Environment.NewLine
+                + "LimitSelection = " + LimitSelection
+                );
+           
             string strExclude = string.Empty;
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
@@ -768,8 +779,7 @@ namespace Chummer
                     ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
                     : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
             };
-
-            Log.Info("ForcedValue = " + ForcedValue + Environment.NewLine + "LimitSelection = " + LimitSelection);
+            
 
             if (!string.IsNullOrEmpty(ForcedValue))
             {
@@ -819,10 +829,9 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlAttribute in xmlSelectAttributeList)
                     {
-                        Log.Info("selectattribute");
-
-                        Log.Info("selectattribute = " + objXmlAttribute.OuterXml);
-
+                        string trace = "selectattribute" + Environment.NewLine
+                            + "selectattribute = " + objXmlAttribute.OuterXml + Environment.NewLine;
+                       
                         List<string> lstAbbrevs = new List<string>(xmlSelectAttributeList.Count);
                         XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute");
                         if (xmlAttributeList?.Count > 0)
@@ -855,11 +864,13 @@ namespace Chummer
                         if (!_objCharacter.DEPEnabled)
                             lstAbbrevs.Remove("DEP");
 
-                        Log.Info("ForcedValue = " + ForcedValue + Environment.NewLine + "LimitSelection = " + LimitSelection);
-
                         // Check to see if there is only one possible selection because of _strLimitSelection.
                         if (!string.IsNullOrEmpty(ForcedValue))
                             LimitSelection = ForcedValue;
+
+                        trace += "ForcedValue = " + ForcedValue + Environment.NewLine + "LimitSelection = " + LimitSelection + Environment.NewLine;
+
+                        Log.Trace(trace);
 
                         if (!string.IsNullOrEmpty(LimitSelection))
                         {
@@ -952,8 +963,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectattribute");
-
+           
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
             if (xmlAttributeList?.Count > 0)
@@ -986,12 +996,15 @@ namespace Chummer
             if (!_objCharacter.DEPEnabled)
                 lstAbbrevs.Remove("DEP");
 
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-
             // Check to see if there is only one possible selection because of _strLimitSelection.
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
+
+            string trace = "selectattribute" + Environment.NewLine
+              + "_strForcedValue = " + ForcedValue + Environment.NewLine
+              + "_strLimitSelection = " + LimitSelection + Environment.NewLine;
+
+            Log.Trace(trace);
 
             if (!string.IsNullOrEmpty(LimitSelection))
             {
@@ -1006,7 +1019,8 @@ namespace Chummer
                     : LanguageManager.GetString("String_Improvement_SelectAttribute")
             })
             {
-                Log.Info("selectattribute = " + bonusNode.OuterXml);
+                trace += Environment.NewLine + "selectattribute = " + bonusNode.OuterXml;
+                Log.Trace(trace);
 
                 frmPickAttribute.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
 
@@ -1054,10 +1068,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectlimit");
-
-            Log.Info("selectlimit = " + bonusNode.OuterXml);
-
+          
             List<string> strLimits = new List<string>(4);
             using (XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit"))
             {
@@ -1089,9 +1100,13 @@ namespace Chummer
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
 
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
+            Log.Trace("selectlimit" + Environment.NewLine
+                + "selectlimit = " + bonusNode.OuterXml + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                );
 
+         
             if (!string.IsNullOrEmpty(LimitSelection))
             {
                 strLimits.RemoveAll(x => x != LimitSelection);
@@ -1175,7 +1190,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("swapskillattribute");
+           
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
@@ -1212,14 +1227,15 @@ namespace Chummer
             if (lstAbbrevs.Count == 1)
                 LimitSelection = lstAbbrevs[0];
 
-            Log.Info("swapskillattribute = " + bonusNode.OuterXml);
-
             // Check to see if there is only one possible selection because of _strLimitSelection.
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
 
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
+            Log.Trace("swapskillattribute" + Environment.NewLine
+                 + "swapskillattribute = " + bonusNode.OuterXml + Environment.NewLine
+                 + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                 );
 
             if (!string.IsNullOrEmpty(LimitSelection))
             {
@@ -1310,7 +1326,8 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("swapskillspecattribute");
+
+          
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
@@ -1347,14 +1364,15 @@ namespace Chummer
             if (lstAbbrevs.Count == 1)
                 LimitSelection = lstAbbrevs[0];
 
-            Log.Info("swapskillspecattribute = " + bonusNode.OuterXml);
-
             // Check to see if there is only one possible selection because of _strLimitSelection.
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
 
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
+            Log.Trace("swapskillspecattribute" + Environment.NewLine
+                  + "swapskillspecattribute = " + bonusNode.OuterXml + Environment.NewLine
+                  + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                  + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                  );
 
             if (!string.IsNullOrEmpty(LimitSelection))
             {
@@ -1448,7 +1466,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectspell");
+            
             XmlNode node;
             // Display the Select Spell window.
             using (SelectSpell frmPickSpell = new SelectSpell(_objCharacter))
@@ -1457,10 +1475,12 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strCategory))
                     frmPickSpell.LimitCategory = strCategory;
 
-                Log.Info("selectspell = " + bonusNode.OuterXml);
-                Log.Info("_strForcedValue = " + ForcedValue);
-                Log.Info("_strLimitSelection = " + LimitSelection);
-
+                Log.Trace("selectspell" + Environment.NewLine
+                    + "selectspell = " + bonusNode.OuterXml + Environment.NewLine
+                    + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                    + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                    );
+             
                 if (!string.IsNullOrEmpty(ForcedValue))
                 {
                     frmPickSpell.ForceSpellName = ForcedValue;
@@ -1528,11 +1548,11 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("addspell");
-
-            Log.Info("addspell = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
+            Log.Trace("addspell" + Environment.NewLine
+                + "addspell = " + bonusNode.OuterXml + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                );
             
             XmlDocument objXmlSpellDocument = _objCharacter.LoadData("spells.xml");
 
@@ -1585,12 +1605,13 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectcomplexform");
+            Log.Trace("selectcomplexform" + Environment.NewLine
+                + "selectcomplexform = " + bonusNode.OuterXml + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                );
 
-            Log.Info("selectcomplexform = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-
+          
             string strSelectedComplexForm = ForcedValue;
 
             if (string.IsNullOrEmpty(strSelectedComplexForm))
@@ -1638,11 +1659,12 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("addcomplexform");
+            Log.Trace("addcomplexform" + Environment.NewLine
+                + "addcomplexform = " + bonusNode.OuterXml + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                );
 
-            Log.Info("addcomplexform = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
             
             XmlDocument objXmlComplexFormDocument = _objCharacter.LoadData("complexforms.xml");
 
@@ -1669,13 +1691,12 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("addgear");
-
-            Log.Info("addgear = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-
-            Log.Info("Adding Gear");
+            Log.Trace("addgear" + Environment.NewLine
+                + "addgear = " + bonusNode.OuterXml + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                + "Adding Gear"
+                );
 
             Gear objNewGear = Purchase(bonusNode);
             if (bonusNode["children"]?.ChildNodes.Count > 0)
@@ -1763,13 +1784,13 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("addweapon");
+            Log.Trace("addweapon" + Environment.NewLine
+                + "addweapon = " + bonusNode.OuterXml + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                + "Adding Weapon"
+                );
 
-            Log.Info("addweapon = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-            
-            Log.Info("Adding Weapon");
             string strName = bonusNode["name"]?.InnerText ?? throw new AbortedException();
             XmlNode node = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + ']') ?? throw new AbortedException();
 
@@ -1809,13 +1830,12 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("naturalweapon");
-
-            Log.Info("naturalweapon = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-
-            Log.Info("Adding Weapon");
+            Log.Trace("naturalweapon" + Environment.NewLine
+                + "naturalweapon = " + bonusNode.OuterXml + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strForcedValue = " + ForcedValue + Environment.NewLine
+                + "_strLimitSelection = " + LimitSelection + Environment.NewLine
+                + "Adding Weapon");
 
             Weapon objWeapon = new Weapon(_objCharacter)
             {
@@ -1849,10 +1869,8 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectaiprogram");
-            Log.Info("selectaiprogram = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-
+            Log.Trace("selectaiprogram" + Environment.NewLine + "selectaiprogram = " + bonusNode.OuterXml + Environment.NewLine + "_strForcedValue = " + ForcedValue);
+           
             XmlNode xmlProgram = null;
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -1923,10 +1941,8 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectaiprogram");
-            Log.Info("selectaiprogram = " + bonusNode.OuterXml);
-            Log.Info("_strForcedValue = " + ForcedValue);
-
+            Log.Trace("selectaiprogram" +  Environment.NewLine + "selectaiprogram = " + bonusNode.OuterXml + Environment.NewLine + "_strForcedValue = " + ForcedValue);
+            
             XmlNode xmlProgram = null;
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -1997,7 +2013,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("selectcontact");
+            Log.Trace("selectcontact");
 
             using (SelectItem frmSelect = new SelectItem())
             {
@@ -2073,7 +2089,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("addcontact");
+            Log.Trace("addcontact");
 
             int intLoyalty = 1;
             int intConnection = 1;
@@ -2115,7 +2131,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("specificattribute");
+            Log.Trace("specificattribute");
 
             // Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
             // Record the improvement.
@@ -2164,7 +2180,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info(new object[] { "attributelevel", bonusNode.OuterXml });
+            Log.Trace(new object[] { "attributelevel", bonusNode.OuterXml });
             string strAttrib = string.Empty;
             int value = 1;
             bonusNode.TryGetInt32FieldQuickly("val", ref value);
@@ -2193,8 +2209,9 @@ namespace Chummer
                 if (!_objCharacter.DEPEnabled)
                     lstAbbrevs.Remove("DEP");
 
-                Log.Info("_strForcedValue = " + ForcedValue);
-                Log.Info("_strLimitSelection = " + LimitSelection);
+                Log.Trace("_strForcedValue = " + ForcedValue + Environment.NewLine
+                     + "_strLimitSelection = " + LimitSelection 
+                    );
 
                 // Check to see if there is only one possible selection because of _strLimitSelection.
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -2212,7 +2229,7 @@ namespace Chummer
                         : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 };
 
-                Log.Info("attributelevel = " + bonusNode.OuterXml);
+                Log.Trace("attributelevel = " + bonusNode.OuterXml);
 
                 frmPickAttribute.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
 
@@ -2236,7 +2253,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info(new object[] { "skilllevel", bonusNode.OuterXml });
+            Log.Trace(new object[] { "skilllevel", bonusNode.OuterXml });
             string strSkill = string.Empty;
             int intValue = 1;
             bonusNode.TryGetInt32FieldQuickly("val", ref intValue);
@@ -2265,12 +2282,15 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("activesoft");
+            
             string strNodeOuterXml = bonusNode.OuterXml;
-            Log.Info("activesoft = " + strNodeOuterXml);
             string strForcedValue = ForcedValue;
-            Log.Info("_strForcedValue = " + strForcedValue);
 
+            Log.Trace("activesoft" + Environment.NewLine
+                + "activesoft = " + strNodeOuterXml + Environment.NewLine
+                + "_strForcedValue = " + strForcedValue + Environment.NewLine
+                );
+         
             bool blnDummy = false;
             SelectedValue = string.IsNullOrEmpty(strForcedValue)
                 ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
@@ -2338,9 +2358,12 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strNodeOuterXml = bonusNode.OuterXml;
-            Log.Info("skillsoft = " + strNodeOuterXml);
             string strForcedValue = ForcedValue;
-            Log.Info("_strForcedValue = " + strForcedValue);
+
+            Log.Trace("skillsoft = " + strNodeOuterXml + Environment.NewLine
+                + "_strForcedValue = " + strForcedValue
+                );
+           
 
             bool blnIsKnowledgeSkill = true;
             SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill) : strForcedValue;
@@ -2381,7 +2404,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info(new object[] { "skillgrouplevel", bonusNode.OuterXml });
+            Log.Trace(new object[] { "skillgrouplevel", bonusNode.OuterXml });
             string strSkillGroup = string.Empty;
             int value = 1;
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup) &&
@@ -2401,8 +2424,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("nuyenmaxbp");
-            Log.Info("nuyenmaxbp = " + bonusNode.OuterXml);
+            Log.Trace("nuyenmaxbp" + Environment.NewLine
+                + "nuyenmaxbp = " + bonusNode.OuterXml
+                );
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NuyenMaxBP, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -2412,8 +2436,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("physicallimit");
-            Log.Info("physicallimit = " + bonusNode.OuterXml);
+            Log.Trace("physicallimit" + Environment.NewLine
+                + "physicallimit = " + bonusNode.OuterXml
+                );
             CreateImprovement("Physical", _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalLimit,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -2424,8 +2449,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("mentallimit");
-            Log.Info("mentallimit = " + bonusNode.OuterXml);
+            Log.Trace("mentallimit" + Environment.NewLine
+                + "mentallimit = " + bonusNode.OuterXml
+                );
             CreateImprovement("Mental", _objImprovementSource, SourceName, Improvement.ImprovementType.MentalLimit,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -2436,8 +2462,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("sociallimit");
-            Log.Info("sociallimit = " + bonusNode.OuterXml);
+            Log.Trace("sociallimit" + Environment.NewLine
+                + "sociallimit = " + bonusNode.OuterXml
+                );
+           
             CreateImprovement("Social", _objImprovementSource, SourceName, Improvement.ImprovementType.SocialLimit,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -2448,8 +2476,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("nuyenamt");
-            Log.Info("nuyenamt = " + bonusNode.OuterXml);
+            Log.Trace("nuyenamt" + Environment.NewLine
+                + "nuyenamt = " + bonusNode.OuterXml
+                );
+           
             string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
             CreateImprovement(strCondition, _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -2460,8 +2490,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("conditionmonitor");
-            Log.Info("conditionmonitor = " + bonusNode.OuterXml);
+            Log.Trace("conditionmonitor" + Environment.NewLine
+                + "conditionmonitor = " + bonusNode.OuterXml
+                );
             string strTemp = bonusNode["physical"]?.InnerText;
             // Physical Condition.
             if (!string.IsNullOrEmpty(strTemp))
@@ -2529,9 +2560,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("livingpersona");
-            Log.Info("livingpersona = " + bonusNode.OuterXml);
-
+            Log.Trace("livingpersona" + Environment.NewLine
+                + "livingpersona = " + bonusNode.OuterXml
+                );
+          
             // Device Rating.
             string strBonus = bonusNode["devicerating"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
@@ -2643,8 +2675,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("specificskill");
-            Log.Info("specificskill = " + bonusNode.OuterXml);
+            Log.Trace("specificskill" + Environment.NewLine
+                + "specificskill = " + bonusNode.OuterXml
+                );
             bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
 
@@ -2698,8 +2731,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("martialart");
-            Log.Info("martialart = " + bonusNode.OuterXml);
+            Log.Trace("martialart" + Environment.NewLine
+                + "martialart = " + bonusNode.OuterXml
+                );
             XmlNode objXmlArt = _objCharacter.LoadData("martialarts.xml").SelectSingleNode("/chummer/martialarts/martialart[name = " + bonusNode.InnerText.CleanXPath() + ']');
 
             MartialArt objMartialArt = new MartialArt(_objCharacter);
@@ -2717,9 +2751,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("limitmodifier");
-            Log.Info("limitmodifier = " + bonusNode.OuterXml);
-
+            Log.Trace("limitmodifier" + Environment.NewLine
+                + "limitmodifier = " + bonusNode.OuterXml
+                );
+           
             string strLimit = bonusNode["limit"]?.InnerText;
             decimal decBonus = ImprovementManager.ValueToDec(_objCharacter, bonusNode["value"]?.InnerXml, _intRating);
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
@@ -2737,9 +2772,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("skillcategory");
-            Log.Info("skillcategory = " + bonusNode.OuterXml);
-
+            Log.Trace("skillcategory" + Environment.NewLine
+                + "skillcategory = " + bonusNode.OuterXml
+                );
+          
             string strName = bonusNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(strName))
             {
@@ -2767,9 +2803,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("skillgroup");
-            Log.Info("skillgroup = " + bonusNode.OuterXml);
-
+            Log.Trace("skillgroup" + Environment.NewLine
+                + "skillgroup = " + bonusNode.OuterXml
+                );
+          
             string strName = bonusNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(strName))
             {
@@ -2795,9 +2832,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("skillattribute");
-            Log.Info("skillattribute = " + bonusNode.OuterXml);
-
+            Log.Trace("skillattribute" + Environment.NewLine
+                + "skillattribute = " + bonusNode.OuterXml
+                );
+          
             string strUseUnique = _strUnique;
             XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
@@ -2828,9 +2866,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("skilllinkedattribute");
-            Log.Info("skilllinkedattribute = " + bonusNode.OuterXml);
-
+            Log.Trace("skilllinkedattribute" + Environment.NewLine
+                + "skilllinkedattribute = " + bonusNode.OuterXml
+                );
+            
             string strUseUnique = _strUnique;
             XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
@@ -2861,9 +2900,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("skillarticulation");
-            Log.Info("skillarticulation = " + bonusNode.OuterXml);
-            
+            Log.Trace("skillarticulation" + Environment.NewLine
+                + "skillarticulation = " + bonusNode.OuterXml
+                );
+        
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnhancedArticulation,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerText, _intRating));
@@ -2874,8 +2914,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("armor");
-            Log.Info("armor = " + bonusNode.OuterXml);
+            Log.Trace("armor" + Environment.NewLine
+                + "armor = " + bonusNode.OuterXml
+                );
+          
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2899,8 +2941,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("firearmor");
-            Log.Info("firearmor = " + bonusNode.OuterXml);
+            Log.Trace("firearmor" + Environment.NewLine
+                + "firearmor = " + bonusNode.OuterXml
+                );
+           
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2924,8 +2968,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("coldarmor");
-            Log.Info("coldarmor = " + bonusNode.OuterXml);
+            Log.Trace("coldarmor" + Environment.NewLine
+                + "coldarmor = " + bonusNode.OuterXml
+                );
+         
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2949,8 +2995,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("electricityarmor");
-            Log.Info("electricityarmor = " + bonusNode.OuterXml);
+            Log.Trace("electricityarmor" + Environment.NewLine
+                + "electricityarmor = " + bonusNode.OuterXml
+                );
+          
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2974,8 +3022,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("acidarmor");
-            Log.Info("acidarmor = " + bonusNode.OuterXml);
+            Log.Trace("acidarmor" + Environment.NewLine
+                + "acidarmor = " + bonusNode.OuterXml
+                );
+         
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2999,8 +3049,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("fallingarmor");
-            Log.Info("fallingarmor = " + bonusNode.OuterXml);
+            Log.Trace("fallingarmor" + Environment.NewLine
+                + "fallingarmor = " + bonusNode.OuterXml
+                );
+           
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3024,8 +3076,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("dodge");
-            Log.Info("dodge = " + bonusNode.OuterXml);
+            Log.Trace("dodge" + Environment.NewLine
+                + "dodge = " + bonusNode.OuterXml
+                );
+           
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3049,8 +3103,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("reach");
-            Log.Info("reach = " + bonusNode.OuterXml);
+            Log.Trace("reach" + Environment.NewLine
+                + "reach = " + bonusNode.OuterXml
+                );
+          
             string strWeapon = bonusNode.Attributes?["name"]?.InnerText ?? string.Empty;
             CreateImprovement(strWeapon, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach,
                 _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -3061,8 +3117,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("unarmeddv");
-            Log.Info("unarmeddv = " + bonusNode.OuterXml);
+            Log.Trace("unarmeddv" + Environment.NewLine
+                + "unarmeddv = " + bonusNode.OuterXml
+                );
+          
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDV, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3072,8 +3130,9 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("unarmeddvphysical");
-            Log.Info("unarmeddvphysical = " + bonusNode.OuterXml);
+            Log.Trace("unarmeddvphysical" + Environment.NewLine
+                + "unarmeddvphysical = " + bonusNode.OuterXml
+                );
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDVPhysical, _strUnique);
         }
 
@@ -3082,8 +3141,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("unarmedap");
-            Log.Info("unarmedap = " + bonusNode.OuterXml);
+            Log.Trace("unarmedap" + Environment.NewLine
+                + "unarmedap = " + bonusNode.OuterXml
+                );
+           
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedAP, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3093,8 +3154,10 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("unarmedreach");
-            Log.Info("unarmedreach = " + bonusNode.OuterXml);
+            Log.Trace("unarmedreach" + Environment.NewLine
+                + "unarmedreach = " + bonusNode.OuterXml
+                );
+           
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedReach, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }

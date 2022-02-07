@@ -2418,7 +2418,7 @@ namespace Chummer
                 return 0;
             }
 
-            Log.Info("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
+            Log.Trace("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             // A List of Improvements to hold all of the items that will eventually be deleted.
             List<Improvement> objImprovementList = (string.IsNullOrEmpty(strSourceName)
