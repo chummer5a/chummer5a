@@ -309,12 +309,11 @@ namespace Chummer.Plugins
 
                 }
 
-                Log.Info("Plugins found: " + MyPlugins.Count);
                 if (MyPlugins.Count == 0)
                 {
                     throw new ArgumentException("No plugins found in " + path + '.');
                 }
-                Log.Info("Plugins active: " + MyActivePlugins.Count);
+                Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: " + MyActivePlugins.Count);
                 foreach (IPlugin plugin in MyActivePlugins)
                 {
                     try

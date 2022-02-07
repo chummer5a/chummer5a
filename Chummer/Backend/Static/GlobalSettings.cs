@@ -76,6 +76,7 @@ namespace Chummer
 
     public sealed class SourcebookInfo : IDisposable
     {
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private string _strPath = string.Empty;
         private PdfReader _objPdfReader;
         private PdfDocument _objPdfDocument;
@@ -115,8 +116,9 @@ namespace Chummer
                             _objPdfReader = new PdfReader(uriPath.LocalPath);
                             _objPdfDocument = new PdfDocument(_objPdfReader);
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
+                            Log.Warn(e, $"Exception while loading {uriPath.LocalPath}: " + e.Message);
                             _objPdfDocument?.Close();
                             _objPdfDocument = null;
                             _objPdfReader?.Close();
