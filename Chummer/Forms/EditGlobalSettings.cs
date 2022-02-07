@@ -131,35 +131,42 @@ namespace Chummer
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _strSelectedLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage;
             try
             {
-                _objSelectedCultureInfo = CultureInfo.GetCultureInfo(_strSelectedLanguage);
-            }
-            catch (CultureNotFoundException)
-            {
-                _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
-            }
-
-            imgLanguageFlag.Image = Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height) >= 32
-                ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strSelectedLanguage.Substring(3, 2))
-                : FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
-
-            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && !_strSelectedLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase);
-            cmdVerify.Enabled = isEnabled;
-            cmdVerifyData.Enabled = isEnabled;
-
-            if (!_blnLoading)
-            {
-                using (new CursorWait(this))
+                _strSelectedLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage;
+                try
                 {
-                    _blnLoading = true;
-                    await TranslateForm();
-                    _blnLoading = false;
+                    _objSelectedCultureInfo = CultureInfo.GetCultureInfo(_strSelectedLanguage);
                 }
-            }
+                catch (CultureNotFoundException)
+                {
+                    _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
+                }
 
-            OptionsChanged(sender, e);
+                imgLanguageFlag.Image = Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height) >= 32
+                    ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strSelectedLanguage.Substring(3, 2))
+                    : FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
+
+                bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && !_strSelectedLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase);
+                cmdVerify.Enabled = isEnabled;
+                cmdVerifyData.Enabled = isEnabled;
+
+                if (!_blnLoading)
+                {
+                    using (new CursorWait(this))
+                    {
+                        _blnLoading = true;
+                        await TranslateForm();
+                        _blnLoading = false;
+                    }
+                }
+
+                OptionsChanged(sender, e);
+            }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                Log.Error(ex, "How the hell? Give me the callstack! " + ex.ToString());
+            }
         }
 
         private async void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
