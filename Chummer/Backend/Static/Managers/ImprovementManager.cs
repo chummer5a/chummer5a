@@ -2418,7 +2418,7 @@ namespace Chummer
                 return 0;
             }
 
-            Log.Trace("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             // A List of Improvements to hold all of the items that will eventually be deleted.
             List<Improvement> objImprovementList = (string.IsNullOrEmpty(strSourceName)
@@ -2456,7 +2456,7 @@ namespace Chummer
                                                  bool blnAllowDuplicatesFromSameSource = false)
         {
             Log.Debug("RemoveImprovements enter");
-
+            //TODO: report a AI-operation (maybe with dependencies), so we get an idea how long this takes.
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null || objImprovementList == null)
             {
