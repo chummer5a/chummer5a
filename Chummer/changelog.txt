@@ -4,6 +4,7 @@ Application Changes:
 - Cyberware and bioware with pair bonuses and/or wireless pair bonuses but no `<pairinclude>` or `<wirelesspairinclude>` nodes specified now still have those bonuses applied properly for every pair of item.
 - The default Internet Explorer version emulated for the character sheet viewer is now 11 instead of 8.
 - Fixed a rare crash that could happen when attempting to print a character.
+- Changelogs for newer versions of Chummer now properly show up in the updater before they are downloaded.
 
 Build 221
 Application Changes:

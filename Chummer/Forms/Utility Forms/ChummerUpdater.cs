@@ -96,6 +96,10 @@ namespace Chummer
             {
                 await DownloadChangelog();
             }
+            if (_blnIsConnected && SilentMode && !_blnSilentModeUpdateWasDenied)
+            {
+                await DownloadUpdates();
+            }
             Log.Info("ChummerUpdater_Load exit");
         }
 
@@ -148,22 +152,13 @@ namespace Chummer
             {
                 if (!_clientDownloader.IsBusy)
                     await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
-                if (_blnIsConnected)
+                if (File.Exists(_strTempLatestVersionChangelogPath))
                 {
-                    if (SilentMode && !_blnSilentModeUpdateWasDenied)
-                    {
-                        await DownloadUpdates();
-                    }
-
-                    if (File.Exists(_strTempLatestVersionChangelogPath))
-                    {
-                        string strUpdateLog = File.ReadAllText(_strTempLatestVersionChangelogPath).CleanForHtml();
-                        await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText
-                                                             = "<font size=\"-1\" face=\"Courier New,Serif\">"
-                                                               + strUpdateLog + "</font>");
-                    }
+                    string strUpdateLog = File.ReadAllText(_strTempLatestVersionChangelogPath).CleanForHtml();
+                    await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText
+                                                         = "<font size=\"-1\" face=\"Courier New,Serif\">"
+                                                           + strUpdateLog + "</font>");
                 }
-
                 await this.DoThreadSafeAsync(DoVersionTextUpdate);
             }
         }
@@ -792,17 +787,17 @@ namespace Chummer
         private async void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             Log.Info("wc_DownloadExeFileCompleted enter");
-            await cmdUpdate.DoThreadSafeAsync(async () =>
+            cmdUpdate.QueueThreadSafe(async () =>
             {
                 cmdUpdate.Text = await LanguageManager.GetStringAsync("Button_Redownload");
                 cmdUpdate.Enabled = true;
             });
-            await cmdRestart.DoThreadSafeAsync(async () =>
+            cmdRestart.QueueThreadSafe(async () =>
             {
                 if (_blnIsConnected && cmdRestart.Text != await LanguageManager.GetStringAsync("Button_Up_To_Date"))
                     cmdRestart.Enabled = true;
             });
-            await cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = true);
+            cmdCleanReinstall.QueueThreadSafe(() => cmdCleanReinstall.Enabled = true);
             Log.Info("wc_DownloadExeFileCompleted exit");
             if (SilentMode)
             {
@@ -816,7 +811,7 @@ namespace Chummer
                 {
                     _blnSilentModeUpdateWasDenied = true; // only actually go through with the attempt in Silent Mode once, don't prompt user any more if they canceled out once already
                     _blnIsConnected = false;
-                    await this.DoThreadSafeAsync(Close);
+                    this.QueueThreadSafe(Close);
                 }
             }
         }
