@@ -1345,7 +1345,7 @@ namespace Chummer
             {
                 sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
                 sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
-                sbdTrace.Append("nodBonus = ").AppendLine(nodBonus?.OuterXml ?? string.Empty);
+                sbdTrace.Append("nodBonus = ").AppendLine(nodBonus?.OuterXml);
                 sbdTrace.Append("intRating = ").AppendLine(intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 sbdTrace.Append("strFriendlyName = ").AppendLine(strFriendlyName);
 

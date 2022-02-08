@@ -36,8 +36,11 @@ namespace Chummer.Backend.Skills
             {
                 if (GlobalSettings.LiveCustomData || _dicCategoriesSkillMap == null)
                 {
-                    Dictionary<string, string> dicReturn = new Dictionary<string, string>();
-                    foreach (XPathNavigator objXmlSkill in CharacterObject.LoadDataXPath("skills.xml").SelectAndCacheExpression("/chummer/knowledgeskills/skill"))
+                    XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
+                                                                    .SelectAndCacheExpression(
+                                                                        "/chummer/knowledgeskills/skill");
+                    Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
+                    foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                     {
                         string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")?.Value;
                         if (!string.IsNullOrWhiteSpace(strCategory))
