@@ -740,9 +740,9 @@ namespace Chummer
             }
 
             return Color.FromArgb(chrAlpha,
-                Convert.ToByte(dblRed * 255.0),
-                Convert.ToByte(dblGreen * 255.0),
-                Convert.ToByte(dblBlue * 255.0));
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)) , byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
         }
 
         /// <summary>
@@ -820,9 +820,9 @@ namespace Chummer
             }
 
             return Color.FromArgb(chrAlpha,
-                Convert.ToByte(dblRed * 255.0),
-                Convert.ToByte(dblGreen * 255.0),
-                Convert.ToByte(dblBlue * 255.0));
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
         }
 
         #endregion Color Utility Methods

@@ -5,6 +5,7 @@ Application Changes:
 - The default Internet Explorer version emulated for the character sheet viewer is now 11 instead of 8.
 - Fixed a rare crash that could happen when attempting to print a character.
 - Changelogs for newer versions of Chummer now properly show up in the updater before they are downloaded.
+- Fixed a rare crash when attempting to convert certain colors to and/or from their dark mode versions.
 
 Build 221
 Application Changes:
