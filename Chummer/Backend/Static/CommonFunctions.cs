@@ -26,6 +26,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -837,14 +838,28 @@ namespace Chummer
         /// <param name="strLanguage">Language to load.</param>
         public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "", Character objCharacter = null)
         {
-            if (!string.IsNullOrWhiteSpace(strAltCode))
-            {
-                XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
-                return xmlOriginalCode?.Value ?? strAltCode;
-            }
+            if (string.IsNullOrWhiteSpace(strAltCode))
+                return string.Empty;
+            XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
+                                                       .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            return xmlOriginalCode?.Value ?? strAltCode;
 
-            return string.Empty;
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static async Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null)
+        {
+            if (string.IsNullOrWhiteSpace(strAltCode))
+                return string.Empty;
+            XPathNavigator xmlOriginalCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
+                .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            return xmlOriginalCode?.Value ?? strAltCode;
+
         }
 
         /// <summary>
@@ -855,11 +870,46 @@ namespace Chummer
         /// <param name="strLanguage">Language to load.</param>
         public static string LanguageBookShort(string strCode, string strLanguage = "", Character objCharacter = null)
         {
-            if (!string.IsNullOrWhiteSpace(strCode))
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
+                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            return xmlAltCode?.Value ?? strCode;
+
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        {
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlAltCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
+                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            return xmlAltCode?.Value ?? strCode;
+        }
+
+        /// <summary>
+        /// Book name (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null)
+        {
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
+                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            if (xmlBook != null)
             {
-                XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
-                return xmlAltCode?.Value ?? strCode;
+                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
             }
 
             return string.Empty;
@@ -871,18 +921,17 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null)
+        public static async Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null)
         {
-            if (!string.IsNullOrWhiteSpace(strCode))
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlBook = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
+                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            if (xmlBook != null)
             {
-                XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
-                if (xmlBook != null)
-                {
-                    string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                }
+                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
             }
 
             return string.Empty;

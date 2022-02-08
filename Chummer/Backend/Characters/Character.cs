@@ -7578,11 +7578,31 @@ namespace Chummer
         /// <summary>
         /// Book code (using the translated version if applicable) using the character's data files.
         /// </summary>
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookCodeFromAltCodeAsync(strAltCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
         public string LanguageBookShort(string strCode, string strLanguage = "")
         {
             return CommonFunctions.LanguageBookShort(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookShortAsync(strCode, strLanguage, this);
         }
 
         /// <summary>
@@ -7593,6 +7613,16 @@ namespace Chummer
         public string LanguageBookLong(string strCode, string strLanguage = "")
         {
             return CommonFunctions.LanguageBookLong(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book name (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookLongAsync(strCode, strLanguage, this);
         }
 
         /// <summary>
