@@ -1622,18 +1622,17 @@ namespace Chummer.Backend.Skills
                         sbdReturn.Append("))");
                 }
 
-                if (blnListAllLimbs || (att.Abbrev != "STR" && att.Abbrev != "AGI") || objShowOnlyCyberware == null)
+                if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) || objShowOnlyCyberware == null)
                     sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(att.DisplayAbbrev).Append(strSpace)
                              .Append('(')
                              .Append(att.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                 else
                 {
-                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(objShowOnlyCyberware.CurrentDisplayName)
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                             .Append(objShowOnlyCyberware.CurrentDisplayName)
                              .Append(strSpace).Append(att.DisplayAbbrev).Append(strSpace).Append('(')
-                             .Append((att.Abbrev == "STR"
-                                         ? objShowOnlyCyberware.TotalStrength
-                                         : objShowOnlyCyberware.TotalAgility)
-                                     .ToString(GlobalSettings.CultureInfo)).Append(')');
+                             .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
+                                                         .ToString(GlobalSettings.CultureInfo)).Append(')');
                     if ((objShowOnlyCyberware.LimbSlot == "arm"
                          || objShowOnlyCyberware.Name.Contains(" Arm")
                          || objShowOnlyCyberware.Name.Contains(" Hand"))
@@ -1703,7 +1702,7 @@ namespace Chummer.Backend.Skills
                 if (!string.IsNullOrEmpty(strExtra))
                     sbdReturn.Append(strExtra);
 
-                if (blnListAllLimbs && (att.Abbrev == "STR" || att.Abbrev == "AGI"))
+                if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
                 {
                     foreach (Cyberware cyberware in CharacterObject.Cyberware)
                     {
@@ -1715,9 +1714,7 @@ namespace Chummer.Backend.Skills
                             sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName).Append(')');
                         }
 
-                        int pool = PoolOtherAttribute(att.Abbrev, false, att.Abbrev == "STR"
-                                                          ? cyberware.TotalStrength
-                                                          : cyberware.TotalAgility);
+                        int pool = PoolOtherAttribute(att.Abbrev, false, cyberware.GetAttributeTotalValue(att.Abbrev));
                         if ((cyberware.LimbSlot != "arm"
                              && !cyberware.Name.Contains(" Arm")
                              && !cyberware.Name.Contains(" Hand"))
@@ -1772,8 +1769,7 @@ namespace Chummer.Backend.Skills
                     sbdReturn.Append(intBasePool.ToString(GlobalSettings.CultureInfo));
                     if (!string.IsNullOrEmpty(strExtra))
                         sbdReturn.Append(strExtra);
-                    if (!blnListAllLimbs || (objSwapSkillAttribute.ImprovedName != "STR" &&
-                                             objSwapSkillAttribute.ImprovedName != "AGI"))
+                    if (!blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
                         continue;
                     foreach (Cyberware cyberware in CharacterObject.Cyberware)
                     {
@@ -1790,9 +1786,7 @@ namespace Chummer.Backend.Skills
 
                         int intLoopPool =
                             PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false,
-                                               objSwapSkillAttribute.ImprovedName == "STR"
-                                                   ? cyberware.TotalStrength
-                                                   : cyberware.TotalAgility);
+                                               cyberware.GetAttributeTotalValue(objSwapSkillAttribute.ImprovedName));
                         if (objSpecialization != null)
                         {
                             intLoopPool += objSpecialization.SpecializationBonus;

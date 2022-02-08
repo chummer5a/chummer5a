@@ -10281,10 +10281,10 @@ namespace Chummer
                         {
                             lblCyberlimbAGILabel.Visible = true;
                             lblCyberlimbAGI.Visible = true;
-                            lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString(GlobalSettings.CultureInfo);
+                            lblCyberlimbAGI.Text = objCyberware.GetAttributeTotalValue("AGI").ToString(GlobalSettings.CultureInfo);
                             lblCyberlimbSTRLabel.Visible = true;
                             lblCyberlimbSTR.Visible = true;
-                            lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString(GlobalSettings.CultureInfo);
+                            lblCyberlimbSTR.Text = objCyberware.GetAttributeTotalValue("STR").ToString(GlobalSettings.CultureInfo);
                         }
                         else
                         {

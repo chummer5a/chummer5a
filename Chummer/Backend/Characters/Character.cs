@@ -1331,15 +1331,13 @@ namespace Chummer
                                                       string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
-                                                    setChangedProperties.Add(strPropertyToUpdate);
-                                                else
                                                 {
-                                                    HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
-                                                    strInnerTemp.Add(strPropertyToUpdate);
-                                                    dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -1416,33 +1414,35 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Reset:
                         {
                             blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(RedlinerBonus));
-                            strTemp.Add(nameof(PrototypeTranshumanEssenceUsed));
-                            strTemp.Add(nameof(BiowareEssence));
-                            strTemp.Add(nameof(CyberwareEssence));
-                            strTemp.Add(nameof(EssenceHole));
-                            dicChangedProperties.Add(this, strTemp);
+                            if (!dicChangedProperties.TryGetValue(this,
+                                                                  out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(this, setChangedProperties);
+                            }
+                            setChangedProperties.Add(nameof(RedlinerBonus));
+                            setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
+                            setChangedProperties.Add(nameof(BiowareEssence));
+                            setChangedProperties.Add(nameof(CyberwareEssence));
+                            setChangedProperties.Add(nameof(EssenceHole));
                             break;
                         }
                     }
 
                     if (blnDoCyberlimbAttributesRefresh)
                     {
-                        CharacterAttrib objAttribute = GetAttribute("AGI");
-                        if (objAttribute != null)
+                        foreach (string strAbbrev in Backend.Equipment.Cyberware.CyberlimbAttributeAbbrevs)
                         {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(CharacterAttrib.TotalValue));
-                            dicChangedProperties.Add(objAttribute, strTemp);
-                        }
-
-                        objAttribute = GetAttribute("STR");
-                        if (objAttribute != null)
-                        {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(CharacterAttrib.TotalValue));
-                            dicChangedProperties.Add(objAttribute, strTemp);
+                            CharacterAttrib objAttribute = GetAttribute(strAbbrev);
+                            if (objAttribute == null)
+                                continue;
+                            if (!dicChangedProperties.TryGetValue(objAttribute,
+                                                                  out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(objAttribute, setChangedProperties);
+                            }
+                            setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
                         }
                     }
 
@@ -9738,6 +9738,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Get all CharacterAttributes that have a particular abbreviation.
+        /// </summary>
+        /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
+        /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
+        /// Mostly expected to be used for gutting Mystic Adept power points.</param>
+        public IEnumerable<CharacterAttrib> GetAllAttributes(string strAttribute, bool blnExplicit = false)
+        {
+            if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute) && !blnExplicit)
+                strAttribute = "MAG";
+            foreach (CharacterAttrib objLoop in AttributeSection.AttributeList)
+            {
+                if (objLoop.Abbrev == strAttribute)
+                    yield return objLoop;
+            }
+            foreach (CharacterAttrib objLoop in AttributeSection.SpecialAttributeList)
+            {
+                if (objLoop.Abbrev == strAttribute)
+                    yield return objLoop;
+            }
+        }
+
+        /// <summary>
         /// Body (BOD) CharacterAttribute.
         /// </summary>
         public CharacterAttrib BOD => AttributeSection.GetAttributeByName("BOD");
@@ -15026,8 +15048,8 @@ namespace Chummer
                 foreach(Cyberware objCyber in Cyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
                 {
                     intLegs += objCyber.LimbSlotCount;
-                    intTempAGI = Math.Min(intTempAGI, objCyber.TotalAgility);
-                    intTempSTR = Math.Min(intTempSTR, objCyber.TotalStrength);
+                    intTempAGI = Math.Min(intTempAGI, objCyber.GetAttributeTotalValue("AGI"));
+                    intTempSTR = Math.Min(intTempSTR, objCyber.GetAttributeTotalValue("STR"));
                 }
 
                 if(intTempAGI != int.MaxValue && intTempSTR != int.MaxValue && intLegs >= 2)
