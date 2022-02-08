@@ -2781,20 +2781,12 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillCategory, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0,
-                        0,
-                        0, 0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillCategory, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0,
-                        0,
-                        0, 0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillCategory, _strUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1, 0,
+                                  0,
+                                  0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
             }
         }
 
@@ -2812,18 +2804,11 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillGroup, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0, 0, 0,
-                        0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillGroup, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0, 0, 0,
-                        0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillGroup, _strUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1, 0, 0, 0,
+                                  0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
             }
         }
 
@@ -2846,18 +2831,12 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillAttribute, strUseUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1,
+                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
+                                  blnAddToRating);
             }
         }
 
@@ -2880,18 +2859,12 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1,
+                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
+                                  blnAddToRating);
             }
         }
 
