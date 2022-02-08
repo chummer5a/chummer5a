@@ -232,9 +232,7 @@ namespace Chummer.Plugins
                 }
                 _objCatalog = new AggregateCatalog();
                 //delete old NeonJungleLC-Plugin
-                string neon = Path.Combine(path, "NeonJungleLC");
-                if (Directory.Exists(neon))
-                    Directory.Delete(neon, true);
+                Utils.SafeDeleteDirectory(Path.Combine(path, "NeonJungleLC"));
                 string[] plugindirectories = Directory.GetDirectories(path);
                 if (plugindirectories.Length == 0)
                 {
@@ -243,10 +241,10 @@ namespace Chummer.Plugins
 
                 foreach (string plugindir in plugindirectories)
                 {
-                    if (plugindir.ToUpperInvariant().Contains("SAMPLEPLUGIN"))
+                    if (plugindir.Contains("SamplePlugin", StringComparison.OrdinalIgnoreCase))
                     {
                         Log.Warn("Found an old SamplePlugin (not maintaned anymore) and deleteing it to not mess with the plugin catalog composition.");
-                        Directory.Delete(plugindir, true);
+                        Utils.SafeDeleteDirectory(plugindir);
                         continue;
                     }
                     Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");

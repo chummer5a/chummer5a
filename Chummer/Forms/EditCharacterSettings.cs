@@ -187,8 +187,8 @@ namespace Chummer
                 if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemove(
                     _objReferenceCharacterSettings.DictionaryKey, out CharacterSettings objDeletedSettings))
                     return;
-                if (!Utils.SafeDeleteFile(
-                    Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
+                if (!await Utils.SafeDeleteFileAsync(
+                        Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
                 {
                     // Revert removal of setting if we cannot delete the file
                     SettingsManager.LoadedCharacterSettingsAsModifiable.Add(objDeletedSettings.DictionaryKey, objDeletedSettings);

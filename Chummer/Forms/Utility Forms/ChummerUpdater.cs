@@ -287,7 +287,7 @@ namespace Chummer
 
             if (File.Exists(_strTempLatestVersionChangelogPath))
             {
-                if (!Utils.SafeDeleteFile(_strTempLatestVersionChangelogPath + ".old", !SilentMode))
+                if (!await Utils.SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".old", !SilentMode))
                     return;
                 File.Move(_strTempLatestVersionChangelogPath, _strTempLatestVersionChangelogPath + ".old");
             }
@@ -295,7 +295,7 @@ namespace Chummer
             try
             {
                 Uri uriConnectionAddress = new Uri(strUrl);
-                if (!Utils.SafeDeleteFile(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode))
+                if (!await Utils.SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode))
                     return;
                 await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp");
                 if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
@@ -611,7 +611,7 @@ namespace Chummer
                                 Directory.CreateDirectory(strLoopDirectory);
                             if (File.Exists(strLoopPath))
                             {
-                                if (!Utils.SafeDeleteFile(strLoopPath + ".old", !SilentMode))
+                                if (!await Utils.SafeDeleteFileAsync(strLoopPath + ".old", !SilentMode))
                                 {
                                     blnDoRestart = false;
                                     break;
@@ -684,11 +684,17 @@ namespace Chummer
             }
             if (blnDoRestart)
             {
-                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
+                Dictionary<string, Task<bool>> dicTasks = new Dictionary<string, Task<bool>>(lstFilesToDelete.Count);
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
-                    if (!Utils.SafeDeleteFile(strFileToDelete))
-                        lstBlocked.Add(strFileToDelete);
+                    dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete));
+                }
+                await Task.WhenAll(dicTasks.Values);
+                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
+                foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
+                {
+                    if (!kvpTaskPair.Value.Result)
+                        lstBlocked.Add(kvpTaskPair.Key);
                 }
 
                 if (lstBlocked.Count > 0)
@@ -743,8 +749,8 @@ namespace Chummer
                 Log.Debug("DownloadUpdates");
                 await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
                                    cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
-                                   cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
-                Utils.SafeDeleteFile(_strTempLatestVersionZipPath, !SilentMode);
+                                   cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false),
+                                   Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode));
                 try
                 {
                     await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath);

@@ -244,10 +244,12 @@ namespace Chummer
                                         }
 
                                         // Delete all old autosaves
+                                        List<Task> lstTasks = new List<Task>(lstOldAutosaves.Count);
                                         foreach (string strOldAutosave in lstOldAutosaves)
                                         {
-                                            Utils.SafeDeleteFile(strOldAutosave);
+                                            lstTasks.Add(Utils.SafeDeleteFileAsync(strOldAutosave));
                                         }
+                                        await Task.WhenAll(lstTasks);
                                     }
 
                                     if (setFilesToLoad.Count > 0)

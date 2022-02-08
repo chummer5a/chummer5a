@@ -247,6 +247,34 @@ namespace Chummer
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
         {
+            return SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout).GetAwaiter()
+                .GetResult();
+        }
+
+        /// <summary>
+        /// Wait for an open file to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">File path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static Task<bool> SafeDeleteFileAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeDeleteFileCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout);
+        }
+
+        /// <summary>
+        /// Wait for an open file to be available for deletion and then delete it.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strPath">File path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        private static async Task<bool> SafeDeleteFileCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout)
+        {
             if (string.IsNullOrEmpty(strPath))
                 return true;
             int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
@@ -260,7 +288,12 @@ namespace Chummer
                         if (blnShowUnauthorizedAccess)
                         {
                             if (Program.MainForm.ShowMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_Prompt_Delete_Existing_File"), strPath),
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                            : await LanguageManager.GetStringAsync(
+                                                "Message_Prompt_Delete_Existing_File"), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
@@ -270,7 +303,11 @@ namespace Chummer
                             return false;
                         }
                     }
-                    File.Delete(strPath);
+
+                    if (blnSync)
+                        File.Delete(strPath);
+                    else
+                        await Task.Run(() => File.Delete(strPath));
                 }
                 catch (PathTooLongException)
                 {
@@ -281,7 +318,10 @@ namespace Chummer
                 {
                     // We do not have sufficient privileges to delete this file.
                     if (blnShowUnauthorizedAccess)
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        Program.MainForm.ShowMessageBox(blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                     return false;
                 }
                 catch (DirectoryNotFoundException)
@@ -300,7 +340,136 @@ namespace Chummer
                     //still being written to
                     //or being processed by another thread
                     //or does not exist (has already been processed)
-                    SafeSleep(intWaitInterval);
+                    if (blnSync)
+                        SafeSleep(intWaitInterval);
+                    else
+                        await SafeSleepAsync(intWaitInterval);
+                    intTimeout -= intWaitInterval;
+                }
+                if (intTimeout < 0)
+                {
+                    BreakIfDebug();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Wait for an open directory to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">Directory path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout).GetAwaiter()
+                .GetResult();
+        }
+
+        /// <summary>
+        /// Wait for an open directory to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">Directory path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static Task<bool> SafeDeleteDirectoryAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeDeleteDirectoryCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout);
+        }
+
+        /// <summary>
+        /// Wait for an open directory to be available for deletion and then delete it.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strPath">Directory path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        private static async Task<bool> SafeDeleteDirectoryCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                return true;
+            if (!Directory.Exists(strPath))
+                return true;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                SafeClearDirectory(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
+                    intTimeout: intTimeout);
+            else
+                await SafeClearDirectoryAsync(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
+                    intTimeout: intTimeout);
+            int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
+            while (Directory.Exists(strPath))
+            {
+                try
+                {
+                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase) && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
+                        if (blnShowUnauthorizedAccess)
+                        {
+                            if (Program.MainForm.ShowMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                            : await LanguageManager.GetStringAsync(
+                                                "Message_Prompt_Delete_Existing_File"), strPath),
+                                    buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
+                                return false;
+                        }
+                        else
+                        {
+                            BreakIfDebug();
+                            return false;
+                        }
+                    }
+
+                    if (blnSync)
+                        Directory.Delete(strPath, true);
+                    else
+                        await Task.Run(() => Directory.Delete(strPath, true));
+                }
+                catch (PathTooLongException)
+                {
+                    // File path is somehow too long? File is not deleted, so return false.
+                    return false;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // We do not have sufficient privileges to delete this file.
+                    if (blnShowUnauthorizedAccess)
+                        Program.MainForm.ShowMessageBox(blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                    return false;
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (FileNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (IOException)
+                {
+                    //the file is unavailable because it is:
+                    //still being written to
+                    //or being processed by another thread
+                    //or does not exist (has already been processed)
+                    if (blnSync)
+                        SafeSleep(intWaitInterval);
+                    else
+                        await SafeSleepAsync(intWaitInterval);
                     intTimeout -= intWaitInterval;
                 }
                 if (intTimeout < 0)
@@ -323,6 +492,39 @@ namespace Chummer
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
         {
+            return SafeClearDirectoryCoreAsync(true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
+                intTimeout).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Safely deletes all files in a directory (though the directory itself remains).
+        /// </summary>
+        /// <param name="strPath">Directory path to clear.</param>
+        /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
+        /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static Task<bool> SafeClearDirectoryAsync(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeClearDirectoryCoreAsync(false, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
+                intTimeout);
+        }
+
+        /// <summary>
+        /// Safely deletes all files in a directory (though the directory itself remains).
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strPath">Directory path to clear.</param>
+        /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
+        /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        private static async Task<bool> SafeClearDirectoryCoreAsync(bool blnSync, string strPath, string strSearchPattern, bool blnRecursive, bool blnShowUnauthorizedAccess, int intTimeout)
+        {
             if (string.IsNullOrEmpty(strPath) || !Directory.Exists(strPath))
                 return true;
             if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase)
@@ -333,8 +535,11 @@ namespace Chummer
                 {
                     if (Program.MainForm.ShowMessageBox(
                             string.Format(GlobalSettings.Language,
-                                          LanguageManager.GetString("Message_Prompt_Delete_Existing_File"),
-                                          strPath),
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                    : await LanguageManager.GetStringAsync("Message_Prompt_Delete_Existing_File"),
+                                strPath),
                             buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning)
                         != DialogResult.Yes)
                         return false;
@@ -349,20 +554,35 @@ namespace Chummer
                                                             blnRecursive
                                                                 ? SearchOption.AllDirectories
                                                                 : SearchOption.TopDirectoryOnly);
-            object objSuccessLock = new object();
-            bool[] ablnSuccess = new bool[astrFilesToDelete.Length];
-            Parallel.For(0, astrFilesToDelete.Length, i =>
+            if (blnSync)
             {
-                // ReSharper disable once AccessToModifiedClosure
-                string strToDelete = astrFilesToDelete[i];
-                // ReSharper disable once AccessToModifiedClosure
-                bool blnLoop = SafeDeleteFile(strToDelete, blnShowUnauthorizedAccess, intTimeout);
-                lock (objSuccessLock)
+                object objSuccessLock = new object();
+                bool[] ablnSuccess = new bool[astrFilesToDelete.Length];
+                Parallel.For(0, astrFilesToDelete.Length, i =>
+                {
                     // ReSharper disable once AccessToModifiedClosure
-                    ablnSuccess[i] = blnLoop;
-            });
+                    string strToDelete = astrFilesToDelete[i];
+                    // ReSharper disable once AccessToModifiedClosure
+                    bool blnLoop = SafeDeleteFile(strToDelete, false, intTimeout);
+                    lock (objSuccessLock)
+                        // ReSharper disable once AccessToModifiedClosure
+                        ablnSuccess[i] = blnLoop;
+                });
+                return ablnSuccess.All(x => x);
+            }
 
-            return ablnSuccess.All(x => x);
+            Task<bool>[] atskSuccesses = new Task<bool>[astrFilesToDelete.Length];
+            for (int i = 0; i < astrFilesToDelete.Length; i++)
+            {
+                string strToDelete = astrFilesToDelete[i];
+                atskSuccesses[i] = Task.Run(() => SafeDeleteFileAsync(strToDelete, false, intTimeout));
+            }
+            foreach (Task<bool> x in atskSuccesses)
+            {
+                if (!await x)
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
