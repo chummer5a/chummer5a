@@ -3976,7 +3976,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Trace("walkmultiplier", Environment.NewLine
+            Log.Trace("walkmultiplier" + Environment.NewLine
                 + "walkmultiplier = " + bonusNode.OuterXml);
             
             string strCategory = bonusNode["category"]?.InnerText;
