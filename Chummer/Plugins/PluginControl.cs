@@ -243,6 +243,12 @@ namespace Chummer.Plugins
 
                 foreach (string plugindir in plugindirectories)
                 {
+                    if (plugindir.ToUpperInvariant().Contains("SAMPLEPLUGIN"))
+                    {
+                        Log.Warn("Found an old SamplePlugin (not maintaned anymore) and deleteing it to not mess with the plugin catalog composition.");
+                        Directory.Delete(plugindir, true);
+                        continue;
+                    }
                     Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");
                     //search for a text file that tells me what dll to parse
                     string infofile = Path.Combine(plugindir, "plugin.txt");
