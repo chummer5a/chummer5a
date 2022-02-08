@@ -62,9 +62,7 @@ namespace Chummer
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Move)
-                return;
-            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>(Techniques.Count);
+            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -76,33 +74,33 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    // ReSharper disable once PossibleNullReferenceException
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
                         if (objOldItem.Parent != this)
                             continue;
                         objOldItem.Parent = null;
-                        lstImprovementSourcesToProcess.Add(objOldItem);
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    // ReSharper disable once PossibleNullReferenceException
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    HashSet<MartialArtTechnique> setNewItems = e.NewItems.OfType<MartialArtTechnique>().ToHashSet();
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
+                        if (setNewItems.Contains(objOldItem))
+                            continue;
                         if (objOldItem.Parent != this)
                             continue;
                         objOldItem.Parent = null;
-                        lstImprovementSourcesToProcess.Add(objOldItem);
                     }
-                    // ReSharper disable once PossibleNullReferenceException
-                    foreach (MartialArtTechnique objNewItem in e.NewItems)
+
+                    foreach (MartialArtTechnique objNewItem in setNewItems)
                     {
                         objNewItem.Parent = this;
                         lstImprovementSourcesToProcess.Add(objNewItem);
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    lstImprovementSourcesToProcess.AddRange(Techniques);
+                case NotifyCollectionChangedAction.Move:
                     break;
             }
             if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)

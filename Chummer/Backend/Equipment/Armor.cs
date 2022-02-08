@@ -107,10 +107,11 @@ namespace Chummer.Backend.Equipment
         private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             bool blnDoEncumbranceRefresh = false;
-            List<ArmorMod> lstImprovementSourcesToProcess = new List<ArmorMod>(ArmorMods.Count);
+            List<ArmorMod> lstImprovementSourcesToProcess = new List<ArmorMod>(e.NewItems?.Count ?? 0);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    // ReSharper disable once PossibleNullReferenceException
                     foreach (ArmorMod objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
@@ -128,26 +129,24 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (objOldItem.Equipped)
-                        {
                             blnDoEncumbranceRefresh = true;
-                            lstImprovementSourcesToProcess.Add(objOldItem);
-                        }
                     }
 
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    HashSet<ArmorMod> setNewItems = e.NewItems.OfType<ArmorMod>().ToHashSet();
                     foreach (ArmorMod objOldItem in e.OldItems)
                     {
+                        if (setNewItems.Contains(objOldItem))
+                            continue;
                         objOldItem.Parent = null;
                         if (objOldItem.Equipped)
-                        {
                             blnDoEncumbranceRefresh = true;
-                            lstImprovementSourcesToProcess.Add(objOldItem);
-                        }
                     }
-
-                    foreach (ArmorMod objNewItem in e.NewItems)
+                    
+                    foreach (ArmorMod objNewItem in setNewItems)
                     {
                         objNewItem.Parent = this;
                         if (objNewItem.Equipped)
@@ -161,7 +160,6 @@ namespace Chummer.Backend.Equipment
 
                 case NotifyCollectionChangedAction.Reset:
                     blnDoEncumbranceRefresh = true;
-                    lstImprovementSourcesToProcess.AddRange(ArmorMods.Where(x => x.Equipped));
                     break;
             }
 

@@ -263,10 +263,11 @@ namespace Chummer.Backend.Equipment
             {
                 bool blnDoEssenceImprovementsRefresh = false;
                 bool blnDoRedlinerRefresh = false;
-                List<Cyberware> lstImprovementSourcesToProcess = new List<Cyberware>(Children.Count);
+                List<Cyberware> lstImprovementSourcesToProcess = new List<Cyberware>(e.NewItems?.Count ?? 0);
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                        // ReSharper disable once PossibleNullReferenceException
                         foreach (Cyberware objNewItem in e.NewItems)
                         {
                             objNewItem.Parent = this;
@@ -308,8 +309,6 @@ namespace Chummer.Backend.Equipment
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Cyberware objOldItem in e.OldItems)
                         {
-                            if (objOldItem.IsModularCurrentlyEquipped)
-                                lstImprovementSourcesToProcess.Add(objOldItem);
                             if (objOldItem.Parent == this)
                                 objOldItem.Parent = null;
 
@@ -346,13 +345,12 @@ namespace Chummer.Backend.Equipment
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
+                        // ReSharper disable once AssignNullToNotNullAttribute
                         HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
                         foreach (Cyberware objOldItem in e.OldItems)
                         {
                             if (setNewItems.Contains(objOldItem))
                                 continue;
-                            if (objOldItem.IsModularCurrentlyEquipped)
-                                lstImprovementSourcesToProcess.Add(objOldItem);
                             if (objOldItem.Parent == this)
                                 objOldItem.Parent = null;
 
@@ -423,7 +421,6 @@ namespace Chummer.Backend.Equipment
 
                     case NotifyCollectionChangedAction.Reset:
                         blnDoEssenceImprovementsRefresh = true;
-                        lstImprovementSourcesToProcess.AddRange(Children.Where(x => x.IsModularCurrentlyEquipped));
                         if (Category == "Cyberlimb" && Parent?.InheritAttributes != false
                                                     && ParentVehicle == null
                                                     &&
