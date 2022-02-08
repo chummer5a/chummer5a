@@ -64,7 +64,7 @@ namespace Chummer
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
-            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0 + e.OldItems?.Count ?? 0);
+            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>(Techniques.Count);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -102,6 +102,7 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
+                    lstImprovementSourcesToProcess.AddRange(Techniques);
                     break;
             }
             if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)

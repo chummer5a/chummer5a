@@ -5253,6 +5253,45 @@ namespace Chummer
                         // Refresh certain improvements
                         using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                         {
+                            // Process all events related to improvements
+                            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                                       Utils.DictionaryForMultiplePropertyChangedPool,
+                                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
+                                           dicChangedProperties))
+                            {
+                                try
+                                {
+                                    foreach (Improvement objImprovement in Improvements)
+                                    {
+                                        if (!objImprovement.Enabled)
+                                            continue;
+                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                     string strPropertyToUpdate) in objImprovement
+                                                     .GetRelevantPropertyChangers())
+                                        {
+                                            if (!dicChangedProperties.TryGetValue(
+                                                    objItemToUpdate, out HashSet<string> setChangedProperties))
+                                            {
+                                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                            }
+
+                                            setChangedProperties.Add(strPropertyToUpdate);
+                                        }
+                                    }
+                                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                                             dicChangedProperties)
+                                    {
+                                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                                    }
+                                }
+                                finally
+                                {
+                                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                                        Utils.StringHashSetPool.Return(setToReturn);
+                                }
+                            }
+
                             // Refresh Black Market Discounts
                             RefreshBlackMarketDiscounts();
                             // Refresh Dealer Connection discounts

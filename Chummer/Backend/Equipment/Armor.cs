@@ -107,86 +107,70 @@ namespace Chummer.Backend.Equipment
         private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             bool blnDoEncumbranceRefresh = false;
+            List<ArmorMod> lstImprovementSourcesToProcess = new List<ArmorMod>(ArmorMods.Count);
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ArmorMod objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        if (objNewItem.Equipped)
+                        {
+                            blnDoEncumbranceRefresh = true;
+                            lstImprovementSourcesToProcess.Add(objNewItem);
+                        }
+                    }
+
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ArmorMod objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        if (objOldItem.Equipped)
+                        {
+                            blnDoEncumbranceRefresh = true;
+                            lstImprovementSourcesToProcess.Add(objOldItem);
+                        }
+                    }
+
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (ArmorMod objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        if (objOldItem.Equipped)
+                        {
+                            blnDoEncumbranceRefresh = true;
+                            lstImprovementSourcesToProcess.Add(objOldItem);
+                        }
+                    }
+
+                    foreach (ArmorMod objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        if (objNewItem.Equipped)
+                        {
+                            blnDoEncumbranceRefresh = true;
+                            lstImprovementSourcesToProcess.Add(objNewItem);
+                        }
+                    }
+
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    blnDoEncumbranceRefresh = true;
+                    lstImprovementSourcesToProcess.AddRange(ArmorMods.Where(x => x.Equipped));
+                    break;
+            }
+
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                            foreach (ArmorMod objNewItem in e.NewItems)
-                            {
-                                objNewItem.Parent = this;
-                                if (objNewItem.Equipped)
-                                {
-                                    if (!blnDoEncumbranceRefresh)
-                                        blnDoEncumbranceRefresh = true;
-                                    if (_objCharacter?.IsLoading == false)
-                                    {
-                                        // Needed in order to properly process named sources where
-                                        // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in _objCharacter.Improvements)
-                                        {
-                                            if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                                == objNewItem.InternalId
-                                                && objImprovement.Enabled)
-                                            {
-                                                foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                          string strPropertyToUpdate) in objImprovement
-                                                             .GetRelevantPropertyChangers())
-                                                {
-                                                    if (dicChangedProperties.TryGetValue(
-                                                            objItemToUpdate, out HashSet<string> setChangedProperties))
-                                                        setChangedProperties.Add(strPropertyToUpdate);
-                                                    else
-                                                    {
-                                                        HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                                        setTemp.Add(strPropertyToUpdate);
-                                                        dicChangedProperties.Add(objItemToUpdate, setTemp);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Remove:
-                            foreach (ArmorMod objOldItem in e.OldItems)
-                            {
-                                objOldItem.Parent = null;
-                                if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
-                                    blnDoEncumbranceRefresh = true;
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Replace:
-                            foreach (ArmorMod objOldItem in e.OldItems)
-                            {
-                                objOldItem.Parent = null;
-                                if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
-                                    blnDoEncumbranceRefresh = true;
-                            }
-
-                            foreach (ArmorMod objNewItem in e.NewItems)
-                            {
-                                objNewItem.Parent = this;
-                                if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
-                                    blnDoEncumbranceRefresh = true;
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Reset:
-                            blnDoEncumbranceRefresh = true;
-                            break;
-                    }
-
                     if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
                     {
                         if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
@@ -196,6 +180,37 @@ namespace Chummer.Backend.Equipment
                             HashSet<string> setTemp = Utils.StringHashSetPool.Get();
                             setTemp.Add(nameof(Character.GetArmorRating));
                             dicChangedProperties.Add(_objCharacter, setTemp);
+                        }
+                    }
+
+                    if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
+                    {
+                        foreach (ArmorMod objItem in lstImprovementSourcesToProcess)
+                        {
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            foreach (Improvement objImprovement in _objCharacter.Improvements)
+                            {
+                                if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                    == objItem.InternalId
+                                    && objImprovement.Enabled)
+                                {
+                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                 string strPropertyToUpdate) in objImprovement
+                                                 .GetRelevantPropertyChangers())
+                                    {
+                                        if (dicChangedProperties.TryGetValue(
+                                                objItemToUpdate, out HashSet<string> setChangedProperties))
+                                            setChangedProperties.Add(strPropertyToUpdate);
+                                        else
+                                        {
+                                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                            setTemp.Add(strPropertyToUpdate);
+                                            dicChangedProperties.Add(objItemToUpdate, setTemp);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -211,7 +226,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
+            if (blnDoEncumbranceRefresh && _objCharacter != null && Equipped)
             {
                 _objCharacter.RefreshEncumbrance();
             }
