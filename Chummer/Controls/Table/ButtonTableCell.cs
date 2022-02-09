@@ -31,17 +31,19 @@ namespace Chummer.UI.Table
         {
             InitializeComponent();
             _button = button ?? throw new ArgumentNullException(nameof(button));
-            button.Click += async (sender, evt) =>
-            {
-                if (ClickHandler != null)
-                    await ClickHandler.Invoke(Value as T);
-            };
+            button.Click += OnButtonClick;
             SuspendLayout();
             Controls.Add(button);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             button.PerformLayout();
             ResumeLayout(false);
+        }
+
+        private async void OnButtonClick(object sender, EventArgs e)
+        {
+            if (ClickHandler != null)
+                await ClickHandler.Invoke(Value as T);
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)
