@@ -146,6 +146,7 @@ namespace Chummer
             "programs.xml",
             "qualities.xml",
             "ranges.xml",
+            "references.xml",
             "settings.xml",
             "sheets.xml",
             "skills.xml",

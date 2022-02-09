@@ -193,8 +193,6 @@ namespace Chummer
         /// <returns></returns>
         private static async Task<XPathNavigator> LoadXPathCoreAsync(bool blnSync, string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
-            bool blnFileFound = false;
-            string strPath = string.Empty;
             strFileName = Path.GetFileName(strFileName);
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
@@ -203,22 +201,22 @@ namespace Chummer
                 else
                     await Utils.SafeSleepAsync();
             }
-            foreach (string strDirectory in s_SetDataDirectories)
-            {
-                strPath = Path.Combine(strDirectory, strFileName);
-                if (File.Exists(strPath))
-                {
-                    blnFileFound = true;
-                    break;
-                }
-            }
-            if (!blnFileFound)
-            {
-                Utils.BreakIfDebug();
-                return null;
-            }
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
+
+            string strPath;
+            if (Utils.BasicDataFileNames.Contains(strFileName))
+                strPath = Path.Combine(s_StrBaseDataPath, strFileName);
+            else
+            {
+                strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
+                if (string.IsNullOrEmpty(strPath))
+                {
+                    // We don't actually have such a file
+                    Utils.BreakIfDebug();
+                    return new XmlDocument {XmlResolver = null}.CreateNavigator();
+                }
+            }
 
             string[] astrRelevantCustomDataPaths;
             if (lstEnabledCustomDataPaths == null)
@@ -226,7 +224,23 @@ namespace Chummer
             else if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
                 astrRelevantCustomDataPaths = lstEnabledCustomDataPaths.Where(x => setDirectoriesPossible.Contains(x)).ToArray();
             else
+            {
                 astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths).ToArray();
+                if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
+                {
+                    lock (s_SetDataDirectoriesLock)
+                    {
+                        if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
+                        {
+                            setLoop = new HashSet<string>();
+                            s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                        }
+
+                        setLoop.AddRange(astrRelevantCustomDataPaths);
+                    }
+                }
+            }
+
             List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) {strLanguage, strPath};
             lstKey.AddRange(astrRelevantCustomDataPaths);
             KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
@@ -727,6 +741,28 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Fetch the first file from a list of custom file paths.
+        /// </summary>
+        /// <param name="strFileName">Name of the file to fetch.</param>
+        /// <param name="lstPaths">Paths to check.</param>
+        /// <returns>The first full path containing <paramref name="strFileName"/> if one is found, string.Empty otherwise.</returns>
+        private static string FetchBaseFileFromCustomDataPaths(string strFileName, IEnumerable<string> lstPaths)
+        {
+            if (strFileName != "improvements.xml" && lstPaths != null)
+            {
+                foreach (string strLoopPath in lstPaths)
+                {
+                    string strLoop = Directory.EnumerateFiles(strLoopPath, strFileName, SearchOption.AllDirectories)
+                                              .FirstOrDefault();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        return strLoop;
+                }
+            }
+            return string.Empty;
         }
 
         /// <summary>

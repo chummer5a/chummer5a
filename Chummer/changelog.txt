@@ -6,6 +6,7 @@ Application Changes:
 - Fixed a rare crash that could happen when attempting to print a character.
 - Changelogs for newer versions of Chummer now properly show up in the updater before they are downloaded.
 - Fixed a rare crash when attempting to convert certain colors to and/or from their dark mode versions.
+- Startup times for users with watch folders has been decreased by about 20%.
 
 Build 221
 Application Changes:
