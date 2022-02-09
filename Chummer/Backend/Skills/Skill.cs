@@ -2136,10 +2136,10 @@ namespace Chummer.Backend.Skills
                                     new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements))
                                 ),
                                 new DependencyGraphNode<string, Skill>(nameof(DefaultModifier),
-                                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                                 )
                             ),
-                            new DependencyGraphNode<string, Skill>(nameof(Name)),
+                            new DependencyGraphNode<string, Skill>(nameof(DictionaryKey)),
                             new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
                             new DependencyGraphNode<string, Skill>(nameof(Specializations))
                         ),
@@ -2166,7 +2166,7 @@ namespace Chummer.Backend.Skills
                         new DependencyGraphNode<string, Skill>(nameof(LearnedRating),
                             new DependencyGraphNode<string, Skill>(nameof(Karma),
                                 new DependencyGraphNode<string, Skill>(nameof(FreeKarma),
-                                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                                 ),
                                 new DependencyGraphNode<string, Skill>(nameof(RatingMaximum),
                                     new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements))
@@ -2175,7 +2175,7 @@ namespace Chummer.Backend.Skills
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(Base),
                                 new DependencyGraphNode<string, Skill>(nameof(FreeBase),
-                                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                                 ),
                                 new DependencyGraphNode<string, Skill>(nameof(RatingMaximum)),
                                 new DependencyGraphNode<string, Skill>(nameof(BasePoints))
@@ -2185,7 +2185,7 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(Leveled),
                         new DependencyGraphNode<string, Skill>(nameof(Rating),
                             new DependencyGraphNode<string, Skill>(nameof(CyberwareRating),
-                                new DependencyGraphNode<string, Skill>(nameof(Name))
+                                new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating))
                         )
@@ -2210,7 +2210,7 @@ namespace Chummer.Backend.Skills
                     )
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements),
-                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(DisplayAttribute),
                     new DependencyGraphNode<string, Skill>(nameof(Attribute),
@@ -2264,7 +2264,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, Skill>(nameof(Enabled),
                     new DependencyGraphNode<string, Skill>(nameof(ForceDisabled)),
                     new DependencyGraphNode<string, Skill>(nameof(Attribute)),
-                    new DependencyGraphNode<string, Skill>(nameof(Name)),
+                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey)),
                     new DependencyGraphNode<string, Skill>(nameof(RequiresGroundMovement)),
                     new DependencyGraphNode<string, Skill>(nameof(RequiresSwimMovement)),
                     new DependencyGraphNode<string, Skill>(nameof(RequiresFlyMovement))
