@@ -126,7 +126,7 @@ namespace Chummer
             SaveRegistrySettings();
 
             if (_blnDirty)
-                Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
+                await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
         }
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)

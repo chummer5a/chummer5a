@@ -6772,20 +6772,20 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public virtual bool SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public virtual async Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
             using (new CursorWait(this))
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(_objCharacter.FileName))
                 {
-                    return SaveCharacterAs(blnDoCreated);
+                    return await SaveCharacterAs(blnDoCreated);
                 }
 
                 if (blnDoCreated)
                 {
                     // If the Created is checked, make sure the user wants to actually save this character.
-                    if (blnNeedConfirm && !ConfirmSaveCreatedCharacter())
+                    if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter())
                         return false;
                     // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
                     return SaveCharacterAsCreated();
@@ -6810,20 +6810,20 @@ namespace Chummer
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
-        public virtual bool SaveCharacterAs(bool blnDoCreated = false)
+        public virtual async Task<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
             using (new CursorWait(this))
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
-                if (blnDoCreated && !ConfirmSaveCreatedCharacter())
+                if (blnDoCreated && !await ConfirmSaveCreatedCharacter())
                 {
                     return false;
                 }
 
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
-                             LanguageManager.GetString("DialogFilter_All")
+                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                             await LanguageManager.GetStringAsync("DialogFilter_All")
                 })
                 {
                     string strShowFileName = _objCharacter.FileName
@@ -6841,7 +6841,7 @@ namespace Chummer
                     _objCharacter.FileName = saveFileDialog.FileName;
                 }
 
-                return SaveCharacter(false, blnDoCreated);
+                return await SaveCharacter(false, blnDoCreated);
             }
         }
 
@@ -6853,7 +6853,7 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public virtual bool ConfirmSaveCreatedCharacter() { return true; }
+        public virtual async Task<bool> ConfirmSaveCreatedCharacter() { return true; }
 
         /// <summary>
         /// The frmViewer window being used by the character.

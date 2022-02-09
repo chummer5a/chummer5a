@@ -1033,19 +1033,19 @@ namespace Chummer
             }
         }
 
-        private void tsSave_Click(object sender, EventArgs e)
+        private async void tsSave_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.SaveCharacter();
+                await objShared.SaveCharacter();
             }
         }
 
-        private void tsSaveAs_Click(object sender, EventArgs e)
+        private async void tsSaveAs_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.SaveCharacterAs();
+                await objShared.SaveCharacterAs();
             }
         }
 
@@ -1705,9 +1705,9 @@ namespace Chummer
             GlobalSettings.MostRecentlyUsedCharacters.Clear();
         }
 
-        private void mnuRestart_Click(object sender, EventArgs e)
+        private async void mnuRestart_Click(object sender, EventArgs e)
         {
-            Utils.RestartApplication(string.Empty, "Message_Options_Restart");
+            await Utils.RestartApplication(string.Empty, "Message_Options_Restart");
         }
 
         protected override void WndProc(ref Message m)

@@ -716,7 +716,7 @@ namespace Chummer
                         }
                     }
                 }
-                Utils.RestartApplication();
+                await Utils.RestartApplication();
             }
             else
             {

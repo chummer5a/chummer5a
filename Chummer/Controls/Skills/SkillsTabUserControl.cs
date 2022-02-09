@@ -756,16 +756,16 @@ namespace Chummer.UI.Skills
 
                 Form frmToUse = ParentForm ?? Program.MainForm;
 
-                DialogResult eResult = await frmToUse.DoThreadSafeFuncAsync(() =>
+                DialogResult eResult = await frmToUse.DoThreadSafeFunc(async () =>
                 {
                     using (SelectItem form = new SelectItem
                            {
-                               Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
+                               Description = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill")
                            })
                     {
                         form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
-                        form.ShowDialogSafe(frmToUse);
+                        await form.ShowDialogSafeAsync(frmToUse);
 
                         if (form.DialogResult == DialogResult.OK)
                             strSelectedSkill = form.SelectedItem;

@@ -18,6 +18,7 @@
  */
 
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -38,17 +39,17 @@ namespace Chummer
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        public static bool WriteNotes(this IHasNotes objNotes, TreeNode treNode)
+        public static async Task<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode)
         {
             if (objNotes == null || treNode == null)
                 return false;
             Form frmToUse = treNode.TreeView.FindForm() ?? Program.MainForm;
 
-            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+            DialogResult eResult = await frmToUse.DoThreadSafeFunc(async () =>
             {
                 using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
                 {
-                    frmItemNotes.ShowDialogSafe(frmToUse);
+                    await frmItemNotes.ShowDialogSafeAsync(frmToUse);
                     if (frmItemNotes.DialogResult != DialogResult.OK)
                         return frmItemNotes.DialogResult;
 

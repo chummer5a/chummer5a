@@ -5857,7 +5857,7 @@ namespace Chummer
             this.tsbSave.Size = new System.Drawing.Size(23, 22);
             this.tsbSave.Tag = "Menu_FileSave";
             this.tsbSave.Text = "Save Character";
-            this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
+            this.tsbSave.Click += new System.EventHandler(this.mnuFileSave_Click);
             // 
             // tsbPrint
             // 

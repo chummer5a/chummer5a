@@ -591,14 +591,14 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use Chummer's current language.</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
-        public static void RestartApplication(string strLanguage = "", string strText = "")
+        public static async Task RestartApplication(string strLanguage = "", string strText = "")
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             if (!string.IsNullOrEmpty(strText))
             {
-                string text = LanguageManager.GetString(strText, strLanguage);
-                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", strLanguage);
+                string text = await LanguageManager.GetStringAsync(strText, strLanguage);
+                string caption = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage);
 
                 if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
@@ -611,13 +611,13 @@ namespace Chummer
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    DialogResult objResult = Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_UnsavedChanges", strLanguage), strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    DialogResult objResult = Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnsavedChanges", strLanguage), strCharacterName), await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     switch (objResult)
                     {
                         case DialogResult.Yes:
                             {
                                 // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                                bool blnResult = objOpenCharacterForm.SaveCharacter();
+                                bool blnResult = await objOpenCharacterForm.SaveCharacter();
                                 if (!blnResult)
                                     return;
                                 // We saved a character as created, which closed the current form and added a new one
