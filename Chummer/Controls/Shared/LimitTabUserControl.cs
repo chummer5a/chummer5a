@@ -160,7 +160,7 @@ namespace Chummer.UI.Shared
 
         private async void tssLimitModifierEdit_Click(object sender, EventArgs e)
         {
-            UpdateLimitModifier();
+            await UpdateLimitModifier();
         }
 
         #endregion Click Events
