@@ -408,7 +408,7 @@ namespace Chummer.Backend.Equipment
                                })
                         {
                             frmSelect.SetGeneralItemsMode(lstQualities);
-                            if (frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
+                            if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             {
                                 _guiID = Guid.Empty;
                                 return;

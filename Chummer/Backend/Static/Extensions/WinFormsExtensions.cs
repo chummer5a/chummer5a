@@ -63,6 +63,17 @@ namespace Chummer
         /// Alternative to Form.ShowDialog() that will not stall out unit tests.
         /// </summary>
         /// <param name="frmForm"></param>
+        /// <param name="objCharacter"></param>
+        /// <returns></returns>
+        public static DialogResult ShowDialogSafe(this Form frmForm, Character objCharacter)
+        {
+            return frmForm.ShowDialogSafe(Program.GetFormForDialog(objCharacter));
+        }
+
+        /// <summary>
+        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// </summary>
+        /// <param name="frmForm"></param>
         /// <param name="owner"></param>
         /// <returns></returns>
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null)
@@ -81,6 +92,17 @@ namespace Chummer
                 frmForm.Close();
                 return frmForm.DialogResult;
             }
+        }
+
+        /// <summary>
+        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// </summary>
+        /// <param name="frmForm"></param>
+        /// <param name="objCharacter"></param>
+        /// <returns></returns>
+        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter)
+        {
+            return frmForm.ShowDialogSafeAsync(Program.GetFormForDialog(objCharacter));
         }
 
         #endregion

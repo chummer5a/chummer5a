@@ -4175,15 +4175,15 @@ namespace Chummer
             }
         }
 
-        private void cmdAddLocation_Click(object sender, EventArgs e)
+        private async void cmdAddLocation_Click(object sender, EventArgs e)
         {
             // Add a new location to the Armor Tree.
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;

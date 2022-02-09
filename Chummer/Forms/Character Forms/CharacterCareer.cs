@@ -3631,12 +3631,12 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void cmdAddArmor_Click(object sender, EventArgs e)
+        private async void cmdAddArmor_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmor();
+                blnAddAgain = await PickArmor();
             }
             while (blnAddAgain);
         }
@@ -6382,18 +6382,18 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private bool PickArmor(Location objLocation = null)
+        private async Task<bool> PickArmor(Location objLocation = null)
         {
             using (SelectArmor frmPickArmor = new SelectArmor(CharacterObject))
             {
-                frmPickArmor.ShowDialogSafe(this);
+                await frmPickArmor.ShowDialogSafeAsync(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickArmor.DialogResult == DialogResult.Cancel)
                     return false;
 
                 // Open the Armor XML file and locate the selected piece.
-                XmlDocument objXmlDocument = CharacterObject.LoadData("armor.xml");
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("armor.xml");
 
                 XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + frmPickArmor.SelectedArmor.CleanXPath() + ']');
 
@@ -6430,7 +6430,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         // Remove the Improvements created by the Armor.
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId);
 
@@ -6439,7 +6439,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor") + LanguageManager.GetString("String_Space") + objArmor.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor") + await LanguageManager.GetStringAsync("String_Space") + objArmor.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -6465,13 +6465,13 @@ namespace Chummer
             }
         }
 
-        private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
+        private async void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
             if (!(treArmor.SelectedNode?.Tag is Location objSelectedLocation)) return;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmor(objSelectedLocation);
+                blnAddAgain = await PickArmor(objSelectedLocation);
             }
             while (blnAddAgain);
         }
@@ -6791,7 +6791,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
+        private async void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is IHasInternalId selectedObject)) return;
             string strSelectedId = selectedObject.InternalId;
@@ -6815,16 +6815,16 @@ namespace Chummer
 
             if (objWeaponMount == null && objMod == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotAddWeapon"),
-                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
 
             if (objWeaponMount?.IsWeaponsFull == true)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_WeaponMountFull"),
-                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponMountFull"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
@@ -6832,25 +6832,25 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddWeaponToWeaponMount(objWeaponMount, objMod, objVehicle);
+                blnAddAgain = await AddWeaponToWeaponMount(objWeaponMount, objMod, objVehicle);
             }
             while (blnAddAgain);
         }
 
-        private bool AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, Vehicle objVehicle)
+        private async Task<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, Vehicle objVehicle)
         {
             using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
             {
                 LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
             })
             {
-                frmPickWeapon.ShowDialogSafe(this);
+                await frmPickWeapon.ShowDialogSafeAsync(this);
 
                 if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                     return false;
 
                 // Open the Weapons XML file and locate the selected piece.
-                XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
                 XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
 
@@ -6888,14 +6888,14 @@ namespace Chummer
                     // Check the item's Cost and make sure the character can afford it.
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         return frmPickWeapon.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon") + LanguageManager.GetString("String_Space") + objWeapon.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon") + await LanguageManager.GetStringAsync("String_Space") + objWeapon.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                         DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
@@ -7078,7 +7078,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private bool AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString)
+        private async Task<bool> AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString)
         {
             using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
             {
@@ -7087,14 +7087,14 @@ namespace Chummer
             })
             {
                 frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                frmPickWeapon.ShowDialogSafe(this);
+                await frmPickWeapon.ShowDialogSafeAsync(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                     return false;
 
                 // Open the Weapons XML file and locate the selected piece.
-                XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
                 XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
 
@@ -7134,13 +7134,13 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return frmPickWeapon.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, strExpenseString + LanguageManager.GetString("String_Space") + objWeapon.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, strExpenseString + await LanguageManager.GetStringAsync("String_Space") + objWeapon.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -7166,19 +7166,19 @@ namespace Chummer
             }
         }
 
-        private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
+        private async void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VehicleWeaponUnderbarrel"), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddUnderbarrelWeapon(objWeapon, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon"));
+                blnAddAgain = await AddUnderbarrelWeapon(objWeapon, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon"));
             }
             while (blnAddAgain);
         }
@@ -7778,7 +7778,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
+        private async void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
@@ -7786,7 +7786,7 @@ namespace Chummer
                 Lifestyle objLifeStyle = new Lifestyle(CharacterObject);
                 using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, objLifeStyle))
                 {
-                    frmPickLifestyle.ShowDialogSafe(this);
+                    await frmPickLifestyle.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
@@ -7891,7 +7891,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddUnderbarrelWeapon(objSelectedWeapon, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon"));
+                blnAddAgain = await AddUnderbarrelWeapon(objSelectedWeapon, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon"));
             }
             while (blnAddAgain);
         }
@@ -8899,12 +8899,12 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsArmorName_Click(object sender, EventArgs e)
+        private async void tsArmorName_Click(object sender, EventArgs e)
         {
             // Make sure a parent item is selected.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectArmorName"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -8918,12 +8918,12 @@ namespace Chummer
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_ArmorName"),
+                Description = await LanguageManager.GetStringAsync("String_ArmorName"),
                 DefaultString = objRename.CustomName,
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -8936,23 +8936,23 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsLifestyleName_Click(object sender, EventArgs e)
+        private async void tsLifestyleName_Click(object sender, EventArgs e)
         {
             // Get the information for the currently selected Lifestyle.
             if (!(treLifestyles.SelectedNode?.Tag is IHasCustomName objCustomName))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectLifestyleName"), LanguageManager.GetString("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_LifestyleName"),
+                Description = await LanguageManager.GetStringAsync("String_LifestyleName"),
                 DefaultString = objCustomName.CustomName,
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -8967,17 +8967,17 @@ namespace Chummer
             }
         }
 
-        private void tsGearRenameLocation_Click(object sender, EventArgs e)
+        private async void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treGear.SelectedNode?.Tag is Location objLocation))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation"),
+                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -8990,17 +8990,17 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsWeaponRenameLocation_Click(object sender, EventArgs e)
+        private async void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treWeapons.SelectedNode?.Tag is Location objLocation))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation"),
+                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9084,17 +9084,17 @@ namespace Chummer
             await WriteNotes(selectedObject, treImprovements.SelectedNode);
         }
 
-        private void tsArmorRenameLocation_Click(object sender, EventArgs e)
+        private async void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treArmor.SelectedNode?.Tag is Location objLocation))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation"),
+                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9107,14 +9107,14 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsImprovementRenameLocation_Click(object sender, EventArgs e)
+        private async void tsImprovementRenameLocation_Click(object sender, EventArgs e)
         {
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -9141,19 +9141,19 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsCyberwareAddGear_Click(object sender, EventArgs e)
+        private async void tsCyberwareAddGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (objCyberware.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9181,14 +9181,14 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickGear.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                         XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
@@ -9232,13 +9232,13 @@ namespace Chummer
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 continue;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9264,19 +9264,19 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (objCyberware.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9303,14 +9303,14 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickGear.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                         XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
@@ -9354,13 +9354,13 @@ namespace Chummer
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 continue;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9386,13 +9386,13 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCyberware.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9400,7 +9400,7 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is Gear objSensor))
             // Make sure the Gear was found.
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9420,7 +9420,7 @@ namespace Chummer
                 }
             }
 
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
             do
             {
@@ -9430,7 +9430,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -9480,13 +9480,13 @@ namespace Chummer
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 continue;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9511,12 +9511,12 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9534,7 +9534,7 @@ namespace Chummer
                 }
             }
 
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
             do
             {
@@ -9544,7 +9544,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -9594,13 +9594,13 @@ namespace Chummer
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 continue;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9625,14 +9625,14 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
+        private async void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
             if (!(treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory))
                 return;
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (objAccessory.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_WeaponGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -9659,14 +9659,14 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickGear.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                         XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
@@ -9710,13 +9710,13 @@ namespace Chummer
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 continue;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9742,19 +9742,19 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             // Make sure the Gear was found.
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             CharacterObject.Weapons.FindWeaponGear(objSensor.InternalId, out WeaponAccessory objAccessory);
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories = string.Empty;
             XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
@@ -9778,7 +9778,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -9827,13 +9827,13 @@ namespace Chummer
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 continue;
                             }
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9859,17 +9859,17 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsVehicleRenameLocation_Click(object sender, EventArgs e)
+        private async void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is Location objLocation))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation"),
+                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -10772,7 +10772,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void cmdWeaponMoveToVehicle_Click(object sender, EventArgs e)
+        private async void cmdWeaponMoveToVehicle_Click(object sender, EventArgs e)
         {
             // Locate the selected Weapon.
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon)) return;
@@ -10791,7 +10791,7 @@ namespace Chummer
             // Cannot continue if there are no Vehicles with a Weapon Mount or Mechanical Arm.
             if (lstVehicles.Count == 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotMoveWeapons"), LanguageManager.GetString("MessageTitle_CannotMoveWeapons"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotMoveWeapons"), await LanguageManager.GetStringAsync("MessageTitle_CannotMoveWeapons"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -10801,7 +10801,7 @@ namespace Chummer
             using (SelectItem frmPickItem = new SelectItem())
             {
                 frmPickItem.SetVehiclesMode(lstVehicles);
-                frmPickItem.ShowDialogSafe(this);
+                await frmPickItem.ShowDialogSafeAsync(this);
 
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                     return;
@@ -10843,14 +10843,14 @@ namespace Chummer
 
                     if (lstItems.Count == 0)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NoValidWeaponMount"),
-                                                        LanguageManager.GetString("MessageTitle_NoValidWeaponMount"),
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NoValidWeaponMount"),
+                                                        await LanguageManager.GetStringAsync("MessageTitle_NoValidWeaponMount"),
                                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
                     frmPickItem.SetGeneralItemsMode(lstItems);
-                    frmPickItem.ShowDialogSafe(this);
+                    await frmPickItem.ShowDialogSafeAsync(this);
 
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                         return;
@@ -12519,15 +12519,15 @@ namespace Chummer
             treImprovements.ClearNodeBackground(objNode);
         }
 
-        private void cmdAddImprovementGroup_Click(object sender, EventArgs e)
+        private async void cmdAddImprovementGroup_Click(object sender, EventArgs e)
         {
             // Add a new location to the Improvements Tree.
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -17192,7 +17192,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsMetamagicAddArt_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
             if (treMetamagic.SelectedNode?.Level != 0)
                 return;
@@ -17214,13 +17214,13 @@ namespace Chummer
 
             using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Art))
             {
-                frmPickArt.ShowDialogSafe(this);
+                await frmPickArt.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
 
                 Art objArt = new Art(CharacterObject);
                 objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
@@ -17254,7 +17254,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
@@ -17286,15 +17286,15 @@ namespace Chummer
                 if (CharacterObject.Karma < intSpellKarmaCost)
                 {
                     // Make sure the Karma expense would not put them over the limit.
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"),
-                        LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return;
                 }
 
                 if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                    LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
-                    , LanguageManager.GetString("String_Enchantment")
+                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
+                    , await LanguageManager.GetStringAsync("String_Enchantment")
                     , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                     return;
             }
@@ -17302,13 +17302,13 @@ namespace Chummer
             XmlNode objXmlArt;
             using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Enchantment))
             {
-                frmPickArt.ShowDialogSafe(this);
+                await frmPickArt.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
             }
 
             Spell objNewSpell = new Spell(CharacterObject);
@@ -17324,10 +17324,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
-                string strType = LanguageManager.GetString("String_Enhancement");
+                string strType = await LanguageManager.GetStringAsync("String_Enhancement");
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intSpellKarmaCost, strType + LanguageManager.GetString("String_Space") + objNewSpell.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -17343,7 +17343,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsMetamagicAddRitual_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
 
@@ -17364,15 +17364,15 @@ namespace Chummer
                 if (CharacterObject.Karma < intSpellKarmaCost)
                 {
                     // Make sure the Karma expense would not put them over the limit.
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"),
-                        LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return;
                 }
 
                 if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                    LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
-                    , LanguageManager.GetString("String_Ritual")
+                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
+                    , await LanguageManager.GetStringAsync("String_Ritual")
                     , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                     return;
             }
@@ -17380,13 +17380,13 @@ namespace Chummer
             XmlNode objXmlArt;
             using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Ritual))
             {
-                frmPickArt.ShowDialogSafe(this);
+                await frmPickArt.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
             }
 
             Spell objNewSpell = new Spell(CharacterObject);
@@ -17402,10 +17402,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
-                string strType = LanguageManager.GetString("String_Ritual");
+                string strType = await LanguageManager.GetStringAsync("String_Ritual");
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intSpellKarmaCost, strType + LanguageManager.GetString("String_Space") + objNewSpell.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
