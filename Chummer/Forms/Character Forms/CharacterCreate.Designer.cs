@@ -3301,7 +3301,7 @@ namespace Chummer
             this.tsbSave.Size = new System.Drawing.Size(23, 22);
             this.tsbSave.Tag = "Menu_FileSave";
             this.tsbSave.Text = "Save Character";
-            this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
+            this.tsbSave.Click += new System.EventHandler(this.mnuFileSave_Click);
             // 
             // tsbPrint
             // 
@@ -3488,7 +3488,7 @@ namespace Chummer
             this.tsVehicleGearAddAsPlugin.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleGearAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsVehicleGearAddAsPlugin.Text = "&Add as Plugin";
-            this.tsVehicleGearAddAsPlugin.Click += new System.EventHandler(this.tsVehicleGearAddAsPlugin_Click);
+            this.tsVehicleGearAddAsPlugin.Click += new System.EventHandler(this.tsVehicleSensorAddAsPlugin_Click);
             // 
             // tsVehicleGearNotes
             // 

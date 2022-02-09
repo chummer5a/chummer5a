@@ -6898,18 +6898,18 @@ namespace Chummer
 
         #region Vehicles Tab
 
-        public void PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
+        public async Task PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
             using (new CursorWait(this))
             {
-                XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
+                XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("gear.xml");
                 bool blnAddAgain;
 
                 do
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6961,8 +6961,8 @@ namespace Chummer
                                 if (decCost > CharacterObject.Nuyen)
                                 {
                                     Program.MainForm.ShowMessageBox(this,
-                                        LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                        LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Information);
                                     continue;
@@ -6971,8 +6971,8 @@ namespace Chummer
                                 // Create the Expense Log Entry.
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decCost * -1,
-                                    LanguageManager.GetString("String_ExpensePurchaseVehicleGear") +
-                                    LanguageManager.GetString("String_Space") +
+                                    await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleGear") +
+                                    await LanguageManager.GetStringAsync("String_Space") +
                                     objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                     DateTime.Now);
                                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
