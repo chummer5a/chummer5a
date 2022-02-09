@@ -46,6 +46,7 @@ namespace Chummer
         private readonly bool _blnPreferNightly;
         private bool _blnIsConnected;
         private Task _tskConnectionLoader;
+        private Task _tskChangelogDownloader;
         private CancellationTokenSource _objConnectionLoaderCancellationTokenSource;
         private readonly WebClient _clientDownloader;
         private readonly WebClient _clientChangelogDownloader;
@@ -91,10 +92,13 @@ namespace Chummer
                 Log.Info("ChummerUpdater_Load exit");
                 Close();
             }
+            if (_tskChangelogDownloader?.IsCompleted == false)
+                await _tskChangelogDownloader;
             if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                 _tskConnectionLoader.IsFaulted)))
             {
-                await DownloadChangelog();
+                _tskChangelogDownloader = Task.Run(DownloadChangelog);
+                await _tskChangelogDownloader;
             }
             if (_blnIsConnected && SilentMode && !_blnSilentModeUpdateWasDenied)
             {
@@ -350,9 +354,9 @@ namespace Chummer
                     return;
                 _blnSilentMode = value;
                 if (value && (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
-                    _tskConnectionLoader.IsFaulted))))
+                        _tskConnectionLoader.IsFaulted))) && _tskChangelogDownloader?.IsCompleted != false)
                 {
-                    Utils.RunWithoutThreadLock(DownloadChangelog);
+                    _tskChangelogDownloader = Task.Run(DownloadChangelog);
                 }
             }
         }
@@ -425,13 +429,17 @@ namespace Chummer
         private async void cmdUpdate_Click(object sender, EventArgs e)
         {
             Log.Info("cmdUpdate_Click");
+            if (_tskChangelogDownloader?.IsCompleted == false)
+                await _tskChangelogDownloader;
             if (_blnIsConnected)
                 await DownloadUpdates();
-            else if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
-                _tskConnectionLoader.IsFaulted)))
+            else if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted
+                                                     && (_tskConnectionLoader.IsCanceled ||
+                                                         _tskConnectionLoader.IsFaulted)))
             {
                 cmdUpdate.Enabled = false;
-                await DownloadChangelog();
+                _tskChangelogDownloader = Task.Run(DownloadChangelog);
+                await _tskChangelogDownloader;
             }
         }
 

@@ -574,9 +574,10 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void lblName_Click(object sender, EventArgs e)
+        private async void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalSettings.Language), _objSkill.CharacterObject);
+            using (new CursorWait(ParentForm))
+                await CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalSettings.Language), _objSkill.CharacterObject);
         }
 
         [UsedImplicitly]

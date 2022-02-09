@@ -16137,9 +16137,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         private void pnlAttributes_Layout(object sender, LayoutEventArgs e)

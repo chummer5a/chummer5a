@@ -17987,9 +17987,9 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         private async void btnCreateCustomDrug_Click(object sender, EventArgs e)

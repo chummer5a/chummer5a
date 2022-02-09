@@ -259,10 +259,10 @@ namespace Chummer
             }
         }
 
-        private void cmdPDFTest_Click(object sender, EventArgs e)
+        private async void cmdPDFTest_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+                await CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
 
         private async void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
