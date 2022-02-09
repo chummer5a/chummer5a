@@ -476,7 +476,7 @@ namespace Chummer
                     Description = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage)
                 })
                 {
-                    if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, dlgSelectFolder.SelectedPath);
                     if (objNewCustomDataDirectory.XmlException != default)
@@ -577,7 +577,7 @@ namespace Chummer
                 Description = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage)
             })
             {
-                if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
+                if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
                 if (!objNewInfo.HasManifest)

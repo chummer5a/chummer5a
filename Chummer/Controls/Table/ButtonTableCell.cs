@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -30,7 +31,11 @@ namespace Chummer.UI.Table
         {
             InitializeComponent();
             _button = button ?? throw new ArgumentNullException(nameof(button));
-            button.Click += ((sender, evt) => ClickHandler?.Invoke(Value as T));
+            button.Click += async (sender, evt) =>
+            {
+                if (ClickHandler != null)
+                    await ClickHandler.Invoke(Value as T);
+            };
             SuspendLayout();
             Controls.Add(button);
             this.UpdateLightDarkMode();
@@ -54,7 +59,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Action<T> ClickHandler { get; set; }
+        public Func<T, Task> ClickHandler { get; set; }
 
         public Func<T, bool> EnabledExtractor { get; set; }
     }

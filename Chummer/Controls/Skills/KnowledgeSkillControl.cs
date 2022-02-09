@@ -360,13 +360,13 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void btnCareerIncrease_Click(object sender, EventArgs e)
+        private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
             int upgradeKarmaCost = _objSkill.UpgradeKarmaCost;
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
                 _objSkill.CurrentDisplayName, _objSkill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
@@ -375,7 +375,7 @@ namespace Chummer.UI.Skills
             _objSkill.Upgrade();
         }
 
-        private void btnAddSpec_Click(object sender, EventArgs e)
+        private async void btnAddSpec_Click(object sender, EventArgs e)
         {
             int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
@@ -408,14 +408,14 @@ namespace Chummer.UI.Skills
             else
                 price += decExtraSpecCost.StandardRound(); //Spec
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             Form frmToUse = ParentForm ?? Program.MainForm;
 
-            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+            DialogResult eResult = await frmToUse.DoThreadSafeFuncAsync(() =>
             {
                 using (SelectSpec selectForm = new SelectSpec(_objSkill) {Mode = "Knowledge"})
                 {
@@ -435,11 +435,11 @@ namespace Chummer.UI.Skills
                 frmParent.IsCharacterUpdateRequested = true;
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             if (!_objSkill.AllowDelete)
                 return;
-            if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
+            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteKnowledgeSkill")))
                 return;
             _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_objSkill);
         }

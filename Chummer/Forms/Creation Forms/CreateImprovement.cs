@@ -222,7 +222,7 @@ namespace Chummer
                                })
                         {
                             frmSelectAction.SetDropdownItemsMode(lstActions);
-                            frmSelectAction.ShowDialogSafe(this);
+                            await frmSelectAction.ShowDialogSafeAsync(this);
 
                             if (frmSelectAction.DialogResult == DialogResult.OK)
                             {
@@ -256,7 +256,7 @@ namespace Chummer
                             Description = await LanguageManager.GetStringAsync("Title_SelectAttribute")
                         })
                         {
-                            frmPickAttribute.ShowDialogSafe(this);
+                            await frmPickAttribute.ShowDialogSafeAsync(this);
 
                             if (frmPickAttribute.DialogResult == DialogResult.OK)
                             {
@@ -272,7 +272,7 @@ namespace Chummer
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
                         using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                         {
-                            frmPickMetamagic.ShowDialogSafe(this);
+                            await frmPickMetamagic.ShowDialogSafeAsync(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
                                 string strSelectedId = frmPickMetamagic.SelectedMetamagic;
@@ -307,7 +307,7 @@ namespace Chummer
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1 };
                         using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                         {
-                            frmPickMetamagic.ShowDialogSafe(this);
+                            await frmPickMetamagic.ShowDialogSafeAsync(this);
                             if (frmPickMetamagic.DialogResult == DialogResult.OK)
                             {
                                 string strSelectedId = frmPickMetamagic.SelectedMetamagic;
@@ -341,7 +341,7 @@ namespace Chummer
                     using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = await LanguageManager.GetStringAsync("Title_SelectAttribute");
-                        frmPickAttribute.ShowDialogSafe(this);
+                        await frmPickAttribute.ShowDialogSafeAsync(this);
 
                         if (frmPickAttribute.DialogResult == DialogResult.OK)
                         {
@@ -355,7 +355,7 @@ namespace Chummer
                     using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = await LanguageManager.GetStringAsync("Title_SelectAttribute");
-                        frmPickAttribute.ShowDialogSafe(this);
+                        await frmPickAttribute.ShowDialogSafeAsync(this);
 
                         if (frmPickAttribute.DialogResult == DialogResult.OK)
                         {
@@ -389,7 +389,7 @@ namespace Chummer
                             Description = await LanguageManager.GetStringAsync("Title_SelectAttribute")
                         })
                         {
-                            frmPickAttribute.ShowDialogSafe(this);
+                            await frmPickAttribute.ShowDialogSafeAsync(this);
 
                             if (frmPickAttribute.DialogResult == DialogResult.OK)
                             {
@@ -404,7 +404,7 @@ namespace Chummer
                     using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
                     {
                         frmPickSkill.Description = await LanguageManager.GetStringAsync("Title_SelectSkill");
-                        frmPickSkill.ShowDialogSafe(this);
+                        await frmPickSkill.ShowDialogSafeAsync(this);
 
                         if (frmPickSkill.DialogResult == DialogResult.OK)
                         {
@@ -470,7 +470,7 @@ namespace Chummer
                                })
                         {
                             frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
-                            frmPickSkill.ShowDialogSafe(this);
+                            await frmPickSkill.ShowDialogSafeAsync(this);
 
                             if (frmPickSkill.DialogResult == DialogResult.OK)
                             {
@@ -486,7 +486,7 @@ namespace Chummer
                     using (SelectSkillCategory frmPickSkillCategory = new SelectSkillCategory(_objCharacter))
                     {
                         frmPickSkillCategory.Description = await LanguageManager.GetStringAsync("Title_SelectSkillCategory");
-                        frmPickSkillCategory.ShowDialogSafe(this);
+                        await frmPickSkillCategory.ShowDialogSafeAsync(this);
 
                         if (frmPickSkillCategory.DialogResult == DialogResult.OK)
                         {
@@ -500,7 +500,7 @@ namespace Chummer
                     using (SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter))
                     {
                         frmPickSkillGroup.Description = await LanguageManager.GetStringAsync("Title_SelectSkillGroup");
-                        frmPickSkillGroup.ShowDialogSafe(this);
+                        await frmPickSkillGroup.ShowDialogSafeAsync(this);
 
                         if (frmPickSkillGroup.DialogResult == DialogResult.OK)
                         {
@@ -532,7 +532,7 @@ namespace Chummer
                                })
                         {
                             selectComplexForm.SetDropdownItemsMode(lstComplexForms);
-                            selectComplexForm.ShowDialogSafe(this);
+                            await selectComplexForm.ShowDialogSafeAsync(this);
 
                             if (selectComplexForm.DialogResult == DialogResult.OK)
                             {
@@ -566,7 +566,7 @@ namespace Chummer
                                })
                         {
                             selectSpell.SetDropdownItemsMode(lstSpells);
-                            selectSpell.ShowDialogSafe(this);
+                            await selectSpell.ShowDialogSafeAsync(this);
 
                             if (selectSpell.DialogResult == DialogResult.OK)
                             {
@@ -582,7 +582,7 @@ namespace Chummer
                     using (SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter))
                     {
                         frmPickWeaponCategory.Description = await LanguageManager.GetStringAsync("Title_SelectWeaponCategory");
-                        frmPickWeaponCategory.ShowDialogSafe(this);
+                        await frmPickWeaponCategory.ShowDialogSafeAsync(this);
 
                         if (frmPickWeaponCategory.DialogResult == DialogResult.OK)
                         {
@@ -596,7 +596,7 @@ namespace Chummer
                     using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter))
                     {
                         frmPickSpellCategory.Description = await LanguageManager.GetStringAsync("Title_SelectSpellCategory");
-                        frmPickSpellCategory.ShowDialogSafe(this);
+                        await frmPickSpellCategory.ShowDialogSafeAsync(this);
 
                         if (frmPickSpellCategory.DialogResult == DialogResult.OK)
                         {
@@ -610,7 +610,7 @@ namespace Chummer
                     using (SelectPower frmPickPower = new SelectPower(_objCharacter))
                     {
                         frmPickPower.IgnoreLimits = chkIgnoreLimits.Checked;
-                        frmPickPower.ShowDialogSafe(this);
+                        await frmPickPower.ShowDialogSafeAsync(this);
 
                         if (frmPickPower.DialogResult == DialogResult.OK)
                         {

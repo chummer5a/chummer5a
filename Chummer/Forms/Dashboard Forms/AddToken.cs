@@ -20,6 +20,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -43,21 +44,21 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
+                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
             })
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    LoadCharacter(openFileDialog.FileName);
+                    await LoadCharacter(openFileDialog.FileName);
         }
 
         /// <summary>
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private void LoadCharacter(string fileName)
+        private async Task LoadCharacter(string fileName)
         {
             if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {
@@ -67,7 +68,7 @@ namespace Chummer
                 };
                 using (new CursorWait(this))
                 {
-                    if (!objCharacter.Load())
+                    if (!await objCharacter.LoadAsync())
                     {
                         // TODO edward setup error page
                         objCharacter.Dispose();
@@ -104,7 +105,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnOK_Click(object sender, EventArgs e)
+        private async void btnOK_Click(object sender, EventArgs e)
         {
             if (_character != null)
             {
@@ -137,7 +138,7 @@ namespace Chummer
                 _character.InitRoll = int.MinValue;
 
             _blnCharacterAdded = true;
-            parentControl.AddToken(_character);
+            await parentControl.AddToken(_character);
             Close();
         }
     }

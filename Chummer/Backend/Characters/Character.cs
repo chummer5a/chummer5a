@@ -14007,15 +14007,10 @@ namespace Chummer
             }
         }
 
-        public string PhysicalCMLabelText
-        {
-            get
-            {
-                return IsAI
-                    ? LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM")
-                    : LanguageManager.GetString("Label_OtherPhysicalCM");
-            }
-        }
+        public string PhysicalCMLabelText =>
+            IsAI
+                ? LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM")
+                : LanguageManager.GetString("Label_OtherPhysicalCM");
 
         public string PhysicalCMToolTip
         {

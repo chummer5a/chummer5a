@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -192,14 +193,14 @@ namespace Chummer
          * goes to the next chummer in the list
          */
 
-        private void btnNext_Click(object sender, EventArgs e)
+        private async void btnNext_Click(object sender, EventArgs e)
         {
             if (_blnFinishedCombatTurn)
                 return; // cannot go to "next"
             if (_intIndex == _lstCharacters.Count - _intTotalChummersWithNoInit)
             {
                 // increment the round count since we have reached the end of the list
-                lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + (++_intRound).ToString(GlobalSettings.CultureInfo);
+                lblRound.Text = await LanguageManager.GetStringAsync("Label_Round") + await LanguageManager.GetStringAsync("String_Space") + (++_intRound).ToString(GlobalSettings.CultureInfo);
                 // reset the the round with a minus ten on all
                 int index = -1;
                 for (int i = 0; i < _lstCharacters.Count; i++)
@@ -291,7 +292,7 @@ namespace Chummer
          * Reset button pressed
          */
 
-        private void btnReset_Click(object sender, EventArgs e)
+        private async void btnReset_Click(object sender, EventArgs e)
         {
             // for every checked character, we re-roll init
             for (int i = 0; i < _lstCharacters.Count; i++)
@@ -320,7 +321,7 @@ namespace Chummer
                         Dice = objLoopCharacter.InitPasses
                     })
                     {
-                        frmHits.ShowDialogSafe(this);
+                        await frmHits.ShowDialogSafeAsync(this);
 
                         if (frmHits.DialogResult != DialogResult.OK)
                             return; // we decided not to actually change the initiative
@@ -333,7 +334,7 @@ namespace Chummer
             _blnFinishedCombatTurn = false;
             _intIndex = 0;
             _intRound = 1;
-            lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalSettings.CultureInfo);
+            lblRound.Text = await LanguageManager.GetStringAsync("Label_Round") + await LanguageManager.GetStringAsync("String_Space") + 1.ToString(GlobalSettings.CultureInfo);
             _intTotalChummersWithNoInit = 0;
         }
 
@@ -384,7 +385,7 @@ namespace Chummer
          * When the user right-clicks somewhere in the check box list.
          */
 
-        private void chkBoxChummer_MouseClick(object sender, MouseEventArgs e)
+        private async void chkBoxChummer_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -397,7 +398,7 @@ namespace Chummer
                     Dice = _lstCharacters[chkBoxChummer.SelectedIndex].InitPasses
                 })
                 {
-                    frmHits.ShowDialogSafe(this);
+                    await frmHits.ShowDialogSafeAsync(this);
 
                     if (frmHits.DialogResult != DialogResult.OK)
                         return; // we decided not to actually change the initiative
@@ -422,7 +423,7 @@ namespace Chummer
         /// Adds the token to the initiative chain
         /// </summary>
         /// <param name="character"></param>
-        public void AddToken(Character character)
+        public async Task AddToken(Character character)
         {
             if (character == null)
                 return;
@@ -433,7 +434,7 @@ namespace Chummer
                     Dice = character.InitPasses
                 })
                 {
-                    frmHits.ShowDialogSafe(this);
+                    await frmHits.ShowDialogSafeAsync(this);
 
                     if (frmHits.DialogResult != DialogResult.OK)
                     {

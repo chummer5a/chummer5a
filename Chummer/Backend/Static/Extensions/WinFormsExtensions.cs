@@ -44,16 +44,43 @@ namespace Chummer
         /// <returns></returns>
         public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null)
         {
+            if (!Utils.IsUnitTest)
+                return frmForm.ShowDialog(owner);
             // Unit tests cannot use ShowDialog because that will stall them out
-            if (Utils.IsUnitTest)
+            bool blnDoClose = false;
+            void FormOnShown(object sender, EventArgs args) => blnDoClose = true;
+            frmForm.Shown += FormOnShown;
+            frmForm.ShowInTaskbar = false;
+            frmForm.Show(owner);
+            while (!blnDoClose)
+                Utils.SafeSleep(true);
+            frmForm.Close();
+            return frmForm.DialogResult;
+
+        }
+
+        /// <summary>
+        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// </summary>
+        /// <param name="frmForm"></param>
+        /// <param name="owner"></param>
+        /// <returns></returns>
+        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null)
+        {
+            // Unit tests cannot use ShowDialog because that will stall them out
+            return !Utils.IsUnitTest ? Task.FromResult(frmForm.ShowDialog(owner)) : ShowDialogSafeUnitTestAsync();
+
+            async Task<DialogResult> ShowDialogSafeUnitTestAsync()
             {
+                bool blnDoClose = false;
+                void FormOnShown(object sender, EventArgs args) => blnDoClose = true;
+                frmForm.Shown += FormOnShown;
                 frmForm.Show(owner);
-                Utils.SafeSleep(Utils.DefaultSleepDuration * 10);
+                while (!blnDoClose)
+                    await Utils.SafeSleepAsync();
                 frmForm.Close();
                 return frmForm.DialogResult;
             }
-
-            return frmForm.ShowDialog(owner);
         }
 
         #endregion

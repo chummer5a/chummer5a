@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -51,9 +52,9 @@ namespace Chummer
             }
         }
 
-        private void PetControl_Load(object sender, EventArgs e)
+        private async void PetControl_Load(object sender, EventArgs e)
         {
-            LoadContactList();
+            await LoadContactList();
 
             DoDataBindings();
 
@@ -113,7 +114,7 @@ namespace Chummer
             cmsContact.Show(cmdLink, cmdLink.Left - 700, cmdLink.Top);
         }
 
-        private void tsContactOpen_Click(object sender, EventArgs e)
+        private async void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objContact.LinkedCharacter != null)
             {
@@ -124,7 +125,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                        objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -147,7 +148,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound"), _objContact.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -156,12 +157,12 @@ namespace Chummer
             }
         }
 
-        private void tsAttachCharacter_Click(object sender, EventArgs e)
+        private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
+                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
@@ -175,7 +176,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     _objContact.FileName = openFileDialog.FileName;
-                    cmdLink.ToolTipText = LanguageManager.GetString("Tip_Contact_OpenFile");
+                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
 
                     // Set the relative path.
                     Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -188,29 +189,29 @@ namespace Chummer
             }
         }
 
-        private void tsRemoveCharacter_Click(object sender, EventArgs e)
+        private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = LanguageManager.GetString("Tip_Contact_LinkFile");
+                cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
-        private void cmdNotes_Click(object sender, EventArgs e)
+        private async void cmdNotes_Click(object sender, EventArgs e)
         {
             using (EditNotes frmContactNotes = new EditNotes(_objContact.Notes, _objContact.NotesColor))
             {
-                frmContactNotes.ShowDialogSafe(this);
+                await frmContactNotes.ShowDialogSafeAsync(this);
                 if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
                 _objContact.Notes = frmContactNotes.Notes;
             }
 
-            string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
+            string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
             cmdNotes.ToolTipText = strTooltip.WordWrap();
@@ -221,13 +222,13 @@ namespace Chummer
 
         #region Methods
 
-        private void LoadContactList()
+        private async Task LoadContactList()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {
                 lstMetatypes.Add(ListItem.Blank);
-                string strSpace = LanguageManager.GetString("String_Space");
-                foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("critters.xml")
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                foreach (XPathNavigator xmlMetatypeNode in (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml"))
                                                                       .SelectAndCacheExpression(
                                                                           "/chummer/metatypes/metatype"))
                 {

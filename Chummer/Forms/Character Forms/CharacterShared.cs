@@ -27,6 +27,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -199,7 +200,7 @@ namespace Chummer
         /// Edit and update a Limit Modifier.
         /// </summary>
         /// <param name="treLimit"></param>
-        protected void UpdateLimitModifier(TreeView treLimit)
+        protected async Task UpdateLimitModifier(TreeView treLimit)
         {
             if (treLimit == null || treLimit.SelectedNode.Level == 0)
                 return;
@@ -213,12 +214,12 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Warning_NoLimitFound"));
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound"));
                     return;
                 }
                 using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
-                    frmPickLimitModifier.ShowDialogSafe(this);
+                    await frmPickLimitModifier.ShowDialogSafeAsync(this);
 
                     if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
                         return;
@@ -243,14 +244,14 @@ namespace Chummer
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        protected void WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        protected async Task WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             if (objNotes == null)
                 return;
             using (new CursorWait(this))
             using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
             {
-                frmItemNotes.ShowDialogSafe(this);
+                await frmItemNotes.ShowDialogSafeAsync(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 objNotes.Notes = frmItemNotes.Notes;

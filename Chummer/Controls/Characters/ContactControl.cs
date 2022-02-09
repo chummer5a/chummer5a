@@ -59,7 +59,7 @@ namespace Chummer
             }
         }
 
-        private void ContactControl_Load(object sender, EventArgs e)
+        private async void ContactControl_Load(object sender, EventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -71,10 +71,10 @@ namespace Chummer
             {
                 if (cmdLink != null)
                     cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
-                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
+                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy")
+                        : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy");
 
-                string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes");
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Enemy_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 cmdNotes.ToolTipText = strTooltip.WordWrap();
@@ -83,10 +83,10 @@ namespace Chummer
             {
                 if (cmdLink != null)
                     cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
-                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                        : LanguageManager.GetString("Tip_Contact_LinkContact");
+                        ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact")
+                        : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact");
 
-                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 cmdNotes.ToolTipText = strTooltip.WordWrap();
@@ -287,7 +287,7 @@ namespace Chummer
             cmsContact.Show(cmdLink, cmdLink.Left - cmsContact.PreferredSize.Width, cmdLink.Top);
         }
 
-        private void tsContactOpen_Click(object sender, EventArgs e)
+        private async void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objContact.LinkedCharacter != null)
             {
@@ -298,7 +298,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                        objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -321,7 +321,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound"), _objContact.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -330,12 +330,12 @@ namespace Chummer
             }
         }
 
-        private void tsAttachCharacter_Click(object sender, EventArgs e)
+        private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
+                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
@@ -349,8 +349,8 @@ namespace Chummer
                 _objContact.FileName = openFileDialog.FileName;
                 if (cmdLink != null)
                     cmdLink.ToolTipText = _objContact.IsEnemy
-                        ? LanguageManager.GetString("Tip_Enemy_OpenFile")
-                        : LanguageManager.GetString("Tip_Contact_OpenFile");
+                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenFile")
+                        : await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
             }
 
             // Set the relative path.
@@ -362,31 +362,31 @@ namespace Chummer
             ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
         }
 
-        private void tsRemoveCharacter_Click(object sender, EventArgs e)
+        private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
                 cmdLink.ToolTipText = _objContact.IsEnemy
-                    ? LanguageManager.GetString("Tip_Enemy_LinkFile")
-                    : LanguageManager.GetString("Tip_Contact_LinkFile");
+                    ? await LanguageManager.GetStringAsync("Tip_Enemy_LinkFile")
+                    : await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
-        private void cmdNotes_Click(object sender, EventArgs e)
+        private async void cmdNotes_Click(object sender, EventArgs e)
         {
             using (EditNotes frmContactNotes = new EditNotes(_objContact.Notes, _objContact.NotesColor))
             {
-                frmContactNotes.ShowDialogSafe(this);
+                await frmContactNotes.ShowDialogSafeAsync(this);
                 if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
                 _objContact.Notes = frmContactNotes.Notes;
             }
 
-            string strTooltip = LanguageManager.GetString(_objContact.IsEnemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
+            string strTooltip = await LanguageManager.GetStringAsync(_objContact.IsEnemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
             cmdNotes.ToolTipText = strTooltip.WordWrap();

@@ -21482,7 +21482,7 @@ namespace Chummer
             this.tsAdvancedLifestyleNotes.Size = new System.Drawing.Size(196, 22);
             this.tsAdvancedLifestyleNotes.Tag = "Menu_Notes";
             this.tsAdvancedLifestyleNotes.Text = "&Notes";
-            this.tsAdvancedLifestyleNotes.Click += new System.EventHandler(this.tsAdvancedLifestyleNotes_Click);
+            this.tsAdvancedLifestyleNotes.Click += new System.EventHandler(this.tsLifestyleNotes_Click);
             // 
             // cmsGearLocation
             // 

@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -216,17 +217,17 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private void cmdAddPower_Click(object sender, EventArgs e)
+        private async void cmdAddPower_Click(object sender, EventArgs e)
         {
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = _objCharacter.LoadData("powers.xml");
+            XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml");
             bool blnAddAgain;
 
             do
             {
                 using (SelectPower frmPickPower = new SelectPower(_objCharacter))
                 {
-                    frmPickPower.ShowDialogSafe(this);
+                    await frmPickPower.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickPower.DialogResult == DialogResult.Cancel)
@@ -392,11 +393,11 @@ namespace Chummer.UI.Powers
                 Size = GetImageSize(Resources.note_edit)
             })
             {
-                ClickHandler = p =>
+                ClickHandler = async p =>
                 {
                     using (EditNotes frmPowerNotes = new EditNotes(p.Notes, p.NotesColor))
                     {
-                        frmPowerNotes.ShowDialogSafe(this);
+                        await frmPowerNotes.ShowDialogSafeAsync(this);
                         if (frmPowerNotes.DialogResult == DialogResult.OK)
                             p.Notes = frmPowerNotes.Notes;
                     }
@@ -447,6 +448,7 @@ namespace Chummer.UI.Powers
 
                     if (frmParent is CharacterShared objParent)
                         objParent.IsCharacterUpdateRequested = true;
+                    return Task.CompletedTask;
                 },
                 EnabledExtractor = (p => p.FreeLevels == 0)
             });

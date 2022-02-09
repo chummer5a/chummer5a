@@ -424,9 +424,9 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void btnCareerIncrease_Click(object sender, EventArgs e)
+        private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
                     _objSkill.CurrentDisplayName, _objSkill.Rating + 1, _objSkill.UpgradeKarmaCost);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
@@ -435,7 +435,7 @@ namespace Chummer.UI.Skills
             _objSkill.Upgrade();
         }
 
-        private void btnAddSpec_Click(object sender, EventArgs e)
+        private async void btnAddSpec_Click(object sender, EventArgs e)
         {
             int price = _objSkill.CharacterObject.Settings.KarmaSpecialization;
 
@@ -468,14 +468,14 @@ namespace Chummer.UI.Skills
             else
                 price += decExtraSpecCost.StandardRound(); //Spec
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             Form frmToUse = ParentForm ?? Program.MainForm;
 
-            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+            DialogResult eResult = await frmToUse.DoThreadSafeFuncAsync(() =>
             {
                 using (SelectSpec selectForm = new SelectSpec(_objSkill))
                 {
@@ -554,20 +554,20 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             if (!_objSkill.AllowDelete)
                 return;
-            if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
+            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
                 return;
             _objSkill.CharacterObject.SkillsSection.Skills.Remove(_objSkill);
         }
 
-        private void tsSkillLabelNotes_Click(object sender, EventArgs e)
+        private async void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
             using (EditNotes frmItemNotes = new EditNotes(_objSkill.Notes, _objSkill.NotesColor))
             {
-                frmItemNotes.ShowDialogSafe(this);
+                await frmItemNotes.ShowDialogSafeAsync(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 _objSkill.Notes = frmItemNotes.Notes;

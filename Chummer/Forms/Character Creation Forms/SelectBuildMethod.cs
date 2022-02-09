@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -77,7 +78,7 @@ namespace Chummer
             chkIgnoreRules.SetToolTip(LanguageManager.GetString("Tip_SelectKarma_IgnoreRules"));
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             if (!(cboCharacterSetting.SelectedValue is CharacterSettings objSelectedGameplayOption))
                 return;
@@ -85,9 +86,9 @@ namespace Chummer
             if (_blnForExistingCharacter && !_objCharacter.Created && _objCharacter.Settings.BuildMethod == _objCharacter.EffectiveBuildMethod && eSelectedBuildMethod != _eStartingBuildMethod)
             {
                 if (Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_SelectBP_SwitchBuildMethods"),
-                        LanguageManager.GetString("String_" + eSelectedBuildMethod), LanguageManager.GetString("String_" + _eStartingBuildMethod)).WordWrap(),
-                    LanguageManager.GetString("MessageTitle_SelectBP_SwitchBuildMethods"), MessageBoxButtons.YesNo,
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SelectBP_SwitchBuildMethods"),
+                        await LanguageManager.GetStringAsync("String_" + eSelectedBuildMethod), await LanguageManager.GetStringAsync("String_" + _eStartingBuildMethod)).WordWrap(),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods"), MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
                 string strOldCharacterSettingsKey = _objCharacter.SettingsKey;
@@ -114,13 +115,13 @@ namespace Chummer
             Close();
         }
 
-        private void cmdEditCharacterOption_Click(object sender, EventArgs e)
+        private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             {
                 using (EditCharacterSettings frmOptions =
                     new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
-                    frmOptions.ShowDialogSafe(this);
+                    await frmOptions.ShowDialogSafeAsync(this);
 
                 SuspendLayout();
                 // Populate the Gameplay Settings list.
@@ -151,31 +152,36 @@ namespace Chummer
             }
         }
 
-        private void SelectBuildMethod_Load(object sender, EventArgs e)
+        private async void SelectBuildMethod_Load(object sender, EventArgs e)
         {
-            cboGamePlay_SelectedIndexChanged(this, e);
+            await ProcessGameplayIndexChanged();
             _blnLoading = false;
         }
 
-        private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await ProcessGameplayIndexChanged();
+        }
+
+        private async Task ProcessGameplayIndexChanged()
         {
             if (!_blnLoading)
                 SuspendLayout();
             // Load the Priority information.
             if (cboCharacterSetting.SelectedValue is CharacterSettings objSelectedGameplayOption)
             {
-                lblBuildMethod.Text = LanguageManager.GetString("String_" + objSelectedGameplayOption.BuildMethod);
+                lblBuildMethod.Text = await LanguageManager.GetStringAsync("String_" + objSelectedGameplayOption.BuildMethod);
                 switch (objSelectedGameplayOption.BuildMethod)
                 {
                     case CharacterBuildMethod.Priority:
-                        lblBuildMethodParamLabel.Text = LanguageManager.GetString("Label_SelectBP_Priorities");
+                        lblBuildMethodParamLabel.Text = await LanguageManager.GetStringAsync("Label_SelectBP_Priorities");
                         lblBuildMethodParam.Text = objSelectedGameplayOption.PriorityArray;
                         lblBuildMethodParamLabel.Visible = true;
                         lblBuildMethodParam.Visible = true;
                         break;
 
                     case CharacterBuildMethod.SumtoTen:
-                        lblBuildMethodParamLabel.Text = LanguageManager.GetString("String_SumtoTen");
+                        lblBuildMethodParamLabel.Text = await LanguageManager.GetStringAsync("String_SumtoTen");
                         lblBuildMethodParam.Text = objSelectedGameplayOption.SumtoTen.ToString(GlobalSettings.CultureInfo);
                         lblBuildMethodParamLabel.Visible = true;
                         lblBuildMethodParam.Visible = true;
@@ -194,7 +200,7 @@ namespace Chummer
 
                 lblBooks.Text = _objCharacter.TranslatedBookList(string.Join(";", objSelectedGameplayOption.Books));
                 if (string.IsNullOrEmpty(lblBooks.Text))
-                    lblBooks.Text = LanguageManager.GetString("String_None");
+                    lblBooks.Text = await LanguageManager.GetStringAsync("String_None");
 
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdCustomDataDirectories))
@@ -207,7 +213,7 @@ namespace Chummer
                 }
 
                 if (string.IsNullOrEmpty(lblBooks.Text))
-                    lblCustomData.Text = LanguageManager.GetString("String_None");
+                    lblCustomData.Text = await LanguageManager.GetStringAsync("String_None");
             }
 
             if (!_blnLoading)
