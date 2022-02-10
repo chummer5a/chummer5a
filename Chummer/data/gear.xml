@@ -9799,8 +9799,8 @@
       <page>319</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <skillattribute>
-          <name precedence="0">MAG</name>
+        <skillattribute precedence="0">
+          <name>MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
@@ -10288,8 +10288,8 @@
       <page>230</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <skillattribute>
-          <name precedence="0">MAG</name>
+        <skillattribute precedence="0">
+          <name>MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
@@ -10873,8 +10873,8 @@
       <page>230</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <skillattribute>
-          <name precedence="0">MAG</name>
+        <skillattribute precedence="0">
+          <name>MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />

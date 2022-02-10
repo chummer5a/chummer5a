@@ -2164,7 +2164,7 @@ namespace Chummer
                 intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
 
             string strUseUnique = _strUnique;
-            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 
@@ -2822,7 +2822,7 @@ namespace Chummer
                 );
           
             string strUseUnique = _strUnique;
-            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 
@@ -2850,7 +2850,7 @@ namespace Chummer
                 );
             
             string strUseUnique = _strUnique;
-            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 

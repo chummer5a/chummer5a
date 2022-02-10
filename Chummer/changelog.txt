@@ -7,6 +7,7 @@ Application Changes:
 - Changelogs for newer versions of Chummer now properly show up in the updater before they are downloaded.
 - Fixed a rare crash when attempting to convert certain colors to and/or from their dark mode versions.
 - Startup times for users with watch folders has been decreased by about 20%.
+- Fixed an issue where some cyberware with wireless bonuses that depend on either the presence of other cyberware or on there being multiple instances of the same cyberware would cause that cyberware's bonuses to mysteriously disappear.
 
 Build 221
 Application Changes:
