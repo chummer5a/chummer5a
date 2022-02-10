@@ -578,6 +578,11 @@ namespace ChummerHub.Client.Backend
                             frmSIN.SINnerResponseUI.Result.ErrorText =
                                 "This is NOT an exception from Chummer itself, but from the SINners WebService. This error happend \"in the cloud\": " +
                                 rb.ErrorText;
+                            if (rb.MyException?.InnerException != null)
+                            {
+                                frmSIN.SINnerResponseUI.Result.ErrorText += Environment.NewLine + rb.MyException?.InnerException.Message;
+                            }
+
                         }
                         else
                         {

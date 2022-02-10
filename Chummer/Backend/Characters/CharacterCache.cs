@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -88,7 +89,7 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingDictionary<string, object> MyPluginDataDic { get; } = new LockingDictionary<string, object>();
+        public Dictionary<string, object> MyPluginDataDic { get; } = new Dictionary<string, object>();
 
         public Task<string> DownLoadRunning { get; set; }
 
@@ -405,7 +406,7 @@ namespace Chummer
         {
             Mugshot?.Dispose();
             DownLoadRunning?.Dispose();
-            MyPluginDataDic.Dispose();
+            MyPluginDataDic.Clear();
             _rwlThis?.Dispose();
         }
 

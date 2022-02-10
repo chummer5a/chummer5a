@@ -337,7 +337,7 @@ namespace ChummerHub.Client.Sinners
                                     "Uploading File", op_uploadChummer,
                                     CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                                 {
-                                    ResultSINnerPut uploadres = await Utils.UploadChummerFileAsync(this);
+                                    ResultSINnerPut uploadres = Utils.UploadChummerFileAsync(this).Result;
                                     if (uploadres.CallSuccess)
                                     {
                                         if (myState != null)
@@ -490,8 +490,11 @@ namespace ChummerHub.Client.Sinners
                             {
                                 Task<ResultSinnerGetOwnedSINByAlias> objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
                                 if (objSearchTask.Status == TaskStatus.Created)
-                                    objSearchTask.RunSynchronously();
-                                res = objSearchTask.Result;
+                                    objSearchTask.Start();
+                                if (objSearchTask.Wait(TimeSpan.FromSeconds(30)))
+                                    res = objSearchTask.Result;
+                                else
+                                    res = null;
                             }
                             else
                                 res =  await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
