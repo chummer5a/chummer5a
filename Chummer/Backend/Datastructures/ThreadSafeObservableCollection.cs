@@ -99,10 +99,10 @@ namespace Chummer
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             using (new EnterWriteLock(LockerObject))
             {
-                if (Count > 0)
+                if (base.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    item = this[0];
+                    item = base[0];
                     base.RemoveItem(0);
                     return true;
                 }
@@ -120,7 +120,7 @@ namespace Chummer
                 T[] aobjReturn = new T[Count];
                 for (int i = 0; i < Count; ++i)
                 {
-                    aobjReturn[i] = this[i];
+                    aobjReturn[i] = base[i];
                 }
                 return aobjReturn;
             }

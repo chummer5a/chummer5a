@@ -195,10 +195,10 @@ namespace Chummer
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             using (new EnterWriteLock(_rwlThis))
             {
-                if (Count > 0)
+                if (_setData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    item = this.First();
+                    item = _setData.First();
                     if (_setData.Remove(item))
                         return true;
                 }
@@ -212,7 +212,7 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
             {
-                T[] aobjReturn = new T[Count];
+                T[] aobjReturn = new T[_setData.Count];
                 int i = 0;
                 foreach (T objLoop in _setData)
                 {

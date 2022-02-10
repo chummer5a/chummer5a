@@ -150,7 +150,7 @@ namespace Chummer
         {
             using (new EnterReadLock(_rwlThis))
             {
-                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[Count];
+                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[_dicData.Count];
                 int i = 0;
                 foreach (KeyValuePair<TKey, TValue> kvpLoop in _dicData)
                 {
@@ -203,10 +203,10 @@ namespace Chummer
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             using (new EnterWriteLock(_rwlThis))
             {
-                if (Count > 0)
+                if (_dicData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    objKeyToTake = Keys.First();
+                    objKeyToTake = _dicData.Keys.First();
                     if (_dicData.TryGetValue(objKeyToTake, out objValue))
                     {
                         blnTakeSuccessful = _dicData.Remove(objKeyToTake);

@@ -71,7 +71,7 @@ namespace Chummer
                     {
                         // Remove all entries greater than the allowed size
                         while (Count > _intMaxSize)
-                            RemoveAt(Count - 1);
+                            RemoveItem(Count - 1);
                     }
                     _blnSkipCollectionChanged = false;
                 }
@@ -88,7 +88,7 @@ namespace Chummer
                 if (index >= _intMaxSize)
                     return;
                 while (Count >= _intMaxSize)
-                    RemoveAt(Count - 1);
+                    RemoveItem(Count - 1);
                 base.InsertItem(index, item);
             }
         }

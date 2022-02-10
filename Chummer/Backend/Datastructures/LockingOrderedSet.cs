@@ -220,7 +220,7 @@ namespace Chummer
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             using (new EnterWriteLock(_rwlThis))
             {
-                if (Count > 0)
+                if (_setData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     item = _lstOrderedData[0];
