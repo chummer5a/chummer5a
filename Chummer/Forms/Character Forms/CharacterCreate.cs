@@ -4601,36 +4601,39 @@ namespace Chummer
             // Open the Armor XML file and locate the selected Armor.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("armor.xml");
 
+            XmlNode objXmlArmor = await objArmor.GetNodeAsync();
+
+            string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
+            bool blnExcludeGeneralCategory = false;
+            XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
+            if (xmlAddModCategory != null)
+            {
+                strAllowedCategories = xmlAddModCategory.InnerText;
+                blnExcludeGeneralCategory = true;
+            }
+            else
+            {
+                xmlAddModCategory = objXmlArmor["addmodcategory"];
+                if (xmlAddModCategory != null)
+                {
+                    strAllowedCategories += ',' + xmlAddModCategory.InnerText;
+                }
+            }
+
             bool blnAddAgain;
             do
             {
                 using (new CursorWait(this))
                 {
-                    XmlNode objXmlArmor = await objArmor.GetNodeAsync();
-
                     using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
                     {
                         ArmorCost = objArmor.OwnCost,
                         ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo),
-                        AllowedCategories = objArmor.Category + ',' + objArmor.Name,
+                        AllowedCategories = strAllowedCategories,
+                        ExcludeGeneralCategory = blnExcludeGeneralCategory,
                         CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                     })
                     {
-                        XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
-                        if (xmlAddModCategory != null)
-                        {
-                            frmPickArmorMod.AllowedCategories = xmlAddModCategory.InnerText;
-                            frmPickArmorMod.ExcludeGeneralCategory = true;
-                        }
-                        else
-                        {
-                            xmlAddModCategory = objXmlArmor["addmodcategory"];
-                            if (xmlAddModCategory != null)
-                            {
-                                frmPickArmorMod.AllowedCategories += ',' + xmlAddModCategory.InnerText;
-                            }
-                        }
-
                         await frmPickArmorMod.ShowDialogSafeAsync(this);
 
                         if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
@@ -12061,10 +12064,10 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 string strCategories = string.Empty;
-                if (!string.IsNullOrEmpty(strSelectedId))
+                if (!string.IsNullOrEmpty(strSelectedId) && objParent is IHasXmlDataNode objParentWithDataNode)
                 {
                     XPathNodeIterator xmlAddonCategoryList
-                        = (await (objParent as IHasXmlDataNode)?.GetNodeXPathAsync())?.Select("addoncategory");
+                        = (await objParentWithDataNode.GetNodeXPathAsync())?.Select("addoncategory");
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

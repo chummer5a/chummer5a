@@ -15229,10 +15229,10 @@ namespace Chummer
             {
                 string strCategories = string.Empty;
 
-                if (!string.IsNullOrEmpty(strSelectedId))
+                if (!string.IsNullOrEmpty(strSelectedId) && objParent is IHasXmlDataNode objParentWithDataNode)
                 {
                     XPathNodeIterator xmlAddonCategoryList
-                        = (await (objParent as IHasXmlDataNode)?.GetNodeXPathAsync())?.Select("addoncategory");
+                        = (await objParentWithDataNode.GetNodeXPathAsync())?.Select("addoncategory");
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
