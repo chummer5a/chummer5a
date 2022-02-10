@@ -8005,7 +8005,18 @@ namespace Chummer
                         SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == strUndoId);
 
                         if (group != null)
-                            --group.Karma;
+                        {
+                            if (group.KarmaUnbroken)
+                                --group.Karma;
+                            else
+                            {
+                                Program.MainForm.ShowMessageBox(this,
+                                    await LanguageManager.GetStringAsync("Message_UndoBrokenSkillGroup"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_UndoBrokenSkillGroup"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+                        }
 
                         break;
                     }

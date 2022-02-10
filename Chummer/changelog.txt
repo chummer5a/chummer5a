@@ -12,6 +12,7 @@ Application Changes:
 - Spells bought as part of Barehanded Adept are now marked as such in exports.
 - Barehanded Adept spells now properly have their drain values doubled, and the tooltip for their drain values now only show forces up to a third of their Magic attribute rounded up (which is the limit imposed by the quality).
 - Tooltips for drain and fading values are now less confusing about how modifiers are incorporated.
+- Attempting to undo increasing a skill group that is broken at the time of the undo now properly causes Chummer to not follow through with the undo.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
@@ -22,6 +23,8 @@ Changed/New Strings:
 - Tip_SpellDrainBase
 - Tip_ComplexFormFading
 - Tip_ComplexFormFadingBase
+- Message_UndoBrokenSkillGroup
+- MessageTitle_UndoBrokenSkillGroup
 
 Build 221
 Application Changes:

@@ -3163,6 +3163,14 @@
       <text>Cannot Undo This Entry</text>
     </string>
     <string>
+      <key>Message_UndoBrokenSkillGroup</key>
+      <text>{0} is a broken skill group, either because one of the skills in it has a specialization or at least one skill in the group is a different level from the others. Chummer cannot undo increases to ratings of broken skill groups.</text>
+    </string>
+    <string>
+      <key>MessageTitle_UndoBrokenSkillGroup</key>
+      <text>Cannot Undo This Skill Group Increase</text>
+    </string>
+    <string>
       <key>Message_UndoExpense</key>
       <text>Are you sure you want to undo this Expense Entry?</text>
     </string>
