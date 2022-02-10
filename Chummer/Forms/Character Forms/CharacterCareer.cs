@@ -3466,9 +3466,9 @@ namespace Chummer
                         }
                     }
                     // Barehanded Adept
-                    else if (CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && objSpell.Range == "T")
+                    else if (CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
                     {
-                        objSpell.UsesUnarmed = true;
+                        objSpell.BarehandedAdept = true;
                     }
 
                     CharacterObject.Spells.Add(objSpell);
@@ -16718,8 +16718,8 @@ namespace Chummer
                 lblSpellRange.Text = objSpell.DisplayRange(GlobalSettings.Language);
                 lblSpellDamage.Text = objSpell.DisplayDamage(GlobalSettings.Language);
                 lblSpellDuration.Text = objSpell.DisplayDuration(GlobalSettings.Language);
-                lblSpellDV.Text = objSpell.DisplayDV(GlobalSettings.Language);
-                lblSpellDV.SetToolTip(objSpell.DVTooltip);
+                lblSpellDV.Text = objSpell.DisplayDv(GlobalSettings.Language);
+                lblSpellDV.SetToolTip(objSpell.DvTooltip);
                 objSpell.SetSourceDetail(lblSpellSource);
 
                 // Determine the size of the Spellcasting Dice Pool.

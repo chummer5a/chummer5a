@@ -140,7 +140,7 @@ namespace Chummer
                     break;
             }
 
-            string strFv = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
+            string strFv = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷').Replace('*', '×') ?? string.Empty;
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strFv = strFv.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))

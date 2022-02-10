@@ -1588,10 +1588,10 @@ namespace Chummer
                 spell.Dispose();
                 throw new AbortedException();
             }
-            spell.Alchemical  = bonusNode.Attributes?["alchemical" ]?.InnerText == bool.TrueString;
-            spell.Extended    = bonusNode.Attributes?["extended"   ]?.InnerText == bool.TrueString;
-            spell.Limited     = bonusNode.Attributes?["limited"    ]?.InnerText == bool.TrueString;
-            spell.UsesUnarmed = bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
+            spell.Alchemical      = bonusNode.Attributes?["alchemical"     ]?.InnerText == bool.TrueString;
+            spell.Extended        = bonusNode.Attributes?["extended"       ]?.InnerText == bool.TrueString;
+            spell.Limited         = bonusNode.Attributes?["limited"        ]?.InnerText == bool.TrueString;
+            spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
             

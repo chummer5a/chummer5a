@@ -3095,9 +3095,9 @@ namespace Chummer
 
                         objSpell.FreeBonus = frmPickSpell.FreeBonus;
                         // Barehanded Adept
-                        if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && objSpell.Range == "T")
+                        if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
                         {
-                            objSpell.UsesUnarmed = true;
+                            objSpell.BarehandedAdept = true;
                         }
 
                         CharacterObject.Spells.Add(objSpell);
@@ -13209,8 +13209,8 @@ namespace Chummer
                 lblSpellRange.Text = objSpell.DisplayRange(GlobalSettings.Language);
                 lblSpellDamage.Text = objSpell.DisplayDamage(GlobalSettings.Language);
                 lblSpellDuration.Text = objSpell.DisplayDuration(GlobalSettings.Language);
-                lblSpellDV.Text = objSpell.DisplayDV(GlobalSettings.Language);
-                lblSpellDV.SetToolTip(objSpell.DVTooltip);
+                lblSpellDV.Text = objSpell.DisplayDv(GlobalSettings.Language);
+                lblSpellDV.SetToolTip(objSpell.DvTooltip);
 
                 objSpell.SetSourceDetail(lblSpellSource);
 
