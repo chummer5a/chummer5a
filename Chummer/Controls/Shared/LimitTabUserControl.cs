@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Shared
@@ -89,11 +90,11 @@ namespace Chummer.UI.Shared
 
         #region Click Events
 
-        private void cmdAddLimitModifier_Click(object sender, EventArgs e)
+        private async void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
             using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(null, "Physical", "Mental", "Social"))
             {
-                frmPickLimitModifier.ShowDialogSafe(this);
+                await frmPickLimitModifier.ShowDialogSafeAsync(this);
 
                 if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
                     return;
@@ -127,12 +128,12 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void tssLimitModifierNotes_Click(object sender, EventArgs e)
+        private async void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
             if (treLimit.SelectedNode == null) return;
             if (treLimit.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treLimit.SelectedNode);
+                await WriteNotes(objNotes, treLimit.SelectedNode);
             }
             else
             {
@@ -144,7 +145,7 @@ namespace Chummer.UI.Shared
                         continue;
                     using (EditNotes frmItemNotes = new EditNotes(objImprovement.Notes, objImprovement.NotesColor))
                     {
-                        frmItemNotes.ShowDialogSafe(this);
+                        await frmItemNotes.ShowDialogSafeAsync(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
                             continue;
 
@@ -157,9 +158,9 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void tssLimitModifierEdit_Click(object sender, EventArgs e)
+        private async void tssLimitModifierEdit_Click(object sender, EventArgs e)
         {
-            UpdateLimitModifier();
+            await UpdateLimitModifier();
         }
 
         #endregion Click Events
@@ -172,11 +173,11 @@ namespace Chummer.UI.Shared
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        private void WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        private async Task WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
             {
-                frmItemNotes.ShowDialogSafe(this);
+                await frmItemNotes.ShowDialogSafeAsync(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
 
@@ -432,7 +433,7 @@ namespace Chummer.UI.Shared
         /// <summary>
         /// Edit and update a Limit Modifier.
         /// </summary>
-        protected void UpdateLimitModifier()
+        protected async Task UpdateLimitModifier()
         {
             if (treLimit.SelectedNode.Level <= 0) return;
             TreeNode objSelectedNode = treLimit.SelectedNode;
@@ -443,13 +444,13 @@ namespace Chummer.UI.Shared
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound"));
+                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Warning_NoLimitFound"));
                 return;
             }
 
             using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
             {
-                frmPickLimitModifier.ShowDialogSafe(this);
+                await frmPickLimitModifier.ShowDialogSafeAsync(this);
 
                 if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
                     return;

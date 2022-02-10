@@ -1622,18 +1622,17 @@ namespace Chummer.Backend.Skills
                         sbdReturn.Append("))");
                 }
 
-                if (blnListAllLimbs || (att.Abbrev != "STR" && att.Abbrev != "AGI") || objShowOnlyCyberware == null)
+                if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) || objShowOnlyCyberware == null)
                     sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(att.DisplayAbbrev).Append(strSpace)
                              .Append('(')
                              .Append(att.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                 else
                 {
-                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(objShowOnlyCyberware.CurrentDisplayName)
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                             .Append(objShowOnlyCyberware.CurrentDisplayName)
                              .Append(strSpace).Append(att.DisplayAbbrev).Append(strSpace).Append('(')
-                             .Append((att.Abbrev == "STR"
-                                         ? objShowOnlyCyberware.TotalStrength
-                                         : objShowOnlyCyberware.TotalAgility)
-                                     .ToString(GlobalSettings.CultureInfo)).Append(')');
+                             .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
+                                                         .ToString(GlobalSettings.CultureInfo)).Append(')');
                     if ((objShowOnlyCyberware.LimbSlot == "arm"
                          || objShowOnlyCyberware.Name.Contains(" Arm")
                          || objShowOnlyCyberware.Name.Contains(" Hand"))
@@ -1703,7 +1702,7 @@ namespace Chummer.Backend.Skills
                 if (!string.IsNullOrEmpty(strExtra))
                     sbdReturn.Append(strExtra);
 
-                if (blnListAllLimbs && (att.Abbrev == "STR" || att.Abbrev == "AGI"))
+                if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
                 {
                     foreach (Cyberware cyberware in CharacterObject.Cyberware)
                     {
@@ -1715,9 +1714,7 @@ namespace Chummer.Backend.Skills
                             sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName).Append(')');
                         }
 
-                        int pool = PoolOtherAttribute(att.Abbrev, false, att.Abbrev == "STR"
-                                                          ? cyberware.TotalStrength
-                                                          : cyberware.TotalAgility);
+                        int pool = PoolOtherAttribute(att.Abbrev, false, cyberware.GetAttributeTotalValue(att.Abbrev));
                         if ((cyberware.LimbSlot != "arm"
                              && !cyberware.Name.Contains(" Arm")
                              && !cyberware.Name.Contains(" Hand"))
@@ -1772,8 +1769,7 @@ namespace Chummer.Backend.Skills
                     sbdReturn.Append(intBasePool.ToString(GlobalSettings.CultureInfo));
                     if (!string.IsNullOrEmpty(strExtra))
                         sbdReturn.Append(strExtra);
-                    if (!blnListAllLimbs || (objSwapSkillAttribute.ImprovedName != "STR" &&
-                                             objSwapSkillAttribute.ImprovedName != "AGI"))
+                    if (!blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
                         continue;
                     foreach (Cyberware cyberware in CharacterObject.Cyberware)
                     {
@@ -1790,9 +1786,7 @@ namespace Chummer.Backend.Skills
 
                         int intLoopPool =
                             PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false,
-                                               objSwapSkillAttribute.ImprovedName == "STR"
-                                                   ? cyberware.TotalStrength
-                                                   : cyberware.TotalAgility);
+                                               cyberware.GetAttributeTotalValue(objSwapSkillAttribute.ImprovedName));
                         if (objSpecialization != null)
                         {
                             intLoopPool += objSpecialization.SpecializationBonus;
@@ -2142,10 +2136,10 @@ namespace Chummer.Backend.Skills
                                     new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements))
                                 ),
                                 new DependencyGraphNode<string, Skill>(nameof(DefaultModifier),
-                                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                                 )
                             ),
-                            new DependencyGraphNode<string, Skill>(nameof(Name)),
+                            new DependencyGraphNode<string, Skill>(nameof(DictionaryKey)),
                             new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
                             new DependencyGraphNode<string, Skill>(nameof(Specializations))
                         ),
@@ -2172,7 +2166,7 @@ namespace Chummer.Backend.Skills
                         new DependencyGraphNode<string, Skill>(nameof(LearnedRating),
                             new DependencyGraphNode<string, Skill>(nameof(Karma),
                                 new DependencyGraphNode<string, Skill>(nameof(FreeKarma),
-                                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                                 ),
                                 new DependencyGraphNode<string, Skill>(nameof(RatingMaximum),
                                     new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements))
@@ -2181,7 +2175,7 @@ namespace Chummer.Backend.Skills
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(Base),
                                 new DependencyGraphNode<string, Skill>(nameof(FreeBase),
-                                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                                 ),
                                 new DependencyGraphNode<string, Skill>(nameof(RatingMaximum)),
                                 new DependencyGraphNode<string, Skill>(nameof(BasePoints))
@@ -2191,7 +2185,7 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(Leveled),
                         new DependencyGraphNode<string, Skill>(nameof(Rating),
                             new DependencyGraphNode<string, Skill>(nameof(CyberwareRating),
-                                new DependencyGraphNode<string, Skill>(nameof(Name))
+                                new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating))
                         )
@@ -2216,7 +2210,7 @@ namespace Chummer.Backend.Skills
                     )
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements),
-                    new DependencyGraphNode<string, Skill>(nameof(Name))
+                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey))
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(DisplayAttribute),
                     new DependencyGraphNode<string, Skill>(nameof(Attribute),
@@ -2270,7 +2264,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, Skill>(nameof(Enabled),
                     new DependencyGraphNode<string, Skill>(nameof(ForceDisabled)),
                     new DependencyGraphNode<string, Skill>(nameof(Attribute)),
-                    new DependencyGraphNode<string, Skill>(nameof(Name)),
+                    new DependencyGraphNode<string, Skill>(nameof(DictionaryKey)),
                     new DependencyGraphNode<string, Skill>(nameof(RequiresGroundMovement)),
                     new DependencyGraphNode<string, Skill>(nameof(RequiresSwimMovement)),
                     new DependencyGraphNode<string, Skill>(nameof(RequiresFlyMovement))

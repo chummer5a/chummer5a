@@ -438,7 +438,7 @@ namespace Chummer
                         frmPickItem.ForceItem(ForcedValue);
 
                     frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -499,7 +499,7 @@ namespace Chummer
                            })
                     {
                         frmPickItem.SetDropdownItemsMode(lstTraditions);
-                        frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickItem.ShowDialogSafe(_objCharacter);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -565,7 +565,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strExclude))
                     frmPickSkillGroup.ExcludeCategory = strExclude;
 
-                frmPickSkillGroup.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickSkillGroup.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
@@ -790,7 +790,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strExclude))
                 frmPickSkillGroup.ExcludeCategory = strExclude;
 
-            frmPickSkillGroup.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+            frmPickSkillGroup.ShowDialogSafe(_objCharacter);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
@@ -885,7 +885,7 @@ namespace Chummer
                                 : LanguageManager.GetString("String_Improvement_SelectAttribute")
                         })
                         {
-                            frmPickAttribute.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                            frmPickAttribute.ShowDialogSafe(_objCharacter);
 
                             // Make sure the dialogue window was not canceled.
                             if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1022,7 +1022,7 @@ namespace Chummer
                 trace += Environment.NewLine + "selectattribute = " + bonusNode.OuterXml;
                 Log.Trace(trace);
 
-                frmPickAttribute.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickAttribute.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1120,7 +1120,7 @@ namespace Chummer
                     : LanguageManager.GetString("String_Improvement_SelectLimit")
             })
             {
-                frmPickLimit.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickLimit.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickLimit.DialogResult == DialogResult.Cancel)
@@ -1251,7 +1251,7 @@ namespace Chummer
                         : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 })
                 {
-                    frmPickAttribute.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickAttribute.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1305,7 +1305,7 @@ namespace Chummer
                         }
                     }
 
-                    frmPickSkill.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickSkill.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSkill.DialogResult == DialogResult.Cancel)
@@ -1388,7 +1388,7 @@ namespace Chummer
                         : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 })
                 {
-                    frmPickAttribute.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickAttribute.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -1442,7 +1442,7 @@ namespace Chummer
                         }
                     }
 
-                    frmPickSkill.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickSkill.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSkill.DialogResult == DialogResult.Cancel)
@@ -1489,7 +1489,7 @@ namespace Chummer
 
                 frmPickSpell.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerText == bool.TrueString;
 
-                frmPickSpell.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickSpell.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSpell.DialogResult == DialogResult.Cancel)
@@ -1519,7 +1519,7 @@ namespace Chummer
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
                 {
-                    frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickText.ShowDialogSafe(_objCharacter);
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult == DialogResult.Cancel)
                         throw new AbortedException();
@@ -1570,7 +1570,7 @@ namespace Chummer
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
                 })
                 {
-                    frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickText.ShowDialogSafe(_objCharacter);
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult == DialogResult.Cancel)
                     {
@@ -1588,10 +1588,10 @@ namespace Chummer
                 spell.Dispose();
                 throw new AbortedException();
             }
-            spell.Alchemical  = bonusNode.Attributes?["alchemical" ]?.InnerText == bool.TrueString;
-            spell.Extended    = bonusNode.Attributes?["extended"   ]?.InnerText == bool.TrueString;
-            spell.Limited     = bonusNode.Attributes?["limited"    ]?.InnerText == bool.TrueString;
-            spell.UsesUnarmed = bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
+            spell.Alchemical      = bonusNode.Attributes?["alchemical"     ]?.InnerText == bool.TrueString;
+            spell.Extended        = bonusNode.Attributes?["extended"       ]?.InnerText == bool.TrueString;
+            spell.Limited         = bonusNode.Attributes?["limited"        ]?.InnerText == bool.TrueString;
+            spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
             
@@ -1619,7 +1619,7 @@ namespace Chummer
                 // Display the Select ComplexForm window.
                 using (SelectComplexForm frmPickComplexForm = new SelectComplexForm(_objCharacter))
                 {
-                    frmPickComplexForm.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickComplexForm.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
@@ -1884,7 +1884,7 @@ namespace Chummer
                 // Display the Select Program window.
                 using (SelectAIProgram frmPickProgram = new SelectAIProgram(_objCharacter))
                 {
-                    frmPickProgram.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickProgram.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickProgram.DialogResult == DialogResult.Cancel)
@@ -1908,7 +1908,7 @@ namespace Chummer
                         Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
                     {
-                        frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickText.ShowDialogSafe(_objCharacter);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                         {
@@ -1956,7 +1956,7 @@ namespace Chummer
                 // Display the Select Spell window.
                 using (SelectAIProgram frmPickProgram = new SelectAIProgram(_objCharacter, false, true))
                 {
-                    frmPickProgram.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickProgram.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickProgram.DialogResult == DialogResult.Cancel)
@@ -1980,7 +1980,7 @@ namespace Chummer
                         Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
                     })
                     {
-                        frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickText.ShowDialogSafe(_objCharacter);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                         {
@@ -2048,7 +2048,7 @@ namespace Chummer
                 int count = 0;
                 //Black magic LINQ to cast content of list to another type
                 frmSelect.SetGeneralItemsMode(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalSettings.InvariantCultureInfo), x.Name)));
-                frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmSelect.ShowDialogSafe(_objCharacter);
 
                 if (frmSelect.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
@@ -2164,7 +2164,7 @@ namespace Chummer
                 intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
 
             string strUseUnique = _strUnique;
-            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 
@@ -2231,7 +2231,7 @@ namespace Chummer
 
                 Log.Trace("attributelevel = " + bonusNode.OuterXml);
 
-                frmPickAttribute.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickAttribute.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickAttribute.DialogResult == DialogResult.Cancel)
@@ -2781,20 +2781,12 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillCategory, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0,
-                        0,
-                        0, 0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillCategory, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0,
-                        0,
-                        0, 0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillCategory, _strUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1, 0,
+                                  0,
+                                  0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
             }
         }
 
@@ -2812,18 +2804,11 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillGroup, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0, 0, 0,
-                        0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillGroup, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1, 0, 0, 0,
-                        0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillGroup, _strUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1, 0, 0, 0,
+                                  0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
             }
         }
 
@@ -2837,7 +2822,7 @@ namespace Chummer
                 );
           
             string strUseUnique = _strUnique;
-            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 
@@ -2846,18 +2831,12 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillAttribute, strUseUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1,
+                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
+                                  blnAddToRating);
             }
         }
 
@@ -2871,7 +2850,7 @@ namespace Chummer
                 );
             
             string strUseUnique = _strUnique;
-            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 
@@ -2880,18 +2859,12 @@ namespace Chummer
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode["exclude"]?.InnerText;
-                if (!string.IsNullOrEmpty(strExclude))
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, strExclude, blnAddToRating);
-                }
-                else
-                {
-                    CreateImprovement(strName, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating), 1,
-                        0, 0, 0, 0, string.Empty, blnAddToRating);
-                }
+                CreateImprovement(strName, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                                                                _intRating), 1,
+                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
+                                  blnAddToRating);
             }
         }
 
@@ -3706,7 +3679,7 @@ namespace Chummer
                                     frmPickCategory.ForceItem(ForcedValue);
                                 }
 
-                                frmPickCategory.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                                frmPickCategory.ShowDialogSafe(_objCharacter);
 
                                 // Make sure the dialogue window was not canceled.
                                 if (frmPickCategory.DialogResult == DialogResult.Cancel)
@@ -3787,7 +3760,7 @@ namespace Chummer
                     }
 
                     frmPickWeapon.ForceItem(ForcedValue);
-                    frmPickWeapon.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickWeapon.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -3823,7 +3796,7 @@ namespace Chummer
                 ForcedMentor = ForcedValue
             })
             {
-                frmPickMentorSpirit.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickMentorSpirit.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
@@ -3864,7 +3837,7 @@ namespace Chummer
                 ForcedMentor = ForcedValue
             })
             {
-                frmPickMentorSpirit.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickMentorSpirit.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
@@ -3976,7 +3949,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Trace("walkmultiplier", Environment.NewLine
+            Log.Trace("walkmultiplier" + Environment.NewLine
                 + "walkmultiplier = " + bonusNode.OuterXml);
             
             string strCategory = bonusNode["category"]?.InnerText;
@@ -4072,7 +4045,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(ForcedValue))
                     frmPickSide.ForceValue(ForcedValue);
                 else
-                    frmPickSide.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickSide.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSide.DialogResult == DialogResult.Cancel)
@@ -4201,7 +4174,7 @@ namespace Chummer
                                 string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strLimitToPowers))
                                     frmPickPower.LimitToPowers = strLimitToPowers;
-                                frmPickPower.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                                frmPickPower.ShowDialogSafe(_objCharacter);
 
                                 // Make sure the dialogue window was not canceled.
                                 if (frmPickPower.DialogResult == DialogResult.Cancel)
@@ -4323,7 +4296,7 @@ namespace Chummer
                             }
 
                             frmPickItem.SetGeneralItemsMode(lstArts);
-                            frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                            frmPickItem.ShowDialogSafe(_objCharacter);
                             // Don't do anything else if the form was canceled.
                             if (frmPickItem.DialogResult == DialogResult.Cancel)
                                 throw new AbortedException();
@@ -4342,7 +4315,7 @@ namespace Chummer
                 {
                     using (SelectArt frmPickArt = new SelectArt(_objCharacter, SelectArt.Mode.Art))
                     {
-                        frmPickArt.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickArt.ShowDialogSafe(_objCharacter);
                         // Don't do anything else if the form was canceled.
                         if (frmPickArt.DialogResult == DialogResult.Cancel)
                             throw new AbortedException();
@@ -4434,7 +4407,7 @@ namespace Chummer
                             }
 
                             frmPickItem.SetGeneralItemsMode(lstMetamagics);
-                            frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                            frmPickItem.ShowDialogSafe(_objCharacter);
                             // Don't do anything else if the form was canceled.
                             if (frmPickItem.DialogResult == DialogResult.Cancel)
                                 throw new AbortedException();
@@ -4461,7 +4434,7 @@ namespace Chummer
                     InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
                     using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                     {
-                        frmPickMetamagic.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickMetamagic.ShowDialogSafe(_objCharacter);
                         // Don't do anything else if the form was canceled.
                         if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                             throw new AbortedException();
@@ -4554,7 +4527,7 @@ namespace Chummer
                             }
 
                             frmPickItem.SetGeneralItemsMode(lstEchoes);
-                            frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                            frmPickItem.ShowDialogSafe(_objCharacter);
                             // Don't do anything else if the form was canceled.
                             if (frmPickItem.DialogResult == DialogResult.Cancel)
                                 throw new AbortedException();
@@ -4582,7 +4555,7 @@ namespace Chummer
                     InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1, Technomancer = true};
                     using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                     {
-                        frmPickMetamagic.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickMetamagic.ShowDialogSafe(_objCharacter);
                         // Don't do anything else if the form was canceled.
                         if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                             throw new AbortedException();
@@ -5398,7 +5371,7 @@ namespace Chummer
                 using (SelectItem frmPickItem = new SelectItem())
                 {
                     frmPickItem.SetGeneralItemsMode(lstCritters);
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
 
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                     {
@@ -5442,7 +5415,7 @@ namespace Chummer
                         frmPickItem.Opacity = 0;
                     }
 
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5522,7 +5495,7 @@ namespace Chummer
                             frmPickItem.Opacity = 0;
                         }
 
-                        frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickItem.ShowDialogSafe(_objCharacter);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5589,7 +5562,7 @@ namespace Chummer
                         frmPickItem.Opacity = 0;
                     }
 
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5633,7 +5606,7 @@ namespace Chummer
                         frmPickText.Opacity = 0;
                     }
 
-                    frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickText.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -5681,7 +5654,7 @@ namespace Chummer
                                 frmPickItem.Opacity = 0;
                             }
 
-                            frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                            frmPickItem.ShowDialogSafe(_objCharacter);
 
                             // Make sure the dialogue window was not canceled.
                             if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -5756,7 +5729,7 @@ namespace Chummer
                         GlobalSettings.Language)
                 })
                 {
-                    frmPickPower.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickPower.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickPower.DialogResult == DialogResult.Cancel)
@@ -5883,7 +5856,7 @@ namespace Chummer
                        })
                 {
                     frmPickItem.SetGeneralItemsMode(lstItems);
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
                     {
@@ -5927,7 +5900,7 @@ namespace Chummer
                             frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
                         }
 
-                        if (frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
+                        if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
@@ -6048,7 +6021,7 @@ namespace Chummer
                 using (SelectItem frmPickItem = new SelectItem())
                 {
                     frmPickItem.SetGeneralItemsMode(lstQualities);
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
 
                     // Don't do anything else if the form was canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6110,7 +6083,7 @@ namespace Chummer
                     using (SelectItem frmPickItem = new SelectItem())
                     {
                         frmPickItem.SetGeneralItemsMode(lstQualities);
-                        frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickItem.ShowDialogSafe(_objCharacter);
 
                         // Don't do anything else if the form was canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6232,7 +6205,7 @@ namespace Chummer
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
                 })
                 {
-                    frmPickSpellCategory.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickSpellCategory.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
@@ -6271,7 +6244,7 @@ namespace Chummer
                 })
                 {
                     frmPickSpellCategory.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
-                    frmPickSpellCategory.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickSpellCategory.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
@@ -6302,7 +6275,7 @@ namespace Chummer
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
                 {
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6334,7 +6307,7 @@ namespace Chummer
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
                 })
                 {
-                    frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                    frmPickItem.ShowDialogSafe(_objCharacter);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -6449,7 +6422,7 @@ namespace Chummer
                     {
                         frmSelect.SetGeneralItemsMode(lstSpirits);
                         frmSelect.ForceItem(ForcedValue);
-                        frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmSelect.ShowDialogSafe(_objCharacter);
                         if (frmSelect.DialogResult == DialogResult.Cancel)
                         {
                             throw new AbortedException();
@@ -6650,7 +6623,7 @@ namespace Chummer
                            })
                     {
                         frmPickItem.SetGeneralItemsMode(lstSkills);
-                        frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                        frmPickItem.ShowDialogSafe(_objCharacter);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -7316,7 +7289,7 @@ namespace Chummer
                            })
                     {
                         frmPickItem.SetDropdownItemsMode(lstActions);
-                        frmPickItem.ShowDialogSafe(Program.MainForm);
+                        frmPickItem.ShowDialogSafe(_objCharacter);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -7460,7 +7433,7 @@ namespace Chummer
                     frmPickItem.ForceItem(ForcedValue);
 
                 frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
-                frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter));
+                frmPickItem.ShowDialogSafe(_objCharacter);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickItem.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.SelectedName))

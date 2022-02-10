@@ -62,7 +62,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnAlchemical;
         private bool _blnFreeBonus;
-        private bool _blnUsesUnarmed;
+        private bool _blnBarehandedAdept;
         private int _intGrade;
 
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
@@ -190,7 +190,7 @@ namespace Chummer
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", string.Empty));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("barehandedadept", _blnBarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
@@ -246,7 +246,8 @@ namespace Chummer
             else
                 _blnCustomExtended = false;
             objNode.TryGetBoolFieldQuickly("freebonus", ref _blnFreeBonus);
-            objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnUsesUnarmed);
+            if (!objNode.TryGetBoolFieldQuickly("barehandedadept", ref _blnBarehandedAdept))
+                objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnBarehandedAdept);
             objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -282,8 +283,9 @@ namespace Chummer
             objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
             objWriter.WriteElementString("damage", DisplayDamage(strLanguageToPrint));
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
-            objWriter.WriteElementString("dv", DisplayDV(strLanguageToPrint));
+            objWriter.WriteElementString("dv", DisplayDv(strLanguageToPrint));
             objWriter.WriteElementString("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("barehandedadept", BarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
@@ -480,9 +482,9 @@ namespace Chummer
         /// <summary>
         /// Translated Drain Value.
         /// </summary>
-        public string DisplayDV(string strLanguage)
+        public string DisplayDv(string strLanguage)
         {
-            string strReturn = DV.Replace('/', '÷');
+            string strReturn = CalculatedDv.Replace('/', '÷').Replace('*', '×');
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strReturn = strReturn.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", strLanguage))
@@ -500,18 +502,21 @@ namespace Chummer
         /// <summary>
         /// Drain Tooltip.
         /// </summary>
-        public string DVTooltip
+        public string DvTooltip
         {
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                int intMAG = _objCharacter.MAG.TotalValue;
-                string strDV = DV;
+                // Barehanded Adept is limited to a Force of MAG/3 rounded up
+                int intHighestForce = BarehandedAdept
+                    ? (_objCharacter.MAG.TotalValue + 2) / 3
+                    : _objCharacter.MAG.TotalValue * 2;
+                string strDV = CalculatedDv;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdTip))
                 {
-                    sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainBase"));
-                    for (int i = 1; i <= intMAG * 2; i++)
+                    sbdTip.Append(LanguageManager.GetString("Tip_SpellDrain"));
+                    for (int i = 1; i <= intHighestForce; i++)
                     {
                         // Calculate the Spell's Drain for the current Force.
                         object xprResult = CommonFunctions.EvaluateInvariantXPath(
@@ -529,21 +534,6 @@ namespace Chummer
                                   .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
                                   .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
                                   .Append(intDV.ToString(GlobalSettings.CultureInfo));
-
-                            string strLabelFormat = strSpace + "({0}" + LanguageManager.GetString("String_Colon")
-                                                    + strSpace + "{1})";
-                            if (Limited)
-                            {
-                                sbdTip.AppendFormat(GlobalSettings.CultureInfo, strLabelFormat,
-                                                    LanguageManager.GetString("String_SpellLimited"), -2);
-                            }
-
-                            if (Extended && _blnCustomExtended)
-                            {
-                                sbdTip.AppendFormat(GlobalSettings.CultureInfo, strLabelFormat,
-                                                    LanguageManager.GetString("String_SpellExtended"),
-                                                    '+' + 2.ToString(GlobalSettings.CultureInfo));
-                            }
                         }
                         else
                         {
@@ -553,17 +543,42 @@ namespace Chummer
                         }
                     }
 
-                    List<Improvement> lstDrainImprovements = RelevantImprovements(
-                        o => o.ImproveType == Improvement.ImprovementType.DrainValue
-                             || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                             || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).ToList();
-                    if (lstDrainImprovements.Count == 0)
-                        return sbdTip.ToString();
-                    sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
-                    foreach (Improvement objLoopImprovement in lstDrainImprovements)
+                    sbdTip.AppendLine();
+                    if (BarehandedAdept)
+                        sbdTip.Append('(');
+                    sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainBase")).Append(strSpace).Append('(').Append(DvBase).Append(')');
+                    if (Limited)
                     {
-                        sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("String_SpellLimited")).Append(strSpace).Append("(-2)");
+                    }
+                    if (Extended && _blnCustomExtended)
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("String_SpellExtended")).Append(strSpace)
+                              .Append("(+2)");
+                    }
+                    foreach (Improvement objLoopImprovement in RelevantImprovements(o =>
+                                 o.ImproveType == Improvement.ImprovementType.DrainValue
+                                 || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                 || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true))
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
                               .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
+                    }
+
+                    if (BarehandedAdept)
+                    {
+                        Improvement objBarehandedAdeptImprovement = ImprovementManager
+                                                                    .GetCachedImprovementListForValueOf(
+                                                                        _objCharacter,
+                                                                        Improvement.ImprovementType.AllowSpellRange)
+                                                                    .Find(x => x.ImprovedName == "T" || x.ImprovedName == "T (A)");
+                        string strBarehandedAdeptName = objBarehandedAdeptImprovement != null
+                            ? _objCharacter.GetObjectName(objBarehandedAdeptImprovement)
+                            : LanguageManager.TranslateExtra("Barehanded Adept", GlobalSettings.Language, _objCharacter, "qualities.xml");
+                        sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace).Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
                     }
 
                     return sbdTip.ToString();
@@ -683,17 +698,17 @@ namespace Chummer
         /// <summary>
         /// Spell's drain value.
         /// </summary>
-        public string DV
+        public string CalculatedDv
         {
             get
             {
-                string strReturn = _strDV;
-                if (!Limited && !_blnCustomExtended && !RelevantImprovements(o =>
+                string strReturn = DvBase;
+                if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !RelevantImprovements(o =>
                         o.ImproveType == Improvement.ImprovementType.DrainValue
                         || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                         || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
                     return strReturn;
-                bool force = strReturn.StartsWith('F');
+                bool blnForce = strReturn.StartsWith('F');
                 string strDV = strReturn.TrimStartOnce('F');
                 //Navigator can't do math on a single value, so inject a mathable value.
                 if (string.IsNullOrEmpty(strDV))
@@ -740,14 +755,19 @@ namespace Chummer
                         sbdReturn.Append("+2");
                     }
 
+                    if (BarehandedAdept)
+                    {
+                        sbdReturn.Insert(0, "2 * (").Append(')');
+                    }
+
                     xprResult = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString(), out bool blnIsSuccess);
                     if (!blnIsSuccess)
                         return strReturn;
                 }
 
-                if (force)
+                if (blnForce)
                 {
-                    strReturn = string.Format(GlobalSettings.InvariantCultureInfo, "F{0:+0;-0;}", xprResult);
+                    strReturn = string.Format(GlobalSettings.InvariantCultureInfo, BarehandedAdept ? "2 * F{0:+0;-0;}" : "F{0:+0;-0;}", xprResult);
                 }
                 else if (xprResult.ToString() != "0")
                 {
@@ -755,6 +775,11 @@ namespace Chummer
                 }
                 return strReturn;
             }
+        }
+
+        public string DvBase
+        {
+            get => _strDV;
             set => _strDV = value;
         }
 
@@ -897,12 +922,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Does the spell use Unarmed in place of Spellcasting for its casting test?
+        /// Does the spell use Unarmed in place of Spellcasting for its casting test and have its drain doubled?
         /// </summary>
-        public bool UsesUnarmed
+        public bool BarehandedAdept
         {
-            get => _blnUsesUnarmed;
-            set => _blnUsesUnarmed = value;
+            get => _blnBarehandedAdept;
+            set => _blnBarehandedAdept = value;
         }
 
         #endregion Properties
@@ -927,7 +952,7 @@ namespace Chummer
                     case "Rituals":
                         return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
                     default:
-                        return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
+                        return _objCharacter.SkillsSection.GetActiveSkill(BarehandedAdept ? "Unarmed Combat" : "Spellcasting");
                 }
             }
         }
@@ -943,7 +968,7 @@ namespace Chummer
                 Skill objSkill = Skill;
                 if (objSkill != null)
                 {
-                    intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
+                    intReturn = BarehandedAdept ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                     // Add any Specialization bonus if applicable.
                     intReturn += Skill.GetSpecializationBonus(Category);
                 }
@@ -971,7 +996,7 @@ namespace Chummer
                     string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     Skill objSkill = Skill;
                     CharacterAttrib objAttrib
-                        = _objCharacter.GetAttribute(UsesUnarmed ? "MAG" : (objSkill?.Attribute ?? "MAG"));
+                        = _objCharacter.GetAttribute(BarehandedAdept ? "MAG" : (objSkill?.Attribute ?? "MAG"));
                     if (objAttrib != null)
                     {
                         sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
@@ -980,7 +1005,7 @@ namespace Chummer
 
                     if (objSkill != null)
                     {
-                        int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
+                        int intPool = BarehandedAdept ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                         if (objAttrib != null)
                             intPool -= objAttrib.TotalValue;
                         if (sbdReturn.Length > 0)

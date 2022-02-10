@@ -724,12 +724,12 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void btnExotic_Click(object sender, EventArgs e)
+        private async void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
             using (SelectExoticSkill frmPickExoticSkill = new SelectExoticSkill(_objCharacter))
             {
-                frmPickExoticSkill.ShowDialogSafe(this);
+                await frmPickExoticSkill.ShowDialogSafeAsync(this);
 
                 if (frmPickExoticSkill.DialogResult != DialogResult.OK)
                     return;
@@ -741,14 +741,14 @@ namespace Chummer.UI.Skills
             // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
             if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"));
+                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
                 _objCharacter.SkillsSection.Skills.Remove(objSkill);
                 return;
             }
             objSkill.Upgrade();
         }
 
-        private void btnKnowledge_Click(object sender, EventArgs e)
+        private async void btnKnowledge_Click(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -756,16 +756,16 @@ namespace Chummer.UI.Skills
 
                 Form frmToUse = ParentForm ?? Program.MainForm;
 
-                DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                DialogResult eResult = await frmToUse.DoThreadSafeFunc(async () =>
                 {
                     using (SelectItem form = new SelectItem
                            {
-                               Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
+                               Description = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill")
                            })
                     {
                         form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
-                        form.ShowDialogSafe(frmToUse);
+                        await form.ShowDialogSafeAsync(frmToUse);
 
                         if (form.DialogResult == DialogResult.OK)
                             strSelectedSkill = form.SelectedItem;
@@ -786,11 +786,11 @@ namespace Chummer.UI.Skills
                 {
                     DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_NewNativeLanguageSkill"),
+                                      await LanguageManager.GetStringAsync("Message_NewNativeLanguageSkill"),
                                       1 + ImprovementManager.ValueOf(
                                           _objCharacter, Improvement.ImprovementType.NativeLanguageLimit),
                                       skill.WritableName),
-                        LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
+                        await LanguageManager.GetStringAsync("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
                     switch (eDialogResult)
                     {
                         case DialogResult.Cancel:

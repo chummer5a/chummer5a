@@ -110,11 +110,11 @@ namespace Chummer
 
         #region Control Events
 
-        private void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
+        private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabCustomDataDirectories"))
-                frmOptions.ShowDialogSafe(this);
+                await frmOptions.ShowDialogSafeAsync(this);
         }
 
         private async void cmdRename_Click(object sender, EventArgs e)
@@ -125,7 +125,7 @@ namespace Chummer
                 Description = await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingRename")
             })
             {
-                frmSelectName.ShowDialogSafe(this);
+                await frmSelectName.ShowDialogSafeAsync(this);
                 if (frmSelectName.DialogResult != DialogResult.OK)
                     return;
                 _objCharacterSettings.Name = frmSelectName.SelectedValue;
@@ -187,8 +187,8 @@ namespace Chummer
                 if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemove(
                     _objReferenceCharacterSettings.DictionaryKey, out CharacterSettings objDeletedSettings))
                     return;
-                if (!Utils.SafeDeleteFile(
-                    Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
+                if (!await Utils.SafeDeleteFileAsync(
+                        Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
                 {
                     // Revert removal of setting if we cannot delete the file
                     SettingsManager.LoadedCharacterSettingsAsModifiable.Add(objDeletedSettings.DictionaryKey, objDeletedSettings);
@@ -246,7 +246,7 @@ namespace Chummer
                         Description = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName")
                     })
                     {
-                        frmSelectName.ShowDialogSafe(this);
+                        await frmSelectName.ShowDialogSafeAsync(this);
                         if (frmSelectName.DialogResult != DialogResult.OK)
                             return;
                         strSelectedName = frmSelectName.SelectedValue;

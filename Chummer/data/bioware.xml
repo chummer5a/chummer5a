@@ -437,8 +437,8 @@
           <name>AGI</name>
           <val>1</val>
         </specificattribute>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>1</val>
         </specificattribute>
         <specificattribute>
@@ -476,8 +476,8 @@
       <cost>Rating * 95000</cost>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
         <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
@@ -3383,8 +3383,8 @@
           <name>AGI</name>
           <val>1</val>
         </specificattribute>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>1</val>
         </specificattribute>
         <specificattribute>
@@ -3470,7 +3470,7 @@
       <bonus unique="muscle">
         <disablequality>Celerity</disablequality>
         <specificattribute>
-          <name precedence="0">AGI</name>
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -3638,8 +3638,8 @@
       <cost>Rating * 100000</cost>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
         <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>

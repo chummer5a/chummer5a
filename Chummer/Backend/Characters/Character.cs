@@ -1331,15 +1331,13 @@ namespace Chummer
                                                       string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
-                                                    setChangedProperties.Add(strPropertyToUpdate);
-                                                else
                                                 {
-                                                    HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
-                                                    strInnerTemp.Add(strPropertyToUpdate);
-                                                    dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -1416,33 +1414,35 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Reset:
                         {
                             blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(RedlinerBonus));
-                            strTemp.Add(nameof(PrototypeTranshumanEssenceUsed));
-                            strTemp.Add(nameof(BiowareEssence));
-                            strTemp.Add(nameof(CyberwareEssence));
-                            strTemp.Add(nameof(EssenceHole));
-                            dicChangedProperties.Add(this, strTemp);
+                            if (!dicChangedProperties.TryGetValue(this,
+                                                                  out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(this, setChangedProperties);
+                            }
+                            setChangedProperties.Add(nameof(RedlinerBonus));
+                            setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
+                            setChangedProperties.Add(nameof(BiowareEssence));
+                            setChangedProperties.Add(nameof(CyberwareEssence));
+                            setChangedProperties.Add(nameof(EssenceHole));
                             break;
                         }
                     }
 
                     if (blnDoCyberlimbAttributesRefresh)
                     {
-                        CharacterAttrib objAttribute = GetAttribute("AGI");
-                        if (objAttribute != null)
+                        foreach (string strAbbrev in Backend.Equipment.Cyberware.CyberlimbAttributeAbbrevs)
                         {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(CharacterAttrib.TotalValue));
-                            dicChangedProperties.Add(objAttribute, strTemp);
-                        }
-
-                        objAttribute = GetAttribute("STR");
-                        if (objAttribute != null)
-                        {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(CharacterAttrib.TotalValue));
-                            dicChangedProperties.Add(objAttribute, strTemp);
+                            CharacterAttrib objAttribute = GetAttribute(strAbbrev);
+                            if (objAttribute == null)
+                                continue;
+                            if (!dicChangedProperties.TryGetValue(objAttribute,
+                                                                  out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(objAttribute, setChangedProperties);
+                            }
+                            setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
                         }
                     }
 
@@ -1838,7 +1838,7 @@ namespace Chummer
                             xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                     })
                     {
-                        frmPickText.ShowDialogSafe(Program.GetFormForDialog(this));
+                        frmPickText.ShowDialogSafe(this);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
                             continue;
@@ -3393,7 +3393,7 @@ namespace Chummer
                                     {
                                         using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                         {
-                                            frmPickBP.ShowDialogSafe(Program.GetFormForDialog(this));
+                                            frmPickBP.ShowDialogSafe(this);
                                             return frmPickBP.DialogResult;
                                         }
                                     }
@@ -3916,7 +3916,7 @@ namespace Chummer
                                                             using (SelectItem frmPickItem = new SelectItem())
                                                             {
                                                                 frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                                frmPickItem.ShowDialogSafe(Program.GetFormForDialog(this));
+                                                                frmPickItem.ShowDialogSafe(this);
 
                                                                 ePickItemResult = frmPickItem.DialogResult;
                                                                 selectedContactUniqueId = frmPickItem.SelectedItem;
@@ -5253,6 +5253,45 @@ namespace Chummer
                         // Refresh certain improvements
                         using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                         {
+                            // Process all events related to improvements
+                            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                                       Utils.DictionaryForMultiplePropertyChangedPool,
+                                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
+                                           dicChangedProperties))
+                            {
+                                try
+                                {
+                                    foreach (Improvement objImprovement in Improvements)
+                                    {
+                                        if (!objImprovement.Enabled)
+                                            continue;
+                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                     string strPropertyToUpdate) in objImprovement
+                                                     .GetRelevantPropertyChangers())
+                                        {
+                                            if (!dicChangedProperties.TryGetValue(
+                                                    objItemToUpdate, out HashSet<string> setChangedProperties))
+                                            {
+                                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                            }
+
+                                            setChangedProperties.Add(strPropertyToUpdate);
+                                        }
+                                    }
+                                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                                             dicChangedProperties)
+                                    {
+                                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                                    }
+                                }
+                                finally
+                                {
+                                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                                        Utils.StringHashSetPool.Return(setToReturn);
+                                }
+                            }
+
                             // Refresh Black Market Discounts
                             RefreshBlackMarketDiscounts();
                             // Refresh Dealer Connection discounts
@@ -7165,7 +7204,7 @@ namespace Chummer
                 {
                     using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
                     {
-                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
+                        frmSelectMetatype.ShowDialogSafe(this);
                         return frmSelectMetatype.DialogResult;
                     }
                 });
@@ -7176,7 +7215,7 @@ namespace Chummer
                 {
                     using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
                     {
-                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
+                        frmSelectMetatype.ShowDialogSafe(this);
                         return frmSelectMetatype.DialogResult;
                     }
                 });
@@ -7539,11 +7578,31 @@ namespace Chummer
         /// <summary>
         /// Book code (using the translated version if applicable) using the character's data files.
         /// </summary>
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookCodeFromAltCodeAsync(strAltCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
         public string LanguageBookShort(string strCode, string strLanguage = "")
         {
             return CommonFunctions.LanguageBookShort(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookShortAsync(strCode, strLanguage, this);
         }
 
         /// <summary>
@@ -7554,6 +7613,16 @@ namespace Chummer
         public string LanguageBookLong(string strCode, string strLanguage = "")
         {
             return CommonFunctions.LanguageBookLong(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book name (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookLongAsync(strCode, strLanguage, this);
         }
 
         /// <summary>
@@ -9735,6 +9804,28 @@ namespace Chummer
             if(strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute) && !blnExplicit)
                 strAttribute = "MAG";
             return AttributeSection.GetAttributeByName(strAttribute);
+        }
+
+        /// <summary>
+        /// Get all CharacterAttributes that have a particular abbreviation.
+        /// </summary>
+        /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
+        /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
+        /// Mostly expected to be used for gutting Mystic Adept power points.</param>
+        public IEnumerable<CharacterAttrib> GetAllAttributes(string strAttribute, bool blnExplicit = false)
+        {
+            if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute) && !blnExplicit)
+                strAttribute = "MAG";
+            foreach (CharacterAttrib objLoop in AttributeSection.AttributeList)
+            {
+                if (objLoop.Abbrev == strAttribute)
+                    yield return objLoop;
+            }
+            foreach (CharacterAttrib objLoop in AttributeSection.SpecialAttributeList)
+            {
+                if (objLoop.Abbrev == strAttribute)
+                    yield return objLoop;
+            }
         }
 
         /// <summary>
@@ -13916,15 +14007,10 @@ namespace Chummer
             }
         }
 
-        public string PhysicalCMLabelText
-        {
-            get
-            {
-                return IsAI
-                    ? LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM")
-                    : LanguageManager.GetString("Label_OtherPhysicalCM");
-            }
-        }
+        public string PhysicalCMLabelText =>
+            IsAI
+                ? LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM")
+                : LanguageManager.GetString("Label_OtherPhysicalCM");
 
         public string PhysicalCMToolTip
         {
@@ -15026,8 +15112,8 @@ namespace Chummer
                 foreach(Cyberware objCyber in Cyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
                 {
                     intLegs += objCyber.LimbSlotCount;
-                    intTempAGI = Math.Min(intTempAGI, objCyber.TotalAgility);
-                    intTempSTR = Math.Min(intTempSTR, objCyber.TotalStrength);
+                    intTempAGI = Math.Min(intTempAGI, objCyber.GetAttributeTotalValue("AGI"));
+                    intTempSTR = Math.Min(intTempSTR, objCyber.GetAttributeTotalValue("STR"));
                 }
 
                 if(intTempAGI != int.MaxValue && intTempSTR != int.MaxValue && intLegs >= 2)
@@ -19999,7 +20085,7 @@ namespace Chummer
                                     {
                                         using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                         {
-                                            frmPickBP.ShowDialogSafe(Program.GetFormForDialog(this));
+                                            frmPickBP.ShowDialogSafe(this);
                                             if (frmPickBP.DialogResult != DialogResult.OK)
                                                 return false;
                                         }
@@ -20061,7 +20147,7 @@ namespace Chummer
 
                                     using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
                                     {
-                                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
+                                        frmSelectMetatype.ShowDialogSafe(this);
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                             return false;
                                     }
@@ -20070,7 +20156,7 @@ namespace Chummer
                                 {
                                     using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
                                     {
-                                        frmSelectMetatype.ShowDialogSafe(Program.GetFormForDialog(this));
+                                        frmSelectMetatype.ShowDialogSafe(this);
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                             return false;
                                     }
@@ -22069,7 +22155,7 @@ namespace Chummer
                 Dice = WIL.TotalValue
             })
             {
-                frmWILHits.ShowDialogSafe(Program.GetFormForDialog(this));
+                frmWILHits.ShowDialogSafe(this);
 
                 if (frmWILHits.DialogResult != DialogResult.OK)
                     return false;

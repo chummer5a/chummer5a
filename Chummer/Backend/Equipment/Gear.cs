@@ -245,7 +245,7 @@ namespace Chummer.Backend.Equipment
                            })
                     {
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickText.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
+                        if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -346,7 +346,7 @@ namespace Chummer.Backend.Equipment
                         !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
                         frmPickWeaponCategory.OnlyCategory = _strForcedValue;
 
-                    if (frmPickWeaponCategory.ShowDialogSafe(Program.GetFormForDialog(_objCharacter))
+                    if (frmPickWeaponCategory.ShowDialogSafe(_objCharacter)
                         != DialogResult.OK)
                     {
                         _guiID = Guid.Empty;
@@ -590,7 +590,7 @@ namespace Chummer.Backend.Equipment
                                     frmPickItem.SetGeneralItemsMode(lstGears);
 
                                     // Make sure the dialogue window was not canceled.
-                                    if (frmPickItem.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
+                                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                     {
                                         if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                                         {

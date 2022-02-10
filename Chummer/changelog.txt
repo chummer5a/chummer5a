@@ -5,6 +5,23 @@ Application Changes:
 - The default Internet Explorer version emulated for the character sheet viewer is now 11 instead of 8.
 - Fixed a rare crash that could happen when attempting to print a character.
 - Changelogs for newer versions of Chummer now properly show up in the updater before they are downloaded.
+- Fixed a rare crash when attempting to convert certain colors to and/or from their dark mode versions.
+- Startup times for users with watch folders has been decreased by about 20%.
+- Fixed an issue where some cyberware with wireless bonuses that depend on either the presence of other cyberware or on there being multiple instances of the same cyberware would cause that cyberware's bonuses to mysteriously disappear.
+- Barehanded Adept now properly allows characters to learn spells with a Touch or Touch (Area) range.
+- Spells bought as part of Barehanded Adept are now marked as such in exports.
+- Barehanded Adept spells now properly have their drain values doubled, and the tooltip for their drain values now only show forces up to a third of their Magic attribute rounded up (which is the limit imposed by the quality).
+- Tooltips for drain and fading values are now less confusing about how modifiers are incorporated.
+
+Data Changes:
+- The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
+- Barehanded Adept no longer shows "T, T (A)" after its name after it is added.
+
+Changed/New Strings:
+- Tip_SpellDrain
+- Tip_SpellDrainBase
+- Tip_ComplexFormFading
+- Tip_ComplexFormFadingBase
 
 Build 221
 Application Changes:

@@ -232,7 +232,7 @@ namespace Chummer.Backend.Skills
 
         internal void AddSkills(FilterOption eFilterOption, string strName = "")
         {
-            List<Skill> lstSkillsToAdd = new List<Skill>(GetActiveSkillsFromData(eFilterOption, true, strName));
+            List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName).ToList();
             foreach (Skill objSkill in lstSkillsToAdd)
             {
                 Guid guidLoop = objSkill.SkillId;

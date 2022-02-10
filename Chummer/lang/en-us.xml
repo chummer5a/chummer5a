@@ -6264,16 +6264,24 @@
     <!-- End Region -->
     <!-- Region ToolTips -->
     <string>
+      <key>Tip_SpellDrain</key>
+      <text>Drain for</text>
+    </string>
+    <string>
       <key>Tip_SpellDrainBase</key>
-      <text>Base Drain for</text>
+      <text>Base Drain</text>
     </string>
     <string>
       <key>Tip_SpellDrainSeeDescription</key>
       <text>See Spell Description</text>
     </string>
     <string>
+      <key>Tip_ComplexFormFading</key>
+      <text>Fading for</text>
+    </string>
+    <string>
       <key>Tip_ComplexFormFadingBase</key>
-      <text>Base Fading for</text>
+      <text>Base Fading</text>
     </string>
     <string>
       <key>Tip_ComplexFormFadingSeeDescription</key>

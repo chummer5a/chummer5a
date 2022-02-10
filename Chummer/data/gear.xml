@@ -7619,7 +7619,7 @@
       <category>Audio Enhancements</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>229</page>
+      <page>247</page>
       <avail>0</avail>
       <armorcapacity>[1]</armorcapacity>
       <capacity>[1]</capacity>
@@ -9799,8 +9799,8 @@
       <page>319</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <skillattribute>
-          <name precedence="0">MAG</name>
+        <skillattribute precedence="0">
+          <name>MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
@@ -10288,8 +10288,8 @@
       <page>230</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <skillattribute>
-          <name precedence="0">MAG</name>
+        <skillattribute precedence="0">
+          <name>MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
@@ -10873,8 +10873,8 @@
       <page>230</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <skillattribute>
-          <name precedence="0">MAG</name>
+        <skillattribute precedence="0">
+          <name>MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />

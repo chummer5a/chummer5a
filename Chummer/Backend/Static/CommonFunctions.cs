@@ -26,6 +26,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -837,14 +838,28 @@ namespace Chummer
         /// <param name="strLanguage">Language to load.</param>
         public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "", Character objCharacter = null)
         {
-            if (!string.IsNullOrWhiteSpace(strAltCode))
-            {
-                XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
-                return xmlOriginalCode?.Value ?? strAltCode;
-            }
+            if (string.IsNullOrWhiteSpace(strAltCode))
+                return string.Empty;
+            XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
+                                                       .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            return xmlOriginalCode?.Value ?? strAltCode;
 
-            return string.Empty;
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static async Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null)
+        {
+            if (string.IsNullOrWhiteSpace(strAltCode))
+                return string.Empty;
+            XPathNavigator xmlOriginalCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
+                .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            return xmlOriginalCode?.Value ?? strAltCode;
+
         }
 
         /// <summary>
@@ -855,11 +870,46 @@ namespace Chummer
         /// <param name="strLanguage">Language to load.</param>
         public static string LanguageBookShort(string strCode, string strLanguage = "", Character objCharacter = null)
         {
-            if (!string.IsNullOrWhiteSpace(strCode))
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
+                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            return xmlAltCode?.Value ?? strCode;
+
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        {
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlAltCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
+                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            return xmlAltCode?.Value ?? strCode;
+        }
+
+        /// <summary>
+        /// Book name (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null)
+        {
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
+                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            if (xmlBook != null)
             {
-                XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
-                return xmlAltCode?.Value ?? strCode;
+                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
             }
 
             return string.Empty;
@@ -871,18 +921,17 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null)
+        public static async Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null)
         {
-            if (!string.IsNullOrWhiteSpace(strCode))
+            if (string.IsNullOrWhiteSpace(strCode))
+                return string.Empty;
+            XPathNavigator xmlBook = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
+                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            if (xmlBook != null)
             {
-                XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
-                if (xmlBook != null)
-                {
-                    string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                }
+                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
             }
 
             return string.Empty;
@@ -1162,7 +1211,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
         /// <param name="e">EventArgs used when this method was called.</param>
-        public static void OpenPdfFromControl(object sender, EventArgs e)
+        public static async Task OpenPdfFromControl(object sender, EventArgs e)
         {
             if (sender is Control objControl)
             {
@@ -1179,7 +1228,8 @@ namespace Chummer
                     objLoopControl = objLoopControl.Parent;
                 }
 
-                OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
+                using (new CursorWait(objControl.FindForm() ?? objControl))
+                    await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
             }
         }
 
@@ -1191,7 +1241,7 @@ namespace Chummer
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalSettings.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
-        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
+        public static async Task OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -1202,23 +1252,23 @@ namespace Chummer
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
-                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoPDFProgramSet"),
-                    LanguageManager.GetString("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
+                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
                 using (EditGlobalSettings frmOptions = new EditGlobalSettings())
                 {
                     if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                         // ReSharper disable once AccessToDisposedClosure
-                        Utils.RunWithoutThreadLock(() => frmOptions.DoLinkPdfReader());
-                    if (frmOptions.ShowDialogSafe(Program.MainForm) != DialogResult.OK)
+                        await frmOptions.DoLinkPdfReader();
+                    if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
                         return;
                     strPdfParameters = GlobalSettings.PdfParameters;
                     strPdfAppPath = GlobalSettings.PdfAppPath;
                 }
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
@@ -1250,7 +1300,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], string.Empty, objCharacter);
+            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
@@ -1273,15 +1323,15 @@ namespace Chummer
             // Check if the file actually exists.
             while (uriPath == null || !File.Exists(uriPath.LocalPath))
             {
-                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NoLinkedPDF"), LanguageBookLong(strBook)),
-                        LanguageManager.GetString("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
+                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
                 using (EditGlobalSettings frmOptions = new EditGlobalSettings())
                 {
                     // ReSharper disable once AccessToDisposedClosure
-                    Utils.RunWithoutThreadLock(() => frmOptions.DoLinkPdf(objBookInfo.Code));
-                    if (frmOptions.ShowDialogSafe(Program.MainForm) != DialogResult.OK)
+                    await frmOptions.DoLinkPdf(objBookInfo.Code);
+                    if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
                         return;
                     uriPath = null;
                     try

@@ -340,7 +340,7 @@ namespace Chummer
         /// </summary>
         public string DisplayFv(string strLanguage)
         {
-            string strReturn = Fv.Replace('/', '÷');
+            string strReturn = CalculatedFv.Replace('/', '÷').Replace('*', '×');
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strReturn = strReturn.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel", strLanguage))
@@ -362,12 +362,12 @@ namespace Chummer
             get
             {
                 int intRES = _objCharacter.RES.TotalValue;
-                string strFv = Fv;
+                string strFv = FvBase;
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdTip))
                 {
-                    sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
+                    sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFading"));
                     for (int i = 1; i <= intRES * 2; i++)
                     {
                         // Calculate the Complex Form's Fading for the current Level.
@@ -396,20 +396,13 @@ namespace Chummer
                         }
                     }
 
-                    decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter,
-                        Improvement.ImprovementType.FadingValue,
-                        out List<Improvement> lstFadingImprovements, strImprovedName: Name,
-                        blnIncludeNonImproved: true);
-                    if (decFVBonus != 0)
+                    sbdTip.AppendLine().Append(LanguageManager.GetString("Tip_ComplexFormFadingBase")).Append(strSpace).Append('(').Append(FvBase).Append(')');
+                    foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 _objCharacter, Improvement.ImprovementType.FadingValue, Name, true))
                     {
-                        sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
-                        foreach (Improvement objLoopImprovement in lstFadingImprovements)
-                        {
-                            sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
-                                  .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
-                        }
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace).Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
+                              .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
                     }
-
                     return sbdTip.ToString();
                 }
             }
@@ -418,14 +411,15 @@ namespace Chummer
         /// <summary>
         /// The Complex Form's FV.
         /// </summary>
-        public string Fv
+        public string CalculatedFv
         {
             get
             {
-                string strReturn = _strFv;
-                decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingValue,
-                                                                out List<Improvement> lstUsedImprovements, strImprovedName: Name, blnIncludeNonImproved: true);
-                if (decFVBonus != 0)
+                string strReturn = FvBase;
+                List<Improvement> lstImprovements
+                    = ImprovementManager.GetCachedImprovementListForValueOf(
+                        _objCharacter, Improvement.ImprovementType.FadingValue, Name, true);
+                if (lstImprovements.Count > 0)
                 {
                     bool force = strReturn.StartsWith('L');
                     string strFv = strReturn;
@@ -457,7 +451,7 @@ namespace Chummer
                                                                   out StringBuilder sbdFv))
                     {
                         sbdFv.Append(strFv);
-                        foreach (Improvement objImprovement in lstUsedImprovements)
+                        foreach (Improvement objImprovement in lstImprovements)
                         {
                             sbdFv.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
                                                objImprovement.Value);
@@ -481,6 +475,11 @@ namespace Chummer
                 }
                 return strReturn;
             }
+        }
+
+        public string FvBase
+        {
+            get => _strFv;
             set => _strFv = value;
         }
 

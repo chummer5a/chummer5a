@@ -27,6 +27,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -199,7 +200,7 @@ namespace Chummer
         /// Edit and update a Limit Modifier.
         /// </summary>
         /// <param name="treLimit"></param>
-        protected void UpdateLimitModifier(TreeView treLimit)
+        protected async Task UpdateLimitModifier(TreeView treLimit)
         {
             if (treLimit == null || treLimit.SelectedNode.Level == 0)
                 return;
@@ -213,12 +214,12 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Warning_NoLimitFound"));
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound"));
                     return;
                 }
                 using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
-                    frmPickLimitModifier.ShowDialogSafe(this);
+                    await frmPickLimitModifier.ShowDialogSafeAsync(this);
 
                     if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
                         return;
@@ -243,14 +244,14 @@ namespace Chummer
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        protected void WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        protected async Task WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             if (objNotes == null)
                 return;
             using (new CursorWait(this))
             using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
             {
-                frmItemNotes.ShowDialogSafe(this);
+                await frmItemNotes.ShowDialogSafeAsync(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 objNotes.Notes = frmItemNotes.Notes;
@@ -6771,20 +6772,20 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public virtual bool SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public virtual async Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
             using (new CursorWait(this))
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(_objCharacter.FileName))
                 {
-                    return SaveCharacterAs(blnDoCreated);
+                    return await SaveCharacterAs(blnDoCreated);
                 }
 
                 if (blnDoCreated)
                 {
                     // If the Created is checked, make sure the user wants to actually save this character.
-                    if (blnNeedConfirm && !ConfirmSaveCreatedCharacter())
+                    if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter())
                         return false;
                     // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
                     return SaveCharacterAsCreated();
@@ -6809,20 +6810,20 @@ namespace Chummer
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
-        public virtual bool SaveCharacterAs(bool blnDoCreated = false)
+        public virtual async Task<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
             using (new CursorWait(this))
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
-                if (blnDoCreated && !ConfirmSaveCreatedCharacter())
+                if (blnDoCreated && !await ConfirmSaveCreatedCharacter())
                 {
                     return false;
                 }
 
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
-                             LanguageManager.GetString("DialogFilter_All")
+                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                             await LanguageManager.GetStringAsync("DialogFilter_All")
                 })
                 {
                     string strShowFileName = _objCharacter.FileName
@@ -6840,7 +6841,7 @@ namespace Chummer
                     _objCharacter.FileName = saveFileDialog.FileName;
                 }
 
-                return SaveCharacter(false, blnDoCreated);
+                return await SaveCharacter(false, blnDoCreated);
             }
         }
 
@@ -6852,7 +6853,7 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public virtual bool ConfirmSaveCreatedCharacter() { return true; }
+        public virtual Task<bool> ConfirmSaveCreatedCharacter() { return Task.FromResult(true); }
 
         /// <summary>
         /// The frmViewer window being used by the character.
@@ -6897,18 +6898,18 @@ namespace Chummer
 
         #region Vehicles Tab
 
-        public void PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
+        public async Task PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
             using (new CursorWait(this))
             {
-                XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
+                XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("gear.xml");
                 bool blnAddAgain;
 
                 do
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6960,8 +6961,8 @@ namespace Chummer
                                 if (decCost > CharacterObject.Nuyen)
                                 {
                                     Program.MainForm.ShowMessageBox(this,
-                                        LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                        LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Information);
                                     continue;
@@ -6970,8 +6971,8 @@ namespace Chummer
                                 // Create the Expense Log Entry.
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decCost * -1,
-                                    LanguageManager.GetString("String_ExpensePurchaseVehicleGear") +
-                                    LanguageManager.GetString("String_Space") +
+                                    await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleGear") +
+                                    await LanguageManager.GetStringAsync("String_Space") +
                                     objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
                                     DateTime.Now);
                                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);

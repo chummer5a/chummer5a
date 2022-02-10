@@ -915,20 +915,20 @@ namespace Chummer
             }
         }
 
-        private void CharacterCreate_FormClosing(object sender, FormClosingEventArgs e)
+        private async void CharacterCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
             // If there are unsaved changes to the character, as the user if they would like to save their changes.
             if (IsDirty)
             {
                 string strCharacterName = CharacterObject.CharacterName;
-                DialogResult objResult = Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_UnsavedChanges"), strCharacterName),
-                    LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DialogResult objResult = Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnsavedChanges"), strCharacterName),
+                    await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 switch (objResult)
                 {
                     case DialogResult.Yes:
                         {
                             // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                            bool blnResult = SaveCharacter();
+                            bool blnResult = await SaveCharacter();
                             if (!blnResult)
                                 e.Cancel = true;
                             break;
@@ -1930,24 +1930,19 @@ namespace Chummer
 
         #region Menu Events
 
-        private void mnuFileSave_Click(object sender, EventArgs e)
+        private async void mnuFileSave_Click(object sender, EventArgs e)
         {
-            SaveCharacter();
+            await SaveCharacter();
         }
 
-        private void mnuFileSaveAs_Click(object sender, EventArgs e)
+        private async void mnuFileSaveAs_Click(object sender, EventArgs e)
         {
-            SaveCharacterAs();
+            await SaveCharacterAs();
         }
 
-        private void mnuFileSaveAsCreated_Click(object sender, EventArgs e)
+        private async void mnuFileSaveAsCreated_Click(object sender, EventArgs e)
         {
-            SaveCharacterAs(true);
-        }
-
-        private void tsbSave_Click(object sender, EventArgs e)
-        {
-            mnuFileSave_Click(sender, e);
+            await SaveCharacterAs(true);
         }
 
         private void tsbPrint_Click(object sender, EventArgs e)
@@ -1965,33 +1960,33 @@ namespace Chummer
             Close();
         }
 
-        private void mnuSpecialAddPACKSKit_Click(object sender, EventArgs e)
+        private async void mnuSpecialAddPACKSKit_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddPACKSKit();
+                blnAddAgain = await AddPACKSKit();
             }
             while (blnAddAgain);
         }
 
-        private void mnuSpecialCreatePACKSKit_Click(object sender, EventArgs e)
+        private async void mnuSpecialCreatePACKSKit_Click(object sender, EventArgs e)
         {
-            CreatePACKSKit();
+            await CreatePACKSKit();
         }
 
-        private void mnuSpecialChangeMetatype_Click(object sender, EventArgs e)
+        private async void mnuSpecialChangeMetatype_Click(object sender, EventArgs e)
         {
-            ChangeMetatype();
+            await ChangeMetatype();
         }
 
-        private void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
+        private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             {
                 using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
                 {
-                    frmPickBP.ShowDialogSafe(this);
+                    await frmPickBP.ShowDialogSafeAsync(this);
 
                     if (frmPickBP.DialogResult != DialogResult.Cancel)
                         IsCharacterUpdateRequested = true;
@@ -2007,24 +2002,24 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void mnuSpecialAddCyberwareSuite_Click(object sender, EventArgs e)
+        private async void mnuSpecialAddCyberwareSuite_Click(object sender, EventArgs e)
         {
-            AddCyberwareSuite(Improvement.ImprovementSource.Cyberware);
+            await AddCyberwareSuite(Improvement.ImprovementSource.Cyberware);
         }
 
-        private void mnuSpecialAddBiowareSuite_Click(object sender, EventArgs e)
+        private async void mnuSpecialAddBiowareSuite_Click(object sender, EventArgs e)
         {
-            AddCyberwareSuite(Improvement.ImprovementSource.Bioware);
+            await AddCyberwareSuite(Improvement.ImprovementSource.Bioware);
         }
 
-        private void mnuSpecialCreateCyberwareSuite_Click(object sender, EventArgs e)
+        private async void mnuSpecialCreateCyberwareSuite_Click(object sender, EventArgs e)
         {
-            CreateCyberwareSuite(Improvement.ImprovementSource.Cyberware);
+            await CreateCyberwareSuite(Improvement.ImprovementSource.Cyberware);
         }
 
-        private void mnuSpecialCreateBiowareSuite_Click(object sender, EventArgs e)
+        private async void mnuSpecialCreateBiowareSuite_Click(object sender, EventArgs e)
         {
-            CreateCyberwareSuite(Improvement.ImprovementSource.Bioware);
+            await CreateCyberwareSuite(Improvement.ImprovementSource.Bioware);
         }
 
         private void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
@@ -3068,10 +3063,10 @@ namespace Chummer
 
         #region Button Events
 
-        private void cmdAddSpell_Click(object sender, EventArgs e)
+        private async void cmdAddSpell_Click(object sender, EventArgs e)
         {
             // Open the Spells XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("spells.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("spells.xml");
 
             bool blnAddAgain;
 
@@ -3081,7 +3076,7 @@ namespace Chummer
                 {
                     using (SelectSpell frmPickSpell = new SelectSpell(CharacterObject))
                     {
-                        frmPickSpell.ShowDialogSafe(this);
+                        await frmPickSpell.ShowDialogSafeAsync(this);
                         // Make sure the dialogue window was not canceled.
                         if (frmPickSpell.DialogResult == DialogResult.Cancel)
                             break;
@@ -3100,9 +3095,9 @@ namespace Chummer
 
                         objSpell.FreeBonus = frmPickSpell.FreeBonus;
                         // Barehanded Adept
-                        if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && objSpell.Range == "T")
+                        if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
                         {
-                            objSpell.UsesUnarmed = true;
+                            objSpell.BarehandedAdept = true;
                         }
 
                         CharacterObject.Spells.Add(objSpell);
@@ -3160,12 +3155,12 @@ namespace Chummer
             AddContactsFromFile();
         }
 
-        private void cmdAddCyberware_Click(object sender, EventArgs e)
+        private async void cmdAddCyberware_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickCyberware(null, Improvement.ImprovementSource.Cyberware);
+                blnAddAgain = await PickCyberware(null, Improvement.ImprovementSource.Cyberware);
             }
             while (blnAddAgain);
         }
@@ -3181,9 +3176,9 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddComplexForm_Click(object sender, EventArgs e)
+        private async void cmdAddComplexForm_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = CharacterObject.LoadData("complexforms.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("complexforms.xml");
             bool blnAddAgain;
 
             do
@@ -3193,7 +3188,7 @@ namespace Chummer
                     // The number of Complex Forms cannot exceed twice the character's RES.
                     if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit) && !CharacterObject.IgnoreRules)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ComplexFormLimit"), LanguageManager.GetString("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ComplexFormLimit"), await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
                     }
 
@@ -3201,7 +3196,7 @@ namespace Chummer
                     // Let the user select a Program.
                     using (SelectComplexForm frmPickComplexForm = new SelectComplexForm(CharacterObject))
                     {
-                        frmPickComplexForm.ShowDialogSafe(this);
+                        await frmPickComplexForm.ShowDialogSafeAsync(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
@@ -3230,9 +3225,9 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void cmdAddAIProgram_Click(object sender, EventArgs e)
+        private async void cmdAddAIProgram_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = CharacterObject.LoadData("programs.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("programs.xml");
             bool blnAddAgain;
             do
             {
@@ -3242,7 +3237,7 @@ namespace Chummer
                     // Let the user select a Program.
                     using (SelectAIProgram frmPickProgram = new SelectAIProgram(CharacterObject))
                     {
-                        frmPickProgram.ShowDialogSafe(this);
+                        await frmPickProgram.ShowDialogSafeAsync(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickProgram.DialogResult == DialogResult.Cancel)
@@ -3265,10 +3260,10 @@ namespace Chummer
                     {
                         using (SelectText frmPickText = new SelectText
                         {
-                            Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText)
+                            Description = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Improvement_SelectText"), objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText)
                         })
                         {
-                            frmPickText.ShowDialogSafe(this);
+                            await frmPickText.ShowDialogSafeAsync(this);
                             strExtra = frmPickText.SelectedValue;
                         }
                     }
@@ -3299,17 +3294,17 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddBioware_Click(object sender, EventArgs e)
+        private async void cmdAddBioware_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickCyberware(null, Improvement.ImprovementSource.Bioware);
+                blnAddAgain = await PickCyberware(null, Improvement.ImprovementSource.Bioware);
             }
             while (blnAddAgain);
         }
 
-        private void cmdAddWeapon_Click(object sender, EventArgs e)
+        private async void cmdAddWeapon_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             Location location = null;
@@ -3319,25 +3314,25 @@ namespace Chummer
             }
             do
             {
-                blnAddAgain = AddWeapon(location);
+                blnAddAgain = await AddWeapon(location);
             }
             while (blnAddAgain);
         }
 
-        private bool AddWeapon(Location objLocation = null)
+        private async Task<bool> AddWeapon(Location objLocation = null)
         {
             using (new CursorWait(this))
             {
                 using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject))
                 {
-                    frmPickWeapon.ShowDialogSafe(this);
+                    await frmPickWeapon.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                         return false;
 
                     // Open the Weapons XML file and locate the selected piece.
-                    XmlNode objXmlWeapon = CharacterObject.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+                    XmlNode objXmlWeapon = (await CharacterObject.LoadDataAsync("weapons.xml")).SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
                     if (objXmlWeapon == null)
                         return frmPickWeapon.AddAgain;
 
@@ -3378,7 +3373,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddLifestyle_Click(object sender, EventArgs e)
+        private async void cmdAddLifestyle_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
 
@@ -3389,7 +3384,7 @@ namespace Chummer
                     Lifestyle objLifestyle;
                     using (SelectLifestyle frmPickLifestyle = new SelectLifestyle(CharacterObject))
                     {
-                        frmPickLifestyle.ShowDialogSafe(this);
+                        await frmPickLifestyle.ShowDialogSafeAsync(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
@@ -3423,7 +3418,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddGear_Click(object sender, EventArgs e)
+        private async void cmdAddGear_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             string strSelectedId = string.Empty;
@@ -3433,7 +3428,7 @@ namespace Chummer
             }
             do
             {
-                blnAddAgain = PickGear(strSelectedId);
+                blnAddAgain = await PickGear(strSelectedId);
             }
             while (blnAddAgain);
         }
@@ -3448,20 +3443,20 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private bool AddVehicle(Location objLocation = null)
+        private async Task<bool> AddVehicle(Location objLocation = null)
         {
             using (new CursorWait(this))
             {
                 using (SelectVehicle frmPickVehicle = new SelectVehicle(CharacterObject))
                 {
-                    frmPickVehicle.ShowDialogSafe(this);
+                    await frmPickVehicle.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickVehicle.DialogResult == DialogResult.Cancel)
                         return false;
 
                     // Open the Vehicles XML file and locate the selected piece.
-                    XmlNode objXmlVehicle = CharacterObject.LoadData("vehicles.xml").SelectSingleNode("/chummer/vehicles/vehicle[id = " + frmPickVehicle.SelectedVehicle.CleanXPath() + ']');
+                    XmlNode objXmlVehicle = (await CharacterObject.LoadDataAsync("vehicles.xml")).SelectSingleNode("/chummer/vehicles/vehicle[id = " + frmPickVehicle.SelectedVehicle.CleanXPath() + ']');
                     if (objXmlVehicle == null)
                         return frmPickVehicle.AddAgain;
                     Vehicle objVehicle = new Vehicle(CharacterObject);
@@ -3493,17 +3488,22 @@ namespace Chummer
             }
         }
 
-        private void cmdAddVehicle_Click(object sender, EventArgs e)
+        private async void cmdAddVehicle_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag as Location);
+                blnAddAgain = await AddVehicle(treVehicles.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
 
-        private void cmdDeleteVehicle_Click(object sender, EventArgs e)
+        private async void cmdDeleteVehicle_Click(object sender, EventArgs e)
+        {
+            await DeleteVehicle();
+        }
+
+        private async Task DeleteVehicle()
         {
             if (!cmdDeleteVehicle.Enabled)
                 return;
@@ -3526,10 +3526,10 @@ namespace Chummer
                             {
                                 Minimum = 0,
                                 Maximum = 1000000,
-                                Description = LanguageManager.GetString("String_Retrofit")
+                                Description = await LanguageManager.GetStringAsync("String_Retrofit")
                             })
                             {
-                                frmModPercent.ShowDialogSafe(this);
+                                await frmModPercent.ShowDialogSafeAsync(this);
 
                                 if (frmModPercent.DialogResult == DialogResult.Cancel)
                                     return;
@@ -3545,7 +3545,7 @@ namespace Chummer
                             // Create a Vehicle Mod for the Retrofit.
                             VehicleMod objRetrofit = new VehicleMod(CharacterObject);
 
-                            XmlDocument objVehiclesDoc = CharacterObject.LoadData("vehicles.xml");
+                            XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml");
                             XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                             objRetrofit.Create(objXmlNode, 0, objMod.Parent);
                             objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
@@ -3727,10 +3727,10 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddCritterPower_Click(object sender, EventArgs e)
+        private async void cmdAddCritterPower_Click(object sender, EventArgs e)
         {
             // Make sure the Critter is allowed to have Optional Powers.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("critterpowers.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("critterpowers.xml");
 
             bool blnAddAgain;
 
@@ -3740,7 +3740,7 @@ namespace Chummer
                 {
                     using (SelectCritterPower frmPickCritterPower = new SelectCritterPower(CharacterObject))
                     {
-                        frmPickCritterPower.ShowDialogSafe(this);
+                        await frmPickCritterPower.ShowDialogSafeAsync(this);
 
                         if (frmPickCritterPower.DialogResult == DialogResult.Cancel)
                             break;
@@ -3799,9 +3799,9 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdLifeModule_Click(object sender, EventArgs e)
+        private async void cmdLifeModule_Click(object sender, EventArgs e)
         {
-            XmlNode xmlStagesParentNode = CharacterObject.LoadData("lifemodules.xml").SelectSingleNode("chummer/stages");
+            XmlNode xmlStagesParentNode = (await CharacterObject.LoadDataAsync("lifemodules.xml")).SelectSingleNode("chummer/stages");
 
             bool blnAddAgain;
             do
@@ -3829,7 +3829,7 @@ namespace Chummer
                     XmlNode objXmlLifeModule;
                     using (SelectLifeModule frmSelectLifeModule = new SelectLifeModule(CharacterObject, intStage))
                     {
-                        frmSelectLifeModule.ShowDialogSafe(this);
+                        await frmSelectLifeModule.ShowDialogSafeAsync(this);
 
                         if (frmSelectLifeModule.DialogResult == DialogResult.Cancel)
                             break;
@@ -3867,9 +3867,9 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void cmdAddQuality_Click(object sender, EventArgs e)
+        private async void cmdAddQuality_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = CharacterObject.LoadData("qualities.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("qualities.xml");
             bool blnAddAgain;
 
             do
@@ -3878,7 +3878,7 @@ namespace Chummer
                 {
                     using (SelectQuality frmPickQuality = new SelectQuality(CharacterObject))
                     {
-                        frmPickQuality.ShowDialogSafe(this);
+                        await frmPickQuality.ShowDialogSafeAsync(this);
 
                         // Don't do anything else if the form was canceled.
                         if (frmPickQuality.DialogResult == DialogResult.Cancel)
@@ -3920,8 +3920,8 @@ namespace Chummer
                                 int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
                                 string strAmount =
                                     CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) +
-                                    LanguageManager.GetString("String_Space") +
-                                    LanguageManager.GetString("String_Karma");
+                                    await LanguageManager.GetStringAsync("String_Space") +
+                                    await LanguageManager.GetStringAsync("String_Karma");
 
                                 // Add the cost of the Quality that is being added.
                                 int intBP = objQuality.BP;
@@ -3936,9 +3936,9 @@ namespace Chummer
                                         {
                                             Program.MainForm.ShowMessageBox(this,
                                                 string.Format(GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString("Message_NegativeQualityLimit"),
+                                                    await LanguageManager.GetStringAsync("Message_NegativeQualityLimit"),
                                                     strAmount),
-                                                LanguageManager.GetString("MessageTitle_NegativeQualityLimit"),
+                                                await LanguageManager.GetStringAsync("MessageTitle_NegativeQualityLimit"),
                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                                             blnAddItem = false;
                                         }
@@ -3947,9 +3947,9 @@ namespace Chummer
                                         {
                                             Program.MainForm.ShowMessageBox(this,
                                                 string.Format(GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString(
+                                                    await LanguageManager.GetStringAsync(
                                                         "Message_NegativeQualityAndMetatypeLimit"), strAmount),
-                                                LanguageManager.GetString("MessageTitle_NegativeQualityLimit"),
+                                                await LanguageManager.GetStringAsync("MessageTitle_NegativeQualityLimit"),
                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                                             blnAddItem = false;
                                         }
@@ -3963,8 +3963,8 @@ namespace Chummer
                                     {
                                         Program.MainForm.ShowMessageBox(this,
                                             string.Format(GlobalSettings.CultureInfo,
-                                                LanguageManager.GetString("Message_PositiveQualityLimit"), strAmount),
-                                            LanguageManager.GetString("MessageTitle_PositiveQualityLimit"),
+                                                await LanguageManager.GetStringAsync("Message_PositiveQualityLimit"), strAmount),
+                                            await LanguageManager.GetStringAsync("MessageTitle_PositiveQualityLimit"),
                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         blnAddItem = false;
                                     }
@@ -4180,15 +4180,15 @@ namespace Chummer
             }
         }
 
-        private void cmdAddLocation_Click(object sender, EventArgs e)
+        private async void cmdAddLocation_Click(object sender, EventArgs e)
         {
             // Add a new location to the Armor Tree.
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4199,15 +4199,15 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddWeaponLocation_Click(object sender, EventArgs e)
+        private async void cmdAddWeaponLocation_Click(object sender, EventArgs e)
         {
             // Add a new location to the Armor Tree.
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4218,7 +4218,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdCreateStackedFocus_Click(object sender, EventArgs e)
+        private async void cmdCreateStackedFocus_Click(object sender, EventArgs e)
         {
             int intFree = 0;
             List<Gear> lstGear = new List<Gear>(2);
@@ -4237,13 +4237,13 @@ namespace Chummer
             // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
             if (intFree < 2)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotStackFoci"), LanguageManager.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotStackFoci"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectItem frmPickItem = new SelectItem
             {
-                Description = LanguageManager.GetString("String_SelectItemFocus"),
+                Description = await LanguageManager.GetStringAsync("String_SelectItemFocus"),
                 AllowAutoSelect = false
             })
             {
@@ -4251,7 +4251,7 @@ namespace Chummer
                 do
                 {
                     frmPickItem.SetGearMode(lstGear);
-                    frmPickItem.ShowDialogSafe(this);
+                    await frmPickItem.ShowDialogSafeAsync(this);
 
                     if (frmPickItem.DialogResult != DialogResult.OK)
                         continue;
@@ -4272,7 +4272,7 @@ namespace Chummer
             // Make sure at least 2 Foci were selected.
             if (lstStack.Count < 2)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_StackedFocusMinimum"), LanguageManager.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4284,7 +4284,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in lstStack)
                         objGear.Bonded = false;
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_StackedFocusForce"), LanguageManager.GetString("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusForce"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -4324,30 +4324,30 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddArmor_Click(object sender, EventArgs e)
+        private async void cmdAddArmor_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddArmor(treArmor.SelectedNode?.Tag as Location);
+                blnAddAgain = await AddArmor(treArmor.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
 
-        private bool AddArmor(Location objLocation = null)
+        private async Task<bool> AddArmor(Location objLocation = null)
         {
             using (new CursorWait(this))
             {
                 using (SelectArmor frmPickArmor = new SelectArmor(CharacterObject))
                 {
-                    frmPickArmor.ShowDialogSafe(this);
+                    await frmPickArmor.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickArmor.DialogResult == DialogResult.Cancel)
                         return false;
 
                     // Open the Armor XML file and locate the selected piece.
-                    XmlNode objXmlArmor = CharacterObject.LoadData("armor.xml").SelectSingleNode("/chummer/armors/armor[id = " + frmPickArmor.SelectedArmor.CleanXPath() + ']');
+                    XmlNode objXmlArmor = (await CharacterObject.LoadDataAsync("armor.xml")).SelectSingleNode("/chummer/armors/armor[id = " + frmPickArmor.SelectedArmor.CleanXPath() + ']');
 
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Armor objArmor = new Armor(CharacterObject);
@@ -4379,15 +4379,15 @@ namespace Chummer
             }
         }
 
-        private void cmdAddArmorBundle_Click(object sender, EventArgs e)
+        private async void cmdAddArmorBundle_Click(object sender, EventArgs e)
         {
             // Add a new location to the Armor Tree.
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4424,7 +4424,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
+        private async void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
             ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
@@ -4438,16 +4438,16 @@ namespace Chummer
             }
             else
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectVehicleLocation"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleLocation"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
                     return;
@@ -4462,53 +4462,53 @@ namespace Chummer
 
         #region ContextMenu Events
 
-        private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickCyberware(objCyberware, objCyberware.SourceType);
+                blnAddAgain = await PickCyberware(objCyberware, objCyberware.SourceType);
             }
             while (blnAddAgain);
         }
 
-        private void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickCyberware(objCyberware, objCyberware.SourceType);
+                blnAddAgain = await PickCyberware(objCyberware, objCyberware.SourceType);
             }
             while (blnAddAgain);
         }
 
-        private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
+        private async void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectWeaponAccessory"),
-                    LanguageManager.GetString("MessageTitle_SelectWeapon"),
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // Accessories cannot be added to Cyberweapons.
             if (objWeapon.Cyberware)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberweaponNoAccessory"), LanguageManager.GetString("MessageTitle_CyberweaponNoAccessory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberweaponNoAccessory"), await LanguageManager.GetStringAsync("MessageTitle_CyberweaponNoAccessory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4516,11 +4516,11 @@ namespace Chummer
             XmlNode objXmlWeapon = objWeapon.GetNode();
             if (objXmlWeapon == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotFindWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            XmlDocument xmlDocument = CharacterObject.LoadData("weapons.xml");
+            XmlDocument xmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
             bool blnAddAgain;
             do
@@ -4530,7 +4530,7 @@ namespace Chummer
                     // Make sure the Weapon allows Accessories to be added to it.
                     if (!objWeapon.AllowAccessory)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotModifyWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
                     }
 
@@ -4539,7 +4539,7 @@ namespace Chummer
                         ParentWeapon = objWeapon
                     })
                     {
-                        frmPickWeaponAccessory.ShowDialogSafe(this);
+                        await frmPickWeaponAccessory.ShowDialogSafeAsync(this);
 
                         if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                             break;
@@ -4579,11 +4579,11 @@ namespace Chummer
                                 {
                                     Minimum = decMin,
                                     Maximum = decMax,
-                                    Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), objAccessory.CurrentDisplayNameShort),
+                                    Description = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SelectVariableCost"), objAccessory.CurrentDisplayNameShort),
                                     AllowCancel = false
                                 })
                                 {
-                                    frmPickNumber.ShowDialogSafe(this);
+                                    await frmPickNumber.ShowDialogSafeAsync(this);
                                     if (frmPickNumber.DialogResult == DialogResult.Cancel)
                                     {
                                         objAccessory.DeleteWeaponAccessory();
@@ -4604,17 +4604,17 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsAddArmorMod_Click(object sender, EventArgs e)
+        private async void tsAddArmorMod_Click(object sender, EventArgs e)
         {
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Armor XML file and locate the selected Armor.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("armor.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("armor.xml");
 
             bool blnAddAgain;
             do
@@ -4646,7 +4646,7 @@ namespace Chummer
                             }
                         }
 
-                        frmPickArmorMod.ShowDialogSafe(this);
+                        await frmPickArmorMod.ShowDialogSafeAsync(this);
 
                         if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
                             break;
@@ -4685,24 +4685,24 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsGearAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsGearAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(objGear.InternalId);
+                blnAddAgain = await PickGear(objGear.InternalId);
             }
             while (blnAddAgain);
         }
 
-        private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
+        private async void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
                 return;
@@ -4710,7 +4710,7 @@ namespace Chummer
             {
                 using (CreateWeaponMount frmPickVehicleMod = new CreateWeaponMount(objVehicle, CharacterObject))
                 {
-                    frmPickVehicleMod.ShowDialogSafe(this);
+                    await frmPickVehicleMod.ShowDialogSafeAsync(this);
 
                     if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
                         return;
@@ -4723,7 +4723,7 @@ namespace Chummer
             }
         }
 
-        private void tsVehicleAddMod_Click(object sender, EventArgs e)
+        private async void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             while (objSelectedNode?.Level > 1)
@@ -4732,12 +4732,12 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
             if (!(objSelectedNode?.Tag is Vehicle objVehicle))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectVehicle"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Vehicles XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("vehicles.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml");
 
             bool blnAddAgain;
 
@@ -4747,7 +4747,7 @@ namespace Chummer
                 {
                     using (SelectVehicleMod frmPickVehicleMod = new SelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods))
                     {
-                        frmPickVehicleMod.ShowDialogSafe(this);
+                        await frmPickVehicleMod.ShowDialogSafeAsync(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
@@ -4856,7 +4856,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
+        private async void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
         {
             // Make sure that a Weapon Mount has been selected.
             // Attempt to locate the selected VehicleMod.
@@ -4878,21 +4878,21 @@ namespace Chummer
 
             if (objWeaponMount == null && objMod == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotAddWeapon"),
-                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
 
             if (objWeaponMount?.IsWeaponsFull == true)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_WeaponMountFull"),
-                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponMountFull"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
 
-            XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
             bool blnAddAgain;
             do
@@ -4904,7 +4904,7 @@ namespace Chummer
                         LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
                     })
                     {
-                        frmPickWeapon.ShowDialogSafe(this);
+                        await frmPickWeapon.ShowDialogSafeAsync(this);
 
                         if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                             return;
@@ -4950,12 +4950,12 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
+        private async void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VehicleWeaponAccessories"), LanguageManager.GetString("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories"), await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4963,11 +4963,11 @@ namespace Chummer
             XmlNode objXmlWeapon = objWeapon.GetNode();
             if (objXmlWeapon == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotFindWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
             bool blnAddAgain;
 
@@ -4978,7 +4978,7 @@ namespace Chummer
                     // Make sure the Weapon allows Accessories to be added to it.
                     if (!objWeapon.AllowAccessory)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotModifyWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
@@ -4987,7 +4987,7 @@ namespace Chummer
                         ParentWeapon = objWeapon
                     })
                     {
-                        frmPickWeaponAccessory.ShowDialogSafe(this);
+                        await frmPickWeaponAccessory.ShowDialogSafeAsync(this);
 
                         if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
                             break;
@@ -5016,12 +5016,12 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
+        private async void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objSelectedWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VehicleWeaponUnderbarrel"), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5034,14 +5034,14 @@ namespace Chummer
                 })
                 {
                     frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                    frmPickWeapon.ShowDialogSafe(this);
+                    await frmPickWeapon.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                         return;
 
                     // Open the Weapons XML file and locate the selected piece.
-                    XmlNode objXmlWeapon = CharacterObject.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+                    XmlNode objXmlWeapon = (await CharacterObject.LoadDataAsync("weapons.xml")).SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
 
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Weapon objWeapon = new Weapon(CharacterObject)
@@ -5074,17 +5074,7 @@ namespace Chummer
             }
         }
 
-        private void tsVehicleAddWeaponAccessoryAlt_Click(object sender, EventArgs e)
-        {
-            tsVehicleAddWeaponAccessory_Click(sender, e);
-        }
-
-        private void tsVehicleAddUnderbarrelWeaponAlt_Click(object sender, EventArgs e)
-        {
-            tsVehicleAddUnderbarrelWeapon_Click(sender, e);
-        }
-
-        private void tsMartialArtsAddTechnique_Click(object sender, EventArgs e)
+        private async void tsMartialArtsAddTechnique_Click(object sender, EventArgs e)
         {
             // Select the Martial Arts node if we're currently on a child.
             while (treMartialArts.SelectedNode?.Level > 1)
@@ -5092,17 +5082,17 @@ namespace Chummer
 
             if (treMartialArts.SelectedNode == null || treMartialArts.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectMartialArtTechnique"), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectMartialArtTechnique"), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            XmlDocument xmlDocument = CharacterObject.LoadData("martialarts.xml");
+            XmlDocument xmlDocument = await CharacterObject.LoadDataAsync("martialarts.xml");
 
             bool blnAddAgain;
             do
@@ -5112,7 +5102,7 @@ namespace Chummer
                     XmlNode xmlTechnique;
                     using (SelectMartialArtTechnique frmPickMartialArtTechnique = new SelectMartialArtTechnique(CharacterObject, objMartialArt))
                     {
-                        frmPickMartialArtTechnique.ShowDialogSafe(this);
+                        await frmPickMartialArtTechnique.ShowDialogSafeAsync(this);
 
                         if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
                             return;
@@ -5138,7 +5128,7 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleAddGear_Click(object sender, EventArgs e)
+        private async void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
             Vehicle objSelectedVehicle;
             Location objLocation = null;
@@ -5154,30 +5144,30 @@ namespace Chummer
                     break;
 
                 default:
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
             }
-            PurchaseVehicleGear(objSelectedVehicle, objLocation);
+            await PurchaseVehicleGear(objSelectedVehicle, objLocation);
         }
 
-        private void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Gear was found.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories = string.Empty;
             XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
@@ -5204,7 +5194,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -5258,12 +5248,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsVehicleGearAddAsPlugin_Click(object sender, EventArgs e)
-        {
-            tsVehicleSensorAddAsPlugin_Click(sender, e);
-        }
-
-        private void tsVehicleGearNotes_Click(object sender, EventArgs e)
+        private async void tsVehicleGearNotes_Click(object sender, EventArgs e)
         {
             if (treVehicles.SelectedNode == null)
                 return;
@@ -5273,7 +5258,7 @@ namespace Chummer
                     {
                         using (EditNotes frmItemNotes = new EditNotes(objGear.Notes, objGear.NotesColor))
                         {
-                            frmItemNotes.ShowDialogSafe(this);
+                            await frmItemNotes.ShowDialogSafeAsync(this);
                             if (frmItemNotes.DialogResult != DialogResult.OK)
                                 return;
                             objGear.Notes = frmItemNotes.Notes;
@@ -5289,7 +5274,7 @@ namespace Chummer
             }
         }
 
-        private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
+        private async void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
@@ -5299,7 +5284,7 @@ namespace Chummer
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                     using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, objLifestyle))
                     {
-                        frmPickLifestyle.ShowDialogSafe(this);
+                        await frmPickLifestyle.ShowDialogSafeAsync(this);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
@@ -5326,7 +5311,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsWeaponName_Click(object sender, EventArgs e)
+        private async void tsWeaponName_Click(object sender, EventArgs e)
         {
             while (treWeapons.SelectedNode?.Level > 1)
                 treWeapons.SelectedNode = treWeapons.SelectedNode.Parent;
@@ -5334,25 +5319,25 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectWeaponName"), LanguageManager.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Weapon.
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectWeaponName"), LanguageManager.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_WeaponName"),
+                Description = await LanguageManager.GetStringAsync("String_WeaponName"),
                 DefaultString = objWeapon.CustomName,
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5365,29 +5350,29 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsGearName_Click(object sender, EventArgs e)
+        private async void tsGearName_Click(object sender, EventArgs e)
         {
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGearName"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Gear.
             if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGearName"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_GearName"),
+                Description = await LanguageManager.GetStringAsync("String_GearName"),
                 DefaultString = objGear.GearName,
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5400,19 +5385,19 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
+        private async void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treWeapons.SelectedNode;
             // Locate the Weapon that is selected in the tree.
             if (!(objSelectedNode?.Tag is Weapon objSelectedWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectWeaponUnderbarrel"), LanguageManager.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (objSelectedWeapon.Cyberware)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareUnderbarrel"), LanguageManager.GetString("MessageTitle_WeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_WeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5425,14 +5410,14 @@ namespace Chummer
                 })
                 {
                     frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                    frmPickWeapon.ShowDialogSafe(this);
+                    await frmPickWeapon.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                         return;
 
                     // Open the Weapons XML file and locate the selected piece.
-                    XmlNode objXmlWeapon = CharacterObject.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+                    XmlNode objXmlWeapon = (await CharacterObject.LoadDataAsync("weapons.xml")).SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
 
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Weapon objWeapon = new Weapon(CharacterObject);
@@ -5462,12 +5447,12 @@ namespace Chummer
             tsGearAddAsPlugin_Click(sender, e);
         }
 
-        private void tsGearRename_Click(object sender, EventArgs e)
+        private async void tsGearRename_Click(object sender, EventArgs e)
         {
             using (SelectText frmPickText = new SelectText())
             {
                 //frmPickText.Description = LanguageManager.GetString("String_AddLocation");
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5480,17 +5465,22 @@ namespace Chummer
             }
         }
 
-        private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
+        private async void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
-            cmdAddArmor_Click(sender, e);
+            bool blnAddAgain;
+            do
+            {
+                blnAddAgain = await AddArmor(treArmor.SelectedNode?.Tag as Location);
+            }
+            while (blnAddAgain);
         }
 
-        private void tsAddArmorGear_Click(object sender, EventArgs e)
+        private async void tsAddArmorGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5498,18 +5488,18 @@ namespace Chummer
             do
             {
                 // Select the root Gear node then open the Select Gear window.
-                blnAddAgain = PickArmorGear(objArmor.InternalId, true);
+                blnAddAgain = await PickArmorGear(objArmor.InternalId, true);
             }
             while (blnAddAgain);
         }
 
-        private void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5518,7 +5508,7 @@ namespace Chummer
             {
                 // Make sure the selected item is another piece of Gear.
                 case ArmorMod objMod when string.IsNullOrEmpty(objMod.GearCapacity):
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
 
                 case ArmorMod objMod:
@@ -5532,126 +5522,126 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickArmorGear(selectedGuid);
+                blnAddAgain = await PickArmorGear(selectedGuid);
             }
             while (blnAddAgain);
         }
 
-        private void tsArmorNotes_Click(object sender, EventArgs e)
+        private async void tsArmorNotes_Click(object sender, EventArgs e)
         {
             if (treArmor.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treArmor.SelectedNode);
+                await WriteNotes(objNotes, treArmor.SelectedNode);
             }
         }
 
-        private void tsWeaponNotes_Click(object sender, EventArgs e)
+        private async void tsWeaponNotes_Click(object sender, EventArgs e)
         {
             if (treWeapons.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treWeapons.SelectedNode);
+                await WriteNotes(objNotes, treWeapons.SelectedNode);
             }
         }
 
-        private void tsCyberwareNotes_Click(object sender, EventArgs e)
+        private async void tsCyberwareNotes_Click(object sender, EventArgs e)
         {
             if (treCyberware.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treCyberware.SelectedNode);
+                await WriteNotes(objNotes, treCyberware.SelectedNode);
             }
         }
 
-        private void tsVehicleNotes_Click(object sender, EventArgs e)
+        private async void tsVehicleNotes_Click(object sender, EventArgs e)
         {
             if (treVehicles.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treVehicles.SelectedNode);
+                await WriteNotes(objNotes, treVehicles.SelectedNode);
             }
         }
 
-        private void tsQualityNotes_Click(object sender, EventArgs e)
+        private async void tsQualityNotes_Click(object sender, EventArgs e)
         {
             if (treQualities.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treQualities.SelectedNode);
+                await WriteNotes(objNotes, treQualities.SelectedNode);
             }
         }
 
-        private void tsMartialArtsNotes_Click(object sender, EventArgs e)
+        private async void tsMartialArtsNotes_Click(object sender, EventArgs e)
         {
             if (treMartialArts.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treMartialArts.SelectedNode);
+                await WriteNotes(objNotes, treMartialArts.SelectedNode);
             }
         }
 
-        private void tsSpellNotes_Click(object sender, EventArgs e)
+        private async void tsSpellNotes_Click(object sender, EventArgs e)
         {
             if (treSpells.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treSpells.SelectedNode);
+                await WriteNotes(objNotes, treSpells.SelectedNode);
             }
         }
 
-        private void tsComplexFormNotes_Click(object sender, EventArgs e)
+        private async void tsComplexFormNotes_Click(object sender, EventArgs e)
         {
             if (treComplexForms.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treComplexForms.SelectedNode);
+                await WriteNotes(objNotes, treComplexForms.SelectedNode);
             }
         }
 
-        private void tsAIProgramNotes_Click(object sender, EventArgs e)
+        private async void tsAIProgramNotes_Click(object sender, EventArgs e)
         {
             if (treAIPrograms.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treAIPrograms.SelectedNode);
+                await WriteNotes(objNotes, treAIPrograms.SelectedNode);
             }
         }
 
-        private void tsCritterPowersNotes_Click(object sender, EventArgs e)
+        private async void tsCritterPowersNotes_Click(object sender, EventArgs e)
         {
             if (treCritterPowers.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treCritterPowers.SelectedNode);
+                await WriteNotes(objNotes, treCritterPowers.SelectedNode);
             }
         }
 
-        private void tsMetamagicNotes_Click(object sender, EventArgs e)
+        private async void tsMetamagicNotes_Click(object sender, EventArgs e)
         {
             if (treMetamagic.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treMetamagic.SelectedNode);
+                await WriteNotes(objNotes, treMetamagic.SelectedNode);
             }
         }
 
-        private void tsGearNotes_Click(object sender, EventArgs e)
+        private async void tsGearNotes_Click(object sender, EventArgs e)
         {
             if (treGear.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treGear.SelectedNode);
+                await WriteNotes(objNotes, treGear.SelectedNode);
             }
         }
 
-        private void tsLifestyleNotes_Click(object sender, EventArgs e)
+        private async void tsLifestyleNotes_Click(object sender, EventArgs e)
         {
             if (treLifestyles.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                WriteNotes(objNotes, treLifestyles.SelectedNode);
+                await WriteNotes(objNotes, treLifestyles.SelectedNode);
             }
         }
 
-        private void tsWeaponMountLocation_Click(object sender, EventArgs e)
+        private async void tsWeaponMountLocation_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_VehicleName"),
+                Description = await LanguageManager.GetStringAsync("String_VehicleName"),
                 DefaultString = objWeaponMount.Location
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5662,7 +5652,7 @@ namespace Chummer
             treVehicles.SelectedNode.Text = objWeaponMount.CurrentDisplayName;
         }
 
-        private void tsVehicleName_Click(object sender, EventArgs e)
+        private async void tsVehicleName_Click(object sender, EventArgs e)
         {
             while (treVehicles.SelectedNode?.Level > 1)
             {
@@ -5672,25 +5662,25 @@ namespace Chummer
             // Make sure a parent item is selected.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectVehicleName"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Vehicle.
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectVehicleName"), LanguageManager.GetString("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_VehicleName"),
+                Description = await LanguageManager.GetStringAsync("String_VehicleName"),
                 DefaultString = objVehicle.CustomName,
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5701,11 +5691,11 @@ namespace Chummer
             treVehicles.SelectedNode.Text = objVehicle.CurrentDisplayName;
         }
 
-        private void tsVehicleAddCyberware_Click(object sender, EventArgs e)
+        private async void tsVehicleAddCyberware_Click(object sender, EventArgs e)
         {
             if (treVehicles.SelectedNode?.Tag is string)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VehicleCyberwarePlugin"), LanguageManager.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5717,12 +5707,12 @@ namespace Chummer
 
             if (objCyberwareParent == null && objMod?.AllowCyberware != true)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VehicleCyberwarePlugin"), LanguageManager.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("cyberware.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("cyberware.xml");
 
             bool blnAddAgain;
 
@@ -5800,7 +5790,7 @@ namespace Chummer
                                 // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                                 if (CharacterObjectSettings.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
                                 {
-                                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"),
+                                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     break;
                                 }
@@ -5868,7 +5858,7 @@ namespace Chummer
 
                         frmPickCyberware.LockGrade();
                         frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
-                        frmPickCyberware.ShowDialogSafe(this);
+                        await frmPickCyberware.ShowDialogSafeAsync(this);
 
                         if (frmPickCyberware.DialogResult == DialogResult.Cancel)
                             break;
@@ -5895,7 +5885,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsArmorName_Click(object sender, EventArgs e)
+        private async void tsArmorName_Click(object sender, EventArgs e)
         {
             while (treArmor.SelectedNode?.Level > 1)
                 treArmor.SelectedNode = treArmor.SelectedNode.Parent;
@@ -5903,25 +5893,25 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectArmorName"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Armor.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectArmorName"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_ArmorName"),
+                Description = await LanguageManager.GetStringAsync("String_ArmorName"),
                 DefaultString = objArmor.CustomName,
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5932,38 +5922,23 @@ namespace Chummer
             treArmor.SelectedNode.Text = objArmor.CurrentDisplayName;
         }
 
-        private void tsEditAdvancedLifestyle_Click(object sender, EventArgs e)
-        {
-            treLifestyles_DoubleClick(sender, e);
-        }
-
-        private void tsAdvancedLifestyleNotes_Click(object sender, EventArgs e)
-        {
-            tsLifestyleNotes_Click(sender, e);
-        }
-
-        private void tsEditLifestyle_Click(object sender, EventArgs e)
-        {
-            treLifestyles_DoubleClick(sender, e);
-        }
-
-        private void tsLifestyleName_Click(object sender, EventArgs e)
+        private async void tsLifestyleName_Click(object sender, EventArgs e)
         {
             // Get the information for the currently selected Lifestyle.
             if (!(treLifestyles.SelectedNode?.Tag is IHasCustomName objCustomName))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectLifestyleName"), LanguageManager.GetString("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_LifestyleName"),
+                Description = await LanguageManager.GetStringAsync("String_LifestyleName"),
                 DefaultString = objCustomName.CustomName,
                 AllowEmptyString = true
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -5978,17 +5953,17 @@ namespace Chummer
             }
         }
 
-        private void tsGearRenameLocation_Click(object sender, EventArgs e)
+        private async void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treGear.SelectedNode?.Tag is Location objLocation))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation"),
+                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -6001,17 +5976,17 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsWeaponRenameLocation_Click(object sender, EventArgs e)
+        private async void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treWeapons.SelectedNode?.Tag is Location objLocation))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation"),
+                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -6024,7 +5999,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsCreateSpell_Click(object sender, EventArgs e)
+        private async void tsCreateSpell_Click(object sender, EventArgs e)
         {
             // Run through the list of Active Skills and pick out the two applicable ones.
             int intSkillValue = Math.Max(CharacterObject.SkillsSection.GetActiveSkill("Spellcasting")?.Rating ?? 0, CharacterObject.SkillsSection.GetActiveSkill("Ritual Spellcasting")?.Rating ?? 0);
@@ -6032,14 +6007,14 @@ namespace Chummer
             // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
             if (CharacterObject.Spells.Count >= 2 * intSkillValue + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit) && !CharacterObject.IgnoreRules)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // The character is still allowed to add Spells, so show the Create Spell window.
             using (CreateSpell frmSpell = new CreateSpell(CharacterObject))
             {
-                frmSpell.ShowDialogSafe(this);
+                await frmSpell.ShowDialogSafeAsync(this);
 
                 if (frmSpell.DialogResult == DialogResult.Cancel)
                     return;
@@ -6053,17 +6028,17 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsArmorRenameLocation_Click(object sender, EventArgs e)
+        private async void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treArmor.SelectedNode?.Tag is Location objLocation))
                 return;
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation"),
+                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
                 DefaultString = objLocation.Name
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -6076,25 +6051,25 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsCyberwareAddGear_Click(object sender, EventArgs e)
+        private async void tsCyberwareAddGear_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCyberware.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (!(objSelectedNode.Tag is Cyberware objCyberware) || objCyberware.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
 
             do
@@ -6140,7 +6115,7 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6185,24 +6160,24 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (objCyberware.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
 
             do
@@ -6226,7 +6201,7 @@ namespace Chummer
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6271,26 +6246,26 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCyberware.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Vehicle Sensor Gear.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             CharacterObject.Cyberware.FindCyberwareGear(objSensor.InternalId, out Cyberware objCyberware);
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
             string strCategories = string.Empty;
             XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
@@ -6314,7 +6289,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6359,25 +6334,25 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Vehicle Sensor Gear.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
             string strCategories = string.Empty;
             XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
@@ -6401,7 +6376,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6446,19 +6421,19 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
+        private async void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treWeapons.SelectedNode;
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_WeaponGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
             string strCategories;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -6478,7 +6453,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6524,12 +6499,12 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             if (!(treWeapons.SelectedNode?.Tag is Gear objSensor))
             // Make sure the Gear was found.
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6550,7 +6525,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
 
             do
@@ -6561,7 +6536,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6607,17 +6582,17 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleRenameLocation_Click(object sender, EventArgs e)
+        private async void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is Location objLocation))
                 return;
 
             using (SelectText frmPickText = new SelectText
             {
-                Description = LanguageManager.GetString("String_AddLocation")
+                Description = await LanguageManager.GetStringAsync("String_AddLocation")
             })
             {
-                frmPickText.ShowDialogSafe(this);
+                await frmPickText.ShowDialogSafeAsync(this);
 
                 if (frmPickText.DialogResult == DialogResult.Cancel)
                     return;
@@ -6630,11 +6605,11 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
+        private async void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
         {
             using (CreateNaturalWeapon frmCreateNaturalWeapon = new CreateNaturalWeapon(CharacterObject))
             {
-                frmCreateNaturalWeapon.ShowDialogSafe(this);
+                await frmCreateNaturalWeapon.ShowDialogSafeAsync(this);
 
                 if (frmCreateNaturalWeapon.DialogResult == DialogResult.Cancel)
                     return;
@@ -6648,16 +6623,16 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure the Gear was found.
             if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ModifyVehicleGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories = string.Empty;
             XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
@@ -6684,7 +6659,7 @@ namespace Chummer
                                                                  && (!objSensor.Capacity.Contains('[')
                                                                      || objSensor.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -6735,18 +6710,18 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
+        private async void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_WeaponGear"), LanguageManager.GetString("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
             {
@@ -6767,7 +6742,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.ShowNegativeCapacityOnly = true;
-                        frmPickGear.ShowDialogSafe(this);
+                        await frmPickGear.ShowDialogSafeAsync(this);
 
                         if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
@@ -7317,7 +7292,7 @@ namespace Chummer
             RefreshPasteStatus(sender, e);
         }
 
-        private void treLifestyles_DoubleClick(object sender, EventArgs e)
+        private async void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
             if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
@@ -7332,7 +7307,7 @@ namespace Chummer
                 // Edit Advanced Lifestyle.
                 using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, newLifestyle))
                 {
-                    frmPickLifestyle.ShowDialogSafe(this);
+                    await frmPickLifestyle.ShowDialogSafeAsync(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                     {
@@ -7351,7 +7326,7 @@ namespace Chummer
                 using (SelectLifestyle frmPickLifestyle = new SelectLifestyle(CharacterObject))
                 {
                     frmPickLifestyle.SetLifestyle(objLifestyle);
-                    frmPickLifestyle.ShowDialogSafe(this);
+                    await frmPickLifestyle.ShowDialogSafeAsync(this);
 
                     if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                     {
@@ -8936,11 +8911,11 @@ namespace Chummer
             }
         }
 
-        private void treVehicles_KeyDown(object sender, KeyEventArgs e)
+        private async void treVehicles_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteVehicle_Click(sender, e);
+                await DeleteVehicle();
             }
         }
 
@@ -10281,10 +10256,10 @@ namespace Chummer
                         {
                             lblCyberlimbAGILabel.Visible = true;
                             lblCyberlimbAGI.Visible = true;
-                            lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString(GlobalSettings.CultureInfo);
+                            lblCyberlimbAGI.Text = objCyberware.GetAttributeTotalValue("AGI").ToString(GlobalSettings.CultureInfo);
                             lblCyberlimbSTRLabel.Visible = true;
                             lblCyberlimbSTR.Visible = true;
-                            lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString(GlobalSettings.CultureInfo);
+                            lblCyberlimbSTR.Text = objCyberware.GetAttributeTotalValue("STR").ToString(GlobalSettings.CultureInfo);
                         }
                         else
                         {
@@ -11097,7 +11072,7 @@ namespace Chummer
                                                                             "/chummer/modcategories"))
                             .Contains(objArmorMod.Category);
                         chkArmorBlackMarketDiscount.Checked = objArmorMod.IncludedInArmor
-                            ? (objArmorMod.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                            ? objArmorMod.Parent?.DiscountCost == true
                             : objArmorMod.DiscountCost;
                     }
                     else
@@ -11477,7 +11452,7 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public override bool SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public override Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
             return base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked);
         }
@@ -11486,7 +11461,7 @@ namespace Chummer
         /// Save the Character using the Save As dialogue box.
         /// </summary>
         /// <param name="blnDoCreated">If True, forces the character to be saved in Career Mode (if possible to do so).</param>
-        public override bool SaveCharacterAs(bool blnDoCreated = false)
+        public override Task<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
             return base.SaveCharacterAs(blnDoCreated || chkCharacterCreated.Checked);
         }
@@ -11578,7 +11553,7 @@ namespace Chummer
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
         /// </summary>
-        private bool PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
+        private async Task<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
             using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, objSource, objSelectedCyberware))
             {
@@ -11894,7 +11869,7 @@ namespace Chummer
                     frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
                 }
 
-                frmPickCyberware.ShowDialogSafe(this);
+                await frmPickCyberware.ShowDialogSafeAsync(this);
 
                 // Make sure the dialogue window was not canceled.
                 if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -11902,8 +11877,8 @@ namespace Chummer
 
                 // Open the Cyberware XML file and locate the selected piece.
                 XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware
-                    ? CharacterObject.LoadData("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']')
-                    : CharacterObject.LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']');
+                    ? (await CharacterObject.LoadDataAsync("bioware.xml")).SelectSingleNode("/chummer/biowares/bioware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']')
+                    : (await CharacterObject.LoadDataAsync("cyberware.xml")).SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']');
 
                 // Create the Cyberware object.
                 Cyberware objCyberware = new Cyberware(CharacterObject);
@@ -11957,7 +11932,7 @@ namespace Chummer
         /// <summary>
         /// Select a piece of Gear to be added to the character.
         /// </summary>
-        private bool PickGear(string strSelectedId)
+        private async Task<bool> PickGear(string strSelectedId)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = CharacterObject.Gear.DeepFindById(strSelectedId);
@@ -12003,14 +11978,14 @@ namespace Chummer
                             frmPickGear.ShowNegativeCapacityOnly = true;
                     }
 
-                    frmPickGear.ShowDialogSafe(this);
+                    await frmPickGear.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickGear.DialogResult == DialogResult.Cancel)
                         return false;
 
                     // Open the Cyberware XML file and locate the selected piece.
-                    XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + ']');
 
                     // Create the new piece of Gear.
@@ -12053,8 +12028,8 @@ namespace Chummer
                         if (objExistingGear.Location == objLocation
                             && objGear.IsIdenticalToOtherGear(objExistingGear, true)
                             && Program.MainForm.ShowMessageBox(this,
-                                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_MergeIdentical"), objGear.DisplayNameShort(GlobalSettings.Language)),
-                                LanguageManager.GetString("MessageTitle_MergeIdentical"),
+                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_MergeIdentical"), objGear.DisplayNameShort(GlobalSettings.Language)),
+                                await LanguageManager.GetStringAsync("MessageTitle_MergeIdentical"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
                             // A match was found, so increase the quantity instead.
@@ -12084,7 +12059,7 @@ namespace Chummer
         /// </summary>
         /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
-        private bool PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
+        private async Task<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
         {
             Gear objSelectedGear = null;
             ArmorMod objSelectedMod = null;
@@ -12135,14 +12110,14 @@ namespace Chummer
                             frmPickGear.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
                     }
 
-                    frmPickGear.ShowDialogSafe(this);
+                    await frmPickGear.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickGear.DialogResult == DialogResult.Cancel)
                         return false;
 
                     // Open the Cyberware XML file and locate the selected piece.
-                    XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                     XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + ']');
 
                     // Create the new piece of Gear.
@@ -13234,8 +13209,8 @@ namespace Chummer
                 lblSpellRange.Text = objSpell.DisplayRange(GlobalSettings.Language);
                 lblSpellDamage.Text = objSpell.DisplayDamage(GlobalSettings.Language);
                 lblSpellDuration.Text = objSpell.DisplayDuration(GlobalSettings.Language);
-                lblSpellDV.Text = objSpell.DisplayDV(GlobalSettings.Language);
-                lblSpellDV.SetToolTip(objSpell.DVTooltip);
+                lblSpellDV.Text = objSpell.DisplayDv(GlobalSettings.Language);
+                lblSpellDV.SetToolTip(objSpell.DvTooltip);
 
                 objSpell.SetSourceDetail(lblSpellSource);
 
@@ -14086,7 +14061,7 @@ namespace Chummer
         /// <summary>
         /// Confirm that the character can move to career mode and perform final actions for karma carryover and such.
         /// </summary>
-        public bool ValidateCharacter()
+        public async Task<bool> ValidateCharacter()
         {
             int intBuildPoints = CalculateBP(false);
 
@@ -14097,22 +14072,22 @@ namespace Chummer
                 {
                     if (!CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalSettings.CultureInfo)),
-                                LanguageManager.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalSettings.CultureInfo)),
+                                await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                             return false;
                     }
-                    else if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraKarma")
+                    else if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraKarma")
                             , intBuildPoints.ToString(GlobalSettings.CultureInfo)
                             , CharacterObjectSettings.KarmaCarryover.ToString(GlobalSettings.CultureInfo)),
-                        LanguageManager.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     {
                         return false;
                     }
                 }
-                if (CharacterObject.Nuyen > 5000 && Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraNuyen")
+                if (CharacterObject.Nuyen > 5000 && Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraNuyen")
                         , CharacterObject.Nuyen.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
                         , 5000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)),
-                    LanguageManager.GetString("MessageTitle_ExtraNuyen"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                    await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return false;
                 if (GlobalSettings.CreateBackupOnCareer && chkCharacterCreated.Checked)
                 {
@@ -14126,7 +14101,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                            Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                             return false;
                         }
                     }
@@ -14142,7 +14117,7 @@ namespace Chummer
                                 strNewName = Guid.NewGuid().ToString("N", GlobalSettings.InvariantCultureInfo);
                         }
                     }
-                    strNewName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("Title_CreateMode") + ").chum5";
+                    strNewName += await LanguageManager.GetStringAsync("String_Space") + '(' + await LanguageManager.GetStringAsync("Title_CreateMode") + ").chum5";
 
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
@@ -14163,7 +14138,7 @@ namespace Chummer
                 if (CharacterObject.Lifestyles.Count == 0)
                 {
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                    XmlDocument objXmlDocument = CharacterObject.LoadData("lifestyles.xml");
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml");
                     XmlNode objXmlLifestyle = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
                     objLifestyle.Create(objXmlLifestyle);
@@ -14174,7 +14149,7 @@ namespace Chummer
                 decimal decStartingNuyen;
                 using (SelectLifestyleStartingNuyen frmStartingNuyen = new SelectLifestyleStartingNuyen(CharacterObject))
                 {
-                    if (frmStartingNuyen.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmStartingNuyen.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return false;
                     decStartingNuyen = frmStartingNuyen.StartingNuyen;
                 }
@@ -14200,11 +14175,11 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public override bool ConfirmSaveCreatedCharacter()
+        public override async Task<bool> ConfirmSaveCreatedCharacter()
         {
-            return Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ConfirmCreate"),
-                LanguageManager.GetString("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question) != DialogResult.No && ValidateCharacter();
+            return Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmCreate"),
+                await LanguageManager.GetStringAsync("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) != DialogResult.No && await ValidateCharacter();
         }
 
         /// <summary>
@@ -14261,13 +14236,13 @@ namespace Chummer
         /// <summary>
         /// Add a PACKS Kit to the character.
         /// </summary>
-        public bool AddPACKSKit()
+        public async Task<bool> AddPACKSKit()
         {
             XmlNode objXmlKit;
             bool blnAddAgain;
             using (SelectPACKSKit frmPickPACKSKit = new SelectPACKSKit(CharacterObject))
             {
-                frmPickPACKSKit.ShowDialogSafe(this);
+                await frmPickPACKSKit.ShowDialogSafeAsync(this);
 
                 // If the form was canceled, don't do anything.
                 if (frmPickPACKSKit.DialogResult == DialogResult.Cancel)
@@ -14277,7 +14252,7 @@ namespace Chummer
                 //if (frmPickPACKSKit.SelectedCategory == "Custom")
                 //blnCreateChildren = false;
 
-                objXmlKit = CharacterObject.LoadData("packs.xml").SelectSingleNode("/chummer/packs/pack[name = " + frmPickPACKSKit.SelectedKit.CleanXPath() + " and category = " + SelectPACKSKit.SelectedCategory.CleanXPath() + ']');
+                objXmlKit = (await CharacterObject.LoadDataAsync("packs.xml")).SelectSingleNode("/chummer/packs/pack[name = " + frmPickPACKSKit.SelectedKit.CleanXPath() + " and category = " + SelectPACKSKit.SelectedCategory.CleanXPath() + ']');
                 blnAddAgain = frmPickPACKSKit.AddAgain;
             }
 
@@ -14288,7 +14263,7 @@ namespace Chummer
             XmlNode xmlQualities = objXmlKit["qualities"];
             if (xmlQualities != null)
             {
-                XmlDocument xmlQualityDocument = CharacterObject.LoadData("qualities.xml");
+                XmlDocument xmlQualityDocument = await CharacterObject.LoadDataAsync("qualities.xml");
 
                 // Positive and Negative Qualities.
                 using (XmlNodeList xmlQualityList = xmlQualities.SelectNodes("*/quality"))
@@ -14332,12 +14307,12 @@ namespace Chummer
                     ForcedValue = strForcedValue
                 })
                 {
-                    frmPickMartialArt.ShowDialogSafe(this);
+                    await frmPickMartialArt.ShowDialogSafeAsync(this);
 
                     if (frmPickMartialArt.DialogResult != DialogResult.Cancel)
                     {
                         // Open the Martial Arts XML file and locate the selected piece.
-                        XmlDocument objXmlMartialArtDocument = CharacterObject.LoadData("martialarts.xml");
+                        XmlDocument objXmlMartialArtDocument = await CharacterObject.LoadDataAsync("martialarts.xml");
 
                         XmlNode objXmlArt = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[id = " + frmPickMartialArt.SelectedMartialArt.CleanXPath() + ']');
 
@@ -14353,7 +14328,7 @@ namespace Chummer
             if (xmlMartialArts != null)
             {
                 // Open the Martial Arts XML file and locate the selected art.
-                XmlDocument objXmlMartialArtDocument = CharacterObject.LoadData("martialarts.xml");
+                XmlDocument objXmlMartialArtDocument = await CharacterObject.LoadDataAsync("martialarts.xml");
 
                 using (XmlNodeList xmlMartialArtsList = xmlMartialArts.SelectNodes("martialart"))
                 {
@@ -14410,7 +14385,7 @@ namespace Chummer
             if (xmlComplexForms != null)
             {
                 // Open the Programs XML file and locate the selected program.
-                XmlDocument objXmlComplexFormDocument = CharacterObject.LoadData("complexforms.xml");
+                XmlDocument objXmlComplexFormDocument = await CharacterObject.LoadDataAsync("complexforms.xml");
                 using (XmlNodeList xmlComplexFormsList = xmlComplexForms.SelectNodes("complexform"))
                 {
                     if (xmlComplexFormsList?.Count > 0)
@@ -14439,7 +14414,7 @@ namespace Chummer
             if (xmlPrograms != null)
             {
                 // Open the Programs XML file and locate the selected program.
-                XmlDocument objXmlProgramDocument = CharacterObject.LoadData("programs.xml");
+                XmlDocument objXmlProgramDocument = await CharacterObject.LoadDataAsync("programs.xml");
                 using (XmlNodeList xmlProgramsList = xmlPrograms.SelectNodes("program"))
                 {
                     if (xmlProgramsList?.Count > 0)
@@ -14464,7 +14439,7 @@ namespace Chummer
             XmlNode xmlSpells = objXmlKit["spells"];
             if (xmlSpells != null)
             {
-                XmlDocument objXmlSpellDocument = CharacterObject.LoadData("spells.xml");
+                XmlDocument objXmlSpellDocument = await CharacterObject.LoadDataAsync("spells.xml");
                 using (XmlNodeList xmlSpellsList = xmlSpells.SelectNodes("spell"))
                 {
                     if (xmlSpellsList?.Count > 0)
@@ -14522,7 +14497,7 @@ namespace Chummer
             XmlNode xmlLifestyles = objXmlKit["lifestyles"];
             if (xmlLifestyles != null)
             {
-                XmlDocument objXmlLifestyleDocument = CharacterObject.LoadData("lifestyles.xml");
+                XmlDocument objXmlLifestyleDocument = await CharacterObject.LoadDataAsync("lifestyles.xml");
 
                 foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
@@ -14560,13 +14535,13 @@ namespace Chummer
                 CharacterObject.NuyenBP += decAmount;
             }
 
-            XmlDocument objXmlGearDocument = CharacterObject.LoadData("gear.xml");
+            XmlDocument objXmlGearDocument = await CharacterObject.LoadDataAsync("gear.xml");
 
             // Update Armor.
             XmlNode xmlArmors = objXmlKit["armors"];
             if (xmlArmors != null)
             {
-                XmlDocument objXmlArmorDocument = CharacterObject.LoadData("armor.xml");
+                XmlDocument objXmlArmorDocument = await CharacterObject.LoadDataAsync("armor.xml");
                 foreach (XmlNode objXmlArmor in xmlArmors.SelectNodes("armor"))
                 {
                     XmlNode objXmlArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[(" + CharacterObjectSettings.BookXPath() + ") and name = " + objXmlArmor["name"].InnerText.CleanXPath() + ']');
@@ -14611,7 +14586,7 @@ namespace Chummer
             XmlNode xmlWeapons = objXmlKit["weapons"];
             if (xmlWeapons != null)
             {
-                XmlDocument objXmlWeaponDocument = CharacterObject.LoadData("weapons.xml");
+                XmlDocument objXmlWeaponDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
                 XmlNodeList xmlWeaponsList = xmlWeapons.SelectNodes("weapon");
                 pgbProgress.Visible = true;
@@ -14701,8 +14676,8 @@ namespace Chummer
                 }
             }
 
-            XmlDocument objXmlCyberwareDocument = CharacterObject.LoadData("cyberware.xml");
-            XmlDocument objXmlBiowareDocument = CharacterObject.LoadData("bioware.xml");
+            XmlDocument objXmlCyberwareDocument = await CharacterObject.LoadDataAsync("cyberware.xml");
+            XmlDocument objXmlBiowareDocument = await CharacterObject.LoadDataAsync("bioware.xml");
 
             // Update Cyberware.
             XmlNode xmlCyberwares = objXmlKit["cyberwares"];
@@ -14774,7 +14749,7 @@ namespace Chummer
             XmlNode xmlVehicles = objXmlKit["vehicles"];
             if (xmlVehicles != null)
             {
-                XmlDocument objXmlVehicleDocument = CharacterObject.LoadData("vehicles.xml");
+                XmlDocument objXmlVehicleDocument = await CharacterObject.LoadDataAsync("vehicles.xml");
                 XmlNodeList xmlVehiclesList = xmlVehicles.SelectNodes("vehicle");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
@@ -14838,7 +14813,7 @@ namespace Chummer
                     // Add any Vehicle Weapons.
                     if (objXmlVehicle["weapons"] != null)
                     {
-                        XmlDocument objXmlWeaponDocument = CharacterObject.LoadData("weapons.xml");
+                        XmlDocument objXmlWeaponDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
                         foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
                         {
@@ -14939,10 +14914,10 @@ namespace Chummer
         /// <summary>
         /// Create a PACKS Kit from the character.
         /// </summary>
-        public void CreatePACKSKit()
+        public async Task CreatePACKSKit()
         {
             using (CreatePACKSKit frmBuildPACKSKit = new CreatePACKSKit(CharacterObject))
-                frmBuildPACKSKit.ShowDialogSafe(this);
+                await frmBuildPACKSKit.ShowDialogSafeAsync(this);
         }
 
         /// <summary>
@@ -14989,13 +14964,13 @@ namespace Chummer
         /// <summary>
         /// Change the character's Metatype or priority selection.
         /// </summary>
-        public void ChangeMetatype()
+        public async Task ChangeMetatype()
         {
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(CharacterObject))
                 {
-                    frmSelectMetatype.ShowDialogSafe(this);
+                    await frmSelectMetatype.ShowDialogSafeAsync(this);
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                         return;
                 }
@@ -15004,7 +14979,7 @@ namespace Chummer
             {
                 using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(CharacterObject))
                 {
-                    frmSelectMetatype.ShowDialogSafe(this);
+                    await frmSelectMetatype.ShowDialogSafeAsync(this);
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                         return;
                 }
@@ -15017,7 +14992,7 @@ namespace Chummer
         /// <summary>
         /// Create a Cyberware Suite from the Cyberware the character currently has.
         /// </summary>
-        private void CreateCyberwareSuite(Improvement.ImprovementSource objSource)
+        private async Task CreateCyberwareSuite(Improvement.ImprovementSource objSource)
         {
             // Make sure all of the Cyberware the character has is of the same grade.
             string strGrade = string.Empty;
@@ -15029,7 +15004,7 @@ namespace Chummer
                         strGrade = objCyberware.Grade.ToString();
                     else if (strGrade != objCyberware.Grade.ToString())
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareGradeMismatch"), LanguageManager.GetString("MessageTitle_CyberwareGradeMismatch"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGradeMismatch"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGradeMismatch"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -15037,12 +15012,12 @@ namespace Chummer
             // The character has no Cyberware!
             if (string.IsNullOrEmpty(strGrade))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NoCyberware"), LanguageManager.GetString("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NoCyberware"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             using (CreateCyberwareSuite frmBuildCyberwareSuite = new CreateCyberwareSuite(CharacterObject, objSource))
-                frmBuildCyberwareSuite.ShowDialogSafe(this);
+                await frmBuildCyberwareSuite.ShowDialogSafeAsync(this);
         }
 
         /// <summary>
@@ -15224,17 +15199,17 @@ namespace Chummer
             tsbCopy.Enabled = blnCopyEnabled;
         }
 
-        private void AddCyberwareSuite(Improvement.ImprovementSource objSource)
+        private async Task AddCyberwareSuite(Improvement.ImprovementSource objSource)
         {
             using (SelectCyberwareSuite frmPickCyberwareSuite = new SelectCyberwareSuite(CharacterObject, objSource))
             {
-                frmPickCyberwareSuite.ShowDialogSafe(this);
+                await frmPickCyberwareSuite.ShowDialogSafeAsync(this);
 
                 if (frmPickCyberwareSuite.DialogResult == DialogResult.Cancel)
                     return;
 
                 string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
-                XmlDocument objXmlDocument = CharacterObject.LoadData(strType + ".xml", string.Empty, true);
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml", string.Empty, true);
                 XmlNode xmlSuite = frmPickCyberwareSuite.SelectedSuite.IsGuid()
                     ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + frmPickCyberwareSuite.SelectedSuite.CleanXPath() + ']')
                     : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = " + frmPickCyberwareSuite.SelectedSuite.CleanXPath() + ']');
@@ -15442,14 +15417,14 @@ namespace Chummer
 
         #endregion Custom Methods
 
-        private void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(CharacterObject, objGrade))
             {
-                frmPickMetamagic.ShowDialogSafe(this);
+                await frmPickMetamagic.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
@@ -15461,12 +15436,12 @@ namespace Chummer
                 Improvement.ImprovementSource objSource;
                 if (CharacterObject.RESEnabled)
                 {
-                    objXmlMetamagic = CharacterObject.LoadData("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
+                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("echoes.xml")).SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
                     objSource = Improvement.ImprovementSource.Echo;
                 }
                 else
                 {
-                    objXmlMetamagic = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
+                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
                     objSource = Improvement.ImprovementSource.Metamagic;
                 }
 
@@ -15483,20 +15458,20 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsMetamagicAddArt_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Art))
             {
-                frmPickArt.ShowDialogSafe(this);
+                await frmPickArt.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
 
                 Art objArt = new Art(CharacterObject);
 
@@ -15513,20 +15488,20 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Enchantment))
             {
-                frmPickArt.ShowDialogSafe(this);
+                await frmPickArt.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
 
                 Spell objNewSpell = new Spell(CharacterObject);
 
@@ -15546,20 +15521,20 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsMetamagicAddRitual_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Ritual))
             {
-                frmPickArt.ShowDialogSafe(this);
+                await frmPickArt.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
 
                 Spell objNewSpell = new Spell(CharacterObject);
 
@@ -15579,27 +15554,27 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsInitiationNotes_Click(object sender, EventArgs e)
+        private async void tsInitiationNotes_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is IHasNotes objNotes))
                 return;
-            WriteNotes(objNotes, treMetamagic.SelectedNode);
+            await WriteNotes(objNotes, treMetamagic.SelectedNode);
         }
 
-        private void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
 
             using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Enhancement))
             {
-                frmPickArt.ShowDialogSafe(this);
+                await frmPickArt.ShowDialogSafeAsync(this);
 
                 // Make sure a value was selected.
                 if (frmPickArt.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("powers.xml")).SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
                 if (objXmlArt == null)
                     return;
 
@@ -15691,11 +15666,11 @@ namespace Chummer
             panEnemies.Focus();
         }
 
-        private void tsAddTechniqueNotes_Click(object sender, EventArgs e)
+        private async void tsAddTechniqueNotes_Click(object sender, EventArgs e)
         {
             if (!(treMartialArts.SelectedNode?.Tag is IHasNotes objNotes))
                 return;
-            WriteNotes(objNotes, treMartialArts.SelectedNode);
+            await WriteNotes(objNotes, treMartialArts.SelectedNode);
         }
 
         private async void btnCreateBackstory_Click(object sender, EventArgs e)
@@ -15712,11 +15687,11 @@ namespace Chummer
             }
         }
 
-        private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)
+        private async void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)
         {
             if (CheckCharacterValidity())
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ValidCharacter"), LanguageManager.GetString("MessageTitle_ValidCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ValidCharacter"), await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -15883,7 +15858,7 @@ namespace Chummer
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
+        private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
         {
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
@@ -15898,19 +15873,19 @@ namespace Chummer
                     && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                 {
                     Program.MainForm.ShowMessageBox(this,
-                                                    LanguageManager.GetString("Message_NoValidModularMount"),
-                                                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                                                    await LanguageManager.GetStringAsync("Message_NoValidModularMount"),
+                                                    await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount"),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
                 using (SelectItem frmPickMount = new SelectItem
                        {
-                           Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                           Description = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
                        })
                 {
                     frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    frmPickMount.ShowDialogSafe(this);
+                    await frmPickMount.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickMount.DialogResult == DialogResult.Cancel)
@@ -15984,7 +15959,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
+        private async void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
@@ -16000,19 +15975,19 @@ namespace Chummer
                         x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                 {
                     Program.MainForm.ShowMessageBox(this,
-                                                    LanguageManager.GetString("Message_NoValidModularMount"),
-                                                    LanguageManager.GetString("MessageTitle_NoValidModularMount"),
+                                                    await LanguageManager.GetStringAsync("Message_NoValidModularMount"),
+                                                    await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount"),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
                 using (SelectItem frmPickMount = new SelectItem
                        {
-                           Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+                           Description = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
                        })
                 {
                     frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    frmPickMount.ShowDialogSafe(this);
+                    await frmPickMount.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickMount.DialogResult == DialogResult.Cancel)
@@ -16109,35 +16084,35 @@ namespace Chummer
                 : FlowDirection.LeftToRight;
         }
 
-        private void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
+        private async void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
         {
             if (!(treWeapons.SelectedNode?.Tag is Location objLocation))
                 return;
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddWeapon(objLocation);
+                blnAddAgain = await AddWeapon(objLocation);
             }
             while (blnAddAgain);
         }
 
-        private void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)
+        private async void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objSelectedNode ? objSelectedNode : null);
+                blnAddAgain = await AddVehicle(treVehicles.SelectedNode?.Tag is Location objSelectedNode ? objSelectedNode : null);
             }
             while (blnAddAgain);
         }
 
-        private void tsEditWeaponMount_Click(object sender, EventArgs e)
+        private async void tsEditWeaponMount_Click(object sender, EventArgs e)
         {
             if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
                 return;
             using (CreateWeaponMount frmCreateWeaponMount = new CreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount))
             {
-                frmCreateWeaponMount.ShowDialogSafe(this);
+                await frmCreateWeaponMount.ShowDialogSafeAsync(this);
 
                 if (frmCreateWeaponMount.DialogResult == DialogResult.Cancel)
                     return;
@@ -16148,11 +16123,11 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void btnCreateCustomDrug_Click_1(object sender, EventArgs e)
+        private async void btnCreateCustomDrug_Click_1(object sender, EventArgs e)
         {
             using (CreateCustomDrug form = new CreateCustomDrug(CharacterObject))
             {
-                form.ShowDialogSafe(this);
+                await form.ShowDialogSafeAsync(this);
 
                 if (form.DialogResult == DialogResult.Cancel)
                     return;
@@ -16162,9 +16137,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         private void pnlAttributes_Layout(object sender, LayoutEventArgs e)
@@ -16328,10 +16303,10 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void mnuFileExport_Click(object sender, EventArgs e)
+        private async void mnuFileExport_Click(object sender, EventArgs e)
         {
             using (ExportCharacter frmExportCharacter = new ExportCharacter(CharacterObject))
-                frmExportCharacter.ShowDialogSafe(this);
+                await frmExportCharacter.ShowDialogSafeAsync(this);
         }
     }
 }

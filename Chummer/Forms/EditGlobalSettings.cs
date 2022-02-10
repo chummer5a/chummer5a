@@ -126,7 +126,7 @@ namespace Chummer
             SaveRegistrySettings();
 
             if (_blnDirty)
-                Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
+                await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
         }
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
@@ -165,7 +165,7 @@ namespace Chummer
             }
             catch(ArgumentOutOfRangeException ex)
             {
-                Log.Error(ex, "How the hell? Give me the callstack! " + ex.ToString());
+                Log.Error(ex, "How the hell? Give me the callstack! " + ex);
             }
         }
 
@@ -259,10 +259,10 @@ namespace Chummer
             }
         }
 
-        private void cmdPDFTest_Click(object sender, EventArgs e)
+        private async void cmdPDFTest_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+                await CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
 
         private async void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
@@ -476,7 +476,7 @@ namespace Chummer
                     Description = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage)
                 })
                 {
-                    if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, dlgSelectFolder.SelectedPath);
                     if (objNewCustomDataDirectory.XmlException != default)
@@ -577,7 +577,7 @@ namespace Chummer
                 Description = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage)
             })
             {
-                if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
+                if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
                 if (!objNewInfo.HasManifest)

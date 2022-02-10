@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -53,7 +54,7 @@ namespace Chummer
             }
         }
 
-        private void SpiritControl_Load(object sender, EventArgs e)
+        private async void SpiritControl_Load(object sender, EventArgs e)
         {
             bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
             nudForce.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
@@ -69,24 +70,24 @@ namespace Chummer
             chkFettered.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
-                lblForce.Text = LanguageManager.GetString("Label_Spirit_Force");
-                chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound");
-                cmdLink.ToolTipText = LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit");
+                lblForce.Text = await LanguageManager.GetStringAsync("Label_Spirit_Force");
+                chkBound.Text = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound");
+                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit");
 
-                string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes");
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 cmdNotes.ToolTipText = strTooltip.WordWrap();
             }
             else
             {
-                lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating");
-                lblServices.Text = LanguageManager.GetString("Label_Sprite_TasksOwed");
-                chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered");
-                chkFettered.Text = LanguageManager.GetString("Checkbox_Sprite_Pet");
-                cmdLink.ToolTipText = LanguageManager.GetString(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit");
+                lblForce.Text = await LanguageManager.GetStringAsync("Label_Sprite_Rating");
+                lblServices.Text = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed");
+                chkBound.Text = await LanguageManager.GetStringAsync("Label_Sprite_Registered");
+                chkFettered.Text = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet");
+                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit");
 
-                string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes");
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
                 cmdNotes.ToolTipText = strTooltip.WordWrap();
@@ -158,7 +159,7 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, e);
         }
 
-        private void tsContactOpen_Click(object sender, EventArgs e)
+        private async void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objSpirit.LinkedCharacter != null)
             {
@@ -169,7 +170,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                        objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -192,7 +193,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound"), _objSpirit.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -201,14 +202,14 @@ namespace Chummer
             }
         }
 
-        private void tsRemoveCharacter_Click(object sender, EventArgs e)
+        private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite");
+                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite");
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -220,12 +221,12 @@ namespace Chummer
             }
         }
 
-        private void tsAttachCharacter_Click(object sender, EventArgs e)
+        private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
+                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
@@ -237,22 +238,22 @@ namespace Chummer
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     _objSpirit.FileName = openFileDialog.FileName;
-                    cmdLink.ToolTipText = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
                     ContactDetailChanged?.Invoke(this, e);
                 }
             }
         }
 
-        private void tsCreateCharacter_Click(object sender, EventArgs e)
+        private async void tsCreateCharacter_Click(object sender, EventArgs e)
         {
             string strSpiritName = cboSpiritName.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSpiritName))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectCritterType"), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_SelectCritterType"), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            CreateCritter(strSpiritName, nudForce.ValueAsInt);
+            await CreateCritter(strSpiritName, nudForce.ValueAsInt);
         }
 
         private void cmdLink_Click(object sender, EventArgs e)
@@ -275,17 +276,17 @@ namespace Chummer
             cmsSpirit.Show(cmdLink, cmdLink.Left - 646, cmdLink.Top);
         }
 
-        private void cmdNotes_Click(object sender, EventArgs e)
+        private async void cmdNotes_Click(object sender, EventArgs e)
         {
             using (EditNotes frmSpritNotes = new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor))
             {
-                frmSpritNotes.ShowDialogSafe(this);
+                await frmSpritNotes.ShowDialogSafeAsync(this);
                 if (frmSpritNotes.DialogResult != DialogResult.OK)
                     return;
                 _objSpirit.Notes = frmSpritNotes.Notes;
             }
 
-            string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
+            string strTooltip = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
 
             if (!string.IsNullOrEmpty(_objSpirit.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
@@ -516,17 +517,17 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private void CreateCritter(string strCritterName, int intForce)
+        private async Task CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
+            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml");
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + ']');
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_UnknownCritterType"), strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnknownCritterType"), strCritterName), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -546,11 +547,11 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(txtCritterName.Text))
                         objCharacter.Name = txtCritterName.Text;
 
-                    string strSpace = LanguageManager.GetString("String_Space");
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
-                        Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                        FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo) + ").chum5"
+                        Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All"),
+                        FileName = strCritterName + strSpace + '(' + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo) + ").chum5"
                     })
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
@@ -569,7 +570,7 @@ namespace Chummer
                     }
 
                     // Link the newly-created Critter to the Spirit.
-                    cmdLink.ToolTipText = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
                     Program.MainForm.OpenCharacter(objCharacter);

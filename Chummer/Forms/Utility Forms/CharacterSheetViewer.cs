@@ -200,24 +200,13 @@ namespace Chummer
             }
         }
 
-        private void CharacterSheetViewer_FormClosing(object sender, FormClosingEventArgs e)
+        private async void CharacterSheetViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objRefresherCancellationTokenSource?.Cancel(false);
             _objOutputGeneratorCancellationTokenSource?.Cancel(false);
 
             // Remove the mugshots directory when the form closes.
-            string mugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
-            if (Directory.Exists(mugshotsDirectoryPath))
-            {
-                try
-                {
-                    Directory.Delete(mugshotsDirectoryPath, true);
-                }
-                catch (IOException)
-                {
-                    // Swallow this
-                }
-            }
+            await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"));
 
             // Clear the reference to the character's Print window.
             foreach (CharacterShared objCharacterShared in Program.MainForm.OpenCharacterForms)
@@ -283,7 +272,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!Utils.SafeDeleteFile(strSaveFile, true))
+                if (!await Utils.SafeDeleteFileAsync(strSaveFile, true))
                 {
                     Program.MainForm.ShowMessageBox(this,
                                                     string.Format(GlobalSettings.CultureInfo,
@@ -597,7 +586,7 @@ namespace Chummer
                             // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
 
                             // Delete any old versions of the file
-                            if (!Utils.SafeDeleteFile(_strTempSheetFilePath, true))
+                            if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true))
                                 return;
 
                             // Read in the resulting code and pass it to the browser.

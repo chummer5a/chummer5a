@@ -14359,7 +14359,7 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <bonus>
+      <bonus useselected="False">
         <allowspellrange>T</allowspellrange>
         <allowspellrange>T (A)</allowspellrange>
         <freespells attribute="MAG" limit="half,touchonly" />

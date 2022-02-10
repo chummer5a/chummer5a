@@ -46,6 +46,7 @@ namespace Chummer
         private readonly bool _blnPreferNightly;
         private bool _blnIsConnected;
         private Task _tskConnectionLoader;
+        private Task _tskChangelogDownloader;
         private CancellationTokenSource _objConnectionLoaderCancellationTokenSource;
         private readonly WebClient _clientDownloader;
         private readonly WebClient _clientChangelogDownloader;
@@ -91,10 +92,13 @@ namespace Chummer
                 Log.Info("ChummerUpdater_Load exit");
                 Close();
             }
+            if (_tskChangelogDownloader?.IsCompleted == false)
+                await _tskChangelogDownloader;
             if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                 _tskConnectionLoader.IsFaulted)))
             {
-                await DownloadChangelog();
+                _tskChangelogDownloader = Task.Run(DownloadChangelog);
+                await _tskChangelogDownloader;
             }
             if (_blnIsConnected && SilentMode && !_blnSilentModeUpdateWasDenied)
             {
@@ -287,7 +291,7 @@ namespace Chummer
 
             if (File.Exists(_strTempLatestVersionChangelogPath))
             {
-                if (!Utils.SafeDeleteFile(_strTempLatestVersionChangelogPath + ".old", !SilentMode))
+                if (!await Utils.SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".old", !SilentMode))
                     return;
                 File.Move(_strTempLatestVersionChangelogPath, _strTempLatestVersionChangelogPath + ".old");
             }
@@ -295,7 +299,7 @@ namespace Chummer
             try
             {
                 Uri uriConnectionAddress = new Uri(strUrl);
-                if (!Utils.SafeDeleteFile(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode))
+                if (!await Utils.SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode))
                     return;
                 await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp");
                 if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
@@ -350,9 +354,9 @@ namespace Chummer
                     return;
                 _blnSilentMode = value;
                 if (value && (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
-                    _tskConnectionLoader.IsFaulted))))
+                        _tskConnectionLoader.IsFaulted))) && _tskChangelogDownloader?.IsCompleted != false)
                 {
-                    Utils.RunWithoutThreadLock(DownloadChangelog);
+                    _tskChangelogDownloader = Task.Run(DownloadChangelog);
                 }
             }
         }
@@ -425,13 +429,17 @@ namespace Chummer
         private async void cmdUpdate_Click(object sender, EventArgs e)
         {
             Log.Info("cmdUpdate_Click");
+            if (_tskChangelogDownloader?.IsCompleted == false)
+                await _tskChangelogDownloader;
             if (_blnIsConnected)
                 await DownloadUpdates();
-            else if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
-                _tskConnectionLoader.IsFaulted)))
+            else if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted
+                                                     && (_tskConnectionLoader.IsCanceled ||
+                                                         _tskConnectionLoader.IsFaulted)))
             {
                 cmdUpdate.Enabled = false;
-                await DownloadChangelog();
+                _tskChangelogDownloader = Task.Run(DownloadChangelog);
+                await _tskChangelogDownloader;
             }
         }
 
@@ -611,7 +619,7 @@ namespace Chummer
                                 Directory.CreateDirectory(strLoopDirectory);
                             if (File.Exists(strLoopPath))
                             {
-                                if (!Utils.SafeDeleteFile(strLoopPath + ".old", !SilentMode))
+                                if (!await Utils.SafeDeleteFileAsync(strLoopPath + ".old", !SilentMode))
                                 {
                                     blnDoRestart = false;
                                     break;
@@ -684,11 +692,17 @@ namespace Chummer
             }
             if (blnDoRestart)
             {
-                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
+                Dictionary<string, Task<bool>> dicTasks = new Dictionary<string, Task<bool>>(lstFilesToDelete.Count);
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
-                    if (!Utils.SafeDeleteFile(strFileToDelete))
-                        lstBlocked.Add(strFileToDelete);
+                    dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete));
+                }
+                await Task.WhenAll(dicTasks.Values);
+                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
+                foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
+                {
+                    if (!kvpTaskPair.Value.Result)
+                        lstBlocked.Add(kvpTaskPair.Key);
                 }
 
                 if (lstBlocked.Count > 0)
@@ -710,7 +724,7 @@ namespace Chummer
                         }
                     }
                 }
-                Utils.RestartApplication();
+                await Utils.RestartApplication();
             }
             else
             {
@@ -743,8 +757,8 @@ namespace Chummer
                 Log.Debug("DownloadUpdates");
                 await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
                                    cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
-                                   cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
-                Utils.SafeDeleteFile(_strTempLatestVersionZipPath, !SilentMode);
+                                   cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false),
+                                   Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode));
                 try
                 {
                     await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath);

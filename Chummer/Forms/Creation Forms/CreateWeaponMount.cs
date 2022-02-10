@@ -732,7 +732,7 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-        private void cmdAddMod_Click(object sender, EventArgs e)
+        private async void cmdAddMod_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
 
@@ -773,14 +773,14 @@ namespace Chummer
                     WeaponMountSlots = intSlots
                 })
                 {
-                    frmPickVehicleMod.ShowDialogSafe(this);
+                    await frmPickVehicleMod.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
                         break;
 
                     blnAddAgain = frmPickVehicleMod.AddAgain;
-                    XmlDocument objXmlDocument = _objCharacter.LoadData("vehicles.xml");
+                    XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("vehicles.xml");
                     XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = " + frmPickVehicleMod.SelectedMod.CleanXPath() + ']');
 
                     VehicleMod objMod = new VehicleMod(_objCharacter)
@@ -801,7 +801,7 @@ namespace Chummer
                         objModsParentNode = new TreeNode
                         {
                             Tag = "Node_AdditionalMods",
-                            Text = LanguageManager.GetString("Node_AdditionalMods")
+                            Text = await LanguageManager.GetStringAsync("Node_AdditionalMods")
                         };
                         treMods.Nodes.Add(objModsParentNode);
                         objModsParentNode.Expand();
@@ -1053,9 +1053,9 @@ namespace Chummer
             }
         }
 
-        private void lblSource_Click(object sender, EventArgs e)
+        private async void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender, e);
         }
     }
 }

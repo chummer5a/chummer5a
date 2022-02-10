@@ -3550,16 +3550,16 @@ namespace Chummer.Backend.Equipment
                             if (objWeaponParent != null)
                             {
                                 Cyberware objAttributeSource = objWeaponParent;
-                                int intSTR = objAttributeSource.TotalStrength;
-                                int intAGI = objAttributeSource.TotalStrength;
+                                int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                                int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
                                 while (objAttributeSource != null)
                                 {
                                     if (intSTR != 0 || intAGI != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
                                     if (objAttributeSource == null) continue;
-                                    intSTR = objAttributeSource.TotalStrength;
-                                    intAGI = objAttributeSource.TotalStrength;
+                                    intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                                    intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
                                 }
 
                                 intUseSTR = intSTR;
@@ -3578,15 +3578,16 @@ namespace Chummer.Backend.Equipment
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.TotalStrength;
-                            int intAGI = objAttributeSource.TotalStrength;
+                            int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                            int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
                             while (objAttributeSource != null)
                             {
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
-                                intSTR = objAttributeSource.TotalStrength;
+                                if (objAttributeSource == null)
+                                    continue;
+                                intSTR = objAttributeSource.GetAttributeTotalValue("STR");
                             }
 
                             intUseSTR = intSTR;
@@ -4202,20 +4203,18 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.ManualOperation:
                         {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                            if (Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR") && _objMountedVehicle == null)
+                            if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute) && _objMountedVehicle == null)
                             {
                                 Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID);
-                                while (objAttributeSource != null
-                                       && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
-                                       && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                while (objAttributeSource != null && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
                                 {
                                     objAttributeSource = objAttributeSource.Parent;
                                 }
 
                                 if (objAttributeSource != null)
-                                    intDicePool = objSkill.PoolOtherAttribute(objSkill.Attribute, false, objSkill.Attribute == "STR"
-                                        ? objAttributeSource.TotalStrength
-                                        : objAttributeSource.TotalAgility);
+                                    intDicePool = objSkill.PoolOtherAttribute(
+                                        objSkill.Attribute, false,
+                                        objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
                                 else
                                     intDicePool = objSkill.Pool;
                             }
@@ -4236,22 +4235,20 @@ namespace Chummer.Backend.Equipment
                             Skill objSkill = Skill;
                             if (objSkill != null)
                             {
-                                if (Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR"))
+                                if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
                                 {
                                     Cyberware objAttributeSource = _objMountedVehicle != null
                                         ? _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)
                                         : _objCharacter.Cyberware.DeepFindById(ParentID);
-                                    while (objAttributeSource != null
-                                           && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
-                                           && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                    while (objAttributeSource != null && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
                                     {
                                         objAttributeSource = objAttributeSource.Parent;
                                     }
 
                                     if (objAttributeSource != null)
-                                        intDicePool = objSkill.PoolOtherAttribute(objSkill.Attribute, false, objSkill.Attribute == "STR"
-                                            ? objAttributeSource.TotalStrength
-                                            : objAttributeSource.TotalAgility);
+                                        intDicePool = objSkill.PoolOtherAttribute(
+                                            objSkill.Attribute, false,
+                                            objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
                                     else
                                         intDicePool = objSkill.Pool;
                                 }
@@ -4640,13 +4637,11 @@ namespace Chummer.Backend.Equipment
                             }
 
                             Cyberware objAttributeSource =
-                                Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR") &&
+                                Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute) &&
                                 _objMountedVehicle == null
                                     ? _objCharacter.Cyberware.DeepFindById(ParentID)
                                     : null;
-                            while (objAttributeSource != null
-                                   && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
-                                   && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                            while (objAttributeSource != null && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
                             {
                                 objAttributeSource = objAttributeSource.Parent;
                             }
@@ -4688,15 +4683,13 @@ namespace Chummer.Backend.Equipment
                                 }
 
                                 Cyberware objAttributeSource = null;
-                                if (Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR"))
+                                if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
                                 {
                                     objAttributeSource =
                                         _objMountedVehicle?.FindVehicleCyberware(x => x.InternalId == ParentID) ??
                                         _objCharacter.Cyberware.DeepFindById(ParentID);
 
-                                    while (objAttributeSource != null
-                                           && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
-                                           && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                    while (objAttributeSource != null && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
                                     {
                                         objAttributeSource = objAttributeSource.Parent;
                                     }
@@ -5547,7 +5540,7 @@ namespace Chummer.Backend.Equipment
                     Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
                 })
                 {
-                    if (frmNewAmmoCount.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) != DialogResult.OK)
+                    if (frmNewAmmoCount.ShowDialogSafe(_objCharacter) != DialogResult.OK)
                         return;
 
                     objInternalClip.Ammo = frmNewAmmoCount.SelectedValue.ToInt32();
@@ -5626,7 +5619,7 @@ namespace Chummer.Backend.Equipment
                 Count = lstCount
             })
             {
-                if (frmReloadWeapon.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) != DialogResult.OK)
+                if (frmReloadWeapon.ShowDialogSafe(_objCharacter) != DialogResult.OK)
                     return;
 
                 // Return any unspent rounds to the Ammo.
@@ -6517,23 +6510,23 @@ namespace Chummer.Backend.Equipment
                             if (objWeaponParent != null)
                             {
                                 Cyberware objAttributeSource = objWeaponParent;
-                                int intSTR = objAttributeSource.TotalStrength;
-                                int intSTRValue = objAttributeSource.StrengthValue;
-                                int intSTRBase = objAttributeSource.BaseStrength;
-                                int intAGI = objAttributeSource.TotalAgility;
-                                int intAGIValue = objAttributeSource.AgilityValue;
-                                int intAGIBase = objAttributeSource.BaseAgility;
+                                int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                                int intSTRValue = objAttributeSource.GetAttributeValue("STR");
+                                int intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
+                                int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
+                                int intAGIValue = objAttributeSource.GetAttributeValue("AGI");
+                                int intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
                                 while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
                                 {
                                     objAttributeSource = objAttributeSource.Parent;
                                     if (objAttributeSource == null)
                                         continue;
-                                    intSTR = objAttributeSource.TotalStrength;
-                                    intSTRValue = objAttributeSource.StrengthValue;
-                                    intSTRBase = objAttributeSource.BaseStrength;
-                                    intAGI = objAttributeSource.TotalAgility;
-                                    intAGIValue = objAttributeSource.AgilityValue;
-                                    intAGIBase = objAttributeSource.BaseAgility;
+                                    intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                                    intSTRValue = objAttributeSource.GetAttributeValue("STR");
+                                    intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
+                                    intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
+                                    intAGIValue = objAttributeSource.GetAttributeValue("AGI");
+                                    intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
                                 }
 
                                 intUseSTR = intSTR;
@@ -6565,23 +6558,23 @@ namespace Chummer.Backend.Equipment
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.TotalStrength;
-                            int intSTRValue = objAttributeSource.StrengthValue;
-                            int intSTRBase = objAttributeSource.BaseStrength;
-                            int intAGI = objAttributeSource.TotalAgility;
-                            int intAGIValue = objAttributeSource.AgilityValue;
-                            int intAGIBase = objAttributeSource.BaseAgility;
+                            int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                            int intSTRValue = objAttributeSource.GetAttributeValue("STR");
+                            int intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
+                            int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
+                            int intAGIValue = objAttributeSource.GetAttributeValue("AGI");
+                            int intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
                             while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
                             {
                                 objAttributeSource = objAttributeSource.Parent;
                                 if (objAttributeSource == null)
                                     continue;
-                                intSTR = objAttributeSource.TotalStrength;
-                                intSTRValue = objAttributeSource.StrengthValue;
-                                intSTRBase = objAttributeSource.BaseStrength;
-                                intAGI = objAttributeSource.TotalAgility;
-                                intAGIValue = objAttributeSource.AgilityValue;
-                                intAGIBase = objAttributeSource.BaseAgility;
+                                intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                                intSTRValue = objAttributeSource.GetAttributeValue("STR");
+                                intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
+                                intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
+                                intAGIValue = objAttributeSource.GetAttributeValue("AGI");
+                                intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
                             }
 
                             intUseSTR = intSTR;

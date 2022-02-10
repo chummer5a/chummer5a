@@ -241,7 +241,8 @@ namespace Chummer
                     }
                     cboSkill3.SelectedValue = strSkill;
                 }
-                cboTalents_SelectedIndexChanged(null, EventArgs.Empty);
+
+                await ProcessTalentsIndexChanged();
 
                 switch (_objCharacter.EffectiveBuildMethod)
                 {
@@ -330,12 +331,17 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            MetatypeSelected();
+            await MetatypeSelected();
         }
 
-        private void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await ProcessTalentsIndexChanged();
+        }
+
+        private async Task ProcessTalentsIndexChanged()
         {
             SuspendLayout();
             cboSkill1.BeginUpdate();
@@ -422,7 +428,7 @@ namespace Chummer
                                     foreach (XPathNavigator objXmlSkill in xmlSkillsList)
                                     {
                                         string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                         ?? LanguageManager.GetString("String_Unknown");
+                                                         ?? await LanguageManager.GetStringAsync("String_Unknown");
                                         lstSkills.Add(
                                             new ListItem(
                                                 strName,
@@ -501,8 +507,8 @@ namespace Chummer
                                 }
 
                                 string strMetamagicSkillSelection = string.Format(
-                                    GlobalSettings.CultureInfo, LanguageManager.GetString("String_MetamagicSkillBase"),
-                                    LanguageManager.GetString("String_MetamagicSkills"));
+                                    GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MetamagicSkillBase"),
+                                    await LanguageManager.GetStringAsync("String_MetamagicSkills"));
                                 // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                                 // So the language file should contain each of those like String_MetamagicSkillType_magic
                                 string strSkillVal = xmlTalentNode.SelectSingleNodeAndCacheExpression("skillval")?.Value
@@ -511,7 +517,7 @@ namespace Chummer
                                                         ?.Value;
                                 lblMetatypeSkillSelection.Text = string.Format(
                                     GlobalSettings.CultureInfo, strMetamagicSkillSelection, strSkillCount,
-                                    LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType),
+                                    await LanguageManager.GetStringAsync("String_MetamagicSkillType_" + strSkillType),
                                     strSkillVal);
                                 lblMetatypeSkillSelection.Visible = true;
                             }
@@ -699,21 +705,21 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        private void MetatypeSelected()
+        private async Task MetatypeSelected()
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 int intSumToTen = SumToTen(false);
                 if (intSumToTen != _objCharacter.Settings.SumtoTen)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_SumtoTen"),
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SumtoTen"),
                         _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo), intSumToTen.ToString(GlobalSettings.CultureInfo)));
                     return;
                 }
             }
             if (cboTalents.SelectedIndex == -1)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectTalent"), LanguageManager.GetString("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectTalent"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -725,7 +731,7 @@ namespace Chummer
                 || (cboSkill2.Visible && string.IsNullOrEmpty(strSkill2))
                 || (cboSkill3.Visible && string.IsNullOrEmpty(strSkill3)))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectSkill"), LanguageManager.GetString("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectSkill"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -734,7 +740,7 @@ namespace Chummer
                 using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill1);
-                    if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     strSkill1 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
                 }
@@ -744,7 +750,7 @@ namespace Chummer
                 using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill2);
-                    if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     strSkill2 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
                 }
@@ -754,7 +760,7 @@ namespace Chummer
                 using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill3);
-                    if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     strSkill3 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
                 }
@@ -764,7 +770,7 @@ namespace Chummer
                 || (cboSkill1.Visible && cboSkill3.Visible && strSkill1 == strSkill3)
                 || (cboSkill2.Visible && cboSkill3.Visible && strSkill2 == strSkill3))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_Duplicate"), LanguageManager.GetString("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -776,7 +782,7 @@ namespace Chummer
                     XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                     if (objXmlMetatype == null)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
@@ -1178,7 +1184,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -2199,9 +2205,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         #endregion Custom Methods

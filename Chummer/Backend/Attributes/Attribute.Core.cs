@@ -518,7 +518,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!_objCharacter.Settings.DontUseCyberlimbCalculation && (Abbrev == "AGI" || Abbrev == "STR"))
+                if (!_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return _objCharacter.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot));
                 }
@@ -604,7 +604,7 @@ namespace Chummer.Backend.Attributes
             int intPureCyberValue = 0;
             int intLimbCount = 0;
             // If this is AGI or STR, factor in any Cyberlimbs.
-            if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Settings.DontUseCyberlimbCalculation && blnIncludeCyberlimbs)
+            if (blnIncludeCyberlimbs && !_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
             {
                 int intLimbTotal = 0;
                 ProcessCyberlimbs(_objCharacter.Cyberware);
@@ -620,16 +620,7 @@ namespace Chummer.Backend.Attributes
                                                  .Contains(objCyberware.LimbSlot))
                             {
                                 intLimbCount += objCyberware.LimbSlotCount;
-                                switch (Abbrev)
-                                {
-                                    case "STR":
-                                        intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
-                                        break;
-
-                                    case "AGI":
-                                        intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
-                                        break;
-                                }
+                                intLimbTotal += objCyberware.GetAttributeTotalValue(Abbrev) * objCyberware.LimbSlotCount;
                             }
                         }
                         else
@@ -918,15 +909,14 @@ namespace Chummer.Backend.Attributes
                             {
                                 foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                                 {
-                                    if (strGroupName == "precedence0" && decValue > decHighest)
-                                    {
-                                        decHighest = decValue;
-                                        sbdNewModifier.Clear();
-                                        sbdNewModifier
-                                            .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                            .Append(strSpace).Append('(')
-                                            .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-                                    }
+                                    if (strGroupName != "precedence0" || decValue <= decHighest)
+                                        continue;
+                                    decHighest = decValue;
+                                    sbdNewModifier.Clear();
+                                    sbdNewModifier
+                                        .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                        .Append(strSpace).Append('(')
+                                        .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                                 }
 
                                 if (setUniqueNames.Contains("precedence-1"))
@@ -934,14 +924,13 @@ namespace Chummer.Backend.Attributes
                                     foreach ((string strGroupName, decimal decValue, string strSourceName) in
                                              lstUniquePair)
                                     {
-                                        if (strGroupName == "precedence-1")
-                                        {
-                                            decHighest += decValue;
-                                            sbdNewModifier
-                                                .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                                .Append(strSpace).Append('(')
-                                                .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-                                        }
+                                        if (strGroupName != "precedence-1")
+                                            continue;
+                                        decHighest += decValue;
+                                        sbdNewModifier
+                                            .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                            .Append(strSpace).Append('(')
+                                            .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                                     }
                                 }
 
@@ -961,8 +950,8 @@ namespace Chummer.Backend.Attributes
                                 foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair.Where(
                                              s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                                 {
-                                    sbdModifier.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace,
-                                                             strSourceName, decValue);
+                                    sbdNewModifier.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace,
+                                                                strSourceName, decValue);
                                 }
 
                                 sbdModifier.Clear();
@@ -1023,36 +1012,32 @@ namespace Chummer.Backend.Attributes
                             decimal decHighest = decimal.MinValue;
                             foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                             {
-                                if (strGroupName == strName && decValue > decHighest)
-                                {
-                                    decHighest = decValue;
-                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                               .Append(strSpace).Append('(')
-                                               .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-                                }
+                                if (strGroupName != strName || decValue <= decHighest)
+                                    continue;
+                                decHighest = decValue;
+                                sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                           .Append(strSpace).Append('(')
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                             }
                         }
 
                         //// If this is AGI or STR, factor in any Cyberlimbs.
-                        if ((Abbrev == "AGI" || Abbrev == "STR") && !_objCharacter.Settings.DontUseCyberlimbCalculation)
+                        if (!_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
                             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                             {
                                 if (objCyberware.Category == "Cyberlimb")
                                 {
                                     sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName).Append(strSpace)
-                                               .Append('(').Append(Abbrev == "AGI"
-                                                                       ? objCyberware.TotalAgility.ToString(
-                                                                           GlobalSettings.CultureInfo)
-                                                                       : objCyberware.TotalStrength.ToString(
-                                                                           GlobalSettings.CultureInfo)).Append(')');
+                                               .Append('(')
+                                               .Append(objCyberware.GetAttributeTotalValue(Abbrev)
+                                                                   .ToString(GlobalSettings.CultureInfo)).Append(')');
                                 }
                             }
                         }
 
-                        sbdModifier.Insert(0, '(' + Value.ToString(GlobalSettings.CultureInfo) + ')')
-                                   .Insert(0, DisplayAbbrev + strSpace);
-                        return _strCachedToolTip = sbdModifier.ToString();
+                        return _strCachedToolTip = DisplayAbbrev + strSpace + '('
+                                                   + Value.ToString(GlobalSettings.CultureInfo) + ')' + sbdModifier;
                     }
                 }
             }
@@ -1244,7 +1229,7 @@ namespace Chummer.Backend.Attributes
                 case nameof(Character.LimbCount):
                     {
                         if (!CharacterObject.Settings.DontUseCyberlimbCalculation &&
-                            (Abbrev == "AGI" || Abbrev == "STR") &&
+                            Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) &&
                             CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
                                                                           && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
                                                                           && !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
@@ -1263,7 +1248,7 @@ namespace Chummer.Backend.Attributes
             {
                 case nameof(CharacterSettings.DontUseCyberlimbCalculation):
                     {
-                        if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                        if (Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev) &&
                             CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
                                                                           && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
                                                                           && !CharacterObject.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))

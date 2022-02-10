@@ -386,9 +386,9 @@ namespace Chummer
             }
         }
 
-        private void lblSource_Click(object sender, EventArgs e)
+        private async void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         private void RefreshList(object sender, EventArgs e)
@@ -518,12 +518,12 @@ namespace Chummer
             }
         }
 
-        private void cmdEditCharacterSetting_Click(object sender, EventArgs e)
+        private async void cmdEditCharacterSetting_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             {
                 using (EditCharacterSettings frmOptions = new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
-                    frmOptions.ShowDialogSafe(this);
+                    await frmOptions.ShowDialogSafeAsync(this);
                 // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
             }
         }

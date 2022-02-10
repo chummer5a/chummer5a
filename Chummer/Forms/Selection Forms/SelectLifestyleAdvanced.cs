@@ -408,7 +408,7 @@ namespace Chummer
             treLifestyleQualities.SortCustomAlphabetically(strSelectedNode);
         }
 
-        private void SelectAdvancedLifestyle_Load(object sender, EventArgs e)
+        private async void SelectAdvancedLifestyle_Load(object sender, EventArgs e)
         {
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
@@ -486,7 +486,7 @@ namespace Chummer
                         foreach (XmlNode objXmlCity in xmlCityList)
                         {
                             string strName = objXmlCity["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             lstCity.Add(new ListItem(strName, objXmlCity["translate"]?.InnerText ?? strName));
                         }
                     }
@@ -576,14 +576,14 @@ namespace Chummer
             }
         }
 
-        private void cmdAddQuality_Click(object sender, EventArgs e)
+        private async void cmdAddQuality_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
             do
             {
                 using (SelectLifestyleQuality frmSelectLifestyleQuality = new SelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
                 {
-                    frmSelectLifestyleQuality.ShowDialogSafe(this);
+                    await frmSelectLifestyleQuality.ShowDialogSafeAsync(this);
 
                     // Don't do anything else if the form was canceled.
                     if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
@@ -805,9 +805,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         /// <summary>

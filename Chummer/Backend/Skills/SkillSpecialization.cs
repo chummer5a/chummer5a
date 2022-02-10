@@ -19,6 +19,7 @@
 
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -30,6 +31,8 @@ namespace Chummer.Backend.Skills
     public class SkillSpecialization : IHasName, IHasXmlDataNode
     {
         private Guid _guiID;
+        private bool _blnNameLoaded;
+        private Task<string> _tskNameLoader;
         private string _strName;
         private readonly bool _blnFree;
         private readonly bool _blnExpertise;
@@ -40,7 +43,9 @@ namespace Chummer.Backend.Skills
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter;
-            _strName = _objCharacter.ReverseTranslateExtra(strName, GlobalSettings.Language, "skills.xml");
+            _tskNameLoader
+                = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
+                               strName, GlobalSettings.Language, "skills.xml"));
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
@@ -56,7 +61,7 @@ namespace Chummer.Backend.Skills
                 return;
             objWriter.WriteStartElement("spec");
             objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("name", Name);
             objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
@@ -160,15 +165,25 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get
+            {
+                if (!_blnNameLoaded)
+                {
+                    _blnNameLoaded = true;
+                    _strName = _tskNameLoader.GetAwaiter().GetResult();
+                }
+                return _strName;
+            }
             set
             {
-                if (_strName != value)
-                {
-                    _strName = value;
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
-                }
+                if (Name == value)
+                    return;
+                _blnNameLoaded = false;
+                _tskNameLoader
+                    = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
+                                   value, GlobalSettings.Language, "skills.xml"));
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 

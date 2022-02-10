@@ -411,7 +411,13 @@ namespace Codaxy.WkHtmlToPdf
             finally
             {
                 if (delete)
-                    Utils.SafeDeleteFile(outputPdfFilePath, true);
+                {
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        Utils.SafeDeleteFile(outputPdfFilePath, true);
+                    else
+                        await Utils.SafeDeleteFileAsync(outputPdfFilePath, true);
+                }
             }
         }
 

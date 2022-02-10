@@ -5857,7 +5857,7 @@ namespace Chummer
             this.tsbSave.Size = new System.Drawing.Size(23, 22);
             this.tsbSave.Tag = "Menu_FileSave";
             this.tsbSave.Text = "Save Character";
-            this.tsbSave.Click += new System.EventHandler(this.tsbSave_Click);
+            this.tsbSave.Click += new System.EventHandler(this.mnuFileSave_Click);
             // 
             // tsbPrint
             // 
@@ -5975,7 +5975,7 @@ namespace Chummer
             this.tsVehicleAddWeaponAccessoryAlt.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddWeaponAccessoryAlt.Tag = "Menu_AddAccessory";
             this.tsVehicleAddWeaponAccessoryAlt.Text = "Add &Accessory";
-            this.tsVehicleAddWeaponAccessoryAlt.Click += new System.EventHandler(this.tsVehicleAddWeaponAccessoryAlt_Click);
+            this.tsVehicleAddWeaponAccessoryAlt.Click += new System.EventHandler(this.tsVehicleAddWeaponAccessory_Click);
             // 
             // tsVehicleAddUnderbarrelWeaponAlt
             // 
@@ -5990,7 +5990,7 @@ namespace Chummer
             this.tsVehicleAddUnderbarrelWeaponAlt.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddUnderbarrelWeaponAlt.Tag = "Menu_AddUnderbarrelWeapon";
             this.tsVehicleAddUnderbarrelWeaponAlt.Text = "Add Underbarrel Weapon";
-            this.tsVehicleAddUnderbarrelWeaponAlt.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeaponAlt_Click);
+            this.tsVehicleAddUnderbarrelWeaponAlt.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeapon_Click);
             // 
             // tsVehicleWeaponNotes
             // 
@@ -6028,7 +6028,7 @@ namespace Chummer
             this.tsVehicleGearAddAsPlugin.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleGearAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsVehicleGearAddAsPlugin.Text = "&Add as Plugin";
-            this.tsVehicleGearAddAsPlugin.Click += new System.EventHandler(this.tsVehicleGearAddAsPlugin_Click);
+            this.tsVehicleGearAddAsPlugin.Click += new System.EventHandler(this.tsVehicleSensorAddAsPlugin_Click);
             // 
             // tsVehicleGearNotes
             // 
@@ -6081,7 +6081,7 @@ namespace Chummer
             this.tsEditKarmaExpense.Size = new System.Drawing.Size(149, 22);
             this.tsEditKarmaExpense.Tag = "Button_EditExpense";
             this.tsEditKarmaExpense.Text = "Edit Expense";
-            this.tsEditKarmaExpense.Click += new System.EventHandler(this.tsEditKarmaExpense_Click);
+            this.tsEditKarmaExpense.Click += new System.EventHandler(this.lstKarma_DoubleClick);
             // 
             // cmsUndoNuyenExpense
             // 
@@ -6119,7 +6119,7 @@ namespace Chummer
             this.tsEditNuyenExpense.Size = new System.Drawing.Size(149, 22);
             this.tsEditNuyenExpense.Tag = "Button_EditExpense";
             this.tsEditNuyenExpense.Text = "Edit Expense";
-            this.tsEditNuyenExpense.Click += new System.EventHandler(this.tsEditNuyenExpense_Click);
+            this.tsEditNuyenExpense.Click += new System.EventHandler(this.lstNuyen_DoubleClick);
             // 
             // cmsArmorGear
             // 
@@ -6383,7 +6383,7 @@ namespace Chummer
             this.tsEditLifestyle.Size = new System.Drawing.Size(152, 22);
             this.tsEditLifestyle.Tag = "Menu_EditLifestyle";
             this.tsEditLifestyle.Text = "&Edit Lifestyle";
-            this.tsEditLifestyle.Click += new System.EventHandler(this.tsEditLifestyle_Click);
+            this.tsEditLifestyle.Click += new System.EventHandler(this.treLifestyles_DoubleClick);
             // 
             // tsLifestyleName
             // 
@@ -20507,7 +20507,7 @@ namespace Chummer
             this.cmdKarmaEdit.Tag = "Button_EditExpense";
             this.cmdKarmaEdit.Text = "Edit Expense";
             this.cmdKarmaEdit.UseVisualStyleBackColor = true;
-            this.cmdKarmaEdit.Click += new System.EventHandler(this.cmdKarmaEdit_Click);
+            this.cmdKarmaEdit.Click += new System.EventHandler(this.lstKarma_DoubleClick);
             // 
             // chtKarma
             // 
@@ -20669,7 +20669,7 @@ namespace Chummer
             this.cmdNuyenEdit.Tag = "Button_EditExpense";
             this.cmdNuyenEdit.Text = "Edit Expense";
             this.cmdNuyenEdit.UseVisualStyleBackColor = true;
-            this.cmdNuyenEdit.Click += new System.EventHandler(this.cmdNuyenEdit_Click);
+            this.cmdNuyenEdit.Click += new System.EventHandler(this.lstNuyen_DoubleClick);
             // 
             // chkShowFreeNuyen
             // 
@@ -21467,7 +21467,7 @@ namespace Chummer
             this.tsEditAdvancedLifestyle.Size = new System.Drawing.Size(196, 22);
             this.tsEditAdvancedLifestyle.Tag = "Menu_EditAdvancedLifestyle";
             this.tsEditAdvancedLifestyle.Text = "&Edit Advanced Lifestyle";
-            this.tsEditAdvancedLifestyle.Click += new System.EventHandler(this.tsEditAdvancedLifestyle_Click);
+            this.tsEditAdvancedLifestyle.Click += new System.EventHandler(this.treLifestyles_DoubleClick);
             // 
             // tsAdvancedLifestyleNotes
             // 
@@ -21482,7 +21482,7 @@ namespace Chummer
             this.tsAdvancedLifestyleNotes.Size = new System.Drawing.Size(196, 22);
             this.tsAdvancedLifestyleNotes.Tag = "Menu_Notes";
             this.tsAdvancedLifestyleNotes.Text = "&Notes";
-            this.tsAdvancedLifestyleNotes.Click += new System.EventHandler(this.tsAdvancedLifestyleNotes_Click);
+            this.tsAdvancedLifestyleNotes.Click += new System.EventHandler(this.tsLifestyleNotes_Click);
             // 
             // cmsGearLocation
             // 

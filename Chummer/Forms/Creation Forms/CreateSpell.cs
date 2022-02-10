@@ -672,7 +672,7 @@ namespace Chummer
                 strDV = '+' + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
-            lblDV.Text = (strBase + strDV).Replace('/', '÷')
+            lblDV.Text = (strBase + strDV).Replace('/', '÷').Replace('*', '×')
                 .CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"))
                 .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
 
@@ -881,7 +881,7 @@ namespace Chummer
             {
                 _objSpell.Damage = chkModifier4.Checked ? "P" : "S";
             }
-            _objSpell.DV = CalculateDrain();
+            _objSpell.DvBase = CalculateDrain();
             if (!string.IsNullOrEmpty(txtRestriction.Text))
                 _objSpell.Extra = txtRestriction.Text;
             _objSpell.Duration = cboDuration.SelectedValue.ToString();

@@ -244,10 +244,12 @@ namespace Chummer
                                         }
 
                                         // Delete all old autosaves
+                                        List<Task> lstTasks = new List<Task>(lstOldAutosaves.Count);
                                         foreach (string strOldAutosave in lstOldAutosaves)
                                         {
-                                            Utils.SafeDeleteFile(strOldAutosave);
+                                            lstTasks.Add(Utils.SafeDeleteFileAsync(strOldAutosave));
                                         }
+                                        await Task.WhenAll(lstTasks);
                                     }
 
                                     if (setFilesToLoad.Count > 0)
@@ -612,18 +614,18 @@ namespace Chummer
             }
         }
 
-        private void mnuGlobalSettings_Click(object sender, EventArgs e)
+        private async void mnuGlobalSettings_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             using (EditGlobalSettings frmOptions = new EditGlobalSettings())
-                frmOptions.ShowDialogSafe(this);
+                await frmOptions.ShowDialogSafeAsync(this);
         }
 
-        private void mnuCharacterSettings_Click(object sender, EventArgs e)
+        private async void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             using (EditCharacterSettings frmCharacterOptions = new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
-                frmCharacterOptions.ShowDialogSafe(this);
+                await frmCharacterOptions.ShowDialogSafeAsync(this);
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -652,10 +654,10 @@ namespace Chummer
             _frmUpdate = null;
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (About showAbout = new About())
-                showAbout.ShowDialogSafe(this);
+                await showAbout.ShowDialogSafeAsync(this);
         }
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
@@ -684,13 +686,13 @@ namespace Chummer
             PrintMultipleCharactersForm.Show(this);
         }
 
-        private void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
+        private async void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
         {
             using (VersionHistory frmShowHistory = new VersionHistory())
-                frmShowHistory.ShowDialogSafe(this);
+                await frmShowHistory.ShowDialogSafeAsync(this);
         }
 
-        private void mnuNewCritter_Click(object sender, EventArgs e)
+        private async void mnuNewCritter_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             {
@@ -698,7 +700,7 @@ namespace Chummer
                 {
                     using (SelectBuildMethod frmPickSetting = new SelectBuildMethod(objCharacter))
                     {
-                        frmPickSetting.ShowDialogSafe(this);
+                        await frmPickSetting.ShowDialogSafeAsync(this);
                         if (frmPickSetting.DialogResult == DialogResult.Cancel)
                             return;
                     }
@@ -711,7 +713,7 @@ namespace Chummer
                     // Show the Metatype selection window.
                     using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(objCharacter, "critters.xml"))
                     {
-                        frmSelectMetatype.ShowDialogSafe(this);
+                        await frmSelectMetatype.ShowDialogSafeAsync(this);
 
                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                             return;
@@ -1031,19 +1033,19 @@ namespace Chummer
             }
         }
 
-        private void tsSave_Click(object sender, EventArgs e)
+        private async void tsSave_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.SaveCharacter();
+                await objShared.SaveCharacter();
             }
         }
 
-        private void tsSaveAs_Click(object sender, EventArgs e)
+        private async void tsSaveAs_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.SaveCharacterAs();
+                await objShared.SaveCharacterAs();
             }
         }
 
@@ -1163,7 +1165,7 @@ namespace Chummer
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
-        private void ShowNewForm(object sender, EventArgs e)
+        private async void ShowNewForm(object sender, EventArgs e)
         {
             using (Character objCharacter = new Character())
             {
@@ -1172,7 +1174,7 @@ namespace Chummer
                     // Show the BP selection window.
                     using (SelectBuildMethod frmBP = new SelectBuildMethod(objCharacter))
                     {
-                        frmBP.ShowDialogSafe(this);
+                        await frmBP.ShowDialogSafeAsync(this);
                         if (frmBP.DialogResult != DialogResult.OK)
                             return;
                     }
@@ -1182,7 +1184,7 @@ namespace Chummer
                     {
                         using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialogSafe(this);
+                            await frmSelectMetatype.ShowDialogSafeAsync(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
@@ -1192,7 +1194,7 @@ namespace Chummer
                     {
                         using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialogSafe(this);
+                            await frmSelectMetatype.ShowDialogSafeAsync(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
@@ -1703,9 +1705,9 @@ namespace Chummer
             GlobalSettings.MostRecentlyUsedCharacters.Clear();
         }
 
-        private void mnuRestart_Click(object sender, EventArgs e)
+        private async void mnuRestart_Click(object sender, EventArgs e)
         {
-            Utils.RestartApplication(string.Empty, "Message_Options_Restart");
+            await Utils.RestartApplication(string.Empty, "Message_Options_Restart");
         }
 
         protected override void WndProc(ref Message m)

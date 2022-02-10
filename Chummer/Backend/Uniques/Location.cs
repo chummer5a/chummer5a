@@ -142,10 +142,10 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
                 return Name;
-            return LanguageManager.TranslateExtra(
+            return _objCharacter.TranslateExtra(
                 !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? LanguageManager.ReverseTranslateExtra(Name, GlobalSettings.Language, _objCharacter)
-                    : Name, strLanguage, _objCharacter);
+                    : Name, strLanguage);
         }
 
         /// <summary>

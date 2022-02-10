@@ -384,23 +384,25 @@ namespace Chummer
             try
             {
                 await Task.WhenAll(
-                    Task.Run(() =>
+                    Task.Run(async () =>
                     {
                         if (!blnRefreshFavorites || lstFavoritesNodes == null || lstFavorites.Count == 0 ||
                             objCancellationToken.IsCancellationRequested)
                             return;
-                        Parallel.For(0, lstFavorites.Count, (i, objState) =>
+                        Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[lstFavorites.Count];
+                        for (int i = 0; i < lstFavorites.Count; ++i)
                         {
-                            if (objCancellationToken.IsCancellationRequested)
-                            {
-                                objState.Stop();
-                                return;
-                            }
-
-                            if (objState.ShouldExitCurrentIteration)
-                                return;
-                            lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]);
-                        });
+                            int iLocal = i;
+                            atskCachingTasks[i] = Task.Run(() => CacheCharacter(lstFavorites[iLocal]), objCancellationToken);
+                        }
+                        await Task.WhenAll(atskCachingTasks);
+                        if (!blnAddFavoriteNode || objFavoriteNode == null ||
+                            objCancellationToken.IsCancellationRequested)
+                            return;
+                        for (int i = 0; i < lstFavorites.Count; ++i)
+                        {
+                            lstFavoritesNodes[i] = await atskCachingTasks[i];
+                        }
                         if (!blnAddFavoriteNode || objFavoriteNode == null ||
                             objCancellationToken.IsCancellationRequested)
                             return;
@@ -414,29 +416,31 @@ namespace Chummer
                             {
                                 if (objFavoriteNode.TreeView.IsDisposed)
                                     continue;
-                                objFavoriteNode.TreeView.DoThreadSafe(() => objFavoriteNode.Nodes.Add(objNode));
+                                await objFavoriteNode.TreeView.DoThreadSafeAsync(() => objFavoriteNode.Nodes.Add(objNode));
                             }
                             else
                                 objFavoriteNode.Nodes.Add(objNode);
                         }
                     }, objCancellationToken),
-                    Task.Run(() =>
+                    Task.Run(async () =>
                     {
                         if (lstRecentsNodes == null || lstRecents.Count == 0 ||
                             objCancellationToken.IsCancellationRequested)
                             return;
-                        Parallel.For(0, lstRecents.Count, (i, objState) =>
+                        Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[lstRecents.Count];
+                        for (int i = 0; i < lstRecents.Count; ++i)
                         {
-                            if (objCancellationToken.IsCancellationRequested)
-                            {
-                                objState.Stop();
-                                return;
-                            }
-
-                            if (objState.ShouldExitCurrentIteration)
-                                return;
-                            lstRecentsNodes[i] = CacheCharacter(lstRecents[i]);
-                        });
+                            int iLocal = i;
+                            atskCachingTasks[i] = Task.Run(() => CacheCharacter(lstRecents[iLocal]), objCancellationToken);
+                        }
+                        await Task.WhenAll(atskCachingTasks);
+                        if (!blnAddRecentNode || objRecentNode == null ||
+                            objCancellationToken.IsCancellationRequested)
+                            return;
+                        for (int i = 0; i < lstRecents.Count; ++i)
+                        {
+                            lstRecentsNodes[i] = await atskCachingTasks[i];
+                        }
                         if (!blnAddRecentNode || objRecentNode == null ||
                             objCancellationToken.IsCancellationRequested)
                             return;
@@ -450,7 +454,7 @@ namespace Chummer
                             {
                                 if (objRecentNode.TreeView.IsDisposed)
                                     continue;
-                                objRecentNode.TreeView.DoThreadSafe(() => objRecentNode.Nodes.Add(objNode));
+                                await objRecentNode.TreeView.DoThreadSafeAsync(() => objRecentNode.Nodes.Add(objNode));
                             }
                             else
                                 objRecentNode.Nodes.Add(objNode);
@@ -564,25 +568,28 @@ namespace Chummer
             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 if (objWatchNode == null || !blnAddWatchNode || dicWatch == null || dicWatch.Count == 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                     return;
                 using (LockingDictionary<TreeNode, string> dicWatchNodes = new LockingDictionary<TreeNode, string>())
                 {
-                    Parallel.ForEach(dicWatch, (kvpLoop, objState) =>
+                    List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(dicWatch.Count);
+                    foreach (string strKey in dicWatch.Keys)
+                        lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey), _objMostRecentlyUsedsRefreshCancellationTokenSource.Token));
+                    if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                        return;
+                    await Task.WhenAll(lstCachingTasks);
+                    if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                        return;
+                    foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
                     {
+                        TreeNode objNode = await tskCachingTask;
+                        if (objNode.Tag is CharacterCache objCache)
+                            dicWatchNodes.TryAdd(objNode, dicWatch[objCache.FilePath]);
                         if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                        {
-                            objState.Stop();
                             return;
-                        }
-
-                        if (objState.ShouldExitCurrentIteration)
-                            return;
-                        // ReSharper disable once AccessToDisposedClosure
-                        dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value);
-                    });
+                    }
                     foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
                     {
                         if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
@@ -593,7 +600,7 @@ namespace Chummer
                         {
                             if (objWatchNode.TreeView.IsDisposed)
                                 continue;
-                            objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s}));
+                            await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s}));
                         }
                         else
                             objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s});
@@ -609,7 +616,7 @@ namespace Chummer
                             {
                                 if (objWatchNode.TreeView.IsDisposed)
                                     continue;
-                                objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                                await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
                             }
                             else
                                 objWatchNode.Nodes.Add(kvtNode.Key);
@@ -626,7 +633,7 @@ namespace Chummer
                                 {
                                     if (objWatchNode.TreeView.IsDisposed)
                                         continue;
-                                    objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                                    await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
                                 }
                                 else
                                     objNode.Nodes.Add(kvtNode.Key);
@@ -780,7 +787,7 @@ namespace Chummer
         /// The cache is then saved in a dictionary to prevent us from storing duplicate image data in memory (which can get expensive!)
         /// </summary>
         /// <param name="strFile"></param>
-        private TreeNode CacheCharacter(string strFile)
+        private async Task<TreeNode> CacheCharacter(string strFile)
         {
             CharacterCache objCache = null;
             if (!_dicSavedCharacterCaches.IsDisposed)
@@ -789,7 +796,7 @@ namespace Chummer
                 {
                     while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
                     {
-                        objCache = new CharacterCache(strFile);
+                        objCache = await CharacterCache.CreateFromFileAsync(strFile);
                         if (_dicSavedCharacterCaches.TryAdd(strFile, objCache))
                             break;
                         objCache.Dispose();
@@ -801,17 +808,17 @@ namespace Chummer
                     // something went wrong (but not fatally so, which is why the exception is handled)
                     Utils.BreakIfDebug();
                     if (objCache == null)
-                        objCache = new CharacterCache(strFile);
+                        objCache = await CharacterCache.CreateFromFileAsync(strFile);
                 }
             }
             else
-                objCache = new CharacterCache(strFile);
+                objCache = await CharacterCache.CreateFromFileAsync(strFile);
 
             TreeNode objNode = new TreeNode
             {
                 Text = objCache.CalculatedName(),
-                ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
-                    () => '<' + Application.ProductName + '>'),
+                ToolTipText = await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
+                                                                        () => '<' + Application.ProductName + '>'),
                 Tag = objCache
             };
             if (!string.IsNullOrEmpty(objCache.ErrorText))
@@ -819,8 +826,8 @@ namespace Chummer
                 objNode.ForeColor = ColorManager.ErrorColor;
                 if (!string.IsNullOrEmpty(objNode.ToolTipText))
                     objNode.ToolTipText += Environment.NewLine + Environment.NewLine;
-                objNode.ToolTipText += LanguageManager.GetString("String_Error") +
-                                       LanguageManager.GetString("String_Colon") + Environment.NewLine +
+                objNode.ToolTipText += await LanguageManager.GetStringAsync("String_Error") +
+                                       await LanguageManager.GetStringAsync("String_Colon") + Environment.NewLine +
                                        objCache.ErrorText;
             }
 

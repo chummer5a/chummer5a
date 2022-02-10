@@ -964,14 +964,14 @@
       <source>SR5</source>
       <page>455</page>
       <bonus>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
       <wirelesspairbonus mode="replace">
-        <specificattribute>
-          <name precedence="1">REA</name>
+        <specificattribute precedence="1">
+          <name>REA</name>
           <val>Rating</val>
           <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
@@ -1040,16 +1040,16 @@
       <bonus>
         <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
       <wirelesspairbonus mode="replace">
         <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="1">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="1">REA</name>
+        <specificattribute precedence="1">
+          <name>REA</name>
           <val>Rating</val>
           <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
@@ -2973,8 +2973,8 @@
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire precedence="0">Rating * 2</skillwire>
         <sociallimit>-Rating</sociallimit>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -7160,8 +7160,8 @@
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire>Rating * 2</skillwire>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -7784,12 +7784,12 @@
       <page>203</page>
       <bonus>
         <disablequality>Celerity</disablequality>
-        <specificattribute>
-          <name precedence="0">AGI</name>
+        <specificattribute precedence="0">
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
-        <specificattribute>
-          <name precedence="0">STR</name>
+        <specificattribute precedence="0">
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -7872,8 +7872,8 @@
       <bonus>
         <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
