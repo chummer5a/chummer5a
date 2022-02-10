@@ -794,7 +794,7 @@ namespace Chummer
                             continue;
                         Quality objQuality = _objCharacter.Qualities[i];
                         if (objQuality.OriginSource == QualitySource.Selected
-                            && objQuality.GetNodeXPath()?.SelectSingleNode("onlyprioritygiven") != null)
+                            && (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("onlyprioritygiven") != null)
                             objQuality.DeleteQuality();
                     }
 
@@ -823,7 +823,7 @@ namespace Chummer
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovable
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                                 continue;
-                            XPathNavigator xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("required");
+                            XPathNavigator xmlRestrictionNode = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("required");
                             if (xmlRestrictionNode != null &&
                                 (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                             {
@@ -831,7 +831,7 @@ namespace Chummer
                             }
                             else
                             {
-                                xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("forbidden");
+                                xmlRestrictionNode = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("forbidden");
                                 if (xmlRestrictionNode != null &&
                                     (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                                 {
@@ -845,7 +845,7 @@ namespace Chummer
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
-                            if (objQuality.GetNodeXPath()?.RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name) == false)
+                            if ((await objQuality.GetNodeXPathAsync())?.RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name) == false)
                             {
                                 objQuality.DeleteQuality();
                             }

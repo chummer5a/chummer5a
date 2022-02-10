@@ -6541,7 +6541,7 @@ namespace Chummer
         /// <summary>
         /// Add a mugshot to the character.
         /// </summary>
-        protected bool AddMugshot()
+        protected async Task<bool> AddMugshot()
         {
             using (new CursorWait(this))
             {
@@ -6555,11 +6555,11 @@ namespace Chummer
                     // Prompt the user to select an image to associate with this character.
 
                     ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
-                    string strFormat = "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}";
+                    string strFormat = "{0}" + await LanguageManager.GetStringAsync("String_Space") + "({1})|{1}";
                     dlgOpenFileDialog.Filter = string.Format(
                         GlobalSettings.InvariantCultureInfo,
-                        LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" +
-                        LanguageManager.GetString("DialogFilter_All"),
+                        await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" +
+                        await LanguageManager.GetStringAsync("DialogFilter_All"),
                         string.Join("|",
                                     lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
                                                                             strFormat, codec.CodecName,
@@ -6575,7 +6575,7 @@ namespace Chummer
                         if (!File.Exists(dlgOpenFileDialog.FileName))
                         {
                             Program.MainForm.ShowMessageBox(string.Format(
-                                LanguageManager.GetString("Message_File_Cannot_Be_Read_Accessed"),
+                                await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Read_Accessed"),
                                 dlgOpenFileDialog.FileName));
                             blnMakeLoop = true;
                         }

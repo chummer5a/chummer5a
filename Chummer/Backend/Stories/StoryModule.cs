@@ -134,7 +134,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         public string DefaultKey
@@ -151,7 +151,7 @@ namespace Chummer
                 return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
             }
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("alttexts/" + strKey)?.Value ??
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNode("alttexts/" + strKey)?.Value ??
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
@@ -413,14 +413,17 @@ namespace Chummer
 
         public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D", GlobalSettings.InvariantCultureInfo);
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData("stories.xml", strLanguage)
-                                               .SelectSingleNode(
-                                                   "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("stories.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("stories.xml", strLanguage))
+                .SelectSingleNode(
+                    "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
                                                    + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
                                                    + ']');
             _strCachedXmlNodeLanguage = strLanguage;
@@ -430,16 +433,19 @@ namespace Chummer
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("stories.xml", strLanguage)
-                                                 .SelectSingleNode(
-                                                     "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
-                                                     + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                     + ']');
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("stories.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("stories.xml", strLanguage))
+                .SelectSingleNode(
+                    "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
+                                                   + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                   + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
         }

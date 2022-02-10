@@ -122,7 +122,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -138,11 +138,18 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            if (Parent == null)
+                _objCachedMyXmlNode = null;
+            else
+                _objCachedMyXmlNode = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? Parent.GetNode(strLanguage)
+                        : await Parent.GetNodeAsync(strLanguage))
+                    ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
@@ -150,12 +157,19 @@ namespace Chummer.Backend.Skills
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = Parent?.GetNodeXPath(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            if (Parent == null)
+                _objCachedMyXmlNode = null;
+            else
+                _objCachedMyXPathNode = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? Parent.GetNodeXPath(strLanguage)
+                        : await Parent.GetNodeXPathAsync(strLanguage))
+                    ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
         }

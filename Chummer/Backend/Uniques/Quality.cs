@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -649,7 +650,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -780,7 +781,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -806,7 +807,7 @@ namespace Chummer
             else
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
-                XPathNavigator xmlMyLimitNode = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("limit");
+                XPathNavigator xmlMyLimitNode = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("limit");
                 if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                     strReturn += strSpace + intLevels.ToString(objCulture);
             }
@@ -1062,20 +1063,23 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData("qualities.xml", strLanguage)
-                                               .SelectSingleNode(SourceID == Guid.Empty
-                                                                     ? "/chummer/qualities/quality[name = "
-                                                                       + Name.CleanXPath() + ']'
-                                                                     : "/chummer/qualities/quality[id = "
-                                                                       + SourceIDString.CleanXPath()
-                                                                       + " or id = " + SourceIDString
-                                                                           .ToUpperInvariant().CleanXPath()
-                                                                       + ']');
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("qualities.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("qualities.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/qualities/quality[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/qualities/quality[id = "
+                                        + SourceIDString.CleanXPath()
+                                        + " or id = " + SourceIDString
+                                                        .ToUpperInvariant().CleanXPath()
+                                        + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
@@ -1083,20 +1087,23 @@ namespace Chummer
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("qualities.xml", strLanguage)
-                                                 .SelectSingleNode(SourceID == Guid.Empty
-                                                                       ? "/chummer/qualities/quality[name = "
-                                                                         + Name.CleanXPath() + ']'
-                                                                       : "/chummer/qualities/quality[id = "
-                                                                         + SourceIDString.CleanXPath()
-                                                                         + " or id = " + SourceIDString
-                                                                             .ToUpperInvariant().CleanXPath()
-                                                                         + ']');
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("qualities.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/qualities/quality[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/qualities/quality[id = "
+                                        + SourceIDString.CleanXPath()
+                                        + " or id = " + SourceIDString
+                                                        .ToUpperInvariant().CleanXPath()
+                                        + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
         }

@@ -1058,7 +1058,7 @@ namespace Chummer
 
         #region Character Events
 
-        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1122,17 +1122,17 @@ namespace Chummer
                             // If the character options permit initiation in create mode, show the Initiation page.
                             UpdateInitiationCost();
 
-                            tabInitiation.Text = LanguageManager.GetString("Tab_Initiation");
-                            tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddMetamagic");
-                            cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade");
-                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveInitiateGrade");
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal")
+                            tabInitiation.Text = await LanguageManager.GetStringAsync("Tab_Initiation");
+                            tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddMetamagic");
+                            cmdAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddInitiateGrade");
+                            cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade");
+                            chkInitiationOrdeal.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationOrdeal"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalSettings.CultureInfo));
-                            gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType");
-                            gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup");
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_InitiationGroup")
+                            gpbInitiationType.Text = await LanguageManager.GetStringAsync("String_InitiationType");
+                            gpbInitiationGroup.Text = await LanguageManager.GetStringAsync("String_InitiationGroup");
+                            chkInitiationGroup.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationGroup"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationGroupPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
+                            chkInitiationSchooling.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationSchooling"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalSettings.CultureInfo));
 
                             chkInitiationSchooling.Enabled = true;
@@ -1141,11 +1141,11 @@ namespace Chummer
                             tsMetamagicAddEnhancement.Visible = true;
                             tsMetamagicAddRitual.Visible = true;
 
-                            string strInitTip = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveInitiateGrade")
+                            string strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade")
                                 , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
                                 , (CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation).ToString(GlobalSettings.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup");
+                            chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup");
 
                             if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                             {
@@ -1196,17 +1196,17 @@ namespace Chummer
                             if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                                 tabCharacterTabs.TabPages.Insert(3, tabInitiation);
 
-                            tabInitiation.Text = LanguageManager.GetString("Tab_Submersion");
-                            tsMetamagicAddMetamagic.Text = LanguageManager.GetString("Button_AddEcho");
-                            cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddSubmersionGrade");
-                            cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveSubmersionGrade");
-                            gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType");
-                            gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork");
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask")
+                            tabInitiation.Text = await LanguageManager.GetStringAsync("Tab_Submersion");
+                            tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddEcho");
+                            cmdAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade");
+                            cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade");
+                            gpbInitiationType.Text = await LanguageManager.GetStringAsync("String_SubmersionType");
+                            gpbInitiationGroup.Text = await LanguageManager.GetStringAsync("String_SubmersionNetwork");
+                            chkInitiationOrdeal.Text = (await LanguageManager.GetStringAsync("Checkbox_SubmersionTask"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationOrdealPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion")
+                            chkInitiationGroup.Text = (await LanguageManager.GetStringAsync("Checkbox_NetworkSubmersion"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationGroupPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
+                            chkInitiationSchooling.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationSchooling"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalSettings.CultureInfo));
                             chkInitiationSchooling.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
                             tsMetamagicAddArt.Visible = false;
@@ -1214,11 +1214,11 @@ namespace Chummer
                             tsMetamagicAddEnhancement.Visible = false;
                             tsMetamagicAddRitual.Visible = false;
 
-                            string strInitTip = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveSubmersionGrade")
+                            string strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade")
                                 , (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo)
                                 , (CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation).ToString(GlobalSettings.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork");
+                            chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork");
 
                             if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.RES) == false)
                             {
@@ -1265,14 +1265,14 @@ namespace Chummer
                         {
                             if (CharacterObject.Ambidextrous)
                             {
-                                lstPrimaryArm.Add(new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous")));
+                                lstPrimaryArm.Add(new ListItem("Ambidextrous", await LanguageManager.GetStringAsync("String_Ambidextrous")));
                                 cboPrimaryArm.Enabled = false;
                             }
                             else
                             {
                                 //Create the dropdown for the character's primary arm.
-                                lstPrimaryArm.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
-                                lstPrimaryArm.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
+                                lstPrimaryArm.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
+                                lstPrimaryArm.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
                                 lstPrimaryArm.Sort(CompareListItems.CompareNames);
                                 cboPrimaryArm.Enabled = true;
                             }
@@ -1606,7 +1606,7 @@ namespace Chummer
             }
         }
 
-        private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             IsCharacterUpdateRequested = true;
             switch (e.PropertyName)
@@ -1676,7 +1676,7 @@ namespace Chummer
                             treCritterPowers.SortCustomOrder();
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("traditions.xml")
+                                (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
                                                .SelectSingleNodeAndCacheExpression("/chummer");
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -1701,7 +1701,7 @@ namespace Chummer
                                 {
                                     lstTraditions.Sort(CompareListItems.CompareNames);
                                     lstTraditions.Insert(
-                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                     if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
                                     {
                                         cboTradition.BeginUpdate();
@@ -1807,7 +1807,7 @@ namespace Chummer
 
                             // Populate the Technomancer Streams list.
                             xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("streams.xml")
+                                (await CharacterObject.LoadDataXPathAsync("streams.xml"))
                                                .SelectSingleNodeAndCacheExpression("/chummer");
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstStreams))
@@ -1834,7 +1834,7 @@ namespace Chummer
                                 {
                                     lstStreams.Sort(CompareListItems.CompareNames);
                                     lstStreams.Insert(
-                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                     if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
                                     {
                                         cboStream.BeginUpdate();
@@ -1943,11 +1943,6 @@ namespace Chummer
         private async void mnuFileSaveAsCreated_Click(object sender, EventArgs e)
         {
             await SaveCharacterAs(true);
-        }
-
-        private void tsbPrint_Click(object sender, EventArgs e)
-        {
-            DoPrint();
         }
 
         private void mnuFilePrint_Click(object sender, EventArgs e)
@@ -2994,19 +2989,9 @@ namespace Chummer
             }
         }
 
-        private void tsbCopy_Click(object sender, EventArgs e)
+        private async void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
         {
-            mnuEditCopy_Click(sender, e);
-        }
-
-        private void tsbPaste_Click(object sender, EventArgs e)
-        {
-            mnuEditPaste_Click(sender, e);
-        }
-
-        private void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
-        {
-            XmlNode objXmlPower = CharacterObject.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
+            XmlNode objXmlPower = (await CharacterObject.LoadDataAsync("critterpowers.xml")).SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
             CritterPower objPower = new CritterPower(CharacterObject);
             objPower.Create(objXmlPower);
             objPower.CountTowardsLimit = false;
@@ -3589,11 +3574,11 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddMugshot_Click(object sender, EventArgs e)
+        private async void cmdAddMugshot_Click(object sender, EventArgs e)
         {
-            if (!AddMugshot())
+            if (!await AddMugshot())
                 return;
-            lblNumMugshots.Text = LanguageManager.GetString("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
+            lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
             ++nudMugshotIndex.Maximum;
             nudMugshotIndex.Value = CharacterObject.Mugshots.Count;
             IsDirty = true;
@@ -4513,7 +4498,7 @@ namespace Chummer
             }
 
             // Open the Weapons XML file and locate the selected Weapon.
-            XmlNode objXmlWeapon = objWeapon.GetNode();
+            XmlNode objXmlWeapon = await objWeapon.GetNodeAsync();
             if (objXmlWeapon == null)
             {
                 Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -4621,7 +4606,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    XmlNode objXmlArmor = objArmor.GetNode();
+                    XmlNode objXmlArmor = await objArmor.GetNodeAsync();
 
                     using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
                     {
@@ -4960,7 +4945,7 @@ namespace Chummer
             }
 
             // Open the Weapons XML file and locate the selected Weapon.
-            XmlNode objXmlWeapon = objWeapon.GetNode();
+            XmlNode objXmlWeapon = await objWeapon.GetNodeAsync();
             if (objXmlWeapon == null)
             {
                 Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5169,7 +5154,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -6268,7 +6253,7 @@ namespace Chummer
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -6355,7 +6340,7 @@ namespace Chummer
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             bool blnAddAgain;
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -6511,7 +6496,7 @@ namespace Chummer
             CharacterObject.Weapons.FindWeaponGear(objSensor.InternalId, out WeaponAccessory objAccessory);
 
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -6634,7 +6619,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -11945,7 +11930,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XPathNavigator xmlParent = blnNullParent ? null : objSelectedGear.GetNodeXPath();
+            XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync();
 
             using (new CursorWait(this))
             {
@@ -12079,7 +12064,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     XPathNodeIterator xmlAddonCategoryList
-                        = (objParent as IHasXmlDataNode)?.GetNodeXPath()?.Select("addoncategory");
+                        = (await (objParent as IHasXmlDataNode)?.GetNodeXPathAsync())?.Select("addoncategory");
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

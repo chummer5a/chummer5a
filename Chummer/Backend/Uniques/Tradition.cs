@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -486,7 +487,7 @@ namespace Chummer.Backend.Uniques
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -894,7 +895,7 @@ namespace Chummer.Backend.Uniques
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -903,73 +904,83 @@ namespace Chummer.Backend.Uniques
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (Type == TraditionType.None)
                 return null;
             if (_xmlCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _xmlCachedMyXmlNode;
-            _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
-                                      : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
-                                                                              + " or id = "
-                                                                              + SourceIDString.ToUpperInvariant()
-                                                                                  .CleanXPath()
-                                                                              + ']');
-            _strCachedXmlNodeLanguage = strLanguage;
-            return _xmlCachedMyXmlNode;
-        }
-
-        public XmlDocument GetTraditionDocument(string strLanguage)
-        {
+            XmlDocument objDoc = null;
             switch (Type)
             {
                 case TraditionType.MAG:
-                    return _objCharacter.LoadData("traditions.xml", strLanguage);
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadData("traditions.xml", strLanguage)
+                        : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage);
+                    break;
 
                 case TraditionType.RES:
-                    return _objCharacter.LoadData("streams.xml", strLanguage);
-
-                default:
-                    return null;
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadData("traditions.xml", strLanguage)
+                        : await _objCharacter.LoadDataAsync("streams.xml", strLanguage);
+                    break;
             }
+            if (objDoc == null)
+                _xmlCachedMyXmlNode = null;
+            else
+                _xmlCachedMyXmlNode = objDoc
+                    .SelectSingleNode(SourceID == Guid.Empty
+                                          ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                                          : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
+                                          + " or id = "
+                                          + SourceIDString.ToUpperInvariant()
+                                                          .CleanXPath()
+                                          + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
+            return _xmlCachedMyXmlNode;
         }
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = GetTraditionDocumentXPath(strLanguage)?
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
-                                      : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
-                                                                              + " or id = "
-                                                                              + SourceIDString.ToUpperInvariant()
-                                                                                  .CleanXPath()
-                                                                              + ']');
-            _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
-        }
-
-        public XPathNavigator GetTraditionDocumentXPath(string strLanguage)
-        {
+            XPathNavigator objDoc = null;
             switch (Type)
             {
                 case TraditionType.MAG:
-                    return _objCharacter.LoadDataXPath("traditions.xml", strLanguage);
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage)
+                        : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage);
+                    break;
 
                 case TraditionType.RES:
-                    return _objCharacter.LoadDataXPath("streams.xml", strLanguage);
-
-                default:
-                    return null;
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage)
+                        : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage);
+                    break;
             }
+            if (objDoc == null)
+                _xmlCachedMyXmlNode = null;
+            else
+                _objCachedMyXPathNode = objDoc
+                    .SelectSingleNode(SourceID == Guid.Empty
+                                          ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                                          : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
+                                          + " or id = "
+                                          + SourceIDString.ToUpperInvariant()
+                                                          .CleanXPath()
+                                          + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties

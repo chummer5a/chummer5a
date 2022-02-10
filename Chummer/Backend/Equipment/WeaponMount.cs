@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -434,7 +435,7 @@ namespace Chummer.Backend.Equipment
             // we instead display them as if they were one of the CRB mounts, but give them a different name
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
             {
-                XPathNavigator xmlOverrideNode = GetNodeXPath(strLanguageToPrint);
+                XPathNavigator xmlOverrideNode = this.GetNodeXPath(strLanguageToPrint);
                 objWriter.WriteElementString("sourceid", xmlOverrideNode?.SelectSingleNodeAndCacheExpression("id")?.Value ?? SourceIDString);
                 objWriter.WriteElementString("source",
                     _objCharacter.LanguageBookShort(xmlOverrideNode?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
@@ -739,12 +740,12 @@ namespace Chummer.Backend.Equipment
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 {
-                    string strReturn = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("page")?.Value ?? Page;
+                    string strReturn = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("page")?.Value ?? Page;
                     return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
                 }
                 return Page;
             }
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -1046,11 +1047,11 @@ namespace Chummer.Backend.Equipment
                 // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
-                    return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("name")?.Value ?? Name;
+                    return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("name")?.Value ?? Name;
                 return Name;
             }
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -1090,7 +1091,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
@@ -1103,12 +1104,16 @@ namespace Chummer.Backend.Equipment
                     ? "a567c5d3-38b8-496a-add8-1e176384e935"
                     // Id for Standard [SR5] mount
                     : "079a5c61-aee6-4383-81b7-32540f7a0a0b";
-                XmlNode xmlOverrideDataNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
-                                                           .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
-                                                                             + strOverrideId.CleanXPath() + " or id = "
-                                                                             + strOverrideId.ToUpperInvariant()
-                                                                                 .CleanXPath()
-                                                                             + ']');
+                XmlNode xmlOverrideDataNode
+                    = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadData("vehicles.xml", strLanguage)
+                        : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage))
+                    .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
+                                      + strOverrideId.CleanXPath() + " or id = "
+                                      + strOverrideId.ToUpperInvariant()
+                                                     .CleanXPath()
+                                      + ']');
                 if (xmlOverrideDataNode != null)
                     return xmlOverrideDataNode; // Do not cache this node
             }
@@ -1116,15 +1121,18 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
-                                               .SelectSingleNode(SourceID == Guid.Empty
-                                                                     ? "/chummer/weaponmounts/weaponmount[name = "
-                                                                       + Name.CleanXPath() + ']'
-                                                                     : "/chummer/weaponmounts/weaponmount[id = "
-                                                                       + SourceIDString.CleanXPath() + " or id = "
-                                                                       + SourceIDString.ToUpperInvariant()
-                                                                           .CleanXPath()
-                                                                       + ']');
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("vehicles.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/weaponmounts/weaponmount[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/weaponmounts/weaponmount[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
@@ -1132,7 +1140,7 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
@@ -1145,12 +1153,16 @@ namespace Chummer.Backend.Equipment
                     ? "a567c5d3-38b8-496a-add8-1e176384e935"
                     // Id for Standard [SR5] mount
                     : "079a5c61-aee6-4383-81b7-32540f7a0a0b";
-                XPathNavigator xmlOverrideDataNode = _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
-                                                           .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
-                                                                             + strOverrideId.CleanXPath() + " or id = "
-                                                                             + strOverrideId.ToUpperInvariant()
-                                                                                 .CleanXPath()
-                                                                             + ']');
+                XPathNavigator xmlOverrideDataNode
+                    = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
+                        : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage))
+                    .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
+                                      + strOverrideId.CleanXPath() + " or id = "
+                                      + strOverrideId.ToUpperInvariant()
+                                                     .CleanXPath()
+                                      + ']');
                 if (xmlOverrideDataNode != null)
                     return xmlOverrideDataNode; // Do not cache this node
             }
@@ -1158,15 +1170,18 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
-                                                 .SelectSingleNode(SourceID == Guid.Empty
-                                                                       ? "/chummer/weaponmounts/weaponmount[name = "
-                                                                         + Name.CleanXPath() + ']'
-                                                                       : "/chummer/weaponmounts/weaponmount[id = "
-                                                                         + SourceIDString.CleanXPath() + " or id = "
-                                                                         + SourceIDString.ToUpperInvariant()
-                                                                             .CleanXPath()
-                                                                         + ']');
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/weaponmounts/weaponmount[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/weaponmounts/weaponmount[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
         }
@@ -1511,7 +1526,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         public string DisplayName(string strLanguage)
@@ -1734,20 +1749,23 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
-                                               .SelectSingleNode(SourceID == Guid.Empty
-                                                                     ? "/chummer/weaponmounts/weaponmount[name = "
-                                                                       + Name.CleanXPath() + ']'
-                                                                     : "/chummer/weaponmounts/weaponmount[id = "
-                                                                       + SourceIDString.CleanXPath() + " or id = "
-                                                                       + SourceIDString.ToUpperInvariant()
-                                                                           .CleanXPath()
-                                                                       + ']');
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("vehicles.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/weaponmounts/weaponmount[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/weaponmounts/weaponmount[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
@@ -1755,20 +1773,23 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
-                                                 .SelectSingleNode(SourceID == Guid.Empty
-                                                                       ? "/chummer/weaponmounts/weaponmount[name = "
-                                                                         + Name.CleanXPath() + ']'
-                                                                       : "/chummer/weaponmounts/weaponmount[id = "
-                                                                         + SourceIDString.CleanXPath() + " or id = "
-                                                                         + SourceIDString.ToUpperInvariant()
-                                                                             .CleanXPath()
-                                                                         + ']');
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/weaponmounts/weaponmount[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/weaponmounts/weaponmount[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
         }

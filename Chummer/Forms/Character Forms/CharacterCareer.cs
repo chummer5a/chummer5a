@@ -3990,11 +3990,11 @@ namespace Chummer
             RemoveSelectedObject(treMartialArts.SelectedNode?.Tag);
         }
 
-        private void cmdAddMugshot_Click(object sender, EventArgs e)
+        private async void cmdAddMugshot_Click(object sender, EventArgs e)
         {
-            if (!AddMugshot())
+            if (!await AddMugshot())
                 return;
-            lblNumMugshots.Text = LanguageManager.GetString("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
+            lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
             ++nudMugshotIndex.Maximum;
             nudMugshotIndex.Value = CharacterObject.Mugshots.Count;
 
@@ -5256,7 +5256,7 @@ namespace Chummer
 
         private async Task<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
         {
-            XPathNavigator objXmlDeleteQuality = objSelectedQuality.GetNodeXPath();
+            XPathNavigator objXmlDeleteQuality = await objSelectedQuality.GetNodeXPathAsync();
             bool blnMetatypeQuality = false;
 
             switch (objSelectedQuality.OriginSource)
@@ -5422,7 +5422,7 @@ namespace Chummer
                 // Adding a new level
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
-                    XPathNavigator objXmlSelectedQuality = objSelectedQuality.GetNodeXPath();
+                    XPathNavigator objXmlSelectedQuality = await objSelectedQuality.GetNodeXPathAsync();
                     if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, await LanguageManager.GetStringAsync("String_Quality")))
                     {
                         UpdateQualityLevelValue(objSelectedQuality);
@@ -5496,7 +5496,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Quality objQuality = new Quality(CharacterObject);
 
-                    objQuality.Create(objSelectedQuality.GetNode(), QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                    objQuality.Create(await objSelectedQuality.GetNodeAsync(), QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                     if (objQuality.InternalId.IsEmptyGuid())
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -6249,7 +6249,7 @@ namespace Chummer
             // Open the Weapons XML file and locate the selected Weapon.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-            XmlNode objXmlWeapon = objWeapon.GetNode();
+            XmlNode objXmlWeapon = await objWeapon.GetNodeAsync();
             if (objXmlWeapon == null)
             {
                 Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6483,7 +6483,7 @@ namespace Chummer
             // Open the Armor XML file and locate the selected Armor.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("armor.xml");
 
-            XmlNode objXmlArmor = objArmor.GetNode();
+            XmlNode objXmlArmor = await objArmor.GetNodeAsync();
 
             string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
             bool blnExcludeGeneralCategory = false;
@@ -6984,7 +6984,7 @@ namespace Chummer
 
             // Open the Weapons XML file and locate the selected Weapon.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
-            XmlNode objXmlWeapon = objWeapon.GetNode();
+            XmlNode objXmlWeapon = await objWeapon.GetNodeAsync();
             if (objXmlWeapon == null)
             {
                 Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7270,7 +7270,7 @@ namespace Chummer
             }
 
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -9413,7 +9413,7 @@ namespace Chummer
             CharacterObject.Cyberware.FindCyberwareGear(objSensor.InternalId, out Cyberware objCyberware);
 
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -9527,7 +9527,7 @@ namespace Chummer
             }
 
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -9762,7 +9762,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -9919,7 +9919,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
             string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = objSensor.GetNodeXPath()?.Select("addoncategory");
+            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync())?.Select("addoncategory");
             if (xmlAddonCategoryList?.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -14987,7 +14987,7 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XPathNavigator xmlParent = blnNullParent ? null : objSelectedGear.GetNodeXPath();
+            XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync();
 
             using (new CursorWait(this))
             {
@@ -15232,7 +15232,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     XPathNodeIterator xmlAddonCategoryList
-                        = (objParent as IHasXmlDataNode)?.GetNodeXPath()?.Select("addoncategory");
+                        = (await (objParent as IHasXmlDataNode)?.GetNodeXPathAsync())?.Select("addoncategory");
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

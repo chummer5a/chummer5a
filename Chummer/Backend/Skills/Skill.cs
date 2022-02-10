@@ -28,6 +28,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
@@ -1920,7 +1921,7 @@ namespace Chummer.Backend.Skills
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -1938,7 +1939,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
@@ -2015,18 +2016,22 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = CharacterObject.LoadData("skills.xml", strLanguage)
-                                                 .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                                                       IsKnowledgeSkill
-                                                                           ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
-                                                                           : "/chummer/skills/skill[id = {0} or id = {1}]",
-                                                                       SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
-                                                                       SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).ToUpperInvariant().CleanXPath()));
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? CharacterObject.LoadData("skills.xml", strLanguage)
+                    : await CharacterObject.LoadDataAsync("skills.xml", strLanguage))
+                .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
+                                                IsKnowledgeSkill
+                                                    ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
+                                                    : "/chummer/skills/skill[id = {0} or id = {1}]",
+                                                SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
+                                                SkillId.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                                       .ToUpperInvariant().CleanXPath()));
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
@@ -2034,18 +2039,27 @@ namespace Chummer.Backend.Skills
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = CharacterObject.LoadDataXPath("skills.xml", strLanguage)
-                                                   .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                                                         IsKnowledgeSkill
-                                                                             ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
-                                                                             : "/chummer/skills/skill[id = {0} or id = {1}]",
-                                                                         SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
-                                                                         SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).ToUpperInvariant().CleanXPath()));
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? CharacterObject.LoadDataXPath("skills.xml", strLanguage)
+                    : await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage))
+                .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
+                                                IsKnowledgeSkill
+                                                    ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
+                                                    : "/chummer/skills/skill[id = {0} or id = {1}]",
+                                                SkillId.ToString(
+                                                           "D",
+                                                           GlobalSettings.InvariantCultureInfo)
+                                                       .CleanXPath(),
+                                                SkillId.ToString(
+                                                           "D",
+                                                           GlobalSettings.InvariantCultureInfo)
+                                                       .ToUpperInvariant().CleanXPath()));
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
         }

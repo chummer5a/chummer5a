@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -97,16 +98,19 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
-                                               .SelectSingleNode(SourceId == Guid.Empty
-                                                                     ? "/chummer/grades/grade[name = "
-                                                                       + Name.CleanXPath() + ']'
-                                                                     : "/chummer/grades/grade[id = "
-                                                                       + SourceIDString.CleanXPath() + ']');
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
+                    : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage))
+                .SelectSingleNode(SourceId == Guid.Empty
+                                      ? "/chummer/grades/grade[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/grades/grade[id = "
+                                        + SourceIDString.CleanXPath() + ']');
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
@@ -115,18 +119,21 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = _objCharacter
-                                    .LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
-                                    .SelectSingleNode(SourceId == Guid.Empty
-                                                          ? "/chummer/grades/grade[name = "
-                                                            + Name.CleanXPath() + ']'
-                                                          : "/chummer/grades/grade[id = "
-                                                            + SourceIDString.CleanXPath() + ']');
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource),
+                                                             strLanguage))
+                .SelectSingleNode(SourceId == Guid.Empty
+                                      ? "/chummer/grades/grade[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/grades/grade[id = "
+                                        + SourceIDString.CleanXPath() + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
         }
@@ -214,7 +221,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);

@@ -3318,7 +3318,7 @@ namespace Chummer
             this.tsbPrint.Size = new System.Drawing.Size(23, 22);
             this.tsbPrint.Tag = "Menu_FilePrint";
             this.tsbPrint.Text = "Print Character";
-            this.tsbPrint.Click += new System.EventHandler(this.tsbPrint_Click);
+            this.tsbPrint.Click += new System.EventHandler(this.mnuFilePrint_Click);
             // 
             // tssSeparator
             // 
@@ -3340,7 +3340,7 @@ namespace Chummer
             this.tsbCopy.Size = new System.Drawing.Size(23, 22);
             this.tsbCopy.Tag = "Menu_EditCopy";
             this.tsbCopy.Text = "Copy";
-            this.tsbCopy.Click += new System.EventHandler(this.tsbCopy_Click);
+            this.tsbCopy.Click += new System.EventHandler(this.mnuEditCopy_Click);
             // 
             // tsbPaste
             // 
@@ -3357,7 +3357,7 @@ namespace Chummer
             this.tsbPaste.Size = new System.Drawing.Size(23, 22);
             this.tsbPaste.Tag = "Menu_EditPaste";
             this.tsbPaste.Text = "Paste";
-            this.tsbPaste.Click += new System.EventHandler(this.tsbPaste_Click);
+            this.tsbPaste.Click += new System.EventHandler(this.mnuEditPaste_Click);
             // 
             // cmsGear
             // 

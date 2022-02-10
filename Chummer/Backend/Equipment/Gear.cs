@@ -27,6 +27,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -982,7 +983,7 @@ namespace Chummer.Backend.Equipment
                 !objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
                 _guiSourceID = Guid.Empty;
-                GetNodeXPath(GlobalSettings.DefaultLanguage, _strName, _strCategory)?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                this.GetNodeXPath(GlobalSettings.DefaultLanguage, _strName, _strCategory)?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
@@ -1881,7 +1882,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -2308,17 +2309,30 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode(string strLanguage)
+        public XmlNode GetNode(string strLanguage, string strName, string strCategory)
         {
-            return GetNode(strLanguage, string.Empty, string.Empty);
+            return GetNodeCoreAsync(true, strLanguage, strName, strCategory).GetAwaiter().GetResult();
         }
 
-        public XmlNode GetNode(string strLanguage, string strName, string strCategory)
+        public Task<XmlNode> GetNodeAsync(string strLanguage, string strName, string strCategory)
+        {
+            return GetNodeCoreAsync(false, strLanguage, strName, strCategory);
+        }
+
+        public Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        {
+            return GetNodeCoreAsync(blnSync, strLanguage, string.Empty, string.Empty);
+        }
+
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, string strName, string strCategory)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            XmlDocument objDoc = _objCharacter.LoadData("gear.xml", strLanguage);
+            XmlDocument objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData("gear.xml", strLanguage)
+                : await _objCharacter.LoadDataAsync("gear.xml", strLanguage);
             string strNameWithQuotes = Name.CleanXPath();
             _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
                                                               ? "/chummer/gears/gear[name = " + strName.CleanXPath()
@@ -2342,17 +2356,30 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
+        public XPathNavigator GetNodeXPath(string strLanguage, string strName, string strCategory)
         {
-            return GetNodeXPath(strLanguage, string.Empty, string.Empty);
+            return GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory).GetAwaiter().GetResult();
         }
 
-        public XPathNavigator GetNodeXPath(string strLanguage, string strName, string strCategory)
+        public Task<XPathNavigator> GetNodeXPathAsync(string strLanguage, string strName, string strCategory)
+        {
+            return GetNodeXPathCoreAsync(false, strLanguage, strName, strCategory);
+        }
+
+        public Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        {
+            return GetNodeXPathCoreAsync(blnSync, strLanguage, string.Empty, string.Empty);
+        }
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, string strName, string strCategory)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
-            XPathNavigator objDoc = _objCharacter.LoadDataXPath("gear.xml", strLanguage);
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath("gear.xml", strLanguage)
+                : await _objCharacter.LoadDataXPathAsync("gear.xml", strLanguage);
             string strNameWithQuotes = Name.CleanXPath();
             _objCachedMyXPathNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
                                                                 ? "/chummer/gears/gear[name = " + strName.CleanXPath()
@@ -2879,7 +2906,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator xmlGearDataNode = GetNodeXPath(strLanguage);
+            XPathNavigator xmlGearDataNode = this.GetNodeXPath(strLanguage);
             if (xmlGearDataNode?.SelectSingleNode("name")?.Value == "Custom Item")
             {
                 return _objCharacter.TranslateExtra(Name, strLanguage);

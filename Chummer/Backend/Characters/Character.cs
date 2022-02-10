@@ -429,14 +429,27 @@ namespace Chummer
             }
         }
 
-        public XmlNode GetNode(string strLanguage)
-        {
-            return GetNode(false, strLanguage);
-        }
-
         public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "")
         {
-            XmlDocument xmlDoc = LoadData(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
+            return GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage).GetAwaiter().GetResult();
+        }
+
+        public Task<XmlNode> GetNodeAsync(bool blnReturnMetatypeOnly, string strLanguage = "")
+        {
+            return GetNodeCoreAsync(false, blnReturnMetatypeOnly, strLanguage);
+        }
+
+        public Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        {
+            return GetNodeCoreAsync(blnSync, false, strLanguage);
+        }
+
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
+        {
+            XmlDocument xmlDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LoadData(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage)
+                : await LoadDataAsync(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
             XmlNode xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
                                                                   ? "/chummer/metatypes/metatype[name = "
                                                                     + Metatype.CleanXPath() + ']'
@@ -468,14 +481,27 @@ namespace Chummer
             return xmlMetavariantNode ?? xmlMetatypeNode;
         }
 
-        public XPathNavigator GetNodeXPath(string strLanguage)
-        {
-            return GetNodeXPath(false, strLanguage);
-        }
-
         public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "")
         {
-            XPathNavigator xmlDoc = LoadDataXPath(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
+            return GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage).GetAwaiter().GetResult();
+        }
+
+        public Task<XPathNavigator> GetNodeXPathAsync(bool blnReturnMetatypeOnly, string strLanguage = "")
+        {
+            return GetNodeXPathCoreAsync(false, blnReturnMetatypeOnly, strLanguage);
+        }
+
+        public Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        {
+            return GetNodeXPathCoreAsync(blnSync, false, strLanguage);
+        }
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
+        {
+            XPathNavigator xmlDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LoadDataXPath(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage)
+                : await LoadDataXPathAsync(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
             XPathNavigator xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']'
                 : "/chummer/metatypes/metatype[id = " +
@@ -3388,12 +3414,20 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ePickBPResult = Program.MainForm.DoThreadSafeFunc(ShowBP);
                                     else
-                                        ePickBPResult = await Program.MainForm.DoThreadSafeFuncAsync(ShowBP);
+                                        ePickBPResult = await Program.MainForm.DoThreadSafeFunc(ShowBPAsync);
                                     DialogResult ShowBP()
                                     {
                                         using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                         {
                                             frmPickBP.ShowDialogSafe(this);
+                                            return frmPickBP.DialogResult;
+                                        }
+                                    }
+                                    async Task<DialogResult> ShowBPAsync()
+                                    {
+                                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
+                                        {
+                                            await frmPickBP.ShowDialogSafeAsync(this);
                                             return frmPickBP.DialogResult;
                                         }
                                     }
@@ -3417,7 +3451,10 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype)
-                                    && !Guid.TryParse(GetNodeXPath(true)?.SelectSingleNode("id")?.Value, out _guiMetatype))
+                                    && !Guid.TryParse(
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        (blnSync ? GetNodeXPath(true) : await GetNodeXPathAsync(true))
+                                        ?.SelectSingleNode("id")?.Value, out _guiMetatype))
                                 {
                                     return false;
                                 }
@@ -3445,14 +3482,19 @@ namespace Chummer
                                 //Shim for metavariants that were saved with an incorrect metatype string.
                                 if (!string.IsNullOrEmpty(_strMetavariant) && _strMetatype == _strMetavariant)
                                 {
-                                    _strMetatype = GetNodeXPath(true).SelectSingleNode("name")?.Value ?? "Human";
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    _strMetatype = (blnSync ? GetNodeXPath(true) : await GetNodeXPathAsync(true))
+                                                   .SelectSingleNode("name")?.Value ?? "Human";
                                 }
 
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid",
                                         ref _guiMetavariant) &&
                                     !string.IsNullOrEmpty(_strMetavariant))
                                 {
-                                    _guiMetavariant = Guid.Parse(this.GetNodeXPath()?.SelectSingleNode("id")?.Value);
+                                    _guiMetavariant
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        = Guid.Parse((blnSync ? this.GetNodeXPath() : await this.GetNodeXPathAsync())
+                                                     ?.SelectSingleNode("id")?.Value);
                                 }
 
                                 bool blnDoSourceFetch =
@@ -3464,7 +3506,9 @@ namespace Chummer
                                     blnDoSourceFetch = true;
                                 if (blnDoSourceFetch)
                                 {
-                                    XPathNavigator xmlCharNode = this.GetNodeXPath();
+                                    XPathNavigator xmlCharNode
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        = blnSync ? this.GetNodeXPath() : await this.GetNodeXPathAsync();
                                     if (xmlCharNode != null)
                                     {
                                         _strSource = xmlCharNode.SelectSingleNode("source")?.Value ?? _strSource;
@@ -3794,8 +3838,12 @@ namespace Chummer
                                             if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
                                                 objQuality.SetGUID(Guid.NewGuid());
                                             _lstQualities.Add(objQuality);
-                                            if (objQuality.GetNodeXPath()?.SelectSingleNode("bonus/addgear/name")
-                                                    ?.Value ==
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? objQuality.GetNodeXPath()
+                                                    : await objQuality.GetNodeXPathAsync())
+                                                ?.SelectSingleNode("bonus/addgear/name")
+                                                ?.Value ==
                                                 "Living Persona")
                                                 objLivingPersonaQuality = objQuality;
                                             // Legacy shim
@@ -3813,7 +3861,10 @@ namespace Chummer
                                                 ImprovementManager.RemoveImprovements(this,
                                                     Improvement.ImprovementSource.Quality,
                                                     objQuality.InternalId);
-                                                XmlNode objNode = objQuality.GetNode();
+                                                XmlNode objNode = blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? objQuality.GetNode()
+                                                    : await objQuality.GetNodeAsync();
                                                 if (objNode != null)
                                                 {
                                                     objQuality.Bonus = objNode["bonus"];
@@ -4362,7 +4413,10 @@ namespace Chummer
                                             x.SourceName == objCyberware.InternalId &&
                                             x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
                                     {
-                                        XmlNode objNode = objCyberware.GetNode();
+                                        XmlNode objNode = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? objCyberware.GetNode()
+                                            : await objCyberware.GetNodeAsync();
                                         if (objNode != null)
                                         {
                                             ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
@@ -4434,7 +4488,10 @@ namespace Chummer
                                                 return Improvements.Any(y => y.SourceName == strToMatch);
                                             }))
                                         {
-                                            XmlNode objNode = objCyberware.GetNode();
+                                            XmlNode objNode = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? objCyberware.GetNode()
+                                                : await objCyberware.GetNodeAsync();
                                             if (objNode != null)
                                             {
                                                 ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
@@ -4770,7 +4827,10 @@ namespace Chummer
                                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
                                         objLivingPersonaQuality.InternalId);
 
-                                    XmlNode objNode = objLivingPersonaQuality.GetNode();
+                                    XmlNode objNode = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? objLivingPersonaQuality.GetNode()
+                                        : await objLivingPersonaQuality.GetNodeAsync();
                                     if (objNode != null)
                                     {
                                         objLivingPersonaQuality.Bonus = objNode["bonus"];
@@ -20085,7 +20145,11 @@ namespace Chummer
                                     {
                                         using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                         {
-                                            frmPickBP.ShowDialogSafe(this);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                frmPickBP.ShowDialogSafe(this);
+                                            else
+                                                await frmPickBP.ShowDialogSafeAsync(this);
                                             if (frmPickBP.DialogResult != DialogResult.OK)
                                                 return false;
                                         }
@@ -20147,7 +20211,11 @@ namespace Chummer
 
                                     using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
                                     {
-                                        frmSelectMetatype.ShowDialogSafe(this);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            frmSelectMetatype.ShowDialogSafe(this);
+                                        else
+                                            await frmSelectMetatype.ShowDialogSafeAsync(this);
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                             return false;
                                     }
@@ -20156,7 +20224,11 @@ namespace Chummer
                                 {
                                     using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
                                     {
-                                        frmSelectMetatype.ShowDialogSafe(this);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            frmSelectMetatype.ShowDialogSafe(this);
+                                        else
+                                            await frmSelectMetatype.ShowDialogSafeAsync(this);
                                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                                             return false;
                                     }
@@ -20781,7 +20853,11 @@ namespace Chummer
                                                                 {
                                                                     Gear objPlugin = new Gear(this);
                                                                     if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
-                                                                        objArmorMod.GetNode(), lstWeapons))
+                                                                            blnSync
+                                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                                ? objArmorMod.GetNode()
+                                                                                : await objArmorMod.GetNodeAsync(),
+                                                                            lstWeapons))
                                                                         objArmorMod.GearChildren.Add(objPlugin);
                                                                     else
                                                                         objPlugin.Dispose();
