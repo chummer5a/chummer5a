@@ -19,148 +19,49 @@
 
 using System;
 using System.Collections;
-using System.Threading;
 
 namespace Chummer
 {
-    public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IEquatable<LockingDictionaryEnumerator>, IDisposable
+    public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IDisposable
     {
-        private bool _blnHasEnteredTopReadLock;
-
-        private readonly ReaderWriterLockSlim _rwlThis;
+        private readonly IHasLockingDictionaryEnumerators _objMyParent;
 
         private readonly IDictionaryEnumerator _objInternalEnumerator;
 
-        public LockingDictionaryEnumerator(IDictionary dicEnumerable, ReaderWriterLockSlim rwlThis)
+        public LockingDictionaryEnumerator(IDictionaryEnumerator objInternalEnumerator, IHasLockingDictionaryEnumerators objMyParent)
         {
-            _objInternalEnumerator = dicEnumerable.GetEnumerator();
-            _rwlThis = rwlThis;
-        }
-
-        public LockingDictionaryEnumerator(IDictionaryEnumerator lstEnumerator, ReaderWriterLockSlim rwlThis)
-        {
-            _objInternalEnumerator = lstEnumerator;
-            _rwlThis = rwlThis;
-        }
-
-        /// <inheritdoc />
-        public bool MoveNext()
-        {
-            bool blnReturn = false;
-            // When we start moving, enter a read lock that is only released when we stop moving
-            if (!_blnHasEnteredTopReadLock)
-            {
-                _blnHasEnteredTopReadLock = true;
-                _rwlThis.EnterReadLock();
-            }
-            try
-            {
-                return blnReturn = _objInternalEnumerator.MoveNext();
-            }
-            finally
-            {
-                if (!blnReturn && _blnHasEnteredTopReadLock)
-                {
-                    _blnHasEnteredTopReadLock = false;
-                    _rwlThis.ExitReadLock();
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public void Reset()
-        {
-            using (new EnterReadLock(_rwlThis))
-                _objInternalEnumerator.Reset();
-            if (_blnHasEnteredTopReadLock)
-            {
-                _blnHasEnteredTopReadLock = false;
-                _rwlThis.ExitReadLock();
-            }
-        }
-
-        /// <inheritdoc />
-        public object Current
-        {
-            get
-            {
-                using (new EnterReadLock(_rwlThis))
-                    return _objInternalEnumerator.Current;
-            }
-        }
-
-        /// <inheritdoc />
-        public object Key
-        {
-            get
-            {
-                using (new EnterReadLock(_rwlThis))
-                    return _objInternalEnumerator.Key;
-            }
-        }
-
-        /// <inheritdoc />
-        public object Value
-        {
-            get
-            {
-                using (new EnterReadLock(_rwlThis))
-                    return _objInternalEnumerator.Value;
-            }
-        }
-
-        /// <inheritdoc />
-        public DictionaryEntry Entry
-        {
-            get
-            {
-                using (new EnterReadLock(_rwlThis))
-                    return _objInternalEnumerator.Entry;
-            }
-        }
-
-        /// <inheritdoc />
-        public bool Equals(LockingDictionaryEnumerator other)
-        {
-            return other != null && Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            return obj != null && Equals((LockingDictionaryEnumerator)obj);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return (_rwlThis, _objInternalEnumerator).GetHashCode();
-        }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return _objInternalEnumerator.ToString() + ' ' + _rwlThis;
-        }
-
-        public static bool operator ==(LockingDictionaryEnumerator left, LockingDictionaryEnumerator right)
-        {
-            return left != null && left.Equals(right);
-        }
-
-        public static bool operator !=(LockingDictionaryEnumerator left, LockingDictionaryEnumerator right)
-        {
-            return !(left == right);
+            _objInternalEnumerator = objInternalEnumerator;
+            _objMyParent = objMyParent;
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_blnHasEnteredTopReadLock)
-            {
-                _blnHasEnteredTopReadLock = false;
-                _rwlThis.ExitReadLock();
-            }
+            _objMyParent.FreeLockingDictionaryEnumerator(this);
         }
+
+        /// <inheritdoc />
+        public bool MoveNext()
+        {
+            return _objInternalEnumerator.MoveNext();
+        }
+
+        /// <inheritdoc />
+        public void Reset()
+        {
+            _objInternalEnumerator.Reset();
+        }
+
+        /// <inheritdoc />
+        public object Current => _objInternalEnumerator.Current;
+
+        /// <inheritdoc />
+        public object Key => _objInternalEnumerator.Key;
+
+        /// <inheritdoc />
+        public object Value => _objInternalEnumerator.Value;
+
+        /// <inheritdoc />
+        public DictionaryEntry Entry => _objInternalEnumerator.Entry;
     }
 }

@@ -34,7 +34,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockingEnumerators<KeyValuePair<TKey, TValue>>, IHasLockingDictionaryEnumerators
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         private readonly ReaderWriterLockSlim
@@ -65,25 +65,80 @@ namespace Chummer
             _dicData = new Dictionary<TKey, TValue>(comparer);
         }
 
+        private readonly object _objActiveEnumeratorsLock = new object();
+        private readonly List<LockingEnumerator<KeyValuePair<TKey, TValue>>> _lstActiveEnumerators = new List<LockingEnumerator<KeyValuePair<TKey, TValue>>>();
+        private readonly List<LockingDictionaryEnumerator> _lstActiveDictionaryEnumerators = new List<LockingDictionaryEnumerator>();
+
+        public LockingEnumerator<KeyValuePair<TKey, TValue>> CreateLockingEnumerator()
+        {
+            bool blnDoLock;
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn;
+            lock (_objActiveEnumeratorsLock)
+            {
+                blnDoLock = _lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0;
+                objReturn = new LockingEnumerator<KeyValuePair<TKey, TValue>>(_dicData.GetEnumerator(), this);
+                _lstActiveEnumerators.Add(objReturn);
+            }
+            if (blnDoLock)
+                _rwlThis.EnterReadLock();
+            return objReturn;
+        }
+
+        public void FreeLockingEnumerator(LockingEnumerator<KeyValuePair<TKey, TValue>> objToFree)
+        {
+            bool blnFreeLock;
+            lock (_objActiveEnumeratorsLock)
+            {
+                _lstActiveEnumerators.Remove(objToFree);
+                blnFreeLock = _lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0;
+            }
+            if (blnFreeLock)
+                _rwlThis.ExitReadLock();
+        }
+
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _dicData.GetEnumerator().GetLockingType(_rwlThis);
+            return CreateLockingEnumerator();
+        }
+
+        public LockingDictionaryEnumerator CreateLockingDictionaryEnumerator()
+        {
+            bool blnDoLock;
+            LockingDictionaryEnumerator objReturn;
+            lock (_objActiveEnumeratorsLock)
+            {
+                blnDoLock = _lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0;
+                objReturn = new LockingDictionaryEnumerator(((IDictionary)_dicData).GetEnumerator(), this);
+                _lstActiveDictionaryEnumerators.Add(objReturn);
+            }
+            if (blnDoLock)
+                _rwlThis.EnterReadLock();
+            return objReturn;
+        }
+
+        public void FreeLockingDictionaryEnumerator(LockingDictionaryEnumerator objToFree)
+        {
+            bool blnFreeLock;
+            lock (_objActiveEnumeratorsLock)
+            {
+                _lstActiveDictionaryEnumerators.Remove(objToFree);
+                blnFreeLock = _lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0;
+            }
+            if (blnFreeLock)
+                _rwlThis.ExitReadLock();
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _dicData.GetLockingDictionaryEnumerator(_rwlThis);
+            return CreateLockingDictionaryEnumerator();
         }
 
         /// <inheritdoc />
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _dicData.GetLockingDictionaryEnumerator(_rwlThis);
+            return CreateLockingDictionaryEnumerator();
         }
 
         /// <inheritdoc />
@@ -434,6 +489,8 @@ namespace Chummer
         public void Dispose()
         {
             IsDisposed = true;
+            while (_rwlThis.IsReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld)
+                Utils.SafeSleep();
             _rwlThis.Dispose();
         }
 

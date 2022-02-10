@@ -26,7 +26,7 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IDisposable, IProducerConsumerCollection<T>
+    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IDisposable, IProducerConsumerCollection<T>, IHasLockingEnumerators<T>
     {
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -291,11 +291,40 @@ namespace Chummer
                 base.ForEach(action);
         }
 
+        private readonly object _objActiveEnumeratorsLock = new object();
+        private readonly List<LockingEnumerator<T>> _lstActiveEnumerators = new List<LockingEnumerator<T>>();
+
+        public LockingEnumerator<T> CreateLockingEnumerator()
+        {
+            bool blnDoLock;
+            LockingEnumerator<T> objReturn;
+            lock (_objActiveEnumeratorsLock)
+            {
+                blnDoLock = _lstActiveEnumerators.Count == 0;
+                objReturn = new LockingEnumerator<T>(base.GetEnumerator(), this);
+                _lstActiveEnumerators.Add(objReturn);
+            }
+            if (blnDoLock)
+                _rwlThis.EnterReadLock();
+            return objReturn;
+        }
+
+        public void FreeLockingEnumerator(LockingEnumerator<T> objToFree)
+        {
+            bool blnFreeLock;
+            lock (_objActiveEnumeratorsLock)
+            {
+                _lstActiveEnumerators.Remove(objToFree);
+                blnFreeLock = _lstActiveEnumerators.Count == 0;
+            }
+            if (blnFreeLock)
+                _rwlThis.ExitReadLock();
+        }
+
         /// <inheritdoc cref="List{T}.GetEnumerator" />
         public new IEnumerator<T> GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return base.GetEnumerator().GetLockingType(_rwlThis);
+            return CreateLockingEnumerator();
         }
 
         /// <inheritdoc cref="List{T}.GetRange" />
@@ -456,6 +485,8 @@ namespace Chummer
         {
             if (disposing)
             {
+                while (_rwlThis.IsReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld)
+                    Utils.SafeSleep();
                 _rwlThis.Dispose();
             }
         }

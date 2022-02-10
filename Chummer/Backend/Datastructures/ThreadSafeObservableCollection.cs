@@ -26,7 +26,7 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>
+    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockingEnumerators<T>
     {
         protected ReaderWriterLockSlim LockerObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
@@ -126,11 +126,40 @@ namespace Chummer
             }
         }
 
+        private readonly object _objActiveEnumeratorsLock = new object();
+        private readonly List<LockingEnumerator<T>> _lstActiveEnumerators = new List<LockingEnumerator<T>>();
+
+        public LockingEnumerator<T> CreateLockingEnumerator()
+        {
+            bool blnDoLock;
+            LockingEnumerator<T> objReturn;
+            lock (_objActiveEnumeratorsLock)
+            {
+                blnDoLock = _lstActiveEnumerators.Count == 0;
+                objReturn = new LockingEnumerator<T>(base.GetEnumerator(), this);
+                _lstActiveEnumerators.Add(objReturn);
+            }
+            if (blnDoLock)
+                LockerObject.EnterReadLock();
+            return objReturn;
+        }
+
+        public void FreeLockingEnumerator(LockingEnumerator<T> objToFree)
+        {
+            bool blnFreeLock;
+            lock (_objActiveEnumeratorsLock)
+            {
+                _lstActiveEnumerators.Remove(objToFree);
+                blnFreeLock = _lstActiveEnumerators.Count == 0;
+            }
+            if (blnFreeLock)
+                LockerObject.ExitReadLock();
+        }
+
         /// <inheritdoc />
         public new IEnumerator<T> GetEnumerator()
         {
-            using (new EnterReadLock(LockerObject))
-                return base.GetEnumerator().GetLockingType(LockerObject);
+            return CreateLockingEnumerator();
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T)" />
@@ -238,6 +267,8 @@ namespace Chummer
         {
             if (disposing)
             {
+                while (LockerObject.IsReadLockHeld || LockerObject.IsUpgradeableReadLockHeld || LockerObject.IsUpgradeableReadLockHeld)
+                    Utils.SafeSleep();
                 LockerObject.Dispose();
             }
         }
