@@ -11452,18 +11452,18 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public override async Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public override Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
-            return await base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked);
+            return base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked);
         }
 
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
         /// <param name="blnDoCreated">If True, forces the character to be saved in Career Mode (if possible to do so).</param>
-        public override async Task<bool> SaveCharacterAs(bool blnDoCreated = false)
+        public override Task<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
-            return await base.SaveCharacterAs(blnDoCreated || chkCharacterCreated.Checked);
+            return base.SaveCharacterAs(blnDoCreated || chkCharacterCreated.Checked);
         }
 
         /// <summary>

@@ -6853,7 +6853,7 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public virtual async Task<bool> ConfirmSaveCreatedCharacter() { return true; }
+        public virtual Task<bool> ConfirmSaveCreatedCharacter() { return Task.FromResult(true); }
 
         /// <summary>
         /// The frmViewer window being used by the character.

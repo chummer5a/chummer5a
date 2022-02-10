@@ -1855,12 +1855,12 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("cyberware");
-            if (string.IsNullOrWhiteSpace(LimbSlot) && _strCategory != "Cyberlimb")
+            if ((string.IsNullOrWhiteSpace(LimbSlot) && _strCategory != "Cyberlimb") || CyberlimbAttributeAbbrevs.Count == 0)
             {
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name);
             }
-            else if (CyberlimbAttributeAbbrevs.Count > 0)
+            else
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdName))
@@ -1889,11 +1889,6 @@ namespace Chummer.Backend.Equipment
                     objWriter.WriteElementString("name", sbdName.ToString());
                     objWriter.WriteElementString("name_english", sbdNameEnglish.ToString());
                 }
-            }
-            else
-            {
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-                objWriter.WriteElementString("name_english", Name);
             }
 
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
