@@ -9,6 +9,9 @@ Application Changes:
 - Startup times for users with watch folders has been decreased by about 20%.
 - Fixed an issue where some cyberware with wireless bonuses that depend on either the presence of other cyberware or on there being multiple instances of the same cyberware would cause that cyberware's bonuses to mysteriously disappear.
 
+Data Changes:
+- The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
+
 Build 221
 Application Changes:
 - Saved character settings files properly exclude disabled custom data directories that are present in the Chummer customdata folder.
