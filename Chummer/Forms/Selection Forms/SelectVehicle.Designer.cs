@@ -32,14 +32,14 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabViews = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -134,11 +134,12 @@ namespace Chummer
             this.tabViews.Controls.Add(this.tabListView);
             this.tabViews.Controls.Add(this.tabBrowse);
             this.tabViews.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabViews.Location = new System.Drawing.Point(3, 30);
+            this.tabViews.Location = new System.Drawing.Point(0, 27);
+            this.tabViews.Margin = new System.Windows.Forms.Padding(0);
             this.tabViews.Name = "tabViews";
             this.tlpBase.SetRowSpan(this.tabViews, 2);
             this.tabViews.SelectedIndex = 0;
-            this.tabViews.Size = new System.Drawing.Size(779, 652);
+            this.tabViews.Size = new System.Drawing.Size(766, 487);
             this.tabViews.TabIndex = 0;
             this.tabViews.SelectedIndexChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
@@ -148,7 +149,7 @@ namespace Chummer
             this.tabListView.Location = new System.Drawing.Point(4, 22);
             this.tabListView.Name = "tabListView";
             this.tabListView.Padding = new System.Windows.Forms.Padding(3);
-            this.tabListView.Size = new System.Drawing.Size(771, 626);
+            this.tabListView.Size = new System.Drawing.Size(758, 461);
             this.tabListView.TabIndex = 0;
             this.tabListView.Tag = "Title_ListView";
             this.tabListView.Text = "List View";
@@ -160,21 +161,19 @@ namespace Chummer
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 3);
-            this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 4);
+            this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 2);
+            this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 3);
             this.tlpMain.Controls.Add(this.tlpLeft, 0, 0);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(3, 3);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 6;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowCount = 4;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(765, 620);
+            this.tlpMain.Size = new System.Drawing.Size(752, 455);
             this.tlpMain.TabIndex = 67;
             // 
             // chkHideOverAvailLimit
@@ -182,7 +181,7 @@ namespace Chummer
             this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
             this.chkHideOverAvailLimit.DefaultColorScheme = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(309, 459);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(303, 409);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
@@ -197,7 +196,7 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.chkShowOnlyAffordItems.DefaultColorScheme = true;
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(309, 484);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(303, 434);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
@@ -218,12 +217,12 @@ namespace Chummer
             this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
             this.tlpLeft.Name = "tlpLeft";
             this.tlpLeft.RowCount = 2;
-            this.tlpMain.SetRowSpan(this.tlpLeft, 6);
+            this.tlpMain.SetRowSpan(this.tlpLeft, 4);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpLeft.Size = new System.Drawing.Size(306, 620);
+            this.tlpLeft.Size = new System.Drawing.Size(300, 455);
             this.tlpLeft.TabIndex = 69;
             // 
             // lstVehicle
@@ -233,7 +232,7 @@ namespace Chummer
             this.lstVehicle.FormattingEnabled = true;
             this.lstVehicle.Location = new System.Drawing.Point(3, 3);
             this.lstVehicle.Name = "lstVehicle";
-            this.lstVehicle.Size = new System.Drawing.Size(300, 614);
+            this.lstVehicle.Size = new System.Drawing.Size(294, 449);
             this.lstVehicle.TabIndex = 32;
             this.lstVehicle.SelectedIndexChanged += new System.EventHandler(this.lstVehicle_SelectedIndexChanged);
             // 
@@ -275,7 +274,7 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblVehiclePilotLabel, 2, 1);
             this.tlpRight.Controls.Add(this.lblVehiclePilot, 3, 1);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(306, 0);
+            this.tlpRight.Location = new System.Drawing.Point(300, 0);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
             this.tlpRight.RowCount = 9;
@@ -289,7 +288,7 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpRight.Size = new System.Drawing.Size(459, 227);
+            this.tlpRight.Size = new System.Drawing.Size(452, 227);
             this.tlpRight.TabIndex = 74;
             // 
             // lblSource
@@ -333,7 +332,7 @@ namespace Chummer
             // 
             this.lblVehicleSeats.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleSeats.AutoSize = true;
-            this.lblVehicleSeats.Location = new System.Drawing.Point(287, 81);
+            this.lblVehicleSeats.Location = new System.Drawing.Point(284, 81);
             this.lblVehicleSeats.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSeats.Name = "lblVehicleSeats";
             this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
@@ -498,7 +497,7 @@ namespace Chummer
             this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Location = new System.Drawing.Point(284, 125);
+            this.flpMarkup.Location = new System.Drawing.Point(281, 125);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
             this.flpMarkup.Size = new System.Drawing.Size(83, 26);
@@ -541,7 +540,7 @@ namespace Chummer
             // 
             this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(235, 131);
+            this.lblMarkupLabel.Location = new System.Drawing.Point(232, 131);
             this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
@@ -553,7 +552,7 @@ namespace Chummer
             // 
             this.lblVehicleSeatsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleSeatsLabel.AutoSize = true;
-            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(244, 81);
+            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(241, 81);
             this.lblVehicleSeatsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
             this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
@@ -565,7 +564,7 @@ namespace Chummer
             // 
             this.lblTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(287, 106);
+            this.lblTest.Location = new System.Drawing.Point(284, 106);
             this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTest.Name = "lblTest";
             this.lblTest.Size = new System.Drawing.Size(19, 13);
@@ -587,7 +586,7 @@ namespace Chummer
             // 
             this.lblVehicleArmorLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleArmorLabel.AutoSize = true;
-            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(244, 56);
+            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(241, 56);
             this.lblVehicleArmorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleArmorLabel.Name = "lblVehicleArmorLabel";
             this.lblVehicleArmorLabel.Size = new System.Drawing.Size(37, 13);
@@ -599,7 +598,7 @@ namespace Chummer
             // 
             this.lblVehicleArmor.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleArmor.AutoSize = true;
-            this.lblVehicleArmor.Location = new System.Drawing.Point(287, 56);
+            this.lblVehicleArmor.Location = new System.Drawing.Point(284, 56);
             this.lblVehicleArmor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleArmor.Name = "lblVehicleArmor";
             this.lblVehicleArmor.Size = new System.Drawing.Size(40, 13);
@@ -610,7 +609,7 @@ namespace Chummer
             // 
             this.lblTestLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblTestLabel.AutoSize = true;
-            this.lblTestLabel.Location = new System.Drawing.Point(250, 106);
+            this.lblTestLabel.Location = new System.Drawing.Point(247, 106);
             this.lblTestLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTestLabel.Name = "lblTestLabel";
             this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
@@ -622,7 +621,7 @@ namespace Chummer
             // 
             this.lblVehicleAccelLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleAccelLabel.AutoSize = true;
-            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(244, 6);
+            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(241, 6);
             this.lblVehicleAccelLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAccelLabel.Name = "lblVehicleAccelLabel";
             this.lblVehicleAccelLabel.Size = new System.Drawing.Size(37, 13);
@@ -634,7 +633,7 @@ namespace Chummer
             // 
             this.lblVehicleAccel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleAccel.AutoSize = true;
-            this.lblVehicleAccel.Location = new System.Drawing.Point(287, 6);
+            this.lblVehicleAccel.Location = new System.Drawing.Point(284, 6);
             this.lblVehicleAccel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAccel.Name = "lblVehicleAccel";
             this.lblVehicleAccel.Size = new System.Drawing.Size(40, 13);
@@ -737,7 +736,7 @@ namespace Chummer
             // 
             this.lblVehiclePilotLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehiclePilotLabel.AutoSize = true;
-            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(251, 31);
+            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(248, 31);
             this.lblVehiclePilotLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePilotLabel.Name = "lblVehiclePilotLabel";
             this.lblVehiclePilotLabel.Size = new System.Drawing.Size(30, 13);
@@ -749,7 +748,7 @@ namespace Chummer
             // 
             this.lblVehiclePilot.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehiclePilot.AutoSize = true;
-            this.lblVehiclePilot.Location = new System.Drawing.Point(287, 31);
+            this.lblVehiclePilot.Location = new System.Drawing.Point(284, 31);
             this.lblVehiclePilot.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePilot.Name = "lblVehiclePilot";
             this.lblVehiclePilot.Size = new System.Drawing.Size(33, 13);
@@ -762,7 +761,7 @@ namespace Chummer
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
             this.tabBrowse.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBrowse.Size = new System.Drawing.Size(771, 626);
+            this.tabBrowse.Size = new System.Drawing.Size(758, 461);
             this.tabBrowse.TabIndex = 1;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
@@ -772,17 +771,17 @@ namespace Chummer
             // 
             this.dgvVehicles.AllowUserToAddRows = false;
             this.dgvVehicles.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.dgvVehicles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.dgvVehicles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
             this.dgvVehicles.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvVehicles.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvVehicles.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvVehicles.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvVehicles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvVehicles.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvc_Guid,
@@ -811,7 +810,7 @@ namespace Chummer
             this.dgvVehicles.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
             this.dgvVehicles.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvVehicles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehicles.Size = new System.Drawing.Size(765, 620);
+            this.dgvVehicles.Size = new System.Drawing.Size(752, 455);
             this.dgvVehicles.TabIndex = 37;
             // 
             // dgvc_Guid
@@ -827,8 +826,8 @@ namespace Chummer
             // 
             this.dgvc_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Name.DataPropertyName = "VehicleName";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle11;
             this.dgvc_Name.HeaderText = "Name";
             this.dgvc_Name.Name = "dgvc_Name";
             this.dgvc_Name.ReadOnly = true;
@@ -936,8 +935,8 @@ namespace Chummer
             // 
             this.dgvc_Gear.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Gear.DataPropertyName = "Gear";
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Gear.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Gear.DefaultCellStyle = dataGridViewCellStyle12;
             this.dgvc_Gear.HeaderText = "Gear";
             this.dgvc_Gear.Name = "dgvc_Gear";
             this.dgvc_Gear.ReadOnly = true;
@@ -949,8 +948,8 @@ namespace Chummer
             // 
             this.dgvc_Mods.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Mods.DataPropertyName = "Mods";
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Mods.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Mods.DefaultCellStyle = dataGridViewCellStyle13;
             this.dgvc_Mods.HeaderText = "Mods";
             this.dgvc_Mods.Name = "dgvc_Mods";
             this.dgvc_Mods.ReadOnly = true;
@@ -962,8 +961,8 @@ namespace Chummer
             // 
             this.dgvc_Weapons.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Weapons.DataPropertyName = "Weapons";
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Weapons.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Weapons.DefaultCellStyle = dataGridViewCellStyle14;
             this.dgvc_Weapons.HeaderText = "Weapons";
             this.dgvc_Weapons.Name = "dgvc_Weapons";
             this.dgvc_Weapons.ReadOnly = true;
@@ -973,8 +972,8 @@ namespace Chummer
             // 
             this.dgvc_WeaponMounts.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_WeaponMounts.DataPropertyName = "WeaponMounts";
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_WeaponMounts.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_WeaponMounts.DefaultCellStyle = dataGridViewCellStyle15;
             this.dgvc_WeaponMounts.HeaderText = "Weapon Mounts";
             this.dgvc_WeaponMounts.Name = "dgvc_WeaponMounts";
             this.dgvc_WeaponMounts.ReadOnly = true;
@@ -1007,10 +1006,10 @@ namespace Chummer
             // 
             this.dgvc_Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle8.Format = "#,0.##¥";
-            dataGridViewCellStyle8.NullValue = null;
-            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle16.Format = "#,0.##¥";
+            dataGridViewCellStyle16.NullValue = null;
+            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle16;
             this.dgvc_Cost.FillWeight = 60F;
             this.dgvc_Cost.HeaderText = "Cost";
             this.dgvc_Cost.Name = "dgvc_Cost";
@@ -1021,17 +1020,20 @@ namespace Chummer
             // 
             // tlpBase
             // 
+            this.tlpBase.AutoSize = true;
+            this.tlpBase.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpBase.ColumnCount = 4;
             this.tlpBase.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBase.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpBase.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBase.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBase.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBase.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpBase.Controls.Add(this.lblSearchLabel, 2, 0);
             this.tlpBase.Controls.Add(this.cboCategory, 1, 0);
             this.tlpBase.Controls.Add(this.txtSearch, 3, 0);
             this.tlpBase.Controls.Add(this.tlpButtons, 3, 3);
             this.tlpBase.Controls.Add(this.lblCategory, 0, 0);
             this.tlpBase.Controls.Add(this.tabViews, 0, 1);
+            this.tlpBase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBase.Location = new System.Drawing.Point(9, 9);
             this.tlpBase.Name = "tlpBase";
             this.tlpBase.RowCount = 4;
@@ -1039,14 +1041,14 @@ namespace Chummer
             this.tlpBase.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBase.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpBase.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBase.Size = new System.Drawing.Size(785, 714);
+            this.tlpBase.Size = new System.Drawing.Size(766, 543);
             this.tlpBase.TabIndex = 1;
             // 
             // lblSearchLabel
             // 
             this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(309, 7);
+            this.lblSearchLabel.Location = new System.Drawing.Point(390, 7);
             this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
@@ -1061,7 +1063,7 @@ namespace Chummer
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(61, 3);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(242, 21);
+            this.cboCategory.Size = new System.Drawing.Size(323, 21);
             this.cboCategory.TabIndex = 34;
             this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.RefreshCurrentList);
@@ -1069,9 +1071,9 @@ namespace Chummer
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(359, 3);
+            this.txtSearch.Location = new System.Drawing.Point(440, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(423, 20);
+            this.txtSearch.Size = new System.Drawing.Size(323, 20);
             this.txtSearch.TabIndex = 1;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
@@ -1089,7 +1091,7 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(551, 685);
+            this.tlpButtons.Location = new System.Drawing.Point(532, 514);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -1156,7 +1158,9 @@ namespace Chummer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(803, 732);
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpBase);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -1190,6 +1194,7 @@ namespace Chummer
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
