@@ -1445,7 +1445,7 @@ namespace Chummer.Backend.Skills
                         _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
                     else
                         _lstCachedSuggestedSpecializations.Clear();
-                    XPathNodeIterator xmlSpecList = this.GetNodeXPath()?.Select("specs/spec");
+                    XPathNodeIterator xmlSpecList = this.GetNodeXPath(GlobalSettings.Language)?.Select("specs/spec");
                     if (xmlSpecList?.Count > 0)
                     {
                         foreach (XPathNavigator xmlSpecNode in xmlSpecList)

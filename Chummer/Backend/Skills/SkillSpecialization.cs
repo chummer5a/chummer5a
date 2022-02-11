@@ -141,7 +141,8 @@ namespace Chummer.Backend.Skills
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                            && !GlobalSettings.LiveCustomData) return _objCachedMyXmlNode;
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
             if (Parent == null)
                 _objCachedMyXmlNode = null;
             else
