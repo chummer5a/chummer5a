@@ -131,29 +131,25 @@ namespace Chummer
 
         public LockingEnumerator<T> CreateLockingEnumerator()
         {
-            bool blnDoLock;
-            LockingEnumerator<T> objReturn;
             lock (_objActiveEnumeratorsLock)
             {
-                blnDoLock = _lstActiveEnumerators.Count == 0;
-                objReturn = new LockingEnumerator<T>(base.GetEnumerator(), this);
+                bool blnDoLock = _lstActiveEnumerators.Count == 0;
+                LockingEnumerator<T> objReturn = new LockingEnumerator<T>(base.GetEnumerator(), this);
                 _lstActiveEnumerators.Add(objReturn);
+                if (blnDoLock)
+                    LockerObject.EnterReadLock();
+                return objReturn;
             }
-            if (blnDoLock)
-                LockerObject.EnterReadLock();
-            return objReturn;
         }
 
         public void FreeLockingEnumerator(LockingEnumerator<T> objToFree)
         {
-            bool blnFreeLock;
             lock (_objActiveEnumeratorsLock)
             {
                 _lstActiveEnumerators.Remove(objToFree);
-                blnFreeLock = _lstActiveEnumerators.Count == 0;
+                if (_lstActiveEnumerators.Count == 0)
+                    LockerObject.ExitReadLock();
             }
-            if (blnFreeLock)
-                LockerObject.ExitReadLock();
         }
 
         /// <inheritdoc />
