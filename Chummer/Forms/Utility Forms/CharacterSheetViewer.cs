@@ -490,8 +490,9 @@ namespace Chummer
                     cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
                     cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false));
                 _objCharacterXml = _lstCharacters.Count > 0
-                    ? CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
-                        _objRefresherCancellationTokenSource.Token, _lstCharacters.ToArray())
+                    ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
+                                                                        _objRefresherCancellationTokenSource.Token,
+                                                                        _lstCharacters.ToArray())
                     : null;
                 await this.DoThreadSafeAsync(() => tsSaveAsXml.Enabled = _objCharacterXml != null);
                 if (_objRefresherCancellationTokenSource.IsCancellationRequested)

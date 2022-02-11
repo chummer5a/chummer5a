@@ -245,8 +245,9 @@ namespace Chummer
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false),
                     txtText.DoThreadSafeAsync(() =>
                         txtText.Text = LanguageManager.GetString("String_Generating_Data")));
-                _objCharacterXml = _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
-                    _objCharacterXmlGeneratorCancellationTokenSource.Token);
+                _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
+                                                                         _objCharacterXmlGeneratorCancellationTokenSource
+                                                                             .Token);
                 if (_objCharacterXmlGeneratorCancellationTokenSource.IsCancellationRequested)
                     return;
                 if (_objCharacterXml != null)

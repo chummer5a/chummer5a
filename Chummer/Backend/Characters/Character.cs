@@ -5406,12 +5406,12 @@ namespace Chummer
             }
         }
 
-        public XmlDocument GenerateExportXml(CultureInfo objCultureInfo, string strLanguage)
+        public Task<XmlDocument> GenerateExportXml(CultureInfo objCultureInfo, string strLanguage)
         {
             return CommonFunctions.GenerateCharactersExportXml(objCultureInfo, strLanguage, this);
         }
 
-        public XmlDocument GenerateExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken)
+        public Task<XmlDocument> GenerateExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken)
         {
             return CommonFunctions.GenerateCharactersExportXml(objCultureInfo, strLanguage, objToken, this);
         }
@@ -5423,7 +5423,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write to.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void PrintToXmlTextWriter(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        public async Task PrintToXmlTextWriter(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
         {
             if (objWriter == null)
                 throw new ArgumentNullException(nameof(objWriter));
@@ -5491,17 +5491,17 @@ namespace Chummer
             if(Ambidextrous)
             {
                 objWriter.WriteElementString("primaryarm",
-                    LanguageManager.GetString("String_Ambidextrous", strLanguageToPrint));
+                    await LanguageManager.GetStringAsync("String_Ambidextrous", strLanguageToPrint));
             }
             else if(PrimaryArm == "Left")
             {
                 objWriter.WriteElementString("primaryarm",
-                    LanguageManager.GetString("String_Improvement_SideLeft", strLanguageToPrint));
+                    await LanguageManager.GetStringAsync("String_Improvement_SideLeft", strLanguageToPrint));
             }
             else
             {
                 objWriter.WriteElementString("primaryarm",
-                    LanguageManager.GetString("String_Improvement_SideRight", strLanguageToPrint));
+                    await LanguageManager.GetStringAsync("String_Improvement_SideRight", strLanguageToPrint));
             }
 
             // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
@@ -5510,28 +5510,28 @@ namespace Chummer
             objWriter.WriteElementString("name",
                 !string.IsNullOrEmpty(Name)
                     ? Name
-                    : LanguageManager.GetString("String_UnnamedCharacter", strLanguageToPrint));
+                    : await LanguageManager.GetStringAsync("String_UnnamedCharacter", strLanguageToPrint));
 
             PrintMugshots(objWriter);
 
             // <sex />
             objWriter.WriteElementString("gender",
-                TranslateExtra(ReverseTranslateExtra(Gender, GlobalSettings.Language, "contacts.xml"),
-                    strLanguageToPrint, "contacts.xml"));
+                await TranslateExtraAsync(await ReverseTranslateExtraAsync(Gender, GlobalSettings.Language, "contacts.xml"),
+                                          strLanguageToPrint, "contacts.xml"));
             // <age />
             objWriter.WriteElementString("age",
-                TranslateExtra(ReverseTranslateExtra(Age, GlobalSettings.Language, "contacts.xml"), strLanguageToPrint,
-                    "contacts.xml"));
+                await TranslateExtraAsync(await ReverseTranslateExtraAsync(Age, GlobalSettings.Language, "contacts.xml"), strLanguageToPrint,
+                                          "contacts.xml"));
             // <eyes />
-            objWriter.WriteElementString("eyes", TranslateExtra(ReverseTranslateExtra(Eyes), strLanguageToPrint));
+            objWriter.WriteElementString("eyes", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Eyes), strLanguageToPrint));
             // <height />
-            objWriter.WriteElementString("height", TranslateExtra(ReverseTranslateExtra(Height), strLanguageToPrint));
+            objWriter.WriteElementString("height", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Height), strLanguageToPrint));
             // <weight />
-            objWriter.WriteElementString("weight", TranslateExtra(ReverseTranslateExtra(Weight), strLanguageToPrint));
+            objWriter.WriteElementString("weight", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Weight), strLanguageToPrint));
             // <skin />
-            objWriter.WriteElementString("skin", TranslateExtra(ReverseTranslateExtra(Skin), strLanguageToPrint));
+            objWriter.WriteElementString("skin", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Skin), strLanguageToPrint));
             // <hair />
-            objWriter.WriteElementString("hair", TranslateExtra(ReverseTranslateExtra(Hair), strLanguageToPrint));
+            objWriter.WriteElementString("hair", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Hair), strLanguageToPrint));
             // <description />
             objWriter.WriteElementString("description", Description.RtfToHtml());
             // <background />
@@ -5904,13 +5904,13 @@ namespace Chummer
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
-                strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
+                strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
                 if(objImprovement.Value > 0)
                     strName += '+';
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if(!string.IsNullOrEmpty(objImprovement.Condition))
-                    strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
+                    strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
@@ -5936,13 +5936,13 @@ namespace Chummer
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
-                strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
+                strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
                 if(objImprovement.Value > 0)
                     strName += '+';
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if(!string.IsNullOrEmpty(objImprovement.Condition))
-                    strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
+                    strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
@@ -5968,13 +5968,13 @@ namespace Chummer
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if(strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
-                strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
+                strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
                 if(objImprovement.Value > 0)
                     strName += '+';
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if(!string.IsNullOrEmpty(objImprovement.Condition))
-                    strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
+                    strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);

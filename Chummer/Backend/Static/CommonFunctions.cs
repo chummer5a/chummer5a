@@ -1158,12 +1158,12 @@ namespace Chummer
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
-        public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
+        public static Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
         {
             return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, lstCharacters);
         }
 
-        public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
+        public static async Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
         {
             if (objToken.IsCancellationRequested)
                 return null;
@@ -1180,7 +1180,7 @@ namespace Chummer
 
                 foreach (Character objCharacter in lstCharacters)
                 {
-                    objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                    await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
                     if (objToken.IsCancellationRequested)
                         return objReturn;
                 }
