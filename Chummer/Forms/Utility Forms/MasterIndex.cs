@@ -66,6 +66,7 @@ namespace Chummer
             "mentors.xml",
             "metamagic.xml",
             "metatypes.xml",
+            "paragons.xml",
             "powers.xml",
             "programs.xml",
             "qualities.xml",

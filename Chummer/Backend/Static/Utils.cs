@@ -141,6 +141,7 @@ namespace Chummer
             "metatypes.xml",
             "options.xml",
             "packs.xml",
+            "paragons.xml",
             "powers.xml",
             "priorities.xml",
             "programs.xml",

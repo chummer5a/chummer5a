@@ -13,6 +13,7 @@ Application Changes:
 - Barehanded Adept spells now properly have their drain values doubled, and the tooltip for their drain values now only show forces up to a third of their Magic attribute rounded up (which is the limit imposed by the quality).
 - Tooltips for drain and fading values are now less confusing about how modifiers are incorporated.
 - Attempting to undo increasing a skill group that is broken at the time of the undo now properly causes Chummer to not follow through with the undo.
+- Paragons from Kill Code now show up in the Master Index.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
