@@ -11965,11 +11965,7 @@ namespace Chummer
                                   .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
                                   .Append(')');
                     }
-
-                    sbdToolTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo,
-                                                         LanguageManager.GetString("Tip_LiftAndCarry"),
-                                                         (STR.TotalValue * 15).ToString(GlobalSettings.CultureInfo),
-                                                         (STR.TotalValue * 10).ToString(GlobalSettings.CultureInfo));
+                    
                     return sbdToolTip.ToString();
                 }
             }
@@ -19270,6 +19266,16 @@ namespace Chummer
                 if (setNamesOfChangedProperties.Contains(nameof(CareerKarma)))
                 {
                     _intCachedCareerKarma = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(BoundSpiritLimit)))
+                {
+                    _intBoundSpiritLimit = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(RegisteredSpriteLimit)))
+                {
+                    _intRegisteredSpriteLimit = int.MinValue;
                 }
 
                 if (setNamesOfChangedProperties.Contains(nameof(InitiationEnabled)))
