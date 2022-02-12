@@ -1756,7 +1756,9 @@ namespace Chummer.Backend.Equipment
                                 new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
                             )
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost), x => x.TrustFund),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost), x => x.TrustFund,
+                            new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
+                        ),
                         new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
@@ -1768,7 +1770,9 @@ namespace Chummer.Backend.Equipment
                             new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => !x.PrimaryTenant),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => !x.PrimaryTenant,
+                            new DependencyGraphNode<string, Lifestyle>(nameof(PrimaryTenant))
+                        ),
                         new DependencyGraphNode<string, Lifestyle>(nameof(IncrementType)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(Percentage))
                     )

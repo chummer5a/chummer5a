@@ -1407,7 +1407,9 @@ namespace Chummer.Backend.Attributes
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
                             )
                         ),
-                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue), x => x.HasModifiers),
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue), x => x.HasModifiers,
+                            new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers))
+                        ),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers))
                     )
                 ),

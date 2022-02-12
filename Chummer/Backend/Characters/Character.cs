@@ -18658,7 +18658,9 @@ namespace Chummer
             new PropertyDependencyGraph<Character>(
                     new DependencyGraphNode<string, Character>(nameof(CharacterName),
                         new DependencyGraphNode<string, Character>(nameof(Alias)),
-                        new DependencyGraphNode<string, Character>(nameof(Name), x => string.IsNullOrWhiteSpace(x.Alias))
+                        new DependencyGraphNode<string, Character>(nameof(Name), x => string.IsNullOrWhiteSpace(x.Alias),
+                            new DependencyGraphNode<string, Character>(nameof(Alias))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayPowerPointsRemaining),
                         new DependencyGraphNode<string, Character>(nameof(PowerPointsTotal),
@@ -18668,7 +18670,9 @@ namespace Chummer
                                     new DependencyGraphNode<string, Character>(nameof(MagicianEnabled))
                                 )
                             ),
-                            new DependencyGraphNode<string, Character>(nameof(MysticAdeptPowerPoints), x => x.UseMysticAdeptPPs)
+                            new DependencyGraphNode<string, Character>(nameof(MysticAdeptPowerPoints), x => x.UseMysticAdeptPPs,
+                                new DependencyGraphNode<string, Character>(nameof(UseMysticAdeptPPs))
+                            )
                         ),
                         new DependencyGraphNode<string, Character>(nameof(PowerPointsUsed))
                     ),
@@ -18709,47 +18713,79 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(MatrixInitiative),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(InitiativeDice), x => !x.IsAI)
+                                new DependencyGraphNode<string, Character>(nameof(InitiativeDice), x => !x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                )
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI),
-                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => x.IsAI),
-                                new DependencyGraphNode<string, Character>(nameof(InitiativeValue), x => !x.IsAI)
+                                new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                ),
+                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                ),
+                                new DependencyGraphNode<string, Character>(nameof(InitiativeValue), x => !x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                )
                             )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeColdToolTip),
                         new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeCold),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI),
-                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI),
+                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            ),
+                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeColdDice),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI)
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                )
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeColdValue),
-                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI),
+                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                ),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI),
-                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI)
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                ),
+                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                )
                             )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHotToolTip),
                         new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHot),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI),
-                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI),
+                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            ),
+                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHotDice),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI)
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                )
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHotValue),
-                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI),
+                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                ),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI),
-                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI)
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                ),
+                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI,
+                                    new DependencyGraphNode<string, Character>(nameof(IsAI))
+                                )
                             )
                         )
                     ),
@@ -18827,7 +18863,9 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(DamageResistancePool),
                             new DependencyGraphNode<string, Character>(nameof(TotalArmorRating)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI)
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(IsAI),
@@ -18856,7 +18894,9 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(SpellDefenseIndirectSoak),
                             new DependencyGraphNode<string, Character>(nameof(TotalArmorRating)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI),
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            ),
                             new DependencyGraphNode<string, Character>(nameof(SpellResistance))
                         )
                     ),
@@ -19009,7 +19049,9 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(SpellDefenseManipulationPhysical),
                             new DependencyGraphNode<string, Character>(nameof(SpellResistance)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI)
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(IsAI))
+                            )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplaySpellDefenseManipulationPhysical),
