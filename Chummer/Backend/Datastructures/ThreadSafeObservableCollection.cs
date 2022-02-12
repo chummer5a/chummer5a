@@ -147,7 +147,7 @@ namespace Chummer
             lock (_objActiveEnumeratorsLock)
             {
                 _lstActiveEnumerators.Remove(objToFree);
-                if (LockerObject.IsReadLockHeld && _lstActiveEnumerators.Count == 0)
+                if (_lstActiveEnumerators.Count == 0)
                     LockerObject.ExitReadLock();
             }
         }
