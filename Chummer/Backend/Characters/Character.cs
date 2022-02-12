@@ -90,6 +90,8 @@ namespace Chummer
         private int _intEdgeUsed;
         private int _intBoundSpiritLimit = int.MinValue;
         private int _intRegisteredSpriteLimit = int.MinValue;
+        private decimal _decCachedCarryLimit = decimal.MinValue;
+        private decimal _decCachedLiftLimit = decimal.MinValue;
 
         // General character info.
         private string _strName = string.Empty;
@@ -2215,7 +2217,7 @@ namespace Chummer
                     // <contactpoints />
                     objWriter.WriteElementString("contactpoints",
                         _intCachedContactPoints.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <contactpoints />
+                    // <contactpointsused />
                     objWriter.WriteElementString("contactpointsused",
                         _intContactPointsUsed.ToString(GlobalSettings.InvariantCultureInfo));
                     // <spelllimit />
@@ -2232,6 +2234,12 @@ namespace Chummer
                     // <currentcounterspellingdice />
                     objWriter.WriteElementString("currentcounterspellingdice",
                         _intCurrentCounterspellingDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <carrylimit />
+                    objWriter.WriteElementString("carrylimit",
+                                                 _decCachedCarryLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <liftlimit />
+                    objWriter.WriteElementString("liftlimit",
+                                                 _decCachedLiftLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <streetcred />
                     objWriter.WriteElementString("streetcred",
                         _intStreetCred.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3578,6 +3586,8 @@ namespace Chummer
                                     ref _intCachedContactPoints);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused",
                                     ref _intContactPointsUsed);
+                                xmlCharacterNavigator.TryGetDecFieldQuickly("carrylimit", ref _decCachedCarryLimit);
+                                xmlCharacterNavigator.TryGetDecFieldQuickly("liftlimit", ref _decCachedLiftLimit);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("ainormalprogramlimit",
                                     ref _intAINormalProgramLimit);
@@ -3594,10 +3604,6 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("totalattributes",
                                     ref _intTotalAttributes);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("edgeused", ref _intEdgeUsed);
-                                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints",
-                                    ref _intCachedContactPoints);
-                                xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused",
-                                    ref _intContactPointsUsed);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("streetcred", ref _intStreetCred);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("publicawareness",
@@ -5793,9 +5799,9 @@ namespace Chummer
             // <memory />
             objWriter.WriteElementString("memory", Memory.ToString(objCulture));
             // <liftweight />
-            objWriter.WriteElementString("liftweight", (STR.TotalValue * 15).ToString(objCulture));
+            objWriter.WriteElementString("liftweight", LiftLimit.ToString(objCulture));
             // <carryweight />
-            objWriter.WriteElementString("carryweight", (STR.TotalValue * 10).ToString(objCulture));
+            objWriter.WriteElementString("carryweight", CarryLimit.ToString(objCulture));
             // <fatigueresist />
             objWriter.WriteElementString("fatigueresist", FatigueResist.ToString(objCulture));
             // <radiationresist />
@@ -6333,6 +6339,8 @@ namespace Chummer
             _intCachedBlackMarketDiscount = int.MinValue;
             _intCachedCareerKarma = int.MinValue;
             _intCachedContactPoints = int.MinValue;
+            _decCachedCarryLimit = decimal.MinValue;
+            _decCachedLiftLimit = decimal.MinValue;
             _intCachedDealerConnectionDiscount = int.MinValue;
             _intCachedEnemyKarma = int.MinValue;
             _intCachedErased = int.MinValue;
@@ -9398,6 +9406,68 @@ namespace Chummer
                     _intContactPointsUsed = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Carry limit (in kg).
+        /// </summary>
+        public decimal CarryLimit
+        {
+            get
+            {
+                if (_decCachedCarryLimit == decimal.MinValue)
+                {
+                    string strExpression = Settings.WeightCarryLimitExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            object objProcess
+                                = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                            _decCachedCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                        }
+                    }
+                    else
+                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCachedCarryLimit);
+                }
+
+                return _decCachedCarryLimit;
+            }
+        }
+
+        /// <summary>
+        /// Lift limit (in kg).
+        /// </summary>
+        public decimal LiftLimit
+        {
+            get
+            {
+                if (_decCachedLiftLimit == decimal.MinValue)
+                {
+                    string strExpression = Settings.WeightLiftLimitExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            object objProcess
+                                = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                            _decCachedLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                        }
+                    }
+                    else
+                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCachedLiftLimit);
+                }
+
+                return _decCachedLiftLimit;
             }
         }
 
@@ -17595,6 +17665,26 @@ namespace Chummer
             }
         }
 
+        private void ProcessSettingsExpressionsForDependentProperties(ICollection<string> lstPropertyChangedHolder,
+                                                                      string strExpressionToFind)
+        {
+            if (!Created)
+            {
+                if (Settings.ContactPointsExpression.Contains(strExpressionToFind))
+                    lstPropertyChangedHolder.Add(nameof(ContactPoints));
+                if (Settings.ChargenKarmaToNuyenExpression.Contains(strExpressionToFind))
+                    lstPropertyChangedHolder.Add(nameof(TotalStartingNuyen));
+            }
+            if (Settings.WeightCarryLimitExpression.Contains(strExpressionToFind))
+                lstPropertyChangedHolder.Add(nameof(CarryLimit));
+            if (Settings.WeightLiftLimitExpression.Contains(strExpressionToFind))
+                lstPropertyChangedHolder.Add(nameof(LiftLimit));
+            if (Settings.BoundSpiritExpression.Contains(strExpressionToFind))
+                lstPropertyChangedHolder.Add(nameof(BoundSpiritLimit));
+            if (Settings.RegisteredSpriteExpression.Contains(strExpressionToFind))
+                lstPropertyChangedHolder.Add(nameof(RegisteredSpriteLimit));
+        }
+
         public void RefreshBODDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             switch (e?.PropertyName)
@@ -17619,42 +17709,19 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseBOD),
                         nameof(SpellDefenseManipulationPhysical)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{BOD}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{BOD}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{BOD}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    if (Settings.BoundSpiritExpression.Contains("{BOD}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{BOD}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{BODUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{BODUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{BODUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{BODUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{BODUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.MetatypeMaximum):
@@ -17677,42 +17744,19 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseAGI),
                         nameof(CalculatedMovement)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{AGI}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{AGI}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{AGI}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    if (Settings.BoundSpiritExpression.Contains("{AGI}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{AGI}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{AGIUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{AGIUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{AGIUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{AGIUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{AGIUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -17732,42 +17776,19 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseREA),
                         nameof(Surprise)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{REA}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{REA}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{REA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    if (Settings.BoundSpiritExpression.Contains("{REA}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{REA}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{REAUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{REAUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{REAUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{REAUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{REAUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -17789,42 +17810,19 @@ namespace Chummer
                         nameof(SpellDefenseManipulationPhysical),
                         nameof(CalculatedMovement)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{STR}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{STR}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{STR}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    if (Settings.BoundSpiritExpression.Contains("{STR}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{STR}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{STRUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{STRUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{STRUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{STRUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{STRUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -17844,42 +17842,19 @@ namespace Chummer
                         nameof(JudgeIntentionsResist),
                         nameof(SpellDefenseDecreaseCHA)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{CHA}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{CHA}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{CHA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    if (Settings.BoundSpiritExpression.Contains("{CHA}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{CHA}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{CHAUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{CHAUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{CHAUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{CHAUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{CHAUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -17905,42 +17880,19 @@ namespace Chummer
                         nameof(SpellDefenseIllusionPhysical),
                         nameof(Surprise)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{INT}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{INT}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{INT}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    if (Settings.BoundSpiritExpression.Contains("{INT}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{INT}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{INTUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{INTUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{INTUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{INTUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{INTUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -17964,43 +17916,19 @@ namespace Chummer
                         nameof(SpellDefenseIllusionPhysical),
                         nameof(SpellDefenseManipulationMental)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{LOG}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{LOG}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{LOG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-
-                    if (Settings.BoundSpiritExpression.Contains("{INT}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{INT}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{LOGUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{LOGUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{LOGUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{INTUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{INTUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -18041,43 +17969,19 @@ namespace Chummer
                         nameof(SpellDefenseIllusionMana),
                         nameof(SpellDefenseManipulationMental)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{WIL}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{WIL}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{WIL}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-
-                    if (Settings.BoundSpiritExpression.Contains("{WIL}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{WIL}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{WILUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{WILUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{WILUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{WILUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{WILUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -18094,43 +17998,19 @@ namespace Chummer
                         EdgeUsed = EDG.TotalValue;
                     else
                         lstProperties.Add(nameof(EdgeRemaining));
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{EDG}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{EDG}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{EDG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-
-                    if (Settings.BoundSpiritExpression.Contains("{EDG}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{EDG}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{EDGUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{EDGUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{EDGUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-                    if (Settings.BoundSpiritExpression.Contains("{EDGUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{EDGUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -18158,43 +18038,19 @@ namespace Chummer
                         lstProperties.Add(nameof(PowerPointsTotal));
                     if (AnyPowerAdeptWayDiscountEnabled)
                         lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{MAG}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAG}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-
-                    if (Settings.BoundSpiritExpression.Contains("{MAG}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{MAG}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>(2);
-                    if (!Settings.SpiritForceBasedOnTotalMAG)
-                        lstProperties.Add(nameof(MaxSpiritForce));
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{MAGUnaug}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAGUnaug}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-
-                    if (Settings.BoundSpiritExpression.Contains("{MAGUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{MAGUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
             }
@@ -18212,45 +18068,19 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(2);
                     if (!UseMysticAdeptPPs)
                         lstProperties.Add(nameof(MaxSpiritForce));
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{MAGAdept}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAGAdept}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-
-                    if (Settings.BoundSpiritExpression.Contains("{MAGAdept}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{MAGAdept}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAGAdeptUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{MAGAdeptUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-
-                        if (Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-
-                    if (Settings.BoundSpiritExpression.Contains("{MAGAdeptUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{MAGAdeptUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -18266,43 +18096,19 @@ namespace Chummer
                     {
                         nameof(MaxSpriteLevel)
                     };
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{RES}"))
-                            lstProperties.Add(nameof(ContactPoints));
-                        if (Settings.ChargenKarmaToNuyenExpression.Contains("{RES}"))
-                            lstProperties.Add(nameof(TotalStartingNuyen));
-                    }
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{RES}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    if (Settings.BoundSpiritExpression.Contains("{RES}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{RES}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{RESUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{RESUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{RESUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-
-                    if (Settings.BoundSpiritExpression.Contains("{RESUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{RESUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -18316,48 +18122,20 @@ namespace Chummer
                 {
                     if (IsAI)
                         EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{DEP}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{DEP}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{DEP}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{DEP}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-
-                    if (Settings.BoundSpiritExpression.Contains("{DEP}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{DEP}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{DEP}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{DEPUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{DEPUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{DEPUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-
-                    if (Settings.BoundSpiritExpression.Contains("{DEPUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{DEPUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -18373,48 +18151,20 @@ namespace Chummer
                     break;
                 case nameof(CharacterAttrib.TotalValue):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{ESS}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{ESS}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{ESS}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{ESS}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-
-                    if (Settings.BoundSpiritExpression.Contains("{ESS}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{ESS}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{ESS}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (!Created)
-                    {
-                        if (Settings.ContactPointsExpression.Contains("{ESSUnaug}"))
-                        {
-                            if (Settings.ChargenKarmaToNuyenExpression.Contains("{ESSUnaug}"))
-                                this.OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
-                            else
-                                OnPropertyChanged(nameof(ContactPoints));
-                        }
-                        else if (Settings.ChargenKarmaToNuyenExpression.Contains("{ESSUnaug}"))
-                            OnPropertyChanged(nameof(TotalStartingNuyen));
-                        if (Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
-                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    }
-
-                    if (Settings.BoundSpiritExpression.Contains("{ESSUnaug}"))
-                        _intBoundSpiritLimit = int.MinValue;
-                    if (Settings.RegisteredSpriteExpression.Contains("{ESSUnaug}"))
-                        _intRegisteredSpriteLimit = int.MinValue;
+                    List<string> lstProperties = new List<string>();
+                    ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}");
+                    OnMultiplePropertyChanged(lstProperties);
+                    if (!Created && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
             }
@@ -19381,6 +19131,16 @@ namespace Chummer
                 if (setNamesOfChangedProperties.Contains(nameof(ContactPoints)))
                 {
                     _intCachedContactPoints = int.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(CarryLimit)))
+                {
+                    _decCachedCarryLimit = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(LiftLimit)))
+                {
+                    _decCachedLiftLimit = decimal.MinValue;
                 }
 
                 if (setNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))

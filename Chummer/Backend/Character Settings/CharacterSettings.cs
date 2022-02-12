@@ -2913,6 +2913,10 @@ namespace Chummer
             }
         }
 
+        public string WeightCarryLimitExpression => "{STR} * 10";
+
+        public string WeightLiftLimitExpression => "{STR} * 15";
+
         private int _intCachedEssenceDecimals = -1;
 
         /// <summary>
