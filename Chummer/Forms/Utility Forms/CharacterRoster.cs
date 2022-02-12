@@ -63,7 +63,7 @@ namespace Chummer
         {
             if (!deleteThem)
             {
-                Program.MainForm.OpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterForms.CollectionChanged += OpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged += RefreshMruLists;
                 treCharacterList.ItemDrag += treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter += treCharacterList_OnDefaultDragEnter;
@@ -81,7 +81,7 @@ namespace Chummer
             }
             else
             {
-                Program.MainForm.OpenCharacterForms.CollectionChanged -= LstOpenCharacterFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterForms.CollectionChanged -= OpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged -= RefreshMruLists;
                 treCharacterList.ItemDrag -= treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
@@ -248,7 +248,7 @@ namespace Chummer
             PurgeUnusedCharacterCaches();
         }
 
-        private async void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void OpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -259,46 +259,18 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Move:
-                case NotifyCollectionChangedAction.Remove:
-                    {
-                        string strMruToUpdate = "mru";
-                        foreach (CharacterShared objForm in e.OldItems)
-                        {
-                            if (GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName))
-                            {
-                                strMruToUpdate = "stickymru"; // Will also update the most recents list, too
-                                break;
-                            }
-                        }
-                        await RefreshMruLists(strMruToUpdate);
-                    }
-                    break;
-
                 case NotifyCollectionChangedAction.Replace:
-                    {
-                        string strMruToUpdate = "mru";
-                        foreach (CharacterShared objForm in e.OldItems)
-                        {
-                            if (GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName))
-                            {
-                                strMruToUpdate = "stickymru"; // Will also update the most recents list, too
-                                break;
-                            }
-                        }
-
-                        if (strMruToUpdate == "mru")
-                        {
-                            foreach (CharacterShared objForm in e.NewItems)
-                            {
-                                if (GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName))
-                                {
-                                    strMruToUpdate = "stickymru"; // Will also update the most recents list, too
-                                    break;
-                                }
-                            }
-                        }
-                        await RefreshMruLists(strMruToUpdate);
-                    }
+                case NotifyCollectionChangedAction.Remove:
+                {
+                    // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                    if (e.OldItems.Cast<CharacterShared>()
+                         .Any(objForm => !GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName)
+                                         && !GlobalSettings.MostRecentlyUsedCharacters.Contains(
+                                             objForm.CharacterObject.FileName)))
+                        await RefreshMruLists("mru");
+                    else
+                        await RefreshNodeTexts();
+                }
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
