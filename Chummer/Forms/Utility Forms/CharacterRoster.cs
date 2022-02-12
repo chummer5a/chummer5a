@@ -351,7 +351,6 @@ namespace Chummer
                     {Tag = "Favorite"};
                 blnAddFavoriteNode = true;
             }
-            TreeNode[] lstFavoritesNodes = blnRefreshFavorites && lstFavorites.Count > 0 ? new TreeNode[lstFavorites.Count] : null;
 
             if (objCancellationToken.IsCancellationRequested)
                 return;
@@ -369,6 +368,8 @@ namespace Chummer
             }
             foreach (string strFavorite in lstFavorites)
                 lstRecents.Remove(strFavorite);
+            if (!blnRefreshFavorites)
+                lstFavorites.Clear();
             TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
             if (objRecentNode == null && lstRecents.Count > 0)
             {
@@ -376,36 +377,54 @@ namespace Chummer
                     {Tag = "Recent"};
                 blnAddRecentNode = true;
             }
-            TreeNode[] lstRecentsNodes = lstRecents.Count > 0 ? new TreeNode[lstRecents.Count] : null;
 
             if (objCancellationToken.IsCancellationRequested)
                 return;
 
-            try
+            int intFavoritesCount = lstFavorites.Count;
+            int intRecentsCount = lstRecents.Count;
+
+            TreeNode[] lstFavoritesNodes = intFavoritesCount > 0 ? new TreeNode[intFavoritesCount] : null;
+            TreeNode[] lstRecentsNodes = intRecentsCount > 0 ? new TreeNode[intRecentsCount] : null;
+
+            if (intFavoritesCount > 0 || intRecentsCount > 0)
             {
-                await Task.WhenAll(
-                    Task.Run(async () =>
+                if (objCancellationToken.IsCancellationRequested)
+                    return;
+                Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[intFavoritesCount + intRecentsCount];
+
+                for (int i = 0; i < intFavoritesCount; ++i)
+                {
+                    int iLocal = i;
+                    atskCachingTasks[i]
+                        = Task.Run(() => CacheCharacter(lstFavorites[iLocal]), objCancellationToken);
+                }
+
+                for (int i = 0; i < intRecentsCount; ++i)
+                {
+                    int iLocal = i;
+                    atskCachingTasks[intFavoritesCount + i]
+                        = Task.Run(() => CacheCharacter(lstRecents[iLocal]), objCancellationToken);
+                }
+
+                try
+                {
+                    await Task.WhenAll(atskCachingTasks);
+                }
+                catch (TaskCanceledException)
+                {
+                    //swallow this
+                }
+
+                if (lstFavoritesNodes != null)
+                {
+                    for (int i = 0; i < intFavoritesCount; ++i)
                     {
-                        if (!blnRefreshFavorites || lstFavoritesNodes == null || lstFavorites.Count == 0 ||
-                            objCancellationToken.IsCancellationRequested)
-                            return;
-                        Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[lstFavorites.Count];
-                        for (int i = 0; i < lstFavorites.Count; ++i)
-                        {
-                            int iLocal = i;
-                            atskCachingTasks[i] = Task.Run(() => CacheCharacter(lstFavorites[iLocal]), objCancellationToken);
-                        }
-                        await Task.WhenAll(atskCachingTasks);
-                        if (!blnAddFavoriteNode || objFavoriteNode == null ||
-                            objCancellationToken.IsCancellationRequested)
-                            return;
-                        for (int i = 0; i < lstFavorites.Count; ++i)
-                        {
-                            lstFavoritesNodes[i] = await atskCachingTasks[i];
-                        }
-                        if (!blnAddFavoriteNode || objFavoriteNode == null ||
-                            objCancellationToken.IsCancellationRequested)
-                            return;
+                        lstFavoritesNodes[i] = await atskCachingTasks[i];
+                    }
+
+                    if (objFavoriteNode != null)
+                    {
                         foreach (TreeNode objNode in lstFavoritesNodes)
                         {
                             if (objCancellationToken.IsCancellationRequested)
@@ -416,34 +435,24 @@ namespace Chummer
                             {
                                 if (objFavoriteNode.TreeView.IsDisposed)
                                     continue;
-                                await objFavoriteNode.TreeView.DoThreadSafeAsync(() => objFavoriteNode.Nodes.Add(objNode));
+                                await objFavoriteNode.TreeView.DoThreadSafeAsync(
+                                    () => objFavoriteNode.Nodes.Add(objNode));
                             }
                             else
                                 objFavoriteNode.Nodes.Add(objNode);
                         }
-                    }, objCancellationToken),
-                    Task.Run(async () =>
+                    }
+                }
+
+                if (lstRecentsNodes != null)
+                {
+                    for (int i = 0; i < intRecentsCount; ++i)
                     {
-                        if (lstRecentsNodes == null || lstRecents.Count == 0 ||
-                            objCancellationToken.IsCancellationRequested)
-                            return;
-                        Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[lstRecents.Count];
-                        for (int i = 0; i < lstRecents.Count; ++i)
-                        {
-                            int iLocal = i;
-                            atskCachingTasks[i] = Task.Run(() => CacheCharacter(lstRecents[iLocal]), objCancellationToken);
-                        }
-                        await Task.WhenAll(atskCachingTasks);
-                        if (!blnAddRecentNode || objRecentNode == null ||
-                            objCancellationToken.IsCancellationRequested)
-                            return;
-                        for (int i = 0; i < lstRecents.Count; ++i)
-                        {
-                            lstRecentsNodes[i] = await atskCachingTasks[i];
-                        }
-                        if (!blnAddRecentNode || objRecentNode == null ||
-                            objCancellationToken.IsCancellationRequested)
-                            return;
+                        lstRecentsNodes[i] = await atskCachingTasks[intFavoritesCount + i];
+                    }
+
+                    if (objRecentNode != null)
+                    {
                         foreach (TreeNode objNode in lstRecentsNodes)
                         {
                             if (objCancellationToken.IsCancellationRequested)
@@ -454,16 +463,14 @@ namespace Chummer
                             {
                                 if (objRecentNode.TreeView.IsDisposed)
                                     continue;
-                                await objRecentNode.TreeView.DoThreadSafeAsync(() => objRecentNode.Nodes.Add(objNode));
+                                await objRecentNode.TreeView.DoThreadSafeAsync(
+                                    () => objRecentNode.Nodes.Add(objNode));
                             }
                             else
                                 objRecentNode.Nodes.Add(objNode);
                         }
-                    }, objCancellationToken));
-            }
-            catch (TaskCanceledException)
-            {
-                //swallow this
+                    }
+                }
             }
 
             if (objCancellationToken.IsCancellationRequested)
@@ -568,80 +575,79 @@ namespace Chummer
             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            await Task.Run(async () =>
+            if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count == 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                return;
+
+            Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>();
+            List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(dicWatch.Count);
+            foreach (string strKey in dicWatch.Keys)
+                lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey),
+                                             _objMostRecentlyUsedsRefreshCancellationTokenSource.Token));
+            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                return;
+            await Task.WhenAll(lstCachingTasks);
+            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                return;
+            foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
             {
-                if (objWatchNode == null || !blnAddWatchNode || dicWatch == null || dicWatch.Count == 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                TreeNode objNode = await tskCachingTask;
+                if (objNode.Tag is CharacterCache objCache)
+                    dicWatchNodes.Add(objNode, dicWatch[objCache.FilePath]);
+                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                     return;
-                using (LockingDictionary<TreeNode, string> dicWatchNodes = new LockingDictionary<TreeNode, string>())
+            }
+
+            foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
+            {
+                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                    return;
+                if (s == "Watch")
+                    continue;
+                if (objWatchNode.TreeView != null)
                 {
-                    List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(dicWatch.Count);
-                    foreach (string strKey in dicWatch.Keys)
-                        lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey), _objMostRecentlyUsedsRefreshCancellationTokenSource.Token));
-                    if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    await Task.WhenAll(lstCachingTasks);
-                    if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
+                    if (objWatchNode.TreeView.IsDisposed)
+                        continue;
+                    await objWatchNode.TreeView.DoThreadSafeAsync(
+                        () => objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s}));
+                }
+                else
+                    objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s});
+            }
+
+            foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
+            {
+                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+                    return;
+                if (kvtNode.Value == "Watch")
+                {
+                    if (objWatchNode.TreeView != null)
                     {
-                        TreeNode objNode = await tskCachingTask;
-                        if (objNode.Tag is CharacterCache objCache)
-                            dicWatchNodes.TryAdd(objNode, dicWatch[objCache.FilePath]);
-                        if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                            return;
+                        if (objWatchNode.TreeView.IsDisposed)
+                            continue;
+                        await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
                     }
-                    foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
+                    else
+                        objWatchNode.Nodes.Add(kvtNode.Key);
+                }
+                else
+                {
+                    foreach (TreeNode objNode in objWatchNode.Nodes)
                     {
                         if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                             return;
-                        if (s == "Watch")
+                        if (objNode.Tag.ToString() != kvtNode.Value)
                             continue;
                         if (objWatchNode.TreeView != null)
                         {
                             if (objWatchNode.TreeView.IsDisposed)
                                 continue;
-                            await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s}));
+                            await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
                         }
                         else
-                            objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s});
-                    }
-
-                    foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
-                    {
-                        if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                            return;
-                        if (kvtNode.Value == "Watch")
-                        {
-                            if (objWatchNode.TreeView != null)
-                            {
-                                if (objWatchNode.TreeView.IsDisposed)
-                                    continue;
-                                await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
-                            }
-                            else
-                                objWatchNode.Nodes.Add(kvtNode.Key);
-                        }
-                        else
-                        {
-                            foreach (TreeNode objNode in objWatchNode.Nodes)
-                            {
-                                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                                    return;
-                                if (objNode.Tag.ToString() != kvtNode.Value)
-                                    continue;
-                                if (objWatchNode.TreeView != null)
-                                {
-                                    if (objWatchNode.TreeView.IsDisposed)
-                                        continue;
-                                    await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
-                                }
-                                else
-                                    objNode.Nodes.Add(kvtNode.Key);
-                            }
-                        }
+                            objNode.Nodes.Add(kvtNode.Key);
                     }
                 }
-            });
+            }
 
             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
@@ -653,7 +659,7 @@ namespace Chummer
             await treCharacterList.DoThreadSafeAsync(() =>
             {
                 treCharacterList.SuspendLayout();
-                if (objWatchNode != null && blnAddWatchNode)
+                if (objWatchNode != null)
                 {
                     if (objWatchNode.TreeView == null)
                     {
