@@ -489,10 +489,10 @@ namespace Chummer.Backend.Attributes
             get
             {
                 foreach (Improvement objImprovement in ImprovementManager
-                                                       .GetCachedImprovementListForValueOf(
+                                                       .GetCachedImprovementListForAugmentedValueOf(
                                                            _objCharacter, Improvement.ImprovementType.Attribute, Abbrev))
                 {
-                    if (objImprovement.Augmented != 0)
+                    if (objImprovement.Augmented * objImprovement.Rating != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
@@ -503,10 +503,10 @@ namespace Chummer.Backend.Attributes
                         return true;
                 }
                 foreach (Improvement objImprovement in ImprovementManager
-                                                       .GetCachedImprovementListForValueOf(
+                                                       .GetCachedImprovementListForAugmentedValueOf(
                                                            _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base"))
                 {
-                    if (objImprovement.Augmented != 0)
+                    if (objImprovement.Augmented * objImprovement.Rating != 0)
                         return true;
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
