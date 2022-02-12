@@ -895,7 +895,7 @@ namespace Chummer
             treSourcebook.EndUpdate();
         }
 
-        private async Task PopulateCustomDataDirectoryTreeView()
+        private async ValueTask PopulateCustomDataDirectoryTreeView()
         {
             object objOldSelected = treCustomDataDirectories.SelectedNode?.Tag;
             treCustomDataDirectories.BeginUpdate();
@@ -999,7 +999,7 @@ namespace Chummer
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
-        private async Task PopulateOptions()
+        private async ValueTask PopulateOptions()
         {
             bool blnDoResumeLayout = !_blnIsLayoutSuspended;
             if (blnDoResumeLayout)
@@ -1194,7 +1194,7 @@ namespace Chummer
             }
         }
 
-        private async Task SetToolTips()
+        private async ValueTask SetToolTips()
         {
             chkUnarmedSkillImprovements.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements")).WordWrap());
             chkIgnoreArt.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt")).WordWrap());

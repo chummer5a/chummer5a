@@ -959,8 +959,8 @@ namespace ChummerHub.Client.Backend
                     Log.Trace("Character loaded: " + objCharacter.Name);
                 }
 
-                CharacterCache objCache = new CharacterCache();
-                ce = await objCache.LoadFromFileAsync(fileName).ContinueWith(x => new CharacterExtended(objCharacter, null, objCache));
+                CharacterCache objCache = await CharacterCache.CreateFromFileAsync(fileName);
+                ce = new CharacterExtended(objCharacter, null, objCache);
                 await ce.Upload();
             }
             catch (Exception ex)

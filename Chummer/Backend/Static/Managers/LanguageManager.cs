@@ -497,7 +497,7 @@ namespace Chummer
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
         /// <returns></returns>
-        public static async Task<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
+        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -646,7 +646,7 @@ namespace Chummer
         /// Check the Keys in the selected language file against the English version.
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
-        public static async Task VerifyStrings(string strLanguage)
+        public static async ValueTask VerifyStrings(string strLanguage)
         {
             string strMessage;
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -853,7 +853,7 @@ namespace Chummer
                 + '(' + GetString("String_DescAdept", strLanguage) + ')';
         }
 
-        public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false)
+        public static async ValueTask<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;

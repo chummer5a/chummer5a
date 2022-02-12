@@ -222,7 +222,7 @@ namespace Chummer
 
         #region Methods
 
-        private async Task LoadContactList()
+        private async ValueTask LoadContactList()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {

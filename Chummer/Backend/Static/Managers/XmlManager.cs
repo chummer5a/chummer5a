@@ -252,7 +252,6 @@ namespace Chummer
                 || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 // The file was not found in the reference list, so it must be loaded.
-                xmlReferenceOfReturn = null;
                 bool blnLoadSuccess;
                 if (blnSync)
                 {
@@ -261,13 +260,19 @@ namespace Chummer
                     blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                 }
                 else
-                    blnLoadSuccess = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile)
-                    .ContinueWith(
-                        x =>
-                        {
-                            xmlDocumentOfReturn = x.Result;
-                            return s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
-                        });
+                {
+                    xmlDocumentOfReturn = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
+                    // Need this conditional so that we actually await the line above before we check to see if the load was successful or not
+                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                    if (xmlDocumentOfReturn != null)
+                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
+                    else
+                    {
+                        xmlReferenceOfReturn = null;
+                        blnLoadSuccess = false;
+                    }
+                }
+
                 if (!blnLoadSuccess)
                 {
                     Utils.BreakIfDebug();
@@ -317,7 +322,6 @@ namespace Chummer
         /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        [Annotations.NotNull]
         public static Task<XmlDocument> LoadAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             return LoadCoreAsync(false, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
@@ -333,7 +337,6 @@ namespace Chummer
         /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        [Annotations.NotNull]
         private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyCollection<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;

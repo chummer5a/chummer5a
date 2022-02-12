@@ -1945,9 +1945,9 @@ namespace Chummer
             await SaveCharacterAs(true);
         }
 
-        private void mnuFilePrint_Click(object sender, EventArgs e)
+        private async void mnuFilePrint_Click(object sender, EventArgs e)
         {
-            DoPrint();
+            await DoPrint();
         }
 
         private void mnuFileClose_Click(object sender, EventArgs e)
@@ -3304,7 +3304,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async Task<bool> AddWeapon(Location objLocation = null)
+        private async ValueTask<bool> AddWeapon(Location objLocation = null)
         {
             using (new CursorWait(this))
             {
@@ -3428,7 +3428,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private async Task<bool> AddVehicle(Location objLocation = null)
+        private async ValueTask<bool> AddVehicle(Location objLocation = null)
         {
             using (new CursorWait(this))
             {
@@ -3488,7 +3488,7 @@ namespace Chummer
             await DeleteVehicle();
         }
 
-        private async Task DeleteVehicle()
+        private async ValueTask DeleteVehicle()
         {
             if (!cmdDeleteVehicle.Enabled)
                 return;
@@ -4319,7 +4319,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async Task<bool> AddArmor(Location objLocation = null)
+        private async ValueTask<bool> AddArmor(Location objLocation = null)
         {
             using (new CursorWait(this))
             {
@@ -11440,7 +11440,7 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public override Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public override ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
             return base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked);
         }
@@ -11449,7 +11449,7 @@ namespace Chummer
         /// Save the Character using the Save As dialogue box.
         /// </summary>
         /// <param name="blnDoCreated">If True, forces the character to be saved in Career Mode (if possible to do so).</param>
-        public override Task<bool> SaveCharacterAs(bool blnDoCreated = false)
+        public override ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
             return base.SaveCharacterAs(blnDoCreated || chkCharacterCreated.Checked);
         }
@@ -11541,7 +11541,7 @@ namespace Chummer
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
         /// </summary>
-        private async Task<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
+        private async ValueTask<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
             using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, objSource, objSelectedCyberware))
             {
@@ -11920,7 +11920,7 @@ namespace Chummer
         /// <summary>
         /// Select a piece of Gear to be added to the character.
         /// </summary>
-        private async Task<bool> PickGear(string strSelectedId)
+        private async ValueTask<bool> PickGear(string strSelectedId)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = CharacterObject.Gear.DeepFindById(strSelectedId);
@@ -12047,7 +12047,7 @@ namespace Chummer
         /// </summary>
         /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
-        private async Task<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
+        private async ValueTask<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
         {
             Gear objSelectedGear = null;
             ArmorMod objSelectedMod = null;
@@ -14049,7 +14049,7 @@ namespace Chummer
         /// <summary>
         /// Confirm that the character can move to career mode and perform final actions for karma carryover and such.
         /// </summary>
-        public async Task<bool> ValidateCharacter()
+        public async ValueTask<bool> ValidateCharacter()
         {
             int intBuildPoints = CalculateBP(false);
 
@@ -14224,7 +14224,7 @@ namespace Chummer
         /// <summary>
         /// Add a PACKS Kit to the character.
         /// </summary>
-        public async Task<bool> AddPACKSKit()
+        public async ValueTask<bool> AddPACKSKit()
         {
             XmlNode objXmlKit;
             bool blnAddAgain;
@@ -14902,7 +14902,7 @@ namespace Chummer
         /// <summary>
         /// Create a PACKS Kit from the character.
         /// </summary>
-        public async Task CreatePACKSKit()
+        public async ValueTask CreatePACKSKit()
         {
             using (CreatePACKSKit frmBuildPACKSKit = new CreatePACKSKit(CharacterObject))
                 await frmBuildPACKSKit.ShowDialogSafeAsync(this);
@@ -14952,7 +14952,7 @@ namespace Chummer
         /// <summary>
         /// Change the character's Metatype or priority selection.
         /// </summary>
-        public async Task ChangeMetatype()
+        public async ValueTask ChangeMetatype()
         {
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
@@ -14980,7 +14980,7 @@ namespace Chummer
         /// <summary>
         /// Create a Cyberware Suite from the Cyberware the character currently has.
         /// </summary>
-        private async Task CreateCyberwareSuite(Improvement.ImprovementSource objSource)
+        private async ValueTask CreateCyberwareSuite(Improvement.ImprovementSource objSource)
         {
             // Make sure all of the Cyberware the character has is of the same grade.
             string strGrade = string.Empty;
@@ -15187,7 +15187,7 @@ namespace Chummer
             tsbCopy.Enabled = blnCopyEnabled;
         }
 
-        private async Task AddCyberwareSuite(Improvement.ImprovementSource objSource)
+        private async ValueTask AddCyberwareSuite(Improvement.ImprovementSource objSource)
         {
             using (SelectCyberwareSuite frmPickCyberwareSuite = new SelectCyberwareSuite(CharacterObject, objSource))
             {

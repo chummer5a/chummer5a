@@ -792,7 +792,7 @@ namespace Chummer
 
         private bool _blnPromptPdfReaderOnLoad;
 
-        public async Task DoLinkPdfReader()
+        public async ValueTask DoLinkPdfReader()
         {
             if (_blnLoading)
                 _blnPromptPdfReaderOnLoad = true;
@@ -802,7 +802,7 @@ namespace Chummer
 
         private string _strSelectCodeOnRefresh = string.Empty;
 
-        public async Task DoLinkPdf(string strCode)
+        public async ValueTask DoLinkPdf(string strCode)
         {
             if (_blnLoading)
                 _strSelectCodeOnRefresh = strCode;
@@ -814,7 +814,7 @@ namespace Chummer
             }
         }
 
-        private async Task PromptPdfLocation()
+        private async ValueTask PromptPdfLocation()
         {
             if (!txtPDFLocation.Enabled)
                 return;
@@ -863,7 +863,7 @@ namespace Chummer
             }
         }
 
-        private async Task PromptPdfAppPath()
+        private async ValueTask PromptPdfAppPath()
         {
             // Prompt the user to select a save file to associate with this Contact.
             using (new CursorWait(this))
@@ -887,7 +887,7 @@ namespace Chummer
             }
         }
 
-        private async Task TranslateForm()
+        private async ValueTask TranslateForm()
         {
             await this.TranslateWinFormAsync(_strSelectedLanguage);
             await PopulateDefaultCharacterSettingLists();
@@ -992,7 +992,7 @@ namespace Chummer
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
-        private async Task PopulateOptions()
+        private async ValueTask PopulateOptions()
         {
             RefreshGlobalSourcebookInfosListView();
             PopulateCustomDataDirectoryListBox();
@@ -1142,7 +1142,7 @@ namespace Chummer
             GlobalSettings.SaveOptionsToRegistry();
         }
 
-        private async Task PopulateDefaultCharacterSettingLists()
+        private async ValueTask PopulateDefaultCharacterSettingLists()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
@@ -1193,7 +1193,7 @@ namespace Chummer
             }
         }
 
-        private async Task PopulateMugshotCompressionOptions()
+        private async ValueTask PopulateMugshotCompressionOptions()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstMugshotCompressionOptions))
@@ -1287,7 +1287,7 @@ namespace Chummer
             }
         }
 
-        private async Task PopulateApplicationInsightsOptions()
+        private async ValueTask PopulateApplicationInsightsOptions()
         {
             string strOldSelected = cboUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalSettings.UseLoggingApplicationInsights.ToString();
             
@@ -1316,7 +1316,7 @@ namespace Chummer
             }
         }
 
-        private async Task PopulateColorModes()
+        private async ValueTask PopulateColorModes()
         {
             string strOldSelected = cboColorMode.SelectedValue?.ToString() ?? GlobalSettings.ColorModeSetting.ToString();
             
@@ -1340,7 +1340,7 @@ namespace Chummer
             }
         }
 
-        private async Task PopulateDpiScalingMethods()
+        private async ValueTask PopulateDpiScalingMethods()
         {
             string strOldSelected = cboDpiScalingMethod.SelectedValue?.ToString() ?? GlobalSettings.DpiScalingMethodSetting.ToString();
             
@@ -1382,7 +1382,7 @@ namespace Chummer
             }
         }
 
-        private async Task SetToolTips()
+        private async ValueTask SetToolTips()
         {
             cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Tip_Options_TelemetryId", _strSelectedLanguage),
                 Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo)).WordWrap());
@@ -1488,7 +1488,7 @@ namespace Chummer
             }
         }
 
-        private async Task PopulateXsltList()
+        private async ValueTask PopulateXsltList()
         {
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             imgSheetLanguageFlag.Image = Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height) >= 32

@@ -39,7 +39,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        public static async Task<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode)
+        public static async ValueTask<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode)
         {
             if (objNotes == null || treNode == null)
                 return false;

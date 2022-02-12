@@ -924,7 +924,7 @@ namespace Chummer
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async ValueTask<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {

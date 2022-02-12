@@ -2210,19 +2210,14 @@ namespace Chummer
             await SaveCharacterAs();
         }
 
-        private void tsbPrint_Click(object sender, EventArgs e)
-        {
-            DoPrint();
-        }
-
         private void mnuFileClose_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void mnuFilePrint_Click(object sender, EventArgs e)
+        private async void mnuFilePrint_Click(object sender, EventArgs e)
         {
-            DoPrint();
+            await DoPrint();
         }
 
         private async void mnuFileExport_Click(object sender, EventArgs e)
@@ -3656,7 +3651,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async Task<bool> PickWeapon(object destObject)
+        private async ValueTask<bool> PickWeapon(object destObject)
         {
             using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject))
             {
@@ -3818,7 +3813,7 @@ namespace Chummer
             RemoveSelectedObject(treGear.SelectedNode?.Tag);
         }
 
-        private async Task<bool> AddVehicle(Location objLocation = null)
+        private async ValueTask<bool> AddVehicle(Location objLocation = null)
         {
             using (SelectVehicle frmPickVehicle = new SelectVehicle(CharacterObject))
             {
@@ -5254,7 +5249,7 @@ namespace Chummer
             }
         }
 
-        private async Task<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
+        private async ValueTask<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
         {
             XPathNavigator objXmlDeleteQuality = await objSelectedQuality.GetNodeXPathAsync();
             bool blnMetatypeQuality = false;
@@ -6377,7 +6372,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async Task<bool> PickArmor(Location objLocation = null)
+        private async ValueTask<bool> PickArmor(Location objLocation = null)
         {
             using (SelectArmor frmPickArmor = new SelectArmor(CharacterObject))
             {
@@ -6832,7 +6827,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async Task<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, Vehicle objVehicle)
+        private async ValueTask<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, Vehicle objVehicle)
         {
             using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
             {
@@ -7073,7 +7068,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async Task<bool> AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString)
+        private async ValueTask<bool> AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString)
         {
             using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
             {
@@ -14616,7 +14611,7 @@ namespace Chummer
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
         /// </summary>
-        public async Task<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
+        public async ValueTask<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
             using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, objSource, objSelectedCyberware))
             {
@@ -14973,7 +14968,7 @@ namespace Chummer
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="objAmmoForWeapon">Gear is being bought as ammo for this weapon.</param>
-        private async Task<bool> PickGear(IHasChildren<Gear> iParent, Location objLocation = null, Gear objStackGear = null, string strForceItemValue = "", Weapon objAmmoForWeapon = null)
+        private async ValueTask<bool> PickGear(IHasChildren<Gear> iParent, Location objLocation = null, Gear objStackGear = null, string strForceItemValue = "", Weapon objAmmoForWeapon = null)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -15209,7 +15204,7 @@ namespace Chummer
         /// </summary>
         /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
-        private async Task<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
+        private async ValueTask<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
         {
             Gear objSelectedGear = null;
             Armor objSelectedArmor = CharacterObject.Armor.FindById(strSelectedId);
@@ -16974,7 +16969,7 @@ namespace Chummer
             return objCyberware;
         }
 
-        private async Task AddCyberwareSuite(Improvement.ImprovementSource objSource)
+        private async ValueTask AddCyberwareSuite(Improvement.ImprovementSource objSource)
         {
             using (SelectCyberwareSuite frmPickCyberwareSuite = new SelectCyberwareSuite(CharacterObject, objSource))
             {

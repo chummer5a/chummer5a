@@ -155,17 +155,17 @@ namespace Chummer
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
-        public Task TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
             return ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true);
         }
 
-        public async Task<string> PrintModule(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage)
         {
             return (await ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage)).NormalizeWhiteSpace();
         }
 
-        public async Task<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
+        public async ValueTask<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
@@ -252,7 +252,7 @@ namespace Chummer
             return string.Concat(lstOutputStrings);
         }
 
-        public async Task<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
+        public async ValueTask<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
         {
             // Process Macros nested inside of single macro
             strInput = await ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents);

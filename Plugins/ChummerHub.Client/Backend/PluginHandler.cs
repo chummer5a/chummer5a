@@ -538,12 +538,12 @@ namespace Chummer.Plugins
                 sinnertab = myCollection.OfType<TabPage>().FirstOrDefault(x => x.Name == "SINners");
             }
             
-            CharacterCache myCharacterCache = new CharacterCache();
+            CharacterCache myCharacterCache;
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
-                myCharacterCache.LoadFromFile(input?.FileName);
+                myCharacterCache = new CharacterCache(input?.FileName);
             else
-                await myCharacterCache.LoadFromFileAsync(input?.FileName);
+                myCharacterCache = await CharacterCache.CreateFromFileAsync(input?.FileName);
             if (sinnertab == null)
                 return new CharacterExtended(input, null, myCharacterCache);
             ucSINnersUserControl myUcSIN = sinnertab.Controls.OfType<ucSINnersUserControl>().FirstOrDefault();

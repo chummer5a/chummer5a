@@ -577,7 +577,7 @@ namespace Chummer
             for (int i = 0; i < astrFilesToDelete.Length; i++)
             {
                 string strToDelete = astrFilesToDelete[i];
-                atskSuccesses[i] = Task.Run(() => SafeDeleteFileAsync(strToDelete, false, intTimeout));
+                atskSuccesses[i] = SafeDeleteFileAsync(strToDelete, false, intTimeout);
             }
             foreach (Task<bool> x in atskSuccesses)
             {
@@ -592,7 +592,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use Chummer's current language.</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
-        public static async Task RestartApplication(string strLanguage = "", string strText = "")
+        public static async ValueTask RestartApplication(string strLanguage = "", string strText = "")
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
@@ -732,7 +732,7 @@ namespace Chummer
                 {
                     tcs.SetResult(await DummyFunction());
                     // This is needed because SetResult always needs a return type
-                    async Task<bool> DummyFunction()
+                    async ValueTask<bool> DummyFunction()
                     {
                         await func;
                         return true;

@@ -423,7 +423,7 @@ namespace Chummer
         /// Adds the token to the initiative chain
         /// </summary>
         /// <param name="character"></param>
-        public async Task AddToken(Character character)
+        public async ValueTask AddToken(Character character)
         {
             if (character == null)
                 return;

@@ -58,7 +58,7 @@ namespace Chummer
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private async Task LoadCharacter(string fileName)
+        private async ValueTask LoadCharacter(string fileName)
         {
             if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {

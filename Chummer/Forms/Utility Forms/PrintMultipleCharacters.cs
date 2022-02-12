@@ -87,7 +87,7 @@ namespace Chummer
             await StartPrint();
         }
 
-        private async Task CancelPrint()
+        private async ValueTask CancelPrint()
         {
             _objPrinterCancellationTokenSource?.Cancel(false);
             try
@@ -105,7 +105,7 @@ namespace Chummer
             }
         }
 
-        private async Task StartPrint()
+        private async ValueTask StartPrint()
         {
             await CancelPrint();
             _objPrinterCancellationTokenSource?.Dispose();
@@ -160,19 +160,19 @@ namespace Chummer
 
                     if (_frmPrintView == null)
                     {
-                        await this.DoThreadSafeAsync(() =>
+                        await this.DoThreadSafeFunc(async () =>
                         {
                             _frmPrintView = new CharacterSheetViewer();
-                            _frmPrintView.SetSelectedSheet("Game Master Summary");
-                            _frmPrintView.SetCharacters(_aobjCharacters);
+                            await _frmPrintView.SetSelectedSheet("Game Master Summary");
+                            await _frmPrintView.SetCharacters(_aobjCharacters);
                             _frmPrintView.Show();
                         });
                     }
                     else
                     {
-                        await _frmPrintView.DoThreadSafeAsync(() =>
+                        await _frmPrintView.DoThreadSafeFunc(async () =>
                         {
-                            _frmPrintView.SetCharacters(_aobjCharacters);
+                            await _frmPrintView.SetCharacters(_aobjCharacters);
                             _frmPrintView.Activate();
                         });
                     }

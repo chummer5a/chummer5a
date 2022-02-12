@@ -38,7 +38,7 @@ namespace Chummer
             _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
-        public async Task<string> GetStory(string strLanguage)
+        public async ValueTask<string> GetStory(string strLanguage)
         {
             //Little bit of data required for following steps
             XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage);

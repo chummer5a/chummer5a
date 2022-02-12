@@ -206,7 +206,7 @@ namespace Chummer
             await RefreshMruLists(e?.Text);
         }
 
-        public async Task RefreshMruLists(string strMruType)
+        public async ValueTask RefreshMruLists(string strMruType)
         {
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource != null)
             {
@@ -279,7 +279,7 @@ namespace Chummer
             }
         }
 
-        public async Task RefreshNodeTexts()
+        public async ValueTask RefreshNodeTexts()
         {
             if (treCharacterList.IsNullOrDisposed())
                 return;

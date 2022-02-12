@@ -178,7 +178,7 @@ namespace Chummer
             }
         }
 
-        private async Task LoadContent()
+        private async ValueTask LoadContent()
         {
             using (CustomActivity opLoadMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
                 CustomActivity.OperationType.RequestOperation, null))

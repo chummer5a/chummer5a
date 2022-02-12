@@ -163,7 +163,7 @@ namespace Chummer
             await ProcessGameplayIndexChanged();
         }
 
-        private async Task ProcessGameplayIndexChanged()
+        private async ValueTask ProcessGameplayIndexChanged()
         {
             if (!_blnLoading)
                 SuspendLayout();

@@ -517,7 +517,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private async Task CreateCritter(string strCritterName, int intForce)
+        private async ValueTask CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
             XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml");

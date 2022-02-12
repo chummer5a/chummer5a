@@ -302,7 +302,7 @@ namespace Chummer
             }
         }
 
-        private async Task RefreshSelectedMetavariant()
+        private async ValueTask RefreshSelectedMetavariant()
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
             XPathNavigator objXmlMetatype = null;

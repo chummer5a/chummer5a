@@ -423,7 +423,7 @@ namespace Chummer
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
-        private async Task SetDocumentText(string strText)
+        private async ValueTask SetDocumentText(string strText)
         {
             int intHeight = await webViewer.DoThreadSafeFuncAsync(() => webViewer.Height);
             string strDocumentText
@@ -439,7 +439,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the characters (and therefore content) of the Viewer window.
         /// </summary>
-        public async Task RefreshCharacters()
+        public async ValueTask RefreshCharacters()
         {
             _objOutputGeneratorCancellationTokenSource?.Cancel(false);
             _objRefresherCancellationTokenSource?.Cancel(false);
@@ -459,7 +459,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the sheet of the Viewer window.
         /// </summary>
-        private async Task RefreshSheet()
+        private async ValueTask RefreshSheet()
         {
             _objOutputGeneratorCancellationTokenSource?.Cancel(false);
             _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
@@ -745,16 +745,16 @@ namespace Chummer
         /// <summary>
         /// Set the XSL sheet that will be selected by default.
         /// </summary>
-        public void SetSelectedSheet(string strSheet)
+        public async ValueTask SetSelectedSheet(string strSheet)
         {
             _strSelectedSheet = strSheet;
-            Task.Run(RefreshSheet);
+            await RefreshSheet();
         }
 
         /// <summary>
         /// Set List of Characters to print.
         /// </summary>
-        public void SetCharacters(params Character[] lstCharacters)
+        public async ValueTask SetCharacters(params Character[] lstCharacters)
         {
             foreach (Character objCharacter in _lstCharacters)
             {
@@ -775,7 +775,7 @@ namespace Chummer
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
                 LanguageManager.PopulateSheetLanguageList(cboLanguage, _strSelectedSheet, _lstCharacters);
                 PopulateXsltList();
-                Task.Run(RefreshCharacters);
+                await RefreshCharacters();
             }
             finally
             {
@@ -783,9 +783,9 @@ namespace Chummer
             }
         }
 
-        private void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Task.Run(RefreshCharacters);
+            await RefreshCharacters();
         }
 
         #endregion Methods

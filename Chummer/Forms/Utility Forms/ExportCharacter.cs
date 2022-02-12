@@ -80,7 +80,7 @@ namespace Chummer
                 cboXSLT.SelectedIndex = 0;
             cboXSLT.EndUpdate();
             _blnLoading = false;
-            await Task.WhenAll(this.DoThreadSafeAsync(() => Text = Text + LanguageManager.GetString("String_Space") + _objCharacter?.Name), DoLanguageUpdate());
+            await Task.WhenAll(this.DoThreadSafeAsync(() => Text = Text + LanguageManager.GetString("String_Space") + _objCharacter?.Name), DoLanguageUpdate().AsTask());
         }
 
         private void ExportCharacter_FormClosing(object sender, FormClosingEventArgs e)
@@ -122,7 +122,7 @@ namespace Chummer
             await DoXsltUpdate();
         }
 
-        private async Task DoLanguageUpdate()
+        private async ValueTask DoLanguageUpdate()
         {
             if (!_blnLoading)
             {
@@ -146,11 +146,11 @@ namespace Chummer
                                                                            _strExportLanguage.Substring(3, 2))
                                                                        : FlagImageGetter.GetFlagFromCountryCode(
                                                                            _strExportLanguage.Substring(3, 2))),
-                    DoXsltUpdate());
+                    DoXsltUpdate().AsTask());
             }
         }
 
-        private async Task DoXsltUpdate()
+        private async ValueTask DoXsltUpdate()
         {
             if (!_blnLoading)
             {

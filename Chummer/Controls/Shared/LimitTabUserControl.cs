@@ -173,7 +173,7 @@ namespace Chummer.UI.Shared
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        private async Task WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        private async ValueTask WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
             {
@@ -433,7 +433,7 @@ namespace Chummer.UI.Shared
         /// <summary>
         /// Edit and update a Limit Modifier.
         /// </summary>
-        protected async Task UpdateLimitModifier()
+        protected async ValueTask UpdateLimitModifier()
         {
             if (treLimit.SelectedNode.Level <= 0) return;
             TreeNode objSelectedNode = treLimit.SelectedNode;

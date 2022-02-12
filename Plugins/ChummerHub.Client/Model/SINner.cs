@@ -47,12 +47,12 @@ namespace ChummerHub.Client.Sinners
             string strPath = FilePath;
             if (!string.IsNullOrEmpty(strPath))
             {
-                CharacterCache objReturn = new CharacterCache();
+                CharacterCache objReturn;
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    objReturn.LoadFromFile(strPath);
+                    objReturn = new CharacterCache(strPath);
                 else
-                    await objReturn.LoadFromFileAsync(strPath);
+                    objReturn = await CharacterCache.CreateFromFileAsync(strPath);
                 return objReturn;
             }
             return null;

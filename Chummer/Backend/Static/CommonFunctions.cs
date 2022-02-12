@@ -852,7 +852,7 @@ namespace Chummer
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null)
+        public static async ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null)
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
@@ -884,7 +884,7 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        public static async ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
@@ -921,7 +921,7 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        public static async ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
@@ -1211,7 +1211,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
         /// <param name="e">EventArgs used when this method was called.</param>
-        public static async Task OpenPdfFromControl(object sender, EventArgs e)
+        public static async ValueTask OpenPdfFromControl(object sender, EventArgs e)
         {
             if (sender is Control objControl)
             {
@@ -1241,7 +1241,7 @@ namespace Chummer
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalSettings.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
-        public static async Task OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
+        public static async ValueTask OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;

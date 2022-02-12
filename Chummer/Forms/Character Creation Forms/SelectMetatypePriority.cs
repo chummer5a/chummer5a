@@ -341,7 +341,7 @@ namespace Chummer
             await ProcessTalentsIndexChanged();
         }
 
-        private async Task ProcessTalentsIndexChanged()
+        private async ValueTask ProcessTalentsIndexChanged()
         {
             SuspendLayout();
             cboSkill1.BeginUpdate();
@@ -705,7 +705,7 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        private async Task MetatypeSelected()
+        private async ValueTask MetatypeSelected()
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -1358,7 +1358,7 @@ namespace Chummer
             return value;
         }
 
-        private async Task RefreshSelectedMetatype()
+        private async ValueTask RefreshSelectedMetatype()
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();

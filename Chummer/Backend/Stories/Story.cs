@@ -138,7 +138,7 @@ namespace Chummer
             return null;
         }
 
-        public async Task GeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage)
         {
             List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
@@ -155,10 +155,10 @@ namespace Chummer
             _blnNeedToRegeneratePersistents = false;
         }
 
-        public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage)
         {
             if (_blnNeedToRegeneratePersistents)
-                await GeneratePersistents(objCulture, strLanguage);
+                await GeneratePersistentsAsync(objCulture, strLanguage);
             string[] strModuleOutputStrings = new string[Modules.Count];
             for (int i = 0; i < Modules.Count; ++i)
             {

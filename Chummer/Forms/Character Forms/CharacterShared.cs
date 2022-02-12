@@ -200,7 +200,7 @@ namespace Chummer
         /// Edit and update a Limit Modifier.
         /// </summary>
         /// <param name="treLimit"></param>
-        protected async Task UpdateLimitModifier(TreeView treLimit)
+        protected async ValueTask UpdateLimitModifier(TreeView treLimit)
         {
             if (treLimit == null || treLimit.SelectedNode.Level == 0)
                 return;
@@ -244,7 +244,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        protected async Task WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        protected async ValueTask WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
             if (objNotes == null)
                 return;
@@ -6541,7 +6541,7 @@ namespace Chummer
         /// <summary>
         /// Add a mugshot to the character.
         /// </summary>
-        protected async Task<bool> AddMugshot()
+        protected async ValueTask<bool> AddMugshot()
         {
             using (new CursorWait(this))
             {
@@ -6772,7 +6772,7 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public virtual async Task<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
             using (new CursorWait(this))
             {
@@ -6810,7 +6810,7 @@ namespace Chummer
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
-        public virtual async Task<bool> SaveCharacterAs(bool blnDoCreated = false)
+        public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
             using (new CursorWait(this))
             {
@@ -6864,7 +6864,7 @@ namespace Chummer
             set => _frmPrintView = value;
         }
 
-        public void DoPrint()
+        public async ValueTask DoPrint()
         {
             using (new CursorWait(this))
             {
@@ -6873,7 +6873,7 @@ namespace Chummer
                 if (_frmPrintView == null)
                 {
                     _frmPrintView = new CharacterSheetViewer();
-                    _frmPrintView.SetCharacters(CharacterObject);
+                    await _frmPrintView.SetCharacters(CharacterObject);
                     _frmPrintView.Show();
                 }
                 else
@@ -6898,7 +6898,7 @@ namespace Chummer
 
         #region Vehicles Tab
 
-        public async Task PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
+        public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
             using (new CursorWait(this))
             {

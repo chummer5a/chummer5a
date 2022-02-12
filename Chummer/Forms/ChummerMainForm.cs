@@ -443,7 +443,7 @@ namespace Chummer
 
         private System.Threading.CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
 
-        private async Task DoCacheGitVersion()
+        private async ValueTask DoCacheGitVersion()
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             System.Net.HttpWebRequest request;
@@ -1057,11 +1057,11 @@ namespace Chummer
             }
         }
 
-        private void tsPrint_Click(object sender, EventArgs e)
+        private async void tsPrint_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.DoPrint();
+                await objShared.DoPrint();
             }
         }
 

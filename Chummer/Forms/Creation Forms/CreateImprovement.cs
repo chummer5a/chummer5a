@@ -747,7 +747,7 @@ namespace Chummer
         /// <param name="strImprovementType"> The selector for the target translation. Often just _strSelect. </param>
         /// <param name="strToTranslate"> The string which to translate. Usually name. Guid in the case of adept powers.</param>
         /// <returns></returns>
-        private async Task<string> TranslateField(string strImprovementType, string strToTranslate)
+        private async ValueTask<string> TranslateField(string strImprovementType, string strToTranslate)
         {
             XPathNavigator objXmlNode;
             switch (strImprovementType)

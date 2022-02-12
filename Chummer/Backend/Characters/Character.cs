@@ -446,10 +446,11 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
+            string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
             XmlDocument xmlDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? LoadData(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage)
-                : await LoadDataAsync(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
+                ? LoadData(strFile, strLanguage)
+                : await LoadDataAsync(strFile, strLanguage);
             XmlNode xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
                                                                   ? "/chummer/metatypes/metatype[name = "
                                                                     + Metatype.CleanXPath() + ']'
@@ -498,10 +499,11 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
+            string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
             XPathNavigator xmlDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? LoadDataXPath(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage)
-                : await LoadDataXPathAsync(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
+                ? LoadDataXPath(strFile, strLanguage)
+                : await LoadDataXPathAsync(strFile, strLanguage);
             XPathNavigator xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']'
                 : "/chummer/metatypes/metatype[id = " +
@@ -2829,7 +2831,6 @@ namespace Chummer
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false)
         {
@@ -3423,7 +3424,7 @@ namespace Chummer
                                             return frmPickBP.DialogResult;
                                         }
                                     }
-                                    async Task<DialogResult> ShowBPAsync()
+                                    async ValueTask<DialogResult> ShowBPAsync()
                                     {
                                         using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                         {
@@ -7640,7 +7641,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public Task<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "")
+        public ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "")
         {
             return CommonFunctions.LanguageBookCodeFromAltCodeAsync(strAltCode, strLanguage, this);
         }
@@ -7660,7 +7661,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "")
+        public ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "")
         {
             return CommonFunctions.LanguageBookShortAsync(strCode, strLanguage, this);
         }
@@ -7680,7 +7681,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public Task<string> LanguageBookLongAsync(string strCode, string strLanguage = "")
+        public ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "")
         {
             return CommonFunctions.LanguageBookLongAsync(strCode, strLanguage, this);
         }

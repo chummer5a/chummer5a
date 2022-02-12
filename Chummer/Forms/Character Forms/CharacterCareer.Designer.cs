@@ -5874,7 +5874,7 @@ namespace Chummer
             this.tsbPrint.Size = new System.Drawing.Size(23, 22);
             this.tsbPrint.Tag = "Menu_FilePrint";
             this.tsbPrint.Text = "Print Character";
-            this.tsbPrint.Click += new System.EventHandler(this.tsbPrint_Click);
+            this.tsbPrint.Click += new System.EventHandler(this.mnuFilePrint_Click);
             // 
             // tsbSeparator
             // 
